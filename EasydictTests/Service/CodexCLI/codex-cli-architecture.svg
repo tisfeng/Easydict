@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" width="960" height="640">
+  <style>
+    text {
+      font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+      fill: #111827;
+    }
+    .title { font-size: 22px; font-weight: 600; }
+    .suite-title { font-size: 16px; font-weight: 600; fill: #1e3a8a; }
+    .suite-title-green { font-size: 16px; font-weight: 600; fill: #14532d; }
+    .node-title { font-size: 14px; font-weight: 600; }
+    .node-text { font-size: 12px; fill: #6b7280; }
+    .legend-text { font-size: 12px; fill: #4b5563; }
+    .scope-title { font-size: 14px; font-weight: 600; fill: #92400e; }
+    .scope-text { font-size: 12px; fill: #92400e; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="640" fill="#ffffff"/>
+  <text x="40" y="52" class="title">CodexCLI 测试套件结构</text>
+  <text x="40" y="78" class="node-text">两个 @Suite 类型，覆盖参数构建、JSONL 解析、token 用量与服务注册；不启动真实子进程或网络。</text>
+
+  <!-- Suite 1: Runner -->
+  <rect x="40" y="120" width="480" height="64" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.8"/>
+  <text x="60" y="148" class="suite-title">@Suite "CodexCLIRunner"</text>
+  <text x="60" y="170" class="node-text">CodexCLIRunnerTests.swift · 21 个测试用例</text>
+
+  <!-- Runner suite children -->
+  <rect x="40" y="220" width="225" height="98" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="60" y="246" class="node-title">buildArguments</text>
+  <text x="60" y="268" class="node-text">exec / --json / --ephemeral</text>
+  <text x="60" y="286" class="node-text">--sandbox read-only / -C</text>
+  <text x="60" y="304" class="node-text">prompt 在 -- 终止符之后</text>
+
+  <rect x="295" y="220" width="225" height="98" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="315" y="246" class="node-title">parseCodexError</text>
+  <text x="315" y="268" class="node-text">stdout JSONL string + object</text>
+  <text x="315" y="286" class="node-text">stderr 兜底（auth / quota）</text>
+  <text x="315" y="304" class="node-text">benign noise 过滤</text>
+
+  <rect x="40" y="340" width="225" height="98" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="60" y="366" class="node-title">parseCodexTokenUsage</text>
+  <text x="60" y="388" class="node-text">turn.completed.usage 字段</text>
+  <text x="60" y="406" class="node-text">多 turn 取最后一次</text>
+  <text x="60" y="424" class="node-text">空 usage 返回 nil</text>
+
+  <rect x="295" y="340" width="225" height="98" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="315" y="366" class="node-title">shell / 工具方法</text>
+  <text x="315" y="388" class="node-text">runWhich</text>
+  <text x="315" y="406" class="node-text">resolveLoginShellPath</text>
+  <text x="315" y="424" class="node-text">extractCodexText</text>
+
+  <!-- Suite 2: Service -->
+  <rect x="560" y="120" width="360" height="64" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.8"/>
+  <text x="580" y="148" class="suite-title-green">@Suite "CodexCLIService"</text>
+  <text x="580" y="170" class="node-text">CodexCLIServiceTests.swift · 6 个测试用例</text>
+
+  <rect x="560" y="220" width="170" height="98" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="580" y="246" class="node-title">serviceType</text>
+  <text x="580" y="268" class="node-text">== .codexCLI</text>
+  <text x="580" y="286" class="node-text">isStream() == true</text>
+  <text x="580" y="304" class="node-text">name 非空</text>
+
+  <rect x="750" y="220" width="170" height="98" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="770" y="246" class="node-title">apiKeyRequirement</text>
+  <text x="770" y="268" class="node-text">== .agentCLI</text>
+  <text x="770" y="286" class="node-text">hasPrivateAPIKey</text>
+  <text x="770" y="304" class="node-text">== false</text>
+
+  <rect x="560" y="340" width="170" height="98" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="580" y="366" class="node-title">factoryRegistration</text>
+  <text x="580" y="388" class="node-text">QueryServiceFactory</text>
+  <text x="580" y="406" class="node-text">.shared.service(</text>
+  <text x="580" y="424" class="node-text">withTypeId: ...) 命中</text>
+
+  <rect x="750" y="340" width="170" height="98" rx="8" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1.5"/>
+  <text x="770" y="366" class="node-title">元信息</text>
+  <text x="770" y="388" class="node-text">isStream / name</text>
+  <text x="770" y="406" class="node-text">apiKeyRequirement</text>
+  <text x="770" y="424" class="node-text">基础属性核对</text>
+
+  <!-- Runner suite ownership lines -->
+  <line x1="152" y1="184" x2="152" y2="218" stroke="#2563eb" stroke-width="1.4" marker-end="url(#arrow-blue)"/>
+  <line x1="408" y1="184" x2="408" y2="218" stroke="#2563eb" stroke-width="1.4" marker-end="url(#arrow-blue)"/>
+  <!-- Service suite ownership lines -->
+  <line x1="645" y1="184" x2="645" y2="218" stroke="#16a34a" stroke-width="1.4" marker-end="url(#arrow-green)"/>
+  <line x1="835" y1="184" x2="835" y2="218" stroke="#16a34a" stroke-width="1.4" marker-end="url(#arrow-green)"/>
+
+  <!-- Out of scope -->
+  <rect x="40" y="470" width="880" height="130" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="60" y="498" class="scope-title">超出测试范围（Out of scope）</text>
+  <text x="60" y="524" class="scope-text">• 真实子进程执行：所有 stdout/stderr 都用字符串 fixture，不依赖本机 codex 二进制或登录态</text>
+  <text x="60" y="546" class="scope-text">• 网络 / OpenAI 账号：测试不调用 OpenAI 服务，CI 与本地行为一致</text>
+  <text x="60" y="568" class="scope-text">• UI 流程：设置面板、风险弹窗、Debug 窗口按项目规范不写自动化测试</text>
+  <text x="60" y="590" class="scope-text">• Stream 实际节奏：codex 0.128.x 不流式增量，端到端时间需在 App 内手工验证</text>
+</svg>

@@ -1280,8 +1280,10 @@
 		C0DEC11E0002000000000005 /* CodexCLILogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLILogger.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIDebugWindow.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIServiceConfigurationView.swift; sourceTree = "<group>"; };
-		C0DEC11E0002000000000008 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		C0DEC11E0002000000000009 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		C0DEC11E0002000000000008 /* codex-cli-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "codex-cli-overview.md"; sourceTree = "<group>"; };
+		C0DEC11E0002000000000009 /* codex-cli-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "codex-cli-overview.md"; sourceTree = "<group>"; };
+		C0DEC11E0002000000000012 /* codex-cli-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "codex-cli-architecture.svg"; sourceTree = "<group>"; };
+		C0DEC11E0002000000000013 /* codex-cli-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "codex-cli-architecture.svg"; sourceTree = "<group>"; };
 		C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIServiceTests.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIRunnerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -3174,7 +3176,8 @@
 			children = (
 				C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */,
 				C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */,
-				C0DEC11E0002000000000009 /* README.md */,
+				C0DEC11E0002000000000009 /* codex-cli-overview.md */,
+				C0DEC11E0002000000000013 /* codex-cli-architecture.svg */,
 			);
 			path = CodexCLI;
 			sourceTree = "<group>";
@@ -3611,7 +3614,8 @@
 				C0DEC11E0002000000000002 /* CodexCLIRunner.swift */,
 				C0DEC11E0002000000000001 /* CodexCLIService.swift */,
 				C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */,
-				C0DEC11E0002000000000008 /* README.md */,
+				C0DEC11E0002000000000008 /* codex-cli-overview.md */,
+				C0DEC11E0002000000000012 /* codex-cli-architecture.svg */,
 			);
 			path = CodexCLI;
 			sourceTree = "<group>";
