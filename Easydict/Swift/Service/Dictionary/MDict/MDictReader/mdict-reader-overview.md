@@ -30,7 +30,7 @@ MDictReader/
 - `MDictMetadataCache` 将轻量结构索引持久化到 Application Support，并用文件路径、大小、
   修改时间和 schema version 失效；schema 提升时旧 cache 会被直接忽略并重建。
 - `MDictHeaderParser` 只负责从 header XML 中提取版本、标题、编码、格式、大小写敏感和加密
-  标记。
+  标记；`MDictReader` 会拒绝所有 key-header encrypted bit 被置位的文件。
 - `MDictKeyBlocks` 负责解析 key block info，并在查询命中某个 block 时按需解压和解析 key
   entries；必要时解密 Encrypted=2 的 key block info。
 - `MDictRecords` 负责根据 record offset 定位 record block，按需解压并缓存 record block。

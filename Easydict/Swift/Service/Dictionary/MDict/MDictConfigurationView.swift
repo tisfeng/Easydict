@@ -68,9 +68,10 @@ struct MDictConfigurationView: View {
 
     // MARK: Private
 
-    private static let importableContentTypes = ["mdx", "mdd"].compactMap {
-        UTType(filenameExtension: $0)
-    }
+    private static let importableContentTypes = [
+        UTType(filenameExtension: "mdx") ?? .data,
+        UTType(filenameExtension: "mdd") ?? .data,
+    ]
 
     @ObservedObject private var manager = MDictManager.shared
     @State private var isImporting = false

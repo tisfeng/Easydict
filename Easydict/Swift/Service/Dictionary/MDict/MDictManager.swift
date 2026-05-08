@@ -60,8 +60,7 @@ final class MDictManager: ObservableObject {
     @Published private(set) var loadErrors: [String: Error] = [:]
 
     var enabledDictionaries: [MDictDictionary] {
-        let enabledPaths = Set(records.filter(\.enabled).map(\.mdxPath))
-        return loadedDictionaries.filter { enabledPaths.contains($0.mdxURL.path) }
+        orderedLoadedDictionaries(for: records.filter(\.enabled))
     }
 
     func dictionariesForLookup() async -> [MDictDictionary] {
@@ -70,11 +69,13 @@ final class MDictManager: ObservableObject {
         let loaded = loadedDictionaries.filter { enabledPaths.contains($0.mdxURL.path) }
         let loadedPaths = Set(loaded.map(\.mdxURL.path))
         let missingRecords = enabledRecords.filter { !loadedPaths.contains($0.mdxPath) }
-        guard !missingRecords.isEmpty else { return loaded }
+        guard !missingRecords.isEmpty else {
+            return orderedLoadedDictionaries(for: enabledRecords)
+        }
 
         let (loadedMissing, errors) = await Self.loadDictionaries(from: missingRecords)
         mergeLoadedDictionaries(loadedMissing, errors: errors)
-        return loadedDictionaries.filter { enabledPaths.contains($0.mdxURL.path) }
+        return orderedLoadedDictionaries(for: enabledRecords)
     }
 
     // MARK: - Import
@@ -191,6 +192,17 @@ final class MDictManager: ObservableObject {
             throw MDictError.invalidFormat("Please import the matching MDX file first")
         }
         try importMDX(mdxURL)
+    }
+
+    private func orderedLoadedDictionaries(
+        for records: [MDictDictionaryRecord]
+    )
+        -> [MDictDictionary] {
+        var dictionariesByPath: [String: MDictDictionary] = [:]
+        for dictionary in loadedDictionaries {
+            dictionariesByPath[dictionary.mdxURL.path] = dictionary
+        }
+        return records.compactMap { dictionariesByPath[$0.mdxPath] }
     }
 
     private func normalizePersistedRecords() {

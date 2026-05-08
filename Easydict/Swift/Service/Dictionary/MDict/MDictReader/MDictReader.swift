@@ -197,6 +197,9 @@ final class MDictReader {
         self.data = data
 
         if let metadata = MDictMetadataCache.shared.load(for: url) {
+            if metadata.header.encrypted & 1 != 0 {
+                throw MDictError.encrypted
+            }
             self.header = metadata.header
             self.keyBlockRanges = metadata.keyBlockRanges
             self.recordBlockRanges = metadata.recordBlockRanges
@@ -207,7 +210,7 @@ final class MDictReader {
         var cursor = 0
         self.header = try Self.parseHeader(data, cursor: &cursor)
 
-        if header.encrypted == 1 {
+        if header.encrypted & 1 != 0 {
             throw MDictError.encrypted
         }
 

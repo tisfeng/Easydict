@@ -1111,13 +1111,14 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
     }
 
     if ([navigationActionURL.scheme isEqualToString:kMDictEntryURIScheme]) {
-        NSString *hrefText = [navigationActionURL.absoluteString ns_decode];
-
-        [self getTextWithHref:hrefText completionHandler:^(NSString *text) {
-            if (self.queryTextBlock && text.length) {
-                self.queryTextBlock([text ns_trim]);
-            }
-        }];
+        NSString *targetText = navigationActionURL.resourceSpecifier ?: @"";
+        if ([targetText hasPrefix:@"//"]) {
+            targetText = [targetText substringFromIndex:2];
+        }
+        targetText = [[targetText ns_decode] ns_trim];
+        if (self.queryTextBlock && targetText.length) {
+            self.queryTextBlock(targetText);
+        }
 
         decisionHandler(WKNavigationActionPolicyCancel);
         return;

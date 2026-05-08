@@ -39,8 +39,10 @@ MDict/
 
 导入流程从 `MDictConfigurationView` 的文件选择器开始，`MDictManager` 根据扩展名导入 MDX
 或匹配 MDD，合并同名资源文件并保存 `MDictDictionaryRecord`。MDD 匹配保留精确同名优先，
-只把短数字后缀当作 multipart 资源后缀处理，避免年份等普通文件名误挂到无关 MDX。首次查询启用词典时，
-`MDictManager` 在后台创建缺失的 `MDictDictionary`，避免启动或首查期间阻塞主线程。
+只把短数字后缀当作 multipart 资源后缀处理，避免年份等普通文件名误挂到无关 MDX。文件选择器
+使用 MDX/MDD 扩展名类型并以通用 data 类型兜底，避免系统未注册自定义扩展名时没有可选类型。
+首次查询启用词典时，`MDictManager` 在后台创建缺失的 `MDictDictionary`，并按 `records`
+中的用户排序返回词典，保证查询优先级和显示顺序一致。
 
 查询流程从 `MDictService.translate` 开始。服务读取启用的 `MDictDictionary`，逐本调用
 `lookup`，词典内部先通过 `MDictReader` 精确查找 key entry 和 record block；如果无结果，再
@@ -57,8 +59,10 @@ MDict/
 如果 MDX 文件旁边存在同名 `.css`，例如 `concise-enhanced.mdx` 对应
 `concise-enhanced.css`，`MDictDictionary` 会在首次命中 HTML 查询时读取并缓存该样式，然后
 注入到词条内容前面，适配 MDict 词库常见的外置样式优化文件。
-资源改写会优先处理脚本、stylesheet、图片和 CSS url，再处理音频链接；`javascript:new Audio(...)`
-中的本地音频会先被改写为 data URI，并由结果页 click handler 拦截播放，避免被 CSP 当作导航阻断。
+资源改写会优先处理脚本、stylesheet、图片和 CSS url，再处理音频链接；内联脚本会保留结果页
+CSP 所需的 nonce，`javascript:new Audio(...)` 中的本地音频会先被改写为 data URI，并由结果页
+click handler 拦截播放，避免被 CSP 当作导航阻断。`mdict-entry://` 跳转由结果面板按 href
+payload 查询，而不是依赖锚点展示文本。
 单次查询有 data URI 数量和总字节预算，避免大词条因为数百个发音资源被同步内联而阻塞查询。
 
 ## 调试入口

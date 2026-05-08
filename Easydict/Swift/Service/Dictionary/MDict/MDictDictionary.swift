@@ -323,7 +323,7 @@ final class MDictDictionary: @unchecked Sendable {
                   let script = scriptText(for: key)
             else { return nil }
 
-            return "<script>\(script)</script>"
+            return "<script nonce=\"easydict-mdict\">\(script)</script>"
         }
     }
 

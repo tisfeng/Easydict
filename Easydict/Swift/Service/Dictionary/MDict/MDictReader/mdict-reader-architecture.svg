@@ -43,7 +43,7 @@
   <rect x="288" y="204" width="160" height="88" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="368" y="235" text-anchor="middle" class="box-title">HeaderParser</text>
   <text x="368" y="260" text-anchor="middle" class="box-text">版本、编码、格式</text>
-  <text x="368" y="280" text-anchor="middle" class="box-text">加密标记</text>
+  <text x="368" y="280" text-anchor="middle" class="box-text">加密 bit flag</text>
 
   <rect x="500" y="204" width="160" height="88" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="580" y="235" text-anchor="middle" class="box-title">KeyBlocks</text>
