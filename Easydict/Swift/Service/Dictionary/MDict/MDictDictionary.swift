@@ -128,6 +128,7 @@ final class MDictDictionary: @unchecked Sendable {
     private var searchIndex: MDictSearchIndex?
     private var resolvedDataURIBytes = 0
     private var resolvedDataURICount = 0
+    private var dataURIBudgetMissCount = 0
     private var cachedLocalStylesheet: String?
     private var didLoadLocalStylesheet = false
 
@@ -220,6 +221,7 @@ final class MDictDictionary: @unchecked Sendable {
     private func resolveLinks(in html: String) -> String {
         resolvedDataURIBytes = 0
         resolvedDataURICount = 0
+        dataURIBudgetMissCount = 0
 
         var result = html
         result = result.replacingOccurrences(
@@ -397,7 +399,10 @@ final class MDictDictionary: @unchecked Sendable {
     private func dataURI(for key: String) -> String? {
         let cacheKey = resourceCacheKey(for: key)
         if let cached = cachedDataURIs[cacheKey] {
-            guard reserveDataURIBudget(bytes: cached.utf8.count) else { return nil }
+            guard reserveDataURIBudget(bytes: cached.utf8.count) else {
+                dataURIBudgetMissCount += 1
+                return nil
+            }
             markDataURICacheHit(cacheKey)
             return cached
         }
@@ -411,7 +416,10 @@ final class MDictDictionary: @unchecked Sendable {
 
         let mimeType = mimeType(for: key)
         let bytes = dataURIByteCount(dataByteCount: data.count, mimeType: mimeType)
-        guard reserveDataURIBudget(bytes: bytes) else { return nil }
+        guard reserveDataURIBudget(bytes: bytes) else {
+            dataURIBudgetMissCount += 1
+            return nil
+        }
 
         let dataURI = "data:\(mimeType);base64,\(data.base64EncodedString())"
         cacheDataURI(dataURI, for: cacheKey)
@@ -449,8 +457,11 @@ final class MDictDictionary: @unchecked Sendable {
             return nil
         }
 
+        let budgetMissCount = dataURIBudgetMissCount
         let resolvedCSS = replaceCSSResources(in: css)
-        cacheStylesheet(resolvedCSS, for: cacheKey)
+        if budgetMissCount == dataURIBudgetMissCount {
+            cacheStylesheet(resolvedCSS, for: cacheKey)
+        }
         return resolvedCSS
     }
 
@@ -458,16 +469,26 @@ final class MDictDictionary: @unchecked Sendable {
         if didLoadLocalStylesheet {
             return cachedLocalStylesheet
         }
-        didLoadLocalStylesheet = true
 
         let cssURL = mdxURL.deletingPathExtension().appendingPathExtension("css")
-        guard FileManager.default.fileExists(atPath: cssURL.path),
-              let data = try? Data(contentsOf: cssURL),
+        guard FileManager.default.fileExists(atPath: cssURL.path) else {
+            didLoadLocalStylesheet = true
+            return nil
+        }
+        guard let data = try? Data(contentsOf: cssURL),
               let css = Self.decodeResourceText(data, preferredEncoding: mdxReader.header.encoding)
-        else { return nil }
+        else {
+            didLoadLocalStylesheet = true
+            return nil
+        }
 
-        cachedLocalStylesheet = replaceCSSResources(in: css)
-        return cachedLocalStylesheet
+        let budgetMissCount = dataURIBudgetMissCount
+        let resolvedCSS = replaceCSSResources(in: css)
+        if budgetMissCount == dataURIBudgetMissCount {
+            cachedLocalStylesheet = resolvedCSS
+            didLoadLocalStylesheet = true
+        }
+        return resolvedCSS
     }
 
     private func scriptText(for key: String) -> String? {

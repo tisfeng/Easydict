@@ -50,7 +50,8 @@ MDict/
 资源时，词典才会创建对应的 resource reader。图片、音频和 CSS url 生成的 data URI 会按 LRU
 缓存；外链 stylesheet 解析后的 CSS 也会缓存，并复用已缓存的内嵌资源。资源 key 查询会先尝试
 词条原始路径，再生成反斜杠和前导斜杠变体，兼容不同 MDD 生成器的路径风格。CSS 和脚本等文本
-资源优先使用 MDX header encoding 解码，再回退到常见 Unicode 编码。最终服务把每本词典
+资源优先使用 MDX header encoding 解码，再回退到常见 Unicode 编码；如果 CSS 内部资源受
+单次 data URI 预算影响未完全替换，这份结果不会进入 stylesheet 缓存。最终服务把每本词典
 的 HTML section 交给
 `DictionaryHTMLRenderer`，由共享词典结果模板渲染。
 如果 MDX 文件旁边存在同名 `.css`，例如 `concise-enhanced.mdx` 对应
