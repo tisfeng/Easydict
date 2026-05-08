@@ -61,9 +61,10 @@ in-flight 加载任务，避免重复解析同一 MDX；返回结果按 `records
 `concise-enhanced.css`，`MDictDictionary` 会在首次命中 HTML 查询时读取并缓存该样式，然后
 注入到词条内容前面，适配 MDict 词库常见的外置样式优化文件。
 资源改写会优先处理脚本、stylesheet、图片和 CSS url，再处理音频链接；内联脚本会保留结果页
-CSP 所需的 nonce，`javascript:new Audio(...)` 中的本地音频会先被改写为 data URI，并由结果页
-click handler 拦截播放，避免被 CSP 当作导航阻断。`mdict-entry://` 跳转由结果面板按 href
-payload 查询，而不是依赖锚点展示文本。
+CSP 所需的 nonce，并转义 `</script` 片段，避免 HTML parser 提前截断脚本。普通
+`sound://` 链接只在独立 scheme 位置改写，不会误改 `mdict-sound://`。`javascript:new Audio(...)`
+中的本地音频会先被改写为 data URI，并由结果页 click handler 拦截播放，避免被 CSP 当作导航阻断。
+`mdict-entry://` 跳转由结果面板按 href payload 查询，而不是依赖锚点展示文本。
 单次查询有 data URI 数量和总字节预算，避免大词条因为数百个发音资源被同步内联而阻塞查询。
 
 ## 调试入口

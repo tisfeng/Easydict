@@ -101,7 +101,7 @@ final class MDictDictionary: @unchecked Sendable {
 
     // MARK: Private
 
-    private static let soundLinkRegex = makeRegex("(?i)sound://([^\"'\\s)<>]+)")
+    private static let soundLinkRegex = makeRegex("(?i)(?<![A-Za-z0-9_-])sound://([^\"'\\s)<>]+)")
     private static let resourceAttributeRegex = makeRegex("(?i)((?:src|poster)\\s*=\\s*[\"'])([^\"']+)([\"'])")
     private static let sourceSetRegex = makeRegex("(?i)(srcset\\s*=\\s*[\"'])([^\"']+)([\"'])")
     private static let stylesheetLinkRegex = makeRegex(
@@ -323,8 +323,16 @@ final class MDictDictionary: @unchecked Sendable {
                   let script = scriptText(for: key)
             else { return nil }
 
-            return "<script nonce=\"easydict-mdict\">\(script)</script>"
+            return "<script nonce=\"easydict-mdict\">\(Self.escapeInlineScript(script))</script>"
         }
+    }
+
+    private static func escapeInlineScript(_ script: String) -> String {
+        script.replacingOccurrences(
+            of: "</script",
+            with: "<\\/script",
+            options: .caseInsensitive
+        )
     }
 
     private func replaceCSSResources(in html: String) -> String {
