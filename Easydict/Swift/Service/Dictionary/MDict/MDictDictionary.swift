@@ -151,6 +151,14 @@ final class MDictDictionary: @unchecked Sendable {
         }
     }
 
+    private static func escapeInlineScript(_ script: String) -> String {
+        script.replacingOccurrences(
+            of: "</script",
+            with: "<\\/script",
+            options: .caseInsensitive
+        )
+    }
+
     private func loadedMDDReaders() -> [MDictReader] {
         if let cachedMDDReaders {
             return cachedMDDReaders
@@ -215,193 +223,6 @@ final class MDictDictionary: @unchecked Sendable {
         let withSlash = normalized.hasPrefix("\\") ? normalized : "\\\(normalized)"
         var seen = Set<String>()
         return [decoded, normalized, withSlash, withoutSlash].filter { seen.insert($0).inserted }
-    }
-
-    /// Rewrites MDict links so WebKit can render local resources without a scheme handler.
-    private func resolveLinks(in html: String) -> String {
-        resolvedDataURIBytes = 0
-        resolvedDataURICount = 0
-        dataURIBudgetMissCount = 0
-
-        var result = html
-        result = result.replacingOccurrences(
-            of: "entry://",
-            with: "mdict-entry://"
-        )
-        result = replaceScriptLinks(in: result)
-        result = replaceStylesheetLinks(in: result)
-        result = replaceResourceAttributes(in: result)
-        result = replaceSourceSets(in: result)
-        result = replaceCSSResources(in: result)
-        result = replaceAudioConstructors(in: result)
-        result = replaceSoundLinks(in: result)
-        if let localStylesheet = localStylesheetText() {
-            result = "<style>\(localStylesheet)</style>\(result)"
-        }
-        return result
-    }
-
-    private func replaceSoundLinks(in html: String) -> String {
-        replaceMatches(
-            in: html,
-            regex: Self.soundLinkRegex
-        ) { match, source in
-            guard let keyRange = Range(match.range(at: 1), in: source) else { return nil }
-            return dataURI(for: String(source[keyRange]))
-        }
-    }
-
-    private func replaceResourceAttributes(in html: String) -> String {
-        replaceMatches(
-            in: html,
-            regex: Self.resourceAttributeRegex
-        ) { match, source in
-            guard let prefixRange = Range(match.range(at: 1), in: source),
-                  let keyRange = Range(match.range(at: 2), in: source),
-                  let suffixRange = Range(match.range(at: 3), in: source)
-            else { return nil }
-
-            let key = String(source[keyRange])
-            guard shouldResolveResource(key),
-                  let dataURI = dataURI(for: key)
-            else { return nil }
-
-            return "\(source[prefixRange])\(dataURI)\(source[suffixRange])"
-        }
-    }
-
-    private func replaceSourceSets(in html: String) -> String {
-        replaceMatches(
-            in: html,
-            regex: Self.sourceSetRegex
-        ) { match, source in
-            guard let prefixRange = Range(match.range(at: 1), in: source),
-                  let valueRange = Range(match.range(at: 2), in: source),
-                  let suffixRange = Range(match.range(at: 3), in: source)
-            else { return nil }
-
-            let rewritten = source[valueRange]
-                .split(separator: ",")
-                .map { candidate -> String in
-                    let parts = candidate.split(separator: " ", omittingEmptySubsequences: true)
-                    guard let key = parts.first,
-                          shouldResolveResource(String(key)),
-                          let dataURI = dataURI(for: String(key))
-                    else { return String(candidate) }
-
-                    let descriptor = parts.dropFirst().joined(separator: " ")
-                    return descriptor.isEmpty ? dataURI : "\(dataURI) \(descriptor)"
-                }
-                .joined(separator: ", ")
-            return "\(source[prefixRange])\(rewritten)\(source[suffixRange])"
-        }
-    }
-
-    private func replaceStylesheetLinks(in html: String) -> String {
-        replaceMatches(
-            in: html,
-            regex: Self.stylesheetLinkRegex
-        ) { match, source in
-            guard let keyRange = Range(match.range(at: 1), in: source) else { return nil }
-            let key = String(source[keyRange])
-            guard shouldResolveResource(key),
-                  let css = stylesheetText(for: key)
-            else { return nil }
-
-            return "<style>\(css)</style>"
-        }
-    }
-
-    private func replaceScriptLinks(in html: String) -> String {
-        replaceMatches(
-            in: html,
-            regex: Self.scriptLinkRegex
-        ) { match, source in
-            guard let keyRange = Range(match.range(at: 1), in: source) else { return nil }
-            let key = String(source[keyRange])
-            guard shouldResolveResource(key),
-                  let script = scriptText(for: key)
-            else { return nil }
-
-            return "<script nonce=\"easydict-mdict\">\(Self.escapeInlineScript(script))</script>"
-        }
-    }
-
-    private static func escapeInlineScript(_ script: String) -> String {
-        script.replacingOccurrences(
-            of: "</script",
-            with: "<\\/script",
-            options: .caseInsensitive
-        )
-    }
-
-    private func replaceCSSResources(in html: String) -> String {
-        replaceMatches(
-            in: html,
-            regex: Self.cssURLRegex
-        ) { match, source in
-            guard let prefixRange = Range(match.range(at: 1), in: source),
-                  let keyRange = Range(match.range(at: 2), in: source),
-                  let suffixRange = Range(match.range(at: 3), in: source)
-            else { return nil }
-
-            let key = String(source[keyRange])
-            guard shouldResolveResource(key),
-                  let dataURI = dataURI(for: key)
-            else { return nil }
-
-            return "\(source[prefixRange])\(dataURI)\(source[suffixRange])"
-        }
-    }
-
-    private func replaceAudioConstructors(in html: String) -> String {
-        replaceMatches(
-            in: html,
-            regex: Self.audioConstructorRegex
-        ) { match, source in
-            guard let argumentRange = Range(match.range(at: 1), in: source) else { return nil }
-            let rawArgument = String(source[argumentRange])
-            let key = rawArgument
-                .replacingOccurrences(of: "&quot;", with: "")
-                .trimmingCharacters(in: CharacterSet(charactersIn: "\"' "))
-            guard shouldResolveResource(key),
-                  let dataURI = dataURI(for: key)
-            else { return nil }
-
-            return "new Audio(\(Self.javaScriptStringLiteral(dataURI)))"
-        }
-    }
-
-    private func replaceMatches(
-        in html: String,
-        regex: NSRegularExpression,
-        replacement: (NSTextCheckingResult, String) -> String?
-    )
-        -> String {
-        var result = html
-        let matches = regex.matches(
-            in: result,
-            range: NSRange(result.startIndex..., in: result)
-        )
-        for match in matches.reversed() {
-            guard let fullRange = Range(match.range, in: result),
-                  let replacementText = replacement(match, result)
-            else { continue }
-            result.replaceSubrange(fullRange, with: replacementText)
-        }
-        return result
-    }
-
-    private func shouldResolveResource(_ key: String) -> Bool {
-        let lowercased = key.lowercased()
-        return !lowercased.hasPrefix("data:")
-            && !lowercased.hasPrefix("http://")
-            && !lowercased.hasPrefix("https://")
-            && !lowercased.hasPrefix("file:")
-            && !lowercased.hasPrefix("about:")
-            && !lowercased.hasPrefix("#")
-            && !lowercased.hasPrefix("mdict-entry://")
-            && !lowercased.hasPrefix("x-dictionary:")
     }
 
     private func dataURI(for key: String) -> String? {
@@ -602,6 +423,190 @@ final class MDictDictionary: @unchecked Sendable {
             missingResourceOrder.removeFirst()
             missingResourceKeys.remove(evicted)
         }
+    }
+}
+
+// MARK: - HTML Link Rewriting
+
+extension MDictDictionary {
+    /// Rewrites MDict links so WebKit can render local resources without a scheme handler.
+    func resolveLinks(in html: String) -> String {
+        resolvedDataURIBytes = 0
+        resolvedDataURICount = 0
+        dataURIBudgetMissCount = 0
+
+        var result = html
+        result = result.replacingOccurrences(
+            of: "entry://",
+            with: "mdict-entry://"
+        )
+        result = replaceScriptLinks(in: result)
+        result = replaceStylesheetLinks(in: result)
+        result = replaceResourceAttributes(in: result)
+        result = replaceSourceSets(in: result)
+        result = replaceCSSResources(in: result)
+        result = replaceAudioConstructors(in: result)
+        result = replaceSoundLinks(in: result)
+        if let localStylesheet = localStylesheetText() {
+            result = "<style>\(localStylesheet)</style>\(result)"
+        }
+        return result
+    }
+
+    func replaceCSSResources(in html: String) -> String {
+        replaceMatches(
+            in: html,
+            regex: Self.cssURLRegex
+        ) { match, source in
+            guard let prefixRange = Range(match.range(at: 1), in: source),
+                  let keyRange = Range(match.range(at: 2), in: source),
+                  let suffixRange = Range(match.range(at: 3), in: source)
+            else { return nil }
+
+            let key = String(source[keyRange])
+            guard shouldResolveResource(key),
+                  let dataURI = dataURI(for: key)
+            else { return nil }
+
+            return "\(source[prefixRange])\(dataURI)\(source[suffixRange])"
+        }
+    }
+
+    fileprivate func replaceSoundLinks(in html: String) -> String {
+        replaceMatches(
+            in: html,
+            regex: Self.soundLinkRegex
+        ) { match, source in
+            guard let keyRange = Range(match.range(at: 1), in: source) else { return nil }
+            return dataURI(for: String(source[keyRange]))
+        }
+    }
+
+    fileprivate func replaceResourceAttributes(in html: String) -> String {
+        replaceMatches(
+            in: html,
+            regex: Self.resourceAttributeRegex
+        ) { match, source in
+            guard let prefixRange = Range(match.range(at: 1), in: source),
+                  let keyRange = Range(match.range(at: 2), in: source),
+                  let suffixRange = Range(match.range(at: 3), in: source)
+            else { return nil }
+
+            let key = String(source[keyRange])
+            guard shouldResolveResource(key),
+                  let dataURI = dataURI(for: key)
+            else { return nil }
+
+            return "\(source[prefixRange])\(dataURI)\(source[suffixRange])"
+        }
+    }
+
+    fileprivate func replaceSourceSets(in html: String) -> String {
+        replaceMatches(
+            in: html,
+            regex: Self.sourceSetRegex
+        ) { match, source in
+            guard let prefixRange = Range(match.range(at: 1), in: source),
+                  let valueRange = Range(match.range(at: 2), in: source),
+                  let suffixRange = Range(match.range(at: 3), in: source)
+            else { return nil }
+
+            let rewritten = source[valueRange]
+                .split(separator: ",")
+                .map { candidate -> String in
+                    let parts = candidate.split(separator: " ", omittingEmptySubsequences: true)
+                    guard let key = parts.first,
+                          shouldResolveResource(String(key)),
+                          let dataURI = dataURI(for: String(key))
+                    else { return String(candidate) }
+
+                    let safeURI = dataURI.replacingOccurrences(of: ",", with: "%2C")
+                    let descriptor = parts.dropFirst().joined(separator: " ")
+                    return descriptor.isEmpty ? safeURI : "\(safeURI) \(descriptor)"
+                }
+                .joined(separator: ", ")
+            return "\(source[prefixRange])\(rewritten)\(source[suffixRange])"
+        }
+    }
+
+    fileprivate func replaceStylesheetLinks(in html: String) -> String {
+        replaceMatches(
+            in: html,
+            regex: Self.stylesheetLinkRegex
+        ) { match, source in
+            guard let keyRange = Range(match.range(at: 1), in: source) else { return nil }
+            let key = String(source[keyRange])
+            guard shouldResolveResource(key),
+                  let css = stylesheetText(for: key)
+            else { return nil }
+
+            return "<style>\(css)</style>"
+        }
+    }
+
+    fileprivate func replaceScriptLinks(in html: String) -> String {
+        replaceMatches(
+            in: html,
+            regex: Self.scriptLinkRegex
+        ) { match, source in
+            guard let keyRange = Range(match.range(at: 1), in: source) else { return nil }
+            let key = String(source[keyRange])
+            guard shouldResolveResource(key),
+                  let script = scriptText(for: key)
+            else { return nil }
+
+            return "<script nonce=\"easydict-mdict\">\(Self.escapeInlineScript(script))</script>"
+        }
+    }
+
+    fileprivate func replaceAudioConstructors(in html: String) -> String {
+        replaceMatches(
+            in: html,
+            regex: Self.audioConstructorRegex
+        ) { match, source in
+            guard let argumentRange = Range(match.range(at: 1), in: source) else { return nil }
+            let rawArgument = String(source[argumentRange])
+            let key = rawArgument
+                .replacingOccurrences(of: "&quot;", with: "")
+                .trimmingCharacters(in: CharacterSet(charactersIn: "\"' "))
+            guard shouldResolveResource(key),
+                  let dataURI = dataURI(for: key)
+            else { return nil }
+
+            return "new Audio(\(Self.javaScriptStringLiteral(dataURI)))"
+        }
+    }
+
+    fileprivate func replaceMatches(
+        in html: String,
+        regex: NSRegularExpression,
+        replacement: (NSTextCheckingResult, String) -> String?
+    )
+        -> String {
+        var result = html
+        let matches = regex.matches(
+            in: result,
+            range: NSRange(result.startIndex..., in: result)
+        )
+        for match in matches.reversed() {
+            guard let fullRange = Range(match.range, in: result),
+                  let replacementText = replacement(match, result)
+            else { continue }
+            result.replaceSubrange(fullRange, with: replacementText)
+        }
+        return result
+    }
+
+    fileprivate func shouldResolveResource(_ key: String) -> Bool {
+        let lowercased = key.lowercased()
+        return !lowercased.hasPrefix("data:")
+            && !lowercased.hasPrefix("http://")
+            && !lowercased.hasPrefix("https://")
+            && !lowercased.hasPrefix("file:")
+            && !lowercased.hasPrefix("about:")
+            && !lowercased.hasPrefix("#")
+            && !lowercased.hasPrefix("mdict-entry://")
+            && !lowercased.hasPrefix("x-dictionary:")
     }
 }
 
