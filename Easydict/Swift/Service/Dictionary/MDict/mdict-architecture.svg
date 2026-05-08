@@ -43,7 +43,7 @@
   <rect x="356" y="204" width="184" height="88" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <text x="448" y="235" text-anchor="middle" class="box-title">MDictManager</text>
   <text x="448" y="260" text-anchor="middle" class="box-text">Defaults records</text>
-  <text x="448" y="280" text-anchor="middle" class="box-text">后台按需加载 + records 排序</text>
+  <text x="448" y="280" text-anchor="middle" class="box-text">in-flight 去重 + records 排序</text>
 
   <rect x="624" y="216" width="218" height="64" rx="8" ry="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
   <text x="733" y="241" text-anchor="middle" class="box-title">MDictDictionary</text>

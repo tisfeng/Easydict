@@ -73,7 +73,8 @@ final class MDictManager: ObservableObject {
             return orderedLoadedDictionaries(for: enabledRecords)
         }
 
-        let (loadedMissing, errors) = await Self.loadDictionaries(from: missingRecords)
+        let tasks = missingRecords.map { loadingTask(for: $0) }
+        let (loadedMissing, errors) = await collectLoadedDictionaries(from: tasks)
         mergeLoadedDictionaries(loadedMissing, errors: errors)
         return orderedLoadedDictionaries(for: enabledRecords)
     }
@@ -124,27 +125,25 @@ final class MDictManager: ObservableObject {
 
     // MARK: Private
 
-    private static func loadDictionaries(
-        from records: [MDictDictionaryRecord]
+    private var loadingTasks: [String: (
+        id: UUID,
+        task: Task<Result<MDictDictionary, Error>, Never>
+    )] = [:]
+
+    private nonisolated static func loadDictionary(
+        from record: MDictDictionaryRecord
     ) async
-        -> ([MDictDictionary], [String: Error]) {
-        await Task.detached(priority: .userInitiated) {
-            var dictionaries: [MDictDictionary] = []
-            var errors: [String: Error] = [:]
-            for record in records {
-                do {
-                    let dict = try MDictDictionary(
-                        mdxURL: record.mdxURL,
-                        mddURLs: record.mddURLs
-                    )
-                    dictionaries.append(dict)
-                } catch {
-                    errors[record.mdxPath] = error
-                    logError("MDictManager: failed to load \(record.mdxPath): \(error)")
-                }
-            }
-            return (dictionaries, errors)
-        }.value
+        -> Result<MDictDictionary, Error> {
+        do {
+            let dict = try MDictDictionary(
+                mdxURL: record.mdxURL,
+                mddURLs: record.mddURLs
+            )
+            return .success(dict)
+        } catch {
+            logError("MDictManager: failed to load \(record.mdxPath): \(error)")
+            return .failure(error)
+        }
     }
 
     private func importMDX(_ mdxURL: URL) throws {
@@ -171,6 +170,42 @@ final class MDictManager: ObservableObject {
         records.append(record)
         loadedDictionaries.append(dict)
         persist()
+    }
+
+    private func loadingTask(
+        for record: MDictDictionaryRecord
+    )
+        -> (String, UUID, Task<Result<MDictDictionary, Error>, Never>) {
+        if let loadingTask = loadingTasks[record.mdxPath] {
+            return (record.mdxPath, loadingTask.id, loadingTask.task)
+        }
+
+        let id = UUID()
+        let task = Task(priority: .userInitiated) {
+            await Self.loadDictionary(from: record)
+        }
+        loadingTasks[record.mdxPath] = (id, task)
+        return (record.mdxPath, id, task)
+    }
+
+    private func collectLoadedDictionaries(
+        from tasks: [(String, UUID, Task<Result<MDictDictionary, Error>, Never>)]
+    ) async
+        -> ([MDictDictionary], [String: Error]) {
+        var dictionaries: [MDictDictionary] = []
+        var errors: [String: Error] = [:]
+        for (path, id, task) in tasks {
+            switch await task.value {
+            case let .success(dictionary):
+                dictionaries.append(dictionary)
+            case let .failure(error):
+                errors[path] = error
+            }
+            if loadingTasks[path]?.id == id {
+                loadingTasks.removeValue(forKey: path)
+            }
+        }
+        return (dictionaries, errors)
     }
 
     private func importMDD(_ mddURL: URL) throws {

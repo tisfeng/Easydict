@@ -41,8 +41,9 @@ MDict/
 或匹配 MDD，合并同名资源文件并保存 `MDictDictionaryRecord`。MDD 匹配保留精确同名优先，
 只把短数字后缀当作 multipart 资源后缀处理，避免年份等普通文件名误挂到无关 MDX。文件选择器
 使用 MDX/MDD 扩展名类型并以通用 data 类型兜底，避免系统未注册自定义扩展名时没有可选类型。
-首次查询启用词典时，`MDictManager` 在后台创建缺失的 `MDictDictionary`，并按 `records`
-中的用户排序返回词典，保证查询优先级和显示顺序一致。
+首次查询启用词典时，`MDictManager` 在后台创建缺失的 `MDictDictionary`，重叠查询会复用同一个
+in-flight 加载任务，避免重复解析同一 MDX；返回结果按 `records` 中的用户排序组织，保证查询
+优先级和显示顺序一致。
 
 查询流程从 `MDictService.translate` 开始。服务读取启用的 `MDictDictionary`，逐本调用
 `lookup`，词典内部先通过 `MDictReader` 精确查找 key entry 和 record block；如果无结果，再
