@@ -91,10 +91,11 @@ class MDictService: QueryService, @unchecked Sendable {
         in dictionaries: [MDictDictionary]
     ) async
         -> [DictionaryHTMLSection] {
-        await Task.detached(priority: .userInitiated) {
+        await Task(priority: .userInitiated) {
             var sections: [DictionaryHTMLSection] = []
 
             for dict in dictionaries {
+                if Task.isCancelled { break }
                 let definition: String
                 do {
                     guard let lookupResult = try dict.lookup(text),
