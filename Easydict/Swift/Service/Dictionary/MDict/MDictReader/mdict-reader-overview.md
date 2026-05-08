@@ -32,7 +32,8 @@ MDictReader/
 - `MDictHeaderParser` 只负责从 header XML 中提取版本、标题、编码、格式、大小写敏感和加密
   标记；`MDictReader` 会拒绝所有 key-header encrypted bit 被置位的文件。
 - `MDictKeyBlocks` 负责解析 key block info，并在查询命中某个 block 时按需解压和解析 key
-  entries；必要时解密 Encrypted=2 的 key block info。
+  entries；解压一律由 8 字节 block header 判定 none/zlib/LZO，避免 size 启发式误判压缩块；
+  必要时解密 Encrypted=2 的 key block info。
 - `MDictRecords` 负责根据 record offset 定位 record block，按需解压并缓存 record block。
 - `MDictBinary` 和 `MDictRIPEMD128` 是底层工具，支持无压缩、LZO 与 zlib block，不处理词典
   导入、资源链接重写、UI 或 HTML 渲染。

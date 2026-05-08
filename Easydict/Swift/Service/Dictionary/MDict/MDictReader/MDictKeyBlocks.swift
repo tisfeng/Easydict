@@ -339,9 +339,6 @@ extension MDictReader {
         decompressedSize: Int
     ) throws
         -> Data {
-        if compressedSize == decompressedSize {
-            return try checkedSubdata(data, at: cursor, count: compressedSize)
-        }
         let compressed = try checkedSubdata(data, at: cursor, count: compressedSize)
         return try decompressBlock(compressed, decompressedSize: decompressedSize)
     }
