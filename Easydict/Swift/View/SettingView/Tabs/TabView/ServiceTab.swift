@@ -15,54 +15,33 @@ struct ServiceTab: View {
     // MARK: Internal
 
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
-            VStack {
+        HSplitView {
+            VStack(spacing: 16) {
                 WindowTypePicker(windowType: $viewModel.windowType)
-                    .padding()
-                List(selection: $viewModel.selectedService) {
+                    .padding(.horizontal, 12)
+                    .padding(.top)
+
+                List(selection: $viewModel.selectedItem) {
+                    WindowConfigurationItem()
+                        .tag(ServiceTabSelection.windowConfiguration)
+
                     ServiceItems()
                 }
                 .listStyle(.plain)
                 .scrollIndicators(.never)
                 .borderedCard()
-                .padding(.bottom)
-                .padding(.horizontal)
-                .frame(minWidth: 260)
+                .padding(.horizontal, 12)
+                .padding(.bottom, 12)
                 .onReceive(serviceHasUpdatedNotification) { _ in
                     Task { @MainActor in
                         viewModel.updateServices()
                     }
                 }
             }
+            .frame(minWidth: 270, maxWidth: 320, maxHeight: .infinity)
 
-            Group {
-                if let service = viewModel.selectedService {
-                    VStack(alignment: .leading) {
-                        Button("setting.service.back") {
-                            viewModel.selectedService = nil
-                        }
-                        .padding()
-
-                        if let view = service.configurationListItems() as? (any View) {
-                            Form {
-                                AnyView(view)
-                            }
-                            .formStyle(.grouped)
-                        } else {
-                            Spacer()
-                            HStack {
-                                Spacer()
-                                Text("setting.service.detail.no_configuration \(service.name())")
-                                Spacer()
-                            }
-                            Spacer()
-                        }
-                    }
-                } else {
-                    WindowConfigurationView(windowType: viewModel.windowType)
-                }
-            }
-            .layoutPriority(1)
+            ServiceDetailView()
+                .layoutPriority(1)
         }
         .environmentObject(viewModel)
         .onChange(of: viewModel.windowType) { _ in
@@ -80,6 +59,16 @@ struct ServiceTab: View {
         .publisher(for: .serviceHasUpdated)
 }
 
+// MARK: - ServiceTabSelection
+
+/// Identifies the active item in the service settings split view.
+/// Service cases store stable service identifiers instead of object references
+/// so selection survives list refreshes as long as the service still exists.
+private enum ServiceTabSelection: Hashable {
+    case windowConfiguration
+    case service(String)
+}
+
 // MARK: - ServiceTabViewModel
 
 @MainActor
@@ -93,29 +82,36 @@ private class ServiceTabViewModel: ObservableObject {
 
     // MARK: Internal
 
-    @Published var selectedService: QueryService?
+    @Published var selectedItem: ServiceTabSelection? = .windowConfiguration
 
     @Published private(set) var services: [QueryService]
 
     @Published var windowType: EZWindowType
 
+    var selectedService: QueryService? {
+        guard case let .service(serviceID) = selectedItem else { return nil }
+
+        return services.first {
+            $0.serviceTypeWithUniqueIdentifier() == serviceID
+        }
+    }
+
     /// Refresh services when the window type changes.
     func handleWindowTypeChange() {
-        selectedService = nil
+        selectedItem = .windowConfiguration
         updateServices()
     }
 
     func updateServices() {
         services = LocalStorage.shared().allServices(windowType)
 
-        let isSelectedExist =
-            services
-                .contains {
-                    $0.serviceTypeWithUniqueIdentifier()
-                        == selectedService?.serviceTypeWithUniqueIdentifier()
-                }
-        if !isSelectedExist {
-            selectedService = nil
+        guard case let .service(selectedServiceID) = selectedItem else { return }
+
+        let isSelectedServiceAvailable = services.contains {
+            $0.serviceTypeWithUniqueIdentifier() == selectedServiceID
+        }
+        if !isSelectedServiceAvailable {
+            selectedItem = .windowConfiguration
         }
     }
 
@@ -135,60 +131,35 @@ private class ServiceTabViewModel: ObservableObject {
     }
 }
 
+// MARK: - WindowConfigurationItem
+
+/// Row that opens the shared window configuration detail.
+/// It stays outside the movable service list so service ordering remains scoped
+/// to translation services only.
+private struct WindowConfigurationItem: View {
+    var body: some View {
+        Text("setting.service.window_configuration")
+            .lineLimit(1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 8)
+            .contentShape(Rectangle())
+            .listRowSeparator(.hidden)
+            .listRowInsets(.init())
+    }
+}
+
 // MARK: - ServiceItems
 
 private struct ServiceItems: View {
     // MARK: Internal
 
     var body: some View {
-        Group {
-            // Free services section
-            if !freeServices.isEmpty {
-                Section {
-                    ForEach(freeServicesWithID, id: \.1) { service, _ in
-                        ServiceItemView(service: service, viewModel: viewModel)
-                            .tag(service)
-                    }
-                    .onMove { source, destination in
-                        handleMove(source: source, destination: destination, inSection: freeServices)
-                    }
-                } header: {
-                    Text("setting.service.section.free")
-                        .font(.headline)
-                }
-            }
-
-            // Pro services section (require API key)
-            if !proServices.isEmpty {
-                Section {
-                    ForEach(proServicesWithID, id: \.1) { service, _ in
-                        ServiceItemView(service: service, viewModel: viewModel)
-                            .tag(service)
-                    }
-                    .onMove { source, destination in
-                        handleMove(source: source, destination: destination, inSection: proServices)
-                    }
-                } header: {
-                    Text("setting.service.section.pro")
-                        .font(.headline)
-                }
-            }
-
-            // CLI translation services section
-            if !cliServices.isEmpty {
-                Section {
-                    ForEach(cliServicesWithID, id: \.1) { service, _ in
-                        ServiceItemView(service: service, viewModel: viewModel)
-                            .tag(service)
-                    }
-                    .onMove { source, destination in
-                        handleMove(source: source, destination: destination, inSection: cliServices)
-                    }
-                } header: {
-                    Text("setting.service.section.agent_cli")
-                        .font(.headline)
-                }
-            }
+        ForEach(servicesWithID, id: \.1) { service, serviceID in
+            ServiceItemView(service: service, viewModel: viewModel)
+                .tag(ServiceTabSelection.service(serviceID))
+        }
+        .onMove { source, destination in
+            viewModel.onServiceItemMove(fromOffsets: source, toOffset: destination)
         }
     }
 
@@ -196,75 +167,48 @@ private struct ServiceItems: View {
 
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
-    private var freeServices: [QueryService] {
-        viewModel.services.filter {
-            !$0.apiKeyRequirement().needsUserProvidedKey && $0.apiKeyRequirement() != .agentCLI
-        }
-    }
-
-    private var proServices: [QueryService] {
-        viewModel.services.filter { $0.apiKeyRequirement().needsUserProvidedKey }
-    }
-
-    private var cliServices: [QueryService] {
-        viewModel.services.filter { $0.apiKeyRequirement() == .agentCLI }
-    }
-
-    private var freeServicesWithID: [(QueryService, String)] {
-        freeServices.map { service in
+    private var servicesWithID: [(QueryService, String)] {
+        viewModel.services.map { service in
             (service, service.serviceTypeWithUniqueIdentifier())
         }
     }
+}
 
-    private var proServicesWithID: [(QueryService, String)] {
-        proServices.map { service in
-            (service, service.serviceTypeWithUniqueIdentifier())
-        }
-    }
+// MARK: - ServiceDetailView
 
-    private var cliServicesWithID: [(QueryService, String)] {
-        cliServices.map { service in
-            (service, service.serviceTypeWithUniqueIdentifier())
-        }
-    }
+/// Detail pane for the service settings split view.
+/// The pane shows window-level configuration until a concrete service row is
+/// selected, then switches to that service's own configuration form.
+private struct ServiceDetailView: View {
+    // MARK: Internal
 
-    /// Handles move operation within a specific section.
-    private func handleMove(source: IndexSet, destination: Int, inSection sectionServices: [QueryService]) {
-        // Create a mapping of section services to their indices in the full services array
-        var sectionToFullIndexMap: [Int: Int] = [:]
-        var sectionIndex = 0
+    var body: some View {
+        Group {
+            if let service = viewModel.selectedService {
+                if let view = service.configurationListItems() as? (any View) {
+                    Form {
+                        AnyView(view)
+                    }
+                    .formStyle(.grouped)
+                } else {
+                    VStack {
+                        Spacer()
 
-        for (fullIndex, service) in viewModel.services.enumerated() where sectionServices
-            .contains(where: { $0.serviceTypeWithUniqueIdentifier() == service.serviceTypeWithUniqueIdentifier()
-            }) {
-            sectionToFullIndexMap[sectionIndex] = fullIndex
-            sectionIndex += 1
-        }
+                        Text("setting.service.detail.no_configuration \(service.name())")
 
-        // Convert section source indices to full array indices
-        var actualSourceIndices = IndexSet()
-        for sectionIdx in source {
-            if let fullIdx = sectionToFullIndexMap[sectionIdx] {
-                actualSourceIndices.insert(fullIdx)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+            } else {
+                WindowConfigurationView(windowType: viewModel.windowType)
             }
         }
-
-        // Find destination index in full services array.
-        // When destination == sectionServices.count the user is dropping at the end of the section.
-        // There is no map entry for that index, so derive it from the last section item's full
-        // index + 1 instead of falling back to the raw section-relative value.
-        let actualDestination: Int
-        if let mapped = sectionToFullIndexMap[destination] {
-            actualDestination = mapped
-        } else if destination == sectionServices.count,
-                  let lastFullIndex = sectionToFullIndexMap[destination - 1] {
-            actualDestination = lastFullIndex + 1
-        } else {
-            actualDestination = destination
-        }
-
-        viewModel.onServiceItemMove(fromOffsets: actualSourceIndices, toOffset: actualDestination)
     }
+
+    // MARK: Private
+
+    @EnvironmentObject private var viewModel: ServiceTabViewModel
 }
 
 // MARK: - ServiceItemViewModel
@@ -390,16 +334,22 @@ private struct ServiceItemView: View {
 
     var body: some View {
         Group {
-            HStack {
+            HStack(spacing: 4) {
                 HStack {
                     Image(service.serviceType().rawValue)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 20.0, height: 20.0)
-                    Text(service.name())
+                        .frame(width: 18, height: 18)
+                    Text(verbatim: serviceItemViewModel.name)
                         .lineLimit(1)
+                        .truncationMode(.tail)
                 }
-                Spacer()
+                .layoutPriority(1)
+
+                Spacer(minLength: 4)
+
+                ServiceRequirementBadge(requirement: service.apiKeyRequirement())
+
                 // Use a fixed width container for both controls, to make sure they are center aligned.
                 ZStack {
                     if serviceItemViewModel.isValidating {
@@ -412,16 +362,15 @@ private struct ServiceItemView: View {
                         )
                         .labelsHidden()
                         .toggleStyle(.switch)
-                        .controlSize(.small) // size: 32*18
+                        .controlSize(.mini)
                     }
                 }
-                .frame(width: 32)
+                .frame(width: 40, alignment: .center)
             }
         }
         .listRowSeparator(.hidden)
         .listRowInsets(.init())
-        .padding(.horizontal, 8)
-        .padding(.vertical, 12)
+        .padding(.vertical, 8)
         .alert(
             "setting.service.failed_to_enable_service \(serviceItemViewModel.service.name())",
             isPresented: $serviceItemViewModel.showErrorAlert
@@ -453,6 +402,69 @@ private struct ServiceItemView: View {
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
     @ObservedObject private var serviceItemViewModel: ServiceItemViewModel
+}
+
+// MARK: - ServiceRequirementBadge
+
+/// Renders the short API credential category shown beside each service row.
+private struct ServiceRequirementBadge: View {
+    // MARK: Internal
+
+    let requirement: ServiceAPIKeyRequirement
+
+    var body: some View {
+        Text(verbatim: title)
+            .font(.caption2.weight(.medium))
+            .foregroundStyle(foregroundColor)
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background {
+                Capsule()
+                    .fill(backgroundColor)
+            }
+            .overlay {
+                Capsule()
+                    .stroke(borderColor, lineWidth: 0.5)
+            }
+    }
+
+    // MARK: Private
+
+    private var title: String {
+        switch requirement {
+        case .none:
+            "no-key"
+        case .builtIn:
+            "built-in"
+        case .userProvided:
+            "key"
+        case .agentCLI:
+            "cli"
+        }
+    }
+
+    private var foregroundColor: Color {
+        switch requirement {
+        case .none:
+            .secondary
+        case .builtIn:
+            .green
+        case .userProvided:
+            .orange
+        case .agentCLI:
+            .blue
+        }
+    }
+
+    private var backgroundColor: Color {
+        foregroundColor.opacity(0.12)
+    }
+
+    private var borderColor: Color {
+        foregroundColor.opacity(0.28)
+    }
 }
 
 // MARK: - WindowTypePicker

@@ -1166,6 +1166,8 @@
 		0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleServiceTests.swift; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
 		0A057D6C2B499A000025C51D /* ServiceTab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceTab.swift; sourceTree = "<group>"; };
+		0A057D6E2F7000000025C51D /* tab-view-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "tab-view-overview.md"; sourceTree = "<group>"; };
+		0A057D6F2F7000000025C51D /* tab-view-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "tab-view-architecture.svg"; sourceTree = "<group>"; };
 		0A2A05A52B59757100EEA142 /* Bundle+AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+AppInfo.swift"; sourceTree = "<group>"; };
 		0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+DidSet.swift"; sourceTree = "<group>"; };
 		0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
@@ -1396,6 +1398,8 @@
 			children = (
 				278540332B3DE04F004E9488 /* GeneralTab.swift */,
 				0A057D6C2B499A000025C51D /* ServiceTab.swift */,
+				0A057D6E2F7000000025C51D /* tab-view-overview.md */,
+				0A057D6F2F7000000025C51D /* tab-view-architecture.svg */,
 				0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */,
 				0A8685C72B552A590022534F /* DisabledAppTab.swift */,
 				96099AE12B5D40330055C4DD /* ShortcutTab.swift */,
