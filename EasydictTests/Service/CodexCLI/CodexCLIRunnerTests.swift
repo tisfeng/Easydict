@@ -148,6 +148,36 @@ struct CodexCLIRunnerTests {
         #expect(error == .notLoggedIn)
     }
 
+    @Test("parseCodexError does not mis-classify auth/quota tokens in non-failure events")
+    func parseErrorIgnoresAuthQuotaInNonFailureEvents() {
+        // A successful run whose assistant text or reasoning happens to mention
+        // "401", "unauthorized", or "rate limit". The classifier must NOT treat
+        // this as a login or quota failure — these are normal events, not failures.
+        let agentMessage =
+            #"{"type":"item.completed","item":{"id":"item_0","type":"agent_message","# +
+            #""text":"HTTP 401 means unauthorized; rate limit is unrelated."}}"#
+        let reasoning =
+            #"{"type":"item.completed","item":{"id":"item_1","type":"reasoning","# +
+            #""text":"Considering quota and 429 handling..."}}"#
+        let stdout = agentMessage + "\n" + reasoning
+        let error = parseCodexError(fromStdout: stdout, stderr: "boom")
+        #expect(error == .cliError(message: "boom"))
+    }
+
+    @Test("parseCodexError prefers terminal failure event over earlier non-failure noise")
+    func parseErrorPrefersTerminalFailureOverNoise() {
+        // A successful agent_message followed by a turn.failed must classify on
+        // the failure event's message, not the earlier non-failure text.
+        let agentMessage =
+            #"{"type":"item.completed","item":{"id":"item_0","type":"agent_message","# +
+            #""text":"Discussing 401 errors as part of the answer."}}"#
+        let turnFailed =
+            #"{"type":"turn.failed","error":"Rate limit exceeded for requests"}"#
+        let stdout = agentMessage + "\n" + turnFailed
+        let error = parseCodexError(fromStdout: stdout, stderr: "")
+        #expect(error == .quotaExceeded(message: "Rate limit exceeded for requests"))
+    }
+
     // MARK: - extractCodexText
 
     @Test("extractCodexText returns text for an agent_message item.completed line")

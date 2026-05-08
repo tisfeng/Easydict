@@ -106,9 +106,14 @@ func parseCodexError(fromStdout stdout: String, stderr: String) -> CodexCLIError
               let event = try? decoder.decode(CodexCLIStreamLine.self, from: data)
         else { continue }
 
+        // Auth and quota classification only applies to terminal failure events.
+        // Non-failure items (reasoning, agent_message, etc.) may legitimately mention
+        // tokens like "401", "unauthorized", or "rate limit" in normal output —
+        // matching them there would misclassify successful or unrelated runs.
+        guard isFailureEvent(event) else { continue }
         guard let message = errorMessage(from: event) else { continue }
 
-        if isFailureEvent(event), stdoutGenericMessage == nil {
+        if stdoutGenericMessage == nil {
             stdoutGenericMessage = message
         }
         if stdoutAuthMessage == nil, isCodexAuthenticationMessage(message) {
