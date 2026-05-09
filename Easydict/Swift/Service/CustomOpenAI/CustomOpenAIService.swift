@@ -9,6 +9,8 @@
 import Defaults
 import Foundation
 
+// MARK: - CustomOpenAIService
+
 @objc(EZCustomOpenAIService)
 class CustomOpenAIService: BaseOpenAIService {
     // MARK: Public
@@ -47,5 +49,13 @@ class CustomOpenAIService: BaseOpenAIService {
             showCustomNameSection: true,
             showStreamingToggle: true
         )
+    }
+}
+
+// MARK: RemoteModelFetchable
+
+extension CustomOpenAIService: RemoteModelFetchable {
+    func fetchRemoteModelIDs() async throws -> [String] {
+        try await fetchOpenAICompatibleModelIDs()
     }
 }

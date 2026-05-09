@@ -189,6 +189,76 @@ public final class GeminiService: StreamService {
     }
 }
 
+// MARK: RemoteModelFetchable
+
+extension GeminiService: RemoteModelFetchable {
+    func fetchRemoteModelIDs() async throws -> [String] {
+        guard !apiKey.trim().isEmpty else {
+            throw QueryError(type: .missingSecretKey, message: "Gemini API key is empty.")
+        }
+
+        let data = try await fetchRemoteModelData(url: try remoteModelsURL())
+
+        guard let modelList = try? JSONDecoder().decode(GeminiModelListResponse.self, from: data) else {
+            throw QueryError(type: .api, message: "Invalid models response")
+        }
+        let ids = modelList.models
+            .filter(\.supportsGenerateContent)
+            .map(\.modelID)
+        return normalizedRemoteModelIDs(ids)
+    }
+
+    private func remoteModelsURL() throws -> URL {
+        var components = URLComponents(string: "https://generativelanguage.googleapis.com/v1beta/models")
+        components?.queryItems = [
+            URLQueryItem(name: "key", value: apiKey),
+            URLQueryItem(name: "pageSize", value: "1000"),
+        ]
+
+        guard let url = components?.url, url.isValid else {
+            throw QueryError(type: .parameter, message: "Gemini models endpoint is invalid")
+        }
+        return url
+    }
+}
+
+// MARK: - GeminiModelListResponse
+
+private struct GeminiModelListResponse: Decodable {
+    let models: [GeminiRemoteModel]
+}
+
+// MARK: - GeminiRemoteModel
+
+private struct GeminiRemoteModel: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case name
+        case baseModelID = "baseModelId"
+        case supportedGenerationMethods
+    }
+
+    let name: String
+    let baseModelID: String?
+    let supportedGenerationMethods: [String]?
+
+    var modelID: String {
+        let id: String
+        if let baseModelID = baseModelID?.trim(), !baseModelID.isEmpty {
+            id = baseModelID
+        } else {
+            id = name.trim()
+        }
+        return id.hasPrefix("models/") ? String(id.dropFirst("models/".count)) : id
+    }
+
+    var supportsGenerateContent: Bool {
+        guard let supportedGenerationMethods, !supportedGenerationMethods.isEmpty else { return true }
+        return supportedGenerationMethods.contains {
+            $0 == "generateContent" || $0 == "streamGenerateContent"
+        }
+    }
+}
+
 // MARK: - GeminiModel
 
 enum GeminiModel: String, CaseIterable {

@@ -112,13 +112,27 @@ struct StreamConfigurationView: View {
             }
 
             if showSupportedModelsSection {
-                TextEditorCell(
-                    titleKey: "service.configuration.custom_openai.supported_models.title",
-                    storedValueKey: service.supportedModelsKey,
-                    placeholder: "service.configuration.custom_openai.model.placeholder",
-                    minHeight: 55,
-                    maxHeight: 100
-                ).disabled(!isEditable)
+                VStack(alignment: .trailing, spacing: 0) {
+                    TextEditorCell(
+                        titleKey: "service.configuration.custom_openai.supported_models.title",
+                        storedValueKey: service.supportedModelsKey,
+                        placeholder: "service.configuration.custom_openai.model.placeholder",
+                        minHeight: 55,
+                        maxHeight: 100
+                    )
+                    .disabled(!isEditable)
+
+                    if canFetchModels {
+                        Button {
+                            isFetchModelsPresented = true
+                        } label: {
+                            Text(fetchModelsTitle)
+                        }
+                        .disabled(isFetchModelsDisabled)
+                        .help(Text(fetchModelsHelp))
+                        .padding(.trailing, 10)
+                    }
+                }
             }
 
             if showUsedModelSection {
@@ -208,5 +222,232 @@ struct StreamConfigurationView: View {
                 )
             }
         }
+        .sheet(isPresented: $isFetchModelsPresented) {
+            if let remoteModelFetcher {
+                RemoteModelsSheet(
+                    titleKey: fetchModelsTitle,
+                    existingModels: existingModelIDs,
+                    fetchModels: {
+                        try await remoteModelFetcher.fetchRemoteModelIDs()
+                    },
+                    onAdd: addModels
+                )
+            }
+        }
     }
+
+    // MARK: Private
+
+    @State private var isFetchModelsPresented = false
+
+    private var remoteModelFetcher: RemoteModelFetchable? {
+        guard service.serviceType() != .gitHub else { return nil }
+        return service as? RemoteModelFetchable
+    }
+
+    private var canFetchModels: Bool {
+        isEditable && remoteModelFetcher != nil
+    }
+
+    private var isFetchModelsDisabled: Bool {
+        guard remoteModelFetcher != nil else { return true }
+        if !isEditable { return true }
+        if service.apiKeyRequirement().needsUserProvidedKey, service.apiKey.trim().isEmpty {
+            return true
+        }
+        return showEndpointSection && !isValidEndpoint(service.endpoint)
+    }
+
+    private var fetchModelsHelp: LocalizedStringKey {
+        guard remoteModelFetcher != nil else {
+            return "service.configuration.fetch_models.title"
+        }
+        if service.apiKeyRequirement().needsUserProvidedKey, service.apiKey.trim().isEmpty {
+            return "missing_secret_key_error"
+        }
+        if showEndpointSection, !isValidEndpoint(service.endpoint) {
+            return "parameter_error"
+        }
+        return fetchModelsTitle
+    }
+
+    private var fetchModelsTitle: LocalizedStringKey {
+        service.serviceType() == .ollama
+            ? "service.configuration.fetch_models.local_title"
+            : "service.configuration.fetch_models.title"
+    }
+
+    private var existingModelIDs: [String] {
+        let storedModels = Defaults[service.supportedModelsKey]
+        return service.validModels(from: storedModels) + service.defaultModels
+    }
+
+    private func addModels(_ modelIDs: [String]) {
+        var models = service.validModels(from: Defaults[service.supportedModelsKey])
+        var existingModels = Set(models)
+        for modelID in modelIDs where existingModels.insert(modelID).inserted {
+            models.append(modelID)
+        }
+        service.supportedModels = service.supportedModels(from: models)
+    }
+
+    private func isValidEndpoint(_ endpoint: String) -> Bool {
+        URL(string: endpoint.trim())?.isValid == true
+    }
+}
+
+// MARK: - RemoteModelsSheet
+
+private struct RemoteModelsSheet: View {
+    // MARK: Internal
+
+    let titleKey: LocalizedStringKey
+    let existingModels: [String]
+    let fetchModels: () async throws -> [String]
+    let onAdd: ([String]) -> ()
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Text(titleKey)
+                .font(.headline)
+
+            if isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if !errorMessage.isEmpty {
+                errorView
+            } else {
+                pickerView
+            }
+
+            HStack {
+                Spacer()
+                Button("cancel", role: .cancel) {
+                    dismiss()
+                }
+                Button("service.configuration.fetch_models.add") {
+                    onAdd(models.map(\.id).filter(selectedIDs.contains))
+                    dismiss()
+                }
+                .disabled(selectedIDs.isEmpty)
+                .keyboardShortcut(.defaultAction)
+            }
+        }
+        .padding(16)
+        .frame(width: 520, height: 440)
+        .task {
+            await loadModels()
+        }
+    }
+
+    // MARK: Private
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var models: [RemoteModelRow] = []
+    @State private var selectedIDs = Set<String>()
+    @State private var searchText = ""
+    @State private var isLoading = true
+    @State private var errorMessage = ""
+
+    private var filteredModels: [RemoteModelRow] {
+        let query = searchText.trim()
+        return query.isEmpty ? models : models.filter { $0.id.localizedCaseInsensitiveContains(query) }
+    }
+
+    private var selectableIDs: [String] {
+        filteredModels.filter { !$0.exists }.map(\.id)
+    }
+
+    private var isAllSelected: Bool {
+        !selectableIDs.isEmpty && selectableIDs.allSatisfy(selectedIDs.contains)
+    }
+
+    private var pickerView: some View {
+        VStack(spacing: 10) {
+            TextField("service.configuration.fetch_models.search", text: $searchText)
+                .textFieldStyle(.roundedBorder)
+
+            HStack {
+                Button {
+                    toggleSelectAll()
+                } label: {
+                    Text(
+                        isAllSelected
+                            ? LocalizedStringKey("service.configuration.fetch_models.deselect_all")
+                            : LocalizedStringKey("service.configuration.fetch_models.select_all")
+                    )
+                }
+                .disabled(selectableIDs.isEmpty)
+                Spacer()
+            }
+
+            List(filteredModels) { model in
+                Toggle(isOn: binding(for: model.id)) {
+                    Text(model.id)
+                        .textSelection(.enabled)
+                }
+                .disabled(model.exists)
+            }
+        }
+    }
+
+    private var errorView: some View {
+        VStack(spacing: 12) {
+            Text("api_error")
+                .font(.headline)
+            Text(errorMessage)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .textSelection(.enabled)
+            Button("retry") {
+                Task { await loadModels() }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private func binding(for modelID: String) -> Binding<Bool> {
+        Binding {
+            selectedIDs.contains(modelID)
+        } set: { isSelected in
+            if isSelected {
+                selectedIDs.insert(modelID)
+            } else {
+                selectedIDs.remove(modelID)
+            }
+        }
+    }
+
+    private func toggleSelectAll() {
+        if isAllSelected {
+            selectableIDs.forEach { selectedIDs.remove($0) }
+        } else {
+            selectedIDs.formUnion(selectableIDs)
+        }
+    }
+
+    @MainActor
+    private func loadModels() async {
+        isLoading = true
+        errorMessage = ""
+        selectedIDs.removeAll()
+
+        do {
+            let existingModelSet = Set(existingModels.map { $0.trim() })
+            models = try await fetchModels().map {
+                RemoteModelRow(id: $0, exists: existingModelSet.contains($0))
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+
+        isLoading = false
+    }
+}
+
+// MARK: - RemoteModelRow
+
+private struct RemoteModelRow: Identifiable {
+    let id: String
+    let exists: Bool
 }

@@ -80,3 +80,12 @@ class OllamaService: BaseOpenAIService {
         return try await dataTask.value
     }
 }
+
+// MARK: RemoteModelFetchable
+
+extension OllamaService: RemoteModelFetchable {
+    func fetchRemoteModelIDs() async throws -> [String] {
+        let models = try await localModels()
+        return normalizedRemoteModelIDs(models.models.map(\.name))
+    }
+}

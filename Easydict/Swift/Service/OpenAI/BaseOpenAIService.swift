@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Alamofire
 import AsyncAlgorithms
 import Foundation
 import OpenAI
@@ -304,4 +305,119 @@ public class BaseOpenAIService: StreamService {
         request.httpBody = try JSONEncoder().encode(query)
         return request
     }
+}
+
+// MARK: - RemoteModelFetchable
+
+protocol RemoteModelFetchable: AnyObject {
+    func fetchRemoteModelIDs() async throws -> [String]
+}
+
+// MARK: - OpenAIService + RemoteModelFetchable
+
+extension OpenAIService: RemoteModelFetchable {
+    func fetchRemoteModelIDs() async throws -> [String] {
+        try await fetchOpenAICompatibleModelIDs()
+    }
+}
+
+extension BaseOpenAIService {
+    func fetchOpenAICompatibleModelIDs() async throws -> [String] {
+        guard !apiKey.trim().isEmpty else {
+            throw QueryError(type: .missingSecretKey, message: "API key is empty")
+        }
+
+        let data = try await fetchRemoteModelData(
+            url: try remoteModelsURL(),
+            headers: [
+                .authorization(bearerToken: apiKey),
+                .accept("application/json"),
+            ]
+        )
+
+        guard let modelList = try? JSONDecoder().decode(OpenAIModelListResponse.self, from: data) else {
+            throw QueryError(type: .api, message: "Invalid models response")
+        }
+        return normalizedRemoteModelIDs(modelList.data.map(\.id))
+    }
+
+    private func remoteModelsURL() throws -> URL {
+        guard let endpointURL = URL(string: endpoint.trim()), endpointURL.isValid,
+              var components = URLComponents(url: endpointURL, resolvingAgainstBaseURL: false)
+        else {
+            throw QueryError(type: .parameter, message: "Endpoint is invalid")
+        }
+
+        var parts = components.path.split(separator: "/", omittingEmptySubsequences: true).map(String.init)
+        let lowercasedParts = parts.map { $0.lowercased() }
+
+        if parts.isEmpty {
+            parts = ["v1"]
+        } else if Array(lowercasedParts.suffix(2)) == ["chat", "completions"] {
+            parts.removeLast(2)
+        } else if lowercasedParts.last == "completions" {
+            parts.removeLast()
+        } else if lowercasedParts.last == "models" {
+            parts.removeLast()
+        }
+
+        parts.append("models")
+        components.query = nil
+        components.fragment = nil
+        components.path = "/" + parts.joined(separator: "/")
+
+        guard let url = components.url, url.isValid else {
+            throw QueryError(type: .parameter, message: "Endpoint is invalid")
+        }
+        return url
+    }
+}
+
+func normalizedRemoteModelIDs(_ ids: [String]) -> [String] {
+    var seenModels = Set<String>()
+    return ids
+        .map { $0.trim() }
+        .filter { !$0.isEmpty }
+        .filter { seenModels.insert($0).inserted }
+}
+
+func fetchRemoteModelData(url: URL, headers: HTTPHeaders = []) async throws -> Data {
+    let response = await AF.request(url, method: .get, headers: headers)
+        .serializingData()
+        .response
+
+    if let statusCode = response.response?.statusCode,
+       !(200 ... 299).contains(statusCode) {
+        throw remoteModelError(statusCode: statusCode, data: response.data)
+    }
+    return try response.result.get()
+}
+
+func remoteModelError(statusCode: Int, data: Data?) -> QueryError {
+    let message = data.flatMap {
+        try? JSONDecoder().decode(RemoteModelErrorResponse.self, from: $0).error.message
+    }?.trim()
+    return QueryError(type: .api, message: message ?? "HTTP \(statusCode)")
+}
+
+// MARK: - OpenAIModelListResponse
+
+private struct OpenAIModelListResponse: Decodable {
+    let data: [OpenAIModelItem]
+}
+
+// MARK: - OpenAIModelItem
+
+private struct OpenAIModelItem: Decodable {
+    let id: String
+}
+
+// MARK: - RemoteModelErrorResponse
+
+private struct RemoteModelErrorResponse: Decodable {
+    struct ErrorBody: Decodable {
+        let message: String?
+    }
+
+    let error: ErrorBody
 }

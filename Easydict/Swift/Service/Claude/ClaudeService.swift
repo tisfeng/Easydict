@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import Alamofire
 import Defaults
 import Foundation
 
@@ -280,6 +281,67 @@ public final class ClaudeService: StreamService {
             }
         }
     }
+}
+
+// MARK: RemoteModelFetchable
+
+extension ClaudeService: RemoteModelFetchable {
+    func fetchRemoteModelIDs() async throws -> [String] {
+        guard !apiKey.trim().isEmpty else {
+            throw QueryError(type: .missingSecretKey, message: "Claude API key is empty.")
+        }
+
+        let data = try await fetchRemoteModelData(
+            url: try remoteModelsURL(),
+            headers: HTTPHeaders([
+                HTTPHeader(name: "x-api-key", value: apiKey),
+                HTTPHeader(name: "anthropic-version", value: anthropicVersion),
+                .accept("application/json"),
+            ])
+        )
+
+        guard let modelList = try? JSONDecoder().decode(ClaudeModelListResponse.self, from: data) else {
+            throw QueryError(type: .api, message: "Invalid models response")
+        }
+        return normalizedRemoteModelIDs(modelList.data.map(\.id))
+    }
+
+    private func remoteModelsURL() throws -> URL {
+        guard let endpointURL = URL(string: endpoint.trim()), endpointURL.isValid,
+              var components = URLComponents(url: endpointURL, resolvingAgainstBaseURL: false)
+        else {
+            throw QueryError(type: .parameter, message: "Claude endpoint is invalid")
+        }
+
+        var parts = components.path.split(separator: "/", omittingEmptySubsequences: true).map(String.init)
+        if parts.isEmpty {
+            parts = ["v1"]
+        } else if ["messages", "models"].contains(parts.last?.lowercased()) {
+            parts.removeLast()
+        }
+
+        parts.append("models")
+        components.fragment = nil
+        components.queryItems = [URLQueryItem(name: "limit", value: "1000")]
+        components.path = "/" + parts.joined(separator: "/")
+
+        guard let url = components.url, url.isValid else {
+            throw QueryError(type: .parameter, message: "Claude endpoint is invalid")
+        }
+        return url
+    }
+}
+
+// MARK: - ClaudeModelListResponse
+
+private struct ClaudeModelListResponse: Decodable {
+    let data: [ClaudeRemoteModel]
+}
+
+// MARK: - ClaudeRemoteModel
+
+private struct ClaudeRemoteModel: Decodable {
+    let id: String
 }
 
 // MARK: - ClaudeModel
