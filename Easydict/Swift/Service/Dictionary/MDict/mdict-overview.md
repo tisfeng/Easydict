@@ -62,8 +62,10 @@ in-flight 加载任务，避免重复解析同一 MDX；返回结果按 `records
 `concise-enhanced.css`，`MDictDictionary` 会在首次命中 HTML 查询时读取并缓存该样式，然后
 注入到词条内容前面，适配 MDict 词库常见的外置样式优化文件。
 资源改写会优先处理脚本、stylesheet、图片和 CSS url，再处理音频链接；`srcset` 候选写入
-data URI 时会把其中的 `,` 转义为 `%2C`，避免被浏览器误当作候选分隔符切碎。内联脚本会
-保留结果页 CSP 所需的 nonce，并转义 `</script` 片段，避免 HTML parser 提前截断脚本。普通
+data URI 时会把其中的 `,` 转义为 `%2C`，避免被浏览器误当作候选分隔符切碎。外链脚本被
+改写成内联时会保留原 `<script>` 上的属性（如 `type="module"`、`defer`），只剥离 `src`
+和原有 `nonce`，再注入结果页 CSP 所需的 `easydict-mdict` nonce，并转义 `</script` 片段，
+避免 HTML parser 提前截断脚本。普通
 `sound://` 和 `mdict-sound://` 链接都会被改写为 data URI，避免 click handler 把无 scheme
 处理器的 URL 喂给 `new Audio(...)` 而播放失败；负向前缀确保不会重复改写已被替换过的位置。
 `javascript:new Audio(...)` 中的本地音频会先被改写为 data URI，并由结果页 click handler

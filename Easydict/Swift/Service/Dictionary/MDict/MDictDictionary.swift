@@ -110,7 +110,10 @@ final class MDictDictionary: @unchecked Sendable {
         "(?is)<link\\b(?=[^>]*\\brel\\s*=\\s*[\"']?stylesheet[\"']?)[^>]*\\bhref\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>"
     )
     private static let scriptLinkRegex = makeRegex(
-        "(?is)<script\\b[^>]*\\bsrc\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>\\s*</script>"
+        "(?is)<script\\b([^>]*?)\\bsrc\\s*=\\s*[\"']([^\"']+)[\"']([^>]*)>\\s*</script>"
+    )
+    private static let nonceAttributeRegex = makeRegex(
+        "(?i)\\s*\\bnonce\\s*=\\s*([\"'])[^\"']*\\1"
     )
     private static let cssURLRegex = makeRegex("(?i)(url\\([\"']?)([^\"')]+)([\"']?\\))")
     private static let audioConstructorRegex = makeRegex("(?i)new\\s+Audio\\((.*?)\\)")
@@ -159,6 +162,17 @@ final class MDictDictionary: @unchecked Sendable {
             with: "<\\/script",
             options: .caseInsensitive
         )
+    }
+
+    private static func preservedScriptAttributes(_ raw: String) -> String {
+        let range = NSRange(raw.startIndex..., in: raw)
+        let stripped = nonceAttributeRegex.stringByReplacingMatches(
+            in: raw,
+            range: range,
+            withTemplate: ""
+        )
+        let trimmed = stripped.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? "" : " \(trimmed)"
     }
 
     private func loadedMDDReaders() -> [MDictReader] {
@@ -551,13 +565,20 @@ extension MDictDictionary {
             in: html,
             regex: Self.scriptLinkRegex
         ) { match, source in
-            guard let keyRange = Range(match.range(at: 1), in: source) else { return nil }
+            guard let prefixRange = Range(match.range(at: 1), in: source),
+                  let keyRange = Range(match.range(at: 2), in: source),
+                  let suffixRange = Range(match.range(at: 3), in: source)
+            else { return nil }
             let key = String(source[keyRange])
             guard shouldResolveResource(key),
                   let script = scriptText(for: key)
             else { return nil }
 
-            return "<script nonce=\"easydict-mdict\">\(Self.escapeInlineScript(script))</script>"
+            let attributes = Self.preservedScriptAttributes(
+                "\(source[prefixRange])\(source[suffixRange])"
+            )
+            return "<script\(attributes) nonce=\"easydict-mdict\">"
+                + "\(Self.escapeInlineScript(script))</script>"
         }
     }
 
