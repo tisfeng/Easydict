@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
+		02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000003 /* MarkdownLabel.swift */; };
+		02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000004 /* MarkdownToggleButton.swift */; };
+		02DEDC0420260430000000BE /* MarkdownRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC04202604300000000A /* MarkdownRendererTests.swift */; };
 		03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */; };
 		03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */; };
 		03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */; };
@@ -598,6 +602,12 @@
 
 /* Begin PBXFileReference section */
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
+		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
+		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
+		02DEDC042026043000000004 /* MarkdownToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownToggleButton.swift; sourceTree = "<group>"; };
+		02DEDC042026043000000005 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		02DEDC042026043000000006 /* Markdown.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = Markdown.svg; sourceTree = "<group>"; };
+		02DEDC04202604300000000A /* MarkdownRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRendererTests.swift; sourceTree = "<group>"; };
 		03008B2529408BF50062B821 /* NSObject+EZDarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZDarkMode.h"; sourceTree = "<group>"; };
 		03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZDarkMode.m"; sourceTree = "<group>"; };
 		03008B2C2941956D0062B821 /* EZURLSchemeHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZURLSchemeHandler.h; sourceTree = "<group>"; };
@@ -3316,6 +3326,18 @@
 			path = MenuView;
 			sourceTree = "<group>";
 		};
+		02DEDC042026043000000001 /* Markdown */ = {
+			isa = PBXGroup;
+			children = (
+				02DEDC042026043000000002 /* MarkdownRenderer.swift */,
+				02DEDC042026043000000003 /* MarkdownLabel.swift */,
+				02DEDC042026043000000004 /* MarkdownToggleButton.swift */,
+				02DEDC042026043000000005 /* README.md */,
+				02DEDC042026043000000006 /* Markdown.svg */,
+			);
+			path = Markdown;
+			sourceTree = "<group>";
+		};
 		967712EB2B5B93E200105E0F /* Feature */ = {
 			isa = PBXGroup;
 			children = (
@@ -3324,6 +3346,7 @@
 				EA3B81F72B52549B004C0E8B /* Configuration */,
 				03779F122BB256B5008D3C42 /* DefaultAPIKeys */,
 				6A8C988B2BAC88A600DB835A /* Localization */,
+				02DEDC042026043000000001 /* Markdown */,
 				967712EC2B5B941600105E0F /* Shortcut */,
 			);
 			path = Feature;
@@ -3370,9 +3393,18 @@
 		BE5912DE778CDCD8495CA4E5 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				02DEDC0420260430000000C1 /* Markdown */,
 				030732CB2F24862A0001382A /* OCR */,
 			);
 			path = Feature;
+			sourceTree = "<group>";
+		};
+		02DEDC0420260430000000C1 /* Markdown */ = {
+			isa = PBXGroup;
+			children = (
+				02DEDC04202604300000000A /* MarkdownRendererTests.swift */,
+			);
+			path = Markdown;
 			sourceTree = "<group>";
 		};
 		C415C0AB2B450C4500A9D231 /* Gemini */ = {
@@ -3993,6 +4025,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				02DEDC0420260430000000BE /* MarkdownRendererTests.swift in Sources */,
 				C09AC0F264D246FC90F9A277 /* AppleServiceTests.swift in Sources */,
 				03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */,
 				03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */,
@@ -4035,6 +4068,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */,
+				02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */,
+				02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */,
 				0338210C2F0EAF490087A361 /* AppleScriptTask.swift in Sources */,
 				03F5A1032F5B3A0100AA0001 /* NSStringEasydictBridge.swift in Sources */,
 				03715A282E6D24F60067259C /* SystemUtility.swift in Sources */,
