@@ -91,29 +91,28 @@ class MDictService: QueryService, @unchecked Sendable {
         in dictionaries: [MDictDictionary]
     ) async
         -> [DictionaryHTMLSection] {
-        await Task(priority: .userInitiated) {
-            var sections: [DictionaryHTMLSection] = []
+        var sections: [DictionaryHTMLSection] = []
 
-            for dict in dictionaries {
-                if Task.isCancelled { break }
-                let definition: String
-                do {
-                    guard let lookupResult = try dict.lookup(text),
-                          !lookupResult.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                    else { continue }
-                    definition = lookupResult
-                } catch {
-                    logError("MDictService: lookup failed in \(dict.title): \(error)")
-                    continue
-                }
-
-                let content = dict.isHTML ? definition : Self.plainTextToHTML(definition)
-                let styledContent = Self.wrapWithStyle(content)
-                sections.append(DictionaryHTMLSection(title: dict.title, html: styledContent))
+        for dict in dictionaries {
+            if Task.isCancelled { break }
+            let definition: String
+            do {
+                guard let lookupResult = try dict.lookup(text),
+                      !lookupResult.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                else { continue }
+                definition = lookupResult
+            } catch {
+                logError("MDictService: lookup failed in \(dict.title): \(error)")
+                continue
             }
 
-            return sections
-        }.value
+            let content = dict.isHTML ? definition : Self.plainTextToHTML(definition)
+            let styledContent = Self.wrapWithStyle(content)
+            sections.append(DictionaryHTMLSection(title: dict.title, html: styledContent))
+            await Task.yield()
+        }
+
+        return sections
     }
 
     private static func wrapWithStyle(_ html: String) -> String {

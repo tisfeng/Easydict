@@ -45,9 +45,10 @@ MDict/
 in-flight 加载任务，避免重复解析同一 MDX；返回结果按 `records` 中的用户排序组织，保证查询
 优先级和显示顺序一致。
 
-查询流程从 `MDictService.translate` 开始。服务读取启用的 `MDictDictionary`，逐本调用
-`lookup`，词典内部先通过 `MDictReader` 精确查找 key entry 和 record block；如果无结果，再
-尝试常见英文变形词，并按需构建 headword 搜索索引用于 prefix、substring 和 fuzzy fallback。
+查询流程从 `MDictService.translate` 开始。服务读取启用的 `MDictDictionary`，在调用方任务里
+逐本调用 `lookup`（保留结构化并发取消语义，外层 `translate` 取消时下一本词典前会立即停止），
+词典内部先通过 `MDictReader` 精确查找 key entry 和 record block；如果无结果，再尝试常见
+英文变形词，并按需构建 headword 搜索索引用于 prefix、substring 和 fuzzy fallback。
 超大词库只走精确查词和变形词路径，避免一次查询 miss 阻塞 UI。
 命中后再把 HTML 中的本地资源链接改写为 data URI 或内部锚点。只有命中结果需要解析 MDD
 资源时，词典才会创建对应的 resource reader。图片、音频和 CSS url 生成的 data URI 会按 LRU
@@ -63,8 +64,10 @@ in-flight 加载任务，避免重复解析同一 MDX；返回结果按 `records
 资源改写会优先处理脚本、stylesheet、图片和 CSS url，再处理音频链接；`srcset` 候选写入
 data URI 时会把其中的 `,` 转义为 `%2C`，避免被浏览器误当作候选分隔符切碎。内联脚本会
 保留结果页 CSP 所需的 nonce，并转义 `</script` 片段，避免 HTML parser 提前截断脚本。普通
-`sound://` 链接只在独立 scheme 位置改写，不会误改 `mdict-sound://`。`javascript:new Audio(...)`
-中的本地音频会先被改写为 data URI，并由结果页 click handler 拦截播放，避免被 CSP 当作导航阻断。
+`sound://` 和 `mdict-sound://` 链接都会被改写为 data URI，避免 click handler 把无 scheme
+处理器的 URL 喂给 `new Audio(...)` 而播放失败；负向前缀确保不会重复改写已被替换过的位置。
+`javascript:new Audio(...)` 中的本地音频会先被改写为 data URI，并由结果页 click handler
+拦截播放，避免被 CSP 当作导航阻断。
 `mdict-entry://` 跳转由结果面板按 href payload 查询，而不是依赖锚点展示文本。
 单次查询有 data URI 数量和总字节预算，避免大词条因为数百个发音资源被同步内联而阻塞查询。
 

@@ -101,7 +101,9 @@ final class MDictDictionary: @unchecked Sendable {
 
     // MARK: Private
 
-    private static let soundLinkRegex = makeRegex("(?i)(?<![A-Za-z0-9_-])sound://([^\"'\\s)<>]+)")
+    private static let soundLinkRegex = makeRegex(
+        "(?i)(?<![A-Za-z0-9_-])(?:mdict-sound|sound)://([^\"'\\s)<>]+)"
+    )
     private static let resourceAttributeRegex = makeRegex("(?i)((?:src|poster)\\s*=\\s*[\"'])([^\"']+)([\"'])")
     private static let sourceSetRegex = makeRegex("(?i)(srcset\\s*=\\s*[\"'])([^\"']+)([\"'])")
     private static let stylesheetLinkRegex = makeRegex(
