@@ -4,6 +4,8 @@
 `StreamService` 的流式翻译链路。核心目标是保留 Claude 的认证与代理能力，
 同时禁用工具、MCP、插件 hooks 和会话持久化，避免引入额外上下文。
 
+![ClaudeCode 架构](./claude-code-architecture.svg)
+
 主要组件如下：
 - `ClaudeCodeService`：组装翻译 prompt，管理当前 runner 生命周期。
 - `ClaudeCodeRunner`：检测 `claude` 可执行文件，注入

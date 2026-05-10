@@ -1549,6 +1549,21 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
             [webViewManager updateAllIframe];
         }
+    } else if ([service.serviceType isEqualToString:EZServiceTypeMDict]) {
+        EZWebViewManager *webViewManager = result.webViewManager;
+        webView = webViewManager.webView;
+        resultCell.wordResultView.webView = webView;
+
+        BOOL htmlChanged = ![webViewManager.loadedHTMLString isEqualToString:result.htmlString];
+        BOOL needLoadHTML = result.isShowing && result.htmlString.length && (!webViewManager.isLoaded || htmlChanged);
+        if (needLoadHTML) {
+            webViewManager.isLoaded = YES;
+            webViewManager.loadedHTMLString = result.htmlString;
+            webView.navigationDelegate = resultCell.wordResultView;
+            [webView loadHTMLString:result.htmlString baseURL:nil];
+        } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
+            [webViewManager updateAllIframe];
+        }
     }
 
     return resultCell;
