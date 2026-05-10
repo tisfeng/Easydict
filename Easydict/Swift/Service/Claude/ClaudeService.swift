@@ -376,4 +376,5 @@ enum ClaudeModel: String, CaseIterable {
     case claude_sonnet_4_6 = "claude-sonnet-4-6"
     case claude_haiku_4_5 = "claude-haiku-4-5"
     case claude_opus_4_6 = "claude-opus-4-6"
+    case claude_opus_4_7 = "claude-opus-4-7"
 }
