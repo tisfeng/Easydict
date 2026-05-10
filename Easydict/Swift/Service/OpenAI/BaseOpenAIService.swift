@@ -383,7 +383,12 @@ func normalizedRemoteModelIDs(_ ids: [String]) -> [String] {
 }
 
 func fetchRemoteModelData(url: URL, headers: HTTPHeaders = []) async throws -> Data {
-    let response = await AF.request(url, method: .get, headers: headers)
+    let response = await AF.request(
+        url,
+        method: .get,
+        headers: headers,
+        requestModifier: { $0.timeoutInterval = EZNetWorkTimeoutInterval }
+    )
         .serializingData(automaticallyCancelling: true)
         .response
 
