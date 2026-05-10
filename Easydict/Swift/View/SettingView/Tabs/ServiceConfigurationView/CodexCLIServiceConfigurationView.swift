@@ -18,7 +18,7 @@ import SwiftUI
 struct CodexCLIServiceConfigurationView: View {
     // MARK: Lifecycle
 
-    init(service: StreamService) {
+    init(service: CodexCLIService) {
         self.service = service
     }
 
@@ -27,6 +27,22 @@ struct CodexCLIServiceConfigurationView: View {
     var body: some View {
         Section {
             CodexCLIStatusRow()
+        }
+
+        // Model + reasoning-effort overrides. Empty model and `.default` effort
+        // both fall back to whatever is configured in ~/.codex/config.toml,
+        // so users only see the CLI's behaviour change when they opt in.
+        Section {
+            InputCell(
+                textFieldTitleKey: "service.configuration.codex_cli.model.title",
+                key: service.modelKey,
+                placeholder: "service.configuration.codex_cli.model.placeholder"
+            )
+            StaticPickerCell(
+                titleKey: "service.configuration.codex_cli.reasoning_effort.title",
+                key: service.reasoningEffortKey,
+                values: CodexReasoningEffort.allCases
+            )
         }
         #if AGENT_CLI_DEBUG
         Section {
@@ -48,7 +64,7 @@ struct CodexCLIServiceConfigurationView: View {
 
     // MARK: Private
 
-    private let service: StreamService
+    private let service: CodexCLIService
 }
 
 // MARK: - CodexCLIStatusRow

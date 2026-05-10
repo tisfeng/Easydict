@@ -581,6 +581,7 @@
 		C0DEC11E0001000000000007 /* CodexCLIServiceConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */; };
 		C0DEC11E0001000000000010 /* CodexCLIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */; };
 		C0DEC11E0001000000000011 /* CodexCLIRunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */; };
+		C0DEC11E0001000000000014 /* CodexReasoningEffort.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1288,6 +1289,7 @@
 		C0DEC11E0002000000000013 /* codex-cli-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "codex-cli-architecture.svg"; sourceTree = "<group>"; };
 		C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIServiceTests.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIRunnerTests.swift; sourceTree = "<group>"; };
+		C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexReasoningEffort.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3618,6 +3620,7 @@
 				C0DEC11E0002000000000002 /* CodexCLIRunner.swift */,
 				C0DEC11E0002000000000001 /* CodexCLIService.swift */,
 				C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */,
+				C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */,
 				C0DEC11E0002000000000008 /* codex-cli-overview.md */,
 				C0DEC11E0002000000000012 /* codex-cli-architecture.svg */,
 			);
@@ -4322,6 +4325,7 @@
 				C0DEC11E0001000000000001 /* CodexCLIService.swift in Sources */,
 				C0DEC11E0001000000000006 /* CodexCLIDebugWindow.swift in Sources */,
 				C0DEC11E0001000000000007 /* CodexCLIServiceConfigurationView.swift in Sources */,
+				C0DEC11E0001000000000014 /* CodexReasoningEffort.swift in Sources */,
 				0333D4C02E5C6EBE00CD4613 /* ShortcutManager.swift in Sources */,
 				0352AF342E0EEE9D00C2D4B1 /* OCRDashHandler.swift in Sources */,
 				0352AF352E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift in Sources */,

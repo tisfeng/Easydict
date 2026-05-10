@@ -5645,6 +5645,63 @@
         }
       }
     },
+    "service.codex_cli.reasoning_effort.default" : {
+      "comment" : "Default option means: do not override ~/.codex/config.toml",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Default (use config.toml)" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Predvolené (z config.toml)" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "默认（沿用 config.toml）" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "預設（沿用 config.toml）" } }
+      }
+    },
+    "service.codex_cli.reasoning_effort.high" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "High" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vysoké" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "高" } }
+      }
+    },
+    "service.codex_cli.reasoning_effort.low" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Low" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Nízke" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "低" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "低" } }
+      }
+    },
+    "service.codex_cli.reasoning_effort.medium" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Medium" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Stredné" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "中" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "中" } }
+      }
+    },
+    "service.codex_cli.reasoning_effort.minimal" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Minimal" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Minimálne" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "最小" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最小" } }
+      }
+    },
+    "service.codex_cli.reasoning_effort.none" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "None" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Žiadne" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "无" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "無" } }
+      }
+    },
+    "service.codex_cli.reasoning_effort.xhigh" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Extra High" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Veľmi vysoké" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "极高" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "極高" } }
+      }
+    },
     "service.codex_cli.risk_warning" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5900,6 +5957,30 @@
             "value" : "權杖"
           }
         }
+      }
+    },
+    "service.configuration.codex_cli.model.placeholder" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Leave empty to use config.toml default" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Prázdne = predvolený z config.toml" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "留空则使用 config.toml 默认" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "留空則使用 config.toml 預設" } }
+      }
+    },
+    "service.configuration.codex_cli.model.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Model" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Model" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "模型" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "模型" } }
+      }
+    },
+    "service.configuration.codex_cli.reasoning_effort.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Reasoning Effort" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Úroveň uvažovania" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } }
       }
     },
     "service.configuration.custom_openai.enable_streaming.footnote" : {

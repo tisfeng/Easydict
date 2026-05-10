@@ -84,7 +84,11 @@ final class CodexCLIService: StreamService {
         runner?.cancel()
         let currentRunner = CodexCLIRunner()
         runner = currentRunner
-        let baseStream = currentRunner.run(prompt: combinedPrompt)
+        let baseStream = currentRunner.run(
+            prompt: combinedPrompt,
+            model: Defaults[modelKey],
+            reasoningEffort: Defaults[reasoningEffortKey].cliValue
+        )
 
         return AsyncThrowingStream { [weak self] continuation in
             let task = Task {
@@ -120,6 +124,16 @@ final class CodexCLIService: StreamService {
                 currentRunner.cancel()
             }
         }
+    }
+
+    // MARK: Internal
+
+    /// Stored reasoning-effort override. `.default` means "do not override
+    /// `~/.codex/config.toml`"; other cases map to codex's accepted values.
+    /// `modelKey` is inherited from `StreamService` and resolves to an empty
+    /// default, which the runner treats as "use codex CLI default".
+    var reasoningEffortKey: Defaults.Key<CodexReasoningEffort> {
+        serviceDefaultsKey(.reasoningEffort, defaultValue: .default)
     }
 
     // MARK: Private

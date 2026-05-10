@@ -76,17 +76,44 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// `--sandbox read-only` blocks any incidental file writes if the model decides to
     /// call shell tools, `--skip-git-repo-check` lets the CLI run from neutral
     /// working directories, and `--ephemeral` skips writing session files to disk.
-    static func buildArguments(prompt: String, workingDirectory: String) -> [String] {
-        [
+    ///
+    /// - Parameters:
+    ///   - prompt: The full prompt sent to the CLI.
+    ///   - workingDirectory: A neutral cwd (typically `/tmp`) so codex does not scan
+    ///     user folders for `AGENTS.md`.
+    ///   - model: Optional model override. Empty / nil leaves the CLI's default in place.
+    ///     Whitespace is trimmed before forming the `-m <model>` flag.
+    ///   - reasoningEffort: Optional reasoning-effort override. Empty / nil leaves the
+    ///     user's `~/.codex/config.toml` untouched; non-empty forms
+    ///     `-c model_reasoning_effort=<value>`.
+    static func buildArguments(
+        prompt: String,
+        workingDirectory: String,
+        model: String? = nil,
+        reasoningEffort: String? = nil
+    )
+        -> [String] {
+        var arguments = [
             "exec",
             "--json",
             "--skip-git-repo-check",
             "--ephemeral",
             "--sandbox", "read-only",
             "-C", workingDirectory,
-            "--",
-            prompt,
         ]
+
+        let trimmedModel = model?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if !trimmedModel.isEmpty {
+            arguments += ["-m", trimmedModel]
+        }
+
+        let trimmedEffort = reasoningEffort?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if !trimmedEffort.isEmpty {
+            arguments += ["-c", "model_reasoning_effort=\(trimmedEffort)"]
+        }
+
+        arguments += ["--", prompt]
+        return arguments
     }
 
     /// Builds the subprocess environment for the Codex CLI invocation.
@@ -114,11 +141,21 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// - `-C <tmpdir>` — uses a neutral working directory so codex does not scan user folders
     ///   for `AGENTS.md` or other repo-local instructions.
     ///
-    /// - Parameter prompt: The full prompt sent to the CLI. The caller is responsible for
-    ///   embedding any system instructions, since `codex exec` does not have a separate
-    ///   system-prompt flag.
+    /// - Parameters:
+    ///   - prompt: The full prompt sent to the CLI. The caller is responsible for
+    ///     embedding any system instructions, since `codex exec` does not have a separate
+    ///     system-prompt flag.
+    ///   - model: Optional model override (empty string and nil both leave codex's
+    ///     default in place).
+    ///   - reasoningEffort: Optional reasoning-effort override
+    ///     (empty / nil keeps the user's `~/.codex/config.toml` setting).
     /// - Returns: A stream that yields text delta strings as they arrive from the CLI.
-    func run(prompt: String) -> AsyncThrowingStream<String, Error> {
+    func run(
+        prompt: String,
+        model: String? = nil,
+        reasoningEffort: String? = nil
+    )
+        -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { [weak self] continuation in
             guard let self else {
                 continuation.finish()
@@ -149,7 +186,9 @@ final class CodexCLIRunner: @unchecked Sendable {
                     process.executableURL = URL(fileURLWithPath: binaryPath)
                     process.arguments = Self.buildArguments(
                         prompt: prompt,
-                        workingDirectory: workingDirectory
+                        workingDirectory: workingDirectory,
+                        model: model,
+                        reasoningEffort: reasoningEffort
                     )
                     process.standardOutput = stdoutPipe
                     process.standardError = stderrPipe

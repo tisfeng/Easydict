@@ -47,6 +47,56 @@ struct CodexCLIRunnerTests {
         }
     }
 
+    @Test("buildArguments omits -m and -c when model and effort are empty")
+    func buildArgumentsOmitsOverridesWhenEmpty() {
+        let arguments = CodexCLIRunner.buildArguments(
+            prompt: "hi",
+            workingDirectory: "/tmp",
+            model: "",
+            reasoningEffort: nil
+        )
+        #expect(!arguments.contains("-m"))
+        #expect(arguments.contains("-c") == false)
+    }
+
+    @Test("buildArguments adds -m when model is non-empty")
+    func buildArgumentsAddsModelFlag() {
+        let arguments = CodexCLIRunner.buildArguments(
+            prompt: "hi",
+            workingDirectory: "/tmp",
+            model: "gpt-5-mini"
+        )
+        #expect(arguments.contains("-m"))
+        #expect(arguments.contains("gpt-5-mini"))
+        // -m must precede the -- terminator
+        if let mIdx = arguments.firstIndex(of: "-m"),
+           let endIdx = arguments.firstIndex(of: "--") {
+            #expect(mIdx < endIdx)
+        }
+    }
+
+    @Test("buildArguments trims whitespace around model value")
+    func buildArgumentsTrimsModel() {
+        let arguments = CodexCLIRunner.buildArguments(
+            prompt: "hi",
+            workingDirectory: "/tmp",
+            model: "  gpt-5-mini  "
+        )
+        #expect(arguments.contains("gpt-5-mini"))
+        #expect(!arguments.contains("  gpt-5-mini  "))
+    }
+
+    @Test("buildArguments adds -c model_reasoning_effort when effort is non-empty")
+    func buildArgumentsAddsReasoningEffortFlag() {
+        let arguments = CodexCLIRunner.buildArguments(
+            prompt: "hi",
+            workingDirectory: "/tmp",
+            reasoningEffort: "low"
+        )
+        #expect(arguments.contains("-c"))
+        #expect(arguments.contains("model_reasoning_effort=low"))
+    }
+
     // MARK: - parseCodexError (stderr-only)
 
     @Test("parseCodexError returns notLoggedIn when stderr says 'not signed in'")
