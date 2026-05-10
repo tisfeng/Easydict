@@ -228,6 +228,18 @@ struct CodexCLIRunnerTests {
         #expect(error == .quotaExceeded(message: "Rate limit exceeded for requests"))
     }
 
+    @Test("parseCodexError reports the latest generic failure message, not transient ones")
+    func parseErrorPrefersLatestGenericMessage() {
+        // Codex can emit transient `type:"error"` progress notices before the
+        // terminal `turn.failed`. The generic fallback message must be the
+        // latest one (the actual failure reason), not the first transient hint.
+        let transient = #"{"type":"error","message":"Reconnecting to OpenAI..."}"#
+        let terminal = #"{"type":"turn.failed","error":"Upstream service unavailable"}"#
+        let stdout = transient + "\n" + terminal
+        let error = parseCodexError(fromStdout: stdout, stderr: "")
+        #expect(error == .cliError(message: "Upstream service unavailable"))
+    }
+
     // MARK: - extractCodexText
 
     @Test("extractCodexText returns text for an agent_message item.completed line")

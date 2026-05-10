@@ -113,9 +113,13 @@ func parseCodexError(fromStdout stdout: String, stderr: String) -> CodexCLIError
         guard isFailureEvent(event) else { continue }
         guard let message = errorMessage(from: event) else { continue }
 
-        if stdoutGenericMessage == nil {
-            stdoutGenericMessage = message
-        }
+        // Generic message is "last wins" so that any transient `type:"error"`
+        // progress notices emitted before the terminal `turn.failed` get
+        // superseded by the actual final reason.
+        // Auth/quota keep first-match: the earliest line that hits a known
+        // keyword tends to be the root cause; later cascade messages would
+        // mask that signal.
+        stdoutGenericMessage = message
         if stdoutAuthMessage == nil, isCodexAuthenticationMessage(message) {
             stdoutAuthMessage = message
         }
