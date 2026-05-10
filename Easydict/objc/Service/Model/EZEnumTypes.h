@@ -56,6 +56,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeGitHub;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeDoubao;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeClaudeCode;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeClaude;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeMDict;
 
 FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
 FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;

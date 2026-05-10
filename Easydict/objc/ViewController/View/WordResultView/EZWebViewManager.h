@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGFloat wordResultViewHeight;
 @property (nonatomic, assign) BOOL isLoaded;
 @property (nonatomic, assign) BOOL needUpdateIframeHeight;
+@property (nonatomic, copy, nullable) NSString *loadedHTMLString;
 
 @property (nonatomic, copy, nullable) void (^didFinishUpdatingIframeHeightBlock)(CGFloat height);
 
