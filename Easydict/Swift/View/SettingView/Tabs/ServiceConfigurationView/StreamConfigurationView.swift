@@ -53,6 +53,8 @@ struct StreamConfigurationView: View {
         // Disable user to edit built-in supported models.
         self.isEditable = service.serviceType() != .builtInAI
 
+        self._apiKey = .init(service.apiKeyKey)
+        self._endpoint = .init(service.endpointKey)
         self._showCustomPromptTextEditor = .init(service.enableCustomPromptKey)
     }
 
@@ -76,6 +78,9 @@ struct StreamConfigurationView: View {
     let showStreamingToggle: Bool
 
     var isEditable = true
+
+    @Default var apiKey: String
+    @Default var endpoint: String
 
     // show system prompt and user prompt, according to service.enableCustomPrompt
     @Default var showCustomPromptTextEditor: Bool
@@ -252,20 +257,20 @@ struct StreamConfigurationView: View {
     private var isFetchModelsDisabled: Bool {
         guard remoteModelFetcher != nil else { return true }
         if !isEditable { return true }
-        if service.apiKeyRequirement().needsUserProvidedKey, service.apiKey.trim().isEmpty {
+        if service.apiKeyRequirement().needsUserProvidedKey, apiKey.trim().isEmpty {
             return true
         }
-        return showEndpointSection && !isValidEndpoint(service.endpoint)
+        return showEndpointSection && !isValidEndpoint(endpoint)
     }
 
     private var fetchModelsHelp: LocalizedStringKey {
         guard remoteModelFetcher != nil else {
             return "service.configuration.fetch_models.title"
         }
-        if service.apiKeyRequirement().needsUserProvidedKey, service.apiKey.trim().isEmpty {
+        if service.apiKeyRequirement().needsUserProvidedKey, apiKey.trim().isEmpty {
             return "missing_secret_key_error"
         }
-        if showEndpointSection, !isValidEndpoint(service.endpoint) {
+        if showEndpointSection, !isValidEndpoint(endpoint) {
             return "parameter_error"
         }
         return fetchModelsTitle
@@ -279,7 +284,7 @@ struct StreamConfigurationView: View {
 
     private var existingModelIDs: [String] {
         let storedModels = Defaults[service.supportedModelsKey]
-        return service.validModels(from: storedModels) + service.defaultModels
+        return service.validModels(from: storedModels)
     }
 
     private func addModels(_ modelIDs: [String]) {

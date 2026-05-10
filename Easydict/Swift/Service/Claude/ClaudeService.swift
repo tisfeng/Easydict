@@ -283,7 +283,7 @@ public final class ClaudeService: StreamService {
     }
 }
 
-// MARK: RemoteModelFetchable
+// MARK: - RemoteModelFetchable
 
 extension ClaudeService: RemoteModelFetchable {
     func fetchRemoteModelIDs() async throws -> [String] {
@@ -291,22 +291,37 @@ extension ClaudeService: RemoteModelFetchable {
             throw QueryError(type: .missingSecretKey, message: "Claude API key is empty.")
         }
 
-        let data = try await fetchRemoteModelData(
-            url: try remoteModelsURL(),
-            headers: HTTPHeaders([
-                HTTPHeader(name: "x-api-key", value: apiKey),
-                HTTPHeader(name: "anthropic-version", value: anthropicVersion),
-                .accept("application/json"),
-            ])
-        )
+        var ids: [String] = []
+        var afterID: String?
+        repeat {
+            let data = try await fetchRemoteModelData(
+                url: try remoteModelsURL(afterID: afterID),
+                headers: HTTPHeaders([
+                    HTTPHeader(name: "x-api-key", value: apiKey),
+                    HTTPHeader(name: "anthropic-version", value: anthropicVersion),
+                    .accept("application/json"),
+                ])
+            )
 
-        guard let modelList = try? JSONDecoder().decode(ClaudeModelListResponse.self, from: data) else {
-            throw QueryError(type: .api, message: "Invalid models response")
-        }
-        return normalizedRemoteModelIDs(modelList.data.map(\.id))
+            guard let modelList = try? JSONDecoder().decode(ClaudeModelListResponse.self, from: data) else {
+                throw QueryError(type: .api, message: "Invalid models response")
+            }
+            ids.append(contentsOf: modelList.data.map(\.id))
+            afterID = modelList.hasMore ? modelList.lastID : nil
+        } while afterID?.isEmpty == false
+
+        return normalizedRemoteModelIDs(ids)
     }
 
-    private func remoteModelsURL() throws -> URL {
+    private func remoteModelsURL(afterID: String?) throws -> URL {
+        let queryItems = [
+            URLQueryItem(name: "limit", value: "1000"),
+            afterID.map { URLQueryItem(name: "after_id", value: $0) },
+        ].compactMap { $0 }
+        return try remoteModelsURL(queryItems: queryItems)
+    }
+
+    private func remoteModelsURL(queryItems: [URLQueryItem]) throws -> URL {
         guard let endpointURL = URL(string: endpoint.trim()), endpointURL.isValid,
               var components = URLComponents(url: endpointURL, resolvingAgainstBaseURL: false)
         else {
@@ -322,7 +337,7 @@ extension ClaudeService: RemoteModelFetchable {
 
         parts.append("models")
         components.fragment = nil
-        components.queryItems = [URLQueryItem(name: "limit", value: "1000")]
+        components.queryItems = queryItems
         components.path = "/" + parts.joined(separator: "/")
 
         guard let url = components.url, url.isValid else {
@@ -335,7 +350,15 @@ extension ClaudeService: RemoteModelFetchable {
 // MARK: - ClaudeModelListResponse
 
 private struct ClaudeModelListResponse: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case data
+        case hasMore = "has_more"
+        case lastID = "last_id"
+    }
+
     let data: [ClaudeRemoteModel]
+    let hasMore: Bool
+    let lastID: String?
 }
 
 // MARK: - ClaudeRemoteModel

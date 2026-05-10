@@ -81,7 +81,7 @@ class OllamaService: BaseOpenAIService {
     }
 }
 
-// MARK: RemoteModelFetchable
+// MARK: - RemoteModelFetchable
 
 extension OllamaService: RemoteModelFetchable {
     func fetchRemoteModelIDs() async throws -> [String] {

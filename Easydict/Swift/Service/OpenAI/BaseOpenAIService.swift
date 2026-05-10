@@ -331,6 +331,7 @@ extension BaseOpenAIService {
             url: try remoteModelsURL(),
             headers: [
                 .authorization(bearerToken: apiKey),
+                HTTPHeader(name: "api-key", value: apiKey),
                 .accept("application/json"),
             ]
         )

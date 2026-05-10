@@ -189,7 +189,7 @@ public final class GeminiService: StreamService {
     }
 }
 
-// MARK: RemoteModelFetchable
+// MARK: - RemoteModelFetchable
 
 extension GeminiService: RemoteModelFetchable {
     func fetchRemoteModelIDs() async throws -> [String] {
@@ -197,23 +197,30 @@ extension GeminiService: RemoteModelFetchable {
             throw QueryError(type: .missingSecretKey, message: "Gemini API key is empty.")
         }
 
-        let data = try await fetchRemoteModelData(url: try remoteModelsURL())
+        var ids: [String] = []
+        var pageToken: String?
+        repeat {
+            let data = try await fetchRemoteModelData(url: try remoteModelsURL(pageToken: pageToken))
 
-        guard let modelList = try? JSONDecoder().decode(GeminiModelListResponse.self, from: data) else {
-            throw QueryError(type: .api, message: "Invalid models response")
-        }
-        let ids = modelList.models
-            .filter(\.supportsGenerateContent)
-            .map(\.modelID)
+            guard let modelList = try? JSONDecoder().decode(GeminiModelListResponse.self, from: data) else {
+                throw QueryError(type: .api, message: "Invalid models response")
+            }
+            ids.append(contentsOf: modelList.models
+                .filter(\.supportsGenerateContent)
+                .map(\.modelID))
+            pageToken = modelList.nextPageToken?.trim()
+        } while pageToken?.isEmpty == false
+
         return normalizedRemoteModelIDs(ids)
     }
 
-    private func remoteModelsURL() throws -> URL {
+    private func remoteModelsURL(pageToken: String?) throws -> URL {
         var components = URLComponents(string: "https://generativelanguage.googleapis.com/v1beta/models")
         components?.queryItems = [
             URLQueryItem(name: "key", value: apiKey),
             URLQueryItem(name: "pageSize", value: "1000"),
-        ]
+            pageToken.map { URLQueryItem(name: "pageToken", value: $0) },
+        ].compactMap { $0 }
 
         guard let url = components?.url, url.isValid else {
             throw QueryError(type: .parameter, message: "Gemini models endpoint is invalid")
@@ -226,6 +233,7 @@ extension GeminiService: RemoteModelFetchable {
 
 private struct GeminiModelListResponse: Decodable {
     let models: [GeminiRemoteModel]
+    let nextPageToken: String?
 }
 
 // MARK: - GeminiRemoteModel
@@ -252,10 +260,9 @@ private struct GeminiRemoteModel: Decodable {
     }
 
     var supportsGenerateContent: Bool {
-        guard let supportedGenerationMethods, !supportedGenerationMethods.isEmpty else { return true }
-        return supportedGenerationMethods.contains {
+        supportedGenerationMethods?.contains {
             $0 == "generateContent" || $0 == "streamGenerateContent"
-        }
+        } == true
     }
 }
 
