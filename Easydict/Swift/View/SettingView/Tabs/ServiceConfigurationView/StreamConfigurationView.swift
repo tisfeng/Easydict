@@ -289,8 +289,8 @@ struct StreamConfigurationView: View {
 
     private func addModels(_ modelIDs: [String]) {
         var models = service.validModels(from: Defaults[service.supportedModelsKey])
-        var existingModels = Set(models)
-        for modelID in modelIDs where existingModels.insert(modelID).inserted {
+        var existingModels = Set(models.map { $0.trim().lowercased() })
+        for modelID in modelIDs where existingModels.insert(modelID.trim().lowercased()).inserted {
             models.append(modelID)
         }
         service.supportedModels = service.supportedModels(from: models)
@@ -438,9 +438,9 @@ private struct RemoteModelsSheet: View {
         selectedIDs.removeAll()
 
         do {
-            let existingModelSet = Set(existingModels.map { $0.trim() })
+            let existingModelSet = Set(existingModels.map { $0.trim().lowercased() })
             models = try await fetchModels().map {
-                RemoteModelRow(id: $0, exists: existingModelSet.contains($0))
+                RemoteModelRow(id: $0, exists: existingModelSet.contains($0.trim().lowercased()))
             }
         } catch {
             errorMessage = error.localizedDescription

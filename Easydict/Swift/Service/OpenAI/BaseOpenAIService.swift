@@ -379,12 +379,12 @@ func normalizedRemoteModelIDs(_ ids: [String]) -> [String] {
     return ids
         .map { $0.trim() }
         .filter { !$0.isEmpty }
-        .filter { seenModels.insert($0).inserted }
+        .filter { seenModels.insert($0.lowercased()).inserted }
 }
 
 func fetchRemoteModelData(url: URL, headers: HTTPHeaders = []) async throws -> Data {
     let response = await AF.request(url, method: .get, headers: headers)
-        .serializingData()
+        .serializingData(automaticallyCancelling: true)
         .response
 
     if let statusCode = response.response?.statusCode,
@@ -395,10 +395,31 @@ func fetchRemoteModelData(url: URL, headers: HTTPHeaders = []) async throws -> D
 }
 
 func remoteModelError(statusCode: Int, data: Data?) -> QueryError {
-    let message = data.flatMap {
-        try? JSONDecoder().decode(RemoteModelErrorResponse.self, from: $0).error.message
-    }?.trim()
-    return QueryError(type: .api, message: message ?? "HTTP \(statusCode)")
+    let message = data.flatMap(remoteModelErrorMessage)?.trim()
+    if let message, !message.isEmpty {
+        return QueryError(type: .api, message: message)
+    }
+    return QueryError(type: .api, message: "HTTP \(statusCode)")
+}
+
+private func remoteModelErrorMessage(from data: Data) -> String? {
+    if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+        if let error = json["error"] as? String {
+            return error
+        }
+        if let error = json["error"] as? [String: Any],
+           let message = error["message"] as? String {
+            return message
+        }
+        if let message = json["message"] as? String {
+            return message
+        }
+    }
+
+    guard let text = String(data: data, encoding: .utf8)?.trim(), !text.isEmpty else {
+        return nil
+    }
+    return String(text.prefix(300))
 }
 
 // MARK: - OpenAIModelListResponse
@@ -411,14 +432,4 @@ private struct OpenAIModelListResponse: Decodable {
 
 private struct OpenAIModelItem: Decodable {
     let id: String
-}
-
-// MARK: - RemoteModelErrorResponse
-
-private struct RemoteModelErrorResponse: Decodable {
-    struct ErrorBody: Decodable {
-        let message: String?
-    }
-
-    let error: ErrorBody
 }
