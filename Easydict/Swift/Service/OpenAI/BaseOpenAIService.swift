@@ -42,6 +42,8 @@ public class BaseOpenAIService: StreamService {
 
     let control = StreamControl()
 
+    var remoteModelsEndpoint: String? { nil }
+
     override func contentStreamTranslate(
         _ text: String,
         from: Language,
@@ -343,6 +345,11 @@ extension BaseOpenAIService {
     }
 
     private func remoteModelsURL() throws -> URL {
+        if let remoteModelsEndpoint = remoteModelsEndpoint?.trim(), !remoteModelsEndpoint.isEmpty,
+           let url = URL(string: remoteModelsEndpoint), url.isValid {
+            return url
+        }
+
         guard let endpointURL = URL(string: endpoint.trim()), endpointURL.isValid,
               var components = URLComponents(url: endpointURL, resolvingAgainstBaseURL: false)
         else {
@@ -363,7 +370,6 @@ extension BaseOpenAIService {
         }
 
         parts.append("models")
-        components.query = nil
         components.fragment = nil
         components.path = "/" + parts.joined(separator: "/")
 

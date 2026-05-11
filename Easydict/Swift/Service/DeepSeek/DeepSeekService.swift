@@ -44,6 +44,10 @@ class DeepSeekService: OpenAIService {
     override var defaultEndpoint: String {
         "https://api.deepseek.com/v1/chat/completions"
     }
+
+    override var remoteModelsEndpoint: String? {
+        "https://api.deepseek.com/models"
+    }
 }
 
 // MARK: - DeepSeekModel
