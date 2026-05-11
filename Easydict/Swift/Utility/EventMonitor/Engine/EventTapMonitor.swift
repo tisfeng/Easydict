@@ -19,8 +19,14 @@ import Foundation
 ///   matching `stop()` returns; otherwise the callback dereferences a freed pointer.
 ///   Currently safe because the only owner is `EventMonitor.shared` (singleton).
 /// - Important: `start()` and `stop()` mutate three CF state fields without locks,
-///   so they MUST be invoked on the main thread. The callback also runs on the main
-///   run loop because the source is installed on `CFRunLoopGetMain()`.
+///   so they MUST be invoked on the main thread.
+/// - Important: The callback runs on the main run loop (source installed on
+///   `CFRunLoopGetMain()`) and invokes `keyDownHandler` synchronously. The
+///   handler must return well under WindowServer's ~30ms budget; transient
+///   overruns trip `.tapDisabledByTimeout`, which the callback recovers by
+///   re-enabling the tap. Synchronous dispatch is deliberate: event capture
+///   and handler execution share one run loop tick, so the handler sees the
+///   popup state as it was when the event fired.
 final class EventTapMonitor {
     // MARK: Internal
 
@@ -44,10 +50,7 @@ final class EventTapMonitor {
             switch type {
             case .keyDown:
                 let keyCode = CGKeyCode(event.getIntegerValueField(.keyboardEventKeycode))
-                let flags = event.flags
-                DispatchQueue.main.async {
-                    monitor.keyDownHandler?(keyCode, flags)
-                }
+                monitor.keyDownHandler?(keyCode, event.flags)
             case .tapDisabledByTimeout, .tapDisabledByUserInput:
                 if let tap = monitor.eventTap {
                     CGEvent.tapEnable(tap: tap, enable: true)
