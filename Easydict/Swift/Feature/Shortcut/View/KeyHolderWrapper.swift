@@ -97,7 +97,12 @@ extension KeyHolderWrapper {
                         message: message
                     )
                     recordView.clear()
-                    HotKeyCenter.shared.unregisterHotKey(with: action.rawValue)
+
+                    // Restore the previous hotkey so it remains active after conflict rejection
+                    let previousKeyCombo = getKeyCombo()
+                    ShortcutManager.shared.bindingGlobalShortcutAction(
+                        keyCombo: previousKeyCombo, action: action
+                    )
                     return
                 }
             } else {

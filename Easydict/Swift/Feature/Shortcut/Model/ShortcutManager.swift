@@ -41,5 +41,6 @@ extension ShortcutManager {
         let shortcutMenu = NSApp.mainMenu?.items.first(where: { $0.title == menuTitle })
         let clearInput = shortcutMenu?.submenu?.items.first(where: { $0.title == shortcutTitle })
         clearInput?.keyEquivalent = ""
+        clearInput?.keyEquivalentModifierMask = []
     }
 }
