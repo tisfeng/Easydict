@@ -336,8 +336,10 @@ extension ClaudeService: RemoteModelFetchable {
         }
 
         parts.append("models")
+        let pageItemNames = Set(queryItems.map(\.name))
+        let existingItems = components.queryItems?.filter { !pageItemNames.contains($0.name) } ?? []
         components.fragment = nil
-        components.queryItems = queryItems
+        components.queryItems = existingItems + queryItems
         components.path = "/" + parts.joined(separator: "/")
 
         guard let url = components.url, url.isValid else {
