@@ -141,7 +141,6 @@ static NSInteger const kAnimationDotViewCount = 5;
 }
 
 - (void)dealloc {
-    MMLogInfo(@"EZResultView dealloc: %@", self);
     [self.timer invalidate];
     self.timer = nil;
 }

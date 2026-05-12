@@ -1549,6 +1549,21 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
             [webViewManager updateAllIframe];
         }
+    } else if ([service.serviceType isEqualToString:EZServiceTypeMDict]) {
+        EZWebViewManager *webViewManager = result.webViewManager;
+        webView = webViewManager.webView;
+        resultCell.wordResultView.webView = webView;
+
+        BOOL htmlChanged = ![webViewManager.loadedHTMLString isEqualToString:result.htmlString];
+        BOOL needLoadHTML = result.isShowing && result.htmlString.length && (!webViewManager.isLoaded || htmlChanged);
+        if (needLoadHTML) {
+            webViewManager.isLoaded = YES;
+            webViewManager.loadedHTMLString = result.htmlString;
+            webView.navigationDelegate = resultCell.wordResultView;
+            [webView loadHTMLString:result.htmlString baseURL:nil];
+        } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
+            [webViewManager updateAllIframe];
+        }
     }
 
     return resultCell;
@@ -1693,7 +1708,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     CGRect screenVisibleFrame = currentScreen.visibleFrame;
     CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
 
-    if (ez_frame_equal_with_tolerance(window.frame, safeFrame, 0.5)) {
+    if (ez_frame_equal_with_tolerance(window.frame,
+                                      safeFrame,
+                                      EZLayoutGeometryTolerance_0_5)) {
         self.tableView.height = tableViewHeight;
         self.lockResizeWindow = NO;
         MMLogInfo(@"Equal frame, no need to update window frame");
