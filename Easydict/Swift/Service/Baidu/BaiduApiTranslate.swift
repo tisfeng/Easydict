@@ -61,7 +61,7 @@ class BaiduApiTranslate: NSObject {
             "sign": signMd5,
         ]
 
-        let request = AF.request(
+        let request = EAF.request(
             "https://fanyi-api.baidu.com/api/trans/vip/translate",
             method: .post,
             parameters: param,

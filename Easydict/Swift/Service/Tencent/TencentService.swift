@@ -101,7 +101,7 @@ public final class TencentService: QueryService {
             result = currentResult
         }
 
-        let request = AF.request(
+        let request = EAF.request(
             endpoint,
             method: .post,
             parameters: parameters,

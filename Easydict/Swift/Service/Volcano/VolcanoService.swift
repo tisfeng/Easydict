@@ -100,7 +100,7 @@ public final class VolcanoService: QueryService {
 
         let afHost = host + uri + "?" + queryString
 
-        let request = AF.request(
+        let request = EAF.request(
             afHost,
             method: .post,
             parameters: parameters,
