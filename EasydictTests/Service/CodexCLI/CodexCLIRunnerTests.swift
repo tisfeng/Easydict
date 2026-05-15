@@ -406,4 +406,47 @@ struct CodexCLIRunnerTests {
         let merged = CodexCLIRunner.mergePathEntries("/usr/bin::/bin", ":/opt/homebrew/bin:")
         #expect(merged == "/usr/bin:/bin:/opt/homebrew/bin")
     }
+
+    // MARK: - extractLoginShellPath
+
+    @Test("extractLoginShellPath ignores banner noise before the begin sentinel")
+    func extractPathIgnoresBanner() {
+        let stdout = """
+        Welcome to my zsh init
+        Sourcing oh-my-zsh plugins...
+        __EZ_CODEX_PATH_BEGIN__
+        /opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin
+        __EZ_CODEX_PATH_END__
+        """
+        let path = CodexCLIRunner.extractLoginShellPath(from: stdout)
+        #expect(path == "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
+    }
+
+    @Test("extractLoginShellPath returns nil when sentinels are missing")
+    func extractPathMissingSentinels() {
+        #expect(CodexCLIRunner.extractLoginShellPath(from: "/usr/bin:/bin") == nil)
+    }
+
+    @Test("extractLoginShellPath returns nil when only one sentinel is present")
+    func extractPathOnlyOneSentinel() {
+        let stdout = "noise __EZ_CODEX_PATH_BEGIN__ /usr/bin"
+        #expect(CodexCLIRunner.extractLoginShellPath(from: stdout) == nil)
+    }
+
+    @Test("extractLoginShellPath returns nil when framed value is empty")
+    func extractPathEmptyFrame() {
+        let stdout = "__EZ_CODEX_PATH_BEGIN__\n\n__EZ_CODEX_PATH_END__"
+        #expect(CodexCLIRunner.extractLoginShellPath(from: stdout) == nil)
+    }
+
+    @Test("extractLoginShellPath preserves spaces inside path entries")
+    func extractPathPreservesSpacesInPath() {
+        let stdout = """
+        __EZ_CODEX_PATH_BEGIN__
+        /Applications/Some Tool.app/Contents/MacOS:/usr/bin
+        __EZ_CODEX_PATH_END__
+        """
+        let path = CodexCLIRunner.extractLoginShellPath(from: stdout)
+        #expect(path == "/Applications/Some Tool.app/Contents/MacOS:/usr/bin")
+    }
 }

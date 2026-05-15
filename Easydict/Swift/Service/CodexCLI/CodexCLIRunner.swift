@@ -156,6 +156,10 @@ final class CodexCLIRunner: @unchecked Sendable {
     ///
     /// The result is cached after the first successful lookup so the login-shell
     /// invocation only happens once per app session.
+    ///
+    /// The command wraps `$PATH` in sentinels so we can extract a clean value even
+    /// when profile scripts (`~/.zprofile`, `~/.zshrc`, oh-my-zsh banners, etc.)
+    /// emit extra text on the same stdout stream before the printf runs.
     static func loginShellEnvironmentPath() -> String? {
         cacheLock.lock()
         defer { cacheLock.unlock() }
@@ -163,11 +167,32 @@ final class CodexCLIRunner: @unchecked Sendable {
         if let cached = cachedLoginShellPath {
             return cached
         }
-        if let value = runViaLoginShell(#"printf %s "$PATH""#), !value.isEmpty {
-            cachedLoginShellPath = value
-            return value
+        let command = "printf '%s\\n' '\(pathSentinelBegin)'; printf '%s' \"$PATH\";"
+            + " printf '\\n%s\\n' '\(pathSentinelEnd)'"
+        if let output = runViaLoginShell(command),
+           let path = extractLoginShellPath(from: output),
+           !path.isEmpty {
+            cachedLoginShellPath = path
+            return path
         }
         return nil
+    }
+
+    /// Extracts the PATH value framed by `pathSentinelBegin` / `pathSentinelEnd`.
+    /// Returns nil when either sentinel is missing or the framed value is empty
+    /// after trimming surrounding whitespace.
+    static func extractLoginShellPath(from output: String) -> String? {
+        guard let beginRange = output.range(of: pathSentinelBegin),
+              let endRange = output.range(
+                  of: pathSentinelEnd,
+                  range: beginRange.upperBound ..< output.endIndex
+              )
+        else {
+            return nil
+        }
+        let between = output[beginRange.upperBound ..< endRange.lowerBound]
+        let trimmed = between.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
     }
 
     /// Runs `codex exec --json` and yields the agent's final message text.
@@ -374,6 +399,11 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// Cached login-shell `PATH` from the first successful lookup.
     /// Same caching rationale as `cachedBinaryPath`.
     private static var cachedLoginShellPath: String?
+
+    /// Sentinels used to frame the `$PATH` value inside login-shell stdout so we
+    /// can recover it even when profile scripts print banners on the same stream.
+    private static let pathSentinelBegin = "__EZ_CODEX_PATH_BEGIN__"
+    private static let pathSentinelEnd = "__EZ_CODEX_PATH_END__"
 
     private static let cacheLock = NSLock()
 
