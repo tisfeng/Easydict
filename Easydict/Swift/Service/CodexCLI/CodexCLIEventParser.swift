@@ -267,14 +267,10 @@ private struct CodexCLIErrorField: Decodable {
     // MARK: Lifecycle
 
     init(from decoder: Decoder) throws {
-        // 1) Plain string form: `"error":"text"`.
-        let single = try decoder.singleValueContainer()
-        if let asString = try? single.decode(String.self) {
-            self.message = asString
-            return
-        }
-
-        // 2) Structured object form: try common message-bearing keys.
+        // 1) Structured object form: `"error":{"message":"…", …}`. Probed first
+        // because some `JSONDecoder` implementations throw `typeMismatch` from
+        // `singleValueContainer()` when the underlying value is an object, which
+        // would skip the keyed branch entirely if attempted second.
         if let keyed = try? decoder.container(keyedBy: ObjectKey.self) {
             let candidateKeys: [ObjectKey] = [.message, .error, .description, .detail]
             for key in candidateKeys {
@@ -284,6 +280,15 @@ private struct CodexCLIErrorField: Decodable {
                     return
                 }
             }
+            self.message = nil
+            return
+        }
+
+        // 2) Plain string form: `"error":"text"`.
+        if let single = try? decoder.singleValueContainer(),
+           let asString = try? single.decode(String.self) {
+            self.message = asString
+            return
         }
 
         // 3) Anything else (number, array, null) — fail soft.
