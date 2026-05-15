@@ -350,4 +350,60 @@ struct CodexCLIRunnerTests {
         let path = CodexCLIRunner.runWhich("__nonexistent_codex_xyz__")
         #expect(path == nil)
     }
+
+    // MARK: - buildProcessEnvironment
+
+    @Test("buildProcessEnvironment merges login-shell PATH after inherited PATH")
+    func buildEnvMergesLoginShellPath() {
+        let env = CodexCLIRunner.buildProcessEnvironment(
+            inheritedEnvironment: ["PATH": "/usr/bin:/bin", "FOO": "bar"],
+            loginShellPath: "/opt/homebrew/bin:/usr/local/bin"
+        )
+        #expect(env["PATH"] == "/usr/bin:/bin:/opt/homebrew/bin:/usr/local/bin")
+        #expect(env["FOO"] == "bar")
+    }
+
+    @Test("buildProcessEnvironment dedupes entries shared by inherited and login-shell PATH")
+    func buildEnvDedupesPathEntries() {
+        let env = CodexCLIRunner.buildProcessEnvironment(
+            inheritedEnvironment: ["PATH": "/usr/bin:/opt/homebrew/bin"],
+            loginShellPath: "/opt/homebrew/bin:/usr/local/bin"
+        )
+        #expect(env["PATH"] == "/usr/bin:/opt/homebrew/bin:/usr/local/bin")
+    }
+
+    @Test("buildProcessEnvironment leaves PATH unchanged when login-shell PATH is nil")
+    func buildEnvKeepsInheritedPathWhenLoginShellMissing() {
+        let env = CodexCLIRunner.buildProcessEnvironment(
+            inheritedEnvironment: ["PATH": "/usr/bin:/bin"],
+            loginShellPath: nil
+        )
+        #expect(env["PATH"] == "/usr/bin:/bin")
+    }
+
+    @Test("buildProcessEnvironment uses login-shell PATH when inherited has none")
+    func buildEnvUsesLoginShellPathWhenMissingInherited() {
+        let env = CodexCLIRunner.buildProcessEnvironment(
+            inheritedEnvironment: ["FOO": "bar"],
+            loginShellPath: "/opt/homebrew/bin"
+        )
+        #expect(env["PATH"] == "/opt/homebrew/bin")
+        #expect(env["FOO"] == "bar")
+    }
+
+    @Test("buildProcessEnvironment omits PATH when both sources are nil or empty")
+    func buildEnvOmitsPathWhenBothSourcesAbsent() {
+        let env = CodexCLIRunner.buildProcessEnvironment(
+            inheritedEnvironment: ["FOO": "bar"],
+            loginShellPath: nil
+        )
+        #expect(env["PATH"] == nil)
+        #expect(env["FOO"] == "bar")
+    }
+
+    @Test("mergePathEntries trims empty colon-separated segments")
+    func mergePathEntriesTrimsEmptySegments() {
+        let merged = CodexCLIRunner.mergePathEntries("/usr/bin::/bin", ":/opt/homebrew/bin:")
+        #expect(merged == "/usr/bin:/bin:/opt/homebrew/bin")
+    }
 }

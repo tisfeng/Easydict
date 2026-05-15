@@ -119,13 +119,55 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// Builds the subprocess environment for the Codex CLI invocation.
     ///
     /// Codex reads its own auth state from `~/.codex/auth.json` and `~/.codex/config.toml`,
-    /// so we only need to inherit the parent process environment (which already includes
-    /// `OPENAI_API_KEY` if the user has configured one).
+    /// so we mostly inherit the parent environment (which already carries `OPENAI_API_KEY`
+    /// if the user has configured one). We additionally merge the user's login-shell
+    /// `PATH` so npm shebang shims (`#!/usr/bin/env node`) can resolve `node` when the
+    /// app is launched from Finder with a minimal `PATH`.
     static func buildProcessEnvironment(
-        inheritedEnvironment: [String: String] = ProcessInfo.processInfo.environment
+        inheritedEnvironment: [String: String] = ProcessInfo.processInfo.environment,
+        loginShellPath: String? = CodexCLIRunner.loginShellEnvironmentPath()
     )
         -> [String: String] {
-        inheritedEnvironment
+        var environment = inheritedEnvironment
+        let merged = mergePathEntries(environment["PATH"], loginShellPath)
+        if !merged.isEmpty {
+            environment["PATH"] = merged
+        }
+        return environment
+    }
+
+    /// Merges two colon-separated `PATH` strings, preserving order and removing duplicates.
+    static func mergePathEntries(_ first: String?, _ second: String?) -> String {
+        var seen = Set<String>()
+        var result: [String] = []
+        for source in [first, second] {
+            guard let source else { continue }
+            for entry in source.split(separator: ":", omittingEmptySubsequences: true) {
+                let value = String(entry)
+                if seen.insert(value).inserted {
+                    result.append(value)
+                }
+            }
+        }
+        return result.joined(separator: ":")
+    }
+
+    /// Returns the user's login-shell `PATH`, or nil if it cannot be resolved.
+    ///
+    /// The result is cached after the first successful lookup so the login-shell
+    /// invocation only happens once per app session.
+    static func loginShellEnvironmentPath() -> String? {
+        cacheLock.lock()
+        defer { cacheLock.unlock() }
+
+        if let cached = cachedLoginShellPath {
+            return cached
+        }
+        if let value = runViaLoginShell(#"printf %s "$PATH""#), !value.isEmpty {
+            cachedLoginShellPath = value
+            return value
+        }
+        return nil
     }
 
     /// Runs `codex exec --json` and yields the agent's final message text.
@@ -328,6 +370,11 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// Cached path from the first successful `detectCodexBinary()` call.
     /// Avoids spawning a login shell on every translation request.
     private static var cachedBinaryPath: String?
+
+    /// Cached login-shell `PATH` from the first successful lookup.
+    /// Same caching rationale as `cachedBinaryPath`.
+    private static var cachedLoginShellPath: String?
+
     private static let cacheLock = NSLock()
 
     /// Shared serial queue for all I/O handler dispatches across invocations.
