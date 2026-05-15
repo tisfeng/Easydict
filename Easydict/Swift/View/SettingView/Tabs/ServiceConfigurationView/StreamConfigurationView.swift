@@ -235,7 +235,7 @@ struct StreamConfigurationView: View {
                     fetchModels: {
                         try await remoteModelFetcher.fetchRemoteModelIDs()
                     },
-                    onAdd: addModels
+                    onSave: updateModels
                 )
             }
         }
@@ -287,10 +287,18 @@ struct StreamConfigurationView: View {
         return service.validModels(from: storedModels)
     }
 
-    private func addModels(_ modelIDs: [String]) {
+    private func updateModels(remoteModelIDs: [String], selectedModelIDs: [String]) {
         var models = service.validModels(from: Defaults[service.supportedModelsKey])
+        let remoteModels = Set(remoteModelIDs.map { $0.trim().lowercased() })
+        let selectedModels = Set(selectedModelIDs.map { $0.trim().lowercased() })
+
+        models = models.filter {
+            let modelID = $0.trim().lowercased()
+            return !remoteModels.contains(modelID) || selectedModels.contains(modelID)
+        }
+
         var existingModels = Set(models.map { $0.trim().lowercased() })
-        for modelID in modelIDs where existingModels.insert(modelID.trim().lowercased()).inserted {
+        for modelID in selectedModelIDs where existingModels.insert(modelID.trim().lowercased()).inserted {
             models.append(modelID)
         }
         service.supportedModels = service.supportedModels(from: models)
@@ -309,7 +317,7 @@ private struct RemoteModelsSheet: View {
     let titleKey: LocalizedStringKey
     let existingModels: [String]
     let fetchModels: () async throws -> [String]
-    let onAdd: ([String]) -> ()
+    let onSave: ([String], [String]) -> ()
 
     var body: some View {
         VStack(spacing: 12) {
@@ -330,11 +338,14 @@ private struct RemoteModelsSheet: View {
                 Button("cancel", role: .cancel) {
                     dismiss()
                 }
-                Button("service.configuration.fetch_models.add") {
-                    onAdd(models.map(\.id).filter(selectedIDs.contains))
+                Button("ok") {
+                    let remoteModelIDs = models.map(\.id)
+                    let selectedModelIDs = remoteModelIDs.filter(selectedIDs.contains)
                     dismiss()
+                    Task { @MainActor in
+                        onSave(remoteModelIDs, selectedModelIDs)
+                    }
                 }
-                .disabled(selectedIDs.isEmpty)
                 .keyboardShortcut(.defaultAction)
             }
         }
@@ -360,7 +371,7 @@ private struct RemoteModelsSheet: View {
     }
 
     private var selectableIDs: [String] {
-        filteredModels.filter { !$0.exists }.map(\.id)
+        filteredModels.map(\.id)
     }
 
     private var isAllSelected: Bool {
@@ -391,7 +402,6 @@ private struct RemoteModelsSheet: View {
                     Text(model.id)
                         .textSelection(.enabled)
                 }
-                .disabled(model.exists)
             }
         }
     }
@@ -442,6 +452,7 @@ private struct RemoteModelsSheet: View {
             models = try await fetchModels().map {
                 RemoteModelRow(id: $0, exists: existingModelSet.contains($0.trim().lowercased()))
             }
+            selectedIDs = Set(models.filter(\.exists).map(\.id))
         } catch {
             errorMessage = error.localizedDescription
         }
