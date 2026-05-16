@@ -189,7 +189,7 @@ public final class GeminiService: StreamService {
     }
 }
 
-// MARK: - RemoteModelFetchable
+// MARK: RemoteModelFetchable
 
 extension GeminiService: RemoteModelFetchable {
     func fetchRemoteModelIDs() async throws -> [String] {

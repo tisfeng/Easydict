@@ -283,7 +283,7 @@ public final class ClaudeService: StreamService {
     }
 }
 
-// MARK: - RemoteModelFetchable
+// MARK: RemoteModelFetchable
 
 extension ClaudeService: RemoteModelFetchable {
     func fetchRemoteModelIDs() async throws -> [String] {

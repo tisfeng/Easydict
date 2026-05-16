@@ -395,8 +395,8 @@ func fetchRemoteModelData(url: URL, headers: HTTPHeaders = []) async throws -> D
         headers: headers,
         requestModifier: { $0.timeoutInterval = EZNetWorkTimeoutInterval }
     )
-        .serializingData(automaticallyCancelling: true)
-        .response
+    .serializingData(automaticallyCancelling: true)
+    .response
 
     if let statusCode = response.response?.statusCode,
        !(200 ... 299).contains(statusCode) {
