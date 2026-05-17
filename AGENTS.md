@@ -2,13 +2,11 @@
 
 Guidance for AI agents working in this repository.
 
-## Project Overview
+## Project Architecture
 
 **Easydict** is a macOS dictionary and translation app that supports word lookup, text translation, and OCR screenshot translation.
 
-**Note:** New development should use modern Swift and SwiftUI APIs available on macOS 13.0+.
-
-## Code Architecture
+New development should use modern Swift and SwiftUI APIs available on macOS 13.0+.
 
 ### Directory Structure
 
