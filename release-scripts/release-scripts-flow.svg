@@ -56,7 +56,7 @@
   <text x="826" y="209" text-anchor="middle" class="node-title">签名与公证凭据</text>
   <text x="718" y="236" class="body">Developer ID Application</text>
   <text x="718" y="258" class="body">TeamIdentifier 匹配团队</text>
-  <text x="718" y="280" class="body">notarytool profile 可用</text>
+  <text x="718" y="280" class="body">profile 位于 login keychain</text>
 
   <rect x="1018" y="178" width="248" height="112" rx="8" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
   <text x="1142" y="209" text-anchor="middle" class="node-title">读取版本快照</text>
@@ -173,7 +173,7 @@
   <rect x="70" y="1098" width="448" height="94" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
   <text x="96" y="1128" class="note-title">环境覆盖入口</text>
   <text x="96" y="1153" class="note">CREATE_DMG_BIN、RELEASE_CODE_SIGN_IDENTITY、</text>
-  <text x="96" y="1174" class="note">NOTARYTOOL_PROFILE、SIGN_UPDATE 和 KEEP_RELEASE_TMP。</text>
+  <text x="96" y="1174" class="note">NOTARYTOOL_PROFILE / KEYCHAIN、SIGN_UPDATE、KEEP_RELEASE_TMP。</text>
 
   <rect x="578" y="1098" width="448" height="94" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
   <text x="604" y="1128" class="note-title">调试入口</text>

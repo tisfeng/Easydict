@@ -214,7 +214,7 @@
         <h3>凭据与文件</h3>
         <ul>
           <li>钥匙串中必须存在 Developer ID Application 证书。</li>
-          <li><code>notarytool</code> keychain profile 必须可用于对应团队。</li>
+          <li><code>notarytool</code> profile 默认必须位于 login keychain，并可用于对应团队。</li>
           <li><code>appcast.xml</code> 和 <code>Easydict.xcodeproj/project.pbxproj</code> 必须存在。</li>
           <li>appcast 中不能已有相同版本号或 build number。</li>
         </ul>
@@ -249,6 +249,10 @@
         <tr>
           <td><code>NOTARYTOOL_PROFILE</code></td>
           <td>默认 <code>easydict-release</code>，必须能通过 <code>xcrun notarytool history</code>。</td>
+        </tr>
+        <tr>
+          <td><code>NOTARYTOOL_KEYCHAIN</code></td>
+          <td>默认 <code>$HOME/Library/Keychains/login.keychain-db</code>，用于固定 <code>notarytool</code> 读取凭据的位置。</td>
         </tr>
         <tr>
           <td><code>RELEASE_SPARKLE_CHANNEL</code></td>
@@ -301,7 +305,8 @@
     <ul>
       <li>需要保留构建和公证中间产物时，设置 <code>KEEP_RELEASE_TMP=1</code> 后重新运行脚本。</li>
       <li>签名失败时先检查 <code>RELEASE_CODE_SIGN_IDENTITY</code>、钥匙串证书和 <code>security find-identity -v -p codesigning</code> 输出。</li>
-      <li>公证失败时查看脚本打印的 <code>notarytool log</code>，确认 hardened runtime、嵌入 framework 和 Team ID。</li>
+      <li>公证失败时先确认 <code>NOTARYTOOL_KEYCHAIN</code> 指向存放 profile 的 keychain，再查看脚本打印的 <code>notarytool log</code>。</li>
+      <li>刷新公证 profile 时使用 <code>xcrun notarytool store-credentials easydict-release --team-id 45Z6V4YD5U --keychain "$HOME/Library/Keychains/login.keychain-db"</code>。</li>
       <li>Sparkle 失败时检查 <code>SIGN_UPDATE</code>、<code>SPARKLE_BIN_DIR</code>、SwiftPM Sparkle artifact 和私钥文件。</li>
       <li>appcast 更新后重点检查新增 item 的 <code>sparkle:version</code>、<code>sparkle:shortVersionString</code>、下载 URL、release notes URL 和 EdDSA 签名。</li>
     </ul>

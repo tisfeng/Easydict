@@ -21,6 +21,7 @@ RELEASE_DEVELOPMENT_TEAM="${RELEASE_DEVELOPMENT_TEAM:-45Z6V4YD5U}"
 RELEASE_CODE_SIGN_IDENTITY="${RELEASE_CODE_SIGN_IDENTITY:-Developer ID Application: Canglong Dai (45Z6V4YD5U)}"
 RELEASE_NOTARY_TEAM_ID="${RELEASE_NOTARY_TEAM_ID:-$RELEASE_DEVELOPMENT_TEAM}"
 NOTARYTOOL_PROFILE="${NOTARYTOOL_PROFILE:-easydict-release}"
+NOTARYTOOL_KEYCHAIN="${NOTARYTOOL_KEYCHAIN:-$HOME/Library/Keychains/login.keychain-db}"
 RELEASE_SPARKLE_CHANNEL="${RELEASE_SPARKLE_CHANNEL-beta}"
 SHOW_BUILD_SETTINGS_TIMEOUT="${SHOW_BUILD_SETTINGS_TIMEOUT:-45}"
 KEEP_RELEASE_TMP="${KEEP_RELEASE_TMP:-0}"
@@ -150,19 +151,27 @@ require_notarytool_profile() {
         exit 1
     fi
 
+    if [[ -z "$NOTARYTOOL_KEYCHAIN" ]]; then
+        echo "error: NOTARYTOOL_KEYCHAIN must not be empty" >&2
+        exit 1
+    fi
+    require_file "$NOTARYTOOL_KEYCHAIN"
+
     if ! history_output="$(
         xcrun notarytool history \
             --keychain-profile "$NOTARYTOOL_PROFILE" \
             --team-id "$RELEASE_NOTARY_TEAM_ID" \
+            --keychain "$NOTARYTOOL_KEYCHAIN" \
             --output-format json 2>&1
     )"; then
-        echo "error: notarytool profile $NOTARYTOOL_PROFILE is not available for team $RELEASE_NOTARY_TEAM_ID" >&2
+        echo "error: notarytool profile $NOTARYTOOL_PROFILE is not available in $NOTARYTOOL_KEYCHAIN for team $RELEASE_NOTARY_TEAM_ID" >&2
         echo "$history_output" >&2
         echo "Create it with:" >&2
         echo "  xcrun notarytool store-credentials $NOTARYTOOL_PROFILE \\" >&2
         echo "      --apple-id <apple-id> \\" >&2
         echo "      --team-id $RELEASE_NOTARY_TEAM_ID \\" >&2
-        echo "      --password <app-specific-password>" >&2
+        echo "      --password <app-specific-password> \\" >&2
+        echo "      --keychain \"$NOTARYTOOL_KEYCHAIN\"" >&2
         exit 1
     fi
 }
@@ -297,6 +306,7 @@ notarize_file() {
         xcrun notarytool submit "$file_path" \
             --keychain-profile "$NOTARYTOOL_PROFILE" \
             --team-id "$RELEASE_NOTARY_TEAM_ID" \
+            --keychain "$NOTARYTOOL_KEYCHAIN" \
             --wait \
             --output-format json 2>&1
     )"; then
@@ -319,7 +329,8 @@ notarize_file() {
             echo "Notarization log for $submission_id:" >&2
             if ! xcrun notarytool log "$submission_id" \
                 --keychain-profile "$NOTARYTOOL_PROFILE" \
-                --team-id "$RELEASE_NOTARY_TEAM_ID" >&2; then
+                --team-id "$RELEASE_NOTARY_TEAM_ID" \
+                --keychain "$NOTARYTOOL_KEYCHAIN" >&2; then
                 echo "warning: failed to fetch notarization log for $submission_id" >&2
             fi
         else
