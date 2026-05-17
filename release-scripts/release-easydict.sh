@@ -663,7 +663,8 @@ main() {
         "CODE_SIGN_IDENTITY=$RELEASE_CODE_SIGN_IDENTITY" \
         "OTHER_CODE_SIGN_FLAGS=--timestamp" \
         "DEPLOYMENT_POSTPROCESSING=YES" \
-        "ENABLE_DEBUG_DYLIB=NO" | xcbeautify
+        "ENABLE_DEBUG_DYLIB=NO" \
+        "EASYDICT_RELEASE_PACKAGING=YES" | xcbeautify
 
     local built_app_path="$DERIVED_DATA_DIR/Build/Products/$CONFIGURATION/$APP_BUNDLE_NAME"
     require_file "$built_app_path"
