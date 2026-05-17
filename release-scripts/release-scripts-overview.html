@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>release-scripts 发布脚本说明</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --text: #111827;
+      --muted: #4b5563;
+      --line: #d1d5db;
+      --soft: #f8fafc;
+      --blue: #2563eb;
+      --green: #16a34a;
+      --red: #dc2626;
+    }
+
+    body {
+      margin: 0;
+      background: #ffffff;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial,
+        "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 40px 24px 56px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.25;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 34px;
+    }
+
+    h2 {
+      margin: 36px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+      font-size: 24px;
+    }
+
+    h3 {
+      margin: 24px 0 10px;
+      font-size: 18px;
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--muted);
+    }
+
+    code {
+      padding: 0.12em 0.35em;
+      border-radius: 4px;
+      background: #f3f4f6;
+      color: #1f2937;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    figure {
+      margin: 24px 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    figcaption {
+      margin-top: 10px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 15px;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f3f4f6;
+      font-weight: 600;
+    }
+
+    ul,
+    ol {
+      margin: 0 0 18px 22px;
+      padding: 0;
+      color: var(--muted);
+    }
+
+    li {
+      margin: 7px 0;
+    }
+
+    .summary {
+      padding: 18px 20px;
+      border-left: 4px solid var(--blue);
+      border-radius: 8px;
+      background: #eff6ff;
+    }
+
+    .summary p {
+      margin: 0;
+      color: #1e3a8a;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin: 16px 0 24px;
+    }
+
+    .panel {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .panel h3 {
+      margin-top: 0;
+    }
+
+    .ok {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .stop {
+      color: var(--red);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>release-scripts 发布脚本说明</h1>
+
+    <section class="summary" aria-label="目录职责">
+      <p>
+        <code>release-scripts/release-easydict.sh</code> 是 Easydict 的本地发布打包入口。
+        它负责把 Release 构建产物转换为可分发的 <code>Easydict.app</code>、
+        <code>Easydict.zip</code> 和 <code>Easydict.dmg</code>，并同步更新
+        Sparkle 使用的 <code>appcast.xml</code>。
+      </p>
+    </section>
+
+    <figure>
+      <img src="./release-scripts-flow.svg" alt="release-easydict.sh 发布流程图">
+      <figcaption>
+        发布链路覆盖预检、构建、重签、公证、Sparkle 更新包、appcast 写入、
+        DMG 打包和临时目录清理。
+      </figcaption>
+    </figure>
+
+    <h2>脚本边界</h2>
+    <p>
+      脚本假设版本号已经在 Xcode 工程中更新完成，不负责递增
+      <code>MARKETING_VERSION</code> 或 <code>CURRENT_PROJECT_VERSION</code>。
+      它也不创建 Git tag、不上传 GitHub Release、不推送提交，只生成本地发布产物并修改
+      <code>appcast.xml</code>。
+    </p>
+    <p>
+      生成的 <code>Easydict.app</code>、<code>Easydict.zip</code>、
+      <code>Easydict.dmg</code> 和 <code>.tmp/release-derived-data</code>
+      都是发布过程产物。除 <code>appcast.xml</code> 外，脚本主要写入被忽略的根目录产物和
+      <code>.tmp</code> 临时目录。
+    </p>
+
+    <h2>运行前提</h2>
+    <div class="grid">
+      <section class="panel">
+        <h3>工具链</h3>
+        <ul>
+          <li><code>xcodebuild</code> 和 <code>xcbeautify</code> 用于 Release 构建。</li>
+          <li><code>python3</code> 用于解析 Xcode 工程、notary JSON 和 appcast。</li>
+          <li><code>ditto</code> 用于复制 app bundle 和创建 Sparkle zip。</li>
+          <li><code>codesign</code>、<code>security</code>、<code>xcrun</code> 用于签名和公证。</li>
+          <li><code>create-dmg</code> 必须是 npm 包 <code>sindresorhus/create-dmg</code> 的命令。</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h3>凭据与文件</h3>
+        <ul>
+          <li>钥匙串中必须存在 Developer ID Application 证书。</li>
+          <li><code>notarytool</code> keychain profile 必须可用于对应团队。</li>
+          <li><code>appcast.xml</code> 和 <code>Easydict.xcodeproj/project.pbxproj</code> 必须存在。</li>
+          <li>appcast 中不能已有相同版本号或 build number。</li>
+        </ul>
+      </section>
+    </div>
+
+    <h2>环境变量入口</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>变量</th>
+          <th>默认值或用途</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>CREATE_DMG_BIN</code></td>
+          <td>默认 <code>create-dmg</code>，可切换到自定义命令路径。</td>
+        </tr>
+        <tr>
+          <td><code>RELEASE_DEVELOPMENT_TEAM</code></td>
+          <td>默认 <code>45Z6V4YD5U</code>，用于构建、签名校验和 TeamIdentifier 校验。</td>
+        </tr>
+        <tr>
+          <td><code>RELEASE_CODE_SIGN_IDENTITY</code></td>
+          <td>默认 <code>Developer ID Application: Canglong Dai (45Z6V4YD5U)</code>。</td>
+        </tr>
+        <tr>
+          <td><code>RELEASE_NOTARY_TEAM_ID</code></td>
+          <td>默认跟随 <code>RELEASE_DEVELOPMENT_TEAM</code>，用于 <code>notarytool</code>。</td>
+        </tr>
+        <tr>
+          <td><code>NOTARYTOOL_PROFILE</code></td>
+          <td>默认 <code>easydict-release</code>，必须能通过 <code>xcrun notarytool history</code>。</td>
+        </tr>
+        <tr>
+          <td><code>RELEASE_SPARKLE_CHANNEL</code></td>
+          <td>默认 <code>beta</code>；运行时设为空值可生成不带 channel 的稳定版 appcast 条目。</td>
+        </tr>
+        <tr>
+          <td><code>SIGN_UPDATE</code> / <code>SPARKLE_BIN_DIR</code></td>
+          <td>覆盖 Sparkle <code>sign_update</code> 查找路径。</td>
+        </tr>
+        <tr>
+          <td><code>SPARKLE_PRIVATE_KEY_FILE</code></td>
+          <td>存在时传给 <code>sign_update --ed-key-file</code>。</td>
+        </tr>
+        <tr>
+          <td><code>SHOW_BUILD_SETTINGS_TIMEOUT</code></td>
+          <td>默认 <code>45</code> 秒；必须是整数，超时后回退解析 project 文件。</td>
+        </tr>
+        <tr>
+          <td><code>KEEP_RELEASE_TMP</code></td>
+          <td>设为 <code>1</code> 时保留 <code>.tmp</code> 中的发布临时文件，便于排查失败。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>主发布流程</h2>
+    <ol>
+      <li>进入仓库根目录，校验命令、文件、Developer ID 证书和 notarytool profile。</li>
+      <li>通过 <code>xcodebuild -showBuildSettings</code> 读取 Release 版本号；失败或超时时解析 <code>project.pbxproj</code>。</li>
+      <li>检查 <code>appcast.xml</code> 中没有重复的 short version 或 build number。</li>
+      <li>使用 Manual signing、timestamp、<code>DEPLOYMENT_POSTPROCESSING=YES</code> 和 <code>ENABLE_DEBUG_DYLIB=NO</code> 执行 Release 构建。</li>
+      <li>将构建出的 app bundle 复制到仓库根目录，先重签 Sparkle helper、XPC、framework 和 dylib，再重签主 app。</li>
+      <li>校验 app 与嵌入代码的 Developer ID、TeamIdentifier 和 timestamp，然后 zip app bundle 提交 Apple 公证并 stapler。</li>
+      <li>用 <code>ditto --keepParent</code> 生成 <code>Easydict.zip</code>，解析 <code>sign_update</code> 输出中的 Sparkle EdDSA 签名和 zip length。</li>
+      <li>用实际文件大小复核 Sparkle length，然后把新的 item 插入 <code>appcast.xml</code>。</li>
+      <li>调用 <code>create-dmg --identity</code> 生成签名 DMG，校验签名后提交公证并 stapler validate。</li>
+      <li>打印三个发布产物路径，并在 <code>KEEP_RELEASE_TMP</code> 未开启时清理发布临时目录。</li>
+    </ol>
+
+    <h2>失败边界</h2>
+    <ul>
+      <li><span class="stop">预检失败：</span>缺少工具、文件、证书、notary profile 或 unsupported <code>create-dmg</code> 会直接退出。</li>
+      <li><span class="stop">版本冲突：</span>appcast 已存在相同版本或 build number 时停止，避免覆盖更新源。</li>
+      <li><span class="stop">签名异常：</span>ad-hoc 签名、非 Developer ID、TeamIdentifier 不一致或缺 timestamp 都会失败。</li>
+      <li><span class="stop">公证异常：</span><code>notarytool submit</code> 未返回 <code>Accepted</code> 时会尝试打印 submission log。</li>
+      <li><span class="stop">Sparkle 异常：</span>无法解析 <code>sparkle:edSignature</code>、无法解析 length 或 length 与 zip 实际大小不一致时停止。</li>
+      <li><span class="ok">安全清理：</span>清理函数只删除 <code>.tmp</code> 下的发布临时路径，避免误删仓库外文件。</li>
+    </ul>
+
+    <h2>调试入口</h2>
+    <ul>
+      <li>需要保留构建和公证中间产物时，设置 <code>KEEP_RELEASE_TMP=1</code> 后重新运行脚本。</li>
+      <li>签名失败时先检查 <code>RELEASE_CODE_SIGN_IDENTITY</code>、钥匙串证书和 <code>security find-identity -v -p codesigning</code> 输出。</li>
+      <li>公证失败时查看脚本打印的 <code>notarytool log</code>，确认 hardened runtime、嵌入 framework 和 Team ID。</li>
+      <li>Sparkle 失败时检查 <code>SIGN_UPDATE</code>、<code>SPARKLE_BIN_DIR</code>、SwiftPM Sparkle artifact 和私钥文件。</li>
+      <li>appcast 更新后重点检查新增 item 的 <code>sparkle:version</code>、<code>sparkle:shortVersionString</code>、下载 URL、release notes URL 和 EdDSA 签名。</li>
+    </ul>
+  </main>
+</body>
+</html>
