@@ -40,9 +40,11 @@ public class BaseOpenAIService: StreamService {
         streamingOverride ?? enableStreaming
     }
 
-    let control = StreamControl()
+    override var canFetchRemoteModels: Bool {
+        true
+    }
 
-    var remoteModelsEndpoint: String? { nil }
+    let control = StreamControl()
 
     override func contentStreamTranslate(
         _ text: String,
@@ -165,6 +167,26 @@ public class BaseOpenAIService: StreamService {
             }
         }
         return chatMessages
+    }
+
+    override func fetchRemoteModelIDs() async throws -> [String] {
+        guard !apiKey.trim().isEmpty else {
+            throw QueryError(type: .missingSecretKey, message: "API key is empty")
+        }
+
+        let data = try await fetchRemoteModelData(
+            url: try remoteModelsURL(),
+            headers: [
+                .authorization(bearerToken: apiKey),
+                HTTPHeader(name: "api-key", value: apiKey),
+                .accept("application/json"),
+            ]
+        )
+
+        guard let modelList = try? JSONDecoder().decode(OpenAIModelListResponse.self, from: data) else {
+            throw QueryError(type: .api, message: "Invalid models response")
+        }
+        return normalizedRemoteModelIDs(modelList.data.map(\.id))
     }
 
     // MARK: Private
@@ -307,42 +329,6 @@ public class BaseOpenAIService: StreamService {
         request.httpBody = try JSONEncoder().encode(query)
         return request
     }
-}
-
-// MARK: - RemoteModelFetchable
-
-protocol RemoteModelFetchable: AnyObject {
-    func fetchRemoteModelIDs() async throws -> [String]
-}
-
-// MARK: - OpenAIService + RemoteModelFetchable
-
-extension OpenAIService: RemoteModelFetchable {
-    func fetchRemoteModelIDs() async throws -> [String] {
-        try await fetchOpenAICompatibleModelIDs()
-    }
-}
-
-extension BaseOpenAIService {
-    func fetchOpenAICompatibleModelIDs() async throws -> [String] {
-        guard !apiKey.trim().isEmpty else {
-            throw QueryError(type: .missingSecretKey, message: "API key is empty")
-        }
-
-        let data = try await fetchRemoteModelData(
-            url: try remoteModelsURL(),
-            headers: [
-                .authorization(bearerToken: apiKey),
-                HTTPHeader(name: "api-key", value: apiKey),
-                .accept("application/json"),
-            ]
-        )
-
-        guard let modelList = try? JSONDecoder().decode(OpenAIModelListResponse.self, from: data) else {
-            throw QueryError(type: .api, message: "Invalid models response")
-        }
-        return normalizedRemoteModelIDs(modelList.data.map(\.id))
-    }
 
     private func remoteModelsURL() throws -> URL {
         if let remoteModelsEndpoint = remoteModelsEndpoint?.trim(), !remoteModelsEndpoint.isEmpty,
@@ -380,14 +366,6 @@ extension BaseOpenAIService {
     }
 }
 
-func normalizedRemoteModelIDs(_ ids: [String]) -> [String] {
-    var seenModels = Set<String>()
-    return ids
-        .map { $0.trim() }
-        .filter { !$0.isEmpty }
-        .filter { seenModels.insert($0.lowercased()).inserted }
-}
-
 func fetchRemoteModelData(url: URL, headers: HTTPHeaders = []) async throws -> Data {
     let response = await AF.request(
         url,
@@ -395,8 +373,8 @@ func fetchRemoteModelData(url: URL, headers: HTTPHeaders = []) async throws -> D
         headers: headers,
         requestModifier: { $0.timeoutInterval = EZNetWorkTimeoutInterval }
     )
-        .serializingData(automaticallyCancelling: true)
-        .response
+    .serializingData(automaticallyCancelling: true)
+    .response
 
     if let statusCode = response.response?.statusCode,
        !(200 ... 299).contains(statusCode) {

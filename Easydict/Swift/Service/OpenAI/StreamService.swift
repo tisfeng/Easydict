@@ -211,6 +211,14 @@ public class StreamService: QueryService {
         enableStreaming
     }
 
+    var canFetchRemoteModels: Bool {
+        false
+    }
+
+    var remoteModelsEndpoint: String? {
+        nil
+    }
+
     var model: String {
         get {
             var model = Defaults[modelKey]
@@ -386,6 +394,26 @@ public class StreamService: QueryService {
 
     func supportedModels(from validModels: [String]) -> String {
         validModels.joined(separator: ", ")
+    }
+
+    func fetchRemoteModelIDs() async throws -> [String] {
+        throw QueryError(type: .unsupportedQueryType)
+    }
+
+    func normalizedRemoteModelIDs(_ ids: [String]) -> [String] {
+        var seenModels = Set<String>()
+        return ids
+            .map { $0.trim() }
+            .filter { !$0.isEmpty }
+            .filter { seenModels.insert(remoteModelLookupID($0)).inserted }
+    }
+
+    func remoteModelLookupID(_ modelID: String) -> String {
+        modelID.trim().lowercased()
+    }
+
+    func remoteModelGroupName(_ modelID: String) -> String? {
+        nil
     }
 
     /// Base on chat query, convert prompt dict to LLM service prompt model.

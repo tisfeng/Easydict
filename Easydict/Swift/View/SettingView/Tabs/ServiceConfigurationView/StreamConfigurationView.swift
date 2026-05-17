@@ -228,12 +228,14 @@ struct StreamConfigurationView: View {
             }
         }
         .sheet(isPresented: $isFetchModelsPresented) {
-            if let remoteModelFetcher {
+            if service.canFetchRemoteModels {
                 RemoteModelsSheet(
                     titleKey: fetchModelsTitle,
                     existingModels: existingModelIDs,
+                    modelLookupID: { service.remoteModelLookupID($0) },
+                    modelGroupName: { service.remoteModelGroupName($0) },
                     fetchModels: {
-                        try await remoteModelFetcher.fetchRemoteModelIDs()
+                        try await service.fetchRemoteModelIDs()
                     },
                     onSave: updateModels
                 )
@@ -245,32 +247,27 @@ struct StreamConfigurationView: View {
 
     @State private var isFetchModelsPresented = false
 
-    private var remoteModelFetcher: RemoteModelFetchable? {
-        guard service.serviceType() != .gitHub else { return nil }
-        return service as? RemoteModelFetchable
-    }
-
     private var canFetchModels: Bool {
-        isEditable && remoteModelFetcher != nil
+        isEditable && service.canFetchRemoteModels
     }
 
     private var isFetchModelsDisabled: Bool {
-        guard remoteModelFetcher != nil else { return true }
+        guard service.canFetchRemoteModels else { return true }
         if !isEditable { return true }
         if service.apiKeyRequirement().needsUserProvidedKey, apiKey.trim().isEmpty {
             return true
         }
-        return showEndpointSection && !isValidEndpoint(endpoint)
+        return showEndpointSection && !isValidEndpoint(service.endpoint)
     }
 
     private var fetchModelsHelp: LocalizedStringKey {
-        guard remoteModelFetcher != nil else {
+        guard service.canFetchRemoteModels else {
             return "service.configuration.fetch_models.title"
         }
         if service.apiKeyRequirement().needsUserProvidedKey, apiKey.trim().isEmpty {
             return "missing_secret_key_error"
         }
-        if showEndpointSection, !isValidEndpoint(endpoint) {
+        if showEndpointSection, !isValidEndpoint(service.endpoint) {
             return "parameter_error"
         }
         return fetchModelsTitle
@@ -289,16 +286,19 @@ struct StreamConfigurationView: View {
 
     private func updateModels(remoteModelIDs: [String], selectedModelIDs: [String]) {
         var models = service.validModels(from: Defaults[service.supportedModelsKey])
-        let remoteModels = Set(remoteModelIDs.map { $0.trim().lowercased() })
-        let selectedModels = Set(selectedModelIDs.map { $0.trim().lowercased() })
+        let remoteModels = Set(remoteModelIDs.map { service.remoteModelLookupID($0) })
+        let selectedModels = Set(selectedModelIDs.map { service.remoteModelLookupID($0) })
 
         models = models.filter {
-            let modelID = $0.trim().lowercased()
+            let modelID = service.remoteModelLookupID($0)
             return !remoteModels.contains(modelID) || selectedModels.contains(modelID)
         }
 
-        var existingModels = Set(models.map { $0.trim().lowercased() })
-        for modelID in selectedModelIDs where existingModels.insert(modelID.trim().lowercased()).inserted {
+        var existingModels = Set<String>()
+        models = models.filter {
+            existingModels.insert(service.remoteModelLookupID($0)).inserted
+        }
+        for modelID in selectedModelIDs where existingModels.insert(service.remoteModelLookupID(modelID)).inserted {
             models.append(modelID)
         }
         service.supportedModels = service.supportedModels(from: models)
@@ -316,6 +316,8 @@ private struct RemoteModelsSheet: View {
 
     let titleKey: LocalizedStringKey
     let existingModels: [String]
+    let modelLookupID: (String) -> String
+    let modelGroupName: (String) -> String?
     let fetchModels: () async throws -> [String]
     let onSave: ([String], [String]) -> ()
 
@@ -362,12 +364,17 @@ private struct RemoteModelsSheet: View {
     @State private var models: [RemoteModelRow] = []
     @State private var selectedIDs = Set<String>()
     @State private var searchText = ""
+    @State private var selectedGroup = ""
     @State private var isLoading = true
     @State private var errorMessage = ""
 
     private var filteredModels: [RemoteModelRow] {
         let query = searchText.trim()
-        return query.isEmpty ? models : models.filter { $0.id.localizedCaseInsensitiveContains(query) }
+        return models.filter { model in
+            let matchesGroup = selectedGroup.isEmpty || model.groupName == selectedGroup
+            let matchesSearch = query.isEmpty || model.id.localizedCaseInsensitiveContains(query)
+            return matchesGroup && matchesSearch
+        }
     }
 
     private var selectableIDs: [String] {
@@ -378,12 +385,30 @@ private struct RemoteModelsSheet: View {
         !selectableIDs.isEmpty && selectableIDs.allSatisfy(selectedIDs.contains)
     }
 
+    private var modelGroups: [String] {
+        var groups = Set<String>()
+        return models.compactMap(\.groupName).filter {
+            groups.insert($0).inserted
+        }
+    }
+
     private var pickerView: some View {
         VStack(spacing: 10) {
             TextField("service.configuration.fetch_models.search", text: $searchText)
                 .textFieldStyle(.roundedBorder)
 
             HStack {
+                if !modelGroups.isEmpty {
+                    Picker("", selection: $selectedGroup) {
+                        Text(verbatim: "All").tag("")
+                        ForEach(modelGroups, id: \.self) { groupName in
+                            Text(groupName).tag(groupName)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(width: 140)
+                }
+
                 Button {
                     toggleSelectAll()
                 } label: {
@@ -398,10 +423,7 @@ private struct RemoteModelsSheet: View {
             }
 
             List(filteredModels) { model in
-                Toggle(isOn: binding(for: model.id)) {
-                    Text(model.id)
-                        .textSelection(.enabled)
-                }
+                modelToggle(model)
             }
         }
     }
@@ -419,6 +441,13 @@ private struct RemoteModelsSheet: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private func modelToggle(_ model: RemoteModelRow) -> some View {
+        Toggle(isOn: binding(for: model.id)) {
+            Text(model.id)
+                .textSelection(.enabled)
+        }
     }
 
     private func binding(for modelID: String) -> Binding<Bool> {
@@ -448,9 +477,13 @@ private struct RemoteModelsSheet: View {
         selectedIDs.removeAll()
 
         do {
-            let existingModelSet = Set(existingModels.map { $0.trim().lowercased() })
+            let existingModelSet = Set(existingModels.map(modelLookupID))
             models = try await fetchModels().map {
-                RemoteModelRow(id: $0, exists: existingModelSet.contains($0.trim().lowercased()))
+                RemoteModelRow(
+                    id: $0,
+                    exists: existingModelSet.contains(modelLookupID($0)),
+                    groupName: modelGroupName($0)
+                )
             }
             selectedIDs = Set(models.filter(\.exists).map(\.id))
         } catch {
@@ -466,4 +499,5 @@ private struct RemoteModelsSheet: View {
 private struct RemoteModelRow: Identifiable {
     let id: String
     let exists: Bool
+    let groupName: String?
 }

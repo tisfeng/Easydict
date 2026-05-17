@@ -6,6 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import Alamofire
 import Defaults
 import Foundation
 
@@ -43,6 +44,81 @@ class GitHubService: OpenAIService {
 
     override var defaultEndpoint: String {
         "https://models.github.ai/inference/chat/completions"
+    }
+
+    override var remoteModelsEndpoint: String? {
+        "https://models.github.ai/catalog/models"
+    }
+
+    override func fetchRemoteModelIDs() async throws -> [String] {
+        guard !apiKey.trim().isEmpty else {
+            throw QueryError(type: .missingSecretKey, message: "GitHub Models token is empty")
+        }
+
+        let data = try await fetchRemoteModelData(
+            url: try remoteModelsURL(),
+            headers: [
+                .authorization(bearerToken: apiKey),
+                .accept("application/vnd.github+json"),
+                HTTPHeader(name: "X-GitHub-Api-Version", value: "2026-03-10"),
+            ]
+        )
+
+        guard let models = try? JSONDecoder().decode([GitHubCatalogModel].self, from: data) else {
+            throw QueryError(type: .api, message: "Invalid models response")
+        }
+        return normalizedRemoteModelIDs(models.filter(\.supportsTextGeneration).map(\.id))
+    }
+
+    override func remoteModelLookupID(_ modelID: String) -> String {
+        let modelID = super.remoteModelLookupID(modelID)
+        guard let separatorIndex = modelID.firstIndex(of: "/") else {
+            return modelID
+        }
+        return String(modelID[modelID.index(after: separatorIndex)...])
+    }
+
+    override func remoteModelGroupName(_ modelID: String) -> String? {
+        let modelID = modelID.trim()
+        guard let separatorIndex = modelID.firstIndex(of: "/") else {
+            return nil
+        }
+        return String(modelID[..<separatorIndex])
+    }
+
+    // MARK: Private
+
+    private func remoteModelsURL() throws -> URL {
+        guard let remoteModelsEndpoint,
+              let url = URL(string: remoteModelsEndpoint), url.isValid
+        else {
+            throw QueryError(type: .parameter, message: "Endpoint is invalid")
+        }
+        return url
+    }
+}
+
+// MARK: - GitHubCatalogModel
+
+private struct GitHubCatalogModel: Decodable {
+    // MARK: Internal
+
+    let id: String
+    let supportedInputModalities: [String]?
+    let supportedOutputModalities: [String]?
+
+    var supportsTextGeneration: Bool {
+        let supportsTextInput = supportedInputModalities?.contains("text") ?? true
+        let supportsTextOutput = supportedOutputModalities?.contains("text") ?? true
+        return supportsTextInput && supportsTextOutput
+    }
+
+    // MARK: Private
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case supportedInputModalities = "supported_input_modalities"
+        case supportedOutputModalities = "supported_output_modalities"
     }
 }
 

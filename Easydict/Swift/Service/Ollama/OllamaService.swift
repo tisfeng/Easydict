@@ -61,6 +61,11 @@ class OllamaService: BaseOpenAIService {
         )
     }
 
+    override func fetchRemoteModelIDs() async throws -> [String] {
+        let models = try await localModels()
+        return normalizedRemoteModelIDs(models.models.map(\.name))
+    }
+
     // MARK: Private
 
     private var ollamaModels = [""]
@@ -78,14 +83,5 @@ class OllamaService: BaseOpenAIService {
         let modelsURL = trueBaseURL.appendingPathComponent("api/tags")
         let dataTask = AF.request(modelsURL).serializingDecodable(OllamaModels.self)
         return try await dataTask.value
-    }
-}
-
-// MARK: - RemoteModelFetchable
-
-extension OllamaService: RemoteModelFetchable {
-    func fetchRemoteModelIDs() async throws -> [String] {
-        let models = try await localModels()
-        return normalizedRemoteModelIDs(models.models.map(\.name))
     }
 }

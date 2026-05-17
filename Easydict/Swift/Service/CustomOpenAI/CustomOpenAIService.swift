@@ -51,11 +51,3 @@ class CustomOpenAIService: BaseOpenAIService {
         )
     }
 }
-
-// MARK: - RemoteModelFetchable
-
-extension CustomOpenAIService: RemoteModelFetchable {
-    func fetchRemoteModelIDs() async throws -> [String] {
-        try await fetchOpenAICompatibleModelIDs()
-    }
-}

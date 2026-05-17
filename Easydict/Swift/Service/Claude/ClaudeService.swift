@@ -56,6 +56,12 @@ public final class ClaudeService: StreamService {
         [apiKeyKey, supportedModelsKey]
     }
 
+    // MARK: Remote Models
+
+    override var canFetchRemoteModels: Bool {
+        true
+    }
+
     override func contentStreamTranslate(
         _ text: String,
         from: Language,
@@ -116,6 +122,33 @@ public final class ClaudeService: StreamService {
         let messages = chatMessageDicts(chatQuery)
         let (_, userMessages) = separateSystemMessages(messages)
         return userMessages.map { ["role": $0.role.rawValue, "content": $0.content] }
+    }
+
+    override func fetchRemoteModelIDs() async throws -> [String] {
+        guard !apiKey.trim().isEmpty else {
+            throw QueryError(type: .missingSecretKey, message: "Claude API key is empty.")
+        }
+
+        var ids: [String] = []
+        var afterID: String?
+        repeat {
+            let data = try await fetchRemoteModelData(
+                url: try remoteModelsURL(afterID: afterID),
+                headers: HTTPHeaders([
+                    HTTPHeader(name: "x-api-key", value: apiKey),
+                    HTTPHeader(name: "anthropic-version", value: anthropicVersion),
+                    .accept("application/json"),
+                ])
+            )
+
+            guard let modelList = try? JSONDecoder().decode(ClaudeModelListResponse.self, from: data) else {
+                throw QueryError(type: .api, message: "Invalid models response")
+            }
+            ids.append(contentsOf: modelList.data.map(\.id))
+            afterID = modelList.hasMore ? modelList.lastID : nil
+        } while afterID?.isEmpty == false
+
+        return normalizedRemoteModelIDs(ids)
     }
 
     // MARK: Private
@@ -280,37 +313,6 @@ public final class ClaudeService: StreamService {
                 continuation.yield(content)
             }
         }
-    }
-}
-
-// MARK: - RemoteModelFetchable
-
-extension ClaudeService: RemoteModelFetchable {
-    func fetchRemoteModelIDs() async throws -> [String] {
-        guard !apiKey.trim().isEmpty else {
-            throw QueryError(type: .missingSecretKey, message: "Claude API key is empty.")
-        }
-
-        var ids: [String] = []
-        var afterID: String?
-        repeat {
-            let data = try await fetchRemoteModelData(
-                url: try remoteModelsURL(afterID: afterID),
-                headers: HTTPHeaders([
-                    HTTPHeader(name: "x-api-key", value: apiKey),
-                    HTTPHeader(name: "anthropic-version", value: anthropicVersion),
-                    .accept("application/json"),
-                ])
-            )
-
-            guard let modelList = try? JSONDecoder().decode(ClaudeModelListResponse.self, from: data) else {
-                throw QueryError(type: .api, message: "Invalid models response")
-            }
-            ids.append(contentsOf: modelList.data.map(\.id))
-            afterID = modelList.hasMore ? modelList.lastID : nil
-        } while afterID?.isEmpty == false
-
-        return normalizedRemoteModelIDs(ids)
     }
 
     private func remoteModelsURL(afterID: String?) throws -> URL {

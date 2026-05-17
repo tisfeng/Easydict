@@ -70,6 +70,12 @@ public final class GeminiService: StreamService {
         ]
     }
 
+    // MARK: Remote Models
+
+    override var canFetchRemoteModels: Bool {
+        true
+    }
+
     override func contentStreamTranslate(
         _ text: String,
         from: Language,
@@ -165,6 +171,28 @@ public final class GeminiService: StreamService {
         return chatModels
     }
 
+    override func fetchRemoteModelIDs() async throws -> [String] {
+        guard !apiKey.trim().isEmpty else {
+            throw QueryError(type: .missingSecretKey, message: "Gemini API key is empty.")
+        }
+
+        var ids: [String] = []
+        var pageToken: String?
+        repeat {
+            let data = try await fetchRemoteModelData(url: try remoteModelsURL(pageToken: pageToken))
+
+            guard let modelList = try? JSONDecoder().decode(GeminiModelListResponse.self, from: data) else {
+                throw QueryError(type: .api, message: "Invalid models response")
+            }
+            ids.append(contentsOf: modelList.models
+                .filter(\.supportsGenerateContent)
+                .map(\.modelID))
+            pageToken = modelList.nextPageToken?.trim()
+        } while pageToken?.isEmpty == false
+
+        return normalizedRemoteModelIDs(ids)
+    }
+
     // MARK: Private
 
     private var currentTask: Task<(), Never>?
@@ -186,32 +214,6 @@ public final class GeminiService: StreamService {
         } else {
             openAIRole
         }
-    }
-}
-
-// MARK: - RemoteModelFetchable
-
-extension GeminiService: RemoteModelFetchable {
-    func fetchRemoteModelIDs() async throws -> [String] {
-        guard !apiKey.trim().isEmpty else {
-            throw QueryError(type: .missingSecretKey, message: "Gemini API key is empty.")
-        }
-
-        var ids: [String] = []
-        var pageToken: String?
-        repeat {
-            let data = try await fetchRemoteModelData(url: try remoteModelsURL(pageToken: pageToken))
-
-            guard let modelList = try? JSONDecoder().decode(GeminiModelListResponse.self, from: data) else {
-                throw QueryError(type: .api, message: "Invalid models response")
-            }
-            ids.append(contentsOf: modelList.models
-                .filter(\.supportsGenerateContent)
-                .map(\.modelID))
-            pageToken = modelList.nextPageToken?.trim()
-        } while pageToken?.isEmpty == false
-
-        return normalizedRemoteModelIDs(ids)
     }
 
     private func remoteModelsURL(pageToken: String?) throws -> URL {
