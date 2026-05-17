@@ -22,6 +22,8 @@ RELEASE_CODE_SIGN_IDENTITY="${RELEASE_CODE_SIGN_IDENTITY:-Developer ID Applicati
 RELEASE_NOTARY_TEAM_ID="${RELEASE_NOTARY_TEAM_ID:-$RELEASE_DEVELOPMENT_TEAM}"
 NOTARYTOOL_PROFILE="${NOTARYTOOL_PROFILE:-easydict-release}"
 NOTARYTOOL_KEYCHAIN="${NOTARYTOOL_KEYCHAIN:-$HOME/Library/Keychains/login.keychain-db}"
+NOTARYTOOL_SUBMIT_ATTEMPTS="${NOTARYTOOL_SUBMIT_ATTEMPTS:-3}"
+NOTARYTOOL_RETRY_DELAY="${NOTARYTOOL_RETRY_DELAY:-15}"
 RELEASE_SPARKLE_CHANNEL="${RELEASE_SPARKLE_CHANNEL-beta}"
 SHOW_BUILD_SETTINGS_TIMEOUT="${SHOW_BUILD_SETTINGS_TIMEOUT:-45}"
 KEEP_RELEASE_TMP="${KEEP_RELEASE_TMP:-0}"
@@ -300,20 +302,31 @@ notarize_file() {
     local submit_output
     local status
     local submission_id
+    local attempt
 
     echo "Submitting $(basename "$file_path") for notarization..."
-    if ! submit_output="$(
-        xcrun notarytool submit "$file_path" \
-            --keychain-profile "$NOTARYTOOL_PROFILE" \
-            --team-id "$RELEASE_NOTARY_TEAM_ID" \
-            --keychain "$NOTARYTOOL_KEYCHAIN" \
-            --wait \
-            --output-format json 2>&1
-    )"; then
-        echo "error: notarytool submit failed for $(basename "$file_path")" >&2
+    for ((attempt = 1; attempt <= NOTARYTOOL_SUBMIT_ATTEMPTS; attempt += 1)); do
+        echo "notarytool submit attempt $attempt/$NOTARYTOOL_SUBMIT_ATTEMPTS for $(basename "$file_path")..."
+        if submit_output="$(
+            xcrun notarytool submit "$file_path" \
+                --keychain-profile "$NOTARYTOOL_PROFILE" \
+                --team-id "$RELEASE_NOTARY_TEAM_ID" \
+                --keychain "$NOTARYTOOL_KEYCHAIN" \
+                --wait \
+                --output-format json 2>&1
+        )"; then
+            break
+        fi
+
+        echo "warning: notarytool submit attempt $attempt/$NOTARYTOOL_SUBMIT_ATTEMPTS failed for $(basename "$file_path")" >&2
         echo "$submit_output" >&2
-        exit 1
-    fi
+        if ((attempt == NOTARYTOOL_SUBMIT_ATTEMPTS)); then
+            echo "error: notarytool submit failed for $(basename "$file_path") after $NOTARYTOOL_SUBMIT_ATTEMPTS attempts" >&2
+            exit 1
+        fi
+        echo "Retrying notarytool submit in $NOTARYTOOL_RETRY_DELAY seconds..." >&2
+        sleep "$NOTARYTOOL_RETRY_DELAY"
+    done
     echo "$submit_output"
 
     if ! status="$(notary_json_field "$submit_output" status)" \
@@ -645,6 +658,14 @@ main() {
 
     if ! [[ "$SHOW_BUILD_SETTINGS_TIMEOUT" =~ ^[0-9]+$ ]]; then
         echo "error: SHOW_BUILD_SETTINGS_TIMEOUT must be an integer" >&2
+        exit 1
+    fi
+    if ! [[ "$NOTARYTOOL_SUBMIT_ATTEMPTS" =~ ^[0-9]+$ ]] || ((NOTARYTOOL_SUBMIT_ATTEMPTS < 1)); then
+        echo "error: NOTARYTOOL_SUBMIT_ATTEMPTS must be a positive integer" >&2
+        exit 1
+    fi
+    if ! [[ "$NOTARYTOOL_RETRY_DELAY" =~ ^[0-9]+$ ]]; then
+        echo "error: NOTARYTOOL_RETRY_DELAY must be an integer" >&2
         exit 1
     fi
 
