@@ -44,7 +44,7 @@
   <rect x="382" y="178" width="248" height="112" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
   <text x="506" y="208" text-anchor="middle" class="node-title">命令与文件预检</text>
   <text x="404" y="236" class="body">xcodebuild / xcbeautify / ditto</text>
-  <text x="404" y="258" class="body">sign_update / appcast.xml</text>
+  <text x="404" y="258" class="body">appcast.xml / project.pbxproj</text>
   <text x="404" y="280" class="body">npm 版 create-dmg</text>
 
   <rect x="692" y="178" width="256" height="112" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
@@ -106,10 +106,10 @@
   <text x="134" y="756" class="body">ditto --keepParent</text>
   <text x="134" y="778" class="body">被 .gitignore 忽略</text>
 
-  <rect x="452" y="696" width="252" height="104" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <rect x="428" y="696" width="300" height="104" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
   <text x="578" y="726" text-anchor="middle" class="node-title">Sparkle 签名</text>
-  <text x="474" y="756" class="body">SIGN_UPDATE / SPARKLE_BIN_DIR / PATH</text>
-  <text x="474" y="778" class="body">提取 length / edSignature</text>
+  <text x="450" y="756" class="body">覆盖：SIGN_UPDATE / SPARKLE_BIN_DIR</text>
+  <text x="450" y="778" class="body">默认：SwiftPM Sparkle artifact</text>
 
   <rect x="800" y="696" width="246" height="104" rx="8" fill="#fefce8" stroke="#fde047" stroke-width="1.5"/>
   <text x="923" y="726" text-anchor="middle" class="node-title">zip 长度校验</text>
@@ -122,8 +122,8 @@
   <text x="1164" y="778" class="body">enclosure 指向 GitHub Easydict.zip</text>
 
   <path d="M 1048 548 L 1048 610 L 234 610 L 234 684" fill="none" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrow-green)"/>
-  <line x1="356" y1="748" x2="440" y2="748" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrow-green)"/>
-  <line x1="704" y1="748" x2="788" y2="748" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrow-green)"/>
+  <line x1="356" y1="748" x2="416" y2="748" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrow-green)"/>
+  <line x1="728" y1="748" x2="788" y2="748" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrow-green)"/>
   <line x1="1046" y1="748" x2="1130" y2="748" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrow-green)"/>
 
   <path d="M 923 800 L 923 828 L 1076 828" fill="none" stroke="#dc2626" stroke-width="2.2" marker-end="url(#arrow-red)"/>

@@ -78,8 +78,16 @@ resolve_sign_update() {
         return
     fi
 
+    candidate_path="$DERIVED_DATA_DIR/SourcePackages/artifacts/sparkle/Sparkle/bin/sign_update"
+    if [[ -e "$candidate_path" ]]; then
+        require_executable_file "$candidate_path"
+        printf '%s\n' "$candidate_path"
+        return
+    fi
+
     echo "error: required Sparkle command not found: sign_update" >&2
-    echo "Set SIGN_UPDATE, set SPARKLE_BIN_DIR, or add sign_update to PATH." >&2
+    echo "Set SIGN_UPDATE, set SPARKLE_BIN_DIR, add sign_update to PATH, or run after the release build creates:" >&2
+    echo "  $candidate_path" >&2
     exit 1
 }
 
@@ -629,9 +637,6 @@ main() {
         exit 1
     fi
 
-    local sign_update_bin
-    sign_update_bin="$(resolve_sign_update)"
-
     local settings_output
     settings_output="$(load_build_settings)"
 
@@ -679,6 +684,9 @@ main() {
     )
 
     echo "Signing $APP_ZIP_NAME for Sparkle..."
+    local sign_update_bin
+    sign_update_bin="$(resolve_sign_update)"
+
     local sign_output
     if [[ -n "${SPARKLE_PRIVATE_KEY_FILE:-}" ]]; then
         sign_output="$(

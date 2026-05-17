@@ -25,10 +25,11 @@
 
 脚本从 `xcodebuild -showBuildSettings` 读取版本信息，超时或失败时回退解析
 `Easydict.xcodeproj/project.pbxproj` 中 `Easydict` target 的 Release 配置。
-Sparkle 的 `sign_update` 按 `SIGN_UPDATE`、`SPARKLE_BIN_DIR/sign_update`、
-PATH 中 `sign_update` 的顺序查找。脚本不再依赖迁移来源项目的本地发布说明
-生成链路，新增 appcast 条目的 release notes 直接指向 GitHub tag 页面，
-下载 URL 指向 GitHub Releases 中的 `Easydict.zip`。
+Sparkle 的 `sign_update` 会在 Release 构建完成后解析，按 `SIGN_UPDATE`、
+`SPARKLE_BIN_DIR/sign_update`、PATH 中 `sign_update`、本次构建 DerivedData
+中的 SwiftPM Sparkle artifact 顺序查找。脚本不再依赖迁移来源项目的本地
+发布说明生成链路，新增 appcast 条目的 release notes 直接指向 GitHub tag
+页面，下载 URL 指向 GitHub Releases 中的 `Easydict.zip`。
 
 Developer ID 签名负责让 macOS 识别应用来源，`xcrun notarytool` 和
 `xcrun stapler` 负责 Gatekeeper 校验，Sparkle 的 `sign_update` 只负责更新包
