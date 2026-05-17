@@ -1303,6 +1303,9 @@
 		EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTypeExtensions.swift; sourceTree = "<group>"; };
 		EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowWindowPositionExtensions.swift; sourceTree = "<group>"; };
 		EA9943F12B5358BF00EE7B97 /* Language+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Language+Extension.swift"; sourceTree = "<group>"; };
+		EADA5E022F80000000110002 /* release-easydict.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "release-easydict.sh"; sourceTree = "<group>"; };
+		EADA5E032F80000000110003 /* release-scripts-flow.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "release-scripts-flow.svg"; sourceTree = "<group>"; };
+		EADA5E042F80000000110004 /* release-scripts-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "release-scripts-overview.md"; sourceTree = "<group>"; };
 		EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalContext.swift; sourceTree = "<group>"; };
 		EF4F062ADB404915AA0EF5186FAF162A /* OrderedDictionary+Variadic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OrderedDictionary+Variadic.h"; sourceTree = "<group>"; };
 		FA76B47A0150434485FCBBAD /* MDictReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictReaderTests.swift; sourceTree = "<group>"; };
@@ -3515,6 +3518,7 @@
 			children = (
 				27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */,
 				27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */,
+				EADA5E012F80000000110001 /* release-scripts */,
 				03B0221829231FA6001C7E63 /* Easydict */,
 				03022F2F2B370B7100B63209 /* EasydictTests */,
 				C99EEB192385796700FEE666 /* Products */,
@@ -3636,6 +3640,16 @@
 				03CE80242ED8972600FB4EAB /* Color */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		EADA5E012F80000000110001 /* release-scripts */ = {
+			isa = PBXGroup;
+			children = (
+				EADA5E022F80000000110002 /* release-easydict.sh */,
+				EADA5E032F80000000110003 /* release-scripts-flow.svg */,
+				EADA5E042F80000000110004 /* release-scripts-overview.md */,
+			);
+			path = "release-scripts";
 			sourceTree = "<group>";
 		};
 		EAED41EA2B54A4900005FE0A /* ServiceConfigurationView */ = {
@@ -4806,13 +4820,15 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Easydict/App/Easydict.entitlements;
 				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
-				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 61;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 45Z6V4YD5U;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_DEBUG_DYLIB = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -4832,6 +4848,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.izual.Easydict;
 				PRODUCT_MODULE_NAME = Easydict;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUNTIME_EXCEPTION_ALLOW_JIT = YES;
 				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
