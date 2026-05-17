@@ -3417,6 +3417,7 @@
 		967712EB2B5B93E200105E0F /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				0328D0792D7D42520050B2C7 /* Screenshot */,
 				03A00D862E616D3D001A4D82 /* ActionManager */,
 				032AAA502C456D96007996A1 /* HTTPServer */,
 				EA3B81F72B52549B004C0E8B /* Configuration */,
@@ -3580,7 +3581,6 @@
 				5A735120BF914C709B1E6B2B /* Logging */,
 				1720B06B4E14473BB7EB192B /* DeviceInfo */,
 				03F2815B2D98E52200AE518C /* ChineseGenre */,
-				0328D0792D7D42520050B2C7 /* Screenshot */,
 				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
 				96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */,
 				03714B8E2C17FCAD00BB4459 /* Constants */,
