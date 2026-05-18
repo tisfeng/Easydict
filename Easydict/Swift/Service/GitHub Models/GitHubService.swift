@@ -50,6 +50,10 @@ class GitHubService: OpenAIService {
         "https://models.github.ai/catalog/models"
     }
 
+    override var remoteModelFetchRequiresEndpoint: Bool {
+        false
+    }
+
     override func fetchRemoteModelIDs() async throws -> [String] {
         guard !apiKey.trim().isEmpty else {
             throw QueryError(type: .missingSecretKey, message: "GitHub Models token is empty")

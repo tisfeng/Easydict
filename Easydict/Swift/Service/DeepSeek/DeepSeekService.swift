@@ -48,6 +48,10 @@ class DeepSeekService: OpenAIService {
     override var remoteModelsEndpoint: String? {
         "https://api.deepseek.com/models"
     }
+
+    override var remoteModelFetchRequiresEndpoint: Bool {
+        false
+    }
 }
 
 // MARK: - DeepSeekModel

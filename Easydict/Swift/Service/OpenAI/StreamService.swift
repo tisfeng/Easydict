@@ -220,6 +220,10 @@ public class StreamService: QueryService {
         nil
     }
 
+    var remoteModelFetchRequiresEndpoint: Bool {
+        true
+    }
+
     var model: String {
         get {
             var model = Defaults[modelKey]

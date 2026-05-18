@@ -257,7 +257,7 @@ struct StreamConfigurationView: View {
         if service.apiKeyRequirement().needsUserProvidedKey, apiKey.trim().isEmpty {
             return true
         }
-        return showEndpointSection && !isValidEndpoint(service.endpoint)
+        return shouldValidateFetchEndpoint && !isValidEndpoint(service.endpoint)
     }
 
     private var fetchModelsHelp: LocalizedStringKey {
@@ -267,10 +267,14 @@ struct StreamConfigurationView: View {
         if service.apiKeyRequirement().needsUserProvidedKey, apiKey.trim().isEmpty {
             return "missing_secret_key_error"
         }
-        if showEndpointSection, !isValidEndpoint(service.endpoint) {
+        if shouldValidateFetchEndpoint, !isValidEndpoint(service.endpoint) {
             return "parameter_error"
         }
         return fetchModelsTitle
+    }
+
+    private var shouldValidateFetchEndpoint: Bool {
+        showEndpointSection && service.remoteModelFetchRequiresEndpoint
     }
 
     private var fetchModelsTitle: LocalizedStringKey {
