@@ -121,7 +121,8 @@ public final class CaiyunService: QueryService {
 
     // easydict://writeKeyValue?EZCaiyunToken=
     private var token: String {
-        let token = Defaults[.caiyunToken]
+        let kcToken = KeychainHelper.readOrEmpty(EZCaiyunToken)
+        let token = kcToken.isEmpty ? Defaults[.caiyunToken] : kcToken
         if !token.isEmpty {
             return token
         } else {

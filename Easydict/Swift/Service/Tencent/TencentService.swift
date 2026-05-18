@@ -150,11 +150,13 @@ public final class TencentService: QueryService {
 
     // easydict://writeKeyValue?EZTencentSecretId=xxx
     private var secretId: String {
-        Defaults[.tencentSecretId]
+        let kc = KeychainHelper.readOrEmpty(EZTencentSecretId)
+        return kc.isEmpty ? Defaults[.tencentSecretId] : kc
     }
 
     // easydict://writeKeyValue?EZTencentSecretKey=xxx
     private var secretKey: String {
-        Defaults[.tencentSecretKey]
+        let kc = KeychainHelper.readOrEmpty(EZTencentSecretKey)
+        return kc.isEmpty ? Defaults[.tencentSecretKey] : kc
     }
 }

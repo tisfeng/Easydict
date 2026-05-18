@@ -181,12 +181,14 @@ public final class VolcanoService: QueryService {
 
     // easydict://writeKeyValue?EZVolcanoAccessKeyID=xxx
     private var accessKeyID: String {
-        Defaults[.volcanoAccessKeyID]
+        let kc = KeychainHelper.readOrEmpty(EZVolcanoAccessKeyID)
+        return kc.isEmpty ? Defaults[.volcanoAccessKeyID] : kc
     }
 
     // easydict://writeKeyValue?EZVolcanoSecretAccessKey=xxx
     private var secretAccessKey: String {
-        Defaults[.volcanoSecretAccessKey]
+        let kc = KeychainHelper.readOrEmpty(EZVolcanoSecretAccessKey)
+        return kc.isEmpty ? Defaults[.volcanoSecretAccessKey] : kc
     }
 
     /// Validates the provided API key, returns a QueryError of type `.missingAPIKey`

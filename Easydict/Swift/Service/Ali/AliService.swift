@@ -107,11 +107,13 @@ class AliService: QueryService {
     private let dateFormatter = ISO8601DateFormatter()
 
     private var aliAccessKeyId: String {
-        Defaults[.aliAccessKeyId]
+        let kc = KeychainHelper.readOrEmpty(EZAliAccessKeyId)
+        return kc.isEmpty ? Defaults[.aliAccessKeyId] : kc
     }
 
     private var aliAccessKeySecret: String {
-        Defaults[.aliAccessKeySecret]
+        let kc = KeychainHelper.readOrEmpty(EZAliAccessKeySecret)
+        return kc.isEmpty ? Defaults[.aliAccessKeySecret] : kc
     }
 
     // swiftlint:disable:next function_parameter_count

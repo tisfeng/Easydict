@@ -51,6 +51,8 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2023-2025 tisfeng. All rights reserved.</string>

@@ -103,12 +103,27 @@
         NSString *value = keyValues[key];
         handled = [self enabledReadWriteKey:key];
         if (handled) {
+            NSString *maskedValue = value.length > 8
+                ? [NSString stringWithFormat:@"%@...%@", [value substringToIndex:4], [value substringFromIndex:value.length - 4]]
+                : @"****";
+            
+            NSAlert *alert = [[NSAlert alloc] init];
+            alert.messageText = @"Security Confirmation";
+            alert.informativeText = [NSString stringWithFormat:@"An external request wants to write a value to key \"%@\":\n%@\n\nAllow this operation?", key, maskedValue];
+            alert.alertStyle = NSAlertStyleWarning;
+            [alert addButtonWithTitle:@"Allow"];
+            [alert addButtonWithTitle:@"Deny"];
+            
+            NSModalResponse response = [alert runModal];
+            if (response != NSAlertFirstButtonReturn) {
+                return NO;
+            }
+            
             MyConfiguration *config = [MyConfiguration shared];
             BOOL isBeta = config.beta;
             
             [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
             
-            // If enabling beta feature, setup beta features.
             if (!isBeta && config.beta) {
                 [MyConfiguration.shared enableBetaFeaturesIfNeeded];
             }
@@ -120,6 +135,18 @@
 /// Read value of key from NSUserDefaults. easydict://readValueOfKey?EZOpenAIAPIKey
 - (nullable NSString *)readValueOfKey:(NSString *)key {
     if ([self enabledReadWriteKey:key]) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        alert.messageText = @"Security Confirmation";
+        alert.informativeText = [NSString stringWithFormat:@"An external request wants to read the value of key \"%@\" and copy it to clipboard.\n\nAllow this operation?", key];
+        alert.alertStyle = NSAlertStyleWarning;
+        [alert addButtonWithTitle:@"Allow"];
+        [alert addButtonWithTitle:@"Deny"];
+        
+        NSModalResponse response = [alert runModal];
+        if (response != NSAlertFirstButtonReturn) {
+            return nil;
+        }
+        
         return [[NSUserDefaults standardUserDefaults] objectForKey:key];
     } else {
         return nil;

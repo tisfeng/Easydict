@@ -19,6 +19,8 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     MMLogInfo(@"程序启动");
 
+    [SecureStorageMigration migrateIfNeeded];
+
     [ShortcutManager.shared setupShortcut];
 
     [EZWindowManager.shared showMainWindowIfNeeded];

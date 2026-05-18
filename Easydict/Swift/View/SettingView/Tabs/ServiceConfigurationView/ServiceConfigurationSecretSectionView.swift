@@ -94,6 +94,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         }
         .onDisappear {
             viewModel.invalidate()
+            SecureStorageMigration.syncSensitiveKeys()
         }
     }
 
