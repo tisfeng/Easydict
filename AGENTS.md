@@ -2,51 +2,67 @@
 
 Guidance for AI agents working in this repository.
 
-## Project Overview
+## Project Architecture
 
 **Easydict** is a macOS dictionary and translation app that supports word lookup, text translation, and OCR screenshot translation.
 
-**Note:** New development should use modern Swift and SwiftUI APIs available on macOS 13.0+.
-
-## Code Architecture
+New development should use modern Swift and SwiftUI APIs available on macOS 13.0+.
 
 ### Directory Structure
 
-- `Easydict/App/` - App entry point, bridging header, assets, localization
-- `Easydict/Swift/` - **Primary development environment** (all new code)
-  - `Service/` - Translation services (Google, Bing, DeepL, OpenAI, etc.)
-  - `Feature/` - Feature modules
-  - `Model/` - Data models
-  - `Utility/` - Extensions and helpers
-  - `View/` - SwiftUI views
-- `Easydict/objc/` - **Legacy code - Maintenance only, no extensions**
-  - `Service/` - Remaining Obj-C services (Baidu, language detection)
-  - `ViewController/` - Window and query view controllers
-  - `MMKit/` - Utility framework
-- `EasydictTests/` - Unit tests
-
-### Service Architecture
-
-Translation services inherit from a base query service. Each service lives in its own directory under `Swift/Service/` with:
-
-- Main service class (e.g., `GoogleService.swift`)
-- Supporting models and extensions as needed
-
-### Key Patterns
-
-- Swift Package Manager for almost all Swift dependencies (Alamofire, Defaults, etc.)
-- CocoaPods for dependency management (Masonry, ReactiveObjC, etc.)
-- Bridging header at `Easydict/App/Easydict-Bridging-Header.h`
-- PCH file at `Easydict/App/PrefixHeader.pch`
-- String localization uses Xcode String Catalogs (`Localizable.xcstrings` files)
+```
+Easydict/
+├── Easydict/                             # App source root
+│   ├── App/                              # App entry, bridge, plist, assets, localization
+│   │   ├── PrefixHeader.pch              # Shared Objective-C precompiled header
+│   │   ├── Easydict-Bridging-Header.h    # Swift and Objective-C bridge declarations
+│   │   └── ...                           # Other app entry, plist, and localization files
+│   │
+│   ├── Swift/                            # Primary development environment
+│   │   ├── Feature/                      # Product feature modules
+│   │   │   ├── Screenshot/               # Screenshot feature
+│   │   │   ├── ActionManager/            # Action routing and execution
+│   │   │   ├── Configuration/            # Runtime configuration features
+│   │   │   ├── DefaultAPIKeys/           # Built-in service key configuration
+│   │   │   ├── HTTPServer/               # Local HTTP server support
+│   │   │   ├── Localization/             # Localization helpers and tooling
+│   │   │   └── Shortcut/                 # Keyboard shortcut model and UI
+│   │   │
+│   │   ├── Model/                        # Shared app data models
+│   │   ├── Service/                      # Translation, dictionary, OCR, and AI services
+│   │   │   ├── Model/                    # Shared service request and response models
+│   │   │   ├── Dictionary/               # Local dictionary and rendering services
+│   │   │   ├── OpenAI/                   # OpenAI-compatible service integration
+│   │   │   ├── Apple/                    # Apple dictionary, OCR, speech, and translation
+│   │   │   ├── ClaudeCode/               # Claude Code CLI service integration
+│   │   │   └── ...                       # Other provider-specific services
+│   │   │
+│   │   ├── Utility/                      # Cross-feature utilities and helpers
+│   │   │   ├── Appearance/               # App appearance helpers
+│   │   │   ├── AppleScript/              # AppleScript execution utilities
+│   │   │   ├── EventMonitor/             # Global event monitoring and workflows
+│   │   │   ├── Extensions/               # Swift, AppKit, SwiftUI, Foundation extensions
+│   │   │   └── Views/                    # Shared utility views
+│   │   │
+│   │   └── View/                         # Shared SwiftUI and AppKit-facing views
+│   │
+│   └── objc/                             # Legacy code - maintenance only
+│       ├── Libraries/                    # Bundled legacy helper libraries
+│       ├── StatusItem/                   # Legacy menu bar status item code
+│       ├── Utility/                      # Legacy helper categories and utilities
+│       └── ViewController/               # Legacy window and query controllers
+│
+├── EasydictTests/                        # Unit tests
+└── Pods/                                 # CocoaPods dependencies and integration project
+```
 
 ## Xcode Project Metadata
 
 Unless the user explicitly says otherwise, when adding or moving files, also update `Easydict.xcodeproj/project.pbxproj` so the files appear in Xcode's navigator.
 
 - By default, every newly added project file, including developer-facing
-  Markdown documentation, must have a matching `PBXFileReference` under the
-  correct `PBXGroup`.
+  documentation such as Markdown or HTML files, must have a matching
+  `PBXFileReference` under the correct `PBXGroup`.
 - Do not add documentation files to build phases such as `Resources` unless the file is
   intentionally shipped at runtime.
 
@@ -122,8 +138,10 @@ Recommended usage:
 
 - Write new code in Swift/SwiftUI only. Legacy Objective-C may receive bug fixes, but no
   new features.
-- Keep source files ideally under 300 lines and never over 500 without strong
-  justification.
+- Keep main project Swift and SwiftUI source files ideally under 300 lines and
+  never over 500 without strong justification. This line-count guideline does
+  not apply to bundled runtime extensions, scripts, generated files, or other
+  non-Swift support modules.
 - Avoid single-letter variable names except trivial loop indices.
 - Avoid `static` functions and variables unless type-level semantics clearly require them.
   Utility types may use `static`.
@@ -149,21 +167,28 @@ Recommended usage:
 - When creating or updating source file header comments, use the current Git username in
   the `Created by ...` line. Do not use agent names such as `Codex`, `Claude`, or
   `AI Assistant`.
-- Every project directory must include a Chinese overview document and a same-prefix SVG
-  technical diagram. Use the directory name converted to kebab-case as the shared prefix:
-  `<directory-kebab>-overview.md` and `<directory-kebab>-<diagram-type>.svg`.
+- Every non-exempt project source directory must include a Chinese HTML overview document
+  and a same-prefix SVG technical diagram. Use the directory name converted to kebab-case
+  as the shared prefix: `<directory-kebab>-overview.html` and
+  `<directory-kebab>-<diagram-type>.svg`.
+- Generated directories, third-party directories, platform scaffold directories, and test
+  directories are exempt from the overview/SVG requirement.
 - Convert `UpperCamelCase` names to kebab-case, convert spaces to hyphens, and keep names
   that are already kebab-case unchanged. For example, `DictionaryRendering/` uses
-  `dictionary-rendering-overview.md` and `dictionary-rendering-architecture.svg`, while
-  `GitHub Models/` uses `github-models-overview.md` and `github-models-architecture.svg`.
+  `dictionary-rendering-overview.html` and `dictionary-rendering-architecture.svg`, while
+  `GitHub Models/` uses `github-models-overview.html` and
+  `github-models-architecture.svg`.
 - Use a kebab-case diagram type that reflects the SVG content, such as `architecture`,
-  `flow`, or `sequence`. Reuse the same directory prefix for the Markdown document
+  `flow`, or `sequence`. Reuse the same directory prefix for the HTML overview document
   and its SVG so related files stay adjacent in search and Xcode.
-- Generate each directory document's SVG technical diagram from the Markdown content with
-  the `fireworks-tech-graph` skill, choosing the diagram type that best fits the content.
+- Generate each directory's SVG technical diagram from the complete semantic structure of
+  the matching HTML overview document with the `fireworks-tech-graph` skill. Do not base
+  the diagram only on the title, opening paragraph, or a few keywords; it must represent
+  the responsibilities, key components, main flows, boundaries, failures, and debugging or
+  test entry points described by the overview.
 - When files in a directory are added, removed, renamed, or their behavior changes, update
-  that directory's Markdown document and same-prefix SVG technical diagram in the same
-  change. Explain responsibilities, key components, main flows, and debugging entry
+  that directory's HTML overview document and same-prefix SVG technical diagram in the
+  same change. Explain responsibilities, key components, main flows, and debugging entry
   points instead of writing a method-by-method API index.
 
 ### Skill Overlay Rules

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1260" width="1600" height="1260" role="img" aria-labelledby="title desc">
+  <title id="title">release-easydict.sh 发布流程</title>
+  <desc id="desc">展示 Easydict 发布脚本从环境预检、Release 构建、签名公证、Sparkle appcast 到 DMG 输出的完整流程。</desc>
+  <style>
+    text {
+      font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    .title { fill: #111827; font-size: 30px; font-weight: 700; }
+    .subtitle { fill: #6b7280; font-size: 15px; }
+    .lane-title { fill: #334155; font-size: 17px; font-weight: 700; }
+    .node-title { fill: #111827; font-size: 17px; font-weight: 700; }
+    .body { fill: #475569; font-size: 13px; }
+    .small { fill: #64748b; font-size: 12px; }
+    .label { fill: #475569; font-size: 12px; font-weight: 600; }
+    .note-title { fill: #374151; font-size: 14px; font-weight: 700; }
+    .note { fill: #4b5563; font-size: 12.5px; }
+  </style>
+
+  <defs>
+    <marker id="arrow-blue" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#9333ea"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="1260" fill="#ffffff"/>
+
+  <text x="800" y="52" text-anchor="middle" class="title">release-easydict.sh 发布流程</text>
+  <text x="800" y="82" text-anchor="middle" class="subtitle">从本地 Release 构建到 Sparkle appcast、ZIP、DMG 和 Apple 公证产物</text>
+
+  <rect x="48" y="116" width="1504" height="218" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="8 6"/>
+  <text x="72" y="148" class="lane-title">输入与预检</text>
+
+  <rect x="78" y="178" width="244" height="112" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="200" y="209" text-anchor="middle" class="node-title">发布输入</text>
+  <text x="104" y="236" class="body">Xcode Release 版本号</text>
+  <text x="104" y="258" class="body">GitHub tag 与下载基址</text>
+  <text x="104" y="280" class="body">Sparkle channel 默认 beta</text>
+
+  <rect x="378" y="178" width="258" height="112" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <text x="507" y="209" text-anchor="middle" class="node-title">命令和文件预检</text>
+  <text x="404" y="236" class="body">xcodebuild / xcbeautify</text>
+  <text x="404" y="258" class="body">python3 / ditto / xcrun</text>
+  <text x="404" y="280" class="body">appcast.xml / project.pbxproj</text>
+
+  <rect x="692" y="178" width="268" height="112" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+  <text x="826" y="209" text-anchor="middle" class="node-title">签名与公证凭据</text>
+  <text x="718" y="236" class="body">Developer ID Application</text>
+  <text x="718" y="258" class="body">TeamIdentifier 匹配团队</text>
+  <text x="718" y="280" class="body">profile 位于 login keychain</text>
+
+  <rect x="1018" y="178" width="248" height="112" rx="8" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <text x="1142" y="209" text-anchor="middle" class="node-title">读取版本快照</text>
+  <text x="1044" y="236" class="body">showBuildSettings 优先</text>
+  <text x="1044" y="258" class="body">超时则解析 project 文件</text>
+  <text x="1044" y="280" class="body">得到 version 和 build</text>
+
+  <rect x="1324" y="178" width="198" height="112" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+  <text x="1423" y="209" text-anchor="middle" class="node-title">appcast 防重</text>
+  <text x="1348" y="236" class="body">short version 不重复</text>
+  <text x="1348" y="258" class="body">build number 不重复</text>
+  <text x="1348" y="280" class="body">重复即停止</text>
+
+  <line x1="322" y1="234" x2="366" y2="234" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+  <line x1="636" y1="234" x2="680" y2="234" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+  <line x1="960" y1="234" x2="1006" y2="234" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+  <line x1="1266" y1="234" x2="1312" y2="234" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+
+  <rect x="48" y="368" width="1504" height="226" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="8 6"/>
+  <text x="72" y="400" class="lane-title">Release 构建、重签与 App 公证</text>
+
+  <rect x="124" y="446" width="260" height="104" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="254" y="477" text-anchor="middle" class="node-title">Release 构建</text>
+  <text x="150" y="506" class="body">xcodebuild build Easydict</text>
+  <text x="150" y="528" class="body">Manual signing + timestamp</text>
+
+  <rect x="478" y="446" width="296" height="104" rx="8" fill="#f0fdfa" stroke="#5eead4" stroke-width="1.5"/>
+  <text x="626" y="477" text-anchor="middle" class="node-title">复制并重签 App</text>
+  <text x="504" y="506" class="body">ditto 到根目录 Easydict.app</text>
+  <text x="504" y="528" class="body">Sparkle helper 与 framework</text>
+
+  <rect x="868" y="446" width="298" height="104" rx="8" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <text x="1017" y="477" text-anchor="middle" class="node-title">签名断言</text>
+  <text x="894" y="506" class="body">非 ad-hoc Developer ID</text>
+  <text x="894" y="528" class="body">TeamIdentifier 和 timestamp</text>
+
+  <rect x="1262" y="446" width="226" height="104" rx="8" fill="#fefce8" stroke="#fde047" stroke-width="1.5"/>
+  <text x="1375" y="477" text-anchor="middle" class="node-title">App 公证</text>
+  <text x="1288" y="506" class="body">notarytool clean-env</text>
+  <text x="1288" y="528" class="body">上传重试后 stapler</text>
+
+  <path d="M 1423 290 L 1423 348 L 254 348 L 254 434" fill="none" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+  <line x1="384" y1="498" x2="466" y2="498" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+  <line x1="774" y1="498" x2="856" y2="498" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+  <line x1="1166" y1="498" x2="1250" y2="498" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+
+  <rect x="48" y="628" width="1504" height="226" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="8 6"/>
+  <text x="72" y="660" class="lane-title">Sparkle 更新包与 appcast 元数据</text>
+
+  <rect x="112" y="704" width="244" height="104" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="234" y="735" text-anchor="middle" class="node-title">生成 Easydict.zip</text>
+  <text x="138" y="764" class="body">ditto --keepParent</text>
+  <text x="138" y="786" class="body">作为 Sparkle 更新包</text>
+
+  <rect x="442" y="704" width="288" height="104" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <text x="586" y="735" text-anchor="middle" class="node-title">解析 sign_update</text>
+  <text x="468" y="764" class="body">SIGN_UPDATE / SPARKLE_BIN_DIR</text>
+  <text x="468" y="786" class="body">PATH 或 SwiftPM artifact</text>
+
+  <rect x="816" y="704" width="238" height="104" rx="8" fill="#fefce8" stroke="#fde047" stroke-width="1.5"/>
+  <text x="935" y="735" text-anchor="middle" class="node-title">Sparkle 签名校验</text>
+  <text x="842" y="764" class="body">解析 edSignature</text>
+  <text x="842" y="786" class="body">length 等于 stat 大小</text>
+
+  <rect x="1146" y="704" width="310" height="104" rx="8" fill="#ecfeff" stroke="#67e8f9" stroke-width="1.5"/>
+  <text x="1301" y="735" text-anchor="middle" class="node-title">写入 appcast.xml</text>
+  <text x="1172" y="764" class="body">release notes 指向 GitHub tag</text>
+  <text x="1172" y="786" class="body">enclosure 指向 Easydict.zip</text>
+
+  <path d="M 1375 550 L 1375 688 L 234 688 L 234 704" fill="none" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrow-green)"/>
+  <line x1="356" y1="756" x2="430" y2="756" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrow-green)"/>
+  <line x1="730" y1="756" x2="804" y2="756" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrow-green)"/>
+  <line x1="1054" y1="756" x2="1134" y2="756" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrow-green)"/>
+
+  <rect x="48" y="888" width="1504" height="174" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="8 6"/>
+  <text x="72" y="920" class="lane-title">DMG、公证、输出与清理</text>
+
+  <rect x="120" y="952" width="270" height="76" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+  <text x="255" y="983" text-anchor="middle" class="node-title">生成签名 DMG</text>
+  <text x="146" y="1012" class="body">create-dmg --identity</text>
+
+  <rect x="498" y="952" width="282" height="76" rx="8" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <text x="639" y="983" text-anchor="middle" class="node-title">DMG 校验与公证</text>
+  <text x="524" y="1012" class="body">codesign verify + stapler validate</text>
+
+  <rect x="888" y="952" width="298" height="76" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <text x="1037" y="983" text-anchor="middle" class="node-title">发布产物就绪</text>
+  <text x="914" y="1012" class="body">Easydict.app / zip / dmg</text>
+
+  <rect x="1292" y="952" width="206" height="76" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="1395" y="983" text-anchor="middle" class="node-title">清理临时目录</text>
+  <text x="1318" y="1012" class="body">KEEP_RELEASE_TMP 可保留</text>
+
+  <path d="M 1301 808 L 1301 936 L 255 936 L 255 952" fill="none" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrow-green)"/>
+  <line x1="390" y1="990" x2="486" y2="990" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+  <line x1="780" y1="990" x2="876" y2="990" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+  <line x1="1186" y1="990" x2="1280" y2="990" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+
+  <path d="M 507 290 L 507 320 L 980 320 L 980 360" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow-red)"/>
+  <rect x="828" y="360" width="304" height="58" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+  <text x="980" y="384" text-anchor="middle" class="node-title">预检失败即停止</text>
+  <text x="852" y="407" class="body">缺工具、证书、profile 或文件</text>
+
+  <path d="M 1017 550 L 1017 580 L 1212 580 L 1212 610" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow-red)"/>
+  <rect x="1088" y="610" width="248" height="58" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+  <text x="1212" y="634" text-anchor="middle" class="node-title">签名或公证失败</text>
+  <text x="1112" y="657" class="body">打印 notary log 后退出</text>
+
+  <path d="M 935 808 L 935 838 L 1080 838 L 1080 868" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow-red)"/>
+  <rect x="948" y="868" width="264" height="58" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+  <text x="1080" y="892" text-anchor="middle" class="node-title">Sparkle 元数据失败</text>
+  <text x="972" y="915" class="body">签名缺失或 length 不一致</text>
+
+  <rect x="70" y="1098" width="448" height="94" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="96" y="1128" class="note-title">环境覆盖入口</text>
+  <text x="96" y="1153" class="note">CREATE_DMG_BIN、RELEASE_CODE_SIGN_IDENTITY、</text>
+  <text x="96" y="1174" class="note">NOTARYTOOL proxy/keychain/retry、SIGN_UPDATE、TMP。</text>
+
+  <rect x="578" y="1098" width="448" height="94" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="604" y="1128" class="note-title">调试入口</text>
+  <text x="604" y="1153" class="note">保留 .tmp、查看 codesign/notarytool 输出、</text>
+  <text x="604" y="1174" class="note">检查 appcast 新 item 和 Sparkle 签名。</text>
+
+  <rect x="1086" y="1098" width="444" height="94" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="1112" y="1128" class="note-title">脚本边界</text>
+  <text x="1112" y="1153" class="note">不递增版本、不上传 Release、不创建 tag，</text>
+  <text x="1112" y="1174" class="note">只生成本地产物并更新 appcast.xml。</text>
+
+  <g transform="translate(78 1224)">
+    <line x1="0" y1="0" x2="46" y2="0" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+    <text x="62" y="5" class="small">主控制流</text>
+    <line x1="178" y1="0" x2="224" y2="0" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrow-green)"/>
+    <text x="240" y="5" class="small">产物与元数据写入</text>
+    <line x1="406" y1="0" x2="452" y2="0" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow-red)"/>
+    <text x="468" y="5" class="small">失败停止</text>
+  </g>
+</svg>
