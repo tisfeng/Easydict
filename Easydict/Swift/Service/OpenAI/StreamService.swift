@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Alamofire
 import Combine
 import Defaults
 import Foundation
@@ -414,6 +415,51 @@ public class StreamService: QueryService {
 
     func remoteModelGroupName(_ modelID: String) -> String? {
         nil
+    }
+
+    func fetchRemoteModelData(url: URL, headers: HTTPHeaders = []) async throws -> Data {
+        let response = await AF.request(
+            url,
+            method: .get,
+            headers: headers,
+            requestModifier: { $0.timeoutInterval = EZNetWorkTimeoutInterval }
+        )
+        .serializingData(automaticallyCancelling: true)
+        .response
+
+        if let statusCode = response.response?.statusCode,
+           !(200 ... 299).contains(statusCode) {
+            throw remoteModelError(statusCode: statusCode, data: response.data)
+        }
+        return try response.result.get()
+    }
+
+    private func remoteModelError(statusCode: Int, data: Data?) -> QueryError {
+        let message = data.flatMap(remoteModelErrorMessage)?.trim()
+        if let message, !message.isEmpty {
+            return QueryError(type: .api, message: message)
+        }
+        return QueryError(type: .api, message: "HTTP \(statusCode)")
+    }
+
+    private func remoteModelErrorMessage(from data: Data) -> String? {
+        if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            if let error = json["error"] as? String {
+                return error
+            }
+            if let error = json["error"] as? [String: Any],
+               let message = error["message"] as? String {
+                return message
+            }
+            if let message = json["message"] as? String {
+                return message
+            }
+        }
+
+        guard let text = String(data: data, encoding: .utf8)?.trim(), !text.isEmpty else {
+            return nil
+        }
+        return String(text.prefix(300))
     }
 
     /// Base on chat query, convert prompt dict to LLM service prompt model.
