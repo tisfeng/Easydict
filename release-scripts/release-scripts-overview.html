@@ -255,6 +255,10 @@
           <td>默认 <code>$HOME/Library/Keychains/login.keychain-db</code>，用于固定 <code>notarytool</code> 读取凭据的位置。</td>
         </tr>
         <tr>
+          <td><code>NOTARYTOOL_PROXY_MODE</code></td>
+          <td>默认 <code>clean-env</code>，调用 <code>notarytool</code> 时清理 shell proxy 环境变量，让 Surge 系统代理或增强模式接管网络。</td>
+        </tr>
+        <tr>
           <td><code>NOTARYTOOL_SUBMIT_ATTEMPTS</code></td>
           <td>默认 <code>3</code>，用于重试 Apple 公证上传过程中的临时网络中断。</td>
         </tr>
@@ -287,7 +291,7 @@
 
     <h2>主发布流程</h2>
     <ol>
-      <li>进入仓库根目录，校验命令、文件、Developer ID 证书和 notarytool profile。</li>
+      <li>进入仓库根目录，校验命令、文件、Developer ID 证书、notarytool 代理模式和 profile。</li>
       <li>通过 <code>xcodebuild -showBuildSettings</code> 读取 Release 版本号；失败或超时时解析 <code>project.pbxproj</code>。</li>
       <li>检查 <code>appcast.xml</code> 中没有重复的 short version 或 build number。</li>
       <li>使用 Manual signing、timestamp、<code>DEPLOYMENT_POSTPROCESSING=YES</code> 和 <code>ENABLE_DEBUG_DYLIB=NO</code> 执行 Release 构建。</li>
@@ -314,6 +318,7 @@
       <li>需要保留构建和公证中间产物时，设置 <code>KEEP_RELEASE_TMP=1</code> 后重新运行脚本。</li>
       <li>签名失败时先检查 <code>RELEASE_CODE_SIGN_IDENTITY</code>、钥匙串证书和 <code>security find-identity -v -p codesigning</code> 输出。</li>
       <li>公证失败时先确认 <code>NOTARYTOOL_KEYCHAIN</code> 指向存放 profile 的 keychain，再查看脚本打印的 <code>notarytool log</code>。</li>
+      <li><code>NOTARYTOOL_PROXY_MODE=clean-env</code> 不会关闭 Surge，只是不继承 <code>.zshrc</code> 中的 <code>http_proxy</code>、<code>https_proxy</code> 和 <code>all_proxy</code>；需要回退时可设为 <code>inherit</code>。</li>
       <li>刷新公证 profile 时使用 <code>xcrun notarytool store-credentials easydict-release --team-id 45Z6V4YD5U --keychain "$HOME/Library/Keychains/login.keychain-db"</code>。</li>
       <li>Sparkle 失败时检查 <code>SIGN_UPDATE</code>、<code>SPARKLE_BIN_DIR</code>、SwiftPM Sparkle artifact 和私钥文件。</li>
       <li>appcast 更新后重点检查新增 item 的 <code>sparkle:version</code>、<code>sparkle:shortVersionString</code>、下载 URL、release notes URL 和 EdDSA 签名。</li>

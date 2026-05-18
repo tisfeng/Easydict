@@ -22,6 +22,7 @@ RELEASE_CODE_SIGN_IDENTITY="${RELEASE_CODE_SIGN_IDENTITY:-Developer ID Applicati
 RELEASE_NOTARY_TEAM_ID="${RELEASE_NOTARY_TEAM_ID:-$RELEASE_DEVELOPMENT_TEAM}"
 NOTARYTOOL_PROFILE="${NOTARYTOOL_PROFILE:-easydict-release}"
 NOTARYTOOL_KEYCHAIN="${NOTARYTOOL_KEYCHAIN:-$HOME/Library/Keychains/login.keychain-db}"
+NOTARYTOOL_PROXY_MODE="${NOTARYTOOL_PROXY_MODE:-clean-env}"
 NOTARYTOOL_SUBMIT_ATTEMPTS="${NOTARYTOOL_SUBMIT_ATTEMPTS:-3}"
 NOTARYTOOL_RETRY_DELAY="${NOTARYTOOL_RETRY_DELAY:-15}"
 RELEASE_SPARKLE_CHANNEL="${RELEASE_SPARKLE_CHANNEL-beta}"
@@ -140,6 +141,35 @@ require_signing_identity() {
     fi
 }
 
+validate_notarytool_proxy_mode() {
+    case "$NOTARYTOOL_PROXY_MODE" in
+        clean-env | inherit)
+            ;;
+        *)
+            echo "error: NOTARYTOOL_PROXY_MODE must be clean-env or inherit" >&2
+            exit 1
+            ;;
+    esac
+}
+
+run_notarytool() {
+    case "$NOTARYTOOL_PROXY_MODE" in
+        clean-env)
+            env \
+                -u http_proxy \
+                -u https_proxy \
+                -u all_proxy \
+                -u HTTP_PROXY \
+                -u HTTPS_PROXY \
+                -u ALL_PROXY \
+                xcrun notarytool "$@"
+            ;;
+        inherit)
+            xcrun notarytool "$@"
+            ;;
+    esac
+}
+
 require_notarytool_profile() {
     local history_output
 
@@ -160,7 +190,7 @@ require_notarytool_profile() {
     require_file "$NOTARYTOOL_KEYCHAIN"
 
     if ! history_output="$(
-        xcrun notarytool history \
+        run_notarytool history \
             --keychain-profile "$NOTARYTOOL_PROFILE" \
             --team-id "$RELEASE_NOTARY_TEAM_ID" \
             --keychain "$NOTARYTOOL_KEYCHAIN" \
@@ -308,7 +338,7 @@ notarize_file() {
     for ((attempt = 1; attempt <= NOTARYTOOL_SUBMIT_ATTEMPTS; attempt += 1)); do
         echo "notarytool submit attempt $attempt/$NOTARYTOOL_SUBMIT_ATTEMPTS for $(basename "$file_path")..."
         if submit_output="$(
-            xcrun notarytool submit "$file_path" \
+            run_notarytool submit "$file_path" \
                 --keychain-profile "$NOTARYTOOL_PROFILE" \
                 --team-id "$RELEASE_NOTARY_TEAM_ID" \
                 --keychain "$NOTARYTOOL_KEYCHAIN" \
@@ -340,7 +370,7 @@ notarize_file() {
         echo "error: notarization status for $(basename "$file_path") is $status" >&2
         if [[ -n "$submission_id" ]]; then
             echo "Notarization log for $submission_id:" >&2
-            if ! xcrun notarytool log "$submission_id" \
+            if ! run_notarytool log "$submission_id" \
                 --keychain-profile "$NOTARYTOOL_PROFILE" \
                 --team-id "$RELEASE_NOTARY_TEAM_ID" \
                 --keychain "$NOTARYTOOL_KEYCHAIN" >&2; then
@@ -653,6 +683,8 @@ main() {
     require_command xcrun
     require_file "$APPCAST_PATH"
     require_file "$PROJECT_PATH"
+    validate_notarytool_proxy_mode
+    echo "Using notarytool proxy mode: $NOTARYTOOL_PROXY_MODE"
     require_signing_identity
     require_notarytool_profile
 
