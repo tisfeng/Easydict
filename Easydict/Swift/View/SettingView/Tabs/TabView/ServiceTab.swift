@@ -268,6 +268,7 @@ private class ServiceItemViewModel: ObservableObject {
 
     @Published var showErrorAlert = false
     @Published var showClaudeCodeRiskAlert = false
+    @Published var showCodexCLIRiskAlert = false
     @Published var error: (any Error)?
 
     unowned var viewModel: ServiceTabViewModel
@@ -281,6 +282,8 @@ private class ServiceItemViewModel: ObservableObject {
             if newValue {
                 if service.serviceType() == .claudeCode {
                     showClaudeCodeRiskAlert = true
+                } else if service.serviceType() == .codexCLI {
+                    showCodexCLIRiskAlert = true
                 } else {
                     tryEnableService()
                 }
@@ -394,6 +397,20 @@ private struct ServiceItemView: View {
             }
         } message: {
             Text("service.claude_code.enable_risk_alert.message")
+        }
+        .alert(
+            "service.codex_cli.enable_risk_alert.title",
+            isPresented: $serviceItemViewModel.showCodexCLIRiskAlert
+        ) {
+            Button("cancel", role: .cancel) {
+                serviceItemViewModel.showCodexCLIRiskAlert = false
+            }
+            Button("ok") {
+                serviceItemViewModel.showCodexCLIRiskAlert = false
+                serviceItemViewModel.tryEnableService()
+            }
+        } message: {
+            Text("service.codex_cli.enable_risk_alert.message")
         }
     }
 
