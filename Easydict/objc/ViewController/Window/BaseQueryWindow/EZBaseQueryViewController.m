@@ -1603,7 +1603,13 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             && newResult.queryText.length
             && ![newResult.queryText isEqualToString:currentQueryText];
         if (hasStaleResult) {
-            [self resetCellWithService:service autoQuery:YES];
+            if (self.queryModel.needDetectLanguage) {
+                [self detectQueryText:^(NSString *_Nonnull language) {
+                    [self resetCellWithService:service autoQuery:YES];
+                }];
+            } else {
+                [self resetCellWithService:service autoQuery:YES];
+            }
             return;
         }
 
