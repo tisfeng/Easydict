@@ -1597,6 +1597,16 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
         service.enabledQuery = isShowing;
 
+        NSString *currentQueryText = self.queryModel.queryText ?: @"";
+        BOOL hasStaleResult = isShowing
+            && newResult.hasShowingResult
+            && newResult.queryText.length
+            && ![newResult.queryText isEqualToString:currentQueryText];
+        if (hasStaleResult) {
+            [self resetCellWithService:service autoQuery:YES];
+            return;
+        }
+
         // If there is no result, try to query with current servie.
         if (isShowing && !newResult.hasShowingResult) {
             if (self.queryModel.needDetectLanguage) {
