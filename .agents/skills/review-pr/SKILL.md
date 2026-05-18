@@ -1,0 +1,182 @@
+---
+name: review-pr
+description: >
+  Prepare a GitHub pull request branch locally, add the contributor fork as a
+  remote when missing, and produce a rigorous code review based on the PR
+  description, linked issues, and actual code changes.
+---
+
+# Review PR Workflow
+
+Use this skill when the user asks to review a GitHub pull request, check out a
+PR branch locally, or prepare a review from a PR link such as
+`tisfeng/Easydict#1173` or `https://github.com/tisfeng/Easydict/pull/1173`.
+
+## Required Input
+
+The user must provide one PR reference:
+
+- GitHub URL: `https://github.com/<base-owner>/<base-repo>/pull/<number>`
+- Shorthand: `<base-owner>/<base-repo>#<number>`
+- PR number only, when the current checkout belongs to the target repository
+
+If the PR reference is missing or ambiguous, ask for it before changing Git
+state.
+
+## Hard Rules
+
+- Keep the local branch name exactly the same as the PR head branch name.
+- Name the contributor remote exactly as the PR head repository owner login.
+- Do not overwrite, delete, rename, rebase, reset, or force-update an existing
+  local branch.
+- Do not push anything while preparing or reviewing the PR.
+- Do not stash or discard local changes automatically. Stop and ask the user if
+  the worktree is dirty before switching branches.
+- If a remote with the intended contributor name already exists but points to a
+  different repository, stop and ask the user how to proceed.
+- Do not review from the PR description alone. Inspect the linked issues,
+  changed files, actual diff, and relevant surrounding code.
+- Follow the repository's normal review stance: lead with findings, prioritize
+  bugs and regressions, include file and line references, then list open
+  questions, verification, and a short summary.
+
+## Step 1: Resolve PR Metadata and Remote
+
+Collect PR metadata with GitHub CLI before changing branches:
+
+```bash
+gh pr view <pr-ref> \
+  --json number,title,url,body,baseRefName,headRefName,headRepository,headRepositoryOwner,closingIssuesReferences
+```
+
+Extract these fields:
+
+- `headRepositoryOwner.login`, for the remote name.
+- `headRepository.name`, for the fork repository name.
+- `headRefName`, for the PR branch name.
+- `baseRefName`, for the base branch used during diff review.
+- `closingIssuesReferences`, for issue context.
+
+If the contributor remote is missing, add it as:
+
+```bash
+git remote add <head-owner> https://github.com/<head-owner>/<head-repo>.git
+```
+
+If it already exists and points to the same repository, reuse it.
+
+## Step 2: Fetch and Switch to the PR Branch
+
+Prefer the bundled helper script for branch preparation:
+
+```bash
+bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh <pr-ref>
+```
+
+The helper script:
+
+- Parses a GitHub PR URL, `<owner>/<repo>#<number>`, or PR number.
+- Reads the PR head owner, fork repository, and branch from `gh pr view`.
+- Adds the contributor remote only when missing.
+- Fetches the exact PR head branch into `refs/remotes/<owner>/<branch>`.
+- Creates or switches to a local branch whose name exactly matches the PR head
+  branch.
+- Sets the local branch upstream to `<owner>/<branch>`.
+- Uses fast-forward-only integration when the local branch already exists.
+
+After it finishes, verify the checkout:
+
+```bash
+git branch --show-current
+git status --short
+git branch -vv
+```
+
+If the branch is dirty, detached, missing upstream, or not named exactly like
+the PR head branch, stop and fix that state before reviewing.
+
+## Step 3: Review Context
+
+Read PR context and issue context first:
+
+```bash
+gh pr view <pr-ref> \
+  --comments \
+  --json number,title,url,body,baseRefName,headRefName,files,commits,closingIssuesReferences,comments,reviews
+```
+
+For every linked issue in `closingIssuesReferences`, inspect the issue body and
+comments:
+
+```bash
+gh issue view <issue-url-or-number> --comments
+```
+
+Then inspect the code changes against the PR base branch. Fetch the base branch
+from the base repository remote if necessary, then compare with three-dot diff:
+
+```bash
+git fetch origin <base-branch>
+git diff --stat origin/<base-branch>...HEAD
+git diff --name-status origin/<base-branch>...HEAD
+git diff origin/<base-branch>...HEAD
+```
+
+Read relevant surrounding source files, tests, configuration, generated files,
+and documentation before making claims. Use `rg` for fast code search.
+
+## Review Focus
+
+Check the PR against the actual problem it claims to solve:
+
+- Does the implementation fully address the PR description and linked issues?
+- Are there behavior regressions, edge cases, concurrency issues, persistence
+  mistakes, localization gaps, or platform-version problems?
+- Are public contracts, model names, defaults, migrations, and UI states still
+  coherent?
+- Are tests or manual verification sufficient for the changed behavior?
+- Does the code match local project patterns, naming, style, and architecture?
+- Are unrelated refactors, generated churn, or accidental changes present?
+
+Run validation only when appropriate for the size and risk of the change. For
+this repository, follow `AGENTS.md`: run `xcodebuild` when substantive code
+changes exceed 100 lines, when the user asks, or when a skill explicitly
+requires it. Always run lightweight checks such as `git diff --check` when they
+are relevant.
+
+## Output Format
+
+Write the final review in Simplified Chinese unless the user asks otherwise.
+Use this structure exactly:
+
+```markdown
+**Findings**
+- [Severity] [path:line] Clear description of the issue, why it matters, and
+  what should change.
+
+**Open Questions**
+- Question or assumption that affects correctness. Use `None` if there are no
+  meaningful questions.
+
+**Verification**
+- Commands run, checks performed, or `Not run` with a concrete reason.
+
+**Summary**
+Short neutral summary of what the PR changes and the overall review result.
+```
+
+Severity values:
+
+- `Critical`: data loss, crashes, security flaws, or broken core workflows.
+- `High`: likely user-visible regression or incorrect behavior.
+- `Medium`: edge-case bug, missing compatibility, or incomplete issue coverage.
+- `Low`: maintainability, clarity, or test/documentation gap worth fixing.
+
+If there are no findings, write:
+
+```markdown
+**Findings**
+No blocking issues found.
+```
+
+Still include open questions, verification, and summary.
