@@ -1352,7 +1352,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)detectQueryText:(nullable void (^)(NSString *language))completion {
     [self cancelDelayDetectQueryText];
 
-    [self.detectManager detectText:self.queryText completion:^(EZQueryModel *queryModel, NSError *error) {
+    NSString *queryText = self.queryText ?: @"";
+    [self.detectManager detectText:queryText completion:^(EZQueryModel *queryModel, NSError *error) {
+        NSString *currentQueryText = self.queryText ?: @"";
+        if (![currentQueryText isEqualToString:queryText]) {
+            return;
+        }
         // `self.queryModel.detectedLanguage` has already been updated inside the method.
 
         // Show detected language button if has queryText, even detect language is auto.
