@@ -1599,13 +1599,26 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
         NSString *currentQueryText = self.queryModel.queryText ?: @"";
         NSString *resultQueryText = newResult.queryText ?: @"";
+        BOOL (^isCurrentState)(void) = ^BOOL {
+            EZQueryService *currentService = [self serviceWithType:service.serviceTypeWithUniqueIdentifier];
+            NSString *updatedQueryText = self.queryModel.queryText ?: @"";
+            return currentService == service
+                && newResult.isShowing
+                && [updatedQueryText isEqualToString:currentQueryText];
+        };
         BOOL hasStaleResult = isShowing
             && newResult.hasShowingResult
             && ![resultQueryText isEqualToString:currentQueryText];
         if (hasStaleResult) {
             if (self.queryModel.needDetectLanguage) {
                 [self detectQueryText:^(NSString *_Nonnull language) {
-                    [self resetCellWithService:service autoQuery:YES];
+                    NSString *updatedResultQueryText = newResult.queryText ?: @"";
+                    BOOL stillHasStaleResult = isCurrentState()
+                        && newResult.hasShowingResult
+                        && ![updatedResultQueryText isEqualToString:currentQueryText];
+                    if (stillHasStaleResult) {
+                        [self resetCellWithService:service autoQuery:YES];
+                    }
                 }];
             } else {
                 [self resetCellWithService:service autoQuery:YES];
@@ -1617,7 +1630,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         if (isShowing && !newResult.hasShowingResult) {
             if (self.queryModel.needDetectLanguage) {
                 [self detectQueryText:^(NSString *_Nonnull language) {
-                    [self queryWithModel:self.queryModel service:service];
+                    BOOL stillNeedsQuery = isCurrentState() && !newResult.hasShowingResult;
+                    if (stillNeedsQuery) {
+                        [self queryWithModel:self.queryModel service:service];
+                    }
                 }];
             } else {
                 [self queryWithModel:self.queryModel service:service];
