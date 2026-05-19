@@ -1322,7 +1322,7 @@
 		C0DEC11E0002000000000005 /* CodexCLILogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLILogger.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIDebugWindow.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIServiceConfigurationView.swift; sourceTree = "<group>"; };
-		C0DEC11E0002000000000008 /* codex-cli-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "codex-cli-overview.md"; sourceTree = "<group>"; };
+		C0DEC11E0002000000000008 /* codex-cli-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "codex-cli-overview.html"; sourceTree = "<group>"; };
 		C0DEC11E0002000000000009 /* codex-cli-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "codex-cli-overview.md"; sourceTree = "<group>"; };
 		C0DEC11E0002000000000012 /* codex-cli-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "codex-cli-architecture.svg"; sourceTree = "<group>"; };
 		C0DEC11E0002000000000013 /* codex-cli-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "codex-cli-architecture.svg"; sourceTree = "<group>"; };
@@ -3717,7 +3717,7 @@
 				C0DEC11E0002000000000001 /* CodexCLIService.swift */,
 				C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */,
 				C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */,
-				C0DEC11E0002000000000008 /* codex-cli-overview.md */,
+				C0DEC11E0002000000000008 /* codex-cli-overview.html */,
 				C0DEC11E0002000000000012 /* codex-cli-architecture.svg */,
 			);
 			path = CodexCLI;

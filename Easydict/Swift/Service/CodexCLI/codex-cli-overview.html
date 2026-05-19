@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>CodexCLI 目录概览</title>
+  <style>
+    :root {
+      --background: #f7f7f4;
+      --surface: #ffffff;
+      --text: #202124;
+      --muted: #5f6368;
+      --border: #d7d8d2;
+      --accent: #0f766e;
+      --code: #f1f3f4;
+      --shadow: 0 18px 42px rgba(32, 33, 36, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #171918;
+        --surface: #222523;
+        --text: #f1f3f2;
+        --muted: #b7bcb8;
+        --border: #3a3f3b;
+        --accent: #5eead4;
+        --code: #303431;
+        --shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+        "Hiragino Sans GB", "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.68;
+    }
+
+    main {
+      width: min(960px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 48px 0 64px;
+    }
+
+    header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1,
+    h2 {
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: 34px;
+      font-weight: 760;
+    }
+
+    h2 {
+      margin: 40px 0 16px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0 0 14px;
+    }
+
+    ul,
+    ol {
+      margin: 0;
+      padding-left: 1.45rem;
+    }
+
+    li {
+      margin: 0 0 10px;
+    }
+
+    code {
+      padding: 0.12rem 0.32rem;
+      border-radius: 5px;
+      background: var(--code);
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    .summary,
+    .diagram {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .summary {
+      padding: 22px 24px;
+    }
+
+    .diagram {
+      margin: 28px 0 36px;
+      padding: 18px;
+    }
+
+    .diagram img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    .diagram figcaption {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .tag {
+      color: var(--accent);
+      font-weight: 650;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="tag">Service / CodexCLI</p>
+      <h1>CodexCLI 目录概览</h1>
+      <p class="lead">
+        CodexCLI 把本地 <code>codex</code> CLI 接入 Easydict 的
+        <code>StreamService</code> 翻译链路。
+      </p>
+    </header>
+
+    <section class="summary" aria-labelledby="overview">
+      <h2 id="overview">概览</h2>
+      <p>
+        设计目标与 <code>ClaudeCode</code> 一致：保留 OpenAI Codex 自有的认证机制
+        （<code>~/.codex/auth.json</code> 或 <code>OPENAI_API_KEY</code>），不做任何
+        OAuth 或代理绕行；每次翻译都启动一个独立的
+        <code>codex exec --json</code> 子进程，无跨查询会话状态。
+      </p>
+    </section>
+
+    <figure class="diagram">
+      <img src="codex-cli-architecture.svg" alt="CodexCLI 翻译服务架构图">
+      <figcaption>同目录的架构图展示服务入口、子进程执行、事件解析与调试日志之间的关系。</figcaption>
+    </figure>
+
+    <section aria-labelledby="components">
+      <h2 id="components">关键组件</h2>
+      <ul>
+        <li>
+          <code>CodexCLIService.swift</code> 接入
+          <code>StreamService</code> 的 <code>contentStreamTranslate</code>
+          入口，把系统 prompt 和对话消息合并成单条 prompt（codex 没有独立的
+          system prompt 标志），并管理 runner 生命周期。
+        </li>
+        <li>
+          <code>CodexCLIRunner.swift</code> 通过登录 shell 的
+          <code>which codex</code> 探测二进制路径并缓存，用
+          <code>Process</code> 启动子进程并并行读取 stdout / stderr。线程安全的
+          <code>cancel()</code> 用于在新查询替换或用户取消时立刻终止子进程。
+        </li>
+        <li>
+          <code>CodexCLIEventParser.swift</code> 解析 JSONL 流式事件：
+          <code>item.completed</code>（<code>agent_message</code>）→ 助手文本，
+          <code>turn.completed.usage</code> → token 用量，
+          <code>turn.failed</code> / <code>error</code> → 类型化错误。
+          <code>error</code> 字段同时支持字符串和
+          <code>{message,...}</code> 对象两种结构（Codex 0.128.x 实际行为）。
+        </li>
+        <li>
+          <code>CodexCLIError.swift</code> 定义 <code>notInstalled</code> /
+          <code>notLoggedIn</code> / <code>quotaExceeded</code> /
+          <code>cliError</code> 四种错误类型，全部携带本地化文案。
+        </li>
+        <li>
+          <code>CodexCLILogger.swift</code> 把每次调用的 stdout/stderr/exit code 写入
+          <code>Application Support/&lt;bundle&gt;/logs/codex-cli/</code>，
+          最多保留 50 个文件。
+        </li>
+        <li>
+          <code>CodexCLIDebugWindow.swift</code> 仅在
+          <code>AGENT_CLI_DEBUG</code> 编译标记下提供一个浮动面板实时显示原始事件，
+          方便调试 CLI 行为变化。
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="flow">
+      <h2 id="flow">主流程</h2>
+      <ol>
+        <li>
+          <code>CodexCLIService.contentStreamTranslate</code> 拼出包含 system + user
+          内容的单条 prompt，构造 <code>CodexCLIRunner</code> 并调用
+          <code>run(prompt:)</code>。
+        </li>
+        <li>
+          Runner 在后台 <code>Task.detached</code> 中探测二进制并启动子进程，参数为
+          <code>exec --json --skip-git-repo-check --ephemeral --sandbox read-only -C &lt;tmp&gt;</code>。
+        </li>
+        <li>
+          stdout 按行解析。<code>item.completed</code>
+          (<code>agent_message</code>) 的文本立刻 yield 给
+          <code>StreamService</code> 基类，其它事件（<code>thread.started</code>、
+          <code>turn.started</code>、reasoning 等）暂存到控制缓冲区。
+        </li>
+        <li>
+          子进程退出后，控制缓冲区用于解析 <code>turn.completed.usage</code> 与各类失败事件。
+          退出码非零且非用户取消时抛出 <code>CodexCLIError</code>。
+        </li>
+        <li>
+          用户取消查询或下一次翻译启动时，<code>cancel()</code>
+          通过原子状态终止子进程，onTermination 回调释放管道资源。
+        </li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="cli-contract">
+      <h2 id="cli-contract">CLI 调用约定</h2>
+      <ul>
+        <li><code>--json</code> 输出 JSONL，每个事件独占一行。</li>
+        <li><code>--ephemeral</code> 跳过会话文件持久化，避免污染 <code>~/.codex/sessions</code>。</li>
+        <li><code>--sandbox read-only</code> 阻止模型工具调用产生文件写入。</li>
+        <li><code>--skip-git-repo-check</code> 允许在中性目录（<code>/tmp</code>）下执行。</li>
+        <li><code>-C &lt;tmpdir&gt;</code> 改变 cwd，避免 codex 读取项目级 <code>AGENTS.md</code>。</li>
+        <li>没有 <code>--system-prompt</code> 等价物，所以系统指令统一拼进 prompt 文本。</li>
+        <li>Codex 0.128.x 不做增量 streaming，整段助手文本一次性出现。</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="debugging">
+      <h2 id="debugging">调试入口</h2>
+      <ul>
+        <li>
+          翻译结果异常先看
+          <code>Application Support/&lt;bundle&gt;/logs/codex-cli/*.log</code>
+          的退出码和原始事件。
+        </li>
+        <li>
+          设置页 Codex 配置区域显示二进制安装状态；找不到二进制返回
+          <code>notInstalled</code>。
+        </li>
+        <li>
+          <code>AGENT_CLI_DEBUG</code> 编译下打开 Debug Log 窗口可实时观察事件流，
+          常用于跟踪 codex 版本升级带来的字段变化。
+        </li>
+        <li>
+          错误分类逻辑见 <code>parseCodexError(fromStdout:stderr:)</code>，
+          新错误模式只需扩充关键字列表或 <code>isFailureEvent</code>。
+        </li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
