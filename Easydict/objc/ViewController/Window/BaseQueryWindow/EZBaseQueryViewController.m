@@ -1598,10 +1598,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         service.enabledQuery = isShowing;
 
         NSString *currentQueryText = self.queryModel.queryText ?: @"";
+        NSString *resultQueryText = newResult.queryText ?: @"";
         BOOL hasStaleResult = isShowing
             && newResult.hasShowingResult
-            && newResult.queryText.length
-            && ![newResult.queryText isEqualToString:currentQueryText];
+            && ![resultQueryText isEqualToString:currentQueryText];
         if (hasStaleResult) {
             if (self.queryModel.needDetectLanguage) {
                 [self detectQueryText:^(NSString *_Nonnull language) {
