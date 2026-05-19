@@ -50,9 +50,9 @@ in-flight 加载任务，避免重复解析同一 MDX；返回结果按 `records
 逐本调用 `lookup`（保留结构化并发取消语义，外层 `translate` 取消时下一本词典前会立即停止），
 词典内部先通过 `MDictReader` 精确查找 key entry 和 record block；如果无结果，再尝试常见
 英文变形词，并按需构建 headword 搜索索引用于 prefix、substring 和 fuzzy fallback。
-如果词条内容是 `@@@LINK=目标词`，`MDictDictionary` 会在同一本词典内继续查询目标词，
-并用深度上限和已访问词集合阻止循环跳转；超大词库只走精确查词和变形词路径，避免一次查询
-miss 阻塞 UI。
+如果词条内容是 `@@@LINK=目标词`，`MDictDictionary` 会在同一本词典内精确查询目标词，
+不复用面向用户输入的变形词或 fuzzy fallback，并用深度上限和已访问词集合阻止循环跳转；
+超大词库只走精确查词和变形词路径，避免一次查询 miss 阻塞 UI。
 命中最终词条后再把 HTML 中的本地资源链接改写为 data URI 或内部锚点。只有命中结果需要解析 MDD
 资源时，词典才会创建对应的 resource reader。图片、音频和 CSS url 生成的 data URI 会按 LRU
 缓存；外链 stylesheet 解析后的 CSS 也会缓存，并复用已缓存的内嵌资源。资源 key 查询会先尝试

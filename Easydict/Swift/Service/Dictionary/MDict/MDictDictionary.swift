@@ -213,7 +213,9 @@ final class MDictDictionary: @unchecked Sendable {
         depth: Int
     ) throws
         -> [String] {
-        let definitions = try directLookupDefinitions(for: word)
+        let definitions = try depth == 0
+            ? directLookupDefinitions(for: word)
+            : exactLookupDefinitions(for: word)
         guard definitions.count == 1,
               let linkedKeyword = Self.linkedKeyword(in: definitions[0]),
               depth < maxMDictLinkResolutionDepth
@@ -236,14 +238,7 @@ final class MDictDictionary: @unchecked Sendable {
     }
 
     private func directLookupDefinitions(for word: String) throws -> [String] {
-        var definitions = try mdxReader.lookupAll(word)
-
-        if definitions.isEmpty, !mdxReader.header.keyCaseSensitive {
-            definitions = try mdxReader.lookupAll(word.lowercased())
-            if definitions.isEmpty {
-                definitions = try mdxReader.lookupAll(word.capitalized)
-            }
-        }
+        var definitions = try exactLookupDefinitions(for: word)
         if !definitions.isEmpty { return definitions }
 
         for candidate in MDictInflection.candidates(for: word) {
@@ -256,6 +251,18 @@ final class MDictDictionary: @unchecked Sendable {
             if !definitions.isEmpty { return definitions }
         }
         return []
+    }
+
+    private func exactLookupDefinitions(for word: String) throws -> [String] {
+        var definitions = try mdxReader.lookupAll(word)
+
+        if definitions.isEmpty, !mdxReader.header.keyCaseSensitive {
+            definitions = try mdxReader.lookupAll(word.lowercased())
+            if definitions.isEmpty {
+                definitions = try mdxReader.lookupAll(word.capitalized)
+            }
+        }
+        return definitions
     }
 
     private func fallbackSearchCandidates(for word: String) throws -> [String] {

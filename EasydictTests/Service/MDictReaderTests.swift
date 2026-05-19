@@ -88,6 +88,19 @@ struct MDictReaderTests {
         #expect(try dictionary.lookup("books") == "<div>book definition</div>")
     }
 
+    @Test("MDict keyword link targets do not use fuzzy fallback")
+    func testKeywordLinkTargetsDoNotUseFuzzyFallback() throws {
+        let mdxURL = try Self.makeTemporaryMDX(records: [
+            "alias": "@@@LINK=boook",
+            "book": "<div>book definition</div>",
+        ])
+        defer { try? FileManager.default.removeItem(at: mdxURL) }
+
+        let dictionary = try MDictDictionary(mdxURL: mdxURL)
+
+        #expect(try dictionary.lookup("alias") == "@@@LINK=boook")
+    }
+
     @Test("MDict keyword link marker trims target word")
     func testLinkedKeywordTrimsTargetWord() {
         #expect(MDictDictionary.linkedKeyword(in: "\n@@@LINK=heads-up\n") == "heads-up")
