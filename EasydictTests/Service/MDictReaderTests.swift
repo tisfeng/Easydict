@@ -75,6 +75,26 @@ struct MDictReaderTests {
         #expect(resource?.isEmpty == false)
     }
 
+    @Test("MDict lookup follows keyword link records")
+    func testLookupFollowsKeywordLinkRecords() throws {
+        let mdxURL = try Self.makeTemporaryMDX(records: [
+            "book": "<div>book definition</div>",
+            "books": "@@@LINK=book",
+        ])
+        defer { try? FileManager.default.removeItem(at: mdxURL) }
+
+        let dictionary = try MDictDictionary(mdxURL: mdxURL)
+
+        #expect(try dictionary.lookup("books") == "<div>book definition</div>")
+    }
+
+    @Test("MDict keyword link marker trims target word")
+    func testLinkedKeywordTrimsTargetWord() {
+        #expect(MDictDictionary.linkedKeyword(in: "\n@@@LINK=heads-up\n") == "heads-up")
+        #expect(MDictDictionary.linkedKeyword(in: "@@@LINK=  book  ") == "book")
+        #expect(MDictDictionary.linkedKeyword(in: "<div>book</div>") == nil)
+    }
+
     // MARK: - Decompression
 
     @Test("Zlib decompression round-trip")
@@ -255,6 +275,67 @@ struct MDictReaderTests {
         return nil
     }
 
+    private static func makeTemporaryMDX(records: [String: String]) throws -> URL {
+        let orderedRecords = records.sorted { $0.key < $1.key }
+        let header = """
+        <Dictionary GeneratedByEngineVersion="2.0" Format="Html" \
+        KeyCaseSensitive="No" Encoding="utf-8" Title="Test Dict" />
+        """
+        let headerData = Data(header.utf16LittleEndianBytes)
+        var data = Data()
+        data.appendUInt32BE(UInt32(headerData.count))
+        data.append(headerData)
+        data.append(Data([0x00, 0x00, 0x00, 0x00]))
+
+        var keyBlock = Data()
+        var recordBlock = Data()
+        for record in orderedRecords {
+            keyBlock.appendUInt64BE(UInt64(recordBlock.count))
+            keyBlock.append(Data(record.key.utf8))
+            keyBlock.append(0)
+            recordBlock.append(Data(record.value.utf8))
+        }
+
+        let keyBlockBytes = uncompressedBlock(keyBlock)
+        var keyInfo = Data()
+        keyInfo.appendUInt64BE(UInt64(orderedRecords.count))
+        keyInfo.appendBoundary(orderedRecords[0].key)
+        keyInfo.appendBoundary(orderedRecords[orderedRecords.count - 1].key)
+        keyInfo.appendUInt64BE(UInt64(keyBlockBytes.count))
+        keyInfo.appendUInt64BE(UInt64(keyBlock.count))
+        let keyInfoBytes = uncompressedBlock(keyInfo)
+
+        data.appendUInt64BE(1)
+        data.appendUInt64BE(UInt64(orderedRecords.count))
+        data.appendUInt64BE(UInt64(keyInfo.count))
+        data.appendUInt64BE(UInt64(keyInfoBytes.count))
+        data.appendUInt64BE(UInt64(keyBlockBytes.count))
+        data.append(Data([0x00, 0x00, 0x00, 0x00]))
+        data.append(keyInfoBytes)
+        data.append(keyBlockBytes)
+
+        let recordBlockBytes = uncompressedBlock(recordBlock)
+        data.appendUInt64BE(1)
+        data.appendUInt64BE(UInt64(orderedRecords.count))
+        data.appendUInt64BE(16)
+        data.appendUInt64BE(UInt64(recordBlockBytes.count))
+        data.appendUInt64BE(UInt64(recordBlockBytes.count))
+        data.appendUInt64BE(UInt64(recordBlock.count))
+        data.append(recordBlockBytes)
+
+        let url = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathExtension("mdx")
+        try data.write(to: url)
+        return url
+    }
+
+    private static func uncompressedBlock(_ payload: Data) -> Data {
+        var data = Data([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
+        data.append(payload)
+        return data
+    }
+
     private func hex(_ bytes: [UInt8]) -> String {
         bytes.map { String(format: "%02x", $0) }.joined()
     }
@@ -265,5 +346,27 @@ extension String {
         utf16.flatMap { unit in
             [UInt8(unit & 0xFF), UInt8(unit >> 8)]
         }
+    }
+}
+
+extension Data {
+    fileprivate mutating func appendUInt32BE(_ value: UInt32) {
+        append(UInt8((value >> 24) & 0xFF))
+        append(UInt8((value >> 16) & 0xFF))
+        append(UInt8((value >> 8) & 0xFF))
+        append(UInt8(value & 0xFF))
+    }
+
+    fileprivate mutating func appendUInt64BE(_ value: UInt64) {
+        for shift in stride(from: 56, through: 0, by: -8) {
+            append(UInt8((value >> UInt64(shift)) & 0xFF))
+        }
+    }
+
+    fileprivate mutating func appendBoundary(_ key: String) {
+        append(UInt8((key.utf8.count >> 8) & 0xFF))
+        append(UInt8(key.utf8.count & 0xFF))
+        append(Data(key.utf8))
+        append(0)
     }
 }

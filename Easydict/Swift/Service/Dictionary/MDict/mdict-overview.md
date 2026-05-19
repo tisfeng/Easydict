@@ -1,7 +1,8 @@
 # MDict
 
 `MDict` 实现用户导入的 MDX/MDD 离线词典查询能力。它负责管理词典文件、解析二进制索引、
-查询条目内容、重写词典内资源链接，并把结果交给共享的词典 HTML 渲染层展示。
+查询条目内容、跟随词条重定向、重写词典内资源链接，并把结果交给共享的词典 HTML
+渲染层展示。
 
 ![MDict 架构](./mdict-architecture.svg)
 
@@ -49,8 +50,10 @@ in-flight 加载任务，避免重复解析同一 MDX；返回结果按 `records
 逐本调用 `lookup`（保留结构化并发取消语义，外层 `translate` 取消时下一本词典前会立即停止），
 词典内部先通过 `MDictReader` 精确查找 key entry 和 record block；如果无结果，再尝试常见
 英文变形词，并按需构建 headword 搜索索引用于 prefix、substring 和 fuzzy fallback。
-超大词库只走精确查词和变形词路径，避免一次查询 miss 阻塞 UI。
-命中后再把 HTML 中的本地资源链接改写为 data URI 或内部锚点。只有命中结果需要解析 MDD
+如果词条内容是 `@@@LINK=目标词`，`MDictDictionary` 会在同一本词典内继续查询目标词，
+并用深度上限和已访问词集合阻止循环跳转；超大词库只走精确查词和变形词路径，避免一次查询
+miss 阻塞 UI。
+命中最终词条后再把 HTML 中的本地资源链接改写为 data URI 或内部锚点。只有命中结果需要解析 MDD
 资源时，词典才会创建对应的 resource reader。图片、音频和 CSS url 生成的 data URI 会按 LRU
 缓存；外链 stylesheet 解析后的 CSS 也会缓存，并复用已缓存的内嵌资源。资源 key 查询会先尝试
 词条原始路径，再生成反斜杠和前导斜杠变体，兼容不同 MDD 生成器的路径风格。CSS 和脚本等文本
@@ -76,8 +79,8 @@ data URI 时会把其中的 `,` 转义为 `%2C`，避免被浏览器误当作候
 ## 调试入口
 
 - 导入失败时，先检查文件扩展名、MDX/MDD 同名匹配，以及 `MDictManager.loadErrors`。
-- 查询无结果时，检查 `MDictManager.dictionariesForLookup()`、词典大小写设置、key block
-  边界和 `MDictSearchIndex` fallback candidates。
+- 查询无结果时，检查 `MDictManager.dictionariesForLookup()`、词典大小写设置、`@@@LINK=`
+  目标词、key block 边界和 `MDictSearchIndex` fallback candidates。
 - 图片、音频或样式缺失时，优先检查 `MDictDictionary` 的 resource key candidates、同名
   `.css` 文件路径、资源重写和 data URI/CSS cache 命中。
 - 解析、解压或加密相关错误，从 `MDictReader/` 子目录里的 `MDictReader`、`MDictBinary`、
