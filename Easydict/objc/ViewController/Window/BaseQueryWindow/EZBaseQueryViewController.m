@@ -1606,42 +1606,53 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
                 && newResult.isShowing
                 && [updatedQueryText isEqualToString:currentQueryText];
         };
+        void (^resetStaleResultIfCurrent)(void) = ^{
+            NSString *updatedResultQueryText = newResult.queryText ?: @"";
+            if (!isCurrentState()) {
+                return;
+            }
+            if (!newResult.hasShowingResult) {
+                return;
+            }
+            if ([updatedResultQueryText isEqualToString:currentQueryText]) {
+                return;
+            }
+            [self resetCellWithService:service autoQuery:YES];
+        };
+        void (^queryServiceIfCurrent)(void) = ^{
+            if (!isCurrentState()) {
+                return;
+            }
+            if (newResult.hasShowingResult) {
+                return;
+            }
+            [self queryWithModel:self.queryModel service:service];
+        };
+        void (^performAfterLanguageDetection)(void (^)(void)) = ^(void (^action)(void)) {
+            if (!self.queryModel.needDetectLanguage) {
+                action();
+                return;
+            }
+            [self detectQueryText:^(NSString *_Nonnull language) {
+                action();
+            }];
+        };
         BOOL hasStaleResult = isShowing
             && newResult.hasShowingResult
             && ![resultQueryText isEqualToString:currentQueryText];
         if (hasStaleResult) {
-            if (self.queryModel.needDetectLanguage) {
-                [self detectQueryText:^(NSString *_Nonnull language) {
-                    NSString *updatedResultQueryText = newResult.queryText ?: @"";
-                    BOOL stillHasStaleResult = isCurrentState()
-                        && newResult.hasShowingResult
-                        && ![updatedResultQueryText isEqualToString:currentQueryText];
-                    if (stillHasStaleResult) {
-                        [self resetCellWithService:service autoQuery:YES];
-                    }
-                }];
-            } else {
-                [self resetCellWithService:service autoQuery:YES];
-            }
+            performAfterLanguageDetection(resetStaleResultIfCurrent);
             return;
         }
 
         // If there is no result, try to query with current servie.
         if (isShowing && !newResult.hasShowingResult) {
-            if (self.queryModel.needDetectLanguage) {
-                [self detectQueryText:^(NSString *_Nonnull language) {
-                    BOOL stillNeedsQuery = isCurrentState() && !newResult.hasShowingResult;
-                    if (stillNeedsQuery) {
-                        [self queryWithModel:self.queryModel service:service];
-                    }
-                }];
-            } else {
-                [self queryWithModel:self.queryModel service:service];
-            }
-        } else {
-            // If alreay has result, just update cell.
-            [self updateCellWithResult:newResult reloadData:YES];
+            performAfterLanguageDetection(queryServiceIfCurrent);
+            return;
         }
+
+        // If alreay has result, just update cell.
+        [self updateCellWithResult:newResult reloadData:YES];
     }];
 }
 
