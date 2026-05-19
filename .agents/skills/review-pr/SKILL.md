@@ -31,7 +31,7 @@ state.
   local branch.
 - Do not push anything while preparing or reviewing the PR.
 - Do not stash or discard local changes automatically. Stop and ask the user if
-  the worktree is dirty before switching branches.
+  the worktree is dirty before preparing or switching branches.
 - If a remote with the intended contributor name already exists but points to a
   different repository, stop and ask the user how to proceed.
 - Do not review from the PR description alone. Inspect the linked issues,
@@ -80,7 +80,7 @@ The helper script:
 - Adds the contributor remote only when missing.
 - Fetches the exact PR head branch into `refs/remotes/<owner>/<branch>`.
 - Creates or switches to a local branch whose name exactly matches the PR head
-  branch.
+  branch, and skips switching when that branch is already current.
 - Sets the local branch upstream to `<owner>/<branch>`.
 - Uses fast-forward-only integration when the local branch already exists.
 
@@ -138,11 +138,15 @@ Check the PR against the actual problem it claims to solve:
 - Does the code match local project patterns, naming, style, and architecture?
 - Are unrelated refactors, generated churn, or accidental changes present?
 
-Run validation only when appropriate for the size and risk of the change. For
-this repository, follow `AGENTS.md`: run `xcodebuild` when substantive code
-changes exceed 100 lines, when the user asks, or when a skill explicitly
-requires it. Always run lightweight checks such as `git diff --check` when they
-are relevant.
+Do not run `xcodebuild` during PR review unless the user explicitly asks for a
+local build. When validation status matters, inspect PR checks instead:
+
+```bash
+gh pr checks <pr-ref>
+```
+
+Always run lightweight local checks such as `git diff --check` when they are
+relevant.
 
 ## Output Format
 
@@ -151,7 +155,7 @@ Use this structure exactly:
 
 ```markdown
 **Findings**
-- [Severity] [path:line] Clear description of the issue, why it matters, and
+- [P0-P3] [path:line] Clear description of the issue, why it matters, and
   what should change.
 
 **Open Questions**
@@ -165,12 +169,12 @@ Use this structure exactly:
 Short neutral summary of what the PR changes and the overall review result.
 ```
 
-Severity values:
+Priority values:
 
-- `Critical`: data loss, crashes, security flaws, or broken core workflows.
-- `High`: likely user-visible regression or incorrect behavior.
-- `Medium`: edge-case bug, missing compatibility, or incomplete issue coverage.
-- `Low`: maintainability, clarity, or test/documentation gap worth fixing.
+- `P0`: data loss, crashes, security flaws, or broken core workflows.
+- `P1`: likely user-visible regression or incorrect behavior.
+- `P2`: edge-case bug, missing compatibility, or incomplete issue coverage.
+- `P3`: maintainability, clarity, or test/documentation gap worth fixing.
 
 If there are no findings, write:
 

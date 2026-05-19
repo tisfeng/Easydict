@@ -66,10 +66,6 @@ else
   fail "Unsupported PR reference: ${pr_ref}"
 fi
 
-if [[ -n $(git status --porcelain=v1) ]]; then
-  fail "Worktree has uncommitted changes. Commit, stash, or clean them before switching PR branches."
-fi
-
 metadata=$(
   gh pr view "$view_ref" "${repo_args[@]}" \
     --json headRefName,headRepository,headRepositoryOwner,number,url \
@@ -81,6 +77,16 @@ IFS=$'\t' read -r head_owner head_repo head_branch pr_number pr_url <<< "$metada
 [[ -n ${head_owner:-} ]] || fail "PR head owner is empty. The fork may be unavailable."
 [[ -n ${head_repo:-} ]] || fail "PR head repository is empty. The fork may be unavailable."
 [[ -n ${head_branch:-} ]] || fail "PR head branch is empty."
+
+current_branch=$(git branch --show-current || true)
+
+if [[ -n $(git status --porcelain=v1) ]]; then
+  if [[ $current_branch == "$head_branch" ]]; then
+    fail "Worktree has uncommitted changes on PR branch '${head_branch}'. Clean it before preparing or reviewing the PR."
+  fi
+
+  fail "Worktree has uncommitted changes on branch '${current_branch:-detached HEAD}'. Commit, stash, or clean them before switching to PR branch '${head_branch}'."
+fi
 
 remote_name=$head_owner
 remote_url="https://github.com/${head_owner}/${head_repo}.git"
@@ -101,7 +107,11 @@ git fetch "$remote_name" "+refs/heads/${head_branch}:${remote_ref}"
 
 if git show-ref --verify --quiet "refs/heads/${head_branch}"; then
   git branch --set-upstream-to="$upstream_ref" "$head_branch"
-  git switch "$head_branch"
+  if [[ $current_branch == "$head_branch" ]]; then
+    printf 'Already on branch: %s\n' "$head_branch"
+  else
+    git switch "$head_branch"
+  fi
   git merge --ff-only "$upstream_ref"
 else
   git switch --create "$head_branch" --track "$upstream_ref"
