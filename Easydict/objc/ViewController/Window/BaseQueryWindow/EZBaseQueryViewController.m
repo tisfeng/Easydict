@@ -704,8 +704,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         NSString *textLanguage = self.queryModel.queryFromLanguage;
         BOOL isEnglishWord = [queryText isEnglishWordWithLanguage:textLanguage];
 
-        // If query text is an English word, use Youdao TTS to play.
-        EZQueryService *ttsService = isEnglishWord ? self.youdaoService : self.defaultTTSService;
+        // If query text is an English word, prefer Youdao TTS for its high-quality
+        // dictionary recordings. Users on slow or restricted networks can disable
+        // this in Advanced settings to fall back to their default TTS service.
+        BOOL preferYoudao = self.config.preferYoudaoTTSForEnglishWord;
+        EZQueryService *ttsService = (isEnglishWord && preferYoudao) ? self.youdaoService : self.defaultTTSService;
         NSString *accent = self.config.pronunciation == EnglishPronunciationUk ? @"uk" : @"us";
 
         [self.audioPlayer playTextAudio:queryText

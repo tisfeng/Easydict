@@ -8533,6 +8533,50 @@
         }
       }
     },
+    "setting.advance.prefer_youdao_tts_for_english_word" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prefer Youdao TTS for English Words"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英语单词优先使用有道发音"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英語單字優先使用有道發音"
+          }
+        }
+      }
+    },
+    "setting.advance.prefer_youdao_tts_for_english_word_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use Youdao's high-quality dictionary recordings for English words instead of the default TTS service. Disable this on slow or restricted networks where Youdao requests are slow or blocked."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英语单词优先使用有道的高品质词典发音，而非默认 TTS 服务。在网速较慢或访问受限的网络环境下，可关闭此选项以避免有道请求慢或被屏蔽导致发音延迟。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英語單字優先使用有道的高品質詞典發音，而非預設 TTS 服務。在網速較慢或存取受限的網路環境下，可關閉此選項以避免有道請求過慢或被封鎖導致發音延遲。"
+          }
+        }
+      }
+    },
     "setting.advance.show_ocr_menu_items" : {
       "localizations" : {
         "en" : {
