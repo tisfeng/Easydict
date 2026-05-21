@@ -18,7 +18,6 @@ extension SystemUtility {
     /// this falls back to checking whether the standard "Paste" menu item is enabled.
     ///
     /// - Returns: `true` when insertion is likely supported; otherwise `false`.
-    @MainActor
     func canInsertText() -> Bool {
         logInfo("Checking if text insertion is supported in current context")
 

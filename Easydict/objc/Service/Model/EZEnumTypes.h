@@ -103,6 +103,7 @@ typedef NS_OPTIONS(NSUInteger, EZTriggerType) {
     EZTriggerTypeTripleClick = 1 << 1,
     EZTriggerTypeDragged = 1 << 2,
     EZTriggerTypeShift = 1 << 3,
+    EZTriggerTypeSelectAllShortcut = 1 << 4,
 };
 
 

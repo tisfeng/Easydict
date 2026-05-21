@@ -287,6 +287,10 @@ final class EventMonitor: NSObject {
 //            log("keyCode: \(event.keyCode)")
 
             EZWindowManager.shared().lastPoint = mouseLocation
+            if handleSelectAllShortcut(event) {
+                return
+            }
+
             if shouldDismissForKeyCombination(
                 keyCode: Int(event.keyCode),
                 modifierFlags: event.modifierFlags.union(currentModifierFlags)
@@ -316,6 +320,41 @@ final class EventMonitor: NSObject {
                 dismissPopButton()
             }
         }
+    }
+
+    private func handleSelectAllShortcut(_ event: NSEvent) -> Bool {
+        guard isSelectAllShortcut(event) else { return false }
+        guard !event.isARepeat else { return false }
+
+        let frontmostTriggerType = appContextProvider.frontmostAppTriggerType(
+            forceGetSelectedTextType: MyConfiguration.shared.forceGetSelectedTextType
+        )
+        guard frontmostTriggerType.contains(.selectAllShortcut) else {
+            logInfo("Frontmost app trigger type does not contain select all shortcut")
+            return false
+        }
+
+        guard enabledAutoSelectText() else { return false }
+        guard systemUtility.canInsertText() else {
+            logInfo("Focused element cannot insert text, skip select all shortcut auto get selected text")
+            return false
+        }
+
+        triggerType = .selectAllShortcut
+        if popButtonController.isPopButtonVisible {
+            dismissPopButton()
+        }
+        cancelDelayGetSelectedText()
+        delayGetSelectedText()
+        return true
+    }
+
+    private func isSelectAllShortcut(_ event: NSEvent) -> Bool {
+        guard event.keyCode == kVK_ANSI_A else { return false }
+
+        let modifierFlags = event.modifierFlags.union(currentModifierFlags)
+        let disallowedModifiers: NSEvent.ModifierFlags = [.option, .shift, .control, .function]
+        return modifierFlags.contains(.command) && modifierFlags.isDisjoint(with: disallowedModifiers)
     }
 
     /// Handles temporary high-frequency input monitors while the pop button is visible.

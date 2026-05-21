@@ -24,7 +24,7 @@ final class AppContextProvider {
         let userAppModelList = LocalStorage.shared().selectTextTypeAppModelList
 
         let appBundleID = frontmostApplication?.bundleIdentifier ?? ""
-        let defaultType: EZTriggerType = [.doubleClick, .tripleClick, .dragged, .shift]
+        let defaultType: EZTriggerType = [.doubleClick, .tripleClick, .dragged, .shift, .selectAllShortcut]
 
         var type = appSelectTextActionType(
             appBundleID: appBundleID,
