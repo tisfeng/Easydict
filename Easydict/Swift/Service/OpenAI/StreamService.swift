@@ -438,34 +438,6 @@ public class StreamService: QueryService {
         return try response.result.get()
     }
 
-    private func remoteModelError(statusCode: Int, data: Data?) -> QueryError {
-        let message = data.flatMap(remoteModelErrorMessage)?.trim()
-        if let message, !message.isEmpty {
-            return QueryError(type: .api, message: message)
-        }
-        return QueryError(type: .api, message: "HTTP \(statusCode)")
-    }
-
-    private func remoteModelErrorMessage(from data: Data) -> String? {
-        if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-            if let error = json["error"] as? String {
-                return error
-            }
-            if let error = json["error"] as? [String: Any],
-               let message = error["message"] as? String {
-                return message
-            }
-            if let message = json["message"] as? String {
-                return message
-            }
-        }
-
-        guard let text = String(data: data, encoding: .utf8)?.trim(), !text.isEmpty else {
-            return nil
-        }
-        return String(text.prefix(300))
-    }
-
     /// Base on chat query, convert prompt dict to LLM service prompt model.
     func serviceChatMessageModels(_ chatQuery: ChatQueryParam)
         -> [Any] {
@@ -545,5 +517,35 @@ public class StreamService: QueryService {
                 )
             )
         }
+    }
+
+    // MARK: Private
+
+    private func remoteModelError(statusCode: Int, data: Data?) -> QueryError {
+        let message = data.flatMap(remoteModelErrorMessage)?.trim()
+        if let message, !message.isEmpty {
+            return QueryError(type: .api, message: message)
+        }
+        return QueryError(type: .api, message: "HTTP \(statusCode)")
+    }
+
+    private func remoteModelErrorMessage(from data: Data) -> String? {
+        if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            if let error = json["error"] as? String {
+                return error
+            }
+            if let error = json["error"] as? [String: Any],
+               let message = error["message"] as? String {
+                return message
+            }
+            if let message = json["message"] as? String {
+                return message
+            }
+        }
+
+        guard let text = String(data: data, encoding: .utf8)?.trim(), !text.isEmpty else {
+            return nil
+        }
+        return String(text.prefix(300))
     }
 }
