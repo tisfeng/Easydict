@@ -436,6 +436,7 @@ final class EventMonitor: NSObject {
         popButtonController.handleMouseMoved(isMouseInExpandedFrame: isMouseInPopButtonExpandedFrame())
     }
 
+    @objc
     private func autoGetSelectedText() {
         guard enabledAutoSelectText() else { return }
         logInfo("auto get selected text")
@@ -590,24 +591,19 @@ final class EventMonitor: NSObject {
     }
 
     private func delayGetSelectedText() {
-        perform(#selector(autoGetSelectedTextObjc), with: nil, afterDelay: Constants.delayGetSelectedText)
+        perform(#selector(autoGetSelectedText), with: nil, afterDelay: Constants.delayGetSelectedText)
     }
 
     private func delayGetSelectedText(_ delay: TimeInterval) {
-        perform(#selector(autoGetSelectedTextObjc), with: nil, afterDelay: delay)
+        perform(#selector(autoGetSelectedText), with: nil, afterDelay: delay)
     }
 
     private func cancelDelayGetSelectedText() {
         NSObject.cancelPreviousPerformRequests(
             withTarget: self,
-            selector: #selector(autoGetSelectedTextObjc),
+            selector: #selector(autoGetSelectedText),
             object: nil
         )
-    }
-
-    @objc
-    private func autoGetSelectedTextObjc() {
-        autoGetSelectedText()
     }
 
     private func isMouseInPopButtonExpandedFrame() -> Bool {
