@@ -34,7 +34,7 @@ class DeepSeekService: OpenAIService {
     }
 
     override var defaultModel: String {
-        DeepSeekModel.deepseekChat.rawValue
+        DeepSeekModel.deepseekV4Flash.rawValue
     }
 
     override var observeKeys: [Defaults.Key<String>] {
@@ -44,13 +44,21 @@ class DeepSeekService: OpenAIService {
     override var defaultEndpoint: String {
         "https://api.deepseek.com/v1/chat/completions"
     }
+
+    override var remoteModelsEndpoint: String? {
+        "https://api.deepseek.com/models"
+    }
+
+    override var remoteModelFetchRequiresEndpoint: Bool {
+        false
+    }
 }
 
 // MARK: - DeepSeekModel
 
 enum DeepSeekModel: String, CaseIterable {
     // Docs: https://api-docs.deepseek.com
-    // Pricing https://api-docs.deepseek.com/quick_start/pricing
-    case deepseekChat = "deepseek-chat" // Input: $0.07(CACHE HIT)/$0.27(CACHE MISS) | Output: $1.10  (8k)
-    case deepseekReasoner = "deepseek-reasoner" // Input: $0.14(CACHE HIT)/$0.55(CACHE MISS) | Output: $2.19  (8k)
+    // Pricing: https://api-docs.deepseek.com/quick_start/pricing
+    case deepseekV4Flash = "deepseek-v4-flash"
+    case deepseekV4Pro = "deepseek-v4-pro"
 }

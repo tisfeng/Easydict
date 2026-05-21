@@ -61,6 +61,11 @@ class OllamaService: BaseOpenAIService {
         )
     }
 
+    override func fetchRemoteModelIDs() async throws -> [String] {
+        let models = try await localModels()
+        return normalizedRemoteModelIDs(models.models.map(\.name))
+    }
+
     // MARK: Private
 
     private var ollamaModels = [""]
