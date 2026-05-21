@@ -70,6 +70,12 @@ public final class GeminiService: StreamService {
         ]
     }
 
+    // MARK: Remote Models
+
+    override var canFetchRemoteModels: Bool {
+        true
+    }
+
     override func contentStreamTranslate(
         _ text: String,
         from: Language,
@@ -165,6 +171,28 @@ public final class GeminiService: StreamService {
         return chatModels
     }
 
+    override func fetchRemoteModelIDs() async throws -> [String] {
+        guard !apiKey.trim().isEmpty else {
+            throw QueryError(type: .missingSecretKey, message: "Gemini API key is empty.")
+        }
+
+        var ids: [String] = []
+        var pageToken: String?
+        repeat {
+            let data = try await fetchRemoteModelData(url: try remoteModelsURL(pageToken: pageToken))
+
+            guard let modelList = try? JSONDecoder().decode(GeminiModelListResponse.self, from: data) else {
+                throw QueryError(type: .api, message: "Invalid models response")
+            }
+            ids.append(contentsOf: modelList.models
+                .filter(\.supportsGenerateContent)
+                .map(\.modelID))
+            pageToken = modelList.nextPageToken?.trim()
+        } while pageToken?.isEmpty == false
+
+        return normalizedRemoteModelIDs(ids)
+    }
+
     // MARK: Private
 
     private var currentTask: Task<(), Never>?
@@ -187,6 +215,57 @@ public final class GeminiService: StreamService {
             openAIRole
         }
     }
+
+    private func remoteModelsURL(pageToken: String?) throws -> URL {
+        var components = URLComponents(string: "https://generativelanguage.googleapis.com/v1beta/models")
+        components?.queryItems = [
+            URLQueryItem(name: "key", value: apiKey),
+            URLQueryItem(name: "pageSize", value: "1000"),
+            pageToken.map { URLQueryItem(name: "pageToken", value: $0) },
+        ].compactMap { $0 }
+
+        guard let url = components?.url, url.isValid else {
+            throw QueryError(type: .parameter, message: "Gemini models endpoint is invalid")
+        }
+        return url
+    }
+}
+
+// MARK: - GeminiModelListResponse
+
+private struct GeminiModelListResponse: Decodable {
+    let models: [GeminiRemoteModel]
+    let nextPageToken: String?
+}
+
+// MARK: - GeminiRemoteModel
+
+private struct GeminiRemoteModel: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case name
+        case baseModelID = "baseModelId"
+        case supportedGenerationMethods
+    }
+
+    let name: String
+    let baseModelID: String?
+    let supportedGenerationMethods: [String]?
+
+    var modelID: String {
+        let id: String
+        if let baseModelID = baseModelID?.trim(), !baseModelID.isEmpty {
+            id = baseModelID
+        } else {
+            id = name.trim()
+        }
+        return id.hasPrefix("models/") ? String(id.dropFirst("models/".count)) : id
+    }
+
+    var supportsGenerateContent: Bool {
+        supportedGenerationMethods?.contains {
+            $0 == "generateContent" || $0 == "streamGenerateContent"
+        } == true
+    }
 }
 
 // MARK: - GeminiModel
@@ -202,12 +281,14 @@ enum GeminiModel: String, CaseIterable {
 
     // MARK: - Free models
 
+    case gemini_3_1_flash_lite = "gemini-3.1-flash-lite"
     case gemini_3_flash_preview = "gemini-3-flash-preview"
     case gemini_2_5_flash = "gemini-2.5-flash" // up to 500 RPD (limit shared with Flash-Lite RPD)
     case gemini_2_5_flash_lite = "gemini-2.5-flash-lite" // up to 500 RPD (limit shared with Flash RPD)
 
     // MARK: - Pro models, not available for free tier
 
+    case gemini_3_1_pro = "gemini-3.1-pro"
     case gemini_3_pro_preview = "gemini-3-pro-preview"
     case gemini_2_5_pro = "gemini-2.5-pro"
 }
