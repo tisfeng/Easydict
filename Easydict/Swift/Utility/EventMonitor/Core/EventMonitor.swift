@@ -302,6 +302,10 @@ final class EventMonitor: NSObject {
             if popButtonController.isPopButtonVisible {
                 dismissPopButton()
             }
+        case .keyUp:
+            // Cmd+A may show the pop button before the shortcut key is released.
+            // Swallow key-up so default dismissal does not hide the new button.
+            break
         case .flagsChanged:
 //            log("flagsChanged, modifierFlags rawValue: \(event.modifierFlags.rawValue)")
 //            log("keyCode: \(event.keyCode)")
@@ -346,6 +350,7 @@ final class EventMonitor: NSObject {
         }
         cancelDelayGetSelectedText()
         delayGetSelectedText()
+
         return true
     }
 
