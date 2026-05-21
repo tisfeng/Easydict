@@ -32,7 +32,7 @@ public final class DetectManager: NSObject {
     /// Initializes a new detect manager with an empty query model.
     public override convenience init() {
         self.init(model: QueryModel())
-        allowsDetachedDetection = true
+        self.allowsDetachedDetection = true
     }
 
     // MARK: Public
