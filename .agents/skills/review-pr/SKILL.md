@@ -158,16 +158,25 @@ Read it with `defaults read -g AppleLanguages` and use the first list entry.
 If the current agent environment cannot read that value, write in the language
 the user is already using in the current conversation.
 
-Keep section headings and priority labels exactly as written. Use this
-structure exactly:
+Keep section headings, `PR Context` subheadings, and priority labels exactly as
+written. Use this structure exactly:
 
 ```markdown
 ## PR Context
-First paragraph describing the PR background, linked issue, or motivation.
 
-Second paragraph describing the main implementation change.
+**Purpose and Scope**
 
-Third paragraph describing the expected impact, risk area, or reviewer focus.
+Describe what the PR is trying to achieve, which issue or workflow it targets,
+and the boundary of the change.
+
+**Key Changes**
+
+Describe the main implementation changes and the important code paths touched.
+
+**Review Focus**
+
+Describe the expected impact, important risks, compatibility concerns, or areas
+reviewers should inspect.
 
 ---
 
@@ -189,10 +198,7 @@ context.
 
 Build `PR Context` from the inspected PR title and body, linked issues, actual
 diff, and relevant surrounding code. Do not merely restate the PR description.
-Use exactly three natural paragraphs in this order: background or motivation,
-main implementation change, then expected impact, risk area, or reviewer focus.
-Each paragraph must contain 2-4 sentences. Do not use explicit paragraph labels
-such as `Problem:`, `Change:`, or `Impact:`.
+Write one natural paragraph of 2-4 sentences under each subheading.
 
 Priority values:
 
