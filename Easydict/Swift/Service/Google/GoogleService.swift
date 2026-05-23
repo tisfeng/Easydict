@@ -169,6 +169,7 @@ class GoogleService: QueryService {
             Language.mongolian, "mn",
             Language.hebrew, "iw",
             Language.georgian, "ka",
+            Language.uyghur, "ug",
             NSNull(),
         ]
 
