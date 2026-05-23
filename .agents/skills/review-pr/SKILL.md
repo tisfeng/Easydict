@@ -150,8 +150,16 @@ relevant.
 
 ## Output Format
 
-Write the final review in Simplified Chinese unless the user asks otherwise.
-Use this structure exactly:
+Write the final review in the user's preferred system language unless the user
+asks otherwise.
+
+Preferred system language means the first language in macOS `AppleLanguages`.
+Read it with `defaults read -g AppleLanguages` and use the first list entry.
+If the current agent environment cannot read that value, write in the language
+the user is already using in the current conversation.
+
+Keep section headings and priority labels exactly as written. Write section
+content in the selected review language. Use this structure exactly:
 
 ```markdown
 **Findings**
@@ -176,11 +184,12 @@ Priority values:
 - `P2`: edge-case bug, missing compatibility, or incomplete issue coverage.
 - `P3`: maintainability, clarity, or test/documentation gap worth fixing.
 
-If there are no findings, write:
+If there are no findings, keep the `Findings` section and state the
+selected-language equivalent of `No blocking issues found.`:
 
 ```markdown
 **Findings**
-No blocking issues found.
+<selected-language equivalent of "No blocking issues found.">
 ```
 
 Still include open questions, verification, and summary.
