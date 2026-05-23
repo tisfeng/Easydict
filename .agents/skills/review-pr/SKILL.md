@@ -162,26 +162,27 @@ Keep section headings and priority labels exactly as written. Use this
 structure exactly:
 
 ```markdown
-**PR Context**
+## PR Context
 First paragraph describing the PR background, linked issue, or motivation.
 
 Second paragraph describing the main implementation change.
 
 Third paragraph describing the expected impact, risk area, or reviewer focus.
 
-**Findings**
+---
+
+## Findings
 - [P0-P3] [path:line] Describe each issue, trigger condition, risk, and
   suggested change.
-- If there are no findings, say so clearly.
 
-**Open Questions**
+## Open Questions
 - List correctness-affecting questions, or say clearly that there are no
   meaningful open questions.
 
-**Verification**
+## Verification
 - List commands and checks performed, or explain why validation was not run.
 
-**Summary**
+## Summary
 Short neutral summary of the overall review result without repeating the PR
 context.
 ```
