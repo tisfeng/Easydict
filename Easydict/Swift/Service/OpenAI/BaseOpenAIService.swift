@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Alamofire
 import AsyncAlgorithms
 import Foundation
 import OpenAI
@@ -37,6 +38,10 @@ public class BaseOpenAIService: StreamService {
     /// from the effective runtime state instead of the stored configuration alone.
     override var usesStreamingTransport: Bool {
         streamingOverride ?? enableStreaming
+    }
+
+    override var canFetchRemoteModels: Bool {
+        true
     }
 
     let control = StreamControl()
@@ -162,6 +167,26 @@ public class BaseOpenAIService: StreamService {
             }
         }
         return chatMessages
+    }
+
+    override func fetchRemoteModelIDs() async throws -> [String] {
+        guard !apiKey.trim().isEmpty else {
+            throw QueryError(type: .missingSecretKey, message: "API key is empty")
+        }
+
+        let data = try await fetchRemoteModelData(
+            url: try remoteModelsURL(),
+            headers: [
+                .authorization(bearerToken: apiKey),
+                HTTPHeader(name: "api-key", value: apiKey),
+                .accept("application/json"),
+            ]
+        )
+
+        guard let modelList = try? JSONDecoder().decode(OpenAIModelListResponse.self, from: data) else {
+            throw QueryError(type: .api, message: "Invalid models response")
+        }
+        return normalizedRemoteModelIDs(modelList.data.map(\.id))
     }
 
     // MARK: Private
@@ -304,4 +329,51 @@ public class BaseOpenAIService: StreamService {
         request.httpBody = try JSONEncoder().encode(query)
         return request
     }
+
+    private func remoteModelsURL() throws -> URL {
+        if let remoteModelsEndpoint = remoteModelsEndpoint?.trim(), !remoteModelsEndpoint.isEmpty,
+           let url = URL(string: remoteModelsEndpoint), url.isValid {
+            return url
+        }
+
+        guard let endpointURL = URL(string: endpoint.trim()), endpointURL.isValid,
+              var components = URLComponents(url: endpointURL, resolvingAgainstBaseURL: false)
+        else {
+            throw QueryError(type: .parameter, message: "Endpoint is invalid")
+        }
+
+        var parts = components.path.split(separator: "/", omittingEmptySubsequences: true).map(String.init)
+        let lowercasedParts = parts.map { $0.lowercased() }
+
+        if parts.isEmpty {
+            parts = ["v1"]
+        } else if Array(lowercasedParts.suffix(2)) == ["chat", "completions"] {
+            parts.removeLast(2)
+        } else if lowercasedParts.last == "completions" {
+            parts.removeLast()
+        } else if lowercasedParts.last == "models" {
+            parts.removeLast()
+        }
+
+        parts.append("models")
+        components.fragment = nil
+        components.path = "/" + parts.joined(separator: "/")
+
+        guard let url = components.url, url.isValid else {
+            throw QueryError(type: .parameter, message: "Endpoint is invalid")
+        }
+        return url
+    }
+}
+
+// MARK: - OpenAIModelListResponse
+
+private struct OpenAIModelListResponse: Decodable {
+    let data: [OpenAIModelItem]
+}
+
+// MARK: - OpenAIModelItem
+
+private struct OpenAIModelItem: Decodable {
+    let id: String
 }
