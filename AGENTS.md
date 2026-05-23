@@ -2,71 +2,58 @@
 
 Guidance for AI agents working in this repository.
 
-## Project Architecture
+## Project Rules
 
-**Easydict** is a macOS dictionary and translation app that supports word lookup, text translation, and OCR screenshot translation.
+Project-specific context, repository layout, build commands, and local operating rules.
 
-New development should use modern Swift and SwiftUI APIs available on macOS 13.0+.
+### Project Overview
+
+Easydict is a macOS dictionary and translation app that supports word lookup, text
+translation, and OCR screenshot translation.
+
+### Platform and Language
+
+- Supports macOS 13.0+.
+- Uses SwiftUI for all new UI components and views.
 
 ### Directory Structure
 
 ```
 Easydict/
-├── Easydict/                             # App source root
-│   ├── App/                              # App entry, bridge, plist, assets, localization
-│   │   ├── PrefixHeader.pch              # Shared Objective-C precompiled header
-│   │   ├── Easydict-Bridging-Header.h    # Swift and Objective-C bridge declarations
-│   │   └── ...                           # Other app entry, plist, and localization files
+├── Easydict/                         # App source root
+│   ├── App/                       # App entry, pch, bridge, plist, assets, localization
 │   │
-│   ├── Swift/                            # Primary development environment
-│   │   ├── Feature/                      # Product feature modules
-│   │   │   ├── Screenshot/               # Screenshot feature
-│   │   │   ├── ActionManager/            # Action routing and execution
-│   │   │   ├── Configuration/            # Runtime configuration features
-│   │   │   ├── DefaultAPIKeys/           # Built-in service key configuration
-│   │   │   ├── HTTPServer/               # Local HTTP server support
-│   │   │   ├── Localization/             # Localization helpers and tooling
-│   │   │   └── Shortcut/                 # Keyboard shortcut model and UI
+│   ├── Swift/                     # Swift source root
+│   │   ├── Feature/               # Product feature modules
+│   │   │   ├── ActionManager/     # Action routing and execution
+│   │   │   ├── Screenshot/        # Screenshot feature
+│   │   │   ├── Shortcut/          # Keyboard shortcut model and UI
+│   │   │   └── ...                # Other product features
 │   │   │
-│   │   ├── Model/                        # Shared app data models
-│   │   ├── Service/                      # Translation, dictionary, OCR, and AI services
-│   │   │   ├── Model/                    # Shared service request and response models
-│   │   │   ├── Dictionary/               # Local dictionary and rendering services
-│   │   │   ├── OpenAI/                   # OpenAI-compatible service integration
-│   │   │   ├── Apple/                    # Apple dictionary, OCR, speech, and translation
-│   │   │   ├── ClaudeCode/               # Claude Code CLI service integration
-│   │   │   └── ...                       # Other provider-specific services
+│   │   ├── Service/               # Translation and AI provider implementations
+│   │   │   ├── Model/             # Service request and response models
+│   │   │   ├── Google/            # Google translation service
+│   │   │   ├── OpenAI/            # OpenAI-compatible service integration
+│   │   │   └── ...                # Other translation and AI services
 │   │   │
-│   │   ├── Utility/                      # Cross-feature utilities and helpers
-│   │   │   ├── Appearance/               # App appearance helpers
-│   │   │   ├── AppleScript/              # AppleScript execution utilities
-│   │   │   ├── EventMonitor/             # Global event monitoring and workflows
-│   │   │   ├── Extensions/               # Swift, AppKit, SwiftUI, Foundation extensions
-│   │   │   └── Views/                    # Shared utility views
+│   │   ├── Model/                 # Shared app data models
+│   │   ├── Utility/               # Cross-feature utilities and helpers
+│   │   │   ├── EventMonitor/      # Global event monitoring and triggers
+│   │   │   ├── Extensions/        # Swift, AppKit, SwiftUI, Foundation extensions
+│   │   │   └── ...                # Other shared utilities
 │   │   │
-│   │   └── View/                         # Shared SwiftUI and AppKit-facing views
+│   │   └── View/                  # Shared SwiftUI and AppKit-facing views
 │   │
-│   └── objc/                             # Legacy code - maintenance only
-│       ├── Libraries/                    # Bundled legacy helper libraries
-│       ├── StatusItem/                   # Legacy menu bar status item code
-│       ├── Utility/                      # Legacy helper categories and utilities
-│       └── ViewController/               # Legacy window and query controllers
+│   └── objc/                      # Legacy code - maintenance only
+│       ├── Libraries/             # Bundled legacy helper libraries
+│       ├── Utility/               # Legacy helper categories and utilities
+│       └── ViewController/        # Legacy window and query controllers
 │
-├── EasydictTests/                        # Unit tests
-└── Pods/                                 # CocoaPods dependencies and integration project
+├── EasydictTests/                    # Unit tests
+└── Pods/                          # CocoaPods dependencies and integration project
 ```
 
-## Xcode Project Metadata
-
-Unless the user explicitly says otherwise, when adding or moving files, also update `Easydict.xcodeproj/project.pbxproj` so the files appear in Xcode's navigator.
-
-- By default, every newly added project file, including developer-facing
-  documentation such as Markdown or HTML files, must have a matching
-  `PBXFileReference` under the correct `PBXGroup`.
-- Do not add documentation files to build phases such as `Resources` unless the file is
-  intentionally shipped at runtime.
-
-## Build Commands
+### Build and Test Commands
 
 Run `xcodebuild` only when:
 
@@ -75,14 +62,16 @@ Run `xcodebuild` only when:
 - The user explicitly asks for a build or test run.
 - The task runs `/code-simplifier`.
 
-Do not run multiple `xcodebuild` commands concurrently against the same workspace and DerivedData location. Concurrent runs can contend for the shared build database, intermediates, and test bundles, which leads to flaky conflicts.
+Do not run multiple `xcodebuild` commands concurrently against the same workspace and
+DerivedData location. Concurrent runs can contend for the shared build database,
+intermediates, and test bundles, which leads to flaky conflicts.
 
 `xcodebuild` may take several minutes. Wait for it to finish.
 
 If the default Xcode DerivedData location fails because of permission, cache, or
-runner state, use an external DerivedData directory instead of a repo-local one:
+runner state, use an temporary external DerivedData directory instead of a repo-local one:
 
-`-derivedDataPath ~/Library/Developer/Xcode/DerivedData/Easydict-Codex`
+`-derivedDataPath ~/Library/Developer/Xcode/DerivedData/Easydict-Temporary`
 
 After the build or test completes, remove that DerivedData directory before
 finishing the task.
@@ -90,7 +79,6 @@ finishing the task.
 Common build and test commands:
 
 ```bash
-
 # Build
 xcodebuild build \
   -workspace Easydict.xcworkspace \
@@ -122,7 +110,7 @@ xcodebuild test-without-building \
 
 Recommended usage:
 
-- `build`: default validation after code changes.
+- `build`: default validation when `xcodebuild` validation is required.
 - `test`: simplest one-shot test run; builds and runs tests in one command.
 - `build-for-testing` + `test-without-building`: preferred when rerunning the same tests
   repeatedly.
@@ -132,16 +120,73 @@ Recommended usage:
   `test-without-building`.
 - Prefer `-only-testing:` when debugging a specific test class or method.
 
-## Coding Standards
+## Swift-Xcode Rules
 
-### Core Rules
+Reusable Swift and Xcode rules for source organization, documentation, testing, and APIs.
 
-- Write new code in Swift/SwiftUI only. Legacy Objective-C may receive bug fixes, but no
-  new features.
-- Keep main project Swift and SwiftUI source files ideally under 300 lines and
-  never over 500 without strong justification. This line-count guideline does
-  not apply to bundled runtime extensions, scripts, generated files, or other
-  non-Swift support modules.
+### Xcode Project Metadata
+
+Unless the user explicitly says otherwise, when adding or moving files, also update the
+owning `.xcodeproj/project.pbxproj` file so the files appear in Xcode's navigator.
+
+- By default, every newly added project file, including developer-facing documentation
+  such as Markdown, HTML or SVG files, must have a matching `PBXFileReference` under the
+  correct `PBXGroup`.
+- Do not add documentation files to build phases such as `Resources` unless the file is
+  intentionally shipped at runtime.
+
+### Source Organization Rules
+
+- Organize source directories by feature or bounded responsibility once a target grows
+  beyond a few files. Keep feature-specific UI, core, state, storage, services,
+  utilities, and docs together.
+- Keep each Swift source file focused on one primary `class` or `struct`. Multiple
+  declarations are acceptable only for tightly coupled protocols, simple pure data
+  models, small private helper types, or extensions and conformance blocks that directly
+  support the primary type.
+- Keep main project Swift source files ideally under 300 lines and never over 500
+  without strong justification. This line-count guideline does not apply to bundled
+  runtime extensions, scripts, generated files, or other non-Swift support modules.
+- Group functions that implement the same `protocol` together instead of scattering them
+  across a type.
+- Mark each protocol implementation block with `// MARK: - <ProtocolName>` or an equally
+  clear section title, such as `// MARK: - WCSessionDelegate`.
+- Use `// MARK:` sections in longer classes and structs to organize lifecycle, state
+  updates, protocol implementations, and private helpers. Do not add a `MARK` only for a
+  single isolated function unless it materially improves navigation.
+
+### Directory Documentation Rules
+
+- Every non-exempt project source directory with more than one direct child source or
+  documentation file must include a Chinese HTML overview and a companion SVG diagram
+  using the same kebab-case directory prefix:
+  `<directory-kebab>-overview.html` and `<directory-kebab>-<diagram-type>.svg`.
+- Count only files directly in the current directory when applying this threshold; do not
+  include files nested in child directories.
+- Exempt generated directories, third-party directories, platform scaffold directories,
+  and test directories from the overview/SVG requirement.
+- Build the prefix by converting `UpperCamelCase` and spaces to kebab-case; keep existing
+  kebab-case names unchanged. Use a diagram type such as `architecture`, `flow`, or
+  `sequence` that reflects the SVG content.
+- Generate the SVG from the complete overview with `fireworks-tech-graph`, covering
+  responsibilities, key components, flows, boundaries, failures, and debugging or test
+  entry points. When directory files change, update the overview and SVG in the same
+  change, avoiding method-by-method API indexes.
+
+### Naming Rules
+
+- Use `UpperCamelCase` for directories and files that are compiled by Xcode, including
+  Swift, Objective-C, and test source files.
+- Use `kebab-case` for directories and files that are not compiled by Xcode, including
+  app-managed runtime paths, scripts, and exported artifacts.
+- For new or renamed classes, structs, enums, protocols, actors, properties, parameters,
+  and local variables, prefer clear, concise names, remove repeated surrounding context,
+  and usually keep them within 20 characters.
+- If a longer name is required by a system API, external protocol, or unavoidable domain
+  term, keep it as short as possible and treat it as an exception.
+
+### Swift Coding Practices
+
 - Avoid single-letter variable names except trivial loop indices.
 - Avoid `static` functions and variables unless type-level semantics clearly require them.
   Utility types may use `static`.
@@ -151,7 +196,7 @@ Recommended usage:
 - Prefer `for … where` over `for` plus inline `if` filtering.
 - Prefer async/await over callback-based completion handlers for new async work.
 
-### Documentation Rules
+### Swift Documentation Comment Rules
 
 - Add a type-level comment immediately before every class, struct, enum, protocol, and
   actor. For core types, use 2-4 short sentences and keep the comment around 220-320
@@ -161,69 +206,9 @@ Recommended usage:
   names, and update comments whenever responsibilities or behavior change.
 - Add English documentation comments for functions when behavior or intent is not obvious.
   Use inline comments only for non-obvious reasoning or complex logic.
-- In Markdown documentation, keep normal prose as natural paragraphs. Hard-wrap only list
-  items, keep them within 90 characters when practical, and preserve continuation
-  indentation.
 - When creating or updating source file header comments, use the current Git username in
   the `Created by ...` line. Do not use agent names such as `Codex`, `Claude`, or
   `AI Assistant`.
-- Every non-exempt project source directory must include a Chinese HTML overview document
-  and a same-prefix SVG technical diagram. Use the directory name converted to kebab-case
-  as the shared prefix: `<directory-kebab>-overview.html` and
-  `<directory-kebab>-<diagram-type>.svg`.
-- Generated directories, third-party directories, platform scaffold directories, and test
-  directories are exempt from the overview/SVG requirement.
-- Convert `UpperCamelCase` names to kebab-case, convert spaces to hyphens, and keep names
-  that are already kebab-case unchanged. For example, `DictionaryRendering/` uses
-  `dictionary-rendering-overview.html` and `dictionary-rendering-architecture.svg`, while
-  `GitHub Models/` uses `github-models-overview.html` and
-  `github-models-architecture.svg`.
-- Use a kebab-case diagram type that reflects the SVG content, such as `architecture`,
-  `flow`, or `sequence`. Reuse the same directory prefix for the HTML overview document
-  and its SVG so related files stay adjacent in search and Xcode.
-- Generate each directory's SVG technical diagram from the complete semantic structure of
-  the matching HTML overview document with the `fireworks-tech-graph` skill. Do not base
-  the diagram only on the title, opening paragraph, or a few keywords; it must represent
-  the responsibilities, key components, main flows, boundaries, failures, and debugging or
-  test entry points described by the overview.
-- When files in a directory are added, removed, renamed, or their behavior changes, update
-  that directory's HTML overview document and same-prefix SVG technical diagram in the
-  same change. Explain responsibilities, key components, main flows, and debugging entry
-  points instead of writing a method-by-method API index.
-
-### Skill Overlay Rules
-
-- `.agents/overrides/` stores repo-level agent rules that are not bundled into runtime
-  skills. Runtime skill-specific overlays should live inside the target skill directory.
-- When using `fireworks-tech-graph`, read
-  `.agents/overrides/fireworks-tech-graph-layout-rules.md` after the skill and apply the
-  stricter project-level layout, connector, label, export, and rendered-review rules.
-- If the base skill conflicts with its overlay, keep the stricter project-level overlay
-  rule instead of editing only the upstream skill mirror.
-
-### Naming Rules
-
-- Use `UpperCamelCase` for directories and files that are compiled by Xcode, including
-  Swift, Objective-C, and test source files.
-- Use `kebab-case` for directories and files that are not compiled by Xcode, including
-  app-managed runtime paths under `Application Support/<bundle>`, scripts, and exported
-  artifacts.
-- For new or renamed classes, structs, enums, protocols, actors, properties, parameters,
-  and local variables, prefer clear, concise names, remove repeated surrounding context,
-  and usually keep them within 25 characters.
-- If a longer name is required by a system API, external protocol, or unavoidable domain
-  term, keep it as short as possible and treat it as an exception.
-
-### Testing Rules
-
-- Each test source file may declare at most one `@Suite` type.
-- Do not add tests for UI code or UI-focused changes.
-- Add or update tests only for changes with meaningful behavior or correctness risk. Skip
-  trivial pass-through code, simple glue code, obvious accessors, and behavior already
-  covered elsewhere, and run the relevant tests.
-- Prefer concrete production code and high-signal behavior assertions. Do not add
-  test-only protocols, mocks, overrides, or invasive production hooks for low-value
-  tests.
 
 ### Libraries and API Usage
 
@@ -241,7 +226,7 @@ Recommended usage:
 - Use `Defaults` for user preferences and settings; avoid introducing new direct
   `UserDefaults` usage.
 
-## Localization
+### Localization
 
 - All user-facing UI text must be localized. Do not hard-code visible strings in SwiftUI
   or AppKit.
@@ -257,6 +242,59 @@ Recommended usage:
   added or changed, update the corresponding entries in this file and keep every supported
   language in sync.
 
-## MCP Servers
+### Test Code Rules
 
-Always use the OpenAI developer documentation MCP server if you need to work with the OpenAI API, ChatGPT Apps SDK, Codex,… without me having to explicitly ask.
+- Each test source file may declare at most one `@Suite` type.
+- Do not add tests for UI code or UI-focused changes.
+- Add or update tests only for changes with meaningful behavior or correctness risk. Skip
+  trivial pass-through code, simple glue code, obvious accessors, and behavior already
+  covered elsewhere, and run the relevant tests.
+- Prefer concrete production code and high-signal behavior assertions. Do not add
+  test-only protocols, mocks, overrides, or invasive production hooks for low-value
+  tests.
+
+## General Agent Rules
+
+Language-agnostic agent guidance for tool usage, local skill overlays, and working
+habits.
+
+### Skill Overlay Rules
+
+- Store local skill overlay files in `.agents/overrides/`; use them to extend shared
+  skill or tool instructions without editing the shared source.
+- When using `fireworks-tech-graph`, read
+  `.agents/overrides/fireworks-tech-graph-quality-rules.md` after the skill and apply its
+  diagram quality, connector, label, export, and rendered-review rules.
+
+### MCP Servers
+
+Always use the OpenAI developer documentation MCP server if you need to work with the
+OpenAI API, ChatGPT Apps SDK, Codex, or related developer tools.
+
+### Agent Working Principles
+
+#### Think Before Coding
+
+- State assumptions, uncertainties, and tradeoffs before implementation.
+- If requirements are unclear or have multiple plausible interpretations, ask before
+  choosing. Mention simpler alternatives when they exist.
+
+#### Simplicity First
+
+- Implement the minimum solution that satisfies the request. Avoid speculative features,
+  single-use abstractions, and unrequested configurability.
+- If a solution grows beyond the real problem, simplify it before delivering.
+
+#### Surgical Changes
+
+- Touch only files and lines needed for the current request. Match existing style and
+  avoid opportunistic refactors or comment and format churn.
+- Remove only imports, variables, functions, or files made unused by the current change.
+  Mention unrelated cleanup opportunities instead of doing them.
+
+#### Goal-Driven Execution
+
+- Translate tasks into verifiable success criteria and keep working until those criteria
+  are met or a blocker is clear.
+- For multi-step work, state a brief plan and validate with relevant tests, checks,
+  builds, or manual inspection.

@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: Draft Angular-style Git commit messages from staged changes and execute `git commit` safely after explicit approval. Use for commit message generation, staged-diff review for commit wording, and Chinese previews of English commit messages.
+description: Draft Angular-style Git commit messages from staged changes and execute `git commit` safely after explicit approval. Use for commit message generation, staged-diff review for commit wording, and preferred-language previews of English commit messages for non-English users.
 ---
 
 # Git Commit Workflow
@@ -31,12 +31,23 @@ Follow this sequence exactly:
    - Identify additions, deletions, and behavior impact.
    - Infer the most accurate `type(scope): subject`.
 6. Draft the commit message in English using the format rules below.
-7. Prepare a Simplified Chinese preview that fully matches the English message.
+7. If `{USR_PREFERRED_LANGUAGE}` is not English, prepare a
+   `{USR_PREFERRED_LANGUAGE}` preview that fully matches the English message.
 8. Present the result using the output rules below and wait for explicit approval.
 9. After approval, execute the commit in three separate steps:
    - Write only the English commit message to `commit_message.txt`
    - Run `git commit -F commit_message.txt`
    - Remove `commit_message.txt`
+
+## User Preferred Language
+
+`{USR_PREFERRED_LANGUAGE}` means the first language in macOS `AppleLanguages`.
+Read it with `defaults read -g AppleLanguages` and use the first list entry. If
+the current agent environment cannot read that value, write in the language the
+user is already using in the current conversation.
+
+Treat English language variants as English. For English users, do not add a
+second preview block that repeats the English commit message.
 
 ## Hard Rules
 
@@ -44,9 +55,10 @@ Follow this sequence exactly:
 - Do not run `git add` when staged changes already exist.
 - Do not run `git push`.
 - Do not commit without explicit user authorization.
-- Do not include Chinese text in the actual commit message file.
+- Do not include any non-English preview text in the actual commit message file.
 - Do not describe unstaged or unrelated changes.
-- Keep the Chinese preview accurate and complete.
+- If `{USR_PREFERRED_LANGUAGE}` is not English, keep that preview accurate and
+  complete.
 - A commit message is incomplete unless it includes a body explaining what changed and why.
 - Every commit message is incomplete unless the body uses exactly three natural
   paragraphs.
@@ -157,18 +169,25 @@ Choose `scope` from the touched module, feature, service, or component name when
 
 ## Output and Approval Rules
 
-- Present the result using this exact format and wait for explicit approval:
+- Present the result and wait for explicit approval.
+- If `{USR_PREFERRED_LANGUAGE}` is English, use this exact format:
+
+```
+{English commit message}
+```
+
+- If `{USR_PREFERRED_LANGUAGE}` is not English, use this exact format:
 
 ```
 {English commit message}
 ```
 
 ```
-{Simplified Chinese translation}
+{{USR_PREFERRED_LANGUAGE} preview}
 ```
 
-- Keep the Simplified Chinese preview aligned with the English message in
-  paragraph count, paragraph order, and meaning for every commit type.
+- Keep the `{USR_PREFERRED_LANGUAGE}` preview aligned with the English message
+  in paragraph count, paragraph order, and meaning for every commit type.
 - Do not create `commit_message.txt` or run `git commit` before explicit approval.
 - Write only the English message into `commit_message.txt`.
 
@@ -185,6 +204,9 @@ Move screenshot capture out of the overlay initializer and begin it only after t
 
 This restores stable screenshot translation startup and prevents the layout conflicts caused by the race.
 ```
+
+The second block below demonstrates a non-English preview. It is not written to
+`commit_message.txt`.
 
 ```
 fix(screenshot): 推迟悬浮层截图直到视图出现后再执行

@@ -36,9 +36,9 @@ state.
   different repository, stop and ask the user how to proceed.
 - Do not review from the PR description alone. Inspect the linked issues,
   changed files, actual diff, and relevant surrounding code.
-- Follow the repository's normal review stance: lead with findings, prioritize
-  bugs and regressions, include file and line references, then list open
-  questions, verification, and a short summary.
+- Follow the repository's normal review stance: lead with PR context, then
+  findings. Prioritize bugs and regressions, include file and line references,
+  then list open questions, verification, and a short summary.
 
 ## Step 1: Resolve PR Metadata and Remote
 
@@ -150,24 +150,48 @@ relevant.
 
 ## Output Format
 
-Write the final review in Simplified Chinese unless the user asks otherwise.
-Use this structure exactly:
+Write the final review in the user's preferred system language unless the user
+asks otherwise.
+
+Preferred system language means the first language in macOS `AppleLanguages`.
+Read it with `defaults read -g AppleLanguages` and use the first list entry.
+If the current agent environment cannot read that value, write in the language
+the user is already using in the current conversation.
+
+Keep section headings and priority labels exactly as written. Use this
+structure exactly:
 
 ```markdown
+**PR Context**
+First paragraph describing the PR background, linked issue, or motivation.
+
+Second paragraph describing the main implementation change.
+
+Third paragraph describing the expected impact, risk area, or reviewer focus.
+
 **Findings**
-- [P0-P3] [path:line] Clear description of the issue, why it matters, and
-  what should change.
+- [P0-P3] [path:line] Describe each issue, trigger condition, risk, and
+  suggested change.
+- If there are no findings, say so clearly.
 
 **Open Questions**
-- Question or assumption that affects correctness. Use `None` if there are no
-  meaningful questions.
+- List correctness-affecting questions, or say clearly that there are no
+  meaningful open questions.
 
 **Verification**
-- Commands run, checks performed, or `Not run` with a concrete reason.
+- List commands and checks performed, or explain why validation was not run.
 
 **Summary**
-Short neutral summary of what the PR changes and the overall review result.
+Short neutral summary of the overall review result without repeating the PR
+context.
 ```
+
+Build `PR Context` from the inspected PR title and body, linked issues, actual
+diff, and relevant surrounding code. Do not merely restate the PR description.
+Use exactly three natural paragraphs in this order: background or motivation,
+main implementation change, then expected impact, risk area, or reviewer focus.
+Each paragraph must contain 2-4 sentences. Do not use explicit paragraph labels
+such as `Problem:`, `Change:`, or `Impact:`.
 
 Priority values:
 
@@ -175,12 +199,3 @@ Priority values:
 - `P1`: likely user-visible regression or incorrect behavior.
 - `P2`: edge-case bug, missing compatibility, or incomplete issue coverage.
 - `P3`: maintainability, clarity, or test/documentation gap worth fixing.
-
-If there are no findings, write:
-
-```markdown
-**Findings**
-No blocking issues found.
-```
-
-Still include open questions, verification, and summary.
