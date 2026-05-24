@@ -216,25 +216,36 @@ final class MDictDictionary: @unchecked Sendable {
         let definitions = try depth == 0
             ? directLookupDefinitions(for: word)
             : exactLookupDefinitions(for: word)
-        guard definitions.count == 1,
-              let linkedKeyword = Self.linkedKeyword(in: definitions[0]),
-              depth < maxMDictLinkResolutionDepth
-        else { return definitions }
-
         let normalizedWord = mdxReader.normalizedKey(word)
-        let normalizedLinkedKeyword = mdxReader.normalizedKey(linkedKeyword)
-        guard normalizedWord != normalizedLinkedKeyword,
-              !visitedWords.contains(normalizedLinkedKeyword)
-        else { return definitions }
+        var resolvedDefinitions: [String] = []
+        for definition in definitions {
+            guard let linkedKeyword = Self.linkedKeyword(in: definition),
+                  depth < maxMDictLinkResolutionDepth
+            else {
+                resolvedDefinitions.append(definition)
+                continue
+            }
 
-        var nextVisitedWords = visitedWords
-        nextVisitedWords.insert(normalizedWord)
-        let linkedDefinitions = try lookupDefinitions(
-            for: linkedKeyword,
-            visitedWords: nextVisitedWords,
-            depth: depth + 1
-        )
-        return linkedDefinitions.isEmpty ? definitions : linkedDefinitions
+            let normalizedLinkedKeyword = mdxReader.normalizedKey(linkedKeyword)
+            guard normalizedWord != normalizedLinkedKeyword,
+                  !visitedWords.contains(normalizedLinkedKeyword)
+            else {
+                resolvedDefinitions.append(definition)
+                continue
+            }
+
+            var nextVisitedWords = visitedWords
+            nextVisitedWords.insert(normalizedWord)
+            let linkedDefinitions = try lookupDefinitions(
+                for: linkedKeyword,
+                visitedWords: nextVisitedWords,
+                depth: depth + 1
+            )
+            resolvedDefinitions.append(
+                contentsOf: linkedDefinitions.isEmpty ? [definition] : linkedDefinitions
+            )
+        }
+        return resolvedDefinitions
     }
 
     private func directLookupDefinitions(for word: String) throws -> [String] {
