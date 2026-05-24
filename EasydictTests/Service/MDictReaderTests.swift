@@ -88,6 +88,23 @@ struct MDictReaderTests {
         #expect(try dictionary.lookup("books") == "<div>book definition</div>")
     }
 
+    @Test("MDict lookup resolves keyword link records among duplicate keys")
+    func testLookupResolvesKeywordLinksAmongDuplicateKeys() throws {
+        let mdxURL = try Self.makeTemporaryMDX(records: [
+            ("book", "<div>book definition</div>"),
+            ("books", "@@@LINK=book"),
+            ("books", "<div>books variant</div>"),
+        ])
+        defer { try? FileManager.default.removeItem(at: mdxURL) }
+
+        let dictionary = try MDictDictionary(mdxURL: mdxURL)
+
+        #expect(
+            try dictionary.lookup("books")
+                == "<div>book definition</div>\n<div>books variant</div>"
+        )
+    }
+
     @Test("MDict keyword link targets do not use fuzzy fallback")
     func testKeywordLinkTargetsDoNotUseFuzzyFallback() throws {
         let mdxURL = try Self.makeTemporaryMDX(records: [
@@ -289,7 +306,27 @@ struct MDictReaderTests {
     }
 
     private static func makeTemporaryMDX(records: [String: String]) throws -> URL {
-        let orderedRecords = records.sorted { $0.key < $1.key }
+        let orderedRecords = records.map { (key: $0.key, value: $0.value) }
+            .sorted { $0.key < $1.key }
+        return try makeTemporaryMDX(orderedRecords: orderedRecords)
+    }
+
+    private static func makeTemporaryMDX(records: [(String, String)]) throws -> URL {
+        let orderedRecords = records.enumerated()
+            .map { (offset: $0.offset, key: $0.element.0, value: $0.element.1) }
+            .sorted {
+                $0.key == $1.key
+                    ? $0.offset < $1.offset
+                    : $0.key < $1.key
+            }
+            .map { (key: $0.key, value: $0.value) }
+        return try makeTemporaryMDX(orderedRecords: orderedRecords)
+    }
+
+    private static func makeTemporaryMDX(
+        orderedRecords: [(key: String, value: String)]
+    ) throws
+        -> URL {
         let header = """
         <Dictionary GeneratedByEngineVersion="2.0" Format="Html" \
         KeyCaseSensitive="No" Encoding="utf-8" Title="Test Dict" />
