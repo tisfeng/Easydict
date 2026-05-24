@@ -32,6 +32,7 @@ public final class DetectManager: NSObject {
     /// Initializes a new detect manager with an empty query model.
     public override convenience init() {
         self.init(model: QueryModel())
+        self.allowsDetachedDetection = true
     }
 
     // MARK: Public
@@ -96,6 +97,10 @@ public final class DetectManager: NSObject {
                 completion(QueryModel(), error)
                 return
             }
+            guard canApplyDetectedLanguage(for: queryText) else {
+                completion(queryModel, staleDetectionError())
+                return
+            }
 
             var preferredLanguages = EZLanguageManager.shared().preferredLanguages
 
@@ -114,7 +119,12 @@ public final class DetectManager: NSObject {
 
             // If the detected language is preferred or optimization is disabled, use Apple's result.
             if isPreferredLanguage || languageDetectOptimize == .none {
-                handleDetectedLanguage(appleDetectedLanguage, error: error, completion: completion)
+                handleDetectedLanguage(
+                    appleDetectedLanguage,
+                    queryText: queryText,
+                    error: error,
+                    completion: completion
+                )
                 return
             }
 
@@ -187,6 +197,8 @@ public final class DetectManager: NSObject {
 
     // MARK: - Private Properties
 
+    private var allowsDetachedDetection = false
+
     private lazy var appleService: AppleService = .shared
 
     private lazy var googleService: GoogleService = .init()
@@ -196,6 +208,14 @@ public final class DetectManager: NSObject {
     private lazy var youdaoService: YoudaoService = .init()
 
     // MARK: - Private Methods
+
+    private func canApplyDetectedLanguage(for queryText: String) -> Bool {
+        allowsDetachedDetection || queryModel.queryText == queryText
+    }
+
+    private func staleDetectionError() -> QueryError {
+        QueryError.error(type: .parameter, message: "Stale language detection result")
+    }
 
     /// Performs deep OCR: first OCRs with auto-detect, then re-OCRs with the detected language
     /// if a specific language wasn't already set. This improves accuracy for languages
@@ -278,9 +298,14 @@ public final class DetectManager: NSObject {
     ///   - completion: Callback to invoke with the updated query model and error.
     private func handleDetectedLanguage(
         _ language: Language,
+        queryText: String,
         error: Error?,
         completion: @escaping (QueryModel, Error?) -> ()
     ) {
+        guard canApplyDetectedLanguage(for: queryText) else {
+            completion(queryModel, staleDetectionError())
+            return
+        }
         queryModel.detectedLanguage = language
 
         // If detection succeeded, we don't need to detect again temporarily.
@@ -357,7 +382,12 @@ public final class DetectManager: NSObject {
                 logError("Baidu detect error: \(error?.localizedDescription ?? "unknown")")
             }
 
-            handleDetectedLanguage(detectedLanguage, error: error ?? fallbackError, completion: completion)
+            handleDetectedLanguage(
+                detectedLanguage,
+                queryText: queryText,
+                error: error ?? fallbackError,
+                completion: completion
+            )
         }
     }
 
@@ -382,7 +412,12 @@ public final class DetectManager: NSObject {
 
             if error == nil {
                 logInfo("Google detected: \(language)")
-                handleDetectedLanguage(language, error: nil, completion: completion)
+                handleDetectedLanguage(
+                    language,
+                    queryText: queryText,
+                    error: nil,
+                    completion: completion
+                )
                 return
             }
 
