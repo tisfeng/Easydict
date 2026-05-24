@@ -79,6 +79,7 @@ extension GoogleService {
         case .mongolian: return "mn"
         case .hebrew: return "iw"
         case .georgian: return "ka"
+        case .uyghur: return "ug"
         default: return nil
         }
     }
@@ -138,6 +139,7 @@ extension GoogleService {
         case "mn": return .mongolian
         case "iw": return .hebrew
         case "ka": return .georgian
+        case "ug": return .uyghur
         default: return nil
         }
     }

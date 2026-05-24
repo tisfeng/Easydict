@@ -36,16 +36,28 @@ state.
   different repository, stop and ask the user how to proceed.
 - Do not review from the PR description alone. Inspect the linked issues,
   changed files, actual diff, and relevant surrounding code.
-- Follow the repository's normal review stance: lead with findings, prioritize
-  bugs and regressions, include file and line references, then list open
-  questions, verification, and a short summary.
+- Follow the repository's normal review stance: lead with PR context, then
+  findings. Prioritize bugs and regressions, include file and line references,
+  then list open questions, verification, and a short summary.
 
-## Step 1: Resolve PR Metadata and Remote
+## Step 1: Check Worktree and Resolve PR Metadata
 
-Collect PR metadata with GitHub CLI before changing branches:
+Check the current worktree before changing Git state:
 
 ```bash
-gh pr view <pr-ref> \
+git status --short --branch
+```
+
+If the worktree has uncommitted changes, stop and ask the user before preparing
+or switching branches.
+
+Collect PR metadata with GitHub CLI before branch preparation. For a GitHub URL
+or `<owner>/<repo>#<number>` shorthand, convert it to `<number> --repo
+<owner>/<repo>` when running manual `gh` commands. For example,
+`owner/repo#123` becomes `gh pr view 123 --repo owner/repo`:
+
+```bash
+gh pr view <number> [--repo <base-owner>/<base-repo>] \
   --json number,title,url,body,baseRefName,headRefName,headRepository,headRepositoryOwner,closingIssuesReferences
 ```
 
@@ -57,17 +69,12 @@ Extract these fields:
 - `baseRefName`, for the base branch used during diff review.
 - `closingIssuesReferences`, for issue context.
 
-If the contributor remote is missing, add it as:
+Do not add or update the contributor remote manually in the normal path. Let the
+helper script prepare the remote, fetch, local branch, and upstream tracking.
 
-```bash
-git remote add <head-owner> https://github.com/<head-owner>/<head-repo>.git
-```
+## Step 2: Prepare the PR Branch
 
-If it already exists and points to the same repository, reuse it.
-
-## Step 2: Fetch and Switch to the PR Branch
-
-Prefer the bundled helper script for branch preparation:
+Use the bundled helper script as the default branch preparation path:
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh <pr-ref>
@@ -84,6 +91,14 @@ The helper script:
 - Sets the local branch upstream to `<owner>/<branch>`.
 - Uses fast-forward-only integration when the local branch already exists.
 
+Use manual remote, fetch, and switch commands only as a fallback when the helper
+script is unavailable or fails for a reason unrelated to PR state. In fallback
+mode, normalize URL and shorthand PR refs the same way as Step 1, add the
+contributor remote only when missing, verify any existing same-name remote points
+to the expected fork, fetch the exact head branch, create or switch to a local
+branch with the exact PR head branch name, and set upstream tracking to the
+contributor remote branch.
+
 After it finishes, verify the checkout:
 
 ```bash
@@ -97,10 +112,11 @@ the PR head branch, stop and fix that state before reviewing.
 
 ## Step 3: Review Context
 
-Read PR context and issue context first:
+Read PR context and issue context first, using the normalized PR number and
+`--repo` arguments from Step 1 when needed:
 
 ```bash
-gh pr view <pr-ref> \
+gh pr view <number> [--repo <base-owner>/<base-repo>] \
   --comments \
   --json number,title,url,body,baseRefName,headRefName,files,commits,closingIssuesReferences,comments,reviews
 ```
@@ -112,14 +128,17 @@ comments:
 gh issue view <issue-url-or-number> --comments
 ```
 
-Then inspect the code changes against the PR base branch. Fetch the base branch
-from the base repository remote if necessary, then compare with three-dot diff:
+Then inspect the code changes against the PR base branch. Use `origin` as
+`<base-remote>` only after confirming it points to the PR base repository. If it
+does not, use the correct base repository remote or stop and ask the user.
+Fetch the base branch from the base repository remote if necessary, then compare
+with three-dot diff:
 
 ```bash
-git fetch origin <base-branch>
-git diff --stat origin/<base-branch>...HEAD
-git diff --name-status origin/<base-branch>...HEAD
-git diff origin/<base-branch>...HEAD
+git fetch <base-remote> <base-branch>
+git diff --stat <base-remote>/<base-branch>...HEAD
+git diff --name-status <base-remote>/<base-branch>...HEAD
+git diff <base-remote>/<base-branch>...HEAD
 ```
 
 Read relevant surrounding source files, tests, configuration, generated files,
@@ -142,7 +161,7 @@ Do not run `xcodebuild` during PR review unless the user explicitly asks for a
 local build. When validation status matters, inspect PR checks instead:
 
 ```bash
-gh pr checks <pr-ref>
+gh pr checks <number> [--repo <base-owner>/<base-repo>]
 ```
 
 Always run lightweight local checks such as `git diff --check` when they are
@@ -150,24 +169,56 @@ relevant.
 
 ## Output Format
 
-Write the final review in Simplified Chinese unless the user asks otherwise.
-Use this structure exactly:
+Write the final review in the user's preferred system language unless the user
+asks otherwise.
+
+Preferred system language means the first language in macOS `AppleLanguages`.
+Read it with `defaults read -g AppleLanguages` and use the first list entry.
+If the current agent environment cannot read that value, write in the language
+the user is already using in the current conversation.
+
+Keep section headings, `PR Context` subheadings, and priority labels exactly as
+written. Use this structure exactly:
 
 ```markdown
-**Findings**
-- [P0-P3] [path:line] Clear description of the issue, why it matters, and
-  what should change.
+## PR Context
 
-**Open Questions**
-- Question or assumption that affects correctness. Use `None` if there are no
-  meaningful questions.
+**Purpose and Scope**
 
-**Verification**
-- Commands run, checks performed, or `Not run` with a concrete reason.
+Describe what the PR is trying to achieve, which issue or workflow it targets,
+and the boundary of the change.
 
-**Summary**
-Short neutral summary of what the PR changes and the overall review result.
+**Key Changes**
+
+Describe the main implementation changes and the important code paths touched.
+
+**Review Focus**
+
+Describe the expected impact, important risks, compatibility concerns, or areas
+reviewers should inspect.
+
+---
+
+## Findings
+- [P1] path:line - Describe each issue, trigger condition, risk, and suggested
+  change.
+- If there are no findings, say so clearly.
+
+## Open Questions
+- List correctness-affecting questions, or say clearly that there are no
+  meaningful open questions.
+
+## Verification
+- List commands and checks performed, or explain why validation was not run.
+
+## Summary
+Short neutral summary of the overall review result without repeating the PR
+context.
 ```
+
+Build `PR Context` from the inspected PR title and body, linked issues, actual
+diff, and relevant surrounding code. Do not merely restate the PR description.
+Write one natural paragraph of 2-4 sentences under each subheading.
 
 Priority values:
 
@@ -175,12 +226,3 @@ Priority values:
 - `P1`: likely user-visible regression or incorrect behavior.
 - `P2`: edge-case bug, missing compatibility, or incomplete issue coverage.
 - `P3`: maintainability, clarity, or test/documentation gap worth fixing.
-
-If there are no findings, write:
-
-```markdown
-**Findings**
-No blocking issues found.
-```
-
-Still include open questions, verification, and summary.
