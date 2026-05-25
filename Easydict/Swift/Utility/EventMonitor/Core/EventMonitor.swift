@@ -287,6 +287,9 @@ final class EventMonitor: NSObject {
 //            log("keyCode: \(event.keyCode)")
 
             EZWindowManager.shared().lastPoint = mouseLocation
+            // Cmd+A only requests a selection change in the frontmost app.
+            // Handle it before the generic key-down dismissal path and read
+            // the selection later.
             if handleSelectAllShortcut(event) {
                 return
             }
@@ -303,8 +306,9 @@ final class EventMonitor: NSObject {
                 dismissPopButton()
             }
         case .keyUp:
-            // Cmd+A may show the pop button before the shortcut key is released.
-            // Swallow key-up so default dismissal does not hide the new button.
+            // Delayed Cmd+A selection reading may show the pop button before
+            // key-up, so key-up must not fall through to the default dismissal
+            // path.
             break
         case .flagsChanged:
 //            log("flagsChanged, modifierFlags rawValue: \(event.modifierFlags.rawValue)")
@@ -326,6 +330,12 @@ final class EventMonitor: NSObject {
         }
     }
 
+    /// Routes Cmd+A through the delayed auto-selection workflow.
+    ///
+    /// The key-down event arrives before the frontmost app may finish updating
+    /// its selection, so this method schedules selection reading for later.
+    /// Returns `true` only when the shortcut was fully handled so the caller can
+    /// skip the generic key-down dismissal path.
     private func handleSelectAllShortcut(_ event: NSEvent) -> Bool {
         guard isSelectAllShortcut(event) else { return false }
         guard !event.isARepeat else { return false }
@@ -339,6 +349,8 @@ final class EventMonitor: NSObject {
         }
 
         guard enabledAutoSelectText() else { return false }
+        // Only editable contexts can update their selection in response to
+        // Cmd+A. Read-only text keeps using the normal selection heuristics.
         guard systemUtility.canInsertText() else {
             logInfo("Focused element cannot insert text, skip select all shortcut auto get selected text")
             return false
@@ -348,15 +360,20 @@ final class EventMonitor: NSObject {
         if popButtonController.isPopButtonVisible {
             dismissPopButton()
         }
+
+        // Wait until the frontmost app applies Cmd+A; reading immediately can
+        // capture the previous, empty, or partial selection.
         cancelDelayGetSelectedText()
         delayGetSelectedText()
 
         return true
     }
 
+    /// Checks for plain Cmd+A while excluding variants such as Cmd+Shift+A.
     private func isSelectAllShortcut(_ event: NSEvent) -> Bool {
         guard event.keyCode == kVK_ANSI_A else { return false }
 
+        // Command flag changes can arrive separately from key-down events.
         let modifierFlags = event.modifierFlags.union(currentModifierFlags)
         let disallowedModifiers: NSEvent.ModifierFlags = [.option, .shift, .control, .function]
         return modifierFlags.contains(.command) && modifierFlags.isDisjoint(with: disallowedModifiers)
@@ -436,6 +453,10 @@ final class EventMonitor: NSObject {
         popButtonController.handleMouseMoved(isMouseInExpandedFrame: isMouseInPopButtonExpandedFrame())
     }
 
+    /// Reads the current selection and updates the auto-query pop button state.
+    ///
+    /// This method stays Objective-C visible because delayed mouse and keyboard
+    /// triggers schedule it with `perform(_:with:afterDelay:)`.
     @objc
     private func autoGetSelectedText() {
         guard enabledAutoSelectText() else { return }
