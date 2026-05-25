@@ -8541,6 +8541,12 @@
             "value" : "Prefer Youdao TTS for English Words"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uprednostniť Youdao TTS pre anglické slová"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8561,6 +8567,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Use Youdao's high-quality dictionary recordings for English words instead of the default TTS service. Disable this on slow or restricted networks where Youdao requests are slow or blocked."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použiť kvalitné slovníkové nahrávky Youdao pre anglické slová namiesto predvolenej TTS služby. Vypnite túto možnosť v pomalých alebo obmedzených sieťach, kde sú požiadavky na Youdao pomalé alebo blokované."
           }
         },
         "zh-Hans" : {
