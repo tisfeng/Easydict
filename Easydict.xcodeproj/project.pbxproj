@@ -667,7 +667,7 @@
 		031C66E32EDB00100025D190 /* dictionary-rendering-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "dictionary-rendering-architecture.svg"; sourceTree = "<group>"; };
 		031C66E52EDB00200025D190 /* dictionary-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "dictionary-overview.md"; sourceTree = "<group>"; };
 		031C66E62EDB00200025D190 /* dictionary-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "dictionary-architecture.svg"; sourceTree = "<group>"; };
-		031C66EA2EDB01000025D190 /* mdict-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "mdict-overview.md"; sourceTree = "<group>"; };
+		031C66EA2EDB01000025D190 /* mdict-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "mdict-overview.html"; sourceTree = "<group>"; };
 		031C66EB2EDB01000025D190 /* mdict-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "mdict-architecture.svg"; sourceTree = "<group>"; };
 		031C66ED2EDB02000025D190 /* mdict-reader-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "mdict-reader-overview.md"; sourceTree = "<group>"; };
 		031C66EE2EDB02000025D190 /* mdict-reader-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "mdict-reader-architecture.svg"; sourceTree = "<group>"; };
@@ -3291,7 +3291,7 @@
 		3A6EB576721647E4A13E445C /* MDict */ = {
 			isa = PBXGroup;
 			children = (
-				031C66EA2EDB01000025D190 /* mdict-overview.md */,
+				031C66EA2EDB01000025D190 /* mdict-overview.html */,
 				031C66EB2EDB01000025D190 /* mdict-architecture.svg */,
 				983925DCBA81465EAE22415B /* MDictService.swift */,
 				30215FF66EE44A0F932E70CF /* MDictDictionary.swift */,
