@@ -334,11 +334,11 @@ final class EventMonitor: NSObject {
     ///
     /// The key-down event arrives before the frontmost app may finish updating
     /// its selection, so this method schedules selection reading for later.
-    /// Returns `true` only when the shortcut was fully handled so the caller can
-    /// skip the generic key-down dismissal path.
+    /// Returns `true` when Cmd+A is consumed, including repeat events that
+    /// should neither reschedule selection reading nor dismiss the pop button.
     private func handleSelectAllShortcut(_ event: NSEvent) -> Bool {
         guard isSelectAllShortcut(event) else { return false }
-        guard !event.isARepeat else { return false }
+        guard !event.isARepeat else { return true }
 
         let frontmostTriggerType = appContextProvider.frontmostAppTriggerType(
             forceGetSelectedTextType: MyConfiguration.shared.forceGetSelectedTextType
