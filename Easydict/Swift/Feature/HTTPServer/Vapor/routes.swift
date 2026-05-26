@@ -90,7 +90,10 @@ func routes(_ app: Application) throws {
         ])
 
         let chatStream = try await streamService.streamTranslate(request: request)
-        let jsonStream = chatStreamToJSONStream(chatStream: chatStream)
+        let jsonStream = chatStreamToJSONStream(
+            chatStream: chatStream,
+            fallbackModel: streamService.model
+        )
 
         let asyncBodyStream: @Sendable (AsyncBodyStreamWriter) async throws -> () = { writer in
             for await json in jsonStream {
@@ -144,10 +147,13 @@ func routes(_ app: Application) throws {
     }
 }
 
-/// Convert chat stream to a JSON stream, wrapping any error as a JSON message.
+/// Convert chat stream to JSON messages, wrapping errors in a chunk-compatible
+/// JSON object so chunk-based stream clients can still decode the payload.
 private func chatStreamToJSONStream(
-    chatStream: AsyncThrowingStream<ChatStreamResult, Error>
-) -> AsyncStream<String> {
+    chatStream: AsyncThrowingStream<ChatStreamResult, Error>,
+    fallbackModel: String
+)
+    -> AsyncStream<String> {
     AsyncStream<String> { continuation in
         Task {
             defer { continuation.finish() }
@@ -158,7 +164,7 @@ private func chatStreamToJSONStream(
                     }
                 }
             } catch {
-                if let errorJson = makeJSONErrorMessage(error) {
+                if let errorJson = makeJSONErrorMessage(error, fallbackModel: fallbackModel) {
                     continuation.yield(errorJson)
                 }
             }
@@ -166,10 +172,20 @@ private func chatStreamToJSONStream(
     }
 }
 
-private func makeJSONErrorMessage(_ error: Error) -> String? {
+private func makeJSONErrorMessage(_ error: Error, fallbackModel: String) -> String? {
     let queryError = QueryError.queryError(from: error)
     let errorMessage = queryError?.localizedDescription ?? error.localizedDescription
-    let errorDict = ["error": errorMessage]
+
+    guard let chunkData = ChatStreamResult.create(
+        content: errorMessage,
+        model: fallbackModel
+    ).jsonData,
+        var errorDict = try? JSONSerialization.jsonObject(with: chunkData) as? [String: Any]
+    else {
+        return nil
+    }
+
+    errorDict["error"] = errorMessage
     guard let errorData = try? JSONSerialization.data(withJSONObject: errorDict) else {
         return nil
     }
