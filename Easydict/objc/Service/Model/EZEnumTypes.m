@@ -80,6 +80,8 @@ NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
             return @"dragged";
         case EZTriggerTypeShift:
             return @"shift";
+        case EZTriggerTypeSelectAllShortcut:
+            return @"select_all_shortcut";
     }
 }
 
