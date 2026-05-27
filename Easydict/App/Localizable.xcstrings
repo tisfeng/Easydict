@@ -8566,25 +8566,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use Youdao's high-quality dictionary recordings for English words instead of the default TTS service. Disable this on slow or restricted networks where Youdao requests are slow or blocked."
+            "value" : "When off, English word pronunciation uses the default TTS service"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Použiť kvalitné slovníkové nahrávky Youdao pre anglické slová namiesto predvolenej TTS služby. Vypnite túto možnosť v pomalých alebo obmedzených sieťach, kde sú požiadavky na Youdao pomalé alebo blokované."
+            "value" : "Po vypnutí sa na výslovnosť anglických slov použije predvolená TTS služba"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "英语单词优先使用有道的高品质词典发音，而非默认 TTS 服务。在网速较慢或访问受限的网络环境下，可关闭此选项以避免有道请求慢或被屏蔽导致发音延迟。"
+            "value" : "关闭后，英语单词发音将使用默认 TTS 服务"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "英語單字優先使用有道的高品質詞典發音，而非預設 TTS 服務。在網速較慢或存取受限的網路環境下，可關閉此選項以避免有道請求過慢或被封鎖導致發音延遲。"
+            "value" : "關閉後，英語單字發音將使用預設 TTS 服務"
           }
         }
       }
