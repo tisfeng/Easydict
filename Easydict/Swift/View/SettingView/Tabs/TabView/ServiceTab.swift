@@ -356,6 +356,9 @@ private struct ServiceItemView: View {
                         ProgressView()
                             .controlSize(.small)
                     } else {
+                        // Magnet can trigger a SwiftUI List(selection:) edge case where the
+                        // first click on an unselected row selects the row before Toggle sees it.
+                        // The Button handles clicks while Toggle only renders the switch.
                         Button {
                             serviceItemViewModel.isEnable.toggle()
                         } label: {
