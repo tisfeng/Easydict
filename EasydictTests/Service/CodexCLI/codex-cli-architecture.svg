@@ -24,12 +24,12 @@
 
   <rect width="960" height="640" fill="#ffffff"/>
   <text x="40" y="52" class="title">CodexCLI 测试套件结构</text>
-  <text x="40" y="78" class="node-text">两个 @Suite 类型，覆盖参数构建、JSONL 解析、token 用量与服务注册；不启动真实子进程或网络。</text>
+  <text x="40" y="78" class="node-text">两个 @Suite 类型，覆盖参数构建、环境合并、JSONL 解析、token 用量与服务注册；不启动真实子进程或网络。</text>
 
   <!-- Suite 1: Runner -->
   <rect x="40" y="120" width="480" height="64" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.8"/>
   <text x="60" y="148" class="suite-title">@Suite "CodexCLIRunner"</text>
-  <text x="60" y="170" class="node-text">CodexCLIRunnerTests.swift · 21 个测试用例</text>
+  <text x="60" y="170" class="node-text">CodexCLIRunnerTests.swift · 53 个测试用例</text>
 
   <!-- Runner suite children -->
   <rect x="40" y="220" width="225" height="98" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
@@ -51,10 +51,10 @@
   <text x="60" y="424" class="node-text">空 usage 返回 nil</text>
 
   <rect x="295" y="340" width="225" height="98" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
-  <text x="315" y="366" class="node-title">shell / 工具方法</text>
-  <text x="315" y="388" class="node-text">runWhich</text>
-  <text x="315" y="406" class="node-text">resolveLoginShellPath</text>
-  <text x="315" y="424" class="node-text">extractCodexText</text>
+  <text x="315" y="366" class="node-title">env / shell 工具</text>
+  <text x="315" y="388" class="node-text">buildProcessEnvironment</text>
+  <text x="315" y="406" class="node-text">env sentinel / rc source</text>
+  <text x="315" y="424" class="node-text">runWhich / shell path</text>
 
   <!-- Suite 2: Service -->
   <rect x="560" y="120" width="360" height="64" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.8"/>

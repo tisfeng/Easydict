@@ -121,21 +121,31 @@ final class CodexCLIRunner: @unchecked Sendable {
 
     /// Builds the subprocess environment for the Codex CLI invocation.
     ///
-    /// Codex reads its own auth state from `~/.codex/auth.json` and `~/.codex/config.toml`,
-    /// so we mostly inherit the parent environment (which already carries `OPENAI_API_KEY`
-    /// if the user has configured one). We additionally merge the user's login-shell
-    /// `PATH` so npm shebang shims (`#!/usr/bin/env node`) can resolve `node` when the
-    /// app is launched from Finder with a minimal `PATH`.
+    /// Parent values win, but Finder / Dock launches often miss shell-profile values.
+    /// The login-shell environment only fills allowlisted auth, Codex home, and proxy
+    /// variables that are absent from the parent. `PATH` is merged separately so npm
+    /// shebang shims (`#!/usr/bin/env node`) can resolve `node`.
     static func buildProcessEnvironment(
         inheritedEnvironment: [String: String] = ProcessInfo.processInfo.environment,
-        loginShellPath: String? = CodexCLIRunner.loginShellEnvironmentPath()
+        loginShellEnvironment: [String: String]? = CodexCLIRunner.loginShellEnvironment()
     )
         -> [String: String] {
         var environment = inheritedEnvironment
-        let merged = mergePathEntries(environment["PATH"], loginShellPath)
+        let merged = mergePathEntries(environment["PATH"], loginShellEnvironment?["PATH"])
         if !merged.isEmpty {
             environment["PATH"] = merged
         }
+
+        for key in loginShellEnvironmentKeys where key != "PATH" {
+            guard environment[key] == nil,
+                  let value = loginShellEnvironment?[key],
+                  !value.isEmpty
+            else {
+                continue
+            }
+            environment[key] = value
+        }
+
         return environment
     }
 
@@ -155,47 +165,82 @@ final class CodexCLIRunner: @unchecked Sendable {
         return result.joined(separator: ":")
     }
 
-    /// Returns the user's login-shell `PATH`, or nil if it cannot be resolved.
+    /// Returns allowlisted variables from the user's login-shell environment.
     ///
     /// The result is cached after the first successful lookup so the login-shell
     /// invocation only happens once per app session.
     ///
-    /// The command wraps `$PATH` in sentinels so we can extract a clean value even
-    /// when profile scripts (`~/.zprofile`, `~/.zshrc`, oh-my-zsh banners, etc.)
-    /// emit extra text on the same stdout stream before the printf runs.
-    static func loginShellEnvironmentPath() -> String? {
+    /// The command sources zsh/bash runtime rc files before wrapping allowlisted
+    /// `KEY=value` output in sentinels. This lets macOS GUI launches recover
+    /// exported auth and network variables from shell profile setup.
+    static func loginShellEnvironment() -> [String: String]? {
         cacheLock.lock()
         defer { cacheLock.unlock() }
 
-        if let cached = cachedLoginShellPath {
+        if let cached = cachedLoginShellEnvironment {
             return cached
         }
-        let command = "printf '%s\\n' '\(pathSentinelBegin)'; printf '%s' \"$PATH\";"
-            + " printf '\\n%s\\n' '\(pathSentinelEnd)'"
-        if let output = runViaLoginShell(command),
-           let path = extractLoginShellPath(from: output),
-           !path.isEmpty {
-            cachedLoginShellPath = path
-            return path
+
+        let shellPath = resolveLoginShellPath(
+            environmentShell: ProcessInfo.processInfo.environment["SHELL"]
+        )
+        let command = loginShellEnvironmentCommand(shellPath: shellPath)
+        if let output = runViaLoginShell(command, shellPath: shellPath),
+           let environment = extractLoginShellEnvironment(from: output) {
+            cachedLoginShellEnvironment = environment
+            return environment
         }
         return nil
     }
 
-    /// Extracts the PATH value framed by `pathSentinelBegin` / `pathSentinelEnd`.
-    /// Returns nil when either sentinel is missing or the framed value is empty
-    /// after trimming surrounding whitespace.
-    static func extractLoginShellPath(from output: String) -> String? {
-        guard let beginRange = output.range(of: pathSentinelBegin),
+    /// Extracts allowlisted `KEY=value` pairs framed by environment sentinels.
+    /// Returns nil when either sentinel is missing.
+    static func extractLoginShellEnvironment(from output: String) -> [String: String]? {
+        guard let beginRange = output.range(of: environmentSentinelBegin),
               let endRange = output.range(
-                  of: pathSentinelEnd,
+                  of: environmentSentinelEnd,
                   range: beginRange.upperBound ..< output.endIndex
               )
         else {
             return nil
         }
-        let between = output[beginRange.upperBound ..< endRange.lowerBound]
-        let trimmed = between.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? nil : trimmed
+
+        var environment: [String: String] = [:]
+        let framedOutput = output[beginRange.upperBound ..< endRange.lowerBound]
+        for rawEntry in framedOutput.split(separator: "\0", omittingEmptySubsequences: false) {
+            let entry = rawEntry.trimmingCharacters(in: .newlines)
+            guard !entry.isEmpty,
+                  let separatorIndex = entry.firstIndex(of: "=")
+            else {
+                continue
+            }
+
+            let key = String(entry[..<separatorIndex])
+            guard loginShellEnvironmentKeys.contains(key) else { continue }
+
+            let valueStart = entry.index(after: separatorIndex)
+            environment[key] = String(entry[valueStart...])
+        }
+        return environment
+    }
+
+    /// Builds the shell script used to print allowlisted environment values.
+    ///
+    /// zsh and bash runtime rc files are sourced silently because macOS GUI apps
+    /// often miss variables exported from `~/.zshrc` or `~/.bashrc`.
+    static func loginShellEnvironmentCommand(shellPath: String) -> String {
+        let keys = loginShellEnvironmentKeys.joined(separator: " ")
+        let rcSource = loginShellEnvironmentRCSource(shellPath: shellPath)
+        return #"""
+        \#(rcSource)
+        printf '%s\n' '\#(environmentSentinelBegin)'
+        for key in \#(keys); do
+          if value=$(/usr/bin/printenv "$key"); then
+            printf '%s=%s\0' "$key" "$value"
+          fi
+        done
+        printf '\n%s\n' '\#(environmentSentinelEnd)'
+        """#
     }
 
     /// Runs `codex exec --json` and yields the agent's final message text.
@@ -420,14 +465,22 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// Avoids spawning a login shell on every translation request.
     private static var cachedBinaryPath: String?
 
-    /// Cached login-shell `PATH` from the first successful lookup.
+    /// Cached login-shell environment from the first successful lookup.
     /// Same caching rationale as `cachedBinaryPath`.
-    private static var cachedLoginShellPath: String?
+    private static var cachedLoginShellEnvironment: [String: String]?
 
-    /// Sentinels used to frame the `$PATH` value inside login-shell stdout so we
+    /// Login-shell variables that are safe and useful for translation subprocesses.
+    private static let loginShellEnvironmentKeys = [
+        "PATH", "OPENAI_API_KEY", "CODEX_API_KEY", "CODEX_ACCESS_TOKEN",
+        "CODEX_HOME", "CODEX_CA_CERTIFICATE", "SSL_CERT_FILE",
+        "HTTPS_PROXY", "HTTP_PROXY", "ALL_PROXY", "NO_PROXY",
+        "https_proxy", "http_proxy", "all_proxy", "no_proxy",
+    ]
+
+    /// Sentinels used to frame the login-shell environment inside stdout so we
     /// can recover it even when profile scripts print banners on the same stream.
-    private static let pathSentinelBegin = "__EZ_CODEX_PATH_BEGIN__"
-    private static let pathSentinelEnd = "__EZ_CODEX_PATH_END__"
+    private static let environmentSentinelBegin = "__EZ_CODEX_ENV_BEGIN__"
+    private static let environmentSentinelEnd = "__EZ_CODEX_ENV_END__"
 
     private static let cacheLock = NSLock()
 
@@ -443,6 +496,17 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// a user-initiated stop from a real CLI failure. Always access under `stateLock`.
     private var isCancelled = false
     private let stateLock = NSLock()
+
+    private static func loginShellEnvironmentRCSource(shellPath: String) -> String {
+        switch URL(fileURLWithPath: shellPath).lastPathComponent {
+        case "zsh":
+            return #"if [ -r "$HOME/.zshrc" ]; then . "$HOME/.zshrc" >/dev/null 2>/dev/null; fi"#
+        case "bash":
+            return #"if [ -r "$HOME/.bashrc" ]; then . "$HOME/.bashrc" >/dev/null 2>/dev/null; fi"#
+        default:
+            return ""
+        }
+    }
 
     private static func configuredProcess(for configuration: CodexProcessConfiguration)
         -> Process {
@@ -586,8 +650,8 @@ final class CodexCLIRunner: @unchecked Sendable {
     }
 
     /// Runs a command via the user's login shell, returning trimmed stdout or nil on failure.
-    private static func runViaLoginShell(_ command: String) -> String? {
-        let shell = resolveLoginShellPath(
+    private static func runViaLoginShell(_ command: String, shellPath: String? = nil) -> String? {
+        let shell = shellPath ?? resolveLoginShellPath(
             environmentShell: ProcessInfo.processInfo.environment["SHELL"]
         )
         let process = Process()

@@ -37,7 +37,8 @@
   <rect x="320" y="120" width="200" height="92" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
   <text x="340" y="148" class="node-title">CodexCLIRunner</text>
   <text x="340" y="172" class="node-text">探测 codex 二进制</text>
-  <text x="340" y="192" class="node-text">启动子进程并读取 IO</text>
+  <text x="340" y="192" class="node-text">读取 rc + allowlist env</text>
+  <text x="340" y="208" class="node-text">启动子进程并读取 IO</text>
 
   <rect x="600" y="120" width="200" height="92" rx="8" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 4"/>
   <text x="620" y="148" class="node-title">codex exec --json</text>

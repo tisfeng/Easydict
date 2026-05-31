@@ -151,8 +151,12 @@
       <h2 id="overview">概览</h2>
       <p>
         设计目标与 <code>ClaudeCode</code> 一致：保留 OpenAI Codex 自有的认证机制
-        （<code>~/.codex/auth.json</code> 或 <code>OPENAI_API_KEY</code>），不做任何
-        OAuth 或代理绕行；每次翻译都启动一个独立的
+        （<code>~/.codex/auth.json</code>、<code>CODEX_API_KEY</code> 或
+        <code>CODEX_ACCESS_TOKEN</code>），不做任何
+        OAuth 或代理绕行；Runner 会在父进程环境优先的前提下，从登录 shell 补齐
+        <code>PATH</code>、<code>CODEX_HOME</code>、API key、access token、
+        custom CA 和代理 allowlist；
+        每次翻译都启动一个独立的
         <code>codex exec --json</code> 子进程，无跨查询会话状态。
       </p>
     </section>
@@ -174,7 +178,9 @@
         <li>
           <code>CodexCLIRunner.swift</code> 通过登录 shell 的
           <code>which codex</code> 探测二进制路径并缓存，用
-          <code>Process</code> 启动子进程并并行读取 stdout / stderr。线程安全的
+          <code>Process</code> 启动子进程并并行读取 stdout / stderr。子进程环境保留
+          父进程变量，并只从登录 shell 补齐 Codex auth、home、custom CA 与代理 allowlist；
+          zsh/bash 会先静默读取 <code>~/.zshrc</code> / <code>~/.bashrc</code>。线程安全的
           <code>cancel()</code> 用于在新查询替换或用户取消时立刻终止子进程。
         </li>
         <li>
@@ -214,7 +220,8 @@
         <li>
           Runner 在后台 <code>Task.detached</code> 中探测二进制并启动子进程，参数为
           <code>exec --json --skip-git-repo-check --ephemeral --sandbox read-only
-          -C &lt;tmp&gt; --disable &lt;feature&gt;...</code>。
+          -C &lt;tmp&gt; --disable &lt;feature&gt;...</code>，并合并父环境与登录 shell
+          allowlist 环境变量。
         </li>
         <li>
           stdout 按行解析。<code>item.completed</code>
@@ -246,6 +253,12 @@
         </li>
         <li><code>--skip-git-repo-check</code> 允许在中性目录（<code>/tmp</code>）下执行。</li>
         <li><code>-C &lt;tmpdir&gt;</code> 改变 cwd，避免 codex 读取项目级 <code>AGENTS.md</code>。</li>
+        <li>
+          子进程环境以父进程为准；登录 shell 只补齐缺失的
+          <code>CODEX_API_KEY</code>、<code>CODEX_ACCESS_TOKEN</code>、
+          <code>OPENAI_API_KEY</code>、<code>CODEX_HOME</code>、custom CA 和大小写 proxy 变量，
+          <code>PATH</code> 则按父进程在前、登录 shell 在后的顺序去重合并。
+        </li>
         <li>没有 <code>--system-prompt</code> 等价物，所以系统指令统一拼进 prompt 文本。</li>
         <li>Codex 0.128.x 不做增量 streaming，整段助手文本一次性出现。</li>
       </ul>
