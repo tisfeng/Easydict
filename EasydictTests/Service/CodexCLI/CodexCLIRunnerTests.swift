@@ -32,6 +32,49 @@ struct CodexCLIRunnerTests {
         #expect(arguments.contains("Translate this"))
     }
 
+    @Test("buildArguments disables Codex tool features before prompt")
+    func buildArgumentsDisablesCodexToolFeatures() {
+        let arguments = CodexCLIRunner.buildArguments(
+            prompt: "Translate this",
+            workingDirectory: "/tmp"
+        )
+        let expectedFeatures = [
+            "shell_tool",
+            "shell_snapshot",
+            "browser_use",
+            "browser_use_external",
+            "in_app_browser",
+            "computer_use",
+            "image_generation",
+            "apps",
+            "plugins",
+            "hooks",
+            "multi_agent",
+            "skill_mcp_dependency_install",
+            "tool_call_mcp_elicitation",
+            "tool_suggest",
+            "workspace_dependencies",
+        ]
+        let disabledFeatures = arguments.indices.compactMap { index -> String? in
+            guard arguments[index] == "--disable",
+                  arguments.indices.contains(index + 1)
+            else {
+                return nil
+            }
+            return arguments[index + 1]
+        }
+
+        #expect(disabledFeatures == expectedFeatures)
+        let terminatorIndex = arguments.firstIndex(of: "--")
+        #expect(terminatorIndex != nil)
+        if let terminatorIndex {
+            for index in arguments.indices where arguments[index] == "--disable" {
+                #expect(index < terminatorIndex)
+                #expect(index + 1 < terminatorIndex)
+            }
+        }
+    }
+
     @Test("buildArguments places prompt after the -- terminator")
     func buildArgumentsPlacesPromptAfterTerminator() {
         let arguments = CodexCLIRunner.buildArguments(

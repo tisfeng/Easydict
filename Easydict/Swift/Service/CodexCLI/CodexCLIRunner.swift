@@ -33,6 +33,30 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// `nil` if the process has not yet finished or no `token_count` event was emitted.
     private(set) var tokenUsage: CodexTokenUsage?
 
+    /// Codex feature flags disabled for translation-only subprocess runs.
+    ///
+    /// Official references:
+    /// - CLI `--disable`: https://developers.openai.com/codex/cli/reference
+    /// - Feature flags: https://developers.openai.com/codex/config-basic#feature-flags
+    /// - Feature list: https://developers.openai.com/codex/cli/reference#codex-features
+    private static let disabledToolFeatures = [
+        "shell_tool",
+        "shell_snapshot",
+        "browser_use",
+        "browser_use_external",
+        "in_app_browser",
+        "computer_use",
+        "image_generation",
+        "apps",
+        "plugins",
+        "hooks",
+        "multi_agent",
+        "skill_mcp_dependency_install",
+        "tool_call_mcp_elicitation",
+        "tool_suggest",
+        "workspace_dependencies",
+    ]
+
     /// Runs `which <name>` directly (without a login shell).
     ///
     /// Used by unit tests, which run in an environment where PATH is already set correctly.
@@ -73,9 +97,8 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// Builds the argument list for a `codex exec --json` invocation.
     ///
     /// Codex `exec` is non-interactive by default, so no approval flag is required.
-    /// `--sandbox read-only` blocks any incidental file writes if the model decides to
-    /// call shell tools, `--skip-git-repo-check` lets the CLI run from neutral
-    /// working directories, and `--ephemeral` skips writing session files to disk.
+    /// Every invocation uses a read-only sandbox and disables tool features that are
+    /// unnecessary for translation. It still loads the user's normal Codex config.
     ///
     /// - Parameters:
     ///   - prompt: The full prompt sent to the CLI.
@@ -101,6 +124,10 @@ final class CodexCLIRunner: @unchecked Sendable {
             "--sandbox", "read-only",
             "-C", workingDirectory,
         ]
+
+        for feature in disabledToolFeatures {
+            arguments += ["--disable", feature]
+        }
 
         let trimmedModel = model?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         if !trimmedModel.isEmpty {
@@ -202,7 +229,8 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// chunk after the model finishes generating.
     ///
     /// Token-reduction / safety flags applied to every invocation:
-    /// - `--sandbox read-only` — blocks file writes if the model calls shell tools.
+    /// - `--disable <feature>` — disables Codex tools that translation does not need.
+    /// - `--sandbox read-only` — keeps a read-only fallback boundary for subprocesses.
     /// - `--skip-git-repo-check` — lets the CLI run from neutral working directories.
     /// - `--ephemeral` — skips writing rollout / session files to disk.
     /// - `-C <tmpdir>` — uses a neutral working directory so codex does not scan user folders

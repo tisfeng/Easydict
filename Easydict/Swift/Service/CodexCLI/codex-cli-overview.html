@@ -213,7 +213,8 @@
         </li>
         <li>
           Runner 在后台 <code>Task.detached</code> 中探测二进制并启动子进程，参数为
-          <code>exec --json --skip-git-repo-check --ephemeral --sandbox read-only -C &lt;tmp&gt;</code>。
+          <code>exec --json --skip-git-repo-check --ephemeral --sandbox read-only
+          -C &lt;tmp&gt; --disable &lt;feature&gt;...</code>。
         </li>
         <li>
           stdout 按行解析。<code>item.completed</code>
@@ -237,7 +238,12 @@
       <ul>
         <li><code>--json</code> 输出 JSONL，每个事件独占一行。</li>
         <li><code>--ephemeral</code> 跳过会话文件持久化，避免污染 <code>~/.codex/sessions</code>。</li>
-        <li><code>--sandbox read-only</code> 阻止模型工具调用产生文件写入。</li>
+        <li><code>--sandbox read-only</code> 作为子进程访问文件系统的兜底边界。</li>
+        <li>
+          <code>--disable &lt;feature&gt;</code> 显式关闭翻译场景不需要的 Codex 工具能力，
+          包括 shell、browser、computer、image、apps、plugins、hooks、
+          multi-agent、tool suggestion 和 workspace dependency helpers。
+        </li>
         <li><code>--skip-git-repo-check</code> 允许在中性目录（<code>/tmp</code>）下执行。</li>
         <li><code>-C &lt;tmpdir&gt;</code> 改变 cwd，避免 codex 读取项目级 <code>AGENTS.md</code>。</li>
         <li>没有 <code>--system-prompt</code> 等价物，所以系统指令统一拼进 prompt 文本。</li>

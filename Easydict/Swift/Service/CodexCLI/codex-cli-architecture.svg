@@ -42,7 +42,7 @@
   <rect x="600" y="120" width="200" height="92" rx="8" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 4"/>
   <text x="620" y="148" class="node-title">codex exec --json</text>
   <text x="620" y="172" class="node-text">--ephemeral</text>
-  <text x="620" y="192" class="node-text">--sandbox read-only</text>
+  <text x="620" y="192" class="node-text">--sandbox + disabled tools</text>
 
   <!-- Row 2 left: Logger sidebar from Runner -->
   <rect x="320" y="260" width="200" height="80" rx="8" fill="#fefce8" stroke="#fde68a" stroke-width="1.5"/>
