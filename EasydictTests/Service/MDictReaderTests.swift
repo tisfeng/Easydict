@@ -312,14 +312,19 @@ struct MDictReaderTests {
     }
 
     private static func makeTemporaryMDX(records: [(String, String)]) throws -> URL {
-        let orderedRecords = records.enumerated()
-            .map { (offset: $0.offset, key: $0.element.0, value: $0.element.1) }
-            .sorted {
-                $0.key == $1.key
-                    ? $0.offset < $1.offset
-                    : $0.key < $1.key
+        let indexedRecords: [(offset: Int, key: String, value: String)] = records.enumerated()
+            .map { record in
+                (offset: record.offset, key: record.element.0, value: record.element.1)
             }
-            .map { (key: $0.key, value: $0.value) }
+        let sortedRecords = indexedRecords.sorted { first, second in
+            if first.key == second.key {
+                return first.offset < second.offset
+            }
+            return first.key < second.key
+        }
+        let orderedRecords: [(key: String, value: String)] = sortedRecords.map { record in
+            (key: record.key, value: record.value)
+        }
         return try makeTemporaryMDX(orderedRecords: orderedRecords)
     }
 
