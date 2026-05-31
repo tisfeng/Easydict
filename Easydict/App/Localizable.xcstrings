@@ -8987,6 +8987,62 @@
         }
       }
     },
+    "setting.advance.prefer_youdao_tts_for_english_word" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prefer Youdao TTS for English Words"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uprednostniť Youdao TTS pre anglické slová"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英语单词优先使用有道发音"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英語單字優先使用有道發音"
+          }
+        }
+      }
+    },
+    "setting.advance.prefer_youdao_tts_for_english_word_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When off, English word pronunciation uses the default TTS service"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po vypnutí sa na výslovnosť anglických slov použije predvolená TTS služba"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭后，英语单词发音将使用默认 TTS 服务"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉後，英語單字發音將使用預設 TTS 服務"
+          }
+        }
+      }
+    },
     "setting.advance.show_ocr_menu_items" : {
       "localizations" : {
         "en" : {
