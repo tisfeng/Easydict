@@ -33,30 +33,6 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// `nil` if the process has not yet finished or no `token_count` event was emitted.
     private(set) var tokenUsage: CodexTokenUsage?
 
-    /// Codex feature flags disabled for translation-only subprocess runs.
-    ///
-    /// Official references:
-    /// - CLI `--disable`: https://developers.openai.com/codex/cli/reference
-    /// - Feature flags: https://developers.openai.com/codex/config-basic#feature-flags
-    /// - Feature list: https://developers.openai.com/codex/cli/reference#codex-features
-    private static let disabledToolFeatures = [
-        "shell_tool",
-        "shell_snapshot",
-        "browser_use",
-        "browser_use_external",
-        "in_app_browser",
-        "computer_use",
-        "image_generation",
-        "apps",
-        "plugins",
-        "hooks",
-        "multi_agent",
-        "skill_mcp_dependency_install",
-        "tool_call_mcp_elicitation",
-        "tool_suggest",
-        "workspace_dependencies",
-    ]
-
     /// Runs `which <name>` directly (without a login shell).
     ///
     /// Used by unit tests, which run in an environment where PATH is already set correctly.
@@ -266,62 +242,33 @@ final class CodexCLIRunner: @unchecked Sendable {
             // detectCodexBinary() spawns a login shell on the first invocation, which would
             // block the UI if scheduled on the main actor.
             Task.detached(priority: .userInitiated) { [weak self] in
-                let decoder = JSONDecoder()
                 do {
                     let binaryPath = try Self.detectCodexBinary()
                     #if AGENT_CLI_DEBUG
                     self?.logger = CodexCLILogger(command: "\(binaryPath) exec --json", prompt: prompt)
                     #endif
 
-                    let process = Process()
-                    let stdoutPipe = Pipe()
-                    let stderrPipe = Pipe()
+                    let context = CodexRunContext()
                     let workingDirectory = FileManager.default.temporaryDirectory.path
-
-                    process.executableURL = URL(fileURLWithPath: binaryPath)
-                    process.arguments = Self.buildArguments(
-                        prompt: prompt,
-                        workingDirectory: workingDirectory,
-                        model: model,
-                        reasoningEffort: reasoningEffort
+                    let process = Self.configuredProcess(
+                        for: CodexProcessConfiguration(
+                            binaryPath: binaryPath,
+                            prompt: prompt,
+                            model: model,
+                            reasoningEffort: reasoningEffort,
+                            workingDirectory: workingDirectory,
+                            context: context
+                        )
                     )
-                    process.standardOutput = stdoutPipe
-                    process.standardError = stderrPipe
-                    process.currentDirectoryURL = URL(fileURLWithPath: workingDirectory)
-                    process.environment = Self.buildProcessEnvironment()
-
-                    let startTime = Date()
-                    var stderrDataBuffer = Data()
-                    var stdoutControlLines: [String] = []
-                    var stdoutDataBuffer = Data()
-
-                    stderrPipe.fileHandleForReading.readabilityHandler = { handle in
-                        let data = handle.availableData
-                        guard !data.isEmpty else { return }
-                        Self.ioQueue.async {
-                            Self.appendCapped(data, to: &stderrDataBuffer)
-                        }
-                    }
-
-                    stdoutPipe.fileHandleForReading.readabilityHandler = { [weak self] handle in
-                        let data = handle.availableData
-                        guard !data.isEmpty else { return }
-                        let capturedLogger = self?.logger
-                        Self.ioQueue.async {
-                            capturedLogger?.appendStdout(String(data: data, encoding: .utf8) ?? "")
-                            stdoutDataBuffer.append(data)
-                            Self.flushLines(
-                                from: &stdoutDataBuffer,
-                                into: &stdoutControlLines,
-                                decoder: decoder,
-                                continuation: continuation
-                            )
-                        }
-                    }
+                    Self.installReadabilityHandlers(
+                        context: context,
+                        logger: self?.logger,
+                        continuation: continuation
+                    )
 
                     process.terminationHandler = { [weak self] terminatedProcess in
-                        stdoutPipe.fileHandleForReading.readabilityHandler = nil
-                        stderrPipe.fileHandleForReading.readabilityHandler = nil
+                        context.stdoutPipe.fileHandleForReading.readabilityHandler = nil
+                        context.stderrPipe.fileHandleForReading.readabilityHandler = nil
 
                         // See ClaudeCodeRunner for the rationale behind the sync barrier:
                         // it flushes any in-flight readabilityHandler dispatches before we
@@ -329,9 +276,9 @@ final class CodexCLIRunner: @unchecked Sendable {
                         Self.ioQueue.sync {}
 
                         let wasCancelled = self?.checkIsCancelled() ?? false
-                        let remainingStdoutData = stdoutPipe.fileHandleForReading
+                        let remainingStdoutData = context.stdoutPipe.fileHandleForReading
                             .readDataToEndOfFile()
-                        let remainingStderrData = stderrPipe.fileHandleForReading
+                        let remainingStderrData = context.stderrPipe.fileHandleForReading
                             .readDataToEndOfFile()
                         let exitCode = Int(terminatedProcess.terminationStatus)
                         let capturedLogger = self?.logger
@@ -341,29 +288,32 @@ final class CodexCLIRunner: @unchecked Sendable {
                                 capturedLogger?.appendStdout(
                                     String(data: remainingStdoutData, encoding: .utf8) ?? ""
                                 )
-                                stdoutDataBuffer.append(remainingStdoutData)
+                                context.stdoutDataBuffer.append(remainingStdoutData)
                             }
                             Self.flushLines(
-                                from: &stdoutDataBuffer,
-                                into: &stdoutControlLines,
+                                from: &context.stdoutDataBuffer,
+                                into: &context.stdoutControlLines,
                                 includeRemainder: true,
-                                decoder: decoder,
+                                decoder: context.decoder,
                                 continuation: continuation
                             )
 
                             if !remainingStderrData.isEmpty {
-                                Self.appendCapped(remainingStderrData, to: &stderrDataBuffer)
+                                Self.appendCapped(remainingStderrData, to: &context.stderrDataBuffer)
                             }
-                            let stderrBuffer = String(data: stderrDataBuffer, encoding: .utf8) ?? ""
+                            let stderrBuffer = String(
+                                data: context.stderrDataBuffer,
+                                encoding: .utf8
+                            ) ?? ""
 
-                            let duration = Date().timeIntervalSince(startTime)
+                            let duration = Date().timeIntervalSince(context.startTime)
                             capturedLogger?.finish(
                                 stderr: stderrBuffer,
                                 exitCode: exitCode,
                                 duration: duration
                             )
 
-                            let controlBuffer = stdoutControlLines.joined(separator: "\n")
+                            let controlBuffer = context.stdoutControlLines.joined(separator: "\n")
                             self?.tokenUsage = parseCodexTokenUsage(
                                 from: controlBuffer,
                                 durationMs: Int(duration * 1000)
@@ -388,8 +338,8 @@ final class CodexCLIRunner: @unchecked Sendable {
                     }
 
                     guard self?.setProcessIfNotCancelled(process) == true else {
-                        stdoutPipe.fileHandleForReading.readabilityHandler = nil
-                        stderrPipe.fileHandleForReading.readabilityHandler = nil
+                        context.stdoutPipe.fileHandleForReading.readabilityHandler = nil
+                        context.stderrPipe.fileHandleForReading.readabilityHandler = nil
                         continuation.finish()
                         return
                     }
@@ -420,6 +370,52 @@ final class CodexCLIRunner: @unchecked Sendable {
 
     // MARK: Private
 
+    /// Stores per-run pipes and buffers shared by subprocess I/O callbacks.
+    /// Mutations happen on `ioQueue` after the handlers are installed.
+    private final class CodexRunContext: @unchecked Sendable {
+        let stdoutPipe = Pipe()
+        let stderrPipe = Pipe()
+        let decoder = JSONDecoder()
+        let startTime = Date()
+        var stderrDataBuffer = Data()
+        var stdoutControlLines: [String] = []
+        var stdoutDataBuffer = Data()
+    }
+
+    /// Captures immutable values needed to configure one Codex subprocess.
+    private struct CodexProcessConfiguration {
+        let binaryPath: String
+        let prompt: String
+        let model: String?
+        let reasoningEffort: String?
+        let workingDirectory: String
+        let context: CodexRunContext
+    }
+
+    /// Codex feature flags disabled for translation-only subprocess runs.
+    ///
+    /// Official references:
+    /// - CLI `--disable`: https://developers.openai.com/codex/cli/reference
+    /// - Feature flags: https://developers.openai.com/codex/config-basic#feature-flags
+    /// - Feature list: https://developers.openai.com/codex/cli/reference#codex-features
+    private static let disabledToolFeatures = [
+        "shell_tool",
+        "shell_snapshot",
+        "browser_use",
+        "browser_use_external",
+        "in_app_browser",
+        "computer_use",
+        "image_generation",
+        "apps",
+        "plugins",
+        "hooks",
+        "multi_agent",
+        "skill_mcp_dependency_install",
+        "tool_call_mcp_elicitation",
+        "tool_suggest",
+        "workspace_dependencies",
+    ]
+
     /// Cached path from the first successful `detectCodexBinary()` call.
     /// Avoids spawning a login shell on every translation request.
     private static var cachedBinaryPath: String?
@@ -447,6 +443,52 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// a user-initiated stop from a real CLI failure. Always access under `stateLock`.
     private var isCancelled = false
     private let stateLock = NSLock()
+
+    private static func configuredProcess(for configuration: CodexProcessConfiguration)
+        -> Process {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: configuration.binaryPath)
+        process.arguments = buildArguments(
+            prompt: configuration.prompt,
+            workingDirectory: configuration.workingDirectory,
+            model: configuration.model,
+            reasoningEffort: configuration.reasoningEffort
+        )
+        process.standardOutput = configuration.context.stdoutPipe
+        process.standardError = configuration.context.stderrPipe
+        process.currentDirectoryURL = URL(fileURLWithPath: configuration.workingDirectory)
+        process.environment = buildProcessEnvironment()
+        return process
+    }
+
+    private static func installReadabilityHandlers(
+        context: CodexRunContext,
+        logger: CodexCLILogger?,
+        continuation: AsyncThrowingStream<String, Error>.Continuation
+    ) {
+        context.stderrPipe.fileHandleForReading.readabilityHandler = { handle in
+            let data = handle.availableData
+            guard !data.isEmpty else { return }
+            ioQueue.async {
+                appendCapped(data, to: &context.stderrDataBuffer)
+            }
+        }
+
+        context.stdoutPipe.fileHandleForReading.readabilityHandler = { handle in
+            let data = handle.availableData
+            guard !data.isEmpty else { return }
+            ioQueue.async {
+                logger?.appendStdout(String(data: data, encoding: .utf8) ?? "")
+                context.stdoutDataBuffer.append(data)
+                flushLines(
+                    from: &context.stdoutDataBuffer,
+                    into: &context.stdoutControlLines,
+                    decoder: context.decoder,
+                    continuation: continuation
+                )
+            }
+        }
+    }
 
     /// Drains all newline-terminated lines from `buffer`, yielding text deltas to
     /// `continuation` and appending non-delta lines to `controlLines`.
