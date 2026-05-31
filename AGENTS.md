@@ -59,6 +59,7 @@ Run `xcodebuild` only when:
 
 - The substantive code changes exceed 100 lines. Documentation comment-only edits do not
   count toward this threshold.
+- Unit test source files under `EasydictTests/**/*.swift` are added or changed.
 - The user explicitly asks for a build or test run.
 - The task runs `/code-simplifier`.
 
@@ -112,6 +113,9 @@ Recommended usage:
 
 - `build`: default validation when `xcodebuild` validation is required.
 - `test`: simplest one-shot test run; builds and runs tests in one command.
+- When unit test source files change, use `xcodebuild test` for the first validation.
+  Scope it with `-only-testing:<Target>/<TestSuiteOrClass>` for the changed test when
+  possible; if the mapping is unclear, run the relevant broader test target or suite.
 - `build-for-testing` + `test-without-building`: preferred when rerunning the same tests
   repeatedly.
 - `test-without-building` requires a compatible prior `build-for-testing` with the same
