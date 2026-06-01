@@ -58,7 +58,7 @@ final class CodexCLIService: StreamService {
     ///
     /// `codex exec` does not have a separate system-prompt flag, so the system
     /// instructions and conversation turns are concatenated into a single prompt
-    /// argument.
+    /// and sent through stdin to avoid argv size limits.
     public override func contentStreamTranslate(
         _ text: String,
         from: Language,

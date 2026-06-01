@@ -77,7 +77,6 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// unnecessary for translation. It still loads the user's normal Codex config.
     ///
     /// - Parameters:
-    ///   - prompt: The full prompt sent to the CLI.
     ///   - workingDirectory: A neutral cwd (typically `/tmp`) so codex does not scan
     ///     user folders for `AGENTS.md`.
     ///   - model: Optional model override. Empty / nil leaves the CLI's default in place.
@@ -86,7 +85,6 @@ final class CodexCLIRunner: @unchecked Sendable {
     ///     user's `~/.codex/config.toml` untouched; non-empty forms
     ///     `-c model_reasoning_effort=<value>`.
     static func buildArguments(
-        prompt: String,
         workingDirectory: String,
         model: String? = nil,
         reasoningEffort: String? = nil
@@ -115,7 +113,7 @@ final class CodexCLIRunner: @unchecked Sendable {
             arguments += ["-c", "model_reasoning_effort=\(trimmedEffort)"]
         }
 
-        arguments += ["--", prompt]
+        arguments += ["--", "-"]
         return arguments
     }
 
@@ -256,11 +254,12 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// - `--ephemeral` — skips writing rollout / session files to disk.
     /// - `-C <tmpdir>` — uses a neutral working directory so codex does not scan user folders
     ///   for `AGENTS.md` or other repo-local instructions.
+    /// - `-- -` — tells codex to read the prompt from stdin instead of argv.
     ///
     /// - Parameters:
     ///   - prompt: The full prompt sent to the CLI. The caller is responsible for
-    ///     embedding any system instructions, since `codex exec` does not have a separate
-    ///     system-prompt flag.
+    ///     embedding any system instructions. It is written to stdin so long OCR
+    ///     or selected text cannot exceed macOS argv limits.
     ///   - model: Optional model override (empty string and nil both leave codex's
     ///     default in place).
     ///   - reasoningEffort: Optional reasoning-effort override
@@ -298,7 +297,6 @@ final class CodexCLIRunner: @unchecked Sendable {
                     let process = Self.configuredProcess(
                         for: CodexProcessConfiguration(
                             binaryPath: binaryPath,
-                            prompt: prompt,
                             model: model,
                             reasoningEffort: reasoningEffort,
                             workingDirectory: workingDirectory,
@@ -391,6 +389,7 @@ final class CodexCLIRunner: @unchecked Sendable {
                     }
                     try process.run()
                     self?.logger?.start()
+                    Self.writePromptToStandardInput(prompt, pipe: context.stdinPipe)
                     if self?.checkIsCancelled() == true, process.isRunning {
                         process.terminate()
                     }
@@ -419,6 +418,7 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// Stores per-run pipes and buffers shared by subprocess I/O callbacks.
     /// Mutations happen on `ioQueue` after the handlers are installed.
     private final class CodexRunContext: @unchecked Sendable {
+        let stdinPipe = Pipe()
         let stdoutPipe = Pipe()
         let stderrPipe = Pipe()
         let decoder = JSONDecoder()
@@ -431,7 +431,6 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// Captures immutable values needed to configure one Codex subprocess.
     private struct CodexProcessConfiguration {
         let binaryPath: String
-        let prompt: String
         let model: String?
         let reasoningEffort: String?
         let workingDirectory: String
@@ -514,11 +513,11 @@ final class CodexCLIRunner: @unchecked Sendable {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: configuration.binaryPath)
         process.arguments = buildArguments(
-            prompt: configuration.prompt,
             workingDirectory: configuration.workingDirectory,
             model: configuration.model,
             reasoningEffort: configuration.reasoningEffort
         )
+        process.standardInput = configuration.context.stdinPipe
         process.standardOutput = configuration.context.stdoutPipe
         process.standardError = configuration.context.stderrPipe
         process.currentDirectoryURL = URL(fileURLWithPath: configuration.workingDirectory)
@@ -702,6 +701,16 @@ final class CodexCLIRunner: @unchecked Sendable {
 }
 
 extension CodexCLIRunner {
+    /// Writes the full prompt to the subprocess stdin and closes the pipe.
+    ///
+    /// Write failures are ignored here so the normal subprocess exit handling can
+    /// classify cancellation, auth errors, or CLI failures from stdout/stderr.
+    static func writePromptToStandardInput(_ prompt: String, pipe: Pipe) {
+        let handle = pipe.fileHandleForWriting
+        defer { try? handle.close() }
+        try? handle.write(contentsOf: Data(prompt.utf8))
+    }
+
     /// Returns the terminal stream error for a completed subprocess.
     ///
     /// `CancellationError` is control flow here: upstream stream services

@@ -44,7 +44,6 @@ struct CodexCLIRunnerTests {
     @Test("buildArguments includes required json exec flags")
     func buildArgumentsIncludesRequiredFlags() {
         let arguments = CodexCLIRunner.buildArguments(
-            prompt: "Translate this",
             workingDirectory: "/tmp"
         )
 
@@ -56,13 +55,11 @@ struct CodexCLIRunnerTests {
         #expect(arguments.contains("read-only"))
         #expect(arguments.contains("-C"))
         #expect(arguments.contains("/tmp"))
-        #expect(arguments.contains("Translate this"))
     }
 
-    @Test("buildArguments disables Codex tool features before prompt")
+    @Test("buildArguments disables Codex tool features before stdin marker")
     func buildArgumentsDisablesCodexToolFeatures() {
         let arguments = CodexCLIRunner.buildArguments(
-            prompt: "Translate this",
             workingDirectory: "/tmp"
         )
         let disabledFeatures = arguments.indices.compactMap { index -> String? in
@@ -85,25 +82,25 @@ struct CodexCLIRunnerTests {
         }
     }
 
-    @Test("buildArguments places prompt after the -- terminator")
-    func buildArgumentsPlacesPromptAfterTerminator() {
+    @Test("buildArguments reads prompt from stdin")
+    func buildArgumentsReadsPromptFromStdin() {
+        let prompt = "--looks-like-a-flag"
         let arguments = CodexCLIRunner.buildArguments(
-            prompt: "--looks-like-a-flag",
             workingDirectory: "/tmp"
         )
         let terminatorIndex = arguments.firstIndex(of: "--")
-        let promptIndex = arguments.firstIndex(of: "--looks-like-a-flag")
+        #expect(!arguments.contains(prompt))
         #expect(terminatorIndex != nil)
-        #expect(promptIndex != nil)
-        if let terminatorIndex, let promptIndex {
-            #expect(terminatorIndex < promptIndex)
+        if let terminatorIndex {
+            #expect(arguments.indices.contains(terminatorIndex + 1))
+            #expect(arguments[terminatorIndex + 1] == "-")
+            #expect(terminatorIndex + 1 == arguments.index(before: arguments.endIndex))
         }
     }
 
     @Test("buildArguments omits -m and -c when model and effort are empty")
     func buildArgumentsOmitsOverridesWhenEmpty() {
         let arguments = CodexCLIRunner.buildArguments(
-            prompt: "hi",
             workingDirectory: "/tmp",
             model: "",
             reasoningEffort: nil
@@ -115,7 +112,6 @@ struct CodexCLIRunnerTests {
     @Test("buildArguments adds -m when model is non-empty")
     func buildArgumentsAddsModelFlag() {
         let arguments = CodexCLIRunner.buildArguments(
-            prompt: "hi",
             workingDirectory: "/tmp",
             model: "gpt-5-mini"
         )
@@ -131,7 +127,6 @@ struct CodexCLIRunnerTests {
     @Test("buildArguments trims whitespace around model value")
     func buildArgumentsTrimsModel() {
         let arguments = CodexCLIRunner.buildArguments(
-            prompt: "hi",
             workingDirectory: "/tmp",
             model: "  gpt-5-mini  "
         )
@@ -142,7 +137,6 @@ struct CodexCLIRunnerTests {
     @Test("buildArguments adds -c model_reasoning_effort when effort is non-empty")
     func buildArgumentsAddsReasoningEffortFlag() {
         let arguments = CodexCLIRunner.buildArguments(
-            prompt: "hi",
             workingDirectory: "/tmp",
             reasoningEffort: "low"
         )
@@ -629,6 +623,19 @@ struct CodexCLIRunnerTests {
 }
 
 extension CodexCLIRunnerTests {
+    // MARK: - writePromptToStandardInput
+
+    @Test("writePromptToStandardInput preserves prompt content")
+    func writePromptToStandardInputPreservesPromptContent() {
+        let prompt = "  system: 翻译\n\nuser: \(String(repeating: "长文本", count: 4_000))  "
+        let pipe = Pipe()
+
+        CodexCLIRunner.writePromptToStandardInput(prompt, pipe: pipe)
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+
+        #expect(String(data: data, encoding: .utf8) == prompt)
+    }
+
     // MARK: - terminalError
 
     @Test("terminalError returns CancellationError when cancelled")

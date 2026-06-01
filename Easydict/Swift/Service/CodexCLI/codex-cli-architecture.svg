@@ -44,6 +44,7 @@
   <text x="620" y="148" class="node-title">codex exec --json</text>
   <text x="620" y="172" class="node-text">--ephemeral</text>
   <text x="620" y="192" class="node-text">--sandbox + disabled tools</text>
+  <text x="620" y="208" class="node-text">prompt from stdin</text>
 
   <!-- Row 2 left: Logger sidebar from Runner -->
   <rect x="320" y="260" width="200" height="80" rx="8" fill="#fefce8" stroke="#fde68a" stroke-width="1.5"/>
@@ -80,7 +81,7 @@
   <line x1="240" y1="166" x2="320" y2="166" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
   <text x="262" y="158" class="legend-text">prompt</text>
   <line x1="520" y1="166" x2="600" y2="166" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
-  <text x="540" y="158" class="legend-text">spawn</text>
+  <text x="540" y="158" class="legend-text">spawn + stdin</text>
 
   <!-- codex (subprocess stdout JSONL) → Parser -->
   <line x1="700" y1="212" x2="700" y2="260" stroke="#6b7280" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#arrow-gray)"/>
