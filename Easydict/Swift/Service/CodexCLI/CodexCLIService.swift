@@ -107,7 +107,9 @@ final class CodexCLIService: StreamService {
                     continuation.finish()
                 } catch is CancellationError {
                     self?.tokenUsage = currentRunner.tokenUsage
-                    continuation.finish()
+                    // Propagate cancellation as control flow. The upstream stream
+                    // pipeline swallows it and stops loading without showing an error.
+                    continuation.finish(throwing: CancellationError())
                 } catch {
                     self?.tokenUsage = currentRunner.tokenUsage
                     let queryError: QueryError

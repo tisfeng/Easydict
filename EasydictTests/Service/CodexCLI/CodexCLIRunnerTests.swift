@@ -628,6 +628,58 @@ struct CodexCLIRunnerTests {
     }
 }
 
+extension CodexCLIRunnerTests {
+    // MARK: - terminalError
+
+    @Test("terminalError returns CancellationError when cancelled")
+    func terminalErrorReturnsCancellationWhenCancelled() {
+        let error = CodexCLIRunner.terminalError(
+            exitCode: 0,
+            wasCancelled: true,
+            stdoutControlBuffer: "",
+            stderrBuffer: ""
+        )
+
+        #expect(error is CancellationError)
+    }
+
+    @Test("terminalError lets cancellation win over CLI failures")
+    func terminalErrorPrefersCancellationOverCLIError() {
+        let error = CodexCLIRunner.terminalError(
+            exitCode: 1,
+            wasCancelled: true,
+            stdoutControlBuffer: "",
+            stderrBuffer: "Error: not signed in"
+        )
+
+        #expect(error is CancellationError)
+    }
+
+    @Test("terminalError preserves non-cancelled CLI failures")
+    func terminalErrorReturnsCLIErrorWhenNotCancelled() {
+        let error = CodexCLIRunner.terminalError(
+            exitCode: 1,
+            wasCancelled: false,
+            stdoutControlBuffer: "",
+            stderrBuffer: "Error: not signed in"
+        )
+
+        #expect(error as? CodexCLIError == .notLoggedIn)
+    }
+
+    @Test("terminalError returns nil for successful non-cancelled exit")
+    func terminalErrorReturnsNilForSuccess() {
+        let error = CodexCLIRunner.terminalError(
+            exitCode: 0,
+            wasCancelled: false,
+            stdoutControlBuffer: "",
+            stderrBuffer: ""
+        )
+
+        #expect(error == nil)
+    }
+}
+
 private func framedLoginShellEnvironment(
     _ entries: [String],
     banner: String = ""

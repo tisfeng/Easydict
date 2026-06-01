@@ -370,11 +370,12 @@ final class CodexCLIRunner: @unchecked Sendable {
                             )
                             #endif
 
-                            if exitCode != 0, !wasCancelled {
-                                let error = parseCodexError(
-                                    fromStdout: controlBuffer,
-                                    stderr: stderrBuffer
-                                )
+                            if let error = Self.terminalError(
+                                exitCode: exitCode,
+                                wasCancelled: wasCancelled,
+                                stdoutControlBuffer: controlBuffer,
+                                stderrBuffer: stderrBuffer
+                            ) {
                                 continuation.finish(throwing: error)
                             } else {
                                 continuation.finish()
@@ -701,6 +702,24 @@ final class CodexCLIRunner: @unchecked Sendable {
 }
 
 extension CodexCLIRunner {
+    /// Returns the terminal stream error for a completed subprocess.
+    ///
+    /// `CancellationError` is control flow here: upstream stream services
+    /// already treat it as user cancellation and finish without showing an error.
+    static func terminalError(
+        exitCode: Int,
+        wasCancelled: Bool,
+        stdoutControlBuffer: String,
+        stderrBuffer: String
+    )
+        -> Error? {
+        if wasCancelled {
+            return CancellationError()
+        }
+        guard exitCode != 0 else { return nil }
+        return parseCodexError(fromStdout: stdoutControlBuffer, stderr: stderrBuffer)
+    }
+
     /// Returns the detected `codex` binary path, or `nil` if not found.
     ///
     /// Used by the configuration view status row.

@@ -235,7 +235,8 @@
         </li>
         <li>
           用户取消查询或下一次翻译启动时，<code>cancel()</code>
-          通过原子状态终止子进程，onTermination 回调释放管道资源。
+          通过原子状态终止子进程，并用 <code>CancellationError</code>
+          进入上层静默取消流程；onTermination 回调释放管道资源。
         </li>
       </ol>
     </section>

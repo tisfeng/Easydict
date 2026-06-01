@@ -29,7 +29,7 @@
   <!-- Suite 1: Runner -->
   <rect x="40" y="120" width="480" height="64" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.8"/>
   <text x="60" y="148" class="suite-title">@Suite "CodexCLIRunner"</text>
-  <text x="60" y="170" class="node-text">CodexCLIRunnerTests.swift · 53 个测试用例</text>
+  <text x="60" y="170" class="node-text">CodexCLIRunnerTests.swift · 57 个测试用例</text>
 
   <!-- Runner suite children -->
   <rect x="40" y="220" width="225" height="98" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
