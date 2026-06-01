@@ -173,7 +173,8 @@
           <code>CodexCLIService.swift</code> 接入
           <code>StreamService</code> 的 <code>contentStreamTranslate</code>
           入口，把系统 prompt 和对话消息合并成单条 prompt（codex 没有独立的
-          system prompt 标志），通过 stdin 交给 runner，并管理 runner 生命周期。
+          system prompt 标志），通过 stdin 交给 runner，并管理 runner 生命周期；
+          推理等级只暴露 Codex 官方支持的 model reasoning values。
         </li>
         <li>
           <code>CodexCLIRunner.swift</code> 通过登录 shell 的
@@ -256,6 +257,11 @@
         <li><code>--skip-git-repo-check</code> 允许在中性目录（<code>/tmp</code>）下执行。</li>
         <li><code>-C &lt;tmpdir&gt;</code> 改变 cwd，避免 codex 读取项目级 <code>AGENTS.md</code>。</li>
         <li><code>-- -</code> 显式让 Codex 从 stdin 读取 prompt，避免长 OCR 或选中文本进入 argv。</li>
+        <li>
+          <code>model_reasoning_effort</code> 只允许 <code>minimal</code>、
+          <code>low</code>、<code>medium</code>、<code>high</code>、
+          <code>xhigh</code>；Codex 不支持 <code>none</code> 作为模型推理等级。
+        </li>
         <li>
           子进程环境以父进程为准；登录 shell 只补齐缺失的
           <code>CODEX_API_KEY</code>、<code>CODEX_ACCESS_TOKEN</code>、

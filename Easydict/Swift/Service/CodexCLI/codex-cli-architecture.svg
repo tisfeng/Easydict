@@ -33,6 +33,7 @@
   <text x="60" y="148" class="node-title">CodexCLIService</text>
   <text x="60" y="172" class="node-text">合并 system + 对话</text>
   <text x="60" y="192" class="node-text">管理 runner 生命周期</text>
+  <text x="60" y="208" class="node-text">reasoning 不含 none</text>
 
   <rect x="320" y="120" width="200" height="92" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
   <text x="340" y="148" class="node-title">CodexCLIRunner</text>

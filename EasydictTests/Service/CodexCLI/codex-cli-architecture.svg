@@ -59,7 +59,7 @@
   <!-- Suite 2: Service -->
   <rect x="560" y="120" width="360" height="64" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.8"/>
   <text x="580" y="148" class="suite-title-green">@Suite "CodexCLIService"</text>
-  <text x="580" y="170" class="node-text">CodexCLIServiceTests.swift · 6 个测试用例</text>
+  <text x="580" y="170" class="node-text">CodexCLIServiceTests.swift · 9 个测试用例</text>
 
   <rect x="560" y="220" width="170" height="98" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
   <text x="580" y="246" class="node-title">serviceType</text>
@@ -80,10 +80,10 @@
   <text x="580" y="424" class="node-text">withTypeId: ...) 命中</text>
 
   <rect x="750" y="340" width="170" height="98" rx="8" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1.5"/>
-  <text x="770" y="366" class="node-title">元信息</text>
-  <text x="770" y="388" class="node-text">isStream / name</text>
-  <text x="770" y="406" class="node-text">apiKeyRequirement</text>
-  <text x="770" y="424" class="node-text">基础属性核对</text>
+  <text x="770" y="366" class="node-title">reasoningEffort</text>
+  <text x="770" y="388" class="node-text">allCases 不含 none</text>
+  <text x="770" y="406" class="node-text">default 不覆盖 CLI</text>
+  <text x="770" y="424" class="node-text">官方值保持 cliValue</text>
 
   <!-- Runner suite ownership lines -->
   <line x1="152" y1="184" x2="152" y2="218" stroke="#2563eb" stroke-width="1.4" marker-end="url(#arrow-blue)"/>

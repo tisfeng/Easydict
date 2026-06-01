@@ -12,16 +12,14 @@ import SwiftUI
 
 // MARK: - CodexReasoningEffort
 
-/// Reasoning effort levels accepted by Codex's `model_reasoning_effort`
-/// configuration. The `default` case is a sentinel that means "do not override
-/// the user's `~/.codex/config.toml`", so the runner omits the `-c` flag.
-///
-/// All other cases map 1:1 to the values codex accepts:
-/// `none`, `minimal`, `low`, `medium`, `high`, `xhigh`.
+/// Reasoning effort levels accepted by Codex's `model_reasoning_effort`.
+/// The `default` case omits the CLI override and keeps the user's config.
+/// Codex does not support `none` for model reasoning effort, so it is not
+/// exposed here.
 enum CodexReasoningEffort: String, CaseIterable, Defaults.Serializable {
-    /// Sentinel meaning "use whatever is in ~/.codex/config.toml" — runner skips the flag.
+    /// Sentinel meaning "use whatever is in ~/.codex/config.toml";
+    /// the runner skips the flag.
     case `default`
-    case none
     case minimal
     case low
     case medium
@@ -44,8 +42,6 @@ extension CodexReasoningEffort: EnumLocalizedStringConvertible {
         switch self {
         case .default:
             "service.codex_cli.reasoning_effort.default"
-        case .none:
-            "service.codex_cli.reasoning_effort.none"
         case .minimal:
             "service.codex_cli.reasoning_effort.minimal"
         case .low:

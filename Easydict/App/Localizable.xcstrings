@@ -5690,14 +5690,6 @@
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最小" } }
       }
     },
-    "service.codex_cli.reasoning_effort.none" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "None" } },
-        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Žiadne" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "无" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "無" } }
-      }
-    },
     "service.codex_cli.reasoning_effort.xhigh" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Extra High" } },

@@ -43,7 +43,35 @@ struct CodexCLIServiceTests {
 
     @Test("QueryServiceFactory registers CodexCLIService")
     func factoryRegistration() {
-        let service = QueryServiceFactory.shared.service(withTypeId: ServiceType.codexCLI.rawValue)
+        let service = QueryServiceFactory.shared.service(
+            withTypeId: ServiceType.codexCLI.rawValue
+        )
         #expect(service is CodexCLIService)
+    }
+
+    @Test("Codex reasoning effort options exclude unsupported none value")
+    func reasoningEffortOptionsExcludeUnsupportedNoneValue() {
+        #expect(CodexReasoningEffort.allCases == [
+            .default,
+            .minimal,
+            .low,
+            .medium,
+            .high,
+            .xhigh,
+        ])
+    }
+
+    @Test("Default reasoning effort does not override CLI config")
+    func defaultReasoningEffortDoesNotOverrideCLIConfig() {
+        #expect(CodexReasoningEffort.default.cliValue == nil)
+    }
+
+    @Test("Documented reasoning effort values keep CLI values")
+    func documentedReasoningEffortsKeepCLIValues() {
+        #expect(CodexReasoningEffort.minimal.cliValue == "minimal")
+        #expect(CodexReasoningEffort.low.cliValue == "low")
+        #expect(CodexReasoningEffort.medium.cliValue == "medium")
+        #expect(CodexReasoningEffort.high.cliValue == "high")
+        #expect(CodexReasoningEffort.xhigh.cliValue == "xhigh")
     }
 }
