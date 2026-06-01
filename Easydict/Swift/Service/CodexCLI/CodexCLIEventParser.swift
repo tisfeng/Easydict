@@ -196,8 +196,9 @@ func parseCodexTokenUsage(from stdout: String, durationMs: Int = 0) -> CodexToke
 /// returns the assistant text when the event is an `item.completed` carrying an
 /// `agent_message`.
 ///
-/// Codex 0.128.x does not stream text deltas — it emits the full message text in
-/// a single `item.completed` event per turn. Other events (`thread.started`,
+/// Codex does not stream token deltas on this path. It may emit multiple
+/// completed `agent_message` items during one run, so the runner decides which
+/// parsed message is terminal. Other events (`thread.started`,
 /// `turn.started`, `turn.completed`, reasoning items, …) return `nil`.
 ///
 /// - Parameter decoder: Caller-supplied decoder to avoid per-call allocation on the hot path.

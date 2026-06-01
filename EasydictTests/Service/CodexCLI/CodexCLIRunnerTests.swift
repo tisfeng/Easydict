@@ -636,6 +636,72 @@ extension CodexCLIRunnerTests {
         #expect(String(data: data, encoding: .utf8) == prompt)
     }
 
+    // MARK: - processCodexStdoutLine
+
+    @Test("processCodexStdoutLine keeps only the latest agent message")
+    func processStdoutLineKeepsLatestAgentMessage() {
+        var latestAgentMessage: String?
+        var controlLines: [String] = []
+
+        CodexCLIRunner.processCodexStdoutLine(
+            #"{"type":"item.completed","item":{"type":"agent_message","text":"Draft"}}"#,
+            latestAgentMessage: &latestAgentMessage,
+            controlLines: &controlLines
+        )
+        CodexCLIRunner.processCodexStdoutLine(
+            #"{"type":"item.completed","item":{"type":"agent_message","text":"Final"}}"#,
+            latestAgentMessage: &latestAgentMessage,
+            controlLines: &controlLines
+        )
+
+        #expect(latestAgentMessage == "Final")
+        #expect(controlLines.isEmpty)
+    }
+
+    @Test("processCodexStdoutLine keeps control events out of agent message cache")
+    func processStdoutLineKeepsControlEventsSeparate() {
+        var latestAgentMessage: String? = "Final"
+        var controlLines: [String] = []
+        let lines = [
+            #"{"type":"item.completed","item":{"type":"reasoning","text":"thinking"}}"#,
+            #"{"type":"turn.completed","usage":{"input_tokens":1}}"#,
+            "not-json",
+        ]
+
+        for line in lines {
+            CodexCLIRunner.processCodexStdoutLine(
+                line,
+                latestAgentMessage: &latestAgentMessage,
+                controlLines: &controlLines
+            )
+        }
+
+        #expect(latestAgentMessage == "Final")
+        #expect(controlLines == lines)
+    }
+
+    @Test("terminalAgentMessage only returns cached text on success")
+    func terminalAgentMessageRequiresSuccess() {
+        #expect(
+            CodexCLIRunner.terminalAgentMessage(
+                latestAgentMessage: "Final",
+                terminalError: nil
+            ) == "Final"
+        )
+        #expect(
+            CodexCLIRunner.terminalAgentMessage(
+                latestAgentMessage: "Final",
+                terminalError: CodexCLIError.notLoggedIn
+            ) == nil
+        )
+        #expect(
+            CodexCLIRunner.terminalAgentMessage(
+                latestAgentMessage: "Final",
+                terminalError: CancellationError()
+            ) == nil
+        )
+    }
+
     // MARK: - terminalError
 
     @Test("terminalError returns CancellationError when cancelled")

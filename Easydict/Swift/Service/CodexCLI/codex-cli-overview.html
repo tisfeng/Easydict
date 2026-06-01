@@ -225,13 +225,14 @@
         </li>
         <li>
           stdout 按行解析。<code>item.completed</code>
-          (<code>agent_message</code>) 的文本立刻 yield 给
-          <code>StreamService</code> 基类，其它事件（<code>thread.started</code>、
-          <code>turn.started</code>、reasoning 等）暂存到控制缓冲区。
+          (<code>agent_message</code>) 的文本会缓存为最新候选结果；
+          其它事件（<code>thread.started</code>、<code>turn.started</code>、
+          reasoning 等）暂存到控制缓冲区。
         </li>
         <li>
-          子进程退出后，控制缓冲区用于解析 <code>turn.completed.usage</code> 与各类失败事件。
-          退出码非零且非用户取消时抛出 <code>CodexCLIError</code>。
+          子进程退出后，控制缓冲区用于解析 <code>turn.completed.usage</code>
+          与各类失败事件；成功退出时才把最后一条 agent message yield 给
+          <code>StreamService</code>，失败或取消则不输出中间文本。
         </li>
         <li>
           用户取消查询或下一次翻译启动时，<code>cancel()</code>

@@ -62,8 +62,8 @@
   <rect x="40" y="430" width="260" height="110" rx="8" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5"/>
   <text x="60" y="458" class="node-title">extractCodexText</text>
   <text x="60" y="482" class="node-text">item.completed / agent_message</text>
-  <text x="60" y="502" class="node-text">→ AsyncThrowingStream&lt;String&gt;</text>
-  <text x="60" y="522" class="node-text">回到 Service 流式输出</text>
+  <text x="60" y="502" class="node-text">缓存最新 assistant 文本</text>
+  <text x="60" y="522" class="node-text">成功退出后输出一次</text>
 
   <rect x="350" y="430" width="260" height="110" rx="8" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5"/>
   <text x="370" y="458" class="node-title">parseCodexTokenUsage</text>

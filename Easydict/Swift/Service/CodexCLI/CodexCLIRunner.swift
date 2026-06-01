@@ -13,12 +13,10 @@ import Foundation
 /// Wraps a `codex exec --json` subprocess and yields its assistant text as
 /// an `AsyncThrowingStream<String, Error>`.
 ///
-/// Uses `--json` so the CLI emits one JSON event per line. Codex 0.128.x does
-/// not stream text deltas — it emits the full message text in a single
-/// `item.completed` event whose `item.type == "agent_message"`. The runner
-/// yields that text once per turn; all other events (`thread.started`,
-/// `turn.started`, `turn.completed`, reasoning items, …) are retained on the
-/// control buffer for post-exit error / usage parsing.
+/// Uses `--json` so the CLI emits one JSON event per line. Codex does not stream
+/// token deltas for this path; it emits completed assistant messages. The runner
+/// keeps the latest `agent_message` and yields it only after a successful exit;
+/// other events are retained for post-exit error / usage parsing.
 ///
 /// Each instance represents exactly one subprocess invocation.
 /// Create a new instance per translation request.
@@ -145,22 +143,6 @@ final class CodexCLIRunner: @unchecked Sendable {
         }
 
         return environment
-    }
-
-    /// Merges two colon-separated `PATH` strings, preserving order and removing duplicates.
-    static func mergePathEntries(_ first: String?, _ second: String?) -> String {
-        var seen = Set<String>()
-        var result: [String] = []
-        for source in [first, second] {
-            guard let source else { continue }
-            for entry in source.split(separator: ":", omittingEmptySubsequences: true) {
-                let value = String(entry)
-                if seen.insert(value).inserted {
-                    result.append(value)
-                }
-            }
-        }
-        return result.joined(separator: ":")
     }
 
     /// Returns allowlisted variables from the user's login-shell environment.
@@ -336,9 +318,9 @@ final class CodexCLIRunner: @unchecked Sendable {
                             Self.flushLines(
                                 from: &context.stdoutDataBuffer,
                                 into: &context.stdoutControlLines,
+                                latestAgentMessage: &context.latestAgentMessage,
                                 includeRemainder: true,
-                                decoder: context.decoder,
-                                continuation: continuation
+                                decoder: context.decoder
                             )
 
                             if !remainingStderrData.isEmpty {
@@ -368,12 +350,21 @@ final class CodexCLIRunner: @unchecked Sendable {
                             )
                             #endif
 
-                            if let error = Self.terminalError(
+                            let terminalError = Self.terminalError(
                                 exitCode: exitCode,
                                 wasCancelled: wasCancelled,
                                 stdoutControlBuffer: controlBuffer,
                                 stderrBuffer: stderrBuffer
+                            )
+
+                            if let message = Self.terminalAgentMessage(
+                                latestAgentMessage: context.latestAgentMessage,
+                                terminalError: terminalError
                             ) {
+                                continuation.yield(message)
+                            }
+
+                            if let error = terminalError {
                                 continuation.finish(throwing: error)
                             } else {
                                 continuation.finish()
@@ -424,6 +415,7 @@ final class CodexCLIRunner: @unchecked Sendable {
         let decoder = JSONDecoder()
         let startTime = Date()
         var stderrDataBuffer = Data()
+        var latestAgentMessage: String?
         var stdoutControlLines: [String] = []
         var stdoutDataBuffer = Data()
     }
@@ -547,31 +539,31 @@ final class CodexCLIRunner: @unchecked Sendable {
                 flushLines(
                     from: &context.stdoutDataBuffer,
                     into: &context.stdoutControlLines,
-                    decoder: context.decoder,
-                    continuation: continuation
+                    latestAgentMessage: &context.latestAgentMessage,
+                    decoder: context.decoder
                 )
             }
         }
     }
 
-    /// Drains all newline-terminated lines from `buffer`, yielding text deltas to
-    /// `continuation` and appending non-delta lines to `controlLines`.
+    /// Drains newline-terminated lines, caching agent text and retaining control events.
     private static func flushLines(
         from buffer: inout Data,
         into controlLines: inout [String],
+        latestAgentMessage: inout String?,
         includeRemainder: Bool = false,
-        decoder: JSONDecoder,
-        continuation: AsyncThrowingStream<String, Error>.Continuation
+        decoder: JSONDecoder
     ) {
         var readHead = buffer.startIndex
         while let newlineIdx = buffer[readHead...].firstIndex(of: 0x0A) {
             let lineData = buffer[readHead ..< newlineIdx]
             if let line = String(data: lineData, encoding: .utf8), !line.isEmpty {
-                if let delta = extractCodexText(from: line, decoder: decoder) {
-                    continuation.yield(delta)
-                } else {
-                    controlLines.append(line)
-                }
+                processCodexStdoutLine(
+                    line,
+                    decoder: decoder,
+                    latestAgentMessage: &latestAgentMessage,
+                    controlLines: &controlLines
+                )
             }
             readHead = buffer.index(after: newlineIdx)
         }
@@ -579,11 +571,12 @@ final class CodexCLIRunner: @unchecked Sendable {
 
         if includeRemainder, !buffer.isEmpty,
            let line = String(data: buffer, encoding: .utf8), !line.isEmpty {
-            if let delta = extractCodexText(from: line, decoder: decoder) {
-                continuation.yield(delta)
-            } else {
-                controlLines.append(line)
-            }
+            processCodexStdoutLine(
+                line,
+                decoder: decoder,
+                latestAgentMessage: &latestAgentMessage,
+                controlLines: &controlLines
+            )
             buffer = Data()
         }
     }
@@ -701,6 +694,22 @@ final class CodexCLIRunner: @unchecked Sendable {
 }
 
 extension CodexCLIRunner {
+    /// Merges two colon-separated `PATH` strings, preserving order and removing duplicates.
+    static func mergePathEntries(_ first: String?, _ second: String?) -> String {
+        var seen = Set<String>()
+        var result: [String] = []
+        for source in [first, second] {
+            guard let source else { continue }
+            for entry in source.split(separator: ":", omittingEmptySubsequences: true) {
+                let value = String(entry)
+                if seen.insert(value).inserted {
+                    result.append(value)
+                }
+            }
+        }
+        return result.joined(separator: ":")
+    }
+
     /// Writes the full prompt to the subprocess stdin and closes the pipe.
     ///
     /// Write failures are ignored here so the normal subprocess exit handling can
@@ -709,6 +718,30 @@ extension CodexCLIRunner {
         let handle = pipe.fileHandleForWriting
         defer { try? handle.close() }
         try? handle.write(contentsOf: Data(prompt.utf8))
+    }
+
+    /// Updates stdout parsing state for one complete JSONL line.
+    static func processCodexStdoutLine(
+        _ line: String,
+        decoder: JSONDecoder = JSONDecoder(),
+        latestAgentMessage: inout String?,
+        controlLines: inout [String]
+    ) {
+        if let message = extractCodexText(from: line, decoder: decoder) {
+            latestAgentMessage = message
+        } else {
+            controlLines.append(line)
+        }
+    }
+
+    /// Returns the final message to yield once subprocess termination is classified.
+    static func terminalAgentMessage(
+        latestAgentMessage: String?,
+        terminalError: Error?
+    )
+        -> String? {
+        guard terminalError == nil else { return nil }
+        return latestAgentMessage
     }
 
     /// Returns the terminal stream error for a completed subprocess.
