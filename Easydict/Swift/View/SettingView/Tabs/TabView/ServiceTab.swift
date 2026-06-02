@@ -268,6 +268,7 @@ private class ServiceItemViewModel: ObservableObject {
 
     @Published var showErrorAlert = false
     @Published var showClaudeCodeRiskAlert = false
+    @Published var showCodexCLIRiskAlert = false
     @Published var error: (any Error)?
 
     unowned var viewModel: ServiceTabViewModel
@@ -281,6 +282,8 @@ private class ServiceItemViewModel: ObservableObject {
             if newValue {
                 if service.serviceType() == .claudeCode {
                     showClaudeCodeRiskAlert = true
+                } else if service.serviceType() == .codexCLI {
+                    showCodexCLIRiskAlert = true
                 } else {
                     tryEnableService()
                 }
@@ -356,13 +359,22 @@ private struct ServiceItemView: View {
                         ProgressView()
                             .controlSize(.small)
                     } else {
-                        Toggle(
-                            serviceItemViewModel.service.name(),
-                            isOn: $serviceItemViewModel.isEnable
-                        )
-                        .labelsHidden()
-                        .toggleStyle(.switch)
-                        .controlSize(.mini)
+                        // Magnet can trigger a SwiftUI List(selection:) edge case where the
+                        // first click on an unselected row selects the row before Toggle sees it.
+                        // The Button handles clicks while Toggle only renders the switch.
+                        Button {
+                            serviceItemViewModel.isEnable.toggle()
+                        } label: {
+                            Toggle(
+                                serviceItemViewModel.service.name(),
+                                isOn: .constant(serviceItemViewModel.isEnable)
+                            )
+                            .labelsHidden()
+                            .toggleStyle(.switch)
+                            .controlSize(.mini)
+                            .allowsHitTesting(false)
+                        }
+                        .buttonStyle(.borderless)
                     }
                 }
                 .frame(width: 40, alignment: .center)
@@ -394,6 +406,20 @@ private struct ServiceItemView: View {
             }
         } message: {
             Text("service.claude_code.enable_risk_alert.message")
+        }
+        .alert(
+            "service.codex_cli.enable_risk_alert.title",
+            isPresented: $serviceItemViewModel.showCodexCLIRiskAlert
+        ) {
+            Button("cancel", role: .cancel) {
+                serviceItemViewModel.showCodexCLIRiskAlert = false
+            }
+            Button("ok") {
+                serviceItemViewModel.showCodexCLIRiskAlert = false
+                serviceItemViewModel.tryEnableService()
+            }
+        } message: {
+            Text("service.codex_cli.enable_risk_alert.message")
         }
     }
 

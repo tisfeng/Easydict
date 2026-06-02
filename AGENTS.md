@@ -59,6 +59,7 @@ Run `xcodebuild` only when:
 
 - The substantive code changes exceed 100 lines. Documentation comment-only edits do not
   count toward this threshold.
+- Unit test source files under `EasydictTests/**/*.swift` are added or changed.
 - The user explicitly asks for a build or test run.
 - The task runs `/code-simplifier`.
 
@@ -112,6 +113,9 @@ Recommended usage:
 
 - `build`: default validation when `xcodebuild` validation is required.
 - `test`: simplest one-shot test run; builds and runs tests in one command.
+- When unit test source files change, use `xcodebuild test` for the first validation.
+  Scope it with `-only-testing:<Target>/<TestSuiteOrClass>` for the changed test when
+  possible; if the mapping is unclear, run the relevant broader test target or suite.
 - `build-for-testing` + `test-without-building`: preferred when rerunning the same tests
   repeatedly.
 - `test-without-building` requires a compatible prior `build-for-testing` with the same
@@ -230,6 +234,9 @@ owning `.xcodeproj/project.pbxproj` file so the files appear in Xcode's navigato
 
 - All user-facing UI text must be localized. Do not hard-code visible strings in SwiftUI
   or AppKit.
+- `Localizable.xcstrings` manages app string localization. Whenever user-facing
+  text is added or its meaning changes, enumerate the catalog's current locales
+  and update every one for the affected key instead of copying nearby entries.
 - Use static String Catalog keys directly in UI and string APIs, for example
   `Text("setting.general.appearance.light_dark_appearance")`.
 - Do not build localization keys dynamically or concatenate localized fragments. For text
@@ -238,10 +245,6 @@ owning `.xcodeproj/project.pbxproj` file so the files appear in Xcode's navigato
 - Use lowercase, dot-separated keys with snake_case segments where needed, and do not
   rename keys casually. Follow `<scope>.<category>.<subcategory>.<element>`, for example
   `common.done` or `setting.general.appearance.light_dark_appearance`.
-- `Localizable.xcstrings` manages app string localization. Whenever localized strings are
-  added or changed, update the corresponding entries in this file and keep every supported
-  language in sync.
-
 ### Test Code Rules
 
 - Each test source file may declare at most one `@Suite` type.

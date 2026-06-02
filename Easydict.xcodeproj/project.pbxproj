@@ -588,6 +588,16 @@
 		F24D63E3FB144383A9B80386 /* MDictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983925DCBA81465EAE22415B /* MDictService.swift */; };
 		FA0D2894537C47E1AF63D495 /* QueryServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */; };
 		FBA62739BEA249C9BC0DFBA3 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F35C93D0925433FA0AD6066 /* ClaudeService.swift */; };
+		C0DEC11E0001000000000001 /* CodexCLIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000001 /* CodexCLIService.swift */; };
+		C0DEC11E0001000000000002 /* CodexCLIRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000002 /* CodexCLIRunner.swift */; };
+		C0DEC11E0001000000000003 /* CodexCLIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000003 /* CodexCLIError.swift */; };
+		C0DEC11E0001000000000004 /* CodexCLIEventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000004 /* CodexCLIEventParser.swift */; };
+		C0DEC11E0001000000000005 /* CodexCLILogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000005 /* CodexCLILogger.swift */; };
+		C0DEC11E0001000000000006 /* CodexCLIDebugWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */; };
+		C0DEC11E0001000000000007 /* CodexCLIServiceConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */; };
+		C0DEC11E0001000000000010 /* CodexCLIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */; };
+		C0DEC11E0001000000000011 /* CodexCLIRunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */; };
+		C0DEC11E0001000000000014 /* CodexReasoningEffort.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1305,6 +1315,20 @@
 		EA9943F12B5358BF00EE7B97 /* Language+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Language+Extension.swift"; sourceTree = "<group>"; };
 		EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalContext.swift; sourceTree = "<group>"; };
 		EF4F062ADB404915AA0EF5186FAF162A /* OrderedDictionary+Variadic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OrderedDictionary+Variadic.h"; sourceTree = "<group>"; };
+		C0DEC11E0002000000000001 /* CodexCLIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIService.swift; sourceTree = "<group>"; };
+		C0DEC11E0002000000000002 /* CodexCLIRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIRunner.swift; sourceTree = "<group>"; };
+		C0DEC11E0002000000000003 /* CodexCLIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIError.swift; sourceTree = "<group>"; };
+		C0DEC11E0002000000000004 /* CodexCLIEventParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIEventParser.swift; sourceTree = "<group>"; };
+		C0DEC11E0002000000000005 /* CodexCLILogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLILogger.swift; sourceTree = "<group>"; };
+		C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIDebugWindow.swift; sourceTree = "<group>"; };
+		C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIServiceConfigurationView.swift; sourceTree = "<group>"; };
+		C0DEC11E0002000000000008 /* codex-cli-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "codex-cli-overview.html"; sourceTree = "<group>"; };
+		C0DEC11E0002000000000009 /* codex-cli-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "codex-cli-overview.md"; sourceTree = "<group>"; };
+		C0DEC11E0002000000000012 /* codex-cli-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "codex-cli-architecture.svg"; sourceTree = "<group>"; };
+		C0DEC11E0002000000000013 /* codex-cli-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "codex-cli-architecture.svg"; sourceTree = "<group>"; };
+		C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIServiceTests.swift; sourceTree = "<group>"; };
+		C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIRunnerTests.swift; sourceTree = "<group>"; };
+		C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexReasoningEffort.swift; sourceTree = "<group>"; };
 		FA76B47A0150434485FCBBAD /* MDictReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictReaderTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1987,6 +2011,7 @@
 				0A9AFBA92B7F8D6A0064C9A8 /* CustomOpenAI */,
 				C415C0AB2B450C4500A9D231 /* Gemini */,
 				ED3EC55898A147C8B7CAFBD5 /* ClaudeCode */,
+				C0DEC11E0003000000000001 /* CodexCLI */,
 				03792EA02C3830E60074A145 /* Ollama */,
 				C4D1ADE12C3F340500A19D02 /* AITool */,
 				C4DD01E72B12B3B00025EE8E /* Tencent */,
@@ -2786,6 +2811,7 @@
 				A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */,
 				0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */,
 				179EFB3D68574DE5817C8AB9 /* ClaudeCode */,
+				C0DEC11E0003000000000002 /* CodexCLI */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -3231,6 +3257,17 @@
 			path = ClaudeCode;
 			sourceTree = "<group>";
 		};
+		C0DEC11E0003000000000002 /* CodexCLI */ = {
+			isa = PBXGroup;
+			children = (
+				C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */,
+				C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */,
+				C0DEC11E0002000000000009 /* codex-cli-overview.md */,
+				C0DEC11E0002000000000013 /* codex-cli-architecture.svg */,
+			);
+			path = CodexCLI;
+			sourceTree = "<group>";
+		};
 		2746AEBF2AF95040005FE0A1 /* Caiyun */ = {
 			isa = PBXGroup;
 			children = (
@@ -3650,6 +3687,7 @@
 				035F9CCE2C529A04005D1C9A /* ServiceAPIType.swift */,
 				03F086F12DB1F5F000268DF0 /* SliderCell.swift */,
 				5F42ADC9AAB3494D9E85B5D8 /* ClaudeCodeServiceConfigurationView.swift */,
+				C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */,
 			);
 			path = ServiceConfigurationView;
 			sourceTree = "<group>";
@@ -3667,6 +3705,22 @@
 				A7C0F3B22D4E56A7890BCDEF /* claude-code-architecture.svg */,
 			);
 			path = ClaudeCode;
+			sourceTree = "<group>";
+		};
+		C0DEC11E0003000000000001 /* CodexCLI */ = {
+			isa = PBXGroup;
+			children = (
+				C0DEC11E0002000000000003 /* CodexCLIError.swift */,
+				C0DEC11E0002000000000004 /* CodexCLIEventParser.swift */,
+				C0DEC11E0002000000000005 /* CodexCLILogger.swift */,
+				C0DEC11E0002000000000002 /* CodexCLIRunner.swift */,
+				C0DEC11E0002000000000001 /* CodexCLIService.swift */,
+				C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */,
+				C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */,
+				C0DEC11E0002000000000008 /* codex-cli-overview.html */,
+				C0DEC11E0002000000000012 /* codex-cli-architecture.svg */,
+			);
+			path = CodexCLI;
 			sourceTree = "<group>";
 		};
 		F85ED7C3B686A1F75E052D1A /* Frameworks */ = {
@@ -4124,6 +4178,8 @@
 				034080A22F6B1C75005C8508 /* AppleSpeechServiceTests.swift in Sources */,
 				A13F30938343423C89FB9B4C /* ClaudeCodeCLIRunnerTests.swift in Sources */,
 				513C5A1DEDCB410184268D48 /* ClaudeCodeServiceTests.swift in Sources */,
+				C0DEC11E0001000000000011 /* CodexCLIRunnerTests.swift in Sources */,
+				C0DEC11E0001000000000010 /* CodexCLIServiceTests.swift in Sources */,
 				030732D42F24862A0001382A /* OCRTextProcessingTests.swift in Sources */,
 				030732D52F24862A0001382A /* OCRTestSample+Chinese.swift in Sources */,
 			);
@@ -4374,6 +4430,14 @@
 				2A2FFF4289154137B673F7FA /* ClaudeCodeService.swift in Sources */,
 				A0CCFCC574EE46559C7C6E39 /* ClaudeCodeDebugWindow.swift in Sources */,
 				24D3321DBBE84C798A32C595 /* ClaudeCodeServiceConfigurationView.swift in Sources */,
+				C0DEC11E0001000000000003 /* CodexCLIError.swift in Sources */,
+				C0DEC11E0001000000000004 /* CodexCLIEventParser.swift in Sources */,
+				C0DEC11E0001000000000005 /* CodexCLILogger.swift in Sources */,
+				C0DEC11E0001000000000002 /* CodexCLIRunner.swift in Sources */,
+				C0DEC11E0001000000000001 /* CodexCLIService.swift in Sources */,
+				C0DEC11E0001000000000006 /* CodexCLIDebugWindow.swift in Sources */,
+				C0DEC11E0001000000000007 /* CodexCLIServiceConfigurationView.swift in Sources */,
+				C0DEC11E0001000000000014 /* CodexReasoningEffort.swift in Sources */,
 				0333D4C02E5C6EBE00CD4613 /* ShortcutManager.swift in Sources */,
 				0352AF342E0EEE9D00C2D4B1 /* OCRDashHandler.swift in Sources */,
 				0352AF352E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift in Sources */,
