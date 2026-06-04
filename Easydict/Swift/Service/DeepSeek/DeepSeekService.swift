@@ -70,11 +70,7 @@ class DeepSeekService: OpenAIService {
     /// in the picker, kept orthogonal to the model identifier so future
     /// DeepSeek-compatible models do not need a code change to opt in.
     var reasoningEffortKey: Defaults.Key<DeepSeekReasoningEffort> {
-        serivceConfigurationKey(
-            .reasoningEffort,
-            serviceType: serviceType(),
-            defaultValue: .high
-        )
+        serviceDefaultsKey(.reasoningEffort, defaultValue: .high)
     }
 
     var reasoningEffort: DeepSeekReasoningEffort {
