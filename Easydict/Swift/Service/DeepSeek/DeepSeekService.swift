@@ -105,7 +105,7 @@ class DeepSeekService: OpenAIService {
                 currentTask.cancel()
             }
 
-            currentTask = Task {
+            let task = Task {
                 do {
                     let queryType = queryType(text: text, from: from, to: to)
                     let chatQueryParam = ChatQueryParam(
@@ -130,6 +130,11 @@ class DeepSeekService: OpenAIService {
                 } catch {
                     continuation.finish(throwing: error)
                 }
+            }
+
+            currentTask = task
+            continuation.onTermination = { _ in
+                task.cancel()
             }
         }
     }
