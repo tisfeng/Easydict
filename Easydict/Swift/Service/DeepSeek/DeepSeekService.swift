@@ -66,11 +66,11 @@ class DeepSeekService: OpenAIService {
         false
     }
 
-    /// Per-service reasoning effort. Applies to every DeepSeek model selected
-    /// in the picker, kept orthogonal to the model identifier so future
-    /// DeepSeek-compatible models do not need a code change to opt in.
+    /// Per-service reasoning effort. Defaults to off because Easydict's
+    /// translation workflows prioritize lower latency; users can still choose
+    /// high or max when quality needs outweigh response speed.
     var reasoningEffortKey: Defaults.Key<DeepSeekReasoningEffort> {
-        serviceDefaultsKey(.reasoningEffort, defaultValue: .high)
+        serviceDefaultsKey(.reasoningEffort, defaultValue: .off)
     }
 
     var reasoningEffort: DeepSeekReasoningEffort {
