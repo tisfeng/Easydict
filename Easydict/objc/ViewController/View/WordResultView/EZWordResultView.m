@@ -35,6 +35,12 @@ static const CGFloat kVerticalPadding_6 = 6;
 static const CGFloat kBlueTextButtonVerticalPadding_2 = 2;
 
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
+static NSString *const kMDictEntryURIScheme = @"mdict-entry";
+
+static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
+    return [result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeAppleDictionary] ||
+           [result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeMDict];
+}
 
 @interface EZWordResultView () <NSTextViewDelegate>
 
@@ -945,7 +951,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     }
 
     // webView height need time to calculate, and the value will be called back later.
-    if (result.serviceTypeWithUniqueIdentifier == EZServiceTypeAppleDictionary) {
+    if (EZResultNeedsDictionaryHTMLHeight(result)) {
         BOOL hasHTML = result.htmlString.length > 0;
         linkButton.enabled = hasHTML;
 
@@ -1140,6 +1146,20 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }];
 
         //        [[NSWorkspace sharedWorkspace] openURL:navigationActionURL];
+
+        decisionHandler(WKNavigationActionPolicyCancel);
+        return;
+    }
+
+    if ([navigationActionURL.scheme isEqualToString:kMDictEntryURIScheme]) {
+        NSString *targetText = navigationActionURL.resourceSpecifier ?: @"";
+        if ([targetText hasPrefix:@"//"]) {
+            targetText = [targetText substringFromIndex:2];
+        }
+        targetText = [[targetText ns_decode] ns_trim];
+        if (self.queryTextBlock && targetText.length) {
+            self.queryTextBlock(targetText);
+        }
 
         decisionHandler(WKNavigationActionPolicyCancel);
         return;

@@ -22,7 +22,7 @@
 
   <rect width="960" height="600" fill="#ffffff"/>
   <text x="40" y="52" class="title">WordResultView 高度更新架构</text>
-  <text x="40" y="78" class="node-text">Apple 词典内容先在 WebView 内稳定测量，再把真实高度变化传到表格和窗口。</text>
+  <text x="40" y="78" class="node-text">Apple Dictionary 与 MDict 内容先在 WebView 内稳定测量，再把真实高度变化传到表格和窗口。</text>
 
   <rect x="40" y="120" width="210" height="92" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
   <text x="62" y="150" class="node-title">EZResultView</text>
@@ -36,7 +36,7 @@
 
   <rect x="570" y="120" width="220" height="92" rx="8" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1.5"/>
   <text x="592" y="150" class="node-title">WKWebView</text>
-  <text x="592" y="174" class="node-text">加载 Apple 词典 HTML</text>
+  <text x="592" y="174" class="node-text">加载词典 HTML</text>
   <text x="592" y="194" class="node-text">触发 iframe 重测脚本</text>
 
   <rect x="570" y="300" width="220" height="100" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>

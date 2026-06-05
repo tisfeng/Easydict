@@ -91,6 +91,9 @@ static NSString *kMethod = @"method";
                         fontSize];
     [self.webView evaluateJavaScript:script
                    completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+        if (error) {
+            MMLogError(@"updateAllIframe failed: %@", error);
+        }
         self.isUpdatingIframe = NO;
         if (self.needUpdateIframeHeight) {
             [self updateAllIframe];
@@ -102,6 +105,7 @@ static NSString *kMethod = @"method";
     self.wordResultViewHeight = 0;
     self.isLoaded = NO;
     self.needUpdateIframeHeight = NO;
+    self.loadedHTMLString = nil;
     self.didFinishUpdatingIframeHeightBlock = nil;
     self.isUpdatingIframe = NO;
     self.forceNextScrollHeightCallback = NO;
@@ -118,6 +122,7 @@ static NSString *kMethod = @"method";
 + (NSArray *)mj_ignoredPropertyNames {
     return @[
         @"webView",
+        @"loadedHTMLString",
         @"isUpdatingIframe",
         @"forceNextScrollHeightCallback",
         @"lastScrollHeight"

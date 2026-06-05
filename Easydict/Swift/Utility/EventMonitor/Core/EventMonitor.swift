@@ -287,6 +287,13 @@ final class EventMonitor: NSObject {
 //            log("keyCode: \(event.keyCode)")
 
             EZWindowManager.shared().lastPoint = mouseLocation
+            // Cmd+A only requests a selection change in the frontmost app.
+            // Handle it before the generic key-down dismissal path and read
+            // the selection later.
+            if handleSelectAllShortcut(event) {
+                return
+            }
+
             if shouldDismissForKeyCombination(
                 keyCode: Int(event.keyCode),
                 modifierFlags: event.modifierFlags.union(currentModifierFlags)
@@ -298,6 +305,11 @@ final class EventMonitor: NSObject {
             if popButtonController.isPopButtonVisible {
                 dismissPopButton()
             }
+        case .keyUp:
+            // Delayed Cmd+A selection reading may show the pop button before
+            // key-up, so key-up must not fall through to the default dismissal
+            // path.
+            break
         case .flagsChanged:
 //            log("flagsChanged, modifierFlags rawValue: \(event.modifierFlags.rawValue)")
 //            log("keyCode: \(event.keyCode)")
@@ -316,6 +328,55 @@ final class EventMonitor: NSObject {
                 dismissPopButton()
             }
         }
+    }
+
+    /// Routes Cmd+A through the delayed auto-selection workflow.
+    ///
+    /// The key-down event arrives before the frontmost app may finish updating
+    /// its selection, so this method schedules selection reading for later.
+    /// Returns `true` when Cmd+A is consumed, including repeat events that
+    /// should neither reschedule selection reading nor dismiss the pop button.
+    private func handleSelectAllShortcut(_ event: NSEvent) -> Bool {
+        guard isSelectAllShortcut(event) else { return false }
+        guard !event.isARepeat else { return true }
+
+        let frontmostTriggerType = appContextProvider.frontmostAppTriggerType(
+            forceGetSelectedTextType: MyConfiguration.shared.forceGetSelectedTextType
+        )
+        guard frontmostTriggerType.contains(.selectAllShortcut) else {
+            logInfo("Frontmost app trigger type does not contain select all shortcut")
+            return false
+        }
+
+        guard enabledAutoSelectText() else { return false }
+        // Only editable contexts can update their selection in response to
+        // Cmd+A. Read-only text keeps using the normal selection heuristics.
+        guard systemUtility.canInsertText() else {
+            logInfo("Focused element cannot insert text, skip select all shortcut auto get selected text")
+            return false
+        }
+
+        triggerType = .selectAllShortcut
+        if popButtonController.isPopButtonVisible {
+            dismissPopButton()
+        }
+
+        // Wait until the frontmost app applies Cmd+A; reading immediately can
+        // capture the previous, empty, or partial selection.
+        cancelDelayGetSelectedText()
+        delayGetSelectedText()
+
+        return true
+    }
+
+    /// Checks for plain Cmd+A while excluding variants such as Cmd+Shift+A.
+    private func isSelectAllShortcut(_ event: NSEvent) -> Bool {
+        guard event.keyCode == kVK_ANSI_A else { return false }
+
+        // Command flag changes can arrive separately from key-down events.
+        let modifierFlags = event.modifierFlags.union(currentModifierFlags)
+        let disallowedModifiers: NSEvent.ModifierFlags = [.option, .shift, .control, .function]
+        return modifierFlags.contains(.command) && modifierFlags.isDisjoint(with: disallowedModifiers)
     }
 
     /// Handles temporary high-frequency input monitors while the pop button is visible.
@@ -392,6 +453,11 @@ final class EventMonitor: NSObject {
         popButtonController.handleMouseMoved(isMouseInExpandedFrame: isMouseInPopButtonExpandedFrame())
     }
 
+    /// Reads the current selection and updates the auto-query pop button state.
+    ///
+    /// This method stays Objective-C visible because delayed mouse and keyboard
+    /// triggers schedule it with `perform(_:with:afterDelay:)`.
+    @objc
     private func autoGetSelectedText() {
         guard enabledAutoSelectText() else { return }
         logInfo("auto get selected text")
@@ -546,24 +612,19 @@ final class EventMonitor: NSObject {
     }
 
     private func delayGetSelectedText() {
-        perform(#selector(autoGetSelectedTextObjc), with: nil, afterDelay: Constants.delayGetSelectedText)
+        perform(#selector(autoGetSelectedText), with: nil, afterDelay: Constants.delayGetSelectedText)
     }
 
     private func delayGetSelectedText(_ delay: TimeInterval) {
-        perform(#selector(autoGetSelectedTextObjc), with: nil, afterDelay: delay)
+        perform(#selector(autoGetSelectedText), with: nil, afterDelay: delay)
     }
 
     private func cancelDelayGetSelectedText() {
         NSObject.cancelPreviousPerformRequests(
             withTarget: self,
-            selector: #selector(autoGetSelectedTextObjc),
+            selector: #selector(autoGetSelectedText),
             object: nil
         )
-    }
-
-    @objc
-    private func autoGetSelectedTextObjc() {
-        autoGetSelectedText()
     }
 
     private func isMouseInPopButtonExpandedFrame() -> Bool {

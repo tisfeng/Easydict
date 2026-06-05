@@ -232,35 +232,12 @@ extension AppleDictionary {
 
         let fromLanguage = languages?.first
 
-        guard let baseHtmlPath = Bundle.main.path(forResource: "apple-dictionary", ofType: "html"),
-              let baseHtmlString = try? String(contentsOfFile: baseHtmlPath, encoding: .utf8)
-        else {
-            return nil
-        }
-
-        let lightTextColorString = NSColor.mm_hexString(from: NSColor.ez_resultTextLight())
-        let lightBackgroundColorString = NSColor.mm_hexString(from: NSColor.ez_resultViewBgLight())
-        let darkBackgroundColorString = NSColor.mm_hexString(from: NSColor.ez_resultViewBgDark())
-
-        let bigWordTitleH2Class = "big-word-title"
         let customIframeContainerClass = "custom-iframe-container"
-
-        let customCSS = """
-        <style>\
-        .\(customIframeContainerClass) { margin-top: 0px; margin-bottom: 0px; width: 100%; }\
-        body { margin: 10px; color: \(lightTextColorString); background-color: \(lightBackgroundColorString
-        ); font-family: 'system-ui'; }\
-        @media (prefers-color-scheme: dark) { \
-        body {\
-        background-color: \(darkBackgroundColorString);\
-        filter: invert(0.85) hue-rotate(185deg) saturate(200%) brightness(120%);\
-        }\
-        }\
-        </style>
-        """
-
-        var iframesHtmlString = ""
-        var bigWordHtml = "<h2 class=\"\(bigWordTitleH2Class)\">\(word)</h2>"
+        let entryStyle = DictionaryHTMLRenderer.entryStyle(
+            bodyMargin: 10,
+            extraCSS: ".\(customIframeContainerClass){margin-top:0;margin-bottom:0;width:100%;}"
+        )
+        var sections: [DictionaryHTMLSection] = []
 
         for dictionary in dictionaries {
             var wordHtmlString = ""
@@ -281,42 +258,21 @@ extension AppleDictionary {
             }
 
             if !wordHtmlString.isEmpty {
-                let dictHTML = "\(customCSS)\n\n\(wordHtmlString)"
-
-                // Create an iframe for each HTML content
-                let escapedDictHTML = dictHTML.escapedXMLString()
-                let iframeHTML =
-                    "<iframe class=\"\(customIframeContainerClass)\" srcdoc=\"\(escapedDictHTML)\"></iframe>"
-
-                let dictName = dictionary.shortName
-                let detailsSummaryHtml =
-                    "\(bigWordHtml)<details open><summary>\(dictName)</summary> \(iframeHTML) </details>"
-
-                bigWordHtml = ""
-                iframesHtmlString += detailsSummaryHtml
-
-                // Save dict HTML to file
-                saveDictHTML(dictHTML, dictName: dictName)
+                let dictHTML = "\(entryStyle)\n\n\(wordHtmlString)"
+                sections.append(DictionaryHTMLSection(title: dictionary.shortName, html: dictHTML))
+                saveDictHTML(dictHTML, dictName: dictionary.shortName)
             }
         }
 
         let endTime = CFAbsoluteTimeGetCurrent()
         logInfo("Query all dicts cost: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
 
-        var htmlString: String?
-        if !iframesHtmlString.isEmpty {
-            let replacedString = "\(iframesHtmlString) </body>"
-            htmlString = baseHtmlString.replacingOccurrences(of: "</body>", with: replacedString)
-
-            // Save all dict HTML
-            let dictionaryURL = TTTDictionary.userDictionaryDirectoryURL()
-            let htmlDirectory = dictionaryURL.appendingPathComponent(kHTMLDirectory).path
-            let filePath = "\(htmlDirectory)/\(kHTMLDictFilePath)"
-            htmlFilePath = filePath
-            try? htmlString?.write(toFile: filePath, atomically: true, encoding: .utf8)
+        guard let renderResult = DictionaryHTMLRenderer.render(word: word, sections: sections) else {
+            return nil
         }
 
-        return htmlString
+        saveAllDictHTML(renderResult.htmlString)
+        return renderResult.htmlString
     }
 
     // MARK: Private
@@ -365,23 +321,37 @@ extension AppleDictionary {
         let dictionaryURL = TTTDictionary.userDictionaryDirectoryURL()
         let htmlDirectory = dictionaryURL.appendingPathComponent(kHTMLDirectory).path
 
-        // Create if not exist
-        let fileManager = FileManager.default
-        if !fileManager.fileExists(atPath: htmlDirectory) {
-            do {
-                try fileManager.createDirectory(
-                    atPath: htmlDirectory, withIntermediateDirectories: true
-                )
-            } catch {
-                logError("createDirectoryAtPath error: \(error)")
-            }
-        }
+        createHTMLDirectoryIfNeeded(htmlDirectory)
 
         let htmlFilePath = "\(htmlDirectory)/\(dictName).html"
         do {
             try dictHTML.write(toFile: htmlFilePath, atomically: true, encoding: .utf8)
         } catch {
             logError("writeToFile error: \(error)")
+        }
+    }
+
+    private func saveAllDictHTML(_ htmlString: String) {
+        let dictionaryURL = TTTDictionary.userDictionaryDirectoryURL()
+        let htmlDirectory = dictionaryURL.appendingPathComponent(kHTMLDirectory).path
+        createHTMLDirectoryIfNeeded(htmlDirectory)
+
+        let filePath = "\(htmlDirectory)/\(kHTMLDictFilePath)"
+        htmlFilePath = filePath
+        try? htmlString.write(toFile: filePath, atomically: true, encoding: .utf8)
+    }
+
+    private func createHTMLDirectoryIfNeeded(_ htmlDirectory: String) {
+        let fileManager = FileManager.default
+        guard !fileManager.fileExists(atPath: htmlDirectory) else { return }
+
+        do {
+            try fileManager.createDirectory(
+                atPath: htmlDirectory,
+                withIntermediateDirectories: true
+            )
+        } catch {
+            logError("createDirectoryAtPath error: \(error)")
         }
     }
 }

@@ -4,6 +4,8 @@
 
 这个目录封装 Easydict 的 AppleScript 能力，包括业务 facade、浏览器与系统脚本模板，以及底层执行后端。上层调用方统一依赖 `AppleScriptTask`，不直接选择 `NSAppleScript` 或 `osascript`。当前正式业务路径默认走 `NSAppleScript`。
 
+![AppleScript 架构](./apple-script-architecture.svg)
+
 ## 关键组件
 
 - `AppleScriptTask.swift`：对外 facade，暴露统一入口并保留快捷指令脚本模板生成。

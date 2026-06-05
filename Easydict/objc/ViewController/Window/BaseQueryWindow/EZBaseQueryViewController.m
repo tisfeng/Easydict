@@ -704,8 +704,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         NSString *textLanguage = self.queryModel.queryFromLanguage;
         BOOL isEnglishWord = [queryText isEnglishWordWithLanguage:textLanguage];
 
-        // If query text is an English word, use Youdao TTS to play.
-        EZQueryService *ttsService = isEnglishWord ? self.youdaoService : self.defaultTTSService;
+        // If query text is an English word, prefer Youdao TTS for its high-quality
+        // dictionary recordings. Users on slow or restricted networks can disable
+        // this in Advanced settings to fall back to their default TTS service.
+        BOOL preferYoudao = self.config.preferYoudaoTTSForEnglishWord;
+        EZQueryService *ttsService = (isEnglishWord && preferYoudao) ? self.youdaoService : self.defaultTTSService;
         NSString *accent = self.config.pronunciation == EnglishPronunciationUk ? @"uk" : @"us";
 
         [self.audioPlayer playTextAudio:queryText
@@ -1352,7 +1355,13 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)detectQueryText:(nullable void (^)(NSString *language))completion {
     [self cancelDelayDetectQueryText];
 
-    [self.detectManager detectText:self.queryText completion:^(EZQueryModel *queryModel, NSError *error) {
+    NSString *queryText = self.queryText ?: @"";
+    [self.detectManager detectText:queryText completion:^(EZQueryModel *queryModel, NSError *error) {
+        // Language detection is async, so ignore callbacks for an older query.
+        NSString *currentQueryText = self.queryText ?: @"";
+        if (![currentQueryText isEqualToString:queryText]) {
+            return;
+        }
         // `self.queryModel.detectedLanguage` has already been updated inside the method.
 
         // Show detected language button if has queryText, even detect language is auto.
@@ -1549,11 +1558,27 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
             [webViewManager updateAllIframe];
         }
+    } else if ([service.serviceType isEqualToString:EZServiceTypeMDict]) {
+        EZWebViewManager *webViewManager = result.webViewManager;
+        webView = webViewManager.webView;
+        resultCell.wordResultView.webView = webView;
+
+        BOOL htmlChanged = ![webViewManager.loadedHTMLString isEqualToString:result.htmlString];
+        BOOL needLoadHTML = result.isShowing && result.htmlString.length && (!webViewManager.isLoaded || htmlChanged);
+        if (needLoadHTML) {
+            webViewManager.isLoaded = YES;
+            webViewManager.loadedHTMLString = result.htmlString;
+            webView.navigationDelegate = resultCell.wordResultView;
+            [webView loadHTMLString:result.htmlString baseURL:nil];
+        } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
+            [webViewManager updateAllIframe];
+        }
     }
 
     return resultCell;
 }
 
+/// Configure callbacks for a reusable result cell.
 - (void)setupResultCell:(EZResultView *)resultView {
     EZQueryResult *result = resultView.result;
     EZQueryService *service = [self serviceWithType:result.serviceTypeWithUniqueIdentifier];
@@ -1572,31 +1597,122 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         [self resetCellWithService:service autoQuery:YES];
     }];
 
-    // !!!: Avoid capture result, the block paramter result is different from former result.
+    // Do not capture `result`; the block receives the current result instance.
     [resultView setClickArrowBlock:^(EZQueryResult *newResult) {
         mm_strongify(self);
         BOOL isShowing = newResult.isShowing;
+
         if (!isShowing) {
             [service.audioPlayer stop];
         }
 
         service.enabledQuery = isShowing;
-
-        // If there is no result, try to query with current servie.
-        if (isShowing && !newResult.hasShowingResult) {
-            if (self.queryModel.needDetectLanguage) {
-                [self detectQueryText:^(NSString *_Nonnull language) {
-                    [self queryWithModel:self.queryModel service:service];
-                }];
-            } else {
-                [self queryWithModel:self.queryModel service:service];
-            }
-        } else {
-            // If alreay has result, just update cell.
-            [self updateCellWithResult:newResult reloadData:YES];
-        }
+        [self handleArrowToggleForResult:newResult service:service isShowing:isShowing];
     }];
 }
+
+#pragma mark - Result Arrow Toggle
+
+/// Route an arrow toggle to refresh, query, or redraw the result cell.
+- (void)handleArrowToggleForResult:(EZQueryResult *)result
+                            service:(EZQueryService *)service
+                          isShowing:(BOOL)isShowing {
+    NSString *currentQueryText = self.queryModel.queryText ?: @"";
+    NSString *resultQueryText = result.queryText ?: @"";
+
+    // Expanded cells can still hold rendered content from an older query.
+    BOOL hasStaleExpandedResult = isShowing
+        && result.hasShowingResult
+        && ![resultQueryText isEqualToString:currentQueryText];
+
+    if (hasStaleExpandedResult) {
+        [self performAfterLanguageDetectionIfNeeded:^{
+            [self requeryStaleExpandedResultIfToggleStillValid:result
+                                                       service:service
+                                                     queryText:currentQueryText];
+        }];
+        return;
+    }
+
+    // Newly expanded services with no visible result should query this text.
+    BOOL needsQueryForExpandedService = isShowing && !result.hasShowingResult;
+    if (needsQueryForExpandedService) {
+        [self performAfterLanguageDetectionIfNeeded:^{
+            [self queryExpandedServiceIfToggleStillValid:service
+                                                  result:result
+                                               queryText:currentQueryText];
+        }];
+        return;
+    }
+
+    // Existing matching results only need their expanded/collapsed state redrawn.
+    [self updateCellWithResult:result reloadData:YES];
+}
+
+/// Check that a delayed arrow action still targets the same service, result, and query.
+- (BOOL)isArrowToggleStillValidForService:(EZQueryService *)service
+                                   result:(EZQueryResult *)result
+                                queryText:(NSString *)queryText {
+    // Language detection may finish after input changes or service reloads.
+    EZQueryService *currentService = [self serviceWithType:service.serviceTypeWithUniqueIdentifier];
+    NSString *currentQueryText = self.queryModel.queryText ?: @"";
+    return currentService == service
+        && result.isShowing
+        && [currentQueryText isEqualToString:queryText];
+}
+
+/// Run the action after language detection when the query still needs it.
+- (void)performAfterLanguageDetectionIfNeeded:(void (^)(void))action {
+    if (!self.queryModel.needDetectLanguage) {
+        action();
+        return;
+    }
+
+    [self detectQueryText:^(NSString *_Nonnull language) {
+        action();
+    }];
+}
+
+/// Reset stale expanded content and query again if the toggle is still valid.
+- (void)requeryStaleExpandedResultIfToggleStillValid:(EZQueryResult *)result
+                                             service:(EZQueryService *)service
+                                           queryText:(NSString *)queryText {
+    if (![self isArrowToggleStillValidForService:service result:result queryText:queryText]) {
+        return;
+    }
+
+    // Another callback may have cleared or replaced the stale result already.
+    if (!result.hasShowingResult) {
+        return;
+    }
+
+    NSString *resultQueryText = result.queryText ?: @"";
+    if ([resultQueryText isEqualToString:queryText]) {
+        return;
+    }
+
+    // Remove stale HTML before auto-querying the expanded service again.
+    [self resetCellWithService:service autoQuery:YES];
+}
+
+/// Query an expanded empty service if the toggle still targets this query.
+- (void)queryExpandedServiceIfToggleStillValid:(EZQueryService *)service
+                                        result:(EZQueryResult *)result
+                                     queryText:(NSString *)queryText {
+    if (![self isArrowToggleStillValidForService:service result:result queryText:queryText]) {
+        return;
+    }
+
+    // Another callback may have produced a result while detection was running.
+    if (result.hasShowingResult) {
+        return;
+    }
+
+    // A no-result expanded cell should query only after the guard passes.
+    [self queryWithModel:self.queryModel service:service];
+}
+
+#pragma mark - Row Mapping
 
 - (NSInteger)resultCellOffset {
     NSInteger offset = 0;

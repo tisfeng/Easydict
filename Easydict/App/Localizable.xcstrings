@@ -5043,6 +5043,7 @@
     },
     "service.claude_code.debug_log.clear" : {
       "comment" : "Button to clear the debug log",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5072,6 +5073,7 @@
     },
     "service.claude_code.debug_log.show_in_finder" : {
       "comment" : "Button to reveal the debug log file in Finder",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5101,6 +5103,7 @@
     },
     "service.claude_code.debug_log.show_window" : {
       "comment" : "Button to open the debug log window",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5130,6 +5133,7 @@
     },
     "service.claude_code.debug_log.window_title" : {
       "comment" : "Title of the Claude Code debug log panel",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5355,6 +5359,452 @@
             "value" : "此服務使用你本機的官方 Claude Code CLI，未來可用性可能發生變化，並可能帶來帳號或政策風險。"
           }
         }
+      }
+    },
+    "service.codex_cli.cli_error %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CLI error: %@"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba CLI: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CLI 错误：%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CLI 錯誤：%@"
+          }
+        }
+      }
+    },
+    "service.codex_cli.cli_error.unknown" : {
+      "comment" : "Fallback message when the CLI exits with a non-zero code but produces no stderr output",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "non-zero exit, no stderr output"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nenulový exit kód, žiadny stderr výstup"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出码非零，无 stderr 输出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出碼非零，無 stderr 輸出"
+          }
+        }
+      }
+    },
+    "service.codex_cli.debug_log.clear" : {
+      "comment" : "Button to clear the debug log",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vymazať"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除"
+          }
+        }
+      }
+    },
+    "service.codex_cli.debug_log.show_in_finder" : {
+      "comment" : "Button to reveal the debug log file in Finder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show in Finder"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť vo Finderi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Finder 中显示"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Finder 中顯示"
+          }
+        }
+      }
+    },
+    "service.codex_cli.debug_log.show_window" : {
+      "comment" : "Button to open the debug log window",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Debug Log Window"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť okno debug logu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示调试日志窗口"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示調試日誌視窗"
+          }
+        }
+      }
+    },
+    "service.codex_cli.debug_log.window_title" : {
+      "comment" : "Title of the Codex debug log panel",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex Debug Log"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debug log Codex"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 调试日志"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 調試日誌"
+          }
+        }
+      }
+    },
+    "service.codex_cli.enable_risk_alert.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This service uses your locally installed and signed-in official Codex CLI. It does not use OAuth, private APIs, or proxy workarounds. OpenAI may change CLI policies or account rules in the future. Continue only if you understand and accept the potential account or policy risk."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Táto služba používa lokálne nainštalované a prihlásené oficiálne Codex CLI. Nepoužíva OAuth, súkromné API ani proxy obchádzky. OpenAI môže v budúcnosti zmeniť pravidlá CLI alebo účtov. Pokračujte iba vtedy, ak rozumiete možnému riziku pre účet alebo pravidlá a prijímate ho."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此服务使用你本机已安装并已登录的官方 Codex CLI，不使用 OAuth、私有 API 或代理绕行方案。OpenAI 未来可能调整 CLI 政策或账号规则。仅当你理解并接受潜在的账号或政策风险时再继续。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此服務使用你本機已安裝且已登入的官方 Codex CLI，不使用 OAuth、私有 API 或代理繞行方案。OpenAI 未來可能調整 CLI 政策或帳號規則。僅當你理解並接受潛在的帳號或政策風險時再繼續。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.enable_risk_alert.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex Risk Notice"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upozornenie na riziko Codex"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 风险提示"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 風險提示"
+          }
+        }
+      }
+    },
+    "service.codex_cli.name" : {
+      "comment" : "The name of the Codex service",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex"
+          }
+        }
+      }
+    },
+    "service.codex_cli.not_installed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex CLI not found. Please install it first."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex CLI sa nenašiel. Najprv ho nainštalujte."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未检测到 Codex CLI，请先安装"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未偵測到 Codex CLI，請先安裝"
+          }
+        }
+      }
+    },
+    "service.codex_cli.not_logged_in" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex is not signed in. Run `codex login` to sign in."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex nie je prihlásený. Spustite `codex login` na prihlásenie."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 未登录，请运行 `codex login` 完成登录"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 未登入，請執行 `codex login` 完成登入"
+          }
+        }
+      }
+    },
+    "service.codex_cli.quota_exceeded" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex usage limit reached."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bol dosiahnutý limit využitia Codex."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 用量已用尽"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 用量已用盡"
+          }
+        }
+      }
+    },
+    "service.codex_cli.reasoning_effort.default" : {
+      "comment" : "Default option means: do not override ~/.codex/config.toml",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Default (use config.toml)" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Predvolené (z config.toml)" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "默认（沿用 config.toml）" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "預設（沿用 config.toml）" } }
+      }
+    },
+    "service.codex_cli.reasoning_effort.high" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "High" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vysoké" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "高" } }
+      }
+    },
+    "service.codex_cli.reasoning_effort.low" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Low" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Nízke" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "低" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "低" } }
+      }
+    },
+    "service.codex_cli.reasoning_effort.medium" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Medium" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Stredné" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "中" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "中" } }
+      }
+    },
+    "service.codex_cli.reasoning_effort.minimal" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Minimal" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Minimálne" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "最小" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最小" } }
+      }
+    },
+    "service.codex_cli.reasoning_effort.xhigh" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Extra High" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Veľmi vysoké" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "极高" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "極高" } }
+      }
+    },
+    "service.codex_cli.risk_warning" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uses your local official Codex CLI. Availability may change in the future and may carry account or policy risk."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Používa tvoje lokálne oficiálne Codex CLI. Dostupnosť sa môže v budúcnosti zmeniť a môže niesť riziko pre účet alebo pravidlá."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此服务使用你本机的官方 Codex CLI，未来可用性可能发生变化，并可能带来账号或政策风险。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此服務使用你本機的官方 Codex CLI，未來可用性可能發生變化，並可能帶來帳號或政策風險。"
+          }
+        }
+      }
+    },
+    "service.deepseek.reasoning_effort.high" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "High" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vysoké" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "高" } }
+      }
+    },
+    "service.deepseek.reasoning_effort.max" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Max" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Maximálne" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "最大" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最大" } }
+      }
+    },
+    "service.deepseek.reasoning_effort.off" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Off" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vypnuté" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关闭" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "關閉" } }
       }
     },
     "service.configuration.ali.access_key_id.title" : {
@@ -5583,6 +6033,38 @@
             "value" : "權杖"
           }
         }
+      }
+    },
+    "service.configuration.codex_cli.model.placeholder" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Leave empty to use config.toml default" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Prázdne = predvolený z config.toml" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "留空则使用 config.toml 默认" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "留空則使用 config.toml 預設" } }
+      }
+    },
+    "service.configuration.codex_cli.model.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Model" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Model" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "模型" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "模型" } }
+      }
+    },
+    "service.configuration.codex_cli.reasoning_effort.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Reasoning Effort" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Úroveň uvažovania" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } }
+      }
+    },
+    "service.configuration.deepseek.reasoning_effort.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Reasoning Effort" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Úroveň uvažovania" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } }
       }
     },
     "service.configuration.custom_openai.enable_streaming.footnote" : {
@@ -6029,6 +6511,175 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "複製"
+          }
+        }
+      }
+    },
+    "service.configuration.fetch_models.add" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pridať"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入"
+          }
+        }
+      }
+    },
+    "service.configuration.fetch_models.deselect_all" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deselect All"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrušiť výber"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消全选"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消全選"
+          }
+        }
+      }
+    },
+    "service.configuration.fetch_models.local_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fetch Local Models"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Načítať lokálne modely"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获取本地模型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取得本地模型"
+          }
+        }
+      }
+    },
+    "service.configuration.fetch_models.search" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search models"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hľadať modely"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索模型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜尋模型"
+          }
+        }
+      }
+    },
+    "service.configuration.fetch_models.select_all" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select All"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vybrať všetko"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全选"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全選"
+          }
+        }
+      }
+    },
+    "service.configuration.fetch_models.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fetch Models"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Načítať modely"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从云端获取模型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從雲端取得模型"
           }
         }
       }
@@ -6869,6 +7520,174 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret Access Key"
+          }
+        }
+      }
+    },
+    "service.mdict.button.import" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Dictionary"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importovať slovník"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导入词典"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "匯入字典"
+          }
+        }
+      }
+    },
+    "service.mdict.error.import_failed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Failed"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import zlyhal"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导入失败"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "匯入失敗"
+          }
+        }
+      }
+    },
+    "service.mdict.error.no_dictionaries" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No MDict dictionaries are enabled. Please import dictionaries in the service settings."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Žiadne MDict slovníky nie sú povolené."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未启用任何 MDict 词典，请在服务设置中导入词典。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未啟用任何 MDict 字典，請在服務設定中匯入字典。"
+          }
+        }
+      }
+    },
+    "service.mdict.hint.no_dictionaries" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No dictionaries imported. Tap + to import an MDX file."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Žiadne slovníky. Kliknutím na + importujte súbor MDX."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚未导入任何词典，点击 + 导入 MDX 文件。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚未匯入任何字典，點擊 + 匯入 MDX 檔案。"
+          }
+        }
+      }
+    },
+    "service.mdict.name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MDict Dictionary"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MDict Slovník"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MDict 词典"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MDict 字典"
+          }
+        }
+      }
+    },
+    "service.mdict.section.dictionaries" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictionaries"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slovníky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "词典列表"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字典清單"
           }
         }
       }
@@ -8248,6 +9067,62 @@
         }
       }
     },
+    "setting.advance.prefer_youdao_tts_for_english_word" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prefer Youdao TTS for English Words"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uprednostniť Youdao TTS pre anglické slová"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英语单词优先使用有道发音"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英語單字優先使用有道發音"
+          }
+        }
+      }
+    },
+    "setting.advance.prefer_youdao_tts_for_english_word_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When off, English word pronunciation uses the default TTS service"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po vypnutí sa na výslovnosť anglických slov použije predvolená TTS služba"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭后，英语单词发音将使用默认 TTS 服务"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉後，英語單字發音將使用預設 TTS 服務"
+          }
+        }
+      }
+    },
     "setting.advance.show_ocr_menu_items" : {
       "localizations" : {
         "en" : {
@@ -9203,6 +10078,7 @@
       }
     },
     "setting.service.back" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9286,90 +10162,6 @@
         }
       }
     },
-    "setting.service.section.agent_cli" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Agent CLI"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Agent CLI"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Agent CLI"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Agent CLI"
-          }
-        }
-      }
-    },
-    "setting.service.section.free" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No API Key Required"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nevyžaduje API kľúč"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无需 API Key"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無需 API Key"
-          }
-        }
-      }
-    },
-    "setting.service.section.pro" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Requires API Key"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vyžaduje API kľúč"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要 API Key"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要 API Key"
-          }
-        }
-      }
-    },
     "setting.service.show_input_text_field" : {
       "localizations" : {
         "en" : {
@@ -9422,6 +10214,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示語言選擇欄"
+          }
+        }
+      }
+    },
+    "setting.service.window_configuration" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window Configuration"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavenie okna"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口配置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "視窗配置"
           }
         }
       }
