@@ -127,6 +127,20 @@ struct MarkdownRendererTests {
         #expect(result.string.contains("bold without close"))
     }
 
+    @Test("Single-line output has no trailing newline")
+    func noTrailingNewline() {
+        let result = renderer.render("Hello")
+        #expect(result.string == "Hello")
+    }
+
+    @Test("Multi-block output does not end with a newline")
+    func multiBlockNoTrailingNewline() {
+        let result = renderer.render("## Title\n\nBody paragraph.\n\n")
+        #expect(!result.string.hasSuffix("\n"))
+        #expect(result.string.contains("Title"))
+        #expect(result.string.contains("Body paragraph."))
+    }
+
     @Test("In-word underscores stay literal so identifiers survive")
     func inWordUnderscoreStaysLiteral() {
         let result = renderer.render("path is foo_bar_baz today")

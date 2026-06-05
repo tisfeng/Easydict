@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Markdown 目录概览</title>
+  <style>
+    :root {
+      --background: #f7f7f4;
+      --surface: #ffffff;
+      --text: #202124;
+      --muted: #5f6368;
+      --border: #d7d8d2;
+      --accent: #0f766e;
+      --code: #f1f3f4;
+      --shadow: 0 18px 42px rgba(32, 33, 36, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #171918;
+        --surface: #222523;
+        --text: #f1f3f2;
+        --muted: #b7bcb8;
+        --border: #3a3f3b;
+        --accent: #5eead4;
+        --code: #303431;
+        --shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+        "Hiragino Sans GB", "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.68;
+    }
+
+    main {
+      width: min(960px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 48px 0 64px;
+    }
+
+    header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1,
+    h2 {
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: 34px;
+      font-weight: 760;
+    }
+
+    h2 {
+      margin: 40px 0 16px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0 0 14px;
+    }
+
+    ul,
+    ol {
+      margin: 0;
+      padding-left: 1.45rem;
+    }
+
+    li {
+      margin: 0 0 10px;
+    }
+
+    code {
+      padding: 0.12rem 0.32rem;
+      border-radius: 5px;
+      background: var(--code);
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    .summary,
+    .diagram {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .summary {
+      padding: 22px 24px;
+    }
+
+    .diagram {
+      margin: 28px 0 36px;
+      padding: 18px;
+    }
+
+    .diagram img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    .diagram figcaption {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .tag {
+      color: var(--accent);
+      font-weight: 650;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="tag">Feature / Markdown</p>
+      <h1>Markdown 目录概览</h1>
+      <p class="lead">
+        把流式 AI / LLM 翻译服务返回的 Markdown 文本渲染为带样式的
+        <code>NSAttributedString</code>，并复用现有的 <code>EZLabel</code> 展示链路。
+      </p>
+    </header>
+
+    <section class="summary" aria-labelledby="overview">
+      <h2 id="overview">概览</h2>
+      <p>
+        仅在流式服务（<code>QueryService.isStream() == true</code>）上启用，对
+        Google / Bing / DeepL / 有道等普通服务保持现有纯文本行为。提供
+        「全局设置开关」和「单条结果即时切换图标按钮」两种入口；渲染器无外部依赖，
+        对未闭合标记容错，因此在 0.3s 节流的流式更新下也不会崩溃。
+      </p>
+    </section>
+
+    <figure class="diagram">
+      <img src="markdown-architecture.svg" alt="Markdown 渲染管线架构图">
+      <figcaption>同目录的架构图展示文本来源、渲染决策、渲染器与展示视图之间的关系。</figcaption>
+    </figure>
+
+    <section aria-labelledby="components">
+      <h2 id="components">关键组件</h2>
+      <ul>
+        <li>
+          <code>MarkdownRenderer.swift</code> 行级 Markdown →
+          <code>NSAttributedString</code> 转换器，支持 ATX 标题、
+          <code>**bold**</code> / <code>*italic*</code> /
+          <code>***bold+italic***</code>、<code>&gt; 引用</code>、有序无序列表、
+          围栏与行内代码、<code>[text](url)</code> 链接、
+          <code>~~删除线~~</code>。下划线强调要求词边界，避免
+          <code>foo_bar_baz</code> 这类标识符被误斜体；渲染结尾会裁掉多余换行，
+          保证测高与纯文本一致。
+        </li>
+        <li>
+          <code>MarkdownLabel.swift</code> 是 <code>EZLabel</code> 子类，覆写
+          <code>updateDisplayedText</code>。<code>markdownEnabled</code> 为
+          <code>true</code> 时走渲染器，为 <code>false</code> 时回落父类纯文本路径，
+          从而复用选中、复制、暗色模式与高度计算等现成行为。
+        </li>
+        <li>
+          <code>MarkdownToggleButton.swift</code> 是流式结果卡片底部的图标按钮。
+          点击后翻转 <code>QueryResult.markdownRenderingOverride</code>，
+          触发表格行重建以应用新状态，并带淡入淡出过渡。
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="flow">
+      <h2 id="flow">主流程</h2>
+      <ol>
+        <li>
+          用户在「设置 → 通用 → 显示」打开 / 关闭全局开关，写入
+          <code>Defaults[.enableMarkdownRendering]</code>。
+        </li>
+        <li>
+          流式服务产出文本，经 0.3s 节流写入
+          <code>QueryResult.translatedResults</code>。
+        </li>
+        <li>
+          <code>EZWordResultView</code> 在重建结果行时，对
+          <code>service.isStream</code> 的服务实例化 <code>MarkdownLabel</code>，
+          并按 <code>result.isMarkdownRenderingEnabled</code>
+          （per-result 覆盖优先于全局默认）设置 <code>markdownEnabled</code>。
+        </li>
+        <li>
+          <code>MarkdownLabel</code> 在每次 <code>setText</code> 后调用
+          <code>MarkdownRenderer</code> 重新解析，将结果写入
+          <code>textStorage</code>。
+        </li>
+        <li>
+          卡片底部 <code>MarkdownToggleButton</code> 调用
+          <code>QueryResult.toggleMarkdownRendering()</code> 并触发
+          <code>updateCellWithResult:reloadData:YES</code>，重建该行视图。
+        </li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="debugging">
+      <h2 id="debugging">调试入口</h2>
+      <ul>
+        <li>
+          渲染样式问题先在 <code>MarkdownRenderer</code> 的
+          <code>appendHeading</code> / <code>appendBlockquote</code> /
+          <code>appendListItem</code> / <code>appendCodeBlock</code> /
+          <code>renderInline</code> 分支定位；这些分支负责所有字体、缩进与背景属性。
+        </li>
+        <li>
+          流式期间样式抖动：检查 <code>MarkdownLabel.updateDisplayedText</code>
+          是否被 <code>setFont</code> / <code>setLineSpacing</code> /
+          暗色模式回调多次触发。
+        </li>
+        <li>
+          开关与按钮联动：确认 <code>QueryResult.isMarkdownRenderingEnabled</code>
+          是否正确地把 per-result 覆盖优先于
+          <code>Defaults[.enableMarkdownRendering]</code>。
+        </li>
+        <li>
+          单测入口：<code>EasydictTests/Feature/Markdown/MarkdownRendererTests.swift</code>，
+          覆盖块级 / 行内 / 流式残缺 / 末尾换行 / 性能预算。
+        </li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
