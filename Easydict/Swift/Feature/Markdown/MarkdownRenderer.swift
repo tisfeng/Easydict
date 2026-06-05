@@ -96,6 +96,10 @@ struct MarkdownRenderer {
             appendCodeBlock(codeBuffer.joined(separator: "\n"), to: output)
         }
 
+        // Each block appends a trailing newline; drop the final one so the
+        // measured height matches the plain-text path (no extra blank line).
+        trimTrailingNewlines(output)
+
         return output
     }
 
@@ -118,6 +122,15 @@ struct MarkdownRenderer {
     }
 
     private var linkColor: NSColor { .linkColor }
+
+    /// Removes trailing newline characters from the end of the attributed
+    /// string in place, preserving the attributes of the remaining content.
+    private func trimTrailingNewlines(_ output: NSMutableAttributedString) {
+        while output.length > 0,
+              (output.string as NSString).hasSuffix("\n") {
+            output.deleteCharacters(in: NSRange(location: output.length - 1, length: 1))
+        }
+    }
 
     private func baseAttributes(
         font: NSFont? = nil,

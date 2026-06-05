@@ -631,8 +631,8 @@
 		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000004 /* MarkdownToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownToggleButton.swift; sourceTree = "<group>"; };
-		02DEDC042026043000000005 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		02DEDC042026043000000006 /* Markdown.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = Markdown.svg; sourceTree = "<group>"; };
+		02DEDC042026043000000005 /* markdown-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "markdown-overview.html"; sourceTree = "<group>"; };
+		02DEDC042026043000000006 /* markdown-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "markdown-architecture.svg"; sourceTree = "<group>"; };
 		02DEDC04202604300000000A /* MarkdownRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRendererTests.swift; sourceTree = "<group>"; };
 		03008B2529408BF50062B821 /* NSObject+EZDarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZDarkMode.h"; sourceTree = "<group>"; };
 		03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZDarkMode.m"; sourceTree = "<group>"; };
@@ -3464,8 +3464,8 @@
 				02DEDC042026043000000002 /* MarkdownRenderer.swift */,
 				02DEDC042026043000000003 /* MarkdownLabel.swift */,
 				02DEDC042026043000000004 /* MarkdownToggleButton.swift */,
-				02DEDC042026043000000005 /* README.md */,
-				02DEDC042026043000000006 /* Markdown.svg */,
+				02DEDC042026043000000005 /* markdown-overview.html */,
+				02DEDC042026043000000006 /* markdown-architecture.svg */,
 			);
 			path = Markdown;
 			sourceTree = "<group>";
