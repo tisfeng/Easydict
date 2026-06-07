@@ -176,7 +176,15 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
             }
 
             if (text) {
-                EZLabel *resultLabel = [[EZLabel alloc] init];
+                EZLabel *resultLabel;
+                BOOL serviceIsStreaming = [self.service isStream];
+                if (serviceIsStreaming && errorMessage.length == 0) {
+                    EDMarkdownLabel *markdownLabel = [[EDMarkdownLabel alloc] init];
+                    markdownLabel.markdownEnabled = result.isMarkdownRenderingEnabled;
+                    resultLabel = markdownLabel;
+                } else {
+                    resultLabel = [[EZLabel alloc] init];
+                }
                 resultLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
                 [self addSubview:resultLabel];
 
@@ -908,6 +916,39 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
         make.left.equalTo(linkButton.mas_right).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
     }];
+
+    // Markdown rendering toggle, only on streaming (AI/LLM) services.
+    if ([self.service isStream]) {
+        EDMarkdownToggleButton *markdownToggleButton = [[EDMarkdownToggleButton alloc] init];
+        [self addSubview:markdownToggleButton];
+        markdownToggleButton.markdownEnabled = result.isMarkdownRenderingEnabled;
+        markdownToggleButton.enabled = hasTranslatedText;
+        markdownToggleButton.mas_key = @"result_markdownToggleButton";
+
+        mm_weakify(self);
+        markdownToggleButton.clickAction = ^{
+            mm_strongify(self);
+            [result toggleMarkdownRendering];
+
+            // Cross-fade the content swap so toggling Markdown does not flash.
+            self.wantsLayer = YES;
+            CATransition *fade = [CATransition animation];
+            fade.type = kCATransitionFade;
+            fade.duration = 0.2;
+            fade.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+            [self.layer addAnimation:fade forKey:@"EDMarkdownToggleFade"];
+
+            EZBaseQueryViewController *queryViewController =
+                EZWindowManager.shared.floatingWindow.queryViewController;
+            [queryViewController updateCellWithResult:result reloadData:YES];
+        };
+
+        [markdownToggleButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            NSView *leftAnchor = result.showReplaceButton ? (NSView *)replaceTextButton : (NSView *)linkButton;
+            make.left.equalTo(leftAnchor.mas_right).offset(buttonPadding);
+            make.width.height.bottom.equalTo(audioButton);
+        }];
+    }
 
     // webView height need time to calculate, and the value will be called back later.
     if (EZResultNeedsDictionaryHTMLHeight(result)) {

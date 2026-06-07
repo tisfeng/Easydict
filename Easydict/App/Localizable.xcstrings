@@ -3098,6 +3098,62 @@
         }
       }
     },
+    "markdown.toggle.tooltip.off" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch to Markdown rendering"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prepnúť na vykresľovanie Markdown"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换到 Markdown 渲染"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切換到 Markdown 渲染"
+          }
+        }
+      }
+    },
+    "markdown.toggle.tooltip.on" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch to plain text"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prepnúť na obyčajný text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换到纯文本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切換到純文字"
+          }
+        }
+      }
+    },
     "main_window" : {
       "localizations" : {
         "en" : {
@@ -9428,6 +9484,90 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自動查詢"
+          }
+        }
+      }
+    },
+    "setting.general.display.enable_markdown_rendering" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Markdown rendering"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Povoliť vykresľovanie Markdown"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用 Markdown 渲染"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用 Markdown 渲染"
+          }
+        }
+      }
+    },
+    "setting.general.display.enable_markdown_rendering.description" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI translation results render headings, lists, and emphasis as formatted text. Click the icon next to a result to override per card."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výsledky AI prekladov sa zobrazia s nadpismi, zoznamami a zvýrazneniami. Pre prepnutie pre jednotlivý výsledok kliknite na ikonu vedľa neho."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 翻译结果将以 Markdown 格式呈现标题、列表与强调。点击单个结果旁的图标可临时切换。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 翻譯結果將以 Markdown 格式呈現標題、清單與強調。點擊單個結果旁的圖示可臨時切換。"
+          }
+        }
+      }
+    },
+    "setting.general.display.header" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobrazenie"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示"
           }
         }
       }
