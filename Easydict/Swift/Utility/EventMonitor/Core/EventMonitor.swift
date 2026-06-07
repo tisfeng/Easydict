@@ -451,7 +451,8 @@ final class EventMonitor: NSObject {
 
     private func isMouseInPopButtonWindow(_ mouseLocation: CGPoint) -> Bool {
         let popButtonWindow = EZWindowManager.shared().popButtonWindow
-        return popButtonWindow.frame.contains(mouseLocation)
+        let windowNumberAtPoint = NSWindow.windowNumber(at: mouseLocation, belowWindowWithWindowNumber: 0)
+        return windowNumberAtPoint == popButtonWindow.windowNumber
     }
 
     /// Handles mouse-moved events with throttling to prevent excessive computation.
