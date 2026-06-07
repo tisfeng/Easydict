@@ -204,7 +204,7 @@ class AliService: QueryService {
             result = currentResult
         }
 
-        let request = AF.request("https://mt.aliyuncs.com", method: .post, parameters: param)
+        let request = EAF.request("https://mt.aliyuncs.com", method: .post, parameters: param)
 
         queryModel.setStop({
             request.cancel()

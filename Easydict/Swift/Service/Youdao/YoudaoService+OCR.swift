@@ -37,7 +37,7 @@ extension YoudaoService {
         let parameters = ["imgBase": imageBase]
 
         do {
-            let response = try await AF.request(
+            let response = try await EAF.request(
                 "https://aidemo.youdao.com/ocrtransapi1",
                 method: .post,
                 parameters: parameters,

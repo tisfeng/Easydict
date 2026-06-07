@@ -97,7 +97,7 @@ public final class ClaudeService: StreamService {
                     )
                     let urlRequest = try createURLRequest(body: requestBody)
 
-                    let (asyncBytes, response) = try await URLSession.shared.bytes(for: urlRequest)
+                    let (asyncBytes, response) = try await EURLSession.bytes(for: urlRequest)
                     try await validateHTTPResponse(response, asyncBytes: asyncBytes)
 
                     try await processStreamBytes(asyncBytes, continuation: continuation)

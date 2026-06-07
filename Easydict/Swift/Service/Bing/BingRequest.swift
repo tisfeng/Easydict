@@ -531,7 +531,7 @@ class BingRequest {
     )
         -> DataRequest {
         let encoding: ParameterEncoding = method == .get ? URLEncoding.default : URLEncoding.httpBody
-        let request = AF.request(
+        let request = EAF.request(
             url,
             method: method,
             parameters: parameters,

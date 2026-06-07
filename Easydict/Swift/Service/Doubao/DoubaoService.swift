@@ -107,7 +107,7 @@ public final class DoubaoService: StreamService {
                     let requestBody = buildRequestBody(text: text, transType: transType)
                     let urlRequest = try createURLRequest(body: requestBody)
 
-                    let (asyncBytes, response) = try await URLSession.shared.bytes(for: urlRequest)
+                    let (asyncBytes, response) = try await EURLSession.bytes(for: urlRequest)
                     try validateHTTPResponse(response)
 
                     try await processStreamBytes(asyncBytes, continuation: continuation)

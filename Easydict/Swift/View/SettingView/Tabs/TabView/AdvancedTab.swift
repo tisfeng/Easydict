@@ -425,6 +425,36 @@ struct AdvancedTab: View {
             } header: {
                 Text("setting.advance.header.http_server")
             }
+
+            // Local proxy
+            Section {
+                LabeledContent {
+                    TextField(
+                        "",
+                        text: $httpProxyURL,
+                        prompt: Text(verbatim: "http://127.0.0.1:7890")
+                    )
+                    .frame(width: 200)
+                    .fixedSize(horizontal: true, vertical: false)
+                } label: {
+                    AdvancedTabItemView(
+                        color: .blue,
+                        icon: .link,
+                        labelText: "setting.advance.http_proxy_url",
+                        subtitleText: "setting.advance.http_proxy_url_desc"
+                    )
+                }
+            } header: {
+                Text("setting.advance.header.local_proxy")
+            } footer: {
+                HStack {
+                    Text("setting.advance.http_proxy_url_footer")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .padding(.leading, 10)
+                    Spacer()
+                }
+            }
         }
         .formStyle(.grouped)
     }
@@ -469,6 +499,7 @@ struct AdvancedTab: View {
 
     @Default(.enableHTTPServer) private var enableHTTPServer
     @Default(.httpPort) private var httpPort
+    @Default(.httpProxyURL) private var httpProxyURL
 
     @Default(.maxWindowHeightPercentage) private var maxWindowHeightPercentageValue
 

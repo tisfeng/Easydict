@@ -8647,6 +8647,118 @@
         }
       }
     },
+    "setting.advance.header.local_proxy" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Local Proxy"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokálny proxy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本地代理"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本地代理"
+          }
+        }
+      }
+    },
+    "setting.advance.http_proxy_url" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP Proxy URL"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP Proxy URL"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP 代理地址"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP 代理地址"
+          }
+        }
+      }
+    },
+    "setting.advance.http_proxy_url_desc" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supports http:// and socks5:// schemes"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podporuje schémy http:// a socks5://"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持 http:// 和 socks5:// 格式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持 http:// 和 socks5:// 格式"
+          }
+        }
+      }
+    },
+    "setting.advance.http_proxy_url_footer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Routes all translation requests through the specified proxy. Leave empty to use system default networking."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presmeruje všetky prekladové požiadavky cez zadaný proxy. Nechajte prázdne pre predvolené sieťové nastavenia."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有翻译服务请求将通过指定的代理发出。留空则使用系统默认网络设置。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有翻譯服務請求將透過指定的代理發出。留空則使用系統預設網路設定。"
+          }
+        }
+      }
+    },
     "setting.advance.header.ocr_settings" : {
       "localizations" : {
         "en" : {

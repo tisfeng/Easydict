@@ -42,7 +42,7 @@ extension GoogleService {
         parameters: Parameters? = nil
     )
         -> DataRequest {
-        AF.request(
+        EAF.request(
             url,
             method: .get,
             parameters: parameters,
