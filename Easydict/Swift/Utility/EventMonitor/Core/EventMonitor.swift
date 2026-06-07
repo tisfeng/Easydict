@@ -430,14 +430,23 @@ final class EventMonitor: NSObject {
     }
 
     private func dismissWindowsIfMouseLocationOutsideFloatingWindow(_ mouseLocation: CGPoint) {
-        if !checkIfMouseLocation(mouseLocation, in: EZWindowManager.shared().floatingWindow) {
+        guard let floatingWindow = EZWindowManager.shared().floatingWindow else {
+            dismissAllNotPinndFloatingWindowBlock?()
+            return
+        }
+
+        // Use AppKit's own hit-testing (the window at the cursor point) rather than
+        // manual `frame.contains` math. The latter misjudged on-window clicks as
+        // "outside" on multi-display / scaled setups, dismissing the input window
+        // mid-typing. `windowNumber(at:)` resolves the actual window under the
+        // cursor in the same coordinate space as the event, regardless of display
+        // arrangement or whether our (accessory) app is active.
+        let windowNumberAtPoint = NSWindow.windowNumber(at: mouseLocation, belowWindowWithWindowNumber: 0)
+        let clickedOnFloatingWindow = windowNumberAtPoint == floatingWindow.windowNumber
+
+        if !clickedOnFloatingWindow {
             dismissAllNotPinndFloatingWindowBlock?()
         }
-    }
-
-    private func checkIfMouseLocation(_ mouseLocation: CGPoint, in window: NSWindow?) -> Bool {
-        guard let window else { return false }
-        return window.frame.contains(mouseLocation)
     }
 
     private func isMouseInPopButtonWindow(_ mouseLocation: CGPoint) -> Bool {

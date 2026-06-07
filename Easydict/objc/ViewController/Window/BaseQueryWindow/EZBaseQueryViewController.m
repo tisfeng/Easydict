@@ -395,6 +395,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
         tableView.delegate = self;
         tableView.dataSource = self;
+        // Don't let clicks on the table body steal first responder from the input
+        // text view, which interrupts typing. Cell subviews (the input field and
+        // selectable result text) keep their own first-responder behavior.
+        tableView.refusesFirstResponder = YES;
         tableView.rowHeight = 40;
         [tableView setAutoresizesSubviews:YES];
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
