@@ -109,7 +109,9 @@ extension DeepLService {
                 var queryError = QueryError(type: .api, message: error.localizedDescription)
 
                 // If web first and has auth key, try official API
-                let useOfficialAPI = !Defaults[.deepLAuth].isEmpty &&
+                let authKey = KeychainHelper.readOrEmpty(EZDeepLAuthKey)
+                let fallbackAuth = authKey.isEmpty ? Defaults[.deepLAuth] : authKey
+                let useOfficialAPI = !fallbackAuth.isEmpty &&
                     (Defaults[.deepLTranslation] == .webFirst)
                 if useOfficialAPI {
                     deepLTranslate(text, from: from, to: to, completion: completion)
@@ -181,9 +183,9 @@ extension DeepLService {
 
         let targetLangCode = languageCode(for: to) ?? ""
 
-        let authKey = Defaults[.deepLAuth]
+        let keychainAuth = KeychainHelper.readOrEmpty(EZDeepLAuthKey)
+        let authKey = keychainAuth.isEmpty ? Defaults[.deepLAuth] : keychainAuth
 
-        // DeepL api free and deepL pro api use different url host.
         let isFreeKey = authKey.hasSuffix(":fx")
         let host = isFreeKey ? "https://api-free.deepl.com" : "https://api.deepl.com"
         var url = "\(host)/v2/translate"

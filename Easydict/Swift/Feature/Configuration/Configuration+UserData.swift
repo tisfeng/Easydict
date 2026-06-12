@@ -9,6 +9,11 @@
 import Foundation
 
 extension MyConfiguration {
+    private static let sensitiveKeySubstrings = [
+        "APIKey", "SecretKey", "SecretId", "SecretAccess", "AuthKey",
+        "Token", "Cookie", "AppId", "AccessKey", "BDUSS", "sentryDSN",
+    ]
+
     var userDefaultsData: [String: Any] {
         let userDefaults = UserDefaults.standard
 
@@ -16,7 +21,9 @@ extension MyConfiguration {
         if let bundleIdentifier = Bundle.main.bundleIdentifier,
            let appUserDefaultsData = userDefaults.persistentDomain(forName: bundleIdentifier) {
             for (key, value) in appUserDefaultsData {
-                if !key.hasPrefix("MASPreferences"), !(value is Data) {
+                if !key.hasPrefix("MASPreferences"),
+                   !(value is Data),
+                   !Self.sensitiveKeySubstrings.contains(where: { key.contains($0) }) {
                     userConfigDict[key] = value
                 }
             }

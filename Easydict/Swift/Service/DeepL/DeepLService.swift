@@ -167,8 +167,9 @@ class DeepLService: QueryService {
     // MARK: - Private Properties
 
     private var authKey: String {
-        // easydict://writeKeyValue?EZDeepLAuthKey=xxx
-        Defaults[.deepLAuth]
+        KeychainHelper.readOrEmpty(EZDeepLAuthKey).isEmpty
+            ? Defaults[.deepLAuth]
+            : KeychainHelper.readOrEmpty(EZDeepLAuthKey)
     }
 
     private var apiType: DeepLAPIUsagePriority {
