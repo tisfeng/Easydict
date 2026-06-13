@@ -25,6 +25,12 @@
     },
     "%@ API Key" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ API キー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -57,6 +63,12 @@
             "value" : "Add to favorites"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お気に入りに追加"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -83,6 +95,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Advanced"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高度な設定"
           }
         },
         "sk" : {
@@ -114,6 +132,12 @@
             "value" : "Ali Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ali 翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -137,6 +161,12 @@
     "Alignment Error" : {
       "comment" : "Error description",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アラインメントエラー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -163,6 +193,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Allow collection of analytics"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分析データの収集を許可"
           }
         },
         "sk" : {
@@ -193,6 +229,12 @@
             "value" : "Allow collection of crash logs"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラッシュログの収集を許可"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -219,6 +261,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Analytics:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分析:"
           }
         },
         "sk" : {
@@ -250,6 +298,12 @@
             "value" : "Antonyms"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "対義語"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -276,6 +330,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API Error"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API エラー"
           }
         },
         "sk" : {
@@ -307,6 +367,12 @@
             "value" : "App Shortcut"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ内ショートカット"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -333,6 +399,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dark"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダーク"
           }
         },
         "sk" : {
@@ -363,6 +435,12 @@
             "value" : "Follow System"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システムに従う"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -391,6 +469,12 @@
             "value" : "Light"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ライト"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -414,6 +498,12 @@
     "Apple" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -440,6 +530,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple Dictionary"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 辞書"
           }
         },
         "sk" : {
@@ -471,6 +567,12 @@
             "value" : "Apple Script Error"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Script エラー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -497,6 +599,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple Translate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 翻訳"
           }
         },
         "sk" : {
@@ -527,6 +635,12 @@
             "value" : "Automatically check for app updates"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリのアップデートを自動的に確認"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -553,6 +667,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto copy first translated text"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最初の翻訳テキストを自動コピー"
           }
         },
         "sk" : {
@@ -583,6 +703,12 @@
             "value" : "Auto copy OCR text after OCR"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR 後にテキストを自動コピー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -609,6 +735,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto copy selected text"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択したテキストを自動コピー"
           }
         },
         "sk" : {
@@ -639,6 +771,12 @@
             "value" : "Auto query after OCR"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR 後に自動クエリ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -665,6 +803,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto query after pasting text"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テキスト貼り付け後に自動クエリ"
           }
         },
         "sk" : {
@@ -695,6 +839,12 @@
             "value" : "Auto query after selecting text"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テキスト選択後に自動クエリ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -718,6 +868,12 @@
     "Baidu" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baidu"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -745,6 +901,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Baidu Translate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baidu 翻訳"
           }
         },
         "sk" : {
@@ -775,6 +937,12 @@
             "value" : "Bing Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bing 翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -798,6 +966,12 @@
     "Buffer Too Small" : {
       "comment" : "Error description",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バッファが小さすぎます"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -826,6 +1000,12 @@
             "value" : "Built-In AI Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ内 AI 翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -850,6 +1030,12 @@
       "comment" : "The name of Caiyun Translate",
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LingoCloud"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "LingoCloud"
@@ -883,6 +1069,12 @@
             "value" : "Cancel"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャンセル"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -909,6 +1101,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Check for updates"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデートを確認"
           }
         },
         "sk" : {
@@ -939,6 +1137,12 @@
             "value" : "Check Now"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今すぐ確認"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -967,6 +1171,12 @@
             "value" : "Check for Updates"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデートを確認"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -993,6 +1203,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pronunciation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "発音"
           }
         },
         "sk" : {
@@ -1024,6 +1240,12 @@
             "value" : "Claude Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude 翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1052,6 +1274,12 @@
             "value" : "Clear All"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてクリア"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1078,6 +1306,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clear input when translating"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳時に入力をクリア"
           }
         },
         "sk" : {
@@ -1109,6 +1343,12 @@
             "value" : "Collocation"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コロケーション"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1135,6 +1375,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除"
           }
         },
         "sk" : {
@@ -1165,6 +1411,12 @@
             "value" : "Export"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エクスポート"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1191,6 +1443,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Query"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クエリ"
           }
         },
         "sk" : {
@@ -1222,6 +1480,12 @@
             "value" : "Comparative"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "比較級"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1248,6 +1512,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Content-Type Mismatch"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Content-Type の不一致"
           }
         },
         "sk" : {
@@ -1278,6 +1548,12 @@
             "value" : "Copy Text"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テキストをコピー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1306,6 +1582,12 @@
             "value" : "Crash Log:"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラッシュログ:"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1332,6 +1614,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン %@"
           }
         },
         "sk" : {
@@ -1363,6 +1651,12 @@
             "value" : "Custom OpenAI"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタム OpenAI"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1386,6 +1680,12 @@
     "Decode Error" : {
       "comment" : "Error description",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デコードエラー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1412,6 +1712,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "DeepL Translate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepL 翻訳"
           }
         },
         "sk" : {
@@ -1443,6 +1749,12 @@
             "value" : "DeepSeek Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepSeek 翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1470,6 +1782,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Detected"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検出"
           }
         },
         "sk" : {
@@ -1501,6 +1819,12 @@
             "value" : "Disabled"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1527,6 +1851,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "If the App is in the \"Disabled App List\", the mouse will not trigger the automatic word retrieval."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリが「無効なアプリリスト」にある場合、マウスによる自動単語取得はトリガーされません。"
           }
         },
         "sk" : {
@@ -1558,6 +1888,12 @@
             "value" : "Doubao Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doubao 翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1585,6 +1921,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "HTTP error: %d"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP エラー: %d"
           }
         },
         "sk" : {
@@ -1616,6 +1958,12 @@
             "value" : "Invalid response"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効なレスポンス"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1645,6 +1993,12 @@
             "value" : "Missing Doubao API Key. Get your API key from https://www.volcengine.com/product/doubao"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doubao API キーがありません。API キーは https://www.volcengine.com/product/doubao から取得してください"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1667,6 +2021,12 @@
     },
     "Easydict" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1689,6 +2049,12 @@
     },
     "Easydict 🍃" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict 🍃"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1715,6 +2081,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Endpoint returned an HTML page"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンドポイントが HTML ページを返しました"
           }
         },
         "sk" : {
@@ -1745,6 +2117,12 @@
             "value" : "Please check that the endpoint URL is correct and includes the full API path."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンドポイント URL が正しく、完全な API パスを含んでいるか確認してください。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1771,6 +2149,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Endpoint returned JSON instead of a stream"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンドポイントがストリームではなく JSON を返しました"
           }
         },
         "sk" : {
@@ -1801,6 +2185,12 @@
             "value" : "Try disabling \"Enable Streaming\" in the service settings."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サービス設定で「ストリーミングを有効化」を無効にしてみてください。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1827,6 +2217,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unexpected response format"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "予期しないレスポンス形式"
           }
         },
         "sk" : {
@@ -1857,6 +2253,12 @@
             "value" : "The endpoint may not be fully OpenAI-compatible. Check the endpoint URL and API documentation."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンドポイントが OpenAI 完全互換でない可能性があります。エンドポイント URL と API ドキュメントを確認してください。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1885,6 +2287,12 @@
             "value" : "Etymology:"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "語源:"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1907,6 +2315,12 @@
     },
     "Export Log" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログをエクスポート"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1930,6 +2344,12 @@
     "Failed to allocate memory" : {
       "comment" : "Error reason",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メモリの割り当てに失敗しました"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1956,6 +2376,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No favorites yet"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お気に入りはまだありません"
           }
         },
         "sk" : {
@@ -1986,6 +2412,12 @@
             "value" : "Export Favorites"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お気に入りをエクスポート"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2012,6 +2444,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Favorites"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お気に入り"
           }
         },
         "sk" : {
@@ -2042,6 +2480,12 @@
             "value" : "Favorites"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お気に入り"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2068,6 +2512,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Feedback"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フィードバック"
           }
         },
         "sk" : {
@@ -2098,6 +2548,12 @@
             "value" : "Fixed window"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "固定ウィンドウ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2124,6 +2580,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Center of screen"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画面中央"
           }
         },
         "sk" : {
@@ -2154,6 +2616,12 @@
             "value" : "Last position"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前回の位置"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2182,6 +2650,12 @@
             "value" : "Mouse position"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マウス位置"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2208,6 +2682,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Right side of screen"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画面右側"
           }
         },
         "sk" : {
@@ -2239,6 +2719,12 @@
             "value" : "Font Size:"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォントサイズ:"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2262,6 +2748,12 @@
     "Function not implemented for the current algorithm" : {
       "comment" : "Error reason",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在のアルゴリズムでは実装されていない関数です"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2291,6 +2783,12 @@
             "value" : "Gemini Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemini 翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2314,6 +2812,12 @@
     "github_models" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Models"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub Models"
@@ -2348,6 +2852,12 @@
             "value" : "Global Shortcut"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グローバルショートカット"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2374,6 +2884,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Google Translate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google 翻訳"
           }
         },
         "sk" : {
@@ -2404,6 +2920,12 @@
             "value" : "Groq Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groq 翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2426,6 +2948,12 @@
     },
     "Help" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ヘルプ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2452,6 +2980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hide"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非表示"
           }
         },
         "sk" : {
@@ -2482,6 +3016,12 @@
             "value" : "Hide Menu Bar Icon"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーアイコンを非表示"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2508,6 +3048,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "If you want to restore, open the settings page in the query window using the shortcut `Cmd + ,`  then cancel the [Hide Status Bar Icon] option."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "元に戻すには、ショートカット `Cmd + ,` でクエリウィンドウの設定ページを開き、[ステータスバーアイコンを非表示] オプションを解除してください。"
           }
         },
         "sk" : {
@@ -2539,6 +3085,12 @@
             "value" : "Font size can be changed using the ⌘ +/- shortcut in the Translation windows."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳ウィンドウでは ⌘ +/- ショートカットでフォントサイズを変更できます。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2565,6 +3117,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No query history"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クエリ履歴はありません"
           }
         },
         "sk" : {
@@ -2595,6 +3153,12 @@
             "value" : "Export History"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "履歴をエクスポート"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2621,6 +3185,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "History"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "履歴"
           }
         },
         "sk" : {
@@ -2651,6 +3221,12 @@
             "value" : "Query History"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クエリ履歴"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2674,6 +3250,12 @@
     "Illegal parameter supplied to encryption/decryption algorithm" : {
       "comment" : "Error reason",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暗号化／復号アルゴリズムに不正なパラメータが渡されました"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2697,6 +3279,12 @@
     "Input data did not decode or decrypt correctly" : {
       "comment" : "Error reason",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力データを正しくデコードまたは復号できませんでした"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2720,6 +3308,12 @@
     "Input size to encryption algorithm was not aligned correctly" : {
       "comment" : "Error reason",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暗号化アルゴリズムへの入力サイズが正しくアラインメントされていません"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2743,6 +3337,12 @@
     "Insufficient buffer provided for specified operation" : {
       "comment" : "Error reason",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "指定された操作に対してバッファが不足しています"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2772,6 +3372,12 @@
             "value" : "Insufficient quota"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クォータ不足"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2798,6 +3404,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Please go to the official service website to register and apply for a personal API key."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公式サービスのウェブサイトで登録し、個人用 API キーを申請してください。"
           }
         },
         "sk" : {
@@ -2829,6 +3441,12 @@
             "value" : "Keep previous result when selected text is empty"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択テキストが空の場合は前回の結果を保持"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2856,6 +3474,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Keep Result:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結果を保持:"
           }
         },
         "sk" : {
@@ -2886,6 +3510,12 @@
             "value" : "Use Baidu language detection for optimization"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baidu の言語検出を使用して最適化"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2914,6 +3544,12 @@
             "value" : "Use Google language detection for optimization"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google の言語検出を使用して最適化"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2940,6 +3576,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Only use System language detection"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システムの言語検出のみを使用"
           }
         },
         "sk" : {
@@ -2971,6 +3613,12 @@
             "value" : "Display Language"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示言語"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2998,6 +3646,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Large"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大"
           }
         },
         "sk" : {
@@ -3028,6 +3682,12 @@
             "value" : "Latest version %@"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新バージョン %@"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3056,6 +3716,12 @@
             "value" : "Launch at login"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン時に起動"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3078,6 +3744,12 @@
     },
     "Log Directory" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログディレクトリ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3106,6 +3778,12 @@
             "value" : "Main window"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メインウィンドウ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3129,6 +3807,12 @@
     "Memory Failure" : {
       "comment" : "Error description",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メモリエラー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3155,6 +3839,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Feedback"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フィードバック"
           }
         },
         "sk" : {
@@ -3186,6 +3876,12 @@
             "value" : "Input Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3213,6 +3909,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pasteboard OCR"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボード OCR"
           }
         },
         "sk" : {
@@ -3244,6 +3946,12 @@
             "value" : "Pasteboard Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボードを翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3271,6 +3979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Polish and Replace"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推敲して置換"
           }
         },
         "sk" : {
@@ -3302,6 +4016,12 @@
             "value" : "Screenshot OCR"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクリーンショット OCR"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3329,6 +4049,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Screenshot Translate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクリーンショット翻訳"
           }
         },
         "sk" : {
@@ -3360,6 +4086,12 @@
             "value" : "Select Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3387,6 +4119,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show Mini Window"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミニウィンドウを表示"
           }
         },
         "sk" : {
@@ -3418,6 +4156,12 @@
             "value" : "Show OCR Window"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR ウィンドウを表示"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3445,6 +4189,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Silent Screenshot OCR"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイレントスクリーンショット OCR"
           }
         },
         "sk" : {
@@ -3476,6 +4226,12 @@
             "value" : "Translate and Replace"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳して置換"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3502,6 +4258,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "About Easydict"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict について"
           }
         },
         "sk" : {
@@ -3532,6 +4294,12 @@
             "value" : "Mini window"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミニウィンドウ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3560,6 +4328,12 @@
             "value" : "MiniMax Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MiniMax 翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3586,6 +4360,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Missing secret key"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "シークレットキーがありません"
           }
         },
         "sk" : {
@@ -3617,6 +4397,12 @@
             "value" : "Menu bar icon"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーアイコン"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3645,6 +4431,12 @@
             "value" : "Need screen capture permission"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画面収録の権限が必要です"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3668,6 +4460,12 @@
     "niuTrans_translate" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NiuTrans"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "NiuTrans"
@@ -3701,6 +4499,12 @@
             "value" : "No result"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結果なし"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3729,6 +4533,12 @@
             "value" : "No results found"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結果が見つかりません"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3751,6 +4561,12 @@
     },
     "none_window" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "なし"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3777,6 +4593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OCR result is empty.\n⚠️ Please manually select language and try again."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR の結果が空です。\n⚠️ 手動で言語を選択して再試行してください。"
           }
         },
         "sk" : {
@@ -3807,6 +4629,12 @@
             "value" : "Ok"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3833,6 +4661,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ollama Translate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama 翻訳"
           }
         },
         "sk" : {
@@ -3864,6 +4698,12 @@
             "value" : "Open App Settings"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ設定を開く"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3890,6 +4730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open in Apple Dictionary"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 辞書で開く"
           }
         },
         "sk" : {
@@ -3920,6 +4766,12 @@
             "value" : "Open in Eudic"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eudic で開く"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3946,6 +4798,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open in Google"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google で開く"
           }
         },
         "sk" : {
@@ -3976,6 +4834,12 @@
             "value" : "Open System Settings"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム設定を開く"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4002,6 +4866,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open Web Link"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウェブリンクを開く"
           }
         },
         "sk" : {
@@ -4032,6 +4902,12 @@
             "value" : "OpenAI Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI 翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4055,6 +4931,12 @@
     "Parameter Error" : {
       "comment" : "Error description",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パラメータエラー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4081,6 +4963,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Parameter Error"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パラメータエラー"
           }
         },
         "sk" : {
@@ -4112,6 +5000,12 @@
             "value" : "Past tense"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "過去形"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4139,6 +5033,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Past participle"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "過去分詞"
           }
         },
         "sk" : {
@@ -4169,6 +5069,12 @@
             "value" : "Pin"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留め"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4195,6 +5101,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "`Enter` to query, `Shift + Enter` to newline"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "`Enter` でクエリ、`Shift + Enter` で改行"
           }
         },
         "sk" : {
@@ -4225,6 +5137,12 @@
             "value" : "Play Audio"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声を再生"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4251,6 +5169,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Please see 👉"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "こちらをご覧ください 👉"
           }
         },
         "sk" : {
@@ -4282,6 +5206,12 @@
             "value" : "Plural"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "複数形"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4308,6 +5238,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Polishing"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推敲"
           }
         },
         "sk" : {
@@ -4339,6 +5275,12 @@
             "value" : "Present participle"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在分詞"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4366,6 +5308,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Privacy"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プライバシー"
           }
         },
         "sk" : {
@@ -4396,6 +5344,12 @@
             "value" : "Privacy Statement"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プライバシーステートメント"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4422,6 +5376,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Easydict uses Sentry and Firebase to collect crash logs (for bug fixes) and anonymous analytics data, but these data will not be associated with your identity, only for improving user experience, and will never be shared with other platforms.\n\nEasydict is open source software, if you are interested, you can check the code."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict は Sentry と Firebase を使用してクラッシュログ（バグ修正用）と匿名の分析データを収集しますが、これらのデータはあなたの個人情報と関連付けられることはなく、ユーザー体験の向上のみに使用され、他のプラットフォームと共有されることは一切ありません。\n\nEasydict はオープンソースソフトウェアです。ご興味があればコードをご確認いただけます。"
           }
         },
         "sk" : {
@@ -4453,6 +5413,12 @@
             "value" : "BrE"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4480,6 +5446,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AmE"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "米"
           }
         },
         "sk" : {
@@ -4510,6 +5482,12 @@
             "value" : "💥 Failed"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "💥 失敗"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4536,6 +5514,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Query in App"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ内でクエリ"
           }
         },
         "sk" : {
@@ -4566,6 +5550,12 @@
             "value" : "Quick action"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クイックアクション"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4592,6 +5582,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quit"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "終了"
           }
         },
         "sk" : {
@@ -4623,6 +5619,12 @@
             "value" : "Now Detected that there is not set input translation shortcut key or selection translation shortcut key!\n\nSet the shortcut key to make sure you can go Easydict and hide the menu bar icon."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力翻訳ショートカットまたは選択翻訳ショートカットが設定されていません！\n\nメニューバーアイコンを非表示にしてもEasydictを開けるよう、ショートカットを設定してください。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4650,6 +5652,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remove code comment symbols"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コードコメント記号を削除"
           }
         },
         "sk" : {
@@ -4681,6 +5689,12 @@
             "value" : "Replace newline with space"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "改行をスペースに置換"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4707,6 +5721,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Replace with Translation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳で置換"
           }
         },
         "sk" : {
@@ -4737,6 +5757,12 @@
             "value" : "Please go to System Settings - Privacy & Security - Screen Recording & System Audio page to enable permissions for Easydict."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム設定 - プライバシーとセキュリティ - 画面収録とシステムオーディオ のページで Easydict の権限を有効にしてください。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4763,6 +5789,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Retry"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再試行"
           }
         },
         "sk" : {
@@ -4794,6 +5826,12 @@
             "value" : "Root"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "語根"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4822,6 +5860,12 @@
             "value" : "Click Esc or right-click to cancel capture"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esc をクリックするか右クリックでキャプチャをキャンセル"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4848,6 +5892,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Click D to select the last screenshot area"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "D をクリックすると前回のスクリーンショット領域を選択します"
           }
         },
         "sk" : {
@@ -4879,6 +5929,12 @@
             "value" : "Select query text when window activate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィンドウのアクティブ化時にクエリテキストを選択"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4906,6 +5962,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Service"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サービス"
           }
         },
         "sk" : {
@@ -4936,6 +5998,12 @@
             "value" : "CLI error: %@"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CLI エラー: %@"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4963,6 +6031,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "non-zero exit, no stderr output"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "終了コードが非ゼロですが、stderr 出力がありません"
           }
         },
         "sk" : {
@@ -4995,6 +6069,12 @@
             "value" : "Clear"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリア"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5023,6 +6103,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show in Finder"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder で表示"
           }
         },
         "sk" : {
@@ -5055,6 +6141,12 @@
             "value" : "Show Debug Log Window"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバッグログウィンドウを表示"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5083,6 +6175,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claude Code Debug Log"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code デバッグログ"
           }
         },
         "sk" : {
@@ -5114,6 +6212,12 @@
             "value" : "This service uses your locally installed and logged-in official Claude Code CLI. It does not use OAuth, private APIs, or proxy workarounds. Anthropic may change CLI policies or account rules in the future. Continue only if you understand and accept the potential account or policy risk."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このサービスは、ローカルにインストールされログイン済みの公式 Claude Code CLI を使用します。OAuth、非公開 API、プロキシによる回避策は使用しません。Anthropic は今後 CLI のポリシーやアカウント規則を変更する可能性があります。潜在的なアカウントやポリシーのリスクを理解し受け入れる場合のみ続行してください。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5143,6 +6247,12 @@
             "value" : "Claude Code Risk Notice"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code リスクに関する注意"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5167,6 +6277,12 @@
       "comment" : "The name of Claude Code",
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claude Code"
@@ -5200,6 +6316,12 @@
             "value" : "Claude Code not found. Please install it first."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code が見つかりません。先にインストールしてください。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5228,6 +6350,12 @@
             "value" : "Claude Code is not logged in. Run `claude` to sign in."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code にログインしていません。`claude` を実行してサインインしてください。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5254,6 +6382,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claude Code usage limit reached."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code の利用上限に達しました。"
           }
         },
         "sk" : {
@@ -5285,6 +6419,12 @@
             "value" : "Uses your local official Claude Code CLI. Availability may change in the future and may carry account or policy risk."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカルの公式 Claude Code CLI を使用します。今後利用できなくなる可能性があり、アカウントやポリシー上のリスクを伴う場合があります。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5311,6 +6451,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CLI error: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CLI エラー: %@"
           }
         },
         "sk" : {
@@ -5342,6 +6488,12 @@
             "value" : "non-zero exit, no stderr output"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "終了コードが非ゼロですが、stderr 出力がありません"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5369,6 +6521,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clear"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリア"
           }
         },
         "sk" : {
@@ -5400,6 +6558,12 @@
             "value" : "Show in Finder"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder で表示"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5427,6 +6591,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show Debug Log Window"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバッグログウィンドウを表示"
           }
         },
         "sk" : {
@@ -5458,6 +6628,12 @@
             "value" : "Codex Debug Log"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex デバッグログ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5485,6 +6661,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "This service uses your locally installed and signed-in official Codex CLI. It does not use OAuth, private APIs, or proxy workarounds. OpenAI may change CLI policies or account rules in the future. Continue only if you understand and accept the potential account or policy risk."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このサービスは、ローカルにインストールされサインイン済みの公式 Codex CLI を使用します。OAuth、非公開 API、プロキシによる回避策は使用しません。OpenAI は今後 CLI のポリシーやアカウント規則を変更する可能性があります。潜在的なアカウントやポリシーのリスクを理解し受け入れる場合のみ続行してください。"
           }
         },
         "sk" : {
@@ -5516,6 +6698,12 @@
             "value" : "Codex Risk Notice"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex リスクに関する注意"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5540,6 +6728,12 @@
       "comment" : "The name of the Codex service",
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Codex"
@@ -5573,6 +6767,12 @@
             "value" : "Codex CLI not found. Please install it first."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex CLI が見つかりません。先にインストールしてください。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5599,6 +6799,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Codex is not signed in. Run `codex login` to sign in."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex にサインインしていません。`codex login` を実行してサインインしてください。"
           }
         },
         "sk" : {
@@ -5629,6 +6835,12 @@
             "value" : "Codex usage limit reached."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex の利用上限に達しました。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5653,6 +6865,7 @@
       "comment" : "Default option means: do not override ~/.codex/config.toml",
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Default (use config.toml)" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "デフォルト（config.toml を使用）" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Predvolené (z config.toml)" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "默认（沿用 config.toml）" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "預設（沿用 config.toml）" } }
@@ -5661,6 +6874,7 @@
     "service.codex_cli.reasoning_effort.high" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "High" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vysoké" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "高" } }
@@ -5669,6 +6883,7 @@
     "service.codex_cli.reasoning_effort.low" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Low" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "低" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Nízke" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "低" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "低" } }
@@ -5677,6 +6892,7 @@
     "service.codex_cli.reasoning_effort.medium" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Medium" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "中" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Stredné" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "中" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "中" } }
@@ -5685,6 +6901,7 @@
     "service.codex_cli.reasoning_effort.minimal" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Minimal" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最小" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Minimálne" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "最小" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最小" } }
@@ -5693,6 +6910,7 @@
     "service.codex_cli.reasoning_effort.xhigh" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Extra High" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "非常に高い" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Veľmi vysoké" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "极高" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "極高" } }
@@ -5705,6 +6923,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uses your local official Codex CLI. Availability may change in the future and may carry account or policy risk."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカルの公式 Codex CLI を使用します。今後利用できなくなる可能性があり、アカウントやポリシー上のリスクを伴う場合があります。"
           }
         },
         "sk" : {
@@ -5730,6 +6954,7 @@
     "service.deepseek.reasoning_effort.high" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "High" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vysoké" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "高" } }
@@ -5738,6 +6963,7 @@
     "service.deepseek.reasoning_effort.max" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Max" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最大" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Maximálne" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "最大" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最大" } }
@@ -5746,6 +6972,7 @@
     "service.deepseek.reasoning_effort.off" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Off" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "オフ" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vypnuté" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关闭" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "關閉" } }
@@ -5754,6 +6981,12 @@
     "service.configuration.ali.access_key_id.title" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AccessKey ID"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AccessKey ID"
@@ -5782,6 +7015,12 @@
     "service.configuration.ali.access_key_secret.title" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AccessKey Secret"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AccessKey Secret"
@@ -5816,6 +7055,12 @@
             "value" : "Currently using the Secret Key API type, but a certain Secret Key is empty. Please go to Settings > Service > %@, fill in the required configuration information, or switch API types."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在 Secret Key API タイプを使用していますが、いずれかの Secret Key が空です。設定 > サービス > %@ で必要な設定情報を入力するか、API タイプを切り替えてください。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5845,6 +7090,12 @@
             "value" : "API Type"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API タイプ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5869,6 +7120,12 @@
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App ID"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "App ID"
@@ -5903,6 +7160,12 @@
             "value" : "Secret Key"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret Key"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5929,6 +7192,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cookie Key"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cookie キー"
           }
         },
         "sk" : {
@@ -5959,6 +7228,12 @@
             "value" : "Token"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5982,6 +7257,7 @@
     "service.configuration.codex_cli.model.placeholder" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Leave empty to use config.toml default" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "空欄の場合は config.toml のデフォルトを使用" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Prázdne = predvolený z config.toml" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "留空则使用 config.toml 默认" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "留空則使用 config.toml 預設" } }
@@ -5990,6 +7266,7 @@
     "service.configuration.codex_cli.model.title" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Model" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "モデル" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Model" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "模型" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "模型" } }
@@ -5998,6 +7275,7 @@
     "service.configuration.codex_cli.reasoning_effort.title" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Reasoning Effort" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "推論の度合い" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Úroveň uvažovania" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } }
@@ -6006,6 +7284,7 @@
     "service.configuration.deepseek.reasoning_effort.title" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Reasoning Effort" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "推論の度合い" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Úroveň uvažovania" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } }
@@ -6017,6 +7296,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Disable if the endpoint does not support streaming responses."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンドポイントがストリーミングレスポンスに対応していない場合は無効にしてください。"
           }
         },
         "sk" : {
@@ -6047,6 +7332,12 @@
             "value" : "Enable Streaming"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ストリーミングを有効化"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6073,6 +7364,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Model name, use commas (,) to separate multiple models."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデル名。複数のモデルはカンマ (,) で区切ります。"
           }
         },
         "sk" : {
@@ -6103,6 +7400,12 @@
             "value" : "Custom Service Name"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタムサービス名"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6131,6 +7434,12 @@
             "value" : "Supported Models"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "対応モデル"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6154,6 +7463,12 @@
     "service.configuration.deepl.auth_key.title" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auth Key"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auth Key"
@@ -6187,6 +7502,12 @@
             "value" : "Auth Key First"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auth Key を優先"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6215,6 +7536,12 @@
             "value" : "Auth Key Only"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auth Key のみ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6238,6 +7565,12 @@
     "service.configuration.deepl.endpoint.placeholder" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://api-free.deepl.com/v2/translate"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "https://api-free.deepl.com/v2/translate"
@@ -6271,6 +7604,12 @@
             "value" : "API Endpoint"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API エンドポイント"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6297,6 +7636,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API Usage Priority"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 使用の優先順位"
           }
         },
         "sk" : {
@@ -6327,6 +7672,12 @@
             "value" : "Web API first"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web API を優先"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6353,6 +7704,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除"
           }
         },
         "sk" : {
@@ -6383,6 +7740,12 @@
             "value" : "API Key"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API キー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6411,6 +7774,12 @@
             "value" : "Model"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデル"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6437,6 +7806,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Duplicate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "複製"
           }
         },
         "sk" : {
@@ -6468,6 +7843,12 @@
             "value" : "Add"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6494,6 +7875,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deselect All"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべて選択解除"
           }
         },
         "sk" : {
@@ -6524,6 +7911,12 @@
             "value" : "Fetch Local Models"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカルモデルを取得"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6550,6 +7943,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Search models"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデルを検索"
           }
         },
         "sk" : {
@@ -6580,6 +7979,12 @@
             "value" : "Select All"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべて選択"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6608,6 +8013,12 @@
             "value" : "Fetch Models"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデルを取得"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6631,6 +8042,12 @@
     "service.configuration.input.placeholder" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxxxxxxxxx"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "xxxxxxxxxx"
@@ -6664,6 +8081,12 @@
             "value" : "API Key"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API キー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6690,6 +8113,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API Key"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API キー"
           }
         },
         "sk" : {
@@ -6720,6 +8149,12 @@
             "value" : "Dictionary"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辞書"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6746,6 +8181,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "When custom prompt is enabled, the default translation, sentence analysis, and dictionary prompt will be disabled."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタムプロンプトを有効にすると、デフォルトの翻訳・文章解析・辞書プロンプトは無効になります。"
           }
         },
         "sk" : {
@@ -6776,6 +8217,12 @@
             "value" : "Enable Custom Prompt"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタムプロンプトを有効化"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6802,6 +8249,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The full request URL, for example https://api.openai.com/v1/chat/completions"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完全なリクエスト URL（例: https://api.openai.com/v1/chat/completions）"
           }
         },
         "sk" : {
@@ -6832,6 +8285,12 @@
             "value" : "API Endpoint"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API エンドポイント"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6858,6 +8317,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hide <think> Tag Content"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "<think> タグの内容を非表示"
           }
         },
         "sk" : {
@@ -6888,6 +8353,12 @@
             "value" : "Use Model"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用モデル"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6914,6 +8385,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sentence"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文章"
           }
         },
         "sk" : {
@@ -6944,6 +8421,12 @@
             "value" : "You are a helpful translation assistant."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたは役立つ翻訳アシスタントです。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6972,6 +8455,12 @@
             "value" : "System Prompt"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システムプロンプト"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6995,6 +8484,12 @@
     "service.configuration.openai.temperature.title" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperature"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Temperature"
@@ -7028,6 +8523,12 @@
             "value" : "Translation"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7054,6 +8555,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Always Off"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "常にオフ"
           }
         },
         "sk" : {
@@ -7084,6 +8591,12 @@
             "value" : "Always On"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "常にオン"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7110,6 +8623,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Default"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルト"
           }
         },
         "sk" : {
@@ -7140,6 +8659,12 @@
             "value" : "Usage Status"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用状況"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7166,6 +8691,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supports the following environment variables:\n\n${{queryText}}: Query text\n${{queryFromLanguage}}: Query language\n${{queryTargetLanguage}}: Target language\n${{firstLanguage}}: User's first language\n\nExample: Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以下の環境変数をサポートしています:\n\n${{queryText}}: クエリテキスト\n${{queryFromLanguage}}: クエリ言語\n${{queryTargetLanguage}}: 対象言語\n${{firstLanguage}}: ユーザーの第一言語\n\n例: 次の ${{queryFromLanguage}} のテキストを ${{queryTargetLanguage}} に翻訳してください: ${{queryText}}"
           }
         },
         "sk" : {
@@ -7196,6 +8727,12 @@
             "value" : "Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次の ${{queryFromLanguage}} のテキストを ${{queryTargetLanguage}} に翻訳してください: ${{queryText}}"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7224,6 +8761,12 @@
             "value" : "User Prompt"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ユーザープロンプト"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7247,6 +8790,12 @@
     "service.configuration.tencent.secret_id.title" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret ID"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret ID"
@@ -7280,6 +8829,12 @@
             "value" : "Secret Key"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret Key"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7306,6 +8861,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Validate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検証"
           }
         },
         "sk" : {
@@ -7336,6 +8897,12 @@
             "value" : "Validation failed 💔"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検証に失敗しました 💔"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7362,6 +8929,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Validation success 🎉"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検証に成功しました 🎉"
           }
         },
         "sk" : {
@@ -7392,6 +8965,12 @@
             "value" : "Streaming is not supported by this endpoint and has been auto-disabled."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このエンドポイントはストリーミングに対応していないため、自動的に無効化されました。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7415,6 +8994,12 @@
     "service.configuration.volcano.access_id.title" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access Key ID"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Access Key ID"
@@ -7448,6 +9033,12 @@
             "value" : "Secret Access Key"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret Access Key"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7474,6 +9065,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Import Dictionary"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辞書をインポート"
           }
         },
         "sk" : {
@@ -7504,6 +9101,12 @@
             "value" : "Import Failed"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インポートに失敗しました"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7530,6 +9133,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No MDict dictionaries are enabled. Please import dictionaries in the service settings."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効な MDict 辞書がありません。サービス設定で辞書をインポートしてください。"
           }
         },
         "sk" : {
@@ -7560,6 +9169,12 @@
             "value" : "No dictionaries imported. Tap + to import an MDX file."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辞書がインポートされていません。+ をタップして MDX ファイルをインポートしてください。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7586,6 +9201,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "MDict Dictionary"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MDict 辞書"
           }
         },
         "sk" : {
@@ -7616,6 +9237,12 @@
             "value" : "Dictionaries"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辞書"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7642,6 +9269,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "General"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一般"
           }
         },
         "sk" : {
@@ -7673,6 +9306,12 @@
             "value" : "About"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "情報"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7700,6 +9339,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Acknowledgements"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "謝辞"
           }
         },
         "sk" : {
@@ -7730,6 +9375,12 @@
             "value" : "Contributors"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "貢献者"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7753,6 +9404,12 @@
     "setting.about.github_link" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub"
@@ -7786,6 +9443,12 @@
             "value" : "Apple Offline Translation"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple オフライン翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7812,6 +9475,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Offline translation requires downloading languages on the device, which can be managed in \"System Settings\"."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オフライン翻訳にはデバイスへの言語のダウンロードが必要で、「システム設定」で管理できます。"
           }
         },
         "sk" : {
@@ -7842,6 +9511,12 @@
             "value" : "Auto Select All Text"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのテキストを自動選択"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7868,6 +9543,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "If no text is currently selected in the text field, automatically select all text content during translate and replace operations"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テキストフィールドで現在テキストが選択されていない場合、翻訳・置換操作時にすべてのテキストを自動的に選択します"
           }
         },
         "sk" : {
@@ -7898,6 +9579,12 @@
             "value" : "Auto show query icon after selecting text"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テキスト選択後にクエリアイコンを自動表示"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7924,6 +9611,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show the query icon only when the selected text language differs and the character count reaches this value."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択したテキストの言語が異なり、かつ文字数がこの値に達した場合のみクエリアイコンを表示します。"
           }
         },
         "sk" : {
@@ -7954,6 +9647,12 @@
             "value" : "Show only when selected text language is not"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択テキストの言語が次でない場合のみ表示"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7980,6 +9679,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minimum character length"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最小文字数"
           }
         },
         "sk" : {
@@ -8010,6 +9715,12 @@
             "value" : "When querying, automatically remove the code comment symbol \"/*#\" from the text."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クエリ時に、テキストからコードコメント記号「/*#」を自動的に削除する。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8036,6 +9747,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "When querying, automatically replace the \"newline\" in the text with \"space\""
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クエリ時に、テキスト内の「改行」を自動的に「スペース」に置き換える"
           }
         },
         "sk" : {
@@ -8066,6 +9783,12 @@
             "value" : "When querying, automatically split single word text into key_value —> key value"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クエリ時に、単一の単語テキストを自動的に分割（key_value —> key value）"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8094,6 +9817,12 @@
             "value" : "Query only when clicking select query icon (when main window hidden)"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択クエリアイコンをクリックしたときのみクエリ（メインウィンドウ非表示時）"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8120,6 +9849,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Default TTS Service"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルトの TTS サービス"
           }
         },
         "sk" : {
@@ -8151,6 +9886,12 @@
             "value" : "Disable Tips View"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ヒント表示を無効化"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8177,6 +9918,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enable Beta features"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ベータ機能を有効化"
           }
         },
         "sk" : {
@@ -8207,6 +9954,12 @@
             "value" : "Compatibility Replace"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "互換置換"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8233,6 +9986,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "When enabled, text replacement will use compatibility mode, which works better in certain applications."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効にすると、テキスト置換が互換モードを使用し、一部のアプリでより適切に動作します。"
           }
         },
         "sk" : {
@@ -8263,6 +10022,12 @@
             "value" : "Enable Force Get Selected Text"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "強制的にテキストを取得を有効化"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8289,6 +10054,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Note: This may affect the clipboard content"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注意: クリップボードの内容に影響する場合があります"
           }
         },
         "sk" : {
@@ -8319,6 +10090,12 @@
             "value" : "Enable HTTP Server"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP サーバーを有効化"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8345,6 +10122,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enable OCR Text Format Optimization"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR テキスト形式の最適化を有効化"
           }
         },
         "sk" : {
@@ -8375,6 +10158,12 @@
             "value" : "The original OCR recognized text format may be incorrect. Enabling this option will optimize the recognized text format."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR で認識された元のテキスト形式が正しくない場合があります。このオプションを有効にすると、認識されたテキスト形式を最適化します。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8401,6 +10190,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "When looking up text, remove Books excerpt copyright notice"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テキスト検索時に、ブックの抜粋著作権表示を削除する"
           }
         },
         "sk" : {
@@ -8431,6 +10226,12 @@
             "value" : "Youdao OCR recognition"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao OCR 認識"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8457,6 +10258,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fallback to Youdao OCR if the default OCR fails"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルトの OCR が失敗した場合、Youdao OCR にフォールバックします"
           }
         },
         "sk" : {
@@ -8487,6 +10294,12 @@
             "value" : "Note: This will not modify the original text, only process the query content."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注意: これは元のテキストを変更せず、クエリ内容のみを処理します。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8513,6 +10326,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Menu Bar Action Copy First"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーアクションコピーを優先"
           }
         },
         "sk" : {
@@ -8543,6 +10362,12 @@
             "value" : "Simulated Shortcut Copy First"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "擬似ショートカットコピーを優先"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8569,6 +10394,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Force Get Selected Text Type"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "強制的にテキストを取得する方法"
           }
         },
         "sk" : {
@@ -8599,6 +10430,12 @@
             "value" : "General Settings"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一般設定"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8625,6 +10462,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "HTTP Server"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP サーバー"
           }
         },
         "sk" : {
@@ -8655,6 +10498,12 @@
             "value" : "OCR Settings"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR 設定"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8681,6 +10530,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Query Text Processing"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クエリテキストの処理"
           }
         },
         "sk" : {
@@ -8711,6 +10566,12 @@
             "value" : "Text Selection & Replacement"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テキストの選択と置換"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8737,6 +10598,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hide main window at startup"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "起動時にメインウィンドウを非表示"
           }
         },
         "sk" : {
@@ -8767,6 +10634,12 @@
             "value" : "Hide Screenshot Tips"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクリーンショットのヒントを非表示"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8793,6 +10666,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hide the tip view when starting screenshot capture."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクリーンショットのキャプチャ開始時にヒント表示を非表示にします。"
           }
         },
         "sk" : {
@@ -8823,6 +10702,12 @@
             "value" : "HTTP Port"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP ポート"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8849,6 +10734,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "After modifying the port, you need to restart the server"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ポートを変更した後はサーバーを再起動する必要があります"
           }
         },
         "sk" : {
@@ -8879,6 +10770,12 @@
             "value" : "Minimum length of text to detect Classical Chinese"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "漢文を検出するテキストの最小長"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8905,6 +10802,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mouse Select Query"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マウス選択クエリ"
           }
         },
         "sk" : {
@@ -8935,6 +10838,12 @@
             "value" : "Automatically pin when the window is displayed."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィンドウ表示時に自動的にピン留めする。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8961,6 +10870,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prefer AppleScript API"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AppleScript API を優先"
           }
         },
         "sk" : {
@@ -8991,6 +10906,12 @@
             "value" : "In browsers, prioritize AppleScript API for text selection and replacement. Enabling this option improves accuracy and success rate."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブラウザでは、テキストの選択と置換に AppleScript API を優先します。このオプションを有効にすると精度と成功率が向上します。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9017,6 +10938,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prefer Youdao TTS for English Words"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英単語には Youdao TTS を優先"
           }
         },
         "sk" : {
@@ -9047,6 +10974,12 @@
             "value" : "When off, English word pronunciation uses the default TTS service"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オフの場合、英単語の発音にはデフォルトの TTS サービスを使用します"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9073,6 +11006,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show OCR Menu Items"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR メニュー項目を表示"
           }
         },
         "sk" : {
@@ -9103,6 +11042,12 @@
             "value" : "Show OCR-related menu items (Screenshot OCR, Pasteboard OCR, OCR Window) in the menu bar."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR 関連のメニュー項目（スクリーンショット OCR、クリップボード OCR、OCR ウィンドウ）をメニューバーに表示します。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9129,6 +11074,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Window Management"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィンドウ管理"
           }
         },
         "sk" : {
@@ -9159,6 +11110,12 @@
             "value" : "Floating Window Position"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フローティングウィンドウの位置"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9185,6 +11142,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Window Maximum Height Percentage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィンドウの最大高さの割合"
           }
         },
         "sk" : {
@@ -9215,6 +11178,12 @@
             "value" : "Mini Window Position"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミニウィンドウの位置"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9243,6 +11212,12 @@
             "value" : "Mouse Window Type"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マウスウィンドウタイプ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9269,6 +11244,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shortcut Window Type"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ショートカットウィンドウタイプ"
           }
         },
         "sk" : {
@@ -9300,6 +11281,12 @@
             "value" : "Unable to add Application"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリケーションを追加できません"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9326,6 +11313,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "App Setting"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ設定"
           }
         },
         "sk" : {
@@ -9356,6 +11349,12 @@
             "value" : "Appearance"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外観"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9382,6 +11381,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto Copy"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動コピー"
           }
         },
         "sk" : {
@@ -9412,6 +11417,12 @@
             "value" : "Auto Query"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動クエリ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9438,6 +11449,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Font Size"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォントサイズ"
           }
         },
         "sk" : {
@@ -9468,6 +11485,12 @@
             "value" : "Font"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォント"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9494,6 +11517,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Input Field"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力フィールド"
           }
         },
         "sk" : {
@@ -9524,6 +11553,12 @@
             "value" : "Language"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9550,6 +11585,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The first language should not be the same as the second language (%1$@). The %2$@ was replaced with %3$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一言語は第二言語（%1$@）と同じにできません。%2$@ は %3$@ に置き換えられました。"
           }
         },
         "sk" : {
@@ -9580,6 +11621,12 @@
             "value" : "first language"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最初の言語"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9606,6 +11653,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "second language"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第二言語"
           }
         },
         "sk" : {
@@ -9636,6 +11689,12 @@
             "value" : "Language Duplicated"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語が重複しています"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9662,6 +11721,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "First Language"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一言語"
           }
         },
         "sk" : {
@@ -9692,6 +11757,12 @@
             "value" : "Language Detection"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語検出"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9718,6 +11789,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Second Language"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第二言語"
           }
         },
         "sk" : {
@@ -9749,6 +11826,12 @@
             "value" : "Other"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その他"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9775,6 +11858,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Query Language"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クエリ言語"
           }
         },
         "sk" : {
@@ -9805,6 +11894,12 @@
             "value" : "Quick Link"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クイックリンク"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9831,6 +11926,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Include Beta versions"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ベータ版を含める"
           }
         },
         "sk" : {
@@ -9861,6 +11962,12 @@
             "value" : "Get early access to new features, but may be unstable"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新機能にいち早くアクセスできますが、不安定な場合があります"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9889,6 +11996,12 @@
             "value" : "Auto play pronunciation after querying English words"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英単語のクエリ後に発音を自動再生"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9915,6 +12028,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "English Pronunciation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英語の発音"
           }
         },
         "sk" : {
@@ -9946,6 +12065,12 @@
             "value" : "Back"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "戻る"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9972,6 +12097,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No configuration for %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ の設定はありません"
           }
         },
         "sk" : {
@@ -10002,6 +12133,12 @@
             "value" : "Failed to enable [%@] service"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[%@] サービスの有効化に失敗しました"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10028,6 +12165,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show Input Text Field"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力テキストフィールドを表示"
           }
         },
         "sk" : {
@@ -10058,6 +12201,12 @@
             "value" : "Show Select Language Bar"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語選択バーを表示"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10086,6 +12235,12 @@
             "value" : "Window Configuration"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィンドウ設定"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10109,6 +12264,12 @@
     "setting.tts_service.options.apple" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple"
@@ -10142,6 +12303,12 @@
             "value" : "Baidu"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baidu"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10165,6 +12332,12 @@
     "setting.tts_service.options.bing" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bing"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bing"
@@ -10198,6 +12371,12 @@
             "value" : "Google"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10226,6 +12405,12 @@
             "value" : "Youdao"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10248,6 +12433,12 @@
     },
     "Settings..." : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定..."
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10274,6 +12465,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shortcut"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ショートカット"
           }
         },
         "sk" : {
@@ -10305,6 +12502,12 @@
             "value" : "Clear All"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてクリア"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10334,6 +12537,12 @@
             "value" : "Clear Input"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力をクリア"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10358,6 +12567,12 @@
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@"
@@ -10392,6 +12607,12 @@
             "value" : "Confirm"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確認"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10419,6 +12640,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The current shortcut can't be used because it is already used \"%@\""
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在のショートカットは「%@」で既に使用されているため使用できません"
           }
         },
         "sk" : {
@@ -10450,6 +12677,12 @@
             "value" : "Shortcut Confict With \"%@\" Unable Use This"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ショートカットが「%@」と競合しているため使用できません"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10477,6 +12710,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copy"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コピー"
           }
         },
         "sk" : {
@@ -10508,6 +12747,12 @@
             "value" : "Copy first translated text"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最初の翻訳テキストをコピー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10535,6 +12780,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Decrease Font Size"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォントサイズを小さく"
           }
         },
         "sk" : {
@@ -10566,6 +12817,12 @@
             "value" : "Focus"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォーカス"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10593,6 +12850,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Increase Font Size"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォントサイズを大きく"
           }
         },
         "sk" : {
@@ -10624,6 +12887,12 @@
             "value" : "Play"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再生"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10650,6 +12919,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示"
           }
         },
         "sk" : {
@@ -10680,6 +12955,12 @@
             "value" : "Show Apple Dictionary quick link icon"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 辞書クイックリンクアイコンを表示"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10706,6 +12987,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show Eudic quick link icon"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eudic クイックリンクアイコンを表示"
           }
         },
         "sk" : {
@@ -10736,6 +13023,12 @@
             "value" : "Show Google quick link icon"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google クイックリンクアイコンを表示"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10762,6 +13055,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show Setting quick link icon"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定クイックリンクアイコンを表示"
           }
         },
         "sk" : {
@@ -10793,6 +13092,12 @@
             "value" : "Third person singular"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "三人称単数"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10820,6 +13125,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Small"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小"
           }
         },
         "sk" : {
@@ -10851,6 +13162,12 @@
             "value" : "Split words"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "単語を分割"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10877,6 +13194,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "💥 Failed to start local server, port: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "💥 ローカルサーバーの起動に失敗しました。ポート: %@"
           }
         },
         "sk" : {
@@ -10907,6 +13230,12 @@
             "value" : "Stop"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10935,6 +13264,12 @@
             "value" : "Stop Playing Audio"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声の再生を停止"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10958,6 +13293,12 @@
     "Success" : {
       "comment" : "Error description",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10984,6 +13325,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Summary"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要約"
           }
         },
         "sk" : {
@@ -11015,6 +13362,12 @@
             "value" : "Superlative"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最上級"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11042,6 +13395,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Synonyms"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同義語"
           }
         },
         "sk" : {
@@ -11073,6 +13432,12 @@
             "value" : "Tencent Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tencent 翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11099,6 +13464,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timeout error"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タイムアウトエラー"
           }
         },
         "sk" : {
@@ -11130,6 +13501,12 @@
             "value" : "Why does the edit button in the upper right corner flicker when selecting words in some applications?"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一部のアプリで単語を選択すると、右上の編集ボタンが点滅するのはなぜですか？"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11157,6 +13534,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "See More"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もっと見る"
           }
         },
         "sk" : {
@@ -11188,6 +13571,12 @@
             "value" : "Why can't I use mouse hover to select words in some applications?"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一部のアプリでマウスオーバーによる単語選択ができないのはなぜですか？"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11217,6 +13606,12 @@
             "value" : "Why can't I select words on some web pages in the browser?"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブラウザの一部のウェブページで単語を選択できないのはなぜですか？"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11243,6 +13638,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Solve This"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解決する"
           }
         },
         "sk" : {
@@ -11274,6 +13675,12 @@
             "value" : "Why does macOS still pop up asking for permissions even though I have given Easydict the Accessibility/Screen Recording permissions?"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict にアクセシビリティ／画面収録の権限を与えたのに、macOS がまだ権限を求めてくるのはなぜですか？"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11301,6 +13708,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Why is the text empty when I select words in some applications?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一部のアプリで単語を選択するとテキストが空になるのはなぜですか？"
           }
         },
         "sk" : {
@@ -11332,6 +13745,12 @@
             "value" : "Tips"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ヒント"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11359,6 +13778,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Why do word selection and OCR need to enable system-related permissions?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "なぜ単語選択と OCR にはシステム関連の権限を有効にする必要があるのですか？"
           }
         },
         "sk" : {
@@ -11389,6 +13814,12 @@
             "value" : "Toggle Languages"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語を切り替え"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11417,6 +13848,12 @@
             "value" : "UK"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11440,6 +13877,12 @@
     "Unimplemented Function" : {
       "comment" : "Error description",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未実装の関数"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11463,6 +13906,12 @@
     "Unknown Error" : {
       "comment" : "Error description",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なエラー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11491,6 +13940,12 @@
             "value" : "Unknown error"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なエラー"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11513,6 +13968,12 @@
     },
     "unknown_option" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なオプション"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11539,6 +14000,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unpin"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留めを解除"
           }
         },
         "sk" : {
@@ -11569,6 +14036,12 @@
             "value" : "Unsupported language"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートされていない言語"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11595,6 +14068,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unsupported query type"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートされていないクエリタイプ"
           }
         },
         "sk" : {
@@ -11625,6 +14104,12 @@
             "value" : "Unsupported service type"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートされていないサービスタイプ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11651,6 +14136,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "US"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "米"
           }
         },
         "sk" : {
@@ -11682,6 +14173,12 @@
             "value" : "Volcano Translate"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volcano 翻訳"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11705,6 +14202,12 @@
     "Youdao" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11733,6 +14236,12 @@
             "value" : "Youdao Dictionary"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao 辞書"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11759,6 +14268,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zhipu Translate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zhipu 翻訳"
           }
         },
         "sk" : {
