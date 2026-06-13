@@ -11,6 +11,12 @@
             "value" : "Easydict"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -38,6 +44,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Easydict"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Easydict"
           }
         },
@@ -71,6 +83,12 @@
             "value" : "Easydict requires permission to execute AppleScript."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict が AppleScript を実行するには権限が必要です。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -98,6 +116,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Copyright © 2023-2025 tisfeng. All rights reserved."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Copyright © 2023-2025 tisfeng. All rights reserved."
           }
         },
