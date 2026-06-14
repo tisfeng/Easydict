@@ -380,6 +380,9 @@ extension Defaults.Keys {
 extension Defaults.Keys {
     // Global
     static let selectionShortcut = Key<KeyCombo?>("EZSelectionShortcutKey_keyHolder")
+    static let toggleAutoSelectTextShortcut = Key<KeyCombo?>(
+        "EZToggleAutoSelectTextShortcutKey_keyHolder"
+    )
     static let snipShortcut = Key<KeyCombo?>("EZSnipShortcutKey_keyHolder")
     static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder")
     // Note: This key value is not suitable for renaming, because it is used in old versions.
