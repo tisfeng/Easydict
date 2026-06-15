@@ -392,7 +392,7 @@ struct MarkdownRenderer {
         var i = start
         while i + markerChars.count <= scalars.count {
             var matched = true
-            for k in 0 ..< markerChars.count where scalars[i + k] != markerChars[k] {
+            for offset in 0 ..< markerChars.count where scalars[i + offset] != markerChars[offset] {
                 matched = false
                 break
             }
