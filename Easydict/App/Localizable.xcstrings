@@ -5727,7 +5727,7 @@
         }
       }
     },
-    "service.deepseek.reasoning_effort.high" : {
+    "service.reasoning_effort.high" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "High" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vysoké" } },
@@ -5735,7 +5735,7 @@
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "高" } }
       }
     },
-    "service.deepseek.reasoning_effort.max" : {
+    "service.reasoning_effort.max" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Max" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Maximálne" } },
@@ -5743,7 +5743,7 @@
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最大" } }
       }
     },
-    "service.deepseek.reasoning_effort.off" : {
+    "service.reasoning_effort.off" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Off" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vypnuté" } },
@@ -6003,7 +6003,7 @@
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } }
       }
     },
-    "service.configuration.deepseek.reasoning_effort.title" : {
+    "service.configuration.reasoning_effort.title" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Reasoning Effort" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Úroveň uvažovania" } },
