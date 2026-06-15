@@ -715,6 +715,34 @@
         }
       }
     },
+    "auto_query_when_text_changed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto query while typing"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatické prekladanie počas písania"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入时自动查询"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸入時自動查詢"
+          }
+        }
+      }
+    },
     "Baidu" : {
       "extractionState" : "manual",
       "localizations" : {

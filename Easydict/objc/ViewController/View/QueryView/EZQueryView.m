@@ -18,6 +18,9 @@
 #import "EZCopyButton.h"
 #import "NSImage+EZSymbolmage.h"
 
+/// Debounce delay before auto querying while the user keeps typing.
+static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.5;
+
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
@@ -403,6 +406,11 @@
         if (flags & NSEventModifierFlagShift) {
             return NO;
         } else {
+            // Pressing Enter queries immediately, so drop any pending
+            // debounced auto query to avoid a duplicate request.
+            [NSObject cancelPreviousPerformRequestsWithTarget:self
+                                                     selector:@selector(autoQueryWhenTextChanged)
+                                                       object:nil];
             if (self.enterActionBlock) {
                 MMLogInfo(@"enterActionBlock");
                 self.enterActionBlock(self.copiedText);
@@ -481,12 +489,46 @@
 - (void)textDidChange:(NSNotification *)notification {
 //    NSString *text = [self copiedText];
 //    MMLogInfo(@"textDidChange: %@", text);
-    
+
     self.queryModel.actionType = EZActionTypeInputQuery;
     self.queryModel.needDetectLanguage = YES;
-    
+
     // textView.string has been changed, we don't need to update it again.
     [self updateInputText:nil];
+
+    // Optionally auto translate while typing, debounced so we only query
+    // once the user pauses instead of on every keystroke.
+    [self scheduleAutoQueryWhenTextChanged];
+}
+
+/// Schedule a debounced auto query when "auto query when text changed" is
+/// enabled. Skips IME composition so we don't query half-typed input.
+- (void)scheduleAutoQueryWhenTextChanged {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self
+                                             selector:@selector(autoQueryWhenTextChanged)
+                                               object:nil];
+
+    if (!MyConfiguration.shared.autoQueryWhenTextChanged) {
+        return;
+    }
+    // Skip while the IME still has marked (composing) text.
+    if (self.textView.hasMarkedText) {
+        return;
+    }
+
+    [self performSelector:@selector(autoQueryWhenTextChanged)
+               withObject:nil
+               afterDelay:EZAutoQueryWhenTextChangedDelay];
+}
+
+- (void)autoQueryWhenTextChanged {
+    NSString *text = [[self copiedText] ns_trim];
+    if (text.length == 0) {
+        return;
+    }
+    if (self.enterActionBlock) {
+        self.enterActionBlock([self copiedText]);
+    }
 }
 
 

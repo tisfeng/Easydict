@@ -73,6 +73,7 @@ struct GeneralTab: View {
                 Toggle("auto_query_selected_text", isOn: $autoQuerySelectedText)
                 Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
                 Toggle("auto_query_pasted_text", isOn: $autoQueryPastedText)
+                Toggle("auto_query_when_text_changed", isOn: $autoQueryWhenTextChanged)
                 Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio)
                 Picker(
                     "setting.general.voice.english_pronunciation",
@@ -268,6 +269,7 @@ struct GeneralTab: View {
     @Default(.autoQueryOCRText) private var autoQueryOCRText
     @Default(.autoQuerySelectedText) private var autoQuerySelectedText
     @Default(.autoQueryPastedText) private var autoQueryPastedText
+    @Default(.autoQueryWhenTextChanged) private var autoQueryWhenTextChanged
     @Default(.autoPlayAudio) private var autoPlayAudio
     @Default(.pronunciation) private var pronunciation
 
