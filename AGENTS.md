@@ -57,11 +57,16 @@ Easydict/
 
 Run `xcodebuild` only when:
 
-- The substantive code changes exceed 100 lines. Documentation comment-only edits do not
-  count toward this threshold.
+- Swift, Objective-C, Xcode project metadata, or app runtime source changes exceed 100
+  substantive lines.
 - Unit test source files under `EasydictTests/**/*.swift` are added or changed.
 - The user explicitly asks for a build or test run.
 - The task runs `/code-simplifier`.
+
+Do not run `xcodebuild` only because Python, Shell, JavaScript/TypeScript, documentation,
+or comment-only edits exceed 100 lines. For script changes, prefer script-level validation
+such as `py_compile`, a relevant dry run or CLI smoke test for Python, and `bash -n` or
+the script's own safe check command for Shell.
 
 Do not run multiple `xcodebuild` commands concurrently against the same workspace and
 DerivedData location. Concurrent runs can contend for the shared build database,
