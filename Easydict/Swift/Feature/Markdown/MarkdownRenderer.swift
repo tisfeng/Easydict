@@ -363,19 +363,24 @@ struct MarkdownRenderer {
 
     // MARK: Inline helpers
 
-    /// Decide whether `marker` at `index` can open an italic run. `*` is always
-    /// permitted, but `_` requires that the preceding character is not part of
-    /// a word so identifiers like `foo_bar_baz` keep their literal underscores.
+    /// Decide whether `marker` at `index` can open an italic run. The next
+    /// character must not be whitespace; `_` also requires that the preceding
+    /// character is not part of a word so identifiers like `foo_bar_baz` keep
+    /// their literal underscores.
     private func canOpenItalic(_ marker: Character, scalars: [Character], at index: Int) -> Bool {
+        let next = index + 1
+        guard next < scalars.count, !scalars[next].isWhitespace else { return false }
         guard marker == "_" else { return true }
         guard index > 0 else { return true }
         return !isWordCharacter(scalars[index - 1])
     }
 
     /// Decide whether `marker` at `closeIndex` can close an italic run.
-    /// Mirrors ``canOpenItalic`` so `_` only closes when the next character is
-    /// outside a word; `*` always closes.
+    /// Mirrors ``canOpenItalic`` so the previous character must not be
+    /// whitespace and `_` only closes when the next character is outside a word.
     private func canCloseItalic(_ marker: Character, scalars: [Character], at closeIndex: Int) -> Bool {
+        let previous = closeIndex - 1
+        guard previous >= 0, !scalars[previous].isWhitespace else { return false }
         guard marker == "_" else { return true }
         let next = closeIndex + 1
         guard next < scalars.count else { return true }

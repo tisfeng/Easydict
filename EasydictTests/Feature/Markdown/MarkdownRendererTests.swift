@@ -57,6 +57,12 @@ struct MarkdownRendererTests {
         #expect(font?.fontDescriptor.symbolicTraits.contains(.italic) == true)
     }
 
+    @Test("Spaced asterisks in expressions stay literal")
+    func spacedAsterisksStayLiteral() {
+        let result = renderer.render("2 * 3 * 4")
+        #expect(result.string == "2 * 3 * 4")
+    }
+
     @Test("Inline code carries a monospaced font and background")
     func inlineCode() {
         let result = renderer.render("Run `swift build` now.")
