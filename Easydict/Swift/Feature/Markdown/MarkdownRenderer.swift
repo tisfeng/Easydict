@@ -89,7 +89,7 @@ struct MarkdownRenderer {
                 continue
             }
 
-            appendParagraph(trimmedString, to: output)
+            appendParagraph(line, to: output)
         }
 
         if inFence, !codeBuffer.isEmpty {
