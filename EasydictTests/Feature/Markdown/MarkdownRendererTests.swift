@@ -141,6 +141,12 @@ struct MarkdownRendererTests {
         #expect(result.string.contains("Body paragraph."))
     }
 
+    @Test("Plain paragraphs preserve leading spaces and tabs")
+    func plainParagraphPreservesLeadingWhitespace() {
+        let result = renderer.render("  indented line\n\tTabbed line")
+        #expect(result.string == "  indented line\n\tTabbed line")
+    }
+
     @Test("In-word underscores stay literal so identifiers survive")
     func inWordUnderscoreStaysLiteral() {
         let result = renderer.render("path is foo_bar_baz today")
