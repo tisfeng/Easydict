@@ -54,16 +54,16 @@ class GlobalContext: NSObject {
         logInfo("reloadLLMServicesSubscribers")
 
         for service in services {
-            if let llmService = service as? StreamService {
-                llmService.cancelSubscribers()
-            }
+            service.cancelSubscribers()
         }
-        let allServiceTypes = LocalStorage.shared().allServiceTypes(EZWindowType.main)
-        services = QueryServiceFactory.shared.services(fromTypes: allServiceTypes)
+        let storage = LocalStorage.shared()
+        let enabledStreamServiceTypes = storage.enabledServiceTypeIDs(EZWindowType.main)
+            .filter { QueryServiceFactory.shared.isStreamService(typeIdIfHave: $0) }
+        services = enabledStreamServiceTypes.compactMap {
+            storage.service($0, windowType: EZWindowType.main) as? StreamService
+        }
         for service in services {
-            if let llmService = service as? StreamService {
-                llmService.setupSubscribers()
-            }
+            service.setupSubscribers()
         }
     }
 
@@ -75,11 +75,13 @@ class GlobalContext: NSObject {
     // TODO: This code is not good, we should improve it later.
 
     /**
-     We need all services to observe llm serivce subscribers for query windows and settings, `services` should keep a strong reference and do not deallocate during the app lifecycle.
+     We need stream services to observe LLM service subscribers for query
+     windows and settings. `services` should keep a strong reference and not
+     deallocate during the app lifecycle.
 
-     When notify a service configuration changed, it will init a new service, this is bad.
-
-     For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
+     Configuration notifications currently create new service instances.
+     Cancel old subscribers before replacing services because old instances may
+     be retained elsewhere.
      */
-    private var services: [QueryService] = []
+    private var services: [StreamService] = []
 }

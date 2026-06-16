@@ -69,11 +69,9 @@ extension QueryService: ServiceSecretConfigreDuplicatable {
         newService.enabled = false
         newService.resetServiceResult()
         for winType in [EZWindowType.fixed, EZWindowType.main, EZWindowType.mini] {
-            var allServiceTypes = LocalStorage.shared().allServiceTypes(winType)
-            allServiceTypes.append(newServiceType)
             newService.windowType = winType
+            LocalStorage.shared().addServiceType(newServiceType, windowType: winType)
             LocalStorage.shared().setService(newService, windowType: winType)
-            LocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: winType)
             NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
         }
         GlobalContext.shared.reloadLLMServicesSubscribers()
@@ -81,9 +79,7 @@ extension QueryService: ServiceSecretConfigreDuplicatable {
 
     func remove() {
         for winType in [EZWindowType.fixed, EZWindowType.main, EZWindowType.mini] {
-            let allServiceTypes = LocalStorage.shared().allServiceTypes(winType)
-                .filter { $0 != serviceTypeWithUniqueIdentifier() }
-            LocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: winType)
+            LocalStorage.shared().removeServiceType(serviceTypeWithUniqueIdentifier(), windowType: winType)
             NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
         }
         GlobalContext.shared.reloadLLMServicesSubscribers()

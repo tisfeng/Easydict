@@ -21,22 +21,25 @@ struct ServiceTab: View {
                     .padding(.horizontal, 12)
                     .padding(.top)
 
-                List(selection: $viewModel.selectedItem) {
-                    WindowConfigurationItem()
-                        .tag(ServiceTabSelection.windowConfiguration)
+                VStack(alignment: .leading, spacing: 8) {
+                    List(selection: $viewModel.selectedItem) {
+                        WindowConfigurationItem()
+                            .tag(ServiceTabSelection.windowConfiguration)
 
-                    ServiceItems()
-                }
-                .listStyle(.plain)
-                .scrollIndicators(.never)
-                .borderedCard()
-                .padding(.horizontal, 12)
-                .padding(.bottom, 12)
-                .onReceive(serviceHasUpdatedNotification) { _ in
-                    Task { @MainActor in
+                        ServiceItems()
+                    }
+                    .listStyle(.plain)
+                    .scrollIndicators(.never)
+                    .borderedCard()
+                    .onReceive(serviceHasUpdatedNotification) { _ in
                         viewModel.updateServices()
                     }
+
+                    ServiceListControls()
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .padding(.horizontal, 12)
+                .padding(.bottom, 12)
             }
             .frame(minWidth: 270, maxWidth: 320, maxHeight: .infinity)
 
@@ -45,9 +48,7 @@ struct ServiceTab: View {
         }
         .environmentObject(viewModel)
         .onChange(of: viewModel.windowType) { _ in
-            Task { @MainActor in
-                viewModel.handleWindowTypeChange()
-            }
+            viewModel.handleWindowTypeChange()
         }
     }
 
@@ -61,10 +62,7 @@ struct ServiceTab: View {
 
 // MARK: - ServiceTabSelection
 
-/// Identifies the active item in the service settings split view.
-/// Service cases store stable service identifiers instead of object references
-/// so selection survives list refreshes as long as the service still exists.
-private enum ServiceTabSelection: Hashable {
+enum ServiceTabSelection: Hashable {
     case windowConfiguration
     case service(String)
 }
@@ -72,70 +70,223 @@ private enum ServiceTabSelection: Hashable {
 // MARK: - ServiceTabViewModel
 
 @MainActor
-private class ServiceTabViewModel: ObservableObject {
+class ServiceTabViewModel: ObservableObject {
     // MARK: Lifecycle
 
     init(windowType: EZWindowType = .fixed) {
         self.windowType = windowType
-        self.services = LocalStorage.shared().allServices(windowType)
+        self.serviceItems = Self.loadServiceItems(windowType)
+        self.availableServiceItems = Self.loadAvailableServiceItems(windowType)
     }
 
     // MARK: Internal
 
-    @Published var selectedItem: ServiceTabSelection? = .windowConfiguration
+    @Published private(set) var serviceItems: [ServiceListItem]
 
-    @Published private(set) var services: [QueryService]
+    @Published private(set) var availableServiceItems: [ServiceListItem]
+
+    @Published private(set) var selectedService: QueryService?
 
     @Published var windowType: EZWindowType
 
-    var selectedService: QueryService? {
-        guard case let .service(serviceID) = selectedItem else { return nil }
-
-        return services.first {
-            $0.serviceTypeWithUniqueIdentifier() == serviceID
+    @Published var selectedItem: ServiceTabSelection? = .windowConfiguration {
+        didSet {
+            DispatchQueue.main.async { [self] in
+                updateSelectedService()
+            }
         }
+    }
+
+    var canRemoveSelectedService: Bool {
+        guard let selectedServiceItem else { return false }
+        return canRemoveService(selectedServiceItem)
     }
 
     /// Refresh services when the window type changes.
     func handleWindowTypeChange() {
         selectedItem = .windowConfiguration
+        selectedService = nil
         updateServices()
     }
 
     func updateServices() {
-        services = LocalStorage.shared().allServices(windowType)
+        serviceItems = Self.loadServiceItems(windowType)
+        availableServiceItems = Self.loadAvailableServiceItems(windowType)
 
         guard case let .service(selectedServiceID) = selectedItem else { return }
 
-        let isSelectedServiceAvailable = services.contains {
-            $0.serviceTypeWithUniqueIdentifier() == selectedServiceID
-        }
+        let isSelectedServiceAvailable = serviceItems.contains { $0.id == selectedServiceID }
         if !isSelectedServiceAvailable {
             selectedItem = .windowConfiguration
+            selectedService = nil
+        } else {
+            updateSelectedService()
         }
     }
 
-    func onServiceItemMove(fromOffsets: IndexSet, toOffset: Int) {
-        var services = services
-        services.move(fromOffsets: fromOffsets, toOffset: toOffset)
+    func moveServices(fromOffsets: IndexSet, toOffset: Int) {
+        var serviceItems = serviceItems
+        serviceItems.move(fromOffsets: fromOffsets, toOffset: toOffset)
 
-        let serviceTypes = services.map { $0.serviceTypeWithUniqueIdentifier() }
+        let serviceTypes = serviceItems.map(\.id)
         LocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
 
         postUpdateServiceNotification()
         updateServices()
     }
 
+    func addService(_ item: ServiceListItem) {
+        guard LocalStorage.shared().addServiceType(item.id, windowType: windowType) else {
+            return
+        }
+
+        selectedItem = .service(item.id)
+        postUpdateServiceNotification()
+        updateServices()
+    }
+
+    func canRemoveService(_ item: ServiceListItem) -> Bool {
+        serviceItems.contains { $0.id == item.id } && serviceItems.count > 1
+    }
+
+    func removeService(_ item: ServiceListItem) {
+        guard LocalStorage.shared().removeServiceType(item.id, windowType: windowType) else {
+            return
+        }
+
+        if selectedItem == .service(item.id) {
+            selectedItem = .windowConfiguration
+            selectedService = nil
+        }
+
+        postUpdateServiceNotification()
+        reloadLLMSubscribersIfNeeded(for: item)
+        updateServices()
+    }
+
+    func removeSelectedService() {
+        guard let selectedServiceItem else {
+            return
+        }
+        removeService(selectedServiceItem)
+    }
+
+    func setServiceEnabled(_ enabled: Bool, for item: ServiceListItem) {
+        if selectedService?.serviceTypeWithUniqueIdentifier() == item.id {
+            selectedService?.enabled = enabled
+            if let selectedService {
+                LocalStorage.shared().setService(selectedService, windowType: windowType)
+            }
+        } else {
+            LocalStorage.shared().setServiceEnabled(
+                enabled,
+                serviceTypeId: item.id,
+                windowType: windowType
+            )
+        }
+
+        postUpdateServiceNotification()
+        reloadLLMSubscribersIfNeeded(for: item)
+        updateServices()
+    }
+
+    func validateAndEnable(_ item: ServiceListItem) async throws {
+        guard item.isStream else {
+            setServiceEnabled(true, for: item)
+            return
+        }
+
+        guard let service = LocalStorage.shared().service(item.id, windowType: windowType) else {
+            return
+        }
+        let result = await service.validate()
+        if let error = result.error {
+            throw error
+        }
+        service.enabled = true
+        LocalStorage.shared().setService(service, windowType: windowType)
+        selectedService = selectedItem == .service(item.id) ? service : selectedService
+        postUpdateServiceNotification()
+        reloadLLMSubscribersIfNeeded(for: item)
+        updateServices()
+    }
+
     func postUpdateServiceNotification() {
         NotificationCenter.default.postServiceUpdateNotification(windowType: windowType)
     }
+
+    // MARK: Private
+
+    private var selectedServiceItem: ServiceListItem? {
+        guard case let .service(serviceID) = selectedItem else {
+            return nil
+        }
+        return serviceItems.first { $0.id == serviceID }
+    }
+
+    private static func loadServiceItems(_ windowType: EZWindowType) -> [ServiceListItem] {
+        serviceItems(from: LocalStorage.shared().allServiceTypes(windowType), windowType: windowType)
+    }
+
+    private static func loadAvailableServiceItems(_ windowType: EZWindowType) -> [ServiceListItem] {
+        serviceItems(
+            from: LocalStorage.shared().availableServiceTypeIDs(windowType: windowType),
+            windowType: windowType
+        )
+    }
+
+    private static func serviceItems(from serviceTypeIds: [String], windowType: EZWindowType) -> [ServiceListItem] {
+        serviceTypeIds.compactMap { typeId in
+            guard let metadata = QueryServiceFactory.shared.metadata(withTypeId: typeId) else {
+                return nil
+            }
+            let info = LocalStorage.shared().serviceInfo(
+                withType: metadata.serviceType,
+                serviceId: metadata.uuid,
+                windowType: windowType
+            )
+            return ServiceListItem(
+                id: typeId,
+                type: metadata.serviceType,
+                name: metadata.title,
+                enabled: info?.enabled == true,
+                requirement: metadata.apiKeyRequirement,
+                isStream: metadata.isStream
+            )
+        }
+    }
+
+    private func updateSelectedService() {
+        guard case let .service(serviceID) = selectedItem else {
+            selectedService = nil
+            return
+        }
+        guard serviceItems.contains(where: { $0.id == serviceID }) else {
+            selectedService = nil
+            return
+        }
+        selectedService = LocalStorage.shared().service(serviceID, windowType: windowType)
+    }
+
+    private func reloadLLMSubscribersIfNeeded(for item: ServiceListItem) {
+        guard windowType == .main, item.isStream else { return }
+        GlobalContext.shared.reloadLLMServicesSubscribers()
+    }
+}
+
+// MARK: - ServiceListItem
+
+struct ServiceListItem: Identifiable {
+    let id: String
+    let type: ServiceType
+    let name: String
+    let enabled: Bool
+    let requirement: ServiceAPIKeyRequirement
+    let isStream: Bool
 }
 
 // MARK: - WindowConfigurationItem
 
-/// Row that opens the shared window configuration detail.
-/// It stays outside the movable service list so service ordering remains scoped
-/// to translation services only.
 private struct WindowConfigurationItem: View {
     var body: some View {
         Text("setting.service.window_configuration")
@@ -148,37 +299,8 @@ private struct WindowConfigurationItem: View {
     }
 }
 
-// MARK: - ServiceItems
-
-private struct ServiceItems: View {
-    // MARK: Internal
-
-    var body: some View {
-        ForEach(servicesWithID, id: \.1) { service, serviceID in
-            ServiceItemView(service: service, viewModel: viewModel)
-                .tag(ServiceTabSelection.service(serviceID))
-        }
-        .onMove { source, destination in
-            viewModel.onServiceItemMove(fromOffsets: source, toOffset: destination)
-        }
-    }
-
-    // MARK: Private
-
-    @EnvironmentObject private var viewModel: ServiceTabViewModel
-
-    private var servicesWithID: [(QueryService, String)] {
-        viewModel.services.map { service in
-            (service, service.serviceTypeWithUniqueIdentifier())
-        }
-    }
-}
-
 // MARK: - ServiceDetailView
 
-/// Detail pane for the service settings split view.
-/// The pane shows window-level configuration until a concrete service row is
-/// selected, then switches to that service's own configuration form.
 private struct ServiceDetailView: View {
     // MARK: Internal
 
@@ -209,288 +331,6 @@ private struct ServiceDetailView: View {
     // MARK: Private
 
     @EnvironmentObject private var viewModel: ServiceTabViewModel
-}
-
-// MARK: - ServiceItemViewModel
-
-@MainActor
-private class ServiceItemViewModel: ObservableObject {
-    // MARK: Lifecycle
-
-    init(_ service: QueryService, viewModel: ServiceTabViewModel) {
-        self.service = service
-        self.name = service.name()
-        self.viewModel = viewModel
-
-        cancellables.append(
-            serviceUpdatePublisher
-                .sink { [weak self] notification in
-                    self?.didReceive(notification)
-                }
-        )
-    }
-
-    // MARK: Public
-
-    /// Try to enable the service, if the service is StreamService, we need to validate it first.
-    public func tryEnableService() {
-        // If service is not StreamService, we can enable it directly
-        if !service.isKind(of: StreamService.self) {
-            updateServiceStatus(enabled: true)
-            return
-        }
-
-        isValidating = true
-
-        Task {
-            do {
-                defer { isValidating = false }
-
-                let result = await service.validate()
-                if let error = result.error {
-                    throw error
-                }
-                updateServiceStatus(enabled: true)
-            } catch {
-                logError("\(self.service.serviceType().rawValue) validate error: \(error)")
-                self.error = error
-                self.showErrorAlert = true
-            }
-        }
-    }
-
-    // MARK: Internal
-
-    let service: QueryService
-
-    @Published var isValidating = false
-    @Published var name = ""
-
-    @Published var showErrorAlert = false
-    @Published var showClaudeCodeRiskAlert = false
-    @Published var showCodexCLIRiskAlert = false
-    @Published var error: (any Error)?
-
-    unowned var viewModel: ServiceTabViewModel
-
-    var isEnable: Bool {
-        get {
-            service.enabled
-        }
-        set {
-            // turn on service
-            if newValue {
-                if service.serviceType() == .claudeCode {
-                    showClaudeCodeRiskAlert = true
-                } else if service.serviceType() == .codexCLI {
-                    showCodexCLIRiskAlert = true
-                } else {
-                    tryEnableService()
-                }
-            } else {
-                // turn off service
-                updateServiceStatus(enabled: false)
-            }
-        }
-    }
-
-    // MARK: Private
-
-    @EnvironmentObject private var serviceTabViewModel: ServiceTabViewModel
-
-    private var cancellables: [AnyCancellable] = []
-
-    private var serviceUpdatePublisher: AnyPublisher<Notification, Never> {
-        NotificationCenter.default
-            .publisher(for: .serviceHasUpdated)
-            .eraseToAnyPublisher()
-    }
-
-    private func didReceive(_ notification: Notification) {
-        guard let info = notification.userInfo as? [String: Any] else { return }
-        guard let serviceType = info[UserInfoKey.serviceType] as? String else { return }
-        guard serviceType == service.serviceType().rawValue else { return }
-        name = service.name()
-    }
-
-    /// Update service enabled status, and post update service notification.
-    private func updateServiceStatus(enabled: Bool) {
-        service.enabled = enabled
-        LocalStorage.shared().setService(service, windowType: viewModel.windowType)
-        viewModel.postUpdateServiceNotification()
-    }
-}
-
-// MARK: - ServiceItemView
-
-private struct ServiceItemView: View {
-    // MARK: Lifecycle
-
-    init(service: QueryService, viewModel: ServiceTabViewModel) {
-        self.service = service
-        self.serviceItemViewModel = ServiceItemViewModel(service, viewModel: viewModel)
-    }
-
-    // MARK: Internal
-
-    let service: QueryService
-
-    var body: some View {
-        Group {
-            HStack(spacing: 4) {
-                HStack {
-                    Image(service.serviceType().rawValue)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 18, height: 18)
-                    Text(verbatim: serviceItemViewModel.name)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                }
-                .layoutPriority(1)
-
-                Spacer(minLength: 4)
-
-                ServiceRequirementBadge(requirement: service.apiKeyRequirement())
-
-                // Use a fixed width container for both controls, to make sure they are center aligned.
-                ZStack {
-                    if serviceItemViewModel.isValidating {
-                        ProgressView()
-                            .controlSize(.small)
-                    } else {
-                        // Magnet can trigger a SwiftUI List(selection:) edge case where the
-                        // first click on an unselected row selects the row before Toggle sees it.
-                        // The Button handles clicks while Toggle only renders the switch.
-                        Button {
-                            serviceItemViewModel.isEnable.toggle()
-                        } label: {
-                            Toggle(
-                                serviceItemViewModel.service.name(),
-                                isOn: .constant(serviceItemViewModel.isEnable)
-                            )
-                            .labelsHidden()
-                            .toggleStyle(.switch)
-                            .controlSize(.mini)
-                            .allowsHitTesting(false)
-                        }
-                        .buttonStyle(.borderless)
-                    }
-                }
-                .frame(width: 40, alignment: .center)
-            }
-        }
-        .listRowSeparator(.hidden)
-        .listRowInsets(.init())
-        .padding(.vertical, 8)
-        .alert(
-            "setting.service.failed_to_enable_service \(serviceItemViewModel.service.name())",
-            isPresented: $serviceItemViewModel.showErrorAlert
-        ) {
-            Button("ok") {
-                serviceItemViewModel.showErrorAlert = false
-            }
-        } message: {
-            Text(serviceItemViewModel.error?.localizedDescription ?? "unknown_error")
-        }
-        .alert(
-            "service.claude_code.enable_risk_alert.title",
-            isPresented: $serviceItemViewModel.showClaudeCodeRiskAlert
-        ) {
-            Button("cancel", role: .cancel) {
-                serviceItemViewModel.showClaudeCodeRiskAlert = false
-            }
-            Button("ok") {
-                serviceItemViewModel.showClaudeCodeRiskAlert = false
-                serviceItemViewModel.tryEnableService()
-            }
-        } message: {
-            Text("service.claude_code.enable_risk_alert.message")
-        }
-        .alert(
-            "service.codex_cli.enable_risk_alert.title",
-            isPresented: $serviceItemViewModel.showCodexCLIRiskAlert
-        ) {
-            Button("cancel", role: .cancel) {
-                serviceItemViewModel.showCodexCLIRiskAlert = false
-            }
-            Button("ok") {
-                serviceItemViewModel.showCodexCLIRiskAlert = false
-                serviceItemViewModel.tryEnableService()
-            }
-        } message: {
-            Text("service.codex_cli.enable_risk_alert.message")
-        }
-    }
-
-    // MARK: Private
-
-    @EnvironmentObject private var viewModel: ServiceTabViewModel
-
-    @ObservedObject private var serviceItemViewModel: ServiceItemViewModel
-}
-
-// MARK: - ServiceRequirementBadge
-
-/// Renders the short API credential category shown beside each service row.
-private struct ServiceRequirementBadge: View {
-    // MARK: Internal
-
-    let requirement: ServiceAPIKeyRequirement
-
-    var body: some View {
-        Text(verbatim: title)
-            .font(.caption2.weight(.medium))
-            .foregroundStyle(foregroundColor)
-            .lineLimit(1)
-            .fixedSize(horizontal: true, vertical: false)
-            .padding(.horizontal, 6)
-            .padding(.vertical, 2)
-            .background {
-                Capsule()
-                    .fill(backgroundColor)
-            }
-            .overlay {
-                Capsule()
-                    .stroke(borderColor, lineWidth: 0.5)
-            }
-    }
-
-    // MARK: Private
-
-    private var title: String {
-        switch requirement {
-        case .none:
-            "no-key"
-        case .builtIn:
-            "built-in"
-        case .userProvided:
-            "key"
-        case .agentCLI:
-            "cli"
-        }
-    }
-
-    private var foregroundColor: Color {
-        switch requirement {
-        case .none:
-            .secondary
-        case .builtIn:
-            .green
-        case .userProvided:
-            .orange
-        case .agentCLI:
-            .blue
-        }
-    }
-
-    private var backgroundColor: Color {
-        foregroundColor.opacity(0.12)
-    }
-
-    private var borderColor: Color {
-        foregroundColor.opacity(0.28)
-    }
 }
 
 // MARK: - WindowTypePicker
