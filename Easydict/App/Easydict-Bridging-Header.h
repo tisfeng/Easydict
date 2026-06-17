@@ -23,4 +23,3 @@
 
 #import "EZLabel.h"
 #import "EZHoverButton.h"
-#import "NSObject+EZDarkMode.h"
