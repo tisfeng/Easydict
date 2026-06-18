@@ -96,7 +96,14 @@ brew install --cask easydict
 
 以下是可选步骤，仅面向开发协作者。
 
-如果经常需要调试一些权限相关的功能，例如取词或 OCR，可选择使用自己的苹果账号运行，请修改 `Easydict-debug.xcconfig` 文件中的 `DEVELOPMENT_TEAM` 为你自己的 Apple Team ID（你可以登录苹果开发者网站找到它），`CODE_SIGN_IDENTITY` 改为 Apple Development。
+如果经常需要调试权限相关的功能（如取词或 OCR），建议使用你自己的 Apple Developer 账号签名，否则每次编译都会触发系统的权限弹窗。
+
+推荐使用 [xcode-team-patcher](https://github.com/MoonMao42/xcode-team-patcher) 工具，它能一键配置 Git 钩子，在每次切换分支时自动替换为你的 Team ID，彻底告别 TCC 权限重置和代码冲突。只需在项目根目录运行：
+```bash
+curl -O https://raw.githubusercontent.com/MoonMao42/xcode-team-patcher/main/install.sh && chmod +x install.sh && ./install.sh
+```
+
+如果不想使用脚本，你可以手动修改 `Easydict-debug.xcconfig` 文件中的 `DEVELOPMENT_TEAM` 为你自己的 Apple Team ID（你可以登录苹果开发者网站找到它），并将 `CODE_SIGN_IDENTITY` 改为 Apple Development。
 
 注意不要提交 `Easydict-debug.xcconfig` 文件，你可以使用下面 git 命令忽略这个文件的本地修改
 
