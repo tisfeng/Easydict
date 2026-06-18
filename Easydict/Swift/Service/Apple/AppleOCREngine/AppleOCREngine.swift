@@ -136,7 +136,11 @@ public class AppleOCREngine: NSObject {
         logInfo("Pasteboard OCR")
         if let image = NSPasteboard.general.image {
             Task {
-                try await showOCRWindow(image: image)
+                do {
+                    try await showOCRWindow(image: image)
+                } catch {
+                    logError("Pasteboard OCR failed: \(error.localizedDescription)")
+                }
             }
         }
     }
