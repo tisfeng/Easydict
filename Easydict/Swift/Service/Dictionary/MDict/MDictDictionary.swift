@@ -16,6 +16,7 @@ private let maxMDictCachedCSSBytes = 4 * 1024 * 1024
 private let maxMDictCachedCSSEntryBytes = 2 * 1024 * 1024
 private let maxMDictMissingResourceCount = 512
 private let maxMDictSearchIndexEntryCount = 200_000
+private let maxMDictLinkResolutionDepth = 8
 
 // MARK: - MDictDictionary
 
@@ -60,6 +61,16 @@ final class MDictDictionary: @unchecked Sendable {
             return text
         }
         return nil
+    }
+
+    static func linkedKeyword(in definition: String) -> String? {
+        let prefix = "@@@LINK="
+        let trimmed = definition.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.hasPrefix(prefix) else { return nil }
+
+        let keyword = trimmed.dropFirst(prefix.count)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return keyword.isEmpty ? nil : keyword
     }
 
     // MARK: - Lookup
@@ -193,14 +204,52 @@ final class MDictDictionary: @unchecked Sendable {
     }
 
     private func lookupDefinitions(for word: String) throws -> [String] {
-        var definitions = try mdxReader.lookupAll(word)
+        try lookupDefinitions(for: word, visitedWords: [], depth: 0)
+    }
 
-        if definitions.isEmpty, !mdxReader.header.keyCaseSensitive {
-            definitions = try mdxReader.lookupAll(word.lowercased())
-            if definitions.isEmpty {
-                definitions = try mdxReader.lookupAll(word.capitalized)
+    private func lookupDefinitions(
+        for word: String,
+        visitedWords: Set<String>,
+        depth: Int
+    ) throws
+        -> [String] {
+        let definitions = try depth == 0
+            ? directLookupDefinitions(for: word)
+            : exactLookupDefinitions(for: word)
+        let normalizedWord = mdxReader.normalizedKey(word)
+        var resolvedDefinitions: [String] = []
+        for definition in definitions {
+            guard let linkedKeyword = Self.linkedKeyword(in: definition),
+                  depth < maxMDictLinkResolutionDepth
+            else {
+                resolvedDefinitions.append(definition)
+                continue
             }
+
+            let normalizedLinkedKeyword = mdxReader.normalizedKey(linkedKeyword)
+            guard normalizedWord != normalizedLinkedKeyword,
+                  !visitedWords.contains(normalizedLinkedKeyword)
+            else {
+                resolvedDefinitions.append(definition)
+                continue
+            }
+
+            var nextVisitedWords = visitedWords
+            nextVisitedWords.insert(normalizedWord)
+            let linkedDefinitions = try lookupDefinitions(
+                for: linkedKeyword,
+                visitedWords: nextVisitedWords,
+                depth: depth + 1
+            )
+            resolvedDefinitions.append(
+                contentsOf: linkedDefinitions.isEmpty ? [definition] : linkedDefinitions
+            )
         }
+        return resolvedDefinitions
+    }
+
+    private func directLookupDefinitions(for word: String) throws -> [String] {
+        var definitions = try exactLookupDefinitions(for: word)
         if !definitions.isEmpty { return definitions }
 
         for candidate in MDictInflection.candidates(for: word) {
@@ -213,6 +262,18 @@ final class MDictDictionary: @unchecked Sendable {
             if !definitions.isEmpty { return definitions }
         }
         return []
+    }
+
+    private func exactLookupDefinitions(for word: String) throws -> [String] {
+        var definitions = try mdxReader.lookupAll(word)
+
+        if definitions.isEmpty, !mdxReader.header.keyCaseSensitive {
+            definitions = try mdxReader.lookupAll(word.lowercased())
+            if definitions.isEmpty {
+                definitions = try mdxReader.lookupAll(word.capitalized)
+            }
+        }
+        return definitions
     }
 
     private func fallbackSearchCandidates(for word: String) throws -> [String] {

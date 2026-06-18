@@ -75,7 +75,10 @@ excluded:
   - "**/UNTESTED_TODO"
   - "vendor"
   - "fastlane"
+  - ".tmp"
+  - "**/.tmp/**" # Exclude local temporary release/build artifacts
   - ".build"
-  - "**/.build/**"      # Exclude all .build subdirectories
-  - "**/checkouts/**"    # Exclude all SPM downloaded dependencies
+  - "**/.build/**" # Exclude all .build subdirectories
+  - "**/checkouts/**" # Exclude all SPM downloaded dependencies
   - "**/DerivedData/**" # Exclude Xcode derived data
+  - "**/SherpaOnnx.swift"

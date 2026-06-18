@@ -38,6 +38,7 @@ NSString *const EZServiceTypeGitHub = @"GitHub";
 NSString *const EZServiceTypeDoubao = @"Doubao";
 NSString *const EZServiceTypeClaudeCode = @"ClaudeCode";
 NSString *const EZServiceTypeClaude = @"Claude";
+NSString *const EZServiceTypeCodexCLI = @"CodexCLI";
 NSString *const EZServiceTypeMDict = @"MDict";
 
 NSString *const EZQueryTextTypeKey = @"QueryTextType";
@@ -80,6 +81,8 @@ NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
             return @"dragged";
         case EZTriggerTypeShift:
             return @"shift";
+        case EZTriggerTypeSelectAllShortcut:
+            return @"select_all_shortcut";
     }
 }
 

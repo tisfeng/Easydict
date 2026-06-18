@@ -134,6 +134,7 @@ class BingService: QueryService {
             Language.mongolian, "mn-Mong",
             Language.hebrew, "he",
             Language.georgian, "ka",
+            Language.uyghur, "ug",
             NSNull(),
         ]
 

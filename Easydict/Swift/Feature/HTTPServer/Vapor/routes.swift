@@ -90,22 +90,18 @@ func routes(_ app: Application) throws {
         ])
 
         let chatStream = try await streamService.streamTranslate(request: request)
-        let jsonStream = try await chatStreamToJSONStream(chatStream: chatStream)
+        let jsonStream = chatStreamToJSONStream(
+            chatStream: chatStream,
+            fallbackModel: streamService.model
+        )
 
         let asyncBodyStream: @Sendable (AsyncBodyStreamWriter) async throws -> () = { writer in
-            do {
-                for try await json in jsonStream {
-                    // SSE format https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
-                    let data = "data: \(json)\n\n"
-                    try await writer.write(.buffer(.init(string: data)))
-                }
-                try await writer.write(.end)
-            } catch {
-                if let queryError = QueryError.queryError(from: error) {
-                    let errorData = "data: \(queryError.localizedDescription)\n\n"
-                    try await writer.write(.buffer(.init(string: errorData)))
-                }
+            for await json in jsonStream {
+                // SSE format https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using-server-sent_events
+                let data = "data: \(json)\n\n"
+                try await writer.write(.buffer(.init(string: data)))
             }
+            try await writer.write(.end)
         }
 
         return Response(
@@ -151,31 +147,47 @@ func routes(_ app: Application) throws {
     }
 }
 
-/// Convert chat stream to json stream
-func chatStreamToJSONStream(chatStream: AsyncThrowingStream<ChatStreamResult, Error>) async throws
-    -> AsyncThrowingStream<String, Error> {
-    var json: String?
-
-    // Check first element for potential errors
-    var iterator = chatStream.makeAsyncIterator()
-    if let firstResult = try await iterator.next() {
-        json = firstResult.jsonString
-    }
-
-    return AsyncThrowingStream<String, Error> { continuation in
-        continuation.yield(json ?? "")
-
+/// Convert chat stream to JSON messages, wrapping errors in a chunk-compatible
+/// JSON object so chunk-based stream clients can still decode the payload.
+private func chatStreamToJSONStream(
+    chatStream: AsyncThrowingStream<ChatStreamResult, Error>,
+    fallbackModel: String
+)
+    -> AsyncStream<String> {
+    AsyncStream<String> { continuation in
         Task {
+            defer { continuation.finish() }
             do {
                 for try await chatResult in chatStream {
                     if let json = chatResult.jsonString {
                         continuation.yield(json)
                     }
                 }
-                continuation.finish()
             } catch {
-                continuation.finish(throwing: error)
+                if let errorJson = makeJSONErrorMessage(error, fallbackModel: fallbackModel) {
+                    continuation.yield(errorJson)
+                }
             }
         }
     }
+}
+
+private func makeJSONErrorMessage(_ error: Error, fallbackModel: String) -> String? {
+    let queryError = QueryError.queryError(from: error)
+    let errorMessage = queryError?.localizedDescription ?? error.localizedDescription
+
+    guard let chunkData = ChatStreamResult.create(
+        content: errorMessage,
+        model: fallbackModel
+    ).jsonData,
+        var errorDict = try? JSONSerialization.jsonObject(with: chunkData) as? [String: Any]
+    else {
+        return nil
+    }
+
+    errorDict["error"] = errorMessage
+    guard let errorData = try? JSONSerialization.data(withJSONObject: errorDict) else {
+        return nil
+    }
+    return String(data: errorData, encoding: .utf8)
 }

@@ -145,6 +145,7 @@ private class ServiceValidationViewModel: ObservableObject {
     init(service: QueryService, observing keys: [Defaults.Key<String>]) {
         self.service = service
         self.name = service.name()
+        self.isValidateBtnDisabled = keys.contains(where: { Defaults[$0].isEmpty })
 
         // check secret key empty input
         Defaults.publisher(keys: keys)

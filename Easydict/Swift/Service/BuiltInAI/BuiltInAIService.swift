@@ -62,6 +62,10 @@ class BuiltInAIService: BaseOpenAIService {
         ZhipuModel.glm_4_flash_250414.rawValue
     }
 
+    override var canFetchRemoteModels: Bool {
+        false
+    }
+
     override var apiKey: String {
         builtInAIAPIKey
     }

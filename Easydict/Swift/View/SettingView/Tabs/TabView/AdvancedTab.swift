@@ -47,6 +47,14 @@ struct AdvancedTab: View {
                             .tag(option)
                     }
                 }
+                Toggle(isOn: $preferYoudaoTTSForEnglishWord) {
+                    AdvancedTabItemView(
+                        color: .indigo,
+                        icon: .waveform,
+                        labelText: "setting.advance.prefer_youdao_tts_for_english_word",
+                        subtitleText: "setting.advance.prefer_youdao_tts_for_english_word_desc"
+                    )
+                }
                 Toggle(isOn: $disableTipsView) {
                     AdvancedTabItemView(
                         color: .green,
@@ -426,6 +434,7 @@ struct AdvancedTab: View {
     @Default(.enableBetaFeature) private var enableBetaFeature
 
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
+    @Default(.preferYoudaoTTSForEnglishWord) private var preferYoudaoTTSForEnglishWord
     @Default(.disableTipsView) private var disableTipsView
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
     @Default(.enableCompatibilityReplace) private var enableCompatibilityReplace

@@ -71,6 +71,13 @@ extension Defaults.Keys {
         "EZConfiguration_kDefaultTTSServiceTypeKey",
         default: TTSServiceType.youdao
     )
+    /// When enabled, English words are spoken via Youdao TTS regardless of the
+    /// configured default TTS service. Defaults to `true` to preserve the long
+    /// standing behavior of using Youdao's high quality dictionary recordings.
+    static let preferYoudaoTTSForEnglishWord = Key<Bool>(
+        "EZConfiguration_kPreferYoudaoTTSForEnglishWordKey",
+        default: true
+    )
     static let showGoogleQuickLink = Key<Bool>("EZConfiguration_kShowGoogleLinkKey", default: true)
     static let showEudicQuickLink = Key<Bool>("EZConfiguration_kShowEudicLinkKey", default: true)
     static let showAppleDictionaryQuickLink = Key<Bool>(

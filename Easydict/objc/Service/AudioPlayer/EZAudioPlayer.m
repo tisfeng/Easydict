@@ -288,9 +288,12 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     BOOL isForcedURL = forceURL && audioURLString.length;
 
     // For English words, Youdao TTS is better than other services, so we try to play local Youdao audio first.
+    // Respect the user's preference: when disabled, skip the Youdao cache lookup so playback follows
+    // the configured default TTS service.
+    BOOL preferYoudao = MyConfiguration.shared.preferYoudaoTTSForEnglishWord;
     BOOL isEnglishWord = [text isEnglishWordWithLanguage:language];
 
-    if (!isForcedURL && isEnglishWord) {
+    if (!isForcedURL && isEnglishWord && preferYoudao) {
         NSString *youdaoAudioFilePath = [self getWordAudioFilePath:text
                                                           language:language
                                                             accent:accent
