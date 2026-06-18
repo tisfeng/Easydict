@@ -67,8 +67,14 @@ final class ClaudeCodeRunner: @unchecked Sendable {
     /// Builds the argument list for a `claude -p --print` invocation.
     ///
     /// The current Claude Code CLI requires `--verbose` when `--print` is combined
-    /// with `--output-format stream-json`.
-    static func buildArguments(prompt: String, systemPrompt: String?) -> [String] {
+    /// with `--output-format stream-json`. `model` defaults to `sonnet` so translation
+    /// uses a fast, capable model instead of whatever the CLI default happens to be;
+    /// pass an empty string to fall back to the CLI default.
+    static func buildArguments(
+        prompt: String,
+        systemPrompt: String?,
+        model: String = "sonnet"
+    ) -> [String] {
         var arguments = [
             "-p", prompt,
             "--print",
@@ -80,6 +86,10 @@ final class ClaudeCodeRunner: @unchecked Sendable {
             "--strict-mcp-config", // ignore user MCP config; no --mcp-config = no servers
             "--setting-sources", "", // skip all settings files to prevent plugin hooks
         ]
+        let trimmedModel = model.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedModel.isEmpty {
+            arguments += ["--model", trimmedModel]
+        }
         if let systemPrompt, !systemPrompt.isEmpty {
             arguments += ["--system-prompt", systemPrompt]
         }
