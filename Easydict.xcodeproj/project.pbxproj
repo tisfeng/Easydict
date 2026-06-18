@@ -1389,6 +1389,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		02DEDC042026043000000001 /* Markdown */ = {
+			isa = PBXGroup;
+			children = (
+				02DEDC042026043000000002 /* MarkdownRenderer.swift */,
+				02DEDC042026043000000003 /* MarkdownLabel.swift */,
+				02DEDC042026043000000004 /* MarkdownToggleButton.swift */,
+				02DEDC042026043000000005 /* markdown-overview.html */,
+				02DEDC042026043000000006 /* markdown-architecture.svg */,
+			);
+			path = Markdown;
+			sourceTree = "<group>";
+		};
+		02DEDC0420260430000000C1 /* Markdown */ = {
+			isa = PBXGroup;
+			children = (
+				02DEDC04202604300000000A /* MarkdownRendererTests.swift */,
+			);
+			path = Markdown;
+			sourceTree = "<group>";
+		};
 		03008B2429408BCB0062B821 /* NSObject+DarkMode */ = {
 			isa = PBXGroup;
 			children = (
@@ -3447,18 +3467,6 @@
 			path = MenuView;
 			sourceTree = "<group>";
 		};
-		02DEDC042026043000000001 /* Markdown */ = {
-			isa = PBXGroup;
-			children = (
-				02DEDC042026043000000002 /* MarkdownRenderer.swift */,
-				02DEDC042026043000000003 /* MarkdownLabel.swift */,
-				02DEDC042026043000000004 /* MarkdownToggleButton.swift */,
-				02DEDC042026043000000005 /* markdown-overview.html */,
-				02DEDC042026043000000006 /* markdown-architecture.svg */,
-			);
-			path = Markdown;
-			sourceTree = "<group>";
-		};
 		967712EB2B5B93E200105E0F /* Feature */ = {
 			isa = PBXGroup;
 			children = (
@@ -3546,14 +3554,6 @@
 				C0DEC11E0002000000000013 /* codex-cli-architecture.svg */,
 			);
 			path = CodexCLI;
-			sourceTree = "<group>";
-		};
-		02DEDC0420260430000000C1 /* Markdown */ = {
-			isa = PBXGroup;
-			children = (
-				02DEDC04202604300000000A /* MarkdownRendererTests.swift */,
-			);
-			path = Markdown;
 			sourceTree = "<group>";
 		};
 		C415C0AB2B450C4500A9D231 /* Gemini */ = {
@@ -5126,7 +5126,7 @@
 			repositoryURL = "https://github.com/orchetect/SettingsAccess";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.4.0;
+				minimumVersion = 2.1.0;
 			};
 		};
 		2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */ = {
@@ -5134,7 +5134,7 @@
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.10.2;
+				minimumVersion = 5.12.0;
 			};
 		};
 		61CCBB09A2214ECE9FB1ECFD /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

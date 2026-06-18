@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Alamofire/Alamofire.git",
       "state" : {
-        "revision" : "513364f870f6bfc468f9d2ff0a95caccc10044c5",
-        "version" : "5.10.2"
+        "revision" : "7595cbcf59809f9977c5f6378500de2ad73b7ddb",
+        "version" : "5.12.0"
       }
     },
     {
@@ -319,8 +319,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/orchetect/SettingsAccess",
       "state" : {
-        "revision" : "0fd73c8b5892e88acb13adb7f36a4ba9293a0061",
-        "version" : "1.4.0"
+        "revision" : "08e80c35501f273afa2f5d6f737429bbe395ff81",
+        "version" : "2.1.0"
       }
     },
     {
