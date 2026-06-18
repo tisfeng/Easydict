@@ -1827,6 +1827,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     //    [self.window setFrame:safeFrame display:NO animate:animateFlag];
     self.isUpdatingWindowFrameInternally = YES;
     [window setFrame:safeFrame display:YES];
+    [self restoreFirstResponderIfWindowIsKey];
     dispatch_async(dispatch_get_main_queue(), ^{
         self.isUpdatingWindowFrameInternally = NO;
     });
@@ -1837,9 +1838,18 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     // Animation cost time.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZUpdateTableViewRowHeightAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.lockResizeWindow = NO;
+        [self restoreFirstResponderIfWindowIsKey];
     });
 
     //    MMLogInfo(@"window frame: %@", @(window.frame));
+}
+
+- (void)restoreFirstResponderIfWindowIsKey {
+    if (self.baseQueryWindow.isKeyWindow && self.queryView.window == self.baseQueryWindow) {
+        if (self.baseQueryWindow.firstResponder != self.queryView.textView) {
+            [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
+        }
+    }
 }
 
 - (CGFloat)getRestrainedScrollViewHeight:(CGFloat)scrollViewContentHeight {
