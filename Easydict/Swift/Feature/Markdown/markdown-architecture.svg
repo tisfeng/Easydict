@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" font-family="-apple-system, system-ui, sans-serif" font-size="14">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+    </marker>
+    <style>
+      .box { fill: #ffffff; stroke: #4a5568; stroke-width: 1.5; rx: 8; ry: 8; }
+      .input-box { fill: #ebf8ff; stroke: #2b6cb0; }
+      .render-box { fill: #fefcbf; stroke: #b7791f; }
+      .view-box { fill: #f0fff4; stroke: #2f855a; }
+      .control-box { fill: #fefcfb; stroke: #c05621; stroke-dasharray: 4 3; }
+      .title { font-weight: 600; font-size: 15px; fill: #1a202c; }
+      .body { font-size: 12.5px; fill: #2d3748; }
+      .edge { stroke: #4a5568; stroke-width: 1.5; fill: none; }
+      .edge-dashed { stroke: #c05621; stroke-width: 1.5; stroke-dasharray: 4 3; fill: none; }
+      .edge-label { font-size: 11.5px; fill: #4a5568; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="460" y="34" text-anchor="middle" class="title" font-size="18">Easydict Markdown Rendering Pipeline</text>
+
+  <!-- Row 1: source -->
+  <rect x="40" y="80" width="240" height="86" class="box input-box"/>
+  <text x="160" y="108" text-anchor="middle" class="title">StreamService</text>
+  <text x="160" y="130" text-anchor="middle" class="body">AI / LLM token stream</text>
+  <text x="160" y="148" text-anchor="middle" class="body">throttle 0.3s → translatedResults</text>
+
+  <!-- Row 1: state -->
+  <rect x="340" y="80" width="240" height="86" class="box input-box"/>
+  <text x="460" y="108" text-anchor="middle" class="title">QueryResult</text>
+  <text x="460" y="130" text-anchor="middle" class="body">translatedResults: [String]?</text>
+  <text x="460" y="148" text-anchor="middle" class="body">markdownRenderingOverride: Bool?</text>
+
+  <!-- Row 1: control -->
+  <rect x="640" y="80" width="240" height="86" class="box control-box"/>
+  <text x="760" y="108" text-anchor="middle" class="title">User Controls</text>
+  <text x="760" y="130" text-anchor="middle" class="body">Settings toggle (global default)</text>
+  <text x="760" y="148" text-anchor="middle" class="body">MarkdownToggleButton (per-card)</text>
+
+  <!-- Row 2: decision -->
+  <rect x="340" y="216" width="240" height="58" class="box input-box"/>
+  <text x="460" y="240" text-anchor="middle" class="title">isMarkdownRenderingEnabled</text>
+  <text x="460" y="260" text-anchor="middle" class="body">override ?? Defaults[.enable…]</text>
+
+  <!-- Row 3: renderer -->
+  <rect x="40" y="324" width="540" height="120" class="box render-box"/>
+  <text x="310" y="352" text-anchor="middle" class="title">MarkdownRenderer (Swift, no deps)</text>
+  <text x="310" y="376" text-anchor="middle" class="body">block pass: ## headings, &gt; quotes, lists, ``` fences</text>
+  <text x="310" y="396" text-anchor="middle" class="body">inline pass: **bold**, *italic*, `code`, [link](url)</text>
+  <text x="310" y="420" text-anchor="middle" class="body">streaming-safe → NSAttributedString</text>
+
+  <!-- Row 3: label -->
+  <rect x="640" y="324" width="240" height="120" class="box view-box"/>
+  <text x="760" y="352" text-anchor="middle" class="title">MarkdownLabel</text>
+  <text x="760" y="376" text-anchor="middle" class="body">extends EZLabel (NSTextView)</text>
+  <text x="760" y="396" text-anchor="middle" class="body">override updateDisplayedText</text>
+  <text x="760" y="420" text-anchor="middle" class="body">fallback: super for plain text</text>
+
+  <!-- Row 4: output -->
+  <rect x="340" y="486" width="240" height="56" class="box view-box"/>
+  <text x="460" y="510" text-anchor="middle" class="title">EZWordResultView (cell)</text>
+  <text x="460" y="530" text-anchor="middle" class="body">selection · copy · dark mode</text>
+
+  <!-- Edges -->
+  <!-- StreamService → QueryResult -->
+  <path class="edge" d="M280 123 L340 123" marker-end="url(#arrow)"/>
+
+  <!-- User Controls → QueryResult (override write) -->
+  <path class="edge-dashed" d="M640 138 L580 138" marker-end="url(#arrow)"/>
+  <text x="610" y="130" text-anchor="middle" class="edge-label">toggle</text>
+
+  <!-- QueryResult → decision -->
+  <path class="edge" d="M460 166 L460 216" marker-end="url(#arrow)"/>
+
+  <!-- decision → renderer (enabled path) -->
+  <path class="edge" d="M380 274 L300 324" marker-end="url(#arrow)"/>
+  <text x="320" y="305" text-anchor="middle" class="edge-label">enabled</text>
+
+  <!-- decision → label (disabled fallback) -->
+  <path class="edge" d="M540 274 L720 324" marker-end="url(#arrow)"/>
+  <text x="650" y="298" text-anchor="middle" class="edge-label">disabled</text>
+
+  <!-- renderer → label -->
+  <path class="edge" d="M580 384 L640 384" marker-end="url(#arrow)"/>
+  <text x="610" y="376" text-anchor="middle" class="edge-label">attrStr</text>
+
+  <!-- label → output -->
+  <path class="edge" d="M720 444 L520 486" marker-end="url(#arrow)"/>
+
+  <!-- renderer → output (when render path used directly) -->
+  <path class="edge" d="M310 444 L420 486" marker-end="url(#arrow)"/>
+</svg>
