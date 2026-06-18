@@ -1846,7 +1846,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)restoreFirstResponderIfWindowIsKey {
     if (self.baseQueryWindow.isKeyWindow && self.queryView.window == self.baseQueryWindow) {
-        if (self.baseQueryWindow.firstResponder != self.queryView.textView) {
+        NSResponder *curr = self.baseQueryWindow.firstResponder;
+        BOOL isFocusEmpty = (curr == nil || curr == self.baseQueryWindow || curr == self.baseQueryWindow.contentView);
+        if (isFocusEmpty) {
             [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
         }
     }
