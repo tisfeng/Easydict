@@ -5126,7 +5126,7 @@
 			repositoryURL = "https://github.com/orchetect/SettingsAccess";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.4.0;
+				minimumVersion = 2.1.0;
 			};
 		};
 		2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */ = {
