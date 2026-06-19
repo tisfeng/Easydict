@@ -17,7 +17,7 @@ extension ShortcutManager {
     static func validateShortcut(_ keyCombo: KeyCombo, excluding action: ShortcutAction? = nil) -> Bool {
         ShortcutManager.shared.confictShortcutTitle = ""
         return validateShortcutConfictBySystem(keyCombo) ||
-            validateShortcutConfictByMenuItem(keyCombo, excluding: action) ||
+            validateShortcutConfictByMenuItem(keyCombo) ||
             validateShortcutConfictBySavedShortcut(keyCombo, excluding: action) ||
             validateShortcutConfictByCustom(keyCombo)
     }
@@ -54,11 +54,8 @@ extension ShortcutManager {
 
 // validate shortcut used by menuItem
 extension ShortcutManager {
-    static func validateShortcutConfictByMenuItem(
-        _ keyCombo: KeyCombo, excluding action: ShortcutAction? = nil
-    )
-        -> Bool {
-        if let item = menuItemUsedShortcut(keyCombo, excluding: action) {
+    static func validateShortcutConfictByMenuItem(_ keyCombo: KeyCombo) -> Bool {
+        if let item = menuItemUsedShortcut(keyCombo) {
             ShortcutManager.shared.confictShortcutTitle = item.title
             return true
         } else {
@@ -66,40 +63,24 @@ extension ShortcutManager {
         }
     }
 
-    static func menuItemUsedShortcut(
-        _ keyCombo: KeyCombo, excluding action: ShortcutAction? = nil
-    )
-        -> NSMenuItem? {
+    static func menuItemUsedShortcut(_ keyCombo: KeyCombo) -> NSMenuItem? {
         guard let mainMenu = NSApp.mainMenu else {
             return nil
         }
-        let excludedTitle = action.map {
-            String(localized: LocalizedStringResource(stringLiteral: $0.localizedStringKey()))
-        }
-        return menuItemWithMatchingShortcut(
-            in: mainMenu, keyCombo: keyCombo, excludingTitle: excludedTitle
-        )
+        return menuItemWithMatchingShortcut(in: mainMenu, keyCombo: keyCombo)
     }
 
-    static func menuItemWithMatchingShortcut(
-        in menu: NSMenu, keyCombo: KeyCombo, excludingTitle: String? = nil
-    )
-        -> NSMenuItem? {
+    static func menuItemWithMatchingShortcut(in menu: NSMenu, keyCombo: KeyCombo) -> NSMenuItem? {
         for item in menu.items {
             let keyEquivalent = item.keyEquivalent
             let keyEquivalentModifierMask = item.keyEquivalentModifierMask
             if keyCombo.keyEquivalent == keyEquivalent,
                keyCombo.keyEquivalentModifierMask == keyEquivalentModifierMask,
                keyCombo.keyEquivalent != "" {
-                if item.title == excludingTitle {
-                    continue
-                }
                 return item
             }
             if let submenu = item.submenu,
-               let menuItem = menuItemWithMatchingShortcut(
-                   in: submenu, keyCombo: keyCombo, excludingTitle: excludingTitle
-               ) {
+               let menuItem = menuItemWithMatchingShortcut(in: submenu, keyCombo: keyCombo) {
                 return menuItem
             }
         }
