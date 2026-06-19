@@ -81,7 +81,7 @@ extension KeyHolderWrapper {
         func recordView(_ recordView: RecordView, didChangeKeyCombo keyCombo: KeyCombo?) {
             if let key = keyCombo {
                 // shortcut validate confict
-                if ShortcutManager.validateShortcut(key) {
+                if ShortcutManager.validateShortcut(key, excluding: action) {
                     let title =
                         String(
                             localized:
@@ -90,7 +90,7 @@ extension KeyHolderWrapper {
                     let message =
                         String(
                             localized:
-                            "shortcut_confict_message \(ShortcutManager.shared.confictMenuItem?.title ?? "")"
+                            "shortcut_confict_message \(ShortcutManager.shared.confictShortcutTitle)"
                         )
                     confictAlterMessage = ShortcutConfictAlertMessage(
                         title: title,
