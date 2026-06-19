@@ -7,15 +7,18 @@
 //
 
 import Carbon
+import Defaults
 import Foundation
 import KeyHolder
 import Magnet
 import Sauce
 
 extension ShortcutManager {
-    static func validateShortcut(_ keyCombo: KeyCombo) -> Bool {
-        validateShortcutConfictBySystem(keyCombo) ||
-            validateShortcutConfictByMenuItem(keyCombo) ||
+    static func validateShortcut(_ keyCombo: KeyCombo, excluding action: ShortcutAction? = nil) -> Bool {
+        ShortcutManager.shared.confictShortcutTitle = ""
+        return validateShortcutConfictBySystem(keyCombo) ||
+            validateShortcutConfictByMenuItem(keyCombo, excluding: action) ||
+            validateShortcutConfictBySavedShortcut(keyCombo, excluding: action) ||
             validateShortcutConfictByCustom(keyCombo)
     }
 }
@@ -51,37 +54,81 @@ extension ShortcutManager {
 
 // validate shortcut used by menuItem
 extension ShortcutManager {
-    static func validateShortcutConfictByMenuItem(_ keyCombo: KeyCombo) -> Bool {
-        if let item = menuItemUsedShortcut(keyCombo) {
-            ShortcutManager.shared.confictMenuItem = item
+    static func validateShortcutConfictByMenuItem(
+        _ keyCombo: KeyCombo, excluding action: ShortcutAction? = nil
+    )
+        -> Bool {
+        if let item = menuItemUsedShortcut(keyCombo, excluding: action) {
+            ShortcutManager.shared.confictShortcutTitle = item.title
             return true
         } else {
             return false
         }
     }
 
-    static func menuItemUsedShortcut(_ keyCombo: KeyCombo) -> NSMenuItem? {
+    static func menuItemUsedShortcut(
+        _ keyCombo: KeyCombo, excluding action: ShortcutAction? = nil
+    )
+        -> NSMenuItem? {
         guard let mainMenu = NSApp.mainMenu else {
             return nil
         }
-        return menuItemWithMatchingShortcut(in: mainMenu, keyCombo: keyCombo)
+        let excludedTitle = action.map {
+            String(localized: LocalizedStringResource(stringLiteral: $0.localizedStringKey()))
+        }
+        return menuItemWithMatchingShortcut(
+            in: mainMenu, keyCombo: keyCombo, excludingTitle: excludedTitle
+        )
     }
 
-    static func menuItemWithMatchingShortcut(in menu: NSMenu, keyCombo: KeyCombo) -> NSMenuItem? {
+    static func menuItemWithMatchingShortcut(
+        in menu: NSMenu, keyCombo: KeyCombo, excludingTitle: String? = nil
+    )
+        -> NSMenuItem? {
         for item in menu.items {
             let keyEquivalent = item.keyEquivalent
             let keyEquivalentModifierMask = item.keyEquivalentModifierMask
             if keyCombo.keyEquivalent == keyEquivalent,
                keyCombo.keyEquivalentModifierMask == keyEquivalentModifierMask,
                keyCombo.keyEquivalent != "" {
+                if item.title == excludingTitle {
+                    continue
+                }
                 return item
             }
             if let submenu = item.submenu,
-               let menuItem = menuItemWithMatchingShortcut(in: submenu, keyCombo: keyCombo) {
+               let menuItem = menuItemWithMatchingShortcut(
+                   in: submenu, keyCombo: keyCombo, excludingTitle: excludingTitle
+               ) {
                 return menuItem
             }
         }
         return nil
+    }
+}
+
+// validate shortcut used by saved shortcut defaults
+extension ShortcutManager {
+    static func validateShortcutConfictBySavedShortcut(
+        _ keyCombo: KeyCombo, excluding action: ShortcutAction? = nil
+    )
+        -> Bool {
+        guard let matchedAction = ShortcutAction.allCases.first(where: { savedAction in
+            guard savedAction != action,
+                  let defaultsKey = savedAction.defaultsKey,
+                  let savedKeyCombo = Defaults[defaultsKey]
+            else {
+                return false
+            }
+            return savedKeyCombo == keyCombo
+        }) else {
+            return false
+        }
+
+        ShortcutManager.shared.confictShortcutTitle = String(
+            localized: LocalizedStringResource(stringLiteral: matchedAction.localizedStringKey())
+        )
+        return true
     }
 }
 
