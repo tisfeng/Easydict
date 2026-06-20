@@ -74,7 +74,8 @@ final class ClaudeCodeRunner: @unchecked Sendable {
         prompt: String,
         systemPrompt: String?,
         model: String = "sonnet"
-    ) -> [String] {
+    )
+        -> [String] {
         var arguments = [
             "-p", prompt,
             "--print",
