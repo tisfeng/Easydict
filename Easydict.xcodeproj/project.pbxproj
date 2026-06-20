@@ -1277,7 +1277,7 @@
 		A1D1807D2F8D100100B1C0D1 /* ThrottleGateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGateTests.swift; sourceTree = "<group>"; };
 		A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.debug.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OrderedDictionary+Variadic.m"; sourceTree = "<group>"; };
-		A7C0F3B12D4E56A7890BCDEF /* claude-code-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "claude-code-overview.md"; sourceTree = "<group>"; };
+		A7C0F3B12D4E56A7890BCDEF /* claude-code-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "claude-code-overview.html"; sourceTree = "<group>"; };
 		A7C0F3B22D4E56A7890BCDEF /* claude-code-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "claude-code-architecture.svg"; sourceTree = "<group>"; };
 		AA0000022E00000000000001 /* QueryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecord.swift; sourceTree = "<group>"; };
 		AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeCLIRunnerTests.swift; sourceTree = "<group>"; };
@@ -3752,7 +3752,7 @@
 				223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */,
 				0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */,
 				CCD19E15F95144B0B2CAF66F /* ClaudeCodeDebugWindow.swift */,
-				A7C0F3B12D4E56A7890BCDEF /* claude-code-overview.md */,
+				A7C0F3B12D4E56A7890BCDEF /* claude-code-overview.html */,
 				A7C0F3B22D4E56A7890BCDEF /* claude-code-architecture.svg */,
 			);
 			path = ClaudeCode;
