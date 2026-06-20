@@ -97,6 +97,7 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.appearanceType) var appearance: AppearanceType
     @DefaultsWrapper(.hideMenuBarIcon) var hideMenuBarIcon: Bool
     @DefaultsWrapper(.fontSizeOptionIndex) var fontSizeIndex: UInt
+    @DefaultsWrapper(.enableMarkdownRendering) var enableMarkdownRendering: Bool
 
     // Advanced Tab
     @DefaultsWrapper(.disableTipsView) var disableTipsView: Bool

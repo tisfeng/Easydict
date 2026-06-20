@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
+		02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000003 /* MarkdownLabel.swift */; };
+		02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000004 /* MarkdownToggleButton.swift */; };
+		02DEDC0420260430000000BE /* MarkdownRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC04202604300000000A /* MarkdownRendererTests.swift */; };
 		03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */; };
 		03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */; };
 		03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */; };
@@ -624,6 +628,12 @@
 
 /* Begin PBXFileReference section */
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
+		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
+		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
+		02DEDC042026043000000004 /* MarkdownToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownToggleButton.swift; sourceTree = "<group>"; };
+		02DEDC042026043000000005 /* markdown-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "markdown-overview.html"; sourceTree = "<group>"; };
+		02DEDC042026043000000006 /* markdown-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "markdown-architecture.svg"; sourceTree = "<group>"; };
+		02DEDC04202604300000000A /* MarkdownRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRendererTests.swift; sourceTree = "<group>"; };
 		03008B2529408BF50062B821 /* NSObject+EZDarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZDarkMode.h"; sourceTree = "<group>"; };
 		03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZDarkMode.m"; sourceTree = "<group>"; };
 		03008B2C2941956D0062B821 /* EZURLSchemeHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZURLSchemeHandler.h; sourceTree = "<group>"; };
@@ -1265,7 +1275,7 @@
 		A1D1807D2F8D100100B1C0D1 /* ThrottleGateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGateTests.swift; sourceTree = "<group>"; };
 		A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.debug.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OrderedDictionary+Variadic.m"; sourceTree = "<group>"; };
-		A7C0F3B12D4E56A7890BCDEF /* claude-code-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "claude-code-overview.md"; sourceTree = "<group>"; };
+		A7C0F3B12D4E56A7890BCDEF /* claude-code-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "claude-code-overview.html"; sourceTree = "<group>"; };
 		A7C0F3B22D4E56A7890BCDEF /* claude-code-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "claude-code-architecture.svg"; sourceTree = "<group>"; };
 		AA0000022E00000000000001 /* QueryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecord.swift; sourceTree = "<group>"; };
 		AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeCLIRunnerTests.swift; sourceTree = "<group>"; };
@@ -1379,6 +1389,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		02DEDC042026043000000001 /* Markdown */ = {
+			isa = PBXGroup;
+			children = (
+				02DEDC042026043000000002 /* MarkdownRenderer.swift */,
+				02DEDC042026043000000003 /* MarkdownLabel.swift */,
+				02DEDC042026043000000004 /* MarkdownToggleButton.swift */,
+				02DEDC042026043000000005 /* markdown-overview.html */,
+				02DEDC042026043000000006 /* markdown-architecture.svg */,
+			);
+			path = Markdown;
+			sourceTree = "<group>";
+		};
+		02DEDC0420260430000000C1 /* Markdown */ = {
+			isa = PBXGroup;
+			children = (
+				02DEDC04202604300000000A /* MarkdownRendererTests.swift */,
+			);
+			path = Markdown;
+			sourceTree = "<group>";
+		};
 		03008B2429408BCB0062B821 /* NSObject+DarkMode */ = {
 			isa = PBXGroup;
 			children = (
@@ -3446,6 +3476,7 @@
 				EA3B81F72B52549B004C0E8B /* Configuration */,
 				03779F122BB256B5008D3C42 /* DefaultAPIKeys */,
 				6A8C988B2BAC88A600DB835A /* Localization */,
+				02DEDC042026043000000001 /* Markdown */,
 				967712EC2B5B941600105E0F /* Shortcut */,
 			);
 			path = Feature;
@@ -3492,6 +3523,7 @@
 		BE5912DE778CDCD8495CA4E5 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				02DEDC0420260430000000C1 /* Markdown */,
 				030732CB2F24862A0001382A /* OCR */,
 			);
 			path = Feature;
@@ -3717,7 +3749,7 @@
 				223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */,
 				0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */,
 				CCD19E15F95144B0B2CAF66F /* ClaudeCodeDebugWindow.swift */,
-				A7C0F3B12D4E56A7890BCDEF /* claude-code-overview.md */,
+				A7C0F3B12D4E56A7890BCDEF /* claude-code-overview.html */,
 				A7C0F3B22D4E56A7890BCDEF /* claude-code-architecture.svg */,
 			);
 			path = ClaudeCode;
@@ -4145,6 +4177,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CC83D91B3954BE7894CC2C8 /* MDictReaderTests.swift in Sources */,
+				02DEDC0420260430000000BE /* MarkdownRendererTests.swift in Sources */,
 				C09AC0F264D246FC90F9A277 /* AppleServiceTests.swift in Sources */,
 				03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */,
 				03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */,
@@ -4203,6 +4236,9 @@
 				F24D63E3FB144383A9B80386 /* MDictService.swift in Sources */,
 				031C66E02EDB00010025D190 /* DictionaryHTMLRenderer.swift in Sources */,
 				B8D793EA87784E0B9D82C7FC /* MDictConfigurationView.swift in Sources */,
+				02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */,
+				02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */,
+				02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */,
 				0338210C2F0EAF490087A361 /* AppleScriptTask.swift in Sources */,
 				03F5A1032F5B3A0100AA0001 /* NSStringEasydictBridge.swift in Sources */,
 				03715A282E6D24F60067259C /* SystemUtility.swift in Sources */,
@@ -5090,7 +5126,7 @@
 			repositoryURL = "https://github.com/orchetect/SettingsAccess";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.4.0;
+				minimumVersion = 2.1.0;
 			};
 		};
 		2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */ = {
@@ -5098,7 +5134,7 @@
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.10.2;
+				minimumVersion = 5.12.0;
 			};
 		};
 		61CCBB09A2214ECE9FB1ECFD /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

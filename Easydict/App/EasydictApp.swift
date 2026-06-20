@@ -57,8 +57,8 @@ struct EasydictApp: App {
                         )
                     ) { _ in
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                            // calling `openSettings` immediately doesn't work so wait a quick moment
-                            try? openSettings()
+                            // calling `openSettingsLegacy` immediately doesn't work so wait a quick moment
+                            try? openSettingsLegacy()
                         }
                     }
             } icon: {
@@ -87,7 +87,7 @@ struct EasydictApp: App {
 
     // MARK: Private
 
-    @Environment(\.openSettings) private var openSettings
+    @Environment(\.openSettingsLegacy) private var openSettingsLegacy
     @Environment(\.openWindow) private var openWindow
 
     @NSApplicationDelegateAdaptor private var delegate: AppDelegate
