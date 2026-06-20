@@ -69,8 +69,8 @@ intermediates, and test bundles, which leads to flaky conflicts.
 
 `xcodebuild` may take several minutes. Wait for it to finish.
 
-If the default Xcode DerivedData location fails because of permission, cache, or
-runner state, use an temporary external DerivedData directory instead of a repo-local one:
+If the default Xcode DerivedData location fails because of permission, cache, or runner
+state, use an temporary external DerivedData directory instead of a repo-local one:
 
 `-derivedDataPath ~/Library/Developer/Xcode/DerivedData/Easydict-Temporary`
 
@@ -124,46 +124,53 @@ Recommended usage:
   `test-without-building`.
 - Prefer `-only-testing:` when debugging a specific test class or method.
 
-## Swift-Xcode Rules
+### Localization
 
-Reusable Swift and Xcode rules for source organization, documentation, testing, and APIs.
+- All user-facing UI text must be localized. Do not hard-code visible strings in SwiftUI,
+  AppKit, scripts, or bundled web assets that users can see.
+- `Localizable.xcstrings` manages app string localization. Whenever user-facing text is
+  added or its meaning changes, enumerate the catalog's current locales and update every
+  one for the affected key instead of copying nearby entries.
+- Use static String Catalog keys directly in UI and string APIs when possible, for example
+  `Text("setting.general.appearance.light_dark_appearance")`.
+- Do not build localization keys dynamically or concatenate localized fragments. For text
+  with runtime values, localize the full sentence with a dedicated entry and pass the
+  values as arguments.
+- Use lowercase, dot-separated keys with snake_case segments where needed, and do not
+  rename keys casually. Follow `<scope>.<category>.<subcategory>.<element>`, for example
+  `common.done` or `setting.general.appearance.light_dark_appearance`.
 
-### Xcode Project Metadata
+## Cross-Language Code Quality Rules
 
-Unless the user explicitly says otherwise, when adding or moving files, also update the
-owning `.xcodeproj/project.pbxproj` file so the files appear in Xcode's navigator.
-
-- By default, every newly added project file, including developer-facing documentation
-  such as Markdown, HTML or SVG files, must have a matching `PBXFileReference` under the
-  correct `PBXGroup`.
-- Do not add documentation files to build phases such as `Resources` unless the file is
-  intentionally shipped at runtime.
+These rules apply to handwritten Swift, Python, Shell, JavaScript/TypeScript, and other
+source files in this repository.
 
 ### Source Organization Rules
 
-- Organize source directories by feature or bounded responsibility once a target grows
+- Organize source directories by feature or bounded responsibility once an area grows
   beyond a few files. Keep feature-specific UI, core, state, storage, services,
   utilities, and docs together.
-- Keep each Swift source file focused on one primary `class` or `struct`. Multiple
-  declarations are acceptable only for tightly coupled protocols, simple pure data
-  models, small private helper types, or extensions and conformance blocks that directly
-  support the primary type.
-- Keep main project Swift source files ideally under 300 lines and never over 500
-  without strong justification. This line-count guideline does not apply to bundled
-  runtime extensions, scripts, generated files, or other non-Swift support modules.
-- Group functions that implement the same `protocol` together instead of scattering them
-  across a type.
-- Mark each protocol implementation block with `// MARK: - <ProtocolName>` or an equally
-  clear section title, such as `// MARK: - WCSessionDelegate`.
-- Use `// MARK:` sections in longer classes and structs to organize lifecycle, state
-  updates, protocol implementations, and private helpers. Do not add a `MARK` only for a
-  single isolated function unless it materially improves navigation.
+- Keep source files focused on one clear responsibility. Prefer extracting a helper,
+  module, or sibling script when a file starts mixing unrelated parsing, UI, I/O,
+  orchestration, and validation concerns.
+- Handwritten source files should generally stay within 500 lines. Files approaching or
+  exceeding this size should be reviewed for a responsibility split before adding more
+  behavior.
+- Handwritten source files should not exceed 1000 lines. Existing files over this limit
+  are technical debt; do not add new complex flows to them without first splitting the
+  file or documenting a concrete split plan.
+- Generated files, third-party code, pure data files, templates, large fixtures, and
+  intentionally vendored runtime files are exempt from the line-count guideline.
+- Use the language's normal section markers in longer files to group lifecycle, state
+  updates, command handling, I/O, parsing, and private helpers. Do not add a section
+  marker for a single isolated function unless it materially improves navigation.
 
 ### Directory Documentation Rules
 
-- Every non-exempt project source directory with more than one direct child source or
-  documentation file must include a Chinese HTML overview and a companion SVG diagram
-  using the same kebab-case directory prefix:
+- Every non-exempt handwritten source directory, including Swift, Python, Shell,
+  JavaScript/TypeScript, and other source areas, with more than one direct child
+  source or documentation file must include a Chinese HTML overview and a companion
+  SVG diagram using the same kebab-case directory prefix:
   `<directory-kebab>-overview.html` and `<directory-kebab>-<diagram-type>.svg`.
 - Count only files directly in the current directory when applying this threshold; do not
   include files nested in child directories.
@@ -179,26 +186,93 @@ owning `.xcodeproj/project.pbxproj` file so the files appear in Xcode's navigato
 
 ### Naming Rules
 
-- Use `UpperCamelCase` for directories and files that are compiled by Xcode, including
-  Swift, Objective-C, and test source files.
-- Use `kebab-case` for directories and files that are not compiled by Xcode, including
-  app-managed runtime paths, scripts, and exported artifacts.
-- For new or renamed classes, structs, enums, protocols, actors, properties, parameters,
-  and local variables, prefer clear, concise names, remove repeated surrounding context,
-  and usually keep them within 20 characters.
+- Use each language and toolchain's normal naming conventions for compiled or imported
+  source files, modules, types, functions, and tests.
+- Use kebab-case for non-imported documentation, exported artifacts, app-managed runtime
+  paths, and standalone scripts unless surrounding tooling already requires another
+  style.
+- For new or renamed types, functions, properties, parameters, and local variables,
+  prefer clear, concise names, remove repeated surrounding context, and usually keep
+  them within 20 characters.
 - If a longer name is required by a system API, external protocol, or unavoidable domain
   term, keep it as short as possible and treat it as an exception.
 
-### Swift Coding Practices
+### Coding Practices
 
 - Avoid single-letter variable names except trivial loop indices.
-- Avoid `static` functions and variables unless type-level semantics clearly require them.
-  Utility types may use `static`.
+- Avoid global helpers, static or type-level functions, and mutable globals unless the
+  language, module, or domain model clearly requires them. Utility modules and types may
+  expose type-level helpers when that is their main responsibility.
 - Do not extract one-off literals into variables or constants unless they are reused or
   have clear semantic meaning. Name a one-off constant only when a magic number has
   distinctive visual or domain meaning.
+- Prefer async/await over callback-based completion handlers in languages and runtimes
+  where async/await is the established option.
+
+### Documentation Comment Rules
+
+- Add file-level comments for non-trivial scripts or modules so readers know the entry
+  point, responsibility, and important side effects.
+- Add short documentation comments for complex functions, command entry points, state
+  machines, parsers, I/O boundaries, and recovery/error-handling logic. Do not add
+  mechanical comments for obvious getters, path helpers, or thin wrappers.
+- Keep comment lines within 80 characters, avoid restating obvious type or property
+  names, and update comments whenever responsibilities or behavior change.
+- Use the language's normal comment style: Swift documentation comments, Python
+  docstrings, Shell comments before functions, and JSDoc/TSDoc where appropriate.
+- When creating or updating source file header comments, use the current Git username in
+  the `Created by ...` line. Do not use agent names such as `Codex`, `Claude`, or
+  `AI Assistant`.
+
+### Test Code Rules
+
+- Do not add tests for UI code or UI-focused changes.
+- Add or update tests only for changes with meaningful behavior or correctness risk. Skip
+  trivial pass-through code, simple glue code, obvious accessors, and behavior already
+  covered elsewhere, and run the relevant tests.
+- Prefer concrete production code and high-signal behavior assertions. Do not add
+  test-only protocols, mocks, overrides, or invasive production hooks for low-value
+  tests.
+
+## Swift-Xcode Rules
+
+Reusable Swift and Xcode rules for source organization, documentation, testing, and APIs.
+
+### Xcode Project Metadata
+
+Unless the user explicitly says otherwise, when adding or moving files, also update the
+owning `.xcodeproj/project.pbxproj` file so the files appear in Xcode's navigator.
+
+- By default, every newly added project file, including developer-facing documentation
+  such as Markdown, HTML or SVG files, must have a matching `PBXFileReference` under the
+  correct `PBXGroup`.
+- Do not add documentation files to build phases such as `Resources` unless the file is
+  intentionally shipped at runtime.
+
+### Swift Source Organization Rules
+
+- Keep each Swift source file focused on one primary `class` or `struct`. Multiple
+  declarations are acceptable only for tightly coupled protocols, simple pure data
+  models, small private helper types, or extensions and conformance blocks that directly
+  support the primary type.
+- Group functions that implement the same `protocol` together instead of scattering them
+  across a type.
+- Mark each protocol implementation block with `// MARK: - <ProtocolName>` or an equally
+  clear section title, such as `// MARK: - WCSessionDelegate`.
+- Use `// MARK:` sections in longer classes and structs to organize lifecycle, state
+  updates, protocol implementations, and private helpers. Do not add a `MARK` only for a
+  single isolated function unless it materially improves navigation.
+
+### Swift Naming Rules
+
+- Use `UpperCamelCase` for directories and files that are compiled by Xcode, including
+  Swift, Objective-C, and test source files.
+
+### Swift Coding Practices
+
+- Avoid `static` functions and variables unless type-level semantics clearly require them.
+  Utility types may use `static`.
 - Prefer `for … where` over `for` plus inline `if` filtering.
-- Prefer async/await over callback-based completion handlers for new async work.
 
 ### Swift Documentation Comment Rules
 
@@ -206,13 +280,8 @@ owning `.xcodeproj/project.pbxproj` file so the files appear in Xcode's navigato
   actor. For core types, use 2-4 short sentences and keep the comment around 220-320
   English characters. For simple private helper types, use 1-2 short sentences and keep
   it under 180 characters.
-- Keep comment lines within 80 characters, avoid restating obvious type or property
-  names, and update comments whenever responsibilities or behavior change.
 - Add English documentation comments for functions when behavior or intent is not obvious.
   Use inline comments only for non-obvious reasoning or complex logic.
-- When creating or updating source file header comments, use the current Git username in
-  the `Created by ...` line. Do not use agent names such as `Codex`, `Claude`, or
-  `AI Assistant`.
 
 ### Libraries and API Usage
 
@@ -230,31 +299,9 @@ owning `.xcodeproj/project.pbxproj` file so the files appear in Xcode's navigato
 - Use `Defaults` for user preferences and settings; avoid introducing new direct
   `UserDefaults` usage.
 
-### Localization
-
-- All user-facing UI text must be localized. Do not hard-code visible strings in SwiftUI
-  or AppKit.
-- `Localizable.xcstrings` manages app string localization. Whenever user-facing
-  text is added or its meaning changes, enumerate the catalog's current locales
-  and update every one for the affected key instead of copying nearby entries.
-- Use static String Catalog keys directly in UI and string APIs, for example
-  `Text("setting.general.appearance.light_dark_appearance")`.
-- Do not build localization keys dynamically or concatenate localized fragments. For text
-  with runtime values, localize the full sentence with a dedicated entry and pass the
-  values as arguments.
-- Use lowercase, dot-separated keys with snake_case segments where needed, and do not
-  rename keys casually. Follow `<scope>.<category>.<subcategory>.<element>`, for example
-  `common.done` or `setting.general.appearance.light_dark_appearance`.
-### Test Code Rules
+### Swift Test Code Rules
 
 - Each test source file may declare at most one `@Suite` type.
-- Do not add tests for UI code or UI-focused changes.
-- Add or update tests only for changes with meaningful behavior or correctness risk. Skip
-  trivial pass-through code, simple glue code, obvious accessors, and behavior already
-  covered elsewhere, and run the relevant tests.
-- Prefer concrete production code and high-signal behavior assertions. Do not add
-  test-only protocols, mocks, overrides, or invasive production hooks for low-value
-  tests.
 
 ## General Agent Rules
 
