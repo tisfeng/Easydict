@@ -187,6 +187,14 @@ extension Defaults.Keys {
         default: true
     )
 
+    /// Whether AI/streaming service results should render Markdown formatting
+    /// (headings, bold, lists, blockquotes, code) in the result label.
+    /// Plain-text services (Google, Bing, DeepL, etc.) ignore this setting.
+    static let enableMarkdownRendering = Key<Bool>(
+        "EZConfiguration_kEnableMarkdownRendering",
+        default: true
+    )
+
     static let autoSelectAllTextFieldText = Key<Bool>(
         "EZConfiguration_kAutoSelectAllTextFieldText",
         default: true
@@ -380,6 +388,9 @@ extension Defaults.Keys {
 extension Defaults.Keys {
     // Global
     static let selectionShortcut = Key<KeyCombo?>("EZSelectionShortcutKey_keyHolder")
+    static let toggleAutoSelectTextShortcut = Key<KeyCombo?>(
+        "EZToggleAutoSelectTextShortcutKey_keyHolder"
+    )
     static let snipShortcut = Key<KeyCombo?>("EZSnipShortcutKey_keyHolder")
     static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder")
     // Note: This key value is not suitable for renaming, because it is used in old versions.

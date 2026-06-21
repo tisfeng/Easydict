@@ -1,88 +1,91 @@
 ---
 name: worktree-rebase-merge
 description: >
-  Use when the user asks to commit a worktree branch, rebase it onto dev,
-  resolve conflicts, then merge the branch into dev from the dev checkout.
+  Use when the user asks to commit a worktree branch, rebase it onto the
+  specified target branch, resolve conflicts, then merge the branch from that
+  target checkout. If no target branch is specified, default to the repository
+  remote default branch.
 ---
 
 # Worktree Rebase/Merge Workflow
 
-Use this skill to finish a worktree feature branch by committing staged work,
-rebasing the branch onto the target branch, then merging it from the target
-branch checkout.
+Use this skill to finish a worktree branch by committing the source branch,
+rebasing it onto a target branch, then merging it from the target checkout.
+Delegate source-branch commit mechanics to the `git-commit` skill.
 
 ## Defaults
 
-- Use `dev` as the target branch unless the user explicitly names another
-  target branch.
-- Treat the branch checked out in the current worktree as the source branch.
+- Use the user-named target branch when provided. Otherwise resolve the
+  repository remote default branch.
+- Resolve the remote default by preferring `origin`; if no `origin` exists and
+  exactly one remote exists, use that remote. Read
+  `refs/remotes/<remote>/HEAD` with
+  `git symbolic-ref --quiet --short refs/remotes/<remote>/HEAD`, then strip the
+  `<remote>/` prefix.
+- Treat the current checkout as the source branch. If it is detached, create a
+  source branch before continuing.
 - Do not fetch, pull, or push unless the user explicitly asks.
-- If the source worktree has no staged changes when entering the commit step,
-  run `git add .` once before deciding whether there is anything to commit.
-- Outside that automatic empty-staging-area pass, only stage files explicitly
-  selected by the user, files already staged for the commit workflow, or
-  resolved conflict files during rebase and merge.
+- Stage only user-selected files, already staged commit files, the single
+  `git-commit` empty-index `git add .` pass, or conflict resolutions.
 
-## Initial Checks
+## Preflight
 
-Before changing Git state:
+- Resolve the target branch before branch checks. If remote selection is
+  ambiguous, the remote HEAD is missing, or the resolved local target branch
+  does not exist, stop and ask the user to name a target branch.
+- Run `git branch --show-current`, `git branch --list <target-branch>`,
+  `git status --short`, and `git worktree list`.
+- Stop if source and target resolve to the same branch.
+- Locate the target checkout from `git worktree list`. Use that path for the
+  final merge when the target is already checked out elsewhere.
+- For detached HEAD, infer an Angular-style `<type>/<kebab-slug>` branch name
+  from the request, status/diff, or `git log -1 --format=%s`; append a numeric
+  suffix if needed, then run `git switch -c <branch-name>`.
 
-1. Run `git branch --show-current`, `git status --short`, and
-   `git worktree list`.
-2. Stop if the current checkout is detached, the source branch is missing, or
-   the source branch is the same as the target branch.
-3. Locate the target branch checkout from `git worktree list`. If the target
-   branch is checked out in another worktree, use that path for the final
-   merge instead of switching the current worktree to the target branch.
+## Commit Source
 
-## Commit Source Branch
+- Use `git-commit` mechanics for staged source changes. Let that skill own
+  staged-only scope, the one allowed empty-index `git add .` pass, message
+  drafting, commit execution, permission retry, and cleanup, but this workflow
+  overrides `git-commit` default-mode reporting order.
+- Before creating `commit_message.txt` or running `git commit -F
+  commit_message.txt`, send a normal assistant message with the fixed heading
+  `提交信息预览` and a fenced `text` code block containing the full actual
+  drafted commit message.
+- The preview text must exactly match the later `commit_message.txt` content,
+  except for Markdown code fences. It must not appear only in tool output,
+  terminal output, hidden reasoning, log files, `commit_message.txt`, or final
+  Git command output.
+- After the body preview is visible, continue automatically unless the user
+  explicitly requested confirmation, preview-only, draft-only, no-commit, or
+  message changes.
+- If `git-commit` reports there is no commit to make, continue only when the
+  source worktree has no uncommitted changes. Otherwise stop and report the
+  uncommitted state.
+- Rerun `git status --short` after the commit step. Rebase only from a clean
+  source worktree unless the user explicitly decides otherwise.
 
-- If staged changes exist, use the `git-commit` skill and follow its staged-only
-  approval workflow exactly.
-- If no staged changes exist, run `git add .` once, then rerun
-  `git status --short` and inspect the staged diff. If files were staged, use
-  the `git-commit` skill and follow its staged-only approval workflow exactly.
-- If `git add .` still leaves no staged changes, continue only if there is no
-  commit needed; otherwise stop and report that there is nothing to commit.
-- After any commit, rerun `git status --short`. Do not start the rebase while
-  the source worktree still has uncommitted changes unless the user explicitly
-  decides how to handle them.
+## Rebase
 
-## Rebase Onto Target
+- From the source worktree, run `git rebase <target-branch>`.
+- On conflicts, inspect `git status --short`, resolve semantically, stage only
+  resolved files, and run `git rebase --continue`. Stop for product decisions
+  or unsafe conflicts.
+- After rebase, require a clean source worktree, run `git diff --check`, and run
+  broader validation only when repository rules or touched code require it.
 
-From the source branch worktree, run `git rebase <target-branch>`.
+## Merge And Final Response
 
-When conflicts occur:
-
-- Inspect `git status --short` and the conflicted files before editing.
-- Resolve conflicts semantically using the current code and docs. Do not choose
-  `--ours` or `--theirs` wholesale unless the user asked for that outcome or
-  the conflict is clearly mechanical.
-- Stage only resolved conflict files, then run `git rebase --continue`.
-- If a conflict requires a product decision or cannot be resolved safely, stop
-  and ask the user.
-
-After the rebase completes, run `git status --short` and `git diff --check`.
-Run broader validation only when the touched code or repository rules require
-it.
-
-## Merge From Target Checkout
-
-Before merging:
-
-1. Confirm the rebased source branch worktree is clean.
-2. Confirm the target branch worktree is clean.
-3. Move to the target branch checkout path found from `git worktree list`, or
-   switch to the target branch in the current worktree only if it is not already
-   checked out elsewhere.
-
-Run `git merge <source-branch>` using Git's default merge behavior. Do not force
-`--no-ff`, squash, rebase again, or push unless the user explicitly asks.
-
-If merge conflicts occur, resolve them with the same conflict rules as the
-rebase step, stage only resolved conflict files, and run `git merge --continue`.
-
-## Final Response
-
-Report the source branch, target branch, target worktree path, commit or merge
-result, and final clean status. State clearly when no push was performed.
+- Confirm both the rebased source worktree and target checkout are clean.
+- Move to the target checkout found during preflight, or switch in the current
+  worktree only when the target is not checked out elsewhere.
+- Run `git merge <source-branch>` with default Git behavior. Do not force
+  `--no-ff`, squash, rebase again, or push unless the user explicitly asks.
+- On merge conflicts, use the same semantic resolution rule as rebase, then
+  stage resolved files only and run `git merge --continue`.
+- Report the source branch, target branch, target checkout path, commit hash,
+  merge result, final clean status, any generated detached-HEAD branch name,
+  and that no push was performed unless the user asked for one.
+- Include a final-response `提交信息预览` fenced `text` code block with the
+  actual committed message, so the preview remains visible even if intermediate
+  assistant updates are collapsed.
