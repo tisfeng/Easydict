@@ -2,7 +2,8 @@
 name: review-pr
 description: >
   Prepare a GitHub pull request branch locally, add the contributor fork as a
-  remote when missing, and produce a rigorous code review based on the PR
+  remote when missing, optionally create a local rebased review branch against
+  the latest base branch, and produce a rigorous code review based on the PR
   description, linked issues, and actual code changes.
 ---
 
@@ -26,14 +27,21 @@ state.
 ## Hard Rules
 
 - Keep the local branch name exactly the same as the PR head branch name.
+- Exception: when using the latest-base rebase review path, use the local
+  review branch name `review/pr-<number>-<head-short-sha>` instead of the PR
+  head branch name. This avoids clobbering local branches when the PR head is
+  named like `dev`.
 - Name the contributor remote exactly as the PR head repository owner login.
 - Do not overwrite, delete, rename, rebase, reset, or force-update an existing
   local branch.
-- Do not push anything while preparing or reviewing the PR.
+- Do not push anything while preparing, rebasing, resolving conflicts, or
+  reviewing the PR unless the user explicitly asks for a push.
 - Do not stash or discard local changes automatically. Stop and ask the user if
   the worktree is dirty before preparing or switching branches.
 - If a remote with the intended contributor name already exists but points to a
   different repository, stop and ask the user how to proceed.
+- Resolve rebase conflicts semantically after reading the conflicting code and
+  surrounding context. Do not mechanically choose ours/theirs.
 - Do not review from the PR description alone. Inspect the linked issues,
   changed files, actual diff, and relevant surrounding code.
 - Follow the repository's normal review stance: lead with PR context, then
@@ -58,7 +66,7 @@ or `<owner>/<repo>#<number>` shorthand, convert it to `<number> --repo
 
 ```bash
 gh pr view <number> [--repo <base-owner>/<base-repo>] \
-  --json number,title,url,body,baseRefName,headRefName,headRepository,headRepositoryOwner,closingIssuesReferences
+  --json number,title,url,body,baseRefName,headRefName,headRefOid,headRepository,headRepositoryOwner,closingIssuesReferences
 ```
 
 Extract these fields:
@@ -66,15 +74,49 @@ Extract these fields:
 - `headRepositoryOwner.login`, for the remote name.
 - `headRepository.name`, for the fork repository name.
 - `headRefName`, for the PR branch name.
+- `headRefOid`, for the local rebased review branch suffix.
 - `baseRefName`, for the base branch used during diff review.
 - `closingIssuesReferences`, for issue context.
 
 Do not add or update the contributor remote manually in the normal path. Let the
 helper script prepare the remote, fetch, local branch, and upstream tracking.
 
-## Step 2: Prepare the PR Branch
+## Step 2: Decide Whether To Rebase Latest Base
 
-Use the bundled helper script as the default branch preparation path:
+Before branch preparation, inspect the PR's merge state:
+
+```bash
+gh pr view <number> [--repo <base-owner>/<base-repo>] \
+  --json mergeable,mergeStateStatus,isDraft,state,updatedAt,headRefOid,baseRefOid
+```
+
+Use the latest-base rebase review path when any of these are true:
+
+- The user explicitly asks to rebase, update to latest `dev`, or resolve
+  conflicts.
+- `mergeable` is `CONFLICTING`.
+- `mergeStateStatus` is `DIRTY`.
+
+When one of those conditions is true, do not run the normal helper first. This
+matters when the PR head branch is named like the local base branch, such as
+`dev`.
+
+If GitHub reports an unknown or clean mergeability state, use the normal helper
+first, fetch the latest base branch, then check whether the prepared PR branch
+already contains the latest base:
+
+```bash
+git merge-base --is-ancestor <base-remote>/<base-branch> HEAD
+```
+
+If that check fails, run the latest-base rebase helper from the clean prepared
+PR branch. Treat `baseRefName` as the latest target branch; do not hard-code
+`dev`.
+
+## Step 3: Prepare the PR Branch
+
+Use the bundled helper script as the default branch preparation path when the
+latest-base rebase path is not needed:
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh <pr-ref>
@@ -91,13 +133,49 @@ The helper script:
 - Sets the local branch upstream to `<owner>/<branch>`.
 - Uses fast-forward-only integration when the local branch already exists.
 
+When the latest-base rebase path is needed, use:
+
+```bash
+bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --rebase-latest <pr-ref>
+```
+
+The rebase helper:
+
+- Fetches the exact PR head branch and latest PR base branch.
+- Creates a local-only branch named `review/pr-<number>-<head-short-sha>` from
+  the PR head.
+- Stops if that local review branch already exists.
+- Rebases the local review branch onto `<base-remote>/<base-branch>`.
+- Never pushes to the contributor remote.
+
+If the rebase stops with conflicts, inspect:
+
+```bash
+git status --short
+git diff --name-only --diff-filter=U
+git diff --cc
+```
+
+Resolve conflicts semantically by reading the conflicting files, relevant
+surrounding code, tests, configuration, generated files, and documentation.
+Stage only resolved conflict files, then continue:
+
+```bash
+git add <resolved-files>
+git rebase --continue
+```
+
+Stop and report a blocker if a conflict requires a product decision or cannot be
+resolved safely from local code and PR context. Do not present a complete review
+from a partially rebased tree.
+
 Use manual remote, fetch, and switch commands only as a fallback when the helper
 script is unavailable or fails for a reason unrelated to PR state. In fallback
 mode, normalize URL and shorthand PR refs the same way as Step 1, add the
 contributor remote only when missing, verify any existing same-name remote points
-to the expected fork, fetch the exact head branch, create or switch to a local
-branch with the exact PR head branch name, and set upstream tracking to the
-contributor remote branch.
+to the expected fork, fetch the exact head branch, and then prepare either the
+normal PR branch or the `review/pr-<number>-<head-short-sha>` rebased review
+branch according to the same rules above.
 
 After it finishes, verify the checkout:
 
@@ -107,10 +185,12 @@ git status --short
 git branch -vv
 ```
 
-If the branch is dirty, detached, missing upstream, or not named exactly like
-the PR head branch, stop and fix that state before reviewing.
+For normal preparation, if the branch is dirty, detached, missing upstream, or
+not named exactly like the PR head branch, stop and fix that state before
+reviewing. For the latest-base rebase path, require the clean local review
+branch `review/pr-<number>-<head-short-sha>` after rebase completion.
 
-## Step 3: Review Context
+## Step 4: Review Context
 
 Read PR context and issue context first, using the normalized PR number and
 `--repo` arguments from Step 1 when needed:
@@ -131,8 +211,10 @@ gh issue view <issue-url-or-number> --comments
 Then inspect the code changes against the PR base branch. Use `origin` as
 `<base-remote>` only after confirming it points to the PR base repository. If it
 does not, use the correct base repository remote or stop and ask the user.
-Fetch the base branch from the base repository remote if necessary, then compare
-with three-dot diff:
+Fetch the base branch from the base repository remote if necessary. After a
+normal preparation, compare the PR branch against the base remote with a
+three-dot diff. After a latest-base rebase preparation, compare the local
+rebased review branch against the latest fetched base remote:
 
 ```bash
 git fetch <base-remote> <base-branch>
@@ -210,6 +292,11 @@ reviewers should inspect.
 
 ## Verification
 - List commands and checks performed, or explain why validation was not run.
+- State whether the latest-base rebase path was triggered. If it was, list the
+  local review branch name, conflict files, conflict resolution status, and
+  confirm that no push was performed.
+- If rebase conflicts could not be resolved safely, report that blocker here and
+  do not claim that a full review was completed.
 
 ## Summary
 Short neutral summary of the overall review result without repeating the PR
