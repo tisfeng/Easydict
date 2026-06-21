@@ -190,7 +190,7 @@ Además, el Diccionario de Apple ofrece soporte para diccionarios personalizados
 Para información detallada, consulta [Cómo usar el diccionario del sistema macOS en Easydict](./how-to-use-macos-system-dictionary-in-easydict.md)
 
 <table>
- 		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
+        <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231225548-1695913945.png">
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
 </table>
