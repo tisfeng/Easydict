@@ -3778,6 +3778,12 @@
             "value" : "Switch to Markdown rendering"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markdown レンダリングに切り替え"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3804,6 +3810,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Switch to plain text"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレーンテキストに切り替え"
           }
         },
         "sk" : {
@@ -11507,6 +11519,12 @@
             "value" : "Enable Markdown rendering"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markdown レンダリングを有効にする"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11535,6 +11553,12 @@
             "value" : "AI translation results render headings, lists, and emphasis as formatted text. Click the icon next to a result to override per card."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 翻訳結果の見出し、リスト、強調を整形済みテキストとして表示します。各結果の横にあるアイコンをクリックすると、カードごとに切り替えられます。"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11561,6 +11585,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Display"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示"
           }
         },
         "sk" : {
@@ -12642,6 +12672,12 @@
             "value" : "Select Translate disabled"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択翻訳を無効にしました"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12669,6 +12705,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Select Translate enabled"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択翻訳を有効にしました"
           }
         },
         "sk" : {
@@ -13118,6 +13160,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toggle Select Translate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択翻訳を切り替え"
           }
         },
         "sk" : {
