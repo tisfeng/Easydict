@@ -403,11 +403,13 @@ private struct RemoteModelsSheet: View {
 
             HStack {
                 if !modelGroups.isEmpty {
-                    Picker("", selection: $selectedGroup) {
+                    Picker(selection: $selectedGroup) {
                         Text(verbatim: "All").tag("")
                         ForEach(modelGroups, id: \.self) { groupName in
                             Text(groupName).tag(groupName)
                         }
+                    } label: {
+                        EmptyView()
                     }
                     .labelsHidden()
                     .frame(width: 140)

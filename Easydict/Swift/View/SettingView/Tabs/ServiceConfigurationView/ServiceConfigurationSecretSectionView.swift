@@ -170,7 +170,7 @@ private class ServiceValidationViewModel: ObservableObject {
 
     @Published var isAlertPresented = false
     @Published var isValidating = false
-    @Published var alertTitle: LocalizedStringKey = ""
+    @Published var alertTitle = LocalizedStringKey(String())
     @Published var errorMessage = ""
     @Published var isValidateBtnDisabled = false
 
@@ -187,7 +187,7 @@ private class ServiceValidationViewModel: ObservableObject {
 
     func reset() {
         isValidating = false
-        alertTitle = ""
+        alertTitle = LocalizedStringKey(String())
         errorMessage = ""
         isAlertPresented = false
     }
