@@ -5,7 +5,7 @@ set -euo pipefail
 usage() {
   cat <<'USAGE'
 Usage:
-  bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh [--rebase-latest] <pr-ref>
+  bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh [--merge-latest] <pr-ref>
 
 Accepted PR references:
   https://github.com/<base-owner>/<base-repo>/pull/<number>
@@ -13,9 +13,10 @@ Accepted PR references:
   <number>
 
 Options:
-  --rebase-latest
-      Create review/pr-<number>-<head-sha> from the PR head and rebase it onto
-      the latest base branch. The branch is local-only and is never pushed.
+  --merge-latest
+      Create review/pr-<number>-merge-<head-sha> from the PR head and merge
+      the latest base branch into it. The branch is local-only and is never
+      pushed.
 USAGE
 }
 
@@ -173,7 +174,7 @@ prepare_pr_branch() {
   printf 'Upstream: %s\n' "$upstream_ref"
 }
 
-prepare_rebased_review_branch() {
+prepare_merged_review_branch() {
   local head_remote=$head_owner
   local head_remote_ref="refs/remotes/${head_remote}/${head_branch}"
   local base_remote
@@ -182,7 +183,7 @@ prepare_rebased_review_branch() {
   local review_branch
   local head_short=${head_oid:0:10}
 
-  require_clean_worktree "preparing a rebased review branch"
+  require_clean_worktree "preparing a merged review branch"
 
   ensure_remote "$head_remote" "$head_owner" "$head_repo"
 
@@ -195,7 +196,7 @@ prepare_rebased_review_branch() {
 
   base_remote_ref="refs/remotes/${base_remote}/${base_branch}"
   base_upstream="${base_remote}/${base_branch}"
-  review_branch="review/pr-${pr_number}-${head_short}"
+  review_branch="review/pr-${pr_number}-merge-${head_short}"
 
   if git show-ref --verify --quiet "refs/heads/${review_branch}"; then
     fail "Local review branch '${review_branch}' already exists. Inspect or remove it before preparing this PR again."
@@ -205,15 +206,15 @@ prepare_rebased_review_branch() {
   git fetch "$base_remote" "+refs/heads/${base_branch}:${base_remote_ref}"
   git switch --create "$review_branch" "$head_remote_ref"
 
-  if git rebase "$base_upstream"; then
-    printf '\nPrepared rebased PR #%s: %s\n' "$pr_number" "$pr_url"
+  if git merge --no-edit "$base_upstream"; then
+    printf '\nPrepared merged PR #%s: %s\n' "$pr_number" "$pr_url"
     printf 'Review branch: %s\n' "$review_branch"
     printf 'Base: %s/%s (%s)\n' "$base_remote" "$base_branch" "https://github.com/${base_owner}/${base_repo}.git"
     printf 'Head: %s/%s (%s)\n' "$head_remote" "$head_branch" "https://github.com/${head_owner}/${head_repo}.git"
     printf 'Head SHA: %s\n' "$head_oid"
     printf 'Push: not performed\n'
   else
-    printf '\nRebase stopped with conflicts for PR #%s: %s\n' "$pr_number" "$pr_url" >&2
+    printf '\nMerge stopped with conflicts for PR #%s: %s\n' "$pr_number" "$pr_url" >&2
     printf 'Review branch: %s\n' "$review_branch" >&2
     printf 'Base: %s\n' "$base_upstream" >&2
     printf '\nInspect conflicts:\n' >&2
@@ -222,7 +223,7 @@ prepare_rebased_review_branch() {
     printf '  git diff --cc\n' >&2
     printf '\nAfter semantic conflict resolution:\n' >&2
     printf '  git add <resolved-files>\n' >&2
-    printf '  git rebase --continue\n' >&2
+    printf '  git commit --no-edit\n' >&2
     exit 2
   fi
 }
@@ -234,7 +235,9 @@ fi
 
 mode=prepare
 if [[ ${1:-} == "--rebase-latest" ]]; then
-  mode=rebase
+  fail "--rebase-latest is no longer supported. Use --merge-latest for remote collaboration PRs."
+elif [[ ${1:-} == "--merge-latest" ]]; then
+  mode=merge
   shift
 fi
 
@@ -249,8 +252,8 @@ command -v git >/dev/null 2>&1 || fail "Git is required."
 parse_pr_ref "$1"
 read_pr_metadata
 
-if [[ $mode == "rebase" ]]; then
-  prepare_rebased_review_branch
+if [[ $mode == "merge" ]]; then
+  prepare_merged_review_branch
 else
   prepare_pr_branch
 fi

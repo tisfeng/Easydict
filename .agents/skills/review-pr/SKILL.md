@@ -2,7 +2,7 @@
 name: review-pr
 description: >
   Prepare a GitHub pull request branch locally, add the contributor fork as a
-  remote when missing, optionally create a local rebased review branch against
+  remote when missing, optionally create a local merged review branch against
   the latest base branch, and produce a rigorous code review based on the PR
   description, linked issues, and actual code changes.
 ---
@@ -27,20 +27,20 @@ state.
 ## Hard Rules
 
 - Keep the local branch name exactly the same as the PR head branch name.
-- Exception: when using the latest-base rebase review path, use the local
-  review branch name `review/pr-<number>-<head-short-sha>` instead of the PR
-  head branch name. This avoids clobbering local branches when the PR head is
-  named like `dev`.
+- Exception: when using the latest-base merge review path, use the local review
+  branch name `review/pr-<number>-merge-<head-short-sha>` instead of the PR head
+  branch name. This avoids clobbering local branches when the PR head is named
+  like `dev`.
 - Name the contributor remote exactly as the PR head repository owner login.
 - Do not overwrite, delete, rename, rebase, reset, or force-update an existing
   local branch.
-- Do not push anything while preparing, rebasing, resolving conflicts, or
+- Do not push anything while preparing, merging, resolving conflicts, or
   reviewing the PR unless the user explicitly asks for a push.
 - Do not stash or discard local changes automatically. Stop and ask the user if
   the worktree is dirty before preparing or switching branches.
 - If a remote with the intended contributor name already exists but points to a
   different repository, stop and ask the user how to proceed.
-- Resolve rebase conflicts semantically after reading the conflicting code and
+- Resolve merge conflicts semantically after reading the conflicting code and
   surrounding context. Do not mechanically choose ours/theirs.
 - Do not review from the PR description alone. Inspect the linked issues,
   changed files, actual diff, and relevant surrounding code.
@@ -74,14 +74,14 @@ Extract these fields:
 - `headRepositoryOwner.login`, for the remote name.
 - `headRepository.name`, for the fork repository name.
 - `headRefName`, for the PR branch name.
-- `headRefOid`, for the local rebased review branch suffix.
+- `headRefOid`, for the local merged review branch suffix.
 - `baseRefName`, for the base branch used during diff review.
 - `closingIssuesReferences`, for issue context.
 
 Do not add or update the contributor remote manually in the normal path. Let the
 helper script prepare the remote, fetch, local branch, and upstream tracking.
 
-## Step 2: Decide Whether To Rebase Latest Base
+## Step 2: Decide Whether To Merge Latest Base
 
 Before branch preparation, inspect the PR's merge state:
 
@@ -90,10 +90,10 @@ gh pr view <number> [--repo <base-owner>/<base-repo>] \
   --json mergeable,mergeStateStatus,isDraft,state,updatedAt,headRefOid,baseRefOid
 ```
 
-Use the latest-base rebase review path when any of these are true:
+Use the latest-base merge review path when any of these are true:
 
-- The user explicitly asks to rebase, update to latest `dev`, or resolve
-  conflicts.
+- The user explicitly asks to merge latest base, update to latest `dev`, update
+  to latest base, or resolve conflicts.
 - `mergeable` is `CONFLICTING`.
 - `mergeStateStatus` is `DIRTY`.
 
@@ -109,14 +109,14 @@ already contains the latest base:
 git merge-base --is-ancestor <base-remote>/<base-branch> HEAD
 ```
 
-If that check fails, run the latest-base rebase helper from the clean prepared
+If that check fails, run the latest-base merge helper from the clean prepared
 PR branch. Treat `baseRefName` as the latest target branch; do not hard-code
 `dev`.
 
 ## Step 3: Prepare the PR Branch
 
 Use the bundled helper script as the default branch preparation path when the
-latest-base rebase path is not needed:
+latest-base merge path is not needed:
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh <pr-ref>
@@ -133,22 +133,23 @@ The helper script:
 - Sets the local branch upstream to `<owner>/<branch>`.
 - Uses fast-forward-only integration when the local branch already exists.
 
-When the latest-base rebase path is needed, use:
+When the latest-base merge path is needed, use:
 
 ```bash
-bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --rebase-latest <pr-ref>
+bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --merge-latest <pr-ref>
 ```
 
-The rebase helper:
+The merge helper:
 
 - Fetches the exact PR head branch and latest PR base branch.
-- Creates a local-only branch named `review/pr-<number>-<head-short-sha>` from
-  the PR head.
+- Creates a local-only branch named
+  `review/pr-<number>-merge-<head-short-sha>` from the PR head.
 - Stops if that local review branch already exists.
-- Rebases the local review branch onto `<base-remote>/<base-branch>`.
+- Merges `<base-remote>/<base-branch>` into the local review branch with
+  `git merge --no-edit`.
 - Never pushes to the contributor remote.
 
-If the rebase stops with conflicts, inspect:
+If the merge stops with conflicts, inspect:
 
 ```bash
 git status --short
@@ -158,23 +159,23 @@ git diff --cc
 
 Resolve conflicts semantically by reading the conflicting files, relevant
 surrounding code, tests, configuration, generated files, and documentation.
-Stage only resolved conflict files, then continue:
+Stage only resolved conflict files, then finish the merge:
 
 ```bash
 git add <resolved-files>
-git rebase --continue
+git commit --no-edit
 ```
 
 Stop and report a blocker if a conflict requires a product decision or cannot be
 resolved safely from local code and PR context. Do not present a complete review
-from a partially rebased tree.
+from a partially merged tree.
 
 Use manual remote, fetch, and switch commands only as a fallback when the helper
 script is unavailable or fails for a reason unrelated to PR state. In fallback
 mode, normalize URL and shorthand PR refs the same way as Step 1, add the
 contributor remote only when missing, verify any existing same-name remote points
 to the expected fork, fetch the exact head branch, and then prepare either the
-normal PR branch or the `review/pr-<number>-<head-short-sha>` rebased review
+normal PR branch or the `review/pr-<number>-merge-<head-short-sha>` merged review
 branch according to the same rules above.
 
 After it finishes, verify the checkout:
@@ -187,8 +188,8 @@ git branch -vv
 
 For normal preparation, if the branch is dirty, detached, missing upstream, or
 not named exactly like the PR head branch, stop and fix that state before
-reviewing. For the latest-base rebase path, require the clean local review
-branch `review/pr-<number>-<head-short-sha>` after rebase completion.
+reviewing. For the latest-base merge path, require the clean local review branch
+`review/pr-<number>-merge-<head-short-sha>` after merge completion.
 
 ## Step 4: Review Context
 
@@ -213,8 +214,8 @@ Then inspect the code changes against the PR base branch. Use `origin` as
 does not, use the correct base repository remote or stop and ask the user.
 Fetch the base branch from the base repository remote if necessary. After a
 normal preparation, compare the PR branch against the base remote with a
-three-dot diff. After a latest-base rebase preparation, compare the local
-rebased review branch against the latest fetched base remote:
+three-dot diff. After a latest-base merge preparation, compare the local merged
+review branch against the latest fetched base remote:
 
 ```bash
 git fetch <base-remote> <base-branch>
@@ -292,10 +293,10 @@ reviewers should inspect.
 
 ## Verification
 - List commands and checks performed, or explain why validation was not run.
-- State whether the latest-base rebase path was triggered. If it was, list the
+- State whether the latest-base merge path was triggered. If it was, list the
   local review branch name, conflict files, conflict resolution status, and
   confirm that no push was performed.
-- If rebase conflicts could not be resolved safely, report that blocker here and
+- If merge conflicts could not be resolved safely, report that blocker here and
   do not claim that a full review was completed.
 
 ## Summary
