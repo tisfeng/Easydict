@@ -26,6 +26,12 @@
             "state" : "translated",
             "value" : "%@ API 金鑰"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Clave API"
+          }
         }
       }
     },
@@ -64,6 +70,12 @@
             "state" : "translated",
             "value" : "加入收藏"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir a favoritos"
+          }
         }
       }
     },
@@ -97,6 +109,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "進階"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avanzado"
           }
         }
       }
@@ -133,6 +151,12 @@
             "state" : "translated",
             "value" : "阿里翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor Ali"
+          }
         }
       }
     },
@@ -161,6 +185,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "對齊錯誤"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error de alineación"
           }
         }
       }
@@ -196,6 +226,12 @@
             "state" : "translated",
             "value" : "允許收集分析數據"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir recopilación de análisis"
+          }
         }
       }
     },
@@ -230,6 +266,12 @@
             "state" : "translated",
             "value" : "允許收集崩潰日誌"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir recopilación de registros de errores"
+          }
         }
       }
     },
@@ -263,6 +305,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "分析："
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Análisis:"
           }
         }
       }
@@ -299,6 +347,12 @@
             "state" : "translated",
             "value" : "反義詞"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antónimos"
+          }
         }
       }
     },
@@ -332,6 +386,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API 錯誤"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error de API"
           }
         }
       }
@@ -368,6 +428,12 @@
             "state" : "translated",
             "value" : "應用程式捷徑"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atajo de la aplicación"
+          }
         }
       }
     },
@@ -401,6 +467,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "黑暗模式"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oscuro"
           }
         }
       }
@@ -436,6 +508,12 @@
             "state" : "translated",
             "value" : "跟隨系統"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir sistema"
+          }
         }
       }
     },
@@ -470,6 +548,12 @@
             "state" : "translated",
             "value" : "淺色"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claro"
+          }
         }
       }
     },
@@ -495,6 +579,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple"
@@ -533,6 +623,12 @@
             "state" : "translated",
             "value" : "蘋果字典"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diccionario Apple"
+          }
         }
       }
     },
@@ -568,6 +664,12 @@
             "state" : "translated",
             "value" : "Apple Script 錯誤"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error de Apple Script"
+          }
         }
       }
     },
@@ -601,6 +703,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "蘋果翻譯"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor de Apple"
           }
         }
       }
@@ -636,6 +744,12 @@
             "state" : "translated",
             "value" : "自動檢查應用程式更新"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar actualizaciones automáticamente"
+          }
         }
       }
     },
@@ -669,6 +783,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自動拷貝第一個翻譯文本"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar automáticamente el primer texto traducido"
           }
         }
       }
@@ -704,6 +824,12 @@
             "state" : "translated",
             "value" : "OCR 完成後自動拷貝 OCR 文本"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar automáticamente texto OCR después de OCR"
+          }
         }
       }
     },
@@ -737,6 +863,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自動拷貝選取的文本"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar automáticamente texto seleccionado"
           }
         }
       }
@@ -772,6 +904,12 @@
             "state" : "translated",
             "value" : "OCR 完成後自動查詢"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consultar automáticamente después de OCR"
+          }
         }
       }
     },
@@ -805,6 +943,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "貼上文本後自動查詢"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consultar automáticamente después de pegar texto"
           }
         }
       }
@@ -840,6 +984,12 @@
             "state" : "translated",
             "value" : "選取文本後自動查詢"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consultar automáticamente después de seleccionar texto"
+          }
         }
       }
     },
@@ -868,6 +1018,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "百度"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baidu"
           }
         }
       }
@@ -904,6 +1060,12 @@
             "state" : "translated",
             "value" : "百度翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor Baidu"
+          }
         }
       }
     },
@@ -938,6 +1100,12 @@
             "state" : "translated",
             "value" : "必應翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor Bing"
+          }
         }
       }
     },
@@ -966,6 +1134,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "緩衝區過小"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Búfer demasiado pequeño"
           }
         }
       }
@@ -1000,6 +1174,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "內建 AI 翻譯"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traducción IA integrada"
           }
         }
       }
@@ -1036,6 +1216,12 @@
             "state" : "translated",
             "value" : "靈雲"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LingoCloud"
+          }
         }
       }
     },
@@ -1069,6 +1255,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
           }
         }
       }
@@ -1104,6 +1296,12 @@
             "state" : "translated",
             "value" : "檢查更新"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar actualizaciones"
+          }
         }
       }
     },
@@ -1137,6 +1335,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "立即檢查"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar ahora"
           }
         }
       }
@@ -1172,6 +1376,12 @@
             "state" : "translated",
             "value" : "檢查更新"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar actualizaciones"
+          }
         }
       }
     },
@@ -1205,6 +1415,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "發音"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronunciación"
           }
         }
       }
@@ -1241,6 +1457,12 @@
             "state" : "translated",
             "value" : "Claude 翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Translate"
+          }
         }
       }
     },
@@ -1275,6 +1497,12 @@
             "state" : "translated",
             "value" : "全部清除"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpiar todo"
+          }
         }
       }
     },
@@ -1308,6 +1536,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻譯時清除輸入"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpiar entrada al traducir"
           }
         }
       }
@@ -1344,6 +1578,12 @@
             "state" : "translated",
             "value" : "搭配詞"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colocación"
+          }
         }
       }
     },
@@ -1377,6 +1617,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "刪除"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar"
           }
         }
       }
@@ -1412,6 +1658,12 @@
             "state" : "translated",
             "value" : "匯出"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar"
+          }
         }
       }
     },
@@ -1445,6 +1697,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查詢"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consulta"
           }
         }
       }
@@ -1481,6 +1739,12 @@
             "state" : "translated",
             "value" : "比較級"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparativo"
+          }
         }
       }
     },
@@ -1514,6 +1778,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "回應格式不符"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Content-Type no coincide"
           }
         }
       }
@@ -1549,6 +1819,12 @@
             "state" : "translated",
             "value" : "拷貝文本"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar texto"
+          }
         }
       }
     },
@@ -1583,6 +1859,12 @@
             "state" : "translated",
             "value" : "崩潰日誌："
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registro de errores:"
+          }
         }
       }
     },
@@ -1616,6 +1898,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "版本 %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión %@"
           }
         }
       }
@@ -1652,6 +1940,12 @@
             "state" : "translated",
             "value" : "自訂 OpenAI"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI personalizado"
+          }
         }
       }
     },
@@ -1680,6 +1974,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "解碼錯誤"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error de decodificación"
           }
         }
       }
@@ -1714,6 +2014,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "DeepL 翻譯"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor DeepL"
           }
         }
       }
@@ -1750,6 +2056,12 @@
             "state" : "translated",
             "value" : "DeepSeek 翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor DeepSeek"
+          }
         }
       }
     },
@@ -1784,6 +2096,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "偵測到"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detectado"
           }
         }
       }
@@ -1820,6 +2138,12 @@
             "state" : "translated",
             "value" : "停用程式"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deshabilitado"
+          }
         }
       }
     },
@@ -1853,6 +2177,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果應用程式在「停用的應用程式清單」中，滑鼠將不會觸發自動擷取單字。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si la aplicación está en la \"Lista de aplicaciones deshabilitadas\", el ratón no activará la recuperación automática de palabras."
           }
         }
       }
@@ -1889,6 +2219,12 @@
             "state" : "translated",
             "value" : "豆包翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor Doubao"
+          }
         }
       }
     },
@@ -1923,6 +2259,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "HTTP 錯誤：%d"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error HTTP: %d"
           }
         }
       }
@@ -1959,6 +2301,12 @@
             "state" : "translated",
             "value" : "無效的響應"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respuesta inválida"
+          }
         }
       }
     },
@@ -1994,6 +2342,12 @@
             "state" : "translated",
             "value" : "缺少豆包 API Key。請從 https://www.volcengine.com/product/doubao 獲取您的 API Key"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falta la clave API de Doubao. Obtén tu clave API en https://www.volcengine.com/product/doubao"
+          }
         }
       }
     },
@@ -2022,6 +2376,12 @@
             "state" : "translated",
             "value" : "Easydict"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
         }
       }
     },
@@ -2046,6 +2406,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict 🍃"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Easydict 🍃"
@@ -2084,6 +2450,12 @@
             "state" : "translated",
             "value" : "端點回傳了 HTML 頁面"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El endpoint devolvió una página HTML"
+          }
         }
       }
     },
@@ -2117,6 +2489,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請檢查端點 URL 是否正確，是否包含完整的 API 路徑。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprueba que la URL del endpoint sea correcta e incluya la ruta completa de la API."
           }
         }
       }
@@ -2152,6 +2530,12 @@
             "state" : "translated",
             "value" : "端點回傳了 JSON 而非串流回應"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El endpoint devolvió JSON en lugar de un flujo"
+          }
         }
       }
     },
@@ -2185,6 +2569,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請嘗試在服務設定中關閉「啟用串流傳輸」。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba a desactivar \"Habilitar streaming\" en los ajustes del servicio."
           }
         }
       }
@@ -2220,6 +2610,12 @@
             "state" : "translated",
             "value" : "回應格式不符合預期"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato de respuesta inesperado"
+          }
         }
       }
     },
@@ -2253,6 +2649,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "該端點可能不完全相容 OpenAI 介面，請檢查端點 URL 和 API 文件。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es posible que el endpoint no sea totalmente compatible con OpenAI. Comprueba la URL del endpoint y la documentación de la API."
           }
         }
       }
@@ -2288,6 +2690,12 @@
             "state" : "translated",
             "value" : "詞源："
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etimología:"
+          }
         }
       }
     },
@@ -2315,6 +2723,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "匯出記錄"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar registro"
           }
         }
       }
@@ -2344,6 +2758,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "無法配置記憶體"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo asignar memoria"
           }
         }
       }
@@ -2379,6 +2799,12 @@
             "state" : "translated",
             "value" : "暫無收藏"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no hay favoritos"
+          }
         }
       }
     },
@@ -2412,6 +2838,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "匯出收藏"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar favoritos"
           }
         }
       }
@@ -2447,6 +2879,12 @@
             "state" : "translated",
             "value" : "收藏"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favoritos"
+          }
         }
       }
     },
@@ -2480,6 +2918,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "收藏夾"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favoritos"
           }
         }
       }
@@ -2515,6 +2959,12 @@
             "state" : "translated",
             "value" : "意見回饋"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comentarios"
+          }
         }
       }
     },
@@ -2548,6 +2998,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "固定視窗"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ventana fija"
           }
         }
       }
@@ -2583,6 +3039,12 @@
             "state" : "translated",
             "value" : "螢幕中央"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centro de la pantalla"
+          }
         }
       }
     },
@@ -2616,6 +3078,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "上次位置"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última posición"
           }
         }
       }
@@ -2651,6 +3119,12 @@
             "state" : "translated",
             "value" : "滑鼠位置"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posición del ratón"
+          }
         }
       }
     },
@@ -2684,6 +3158,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "螢幕右側"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lado derecho de la pantalla"
           }
         }
       }
@@ -2720,6 +3200,12 @@
             "state" : "translated",
             "value" : "字體大小："
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño de fuente:"
+          }
         }
       }
     },
@@ -2748,6 +3234,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "目前演算法未實作此功能"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Función no implementada para el algoritmo actual"
           }
         }
       }
@@ -2784,6 +3276,12 @@
             "state" : "translated",
             "value" : "Gemini 翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor Gemini"
+          }
         }
       }
     },
@@ -2817,6 +3315,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub 模型"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelos de GitHub"
           }
         }
       }
@@ -2853,6 +3357,12 @@
             "state" : "translated",
             "value" : "全域快速鍵"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atajo global"
+          }
         }
       }
     },
@@ -2886,6 +3396,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Google 翻譯"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor de Google"
           }
         }
       }
@@ -2921,6 +3437,12 @@
             "state" : "translated",
             "value" : "Groq 翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor de Groq"
+          }
         }
       }
     },
@@ -2948,6 +3470,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "說明"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayuda"
           }
         }
       }
@@ -2983,6 +3511,12 @@
             "state" : "translated",
             "value" : "隱藏"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar"
+          }
         }
       }
     },
@@ -3017,6 +3551,12 @@
             "state" : "translated",
             "value" : "隱藏選單列圖示"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar icono de la barra de menús"
+          }
         }
       }
     },
@@ -3050,6 +3590,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果您想要還原，請在查詢視窗中使用快速鍵 Cmd + , 開啟設定頁面，然後取消 [隱藏狀態列圖示] 選項。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si quieres restaurar, abre la página de configuración en la ventana de consulta usando el atajo `Cmd + ,` y luego cancela la opción [Ocultar icono de barra de estado]."
           }
         }
       }
@@ -3086,6 +3632,12 @@
             "state" : "translated",
             "value" : "在翻譯視窗中可使用 ⌘ +/- 快速鍵變更字體大小。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El tamaño de fuente se puede cambiar usando el atajo ⌘ +/- en las ventanas de traducción."
+          }
         }
       }
     },
@@ -3119,6 +3671,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "暫無查詢記錄"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin historial de consultas"
           }
         }
       }
@@ -3154,6 +3712,12 @@
             "state" : "translated",
             "value" : "匯出歷史"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar historial"
+          }
         }
       }
     },
@@ -3187,6 +3751,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "歷史"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historial"
           }
         }
       }
@@ -3222,6 +3792,12 @@
             "state" : "translated",
             "value" : "查詢歷史"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historial de consultas"
+          }
         }
       }
     },
@@ -3250,6 +3826,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "提供給加密/解密演算法的參數無效"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parámetro ilegal proporcionado al algoritmo de cifrado/descifrado"
           }
         }
       }
@@ -3280,6 +3862,12 @@
             "state" : "translated",
             "value" : "輸入資料無法正確解碼或解密"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los datos de entrada no se decodificaron o descifraron correctamente"
+          }
         }
       }
     },
@@ -3309,6 +3897,12 @@
             "state" : "translated",
             "value" : "輸入至加密演算法的大小未正確對齊"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El tamaño de entrada al algoritmo de cifrado no estaba alineado correctamente"
+          }
         }
       }
     },
@@ -3337,6 +3931,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "為指定操作提供的緩衝區不足"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Búfer insuficiente proporcionado para la operación especificada"
           }
         }
       }
@@ -3373,6 +3973,12 @@
             "state" : "translated",
             "value" : "配额不足"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuota insuficiente"
+          }
         }
       }
     },
@@ -3406,6 +4012,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請前往官方服務網站註冊並申請個人 API 金鑰。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por favor, ve al sitio web oficial del servicio para registrarte y solicitar una clave API personal."
           }
         }
       }
@@ -3442,6 +4054,12 @@
             "state" : "translated",
             "value" : "選取的文字為空白時保留先前結果"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantener resultado anterior cuando el texto seleccionado está vacío"
+          }
         }
       }
     },
@@ -3477,6 +4095,12 @@
             "state" : "translated",
             "value" : "保留結果："
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantener resultado:"
+          }
         }
       }
     },
@@ -3510,6 +4134,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用百度語言偵測進行最佳化"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar detección de idioma de Baidu para optimizar"
           }
         }
       }
@@ -3545,6 +4175,12 @@
             "state" : "translated",
             "value" : "使用 Google 語言偵測進行最佳化"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor Claude"
+          }
         }
       }
     },
@@ -3578,6 +4214,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "僅使用系統語言偵測"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar solo detección de idioma del sistema"
           }
         }
       }
@@ -3614,6 +4256,12 @@
             "state" : "translated",
             "value" : "顯示語言"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma de visualización"
+          }
         }
       }
     },
@@ -3649,6 +4297,12 @@
             "state" : "translated",
             "value" : "大"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grande"
+          }
         }
       }
     },
@@ -3682,6 +4336,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最新版本 %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última versión %@"
           }
         }
       }
@@ -3717,6 +4377,12 @@
             "state" : "translated",
             "value" : "登入時啟動"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar al arrancar"
+          }
         }
       }
     },
@@ -3744,6 +4410,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "記錄目錄"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Directorio de registros"
           }
         }
       }
@@ -3779,6 +4451,12 @@
             "state" : "translated",
             "value" : "切換到 Markdown 渲染"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar a renderizado Markdown"
+          }
         }
       }
     },
@@ -3812,6 +4490,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "切換到純文字"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar a texto sin formato"
           }
         }
       }
@@ -3847,6 +4531,12 @@
             "state" : "translated",
             "value" : "主視窗"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ventana principal"
+          }
         }
       }
     },
@@ -3875,6 +4565,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "記憶體故障"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fallo de memoria"
           }
         }
       }
@@ -3909,6 +4605,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "意見回饋"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comentarios"
           }
         }
       }
@@ -3945,6 +4647,12 @@
             "state" : "translated",
             "value" : "輸入翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traducir entrada"
+          }
         }
       }
     },
@@ -3979,6 +4687,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "剪貼簿 OCR"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR del portapapeles"
           }
         }
       }
@@ -4015,6 +4729,12 @@
             "state" : "translated",
             "value" : "剪貼簿翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traducir portapapeles"
+          }
         }
       }
     },
@@ -4049,6 +4769,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "潤色並替換"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulir y reemplazar"
           }
         }
       }
@@ -4085,6 +4811,12 @@
             "state" : "translated",
             "value" : "螢幕截圖 OCR"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR de captura de pantalla"
+          }
         }
       }
     },
@@ -4119,6 +4851,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "螢幕截圖翻譯"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traducir captura de pantalla"
           }
         }
       }
@@ -4155,6 +4893,12 @@
             "state" : "translated",
             "value" : "選取翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traducir selección"
+          }
         }
       }
     },
@@ -4189,6 +4933,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示迷你視窗"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ventana de Show Mini"
           }
         }
       }
@@ -4225,6 +4975,12 @@
             "state" : "translated",
             "value" : "顯示 OCR 視窗"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ventana de Show OCR"
+          }
         }
       }
     },
@@ -4259,6 +5015,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "靜默螢幕截圖 OCR"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR de captura silenciosa"
           }
         }
       }
@@ -4295,6 +5057,12 @@
             "state" : "translated",
             "value" : "翻譯並替換"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traducir y reemplazar"
+          }
         }
       }
     },
@@ -4328,6 +5096,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "關於 Easydict"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de Easydict"
           }
         }
       }
@@ -4363,6 +5137,12 @@
             "state" : "translated",
             "value" : "迷你視窗"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ventana mini"
+          }
         }
       }
     },
@@ -4397,6 +5177,12 @@
             "state" : "translated",
             "value" : "MiniMax 翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor de MiniMax"
+          }
         }
       }
     },
@@ -4430,6 +5216,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "缺少密鑰"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falta la clave secreta"
           }
         }
       }
@@ -4466,6 +5258,12 @@
             "state" : "translated",
             "value" : "選單列圖示"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icono de la barra de menú"
+          }
         }
       }
     },
@@ -4499,6 +5297,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "需要螢幕錄製權限"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se necesita permiso de captura de pantalla"
           }
         }
       }
@@ -4534,6 +5338,12 @@
             "state" : "translated",
             "value" : "小牛翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NiuTrans"
+          }
         }
       }
     },
@@ -4567,6 +5377,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "無結果"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin resultado"
           }
         }
       }
@@ -4602,6 +5418,12 @@
             "state" : "translated",
             "value" : "找不到結果"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontraron resultados"
+          }
         }
       }
     },
@@ -4629,6 +5451,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "無視窗"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin ventana"
           }
         }
       }
@@ -4664,6 +5492,12 @@
             "state" : "translated",
             "value" : "OCR 結果為空白。\n⚠️ 請手動選擇語言並再試一次。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El resultado de OCR está vacío.\n⚠️ Por favor, selecciona manualmente el idioma e inténtalo de nuevo."
+          }
         }
       }
     },
@@ -4694,6 +5528,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
@@ -4732,6 +5572,12 @@
             "state" : "translated",
             "value" : "Ollama 翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor de Ollama"
+          }
         }
       }
     },
@@ -4767,6 +5613,12 @@
             "state" : "translated",
             "value" : "開啟應用程式設定"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir configuración de la app"
+          }
         }
       }
     },
@@ -4800,6 +5652,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 Apple 辭典中開啟"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir en el Diccionario de Apple"
           }
         }
       }
@@ -4835,6 +5693,12 @@
             "state" : "translated",
             "value" : "在歐路辭典中開啟"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir en Eudic"
+          }
         }
       }
     },
@@ -4868,6 +5732,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 Google 中開啟"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir en Google"
           }
         }
       }
@@ -4903,6 +5773,12 @@
             "state" : "translated",
             "value" : "開啟系統設定"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir configuración del sistema"
+          }
         }
       }
     },
@@ -4936,6 +5812,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟網頁連結"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir enlace web"
           }
         }
       }
@@ -4971,6 +5853,12 @@
             "state" : "translated",
             "value" : "OpenAI 翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor de OpenAI"
+          }
         }
       }
     },
@@ -4999,6 +5887,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "參數錯誤"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error de parámetro"
           }
         }
       }
@@ -5033,6 +5927,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "參數錯誤"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error de parámetro"
           }
         }
       }
@@ -5069,6 +5969,12 @@
             "state" : "translated",
             "value" : "過去式"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasado"
+          }
         }
       }
     },
@@ -5104,6 +6010,12 @@
             "state" : "translated",
             "value" : "過去分詞"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Participio pasado"
+          }
         }
       }
     },
@@ -5137,6 +6049,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "釘選"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fijar"
           }
         }
       }
@@ -5172,6 +6090,12 @@
             "state" : "translated",
             "value" : "按 Enter 查詢，Shift + Enter 換行"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "`Enter` para consultar, `Shift + Enter` para nueva línea"
+          }
         }
       }
     },
@@ -5206,6 +6130,12 @@
             "state" : "translated",
             "value" : "播放音訊"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducir audio"
+          }
         }
       }
     },
@@ -5239,6 +6169,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請參閱 👉"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por favor mira 👉"
           }
         }
       }
@@ -5275,6 +6211,12 @@
             "state" : "translated",
             "value" : "複數"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plural"
+          }
         }
       }
     },
@@ -5308,6 +6250,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "潤飾"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulido"
           }
         }
       }
@@ -5344,6 +6292,12 @@
             "state" : "translated",
             "value" : "現在分詞"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerundio"
+          }
         }
       }
     },
@@ -5379,6 +6333,12 @@
             "state" : "translated",
             "value" : "隱私權"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidad"
+          }
         }
       }
     },
@@ -5413,6 +6373,12 @@
             "state" : "translated",
             "value" : "隱私權聲明"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Declaración de privacidad"
+          }
         }
       }
     },
@@ -5446,6 +6412,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Easydict 使用了 Sentry 和 Firebase 來收集當機記錄（用於修復錯誤）和匿名分析資料，但這些資料不會與您的身分有關聯，僅用於改善使用者體驗，絕不會與其他平台分享。\n\nEasydict 是開放原始碼軟體，如果您有興趣，可以查看程式碼。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict usa Sentry y Firebase para recopilar registros de errores (para corrección de errores) y datos analíticos anónimos, pero estos datos no se asociarán con tu identidad, solo para mejorar la experiencia del usuario, y nunca se compartirán con otras plataformas.\n\nEasydict es software de código abierto, si estás interesado, puedes verificar el código."
           }
         }
       }
@@ -5482,6 +6454,12 @@
             "state" : "translated",
             "value" : "英音"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrE"
+          }
         }
       }
     },
@@ -5517,6 +6495,12 @@
             "state" : "translated",
             "value" : "美音"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AmE"
+          }
         }
       }
     },
@@ -5550,6 +6534,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "💥 失敗"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "💥 Fallido"
           }
         }
       }
@@ -5585,6 +6575,12 @@
             "state" : "translated",
             "value" : "在應用程式中查詢"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consultar en la aplicación"
+          }
         }
       }
     },
@@ -5619,6 +6615,12 @@
             "state" : "translated",
             "value" : "快速動作"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acción rápida"
+          }
         }
       }
     },
@@ -5652,6 +6654,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "結束"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salir"
           }
         }
       }
@@ -5688,6 +6696,12 @@
             "state" : "translated",
             "value" : "現在偵測到未設定輸入翻譯快速鍵或選取翻譯快速鍵！\n\n請設定快速鍵以確保您可以前往 Easydict 並隱藏選單列圖示。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Se detectó que no hay configurada tecla de atajo para traducción de entrada o traducción de selección!\n\nConfigura la tecla de atajo para asegurarte de poder acceder a Easydict y ocultar el icono de la barra de menú."
+          }
         }
       }
     },
@@ -5722,6 +6736,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "移除程式碼註解符號"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar símbolos de comentarios de código"
           }
         }
       }
@@ -5758,6 +6778,12 @@
             "state" : "translated",
             "value" : "將換行符號替換為空格"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reemplazar salto de línea con espacio"
+          }
         }
       }
     },
@@ -5791,6 +6817,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "以翻譯取代"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reemplazar con traducción"
           }
         }
       }
@@ -5826,6 +6858,12 @@
             "state" : "translated",
             "value" : "請前往系統設定 - 隱私權與安全性 - 螢幕錄製與系統音訊頁面，為 Easydict 啟用權限。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por favor, ve a Configuración del Sistema - Privacidad y Seguridad - Grabación de pantalla y audio del sistema para habilitar los permisos para Easydict."
+          }
         }
       }
     },
@@ -5859,6 +6897,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重試"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar"
           }
         }
       }
@@ -5895,6 +6939,12 @@
             "state" : "translated",
             "value" : "詞根"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raíz"
+          }
         }
       }
     },
@@ -5929,6 +6979,12 @@
             "state" : "translated",
             "value" : "單擊 Esc 或右鍵取消截圖"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clic en Esc o clic derecho para cancelar la captura"
+          }
         }
       }
     },
@@ -5962,6 +7018,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "單擊 D 鍵選擇上一次截圖區域"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clic en D para seleccionar el área de la última captura"
           }
         }
       }
@@ -5998,6 +7060,12 @@
             "state" : "translated",
             "value" : "視窗啟用時選取查詢文字"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar texto de consulta al activar la ventana"
+          }
         }
       }
     },
@@ -6033,6 +7101,12 @@
             "state" : "translated",
             "value" : "服務"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servicio"
+          }
         }
       }
     },
@@ -6066,6 +7140,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CLI 錯誤：%@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error de CLI: %@"
           }
         }
       }
@@ -6101,6 +7181,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "退出碼非零，無 stderr 輸出"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "salida distinta de cero, sin salida de stderr"
           }
         }
       }
@@ -6138,6 +7224,12 @@
             "state" : "translated",
             "value" : "清除"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar"
+          }
         }
       }
     },
@@ -6173,6 +7265,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 Finder 中顯示"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en Finder"
           }
         }
       }
@@ -6210,6 +7308,12 @@
             "state" : "translated",
             "value" : "顯示調試日誌視窗"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar ventana de registro de depuración"
+          }
         }
       }
     },
@@ -6246,6 +7350,12 @@
             "state" : "translated",
             "value" : "Claude Code 調試日誌"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registro de depuración de Claude Code"
+          }
         }
       }
     },
@@ -6280,6 +7390,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此服務使用你本機已安裝且已登入的官方 Claude Code CLI，不使用 OAuth、私有 API 或代理繞行方案。Anthropic 未來可能調整 CLI 政策或帳號規則。僅當你理解並接受潛在的帳號或政策風險時再繼續。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este servicio usa la CLI oficial de Claude Code instalada localmente y con sesión iniciada. No usa OAuth, API privadas ni soluciones con proxy. Anthropic puede cambiar las políticas de la CLI o las reglas de cuenta en el futuro. Continúa solo si entiendes y aceptas el posible riesgo para la cuenta o las políticas."
           }
         }
       }
@@ -6316,6 +7432,12 @@
             "state" : "translated",
             "value" : "Claude Code 風險提示"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aviso de riesgo de Claude Code"
+          }
         }
       }
     },
@@ -6347,6 +7469,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claude Code"
@@ -6385,6 +7513,12 @@
             "state" : "translated",
             "value" : "未偵測到 Claude Code，請先安裝"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró Claude Code. Instálalo primero."
+          }
         }
       }
     },
@@ -6419,6 +7553,12 @@
             "state" : "translated",
             "value" : "Claude Code 未登入，請執行 `claude` 完成登入"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code no tiene sesión iniciada. Ejecuta `claude` para iniciar sesión."
+          }
         }
       }
     },
@@ -6452,6 +7592,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claude Code 用量已用盡"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se alcanzó el límite de uso de Claude Code."
           }
         }
       }
@@ -6488,6 +7634,12 @@
             "state" : "translated",
             "value" : "此服務使用你本機的官方 Claude Code CLI，未來可用性可能發生變化，並可能帶來帳號或政策風險。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa tu CLI oficial local de Claude Code. La disponibilidad puede cambiar en el futuro y puede implicar riesgos para la cuenta o las políticas."
+          }
         }
       }
     },
@@ -6521,6 +7673,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CLI 錯誤：%@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error de CLI: %@"
           }
         }
       }
@@ -6557,6 +7715,12 @@
             "state" : "translated",
             "value" : "退出碼非零，無 stderr 輸出"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "salida distinta de cero, sin salida de stderr"
+          }
         }
       }
     },
@@ -6591,6 +7755,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "清除"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar"
           }
         }
       }
@@ -6627,6 +7797,12 @@
             "state" : "translated",
             "value" : "在 Finder 中顯示"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en Finder"
+          }
         }
       }
     },
@@ -6661,6 +7837,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示調試日誌視窗"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar ventana de registro de depuración"
           }
         }
       }
@@ -6697,6 +7879,12 @@
             "state" : "translated",
             "value" : "Codex 調試日誌"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registro de depuración de Codex"
+          }
         }
       }
     },
@@ -6731,6 +7919,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此服務使用你本機已安裝且已登入的官方 Codex CLI，不使用 OAuth、私有 API 或代理繞行方案。OpenAI 未來可能調整 CLI 政策或帳號規則。僅當你理解並接受潛在的帳號或政策風險時再繼續。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este servicio usa la CLI oficial de Codex instalada localmente y con sesión iniciada. No usa OAuth, API privadas ni soluciones con proxy. OpenAI puede cambiar las políticas de la CLI o las reglas de cuenta en el futuro. Continúa solo si entiendes y aceptas el posible riesgo para la cuenta o las políticas."
           }
         }
       }
@@ -6767,6 +7961,12 @@
             "state" : "translated",
             "value" : "Codex 風險提示"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aviso de riesgo de Codex"
+          }
         }
       }
     },
@@ -6798,6 +7998,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Codex"
@@ -6836,6 +8042,12 @@
             "state" : "translated",
             "value" : "未偵測到 Codex CLI，請先安裝"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró Codex CLI. Instálalo primero."
+          }
         }
       }
     },
@@ -6869,6 +8081,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Codex 未登入，請執行 `codex login` 完成登入"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex no tiene sesión iniciada. Ejecuta `codex login` para iniciar sesión."
           }
         }
       }
@@ -6904,6 +8122,12 @@
             "state" : "translated",
             "value" : "Codex 用量已用盡"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se alcanzó el límite de uso de Codex."
+          }
         }
       }
     },
@@ -6914,7 +8138,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "デフォルト（config.toml を使用）" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Predvolené (z config.toml)" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "默认（沿用 config.toml）" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "預設（沿用 config.toml）" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "預設（沿用 config.toml）" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Predeterminado (usar config.toml)" } }
       }
     },
     "service.codex_cli.reasoning_effort.high" : {
@@ -6923,7 +8148,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vysoké" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "高" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Alto" } }
       }
     },
     "service.codex_cli.reasoning_effort.low" : {
@@ -6932,7 +8158,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "低" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Nízke" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "低" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "低" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "低" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Bajo" } }
       }
     },
     "service.codex_cli.reasoning_effort.medium" : {
@@ -6941,7 +8168,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "中" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Stredné" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "中" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "中" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "中" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Medio" } }
       }
     },
     "service.codex_cli.reasoning_effort.minimal" : {
@@ -6950,7 +8178,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "最小" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Minimálne" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "最小" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最小" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最小" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mínimo" } }
       }
     },
     "service.codex_cli.reasoning_effort.xhigh" : {
@@ -6959,7 +8188,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "非常に高い" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Veľmi vysoké" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "极高" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "極高" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "極高" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Extra alto" } }
       }
     },
     "service.codex_cli.risk_warning" : {
@@ -6994,6 +8224,12 @@
             "state" : "translated",
             "value" : "此服務使用你本機的官方 Codex CLI，未來可用性可能發生變化，並可能帶來帳號或政策風險。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa tu CLI oficial local de Codex. La disponibilidad puede cambiar en el futuro y puede implicar riesgos para la cuenta o las políticas."
+          }
         }
       }
     },
@@ -7003,7 +8239,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vysoké" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "高" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Alto" } }
       }
     },
     "service.deepseek.reasoning_effort.max" : {
@@ -7012,7 +8249,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "最大" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Maximálne" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "最大" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最大" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最大" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Máximo" } }
       }
     },
     "service.deepseek.reasoning_effort.off" : {
@@ -7021,7 +8259,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "オフ" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vypnuté" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关闭" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "關閉" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "關閉" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Desactivado" } }
       }
     },
     "service.configuration.ali.access_key_id.title" : {
@@ -7054,6 +8293,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AccessKey ID"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID de clave de acceso"
           }
         }
       }
@@ -7088,6 +8333,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AccessKey Secret"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secreto de clave de acceso"
           }
         }
       }
@@ -7124,6 +8375,12 @@
             "state" : "translated",
             "value" : "目前使用的是 Secret Key API 類型，但某個 Secret Key 為空。請前往設定 > 服務 > %@，填入必要的配置資訊，或切換 API 類型。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualmente usando el tipo de API de clave secreta, pero una cierta clave secreta está vacía. Por favor, ve a Configuración > Servicio > %@, completa la información de configuración requerida, o cambia el tipo de API."
+          }
         }
       }
     },
@@ -7158,6 +8415,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API 類型"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de API"
           }
         }
       }
@@ -7194,6 +8457,12 @@
             "state" : "translated",
             "value" : "應用程式 ID"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID de aplicación"
+          }
         }
       }
     },
@@ -7229,6 +8498,12 @@
             "state" : "translated",
             "value" : "Secret Key"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clave secreta"
+          }
         }
       }
     },
@@ -7262,6 +8537,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cookie 金鑰"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clave de cookie"
           }
         }
       }
@@ -7297,6 +8578,12 @@
             "state" : "translated",
             "value" : "權杖"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token"
+          }
         }
       }
     },
@@ -7306,7 +8593,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "空欄の場合は config.toml のデフォルトを使用" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Prázdne = predvolený z config.toml" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "留空则使用 config.toml 默认" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "留空則使用 config.toml 預設" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "留空則使用 config.toml 預設" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Déjalo vacío para usar el valor predeterminado de config.toml" } }
       }
     },
     "service.configuration.codex_cli.model.title" : {
@@ -7315,7 +8603,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "モデル" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Model" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "模型" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "模型" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "模型" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Modelo" } }
       }
     },
     "service.configuration.codex_cli.reasoning_effort.title" : {
@@ -7324,7 +8613,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "推論の度合い" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Úroveň uvažovania" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Esfuerzo de razonamiento" } }
       }
     },
     "service.configuration.deepseek.reasoning_effort.title" : {
@@ -7333,7 +8623,8 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "推論の度合い" } },
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Úroveň uvažovania" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } }
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Esfuerzo de razonamiento" } }
       }
     },
     "service.configuration.custom_openai.enable_streaming.footnote" : {
@@ -7366,6 +8657,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果端點不支援串流回應，請關閉此選項。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactívalo si el endpoint no admite respuestas en streaming."
           }
         }
       }
@@ -7401,6 +8698,12 @@
             "state" : "translated",
             "value" : "啟用串流傳輸"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habilitar streaming"
+          }
         }
       }
     },
@@ -7434,6 +8737,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "模型名稱，使用逗號（,）分隔多個模型。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre del modelo, usa comas (,) para separar múltiples modelos."
           }
         }
       }
@@ -7469,6 +8778,12 @@
             "state" : "translated",
             "value" : "自訂服務名稱"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de servicio personalizado"
+          }
         }
       }
     },
@@ -7502,6 +8817,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "支援的模型"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelos soportados"
           }
         }
       }
@@ -7537,6 +8858,12 @@
             "state" : "translated",
             "value" : "驗證金鑰"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clave de autenticación"
+          }
         }
       }
     },
@@ -7570,6 +8897,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "驗證金鑰优先"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clave de autenticación primero"
           }
         }
       }
@@ -7605,6 +8938,12 @@
             "state" : "translated",
             "value" : "僅使用驗證金鑰"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo clave de autenticación"
+          }
         }
       }
     },
@@ -7635,6 +8974,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://api-free.deepl.com/v2/translate"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "https://api-free.deepl.com/v2/translate"
@@ -7673,6 +9018,12 @@
             "state" : "translated",
             "value" : "API 端點"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endpoint de API"
+          }
         }
       }
     },
@@ -7706,6 +9057,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API 使用優先順序"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prioridad de uso de API"
           }
         }
       }
@@ -7741,6 +9098,12 @@
             "state" : "translated",
             "value" : "優先使用網頁 API"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API web primero"
+          }
         }
       }
     },
@@ -7774,6 +9137,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "刪除"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar"
           }
         }
       }
@@ -7809,6 +9178,12 @@
             "state" : "translated",
             "value" : "API Key"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clave API"
+          }
         }
       }
     },
@@ -7843,6 +9218,12 @@
             "state" : "translated",
             "value" : "模型"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelo"
+          }
         }
       }
     },
@@ -7876,6 +9257,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "複製"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicar"
           }
         }
       }
@@ -7912,6 +9299,12 @@
             "state" : "translated",
             "value" : "加入"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir"
+          }
         }
       }
     },
@@ -7945,6 +9338,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消全選"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deseleccionar todo"
           }
         }
       }
@@ -7980,6 +9379,12 @@
             "state" : "translated",
             "value" : "取得本地模型"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtener modelos locales"
+          }
         }
       }
     },
@@ -8013,6 +9418,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "搜尋模型"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar modelos"
           }
         }
       }
@@ -8048,6 +9459,12 @@
             "state" : "translated",
             "value" : "全選"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar todo"
+          }
         }
       }
     },
@@ -8082,6 +9499,12 @@
             "state" : "translated",
             "value" : "從雲端取得模型"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtener modelos"
+          }
         }
       }
     },
@@ -8112,6 +9535,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxxxxxxxxx"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "xxxxxxxxxx"
@@ -8150,6 +9579,12 @@
             "state" : "translated",
             "value" : "API 金鑰"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clave API"
+          }
         }
       }
     },
@@ -8183,6 +9618,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API Key"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clave API"
           }
         }
       }
@@ -8218,6 +9659,12 @@
             "state" : "translated",
             "value" : "辭典"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diccionario"
+          }
         }
       }
     },
@@ -8251,6 +9698,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟自訂提示時，會禁用預設的翻譯、句子分析和查單字提示。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando el prompt personalizado está habilitado, el prompt de traducción, análisis de oraciones y diccionario por defecto serán deshabilitados."
           }
         }
       }
@@ -8286,6 +9739,12 @@
             "state" : "translated",
             "value" : "使用自訂 Prompt"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habilitar prompt personalizado"
+          }
         }
       }
     },
@@ -8319,6 +9778,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "完整的請求 URL，例如 https://api.openai.com/v1/chat/completions"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La URL completa de la solicitud, por ejemplo https://api.openai.com/v1/chat/completions"
           }
         }
       }
@@ -8354,6 +9819,12 @@
             "state" : "translated",
             "value" : "API 端點"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endpoint de API"
+          }
         }
       }
     },
@@ -8387,6 +9858,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隱藏 <think> 標籤內容"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar <think> Tag Content"
           }
         }
       }
@@ -8422,6 +9899,12 @@
             "state" : "translated",
             "value" : "使用模型"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar modelo"
+          }
         }
       }
     },
@@ -8455,6 +9938,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "句子"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oración"
           }
         }
       }
@@ -8490,6 +9979,12 @@
             "state" : "translated",
             "value" : "你是一個有用的翻譯助手。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eres un asistente de traducción útil."
+          }
         }
       }
     },
@@ -8523,6 +10018,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "系統 Prompt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prompt del sistema"
           }
         }
       }
@@ -8558,6 +10059,12 @@
             "state" : "translated",
             "value" : "溫度"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperatura"
+          }
         }
       }
     },
@@ -8591,6 +10098,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻譯"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traducción"
           }
         }
       }
@@ -8626,6 +10139,12 @@
             "state" : "translated",
             "value" : "始終關閉"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siempre apagado"
+          }
         }
       }
     },
@@ -8659,6 +10178,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "始終開啟"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siempre encendido"
           }
         }
       }
@@ -8694,6 +10219,12 @@
             "state" : "translated",
             "value" : "預設"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predeterminado"
+          }
         }
       }
     },
@@ -8727,6 +10258,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用狀態"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estado de uso"
           }
         }
       }
@@ -8762,6 +10299,12 @@
             "state" : "translated",
             "value" : "支援以下環境變數：\n\n${{queryText}}: 查詢文本\n${{queryFromLanguage}}: 查詢語言\n${{queryTargetLanguage}}: 目標語言\n${{firstLanguage}}: 使用者第一語言\n\n例如：Translate the following ${{queryFromLanguage}} text into ${{queryTargetLanguage}}: ${{queryText}}"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soporta las siguientes variables de entorno:\n\n${{queryText}}: Texto de consulta\n${{queryFromLanguage}}: Idioma de origen\n${{queryTargetLanguage}}: Idioma de destino\n${{firstLanguage}}: Primer idioma del usuario\n\nEjemplo: Traduce el siguiente texto de ${{queryFromLanguage}} a ${{queryTargetLanguage}}: ${{queryText}}"
+          }
         }
       }
     },
@@ -8795,6 +10338,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "將下面 ${{queryFromLanguage}} 的文本翻譯成 ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traducir el siguiente texto de ${{queryFromLanguage}} a ${{queryTargetLanguage}}: ${{queryText}}"
           }
         }
       }
@@ -8830,6 +10379,12 @@
             "state" : "translated",
             "value" : "用戶 Prompt"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prompt del usuario"
+          }
         }
       }
     },
@@ -8863,6 +10418,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret ID"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID secreto"
           }
         }
       }
@@ -8898,6 +10459,12 @@
             "state" : "translated",
             "value" : "Secret Key"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clave secreta"
+          }
         }
       }
     },
@@ -8931,6 +10498,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "驗證"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Validar"
           }
         }
       }
@@ -8966,6 +10539,12 @@
             "state" : "translated",
             "value" : "驗證失敗 💔"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Validación fallida 💔"
+          }
         }
       }
     },
@@ -8999,6 +10578,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "驗證成功 🎉"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Validación exitosa 🎉"
           }
         }
       }
@@ -9034,6 +10619,12 @@
             "state" : "translated",
             "value" : "該端點不支援串流傳輸，已自動關閉。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este endpoint no admite streaming y se ha desactivado automáticamente."
+          }
         }
       }
     },
@@ -9067,6 +10658,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Access Key ID"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID de clave de acceso"
           }
         }
       }
@@ -9102,6 +10699,12 @@
             "state" : "translated",
             "value" : "Secret Access Key"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clave secreta de acceso"
+          }
         }
       }
     },
@@ -9135,6 +10738,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "匯入字典"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importar diccionario"
           }
         }
       }
@@ -9170,6 +10779,12 @@
             "state" : "translated",
             "value" : "匯入失敗"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al importar"
+          }
         }
       }
     },
@@ -9203,6 +10818,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未啟用任何 MDict 字典，請在服務設定中匯入字典。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay diccionarios MDict habilitados. Importa diccionarios en los ajustes del servicio."
           }
         }
       }
@@ -9238,6 +10859,12 @@
             "state" : "translated",
             "value" : "尚未匯入任何字典，點擊 + 匯入 MDX 檔案。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se importaron diccionarios. Pulsa + para importar un archivo MDX."
+          }
         }
       }
     },
@@ -9271,6 +10898,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "MDict 字典"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diccionario MDict"
           }
         }
       }
@@ -9306,6 +10939,12 @@
             "state" : "translated",
             "value" : "字典清單"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diccionarios"
+          }
         }
       }
     },
@@ -9339,6 +10978,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一般"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
           }
         }
       }
@@ -9375,6 +11020,12 @@
             "state" : "translated",
             "value" : "關於"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de"
+          }
         }
       }
     },
@@ -9410,6 +11061,12 @@
             "state" : "translated",
             "value" : "致謝"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agradecimientos"
+          }
         }
       }
     },
@@ -9444,6 +11101,12 @@
             "state" : "translated",
             "value" : "貢獻者"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colaboradores"
+          }
         }
       }
     },
@@ -9474,6 +11137,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub"
@@ -9512,6 +11181,12 @@
             "state" : "translated",
             "value" : "蘋果離線翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traducción sin conexión de Apple"
+          }
         }
       }
     },
@@ -9545,6 +11220,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "離線翻譯需要在設備上下載語言，可通過“系統設置”管理下載語言。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La traducción sin conexión requiere descargar idiomas en el dispositivo, que se pueden gestionar en \"Configuración del Sistema\"."
           }
         }
       }
@@ -9580,6 +11261,12 @@
             "state" : "translated",
             "value" : "自動選取所有文本"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar automáticamente todo el texto"
+          }
         }
       }
     },
@@ -9613,6 +11300,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果當前輸入框中未選中文本，在翻譯並替換操作時，允許自動全選文本內容"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si no hay texto seleccionado actualmente en el campo de texto, seleccionar automáticamente todo el contenido del texto durante las operaciones de traducción y reemplazo"
           }
         }
       }
@@ -9648,6 +11341,12 @@
             "state" : "translated",
             "value" : "選取文本後自動顯示查詢圖示"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar automáticamente el icono de consulta tras seleccionar texto"
+          }
         }
       }
     },
@@ -9681,6 +11380,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "僅當選取文本語言≠指定語言 且 字元數≥該值時顯示查詢圖示。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar el icono de consulta solo cuando el idioma del texto seleccionado sea diferente y la cantidad de caracteres alcance este valor."
           }
         }
       }
@@ -9716,6 +11421,12 @@
             "state" : "translated",
             "value" : "僅當選取文本語言不是"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar solo cuando el idioma del texto seleccionado no sea"
+          }
         }
       }
     },
@@ -9749,6 +11460,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最小字元長度"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longitud mínima de caracteres"
           }
         }
       }
@@ -9784,6 +11501,12 @@
             "state" : "translated",
             "value" : "查詢時，自動移除文本中的代碼注釋符號「/*#」"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al consultar, eliminar automáticamente el símbolo de comentario de código \"/*#\" del texto."
+          }
         }
       }
     },
@@ -9817,6 +11540,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查詢時，自動將文本中的「換行符」替換為「空格」"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al consultar, reemplazar automáticamente el \"salto de línea\" en el texto con \"espacio\""
           }
         }
       }
@@ -9852,6 +11581,12 @@
             "state" : "translated",
             "value" : "查詢時，自動將單個單詞文本分詞為 key_value —> key value"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al consultar, dividir automáticamente el texto de una sola palabra en clave_valor —> clave valor"
+          }
         }
       }
     },
@@ -9886,6 +11621,12 @@
             "state" : "translated",
             "value" : "僅在點擊划詞查詢圖示時查詢（當主視窗隱藏時）"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consultar solo al hacer clic en el icono de consulta de selección (cuando la ventana principal está oculta)"
+          }
         }
       }
     },
@@ -9919,6 +11660,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "預設文字轉語音服務"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servicio TTS por defecto"
           }
         }
       }
@@ -9955,6 +11702,12 @@
             "state" : "translated",
             "value" : "停用提示檢視"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deshabilitar Tips View"
+          }
         }
       }
     },
@@ -9988,6 +11741,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟用測試版功能"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habilitar funciones beta"
           }
         }
       }
@@ -10023,6 +11782,12 @@
             "state" : "translated",
             "value" : "相容模式取代"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reemplazo de compatibilidad"
+          }
         }
       }
     },
@@ -10056,6 +11821,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟用後，文字取代將使用相容模式，在部分應用程式中更可靠。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando está habilitado, el reemplazo de texto usará el modo de compatibilidad, que funciona mejor en ciertas aplicaciones."
           }
         }
       }
@@ -10091,6 +11862,12 @@
             "state" : "translated",
             "value" : "啟用強制取詞"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habilitar obtención forzada de texto seleccionado"
+          }
         }
       }
     },
@@ -10124,6 +11901,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "注意，這可能會影響剪貼板內容"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nota: Esto puede afectar el contenido del portapapeles"
           }
         }
       }
@@ -10159,6 +11942,12 @@
             "state" : "translated",
             "value" : "啟用 HTTP 伺服器"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habilitar servidor HTTP"
+          }
         }
       }
     },
@@ -10192,6 +11981,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟用 OCR 文本格式優化"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habilitar optimización de formato de texto OCR"
           }
         }
       }
@@ -10227,6 +12022,12 @@
             "state" : "translated",
             "value" : "OCR 原始識別文本格式可能有誤，開啟該選項後，將會對文本進行格式優化處理。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El formato del texto reconocido por OCR original puede ser incorrecto. Habilitar esta opción optimizará el formato del texto reconocido."
+          }
         }
       }
     },
@@ -10260,6 +12061,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取詞時，移除 Books 摘錄中的版權資訊"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al buscar texto, eliminar el aviso de derechos de autor del extracto de Books"
           }
         }
       }
@@ -10295,6 +12102,12 @@
             "state" : "translated",
             "value" : "有道 OCR 辨識"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconocimiento OCR de Youdao"
+          }
         }
       }
     },
@@ -10328,6 +12141,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "當預設 OCR 識別失敗時，自動使用有道 OCR"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar OCR de Youdao si el OCR por defecto falla"
           }
         }
       }
@@ -10363,6 +12182,12 @@
             "state" : "translated",
             "value" : "注意，這不會修改原文，僅對查詢內容進行處理"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nota: Esto no modificará el texto original, solo procesará el contenido de la consulta."
+          }
         }
       }
     },
@@ -10396,6 +12221,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "優先選單列動作複製取詞"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acción de barra de menú copiar primero"
           }
         }
       }
@@ -10431,6 +12262,12 @@
             "state" : "translated",
             "value" : "優先模擬快速鍵複製取詞"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atajo simulado copiar primero"
+          }
         }
       }
     },
@@ -10464,6 +12301,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "強制取詞類型"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de obtención forzada de texto seleccionado"
           }
         }
       }
@@ -10499,6 +12342,12 @@
             "state" : "translated",
             "value" : "一般設定"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración de General"
+          }
         }
       }
     },
@@ -10532,6 +12381,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "HTTP 伺服器"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servidor HTTP"
           }
         }
       }
@@ -10567,6 +12422,12 @@
             "state" : "translated",
             "value" : "OCR 設定"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración de OCR"
+          }
         }
       }
     },
@@ -10600,6 +12461,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查詢文本處理"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Procesamiento de texto de consulta"
           }
         }
       }
@@ -10635,6 +12502,12 @@
             "state" : "translated",
             "value" : "取詞與文本替換"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selección y reemplazo de texto"
+          }
         }
       }
     },
@@ -10668,6 +12541,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟動時隱藏主視窗"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar ventana principal al iniciar"
           }
         }
       }
@@ -10703,6 +12582,12 @@
             "state" : "translated",
             "value" : "隱藏截圖提示"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar consejos de captura de pantalla"
+          }
         }
       }
     },
@@ -10736,6 +12621,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開始截圖時隱藏提示檢視。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar la vista de consejos al iniciar la captura de pantalla."
           }
         }
       }
@@ -10771,6 +12662,12 @@
             "state" : "translated",
             "value" : "HTTP 連接埠"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puerto HTTP"
+          }
         }
       }
     },
@@ -10804,6 +12701,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "修改連接埠後，您需要重新啟動伺服器"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Después de modificar el puerto, necesitas reiniciar el servidor"
           }
         }
       }
@@ -10839,6 +12742,12 @@
             "state" : "translated",
             "value" : "檢測古文的最小文本長度"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longitud mínima de texto para detectar chino clásico"
+          }
         }
       }
     },
@@ -10872,6 +12781,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "滑鼠划詞查詢"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consulta de selección con ratón"
           }
         }
       }
@@ -10907,6 +12822,12 @@
             "state" : "translated",
             "value" : "顯示視窗時自動釘選"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fijar automáticamente la ventana cuando se muestra."
+          }
         }
       }
     },
@@ -10940,6 +12861,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "優先使用 AppleScript API"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferir API de AppleScript"
           }
         }
       }
@@ -10975,6 +12902,12 @@
             "state" : "translated",
             "value" : "在瀏覽器中，優先使用 AppleScript API 進行取詞和文本替換。開啟該選項，可提升取詞的準確性和成功率。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En navegadores, priorizar la API de AppleScript para la selección y reemplazo de texto. Habilitar esta opción mejora la precisión y la tasa de éxito."
+          }
         }
       }
     },
@@ -11008,6 +12941,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "英語單字優先使用有道發音"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferir Youdao TTS para palabras en inglés"
           }
         }
       }
@@ -11043,6 +12982,12 @@
             "state" : "translated",
             "value" : "關閉後，英語單字發音將使用預設 TTS 服務"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando está desactivado, la pronunciación de palabras en inglés usa el servicio TTS predeterminado"
+          }
         }
       }
     },
@@ -11076,6 +13021,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示 OCR 選單項目"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar elementos del menú OCR"
           }
         }
       }
@@ -11111,6 +13062,12 @@
             "state" : "translated",
             "value" : "在選單列中顯示 OCR 相關的選單項目（截圖 OCR、剪貼簿 OCR、OCR 視窗）。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar los elementos del menú relacionados con OCR (OCR de captura de pantalla, OCR del portapapeles, Ventana OCR) en la barra de menús."
+          }
         }
       }
     },
@@ -11144,6 +13101,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "視窗管理"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestión de ventanas"
           }
         }
       }
@@ -11179,6 +13142,12 @@
             "state" : "translated",
             "value" : "浮動視窗位置"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posición de ventana flotante"
+          }
         }
       }
     },
@@ -11212,6 +13181,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "窗口最大高度百分比"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porcentaje máximo de altura de ventana"
           }
         }
       }
@@ -11247,6 +13222,12 @@
             "state" : "translated",
             "value" : "迷你視窗位置"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posición de ventana mini"
+          }
         }
       }
     },
@@ -11281,6 +13262,12 @@
             "state" : "translated",
             "value" : "滑鼠視窗類型"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de ventana del ratón"
+          }
         }
       }
     },
@@ -11314,6 +13301,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "快速鍵視窗類型"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de ventana de atajo"
           }
         }
       }
@@ -11350,6 +13343,12 @@
             "state" : "translated",
             "value" : "無法新增應用程式"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se puede agregar la aplicación"
+          }
         }
       }
     },
@@ -11383,6 +13382,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "應用程式設定"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración de la App"
           }
         }
       }
@@ -11418,6 +13423,12 @@
             "state" : "translated",
             "value" : "外觀"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apariencia"
+          }
         }
       }
     },
@@ -11451,6 +13462,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自動拷貝"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto Copiar"
           }
         }
       }
@@ -11486,6 +13503,12 @@
             "state" : "translated",
             "value" : "自動查詢"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consulta automática"
+          }
         }
       }
     },
@@ -11519,6 +13542,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟用 Markdown 渲染"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habilitar renderizado Markdown"
           }
         }
       }
@@ -11554,6 +13583,12 @@
             "state" : "translated",
             "value" : "AI 翻譯結果將以 Markdown 格式呈現標題、清單與強調。點擊單個結果旁的圖示可臨時切換。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los resultados de traducción de IA renderizan encabezados, listas y énfasis como texto con formato. Haz clic en el icono junto a un resultado para cambiarlo por tarjeta."
+          }
         }
       }
     },
@@ -11587,6 +13622,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visualización"
           }
         }
       }
@@ -11622,6 +13663,12 @@
             "state" : "translated",
             "value" : "字體大小"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño de fuente"
+          }
         }
       }
     },
@@ -11655,6 +13702,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "字體"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuente"
           }
         }
       }
@@ -11690,6 +13743,12 @@
             "state" : "translated",
             "value" : "輸入欄位"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Campo de entrada"
+          }
         }
       }
     },
@@ -11723,6 +13782,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "語言"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma"
           }
         }
       }
@@ -11758,6 +13823,12 @@
             "state" : "translated",
             "value" : "第一語言不應與第二語言（%1$@）相同。%2$@ 已被 %3$@ 取代。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El primer idioma no debe ser el mismo que el segundo idioma (%1$@). %2$@ fue reemplazado por %3$@."
+          }
         }
       }
     },
@@ -11791,6 +13862,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "第一語言"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "primer idioma"
           }
         }
       }
@@ -11826,6 +13903,12 @@
             "state" : "translated",
             "value" : "第二語言"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "segundo idioma"
+          }
         }
       }
     },
@@ -11859,6 +13942,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "語言重複"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma duplicado"
           }
         }
       }
@@ -11894,6 +13983,12 @@
             "state" : "translated",
             "value" : "第一語言"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primer idioma"
+          }
         }
       }
     },
@@ -11928,6 +14023,12 @@
             "state" : "translated",
             "value" : "語言偵測"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detección de idioma"
+          }
         }
       }
     },
@@ -11961,6 +14062,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "第二語言"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segundo idioma"
           }
         }
       }
@@ -11997,6 +14104,12 @@
             "state" : "translated",
             "value" : "其他"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otro"
+          }
         }
       }
     },
@@ -12030,6 +14143,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查詢語言"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma de consulta"
           }
         }
       }
@@ -12065,6 +14184,12 @@
             "state" : "translated",
             "value" : "快速連結"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enlace rápido"
+          }
         }
       }
     },
@@ -12098,6 +14223,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "包括 Beta 版本"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incluir versiones beta"
           }
         }
       }
@@ -12133,6 +14264,12 @@
             "state" : "translated",
             "value" : "搶先體驗新功能，但可能不穩定"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtener acceso anticipado a nuevas funciones, pero puede ser inestable"
+          }
         }
       }
     },
@@ -12167,6 +14304,12 @@
             "state" : "translated",
             "value" : "查詢英文單字後自動播放發音"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducir pronunciación automáticamente después de consultar palabras en inglés"
+          }
         }
       }
     },
@@ -12200,6 +14343,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "英文發音"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronunciación en inglés"
           }
         }
       }
@@ -12236,6 +14385,12 @@
             "state" : "translated",
             "value" : "返回"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver"
+          }
         }
       }
     },
@@ -12269,6 +14424,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未設定 %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin configuración para %@"
           }
         }
       }
@@ -12304,6 +14465,12 @@
             "state" : "translated",
             "value" : "無法啟用【%@】服務"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al habilitar el servicio [%@]"
+          }
         }
       }
     },
@@ -12337,6 +14504,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示文本輸入框"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar campo de entrada de texto"
           }
         }
       }
@@ -12372,6 +14545,12 @@
             "state" : "translated",
             "value" : "顯示語言選擇欄"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar barra de selección de idioma"
+          }
         }
       }
     },
@@ -12406,6 +14585,12 @@
             "state" : "translated",
             "value" : "視窗配置"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración de ventana"
+          }
         }
       }
     },
@@ -12436,6 +14621,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple"
@@ -12474,6 +14665,12 @@
             "state" : "translated",
             "value" : "百度"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baidu"
+          }
         }
       }
     },
@@ -12508,6 +14705,12 @@
             "state" : "translated",
             "value" : "必應"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bing"
+          }
         }
       }
     },
@@ -12538,6 +14741,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Google"
@@ -12576,6 +14785,12 @@
             "state" : "translated",
             "value" : "有道"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao"
+          }
         }
       }
     },
@@ -12603,6 +14818,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定⋯"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes..."
           }
         }
       }
@@ -12637,6 +14858,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "快速鍵"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atajo"
           }
         }
       }
@@ -12673,6 +14900,12 @@
             "state" : "translated",
             "value" : "已關閉選取翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traducción por selección desactivada"
+          }
         }
       }
     },
@@ -12707,6 +14940,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已開啟選取翻譯"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traducción por selección activada"
           }
         }
       }
@@ -12743,6 +14982,12 @@
             "state" : "translated",
             "value" : "全部清除"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpiar todo"
+          }
         }
       }
     },
@@ -12778,6 +15023,12 @@
             "state" : "translated",
             "value" : "清除輸入"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpiar entrada"
+          }
         }
       }
     },
@@ -12809,6 +15060,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@"
@@ -12848,6 +15105,12 @@
             "state" : "translated",
             "value" : "確認"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmar"
+          }
         }
       }
     },
@@ -12882,6 +15145,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "目前的快速鍵無法使用，因為它已被「%@」使用"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El atajo actual no se puede usar porque ya está en uso \"%@\""
           }
         }
       }
@@ -12918,6 +15187,12 @@
             "state" : "translated",
             "value" : "快速鍵與「%@」衝突無法使用"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conflicto de atajo con \"%@\" No se puede usar este"
+          }
         }
       }
     },
@@ -12952,6 +15227,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "拷貝"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar"
           }
         }
       }
@@ -12988,6 +15269,12 @@
             "state" : "translated",
             "value" : "拷貝第一個翻譯文本"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar el primer texto traducido"
+          }
         }
       }
     },
@@ -13022,6 +15309,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "縮小字體"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disminuir tamaño de fuente"
           }
         }
       }
@@ -13058,6 +15351,12 @@
             "state" : "translated",
             "value" : "焦點"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enfoque"
+          }
         }
       }
     },
@@ -13092,6 +15391,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "放大字體"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aumentar tamaño de fuente"
           }
         }
       }
@@ -13128,6 +15433,12 @@
             "state" : "translated",
             "value" : "播放"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducir"
+          }
         }
       }
     },
@@ -13163,6 +15474,12 @@
             "state" : "translated",
             "value" : "切換選取翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alternar traducción por selección"
+          }
         }
       }
     },
@@ -13196,6 +15513,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar"
           }
         }
       }
@@ -13231,6 +15554,12 @@
             "state" : "translated",
             "value" : "顯示 Apple 辭典快速連結圖示"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar icono de enlace rápido del Diccionario de Apple"
+          }
         }
       }
     },
@@ -13264,6 +15593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示歐路辭典快速連結圖示"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar icono de enlace rápido de Eudic"
           }
         }
       }
@@ -13299,6 +15634,12 @@
             "state" : "translated",
             "value" : "顯示 Google 快速連結圖示"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar icono de enlace rápido de Google"
+          }
         }
       }
     },
@@ -13332,6 +15673,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示設定快速連結圖示"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar icono de enlace rápido de configuración"
           }
         }
       }
@@ -13368,6 +15715,12 @@
             "state" : "translated",
             "value" : "第三人稱單數"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tercera persona singular"
+          }
         }
       }
     },
@@ -13402,6 +15755,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "小"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pequeño"
           }
         }
       }
@@ -13438,6 +15797,12 @@
             "state" : "translated",
             "value" : "分割單字"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dividir palabras"
+          }
         }
       }
     },
@@ -13471,6 +15836,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "💥 無法啟動本機伺服器，連接埠：%@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "💥 Error al iniciar el servidor local, puerto: %@"
           }
         }
       }
@@ -13506,6 +15877,12 @@
             "state" : "translated",
             "value" : "停止"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detener"
+          }
         }
       }
     },
@@ -13540,6 +15917,12 @@
             "state" : "translated",
             "value" : "停止播放音訊"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detener audio"
+          }
         }
       }
     },
@@ -13568,6 +15951,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "成功"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éxito"
           }
         }
       }
@@ -13602,6 +15991,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "摘要"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumen"
           }
         }
       }
@@ -13638,6 +16033,12 @@
             "state" : "translated",
             "value" : "最高級"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Superlativo"
+          }
         }
       }
     },
@@ -13672,6 +16073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "同義詞"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinónimos"
           }
         }
       }
@@ -13708,6 +16115,12 @@
             "state" : "translated",
             "value" : "騰訊翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor Tencent"
+          }
         }
       }
     },
@@ -13741,6 +16154,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "逾時錯誤"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error de tiempo de espera"
           }
         }
       }
@@ -13777,6 +16196,12 @@
             "state" : "translated",
             "value" : "為什麼在某些應用程式中選取文字時，右上角的編輯按鈕會閃爍？"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Por qué el botón de edición en la esquina superior derecha parpadea al seleccionar palabras en algunas aplicaciones?"
+          }
         }
       }
     },
@@ -13811,6 +16236,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查看更多"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver más"
           }
         }
       }
@@ -13847,6 +16278,12 @@
             "state" : "translated",
             "value" : "為什麼我無法在某些應用程式中使用滑鼠懸停來選取文字？"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Por qué no puedo usar el ratón para seleccionar palabras en algunas aplicaciones?"
+          }
         }
       }
     },
@@ -13882,6 +16319,12 @@
             "state" : "translated",
             "value" : "為什麼我無法在瀏覽器的某些網頁上選取文字？"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Por qué no puedo seleccionar palabras en algunas páginas web del navegador?"
+          }
         }
       }
     },
@@ -13915,6 +16358,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "解決此問題"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resolver esto"
           }
         }
       }
@@ -13951,6 +16400,12 @@
             "state" : "translated",
             "value" : "為什麼我已經給予 Easydict 輔助使用/螢幕錄製權限，macOS 仍會彈出詢問權限？"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Por qué macOS sigue pidiendo permisos aunque ya he dado a Easydict los permisos de Accesibilidad/Grabación de pantalla?"
+          }
         }
       }
     },
@@ -13985,6 +16440,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "為什麼我在某些應用程式中選取文字時，文字內容為空？"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Por qué el texto está vacío cuando selecciono palabras en algunas aplicaciones?"
           }
         }
       }
@@ -14021,6 +16482,12 @@
             "state" : "translated",
             "value" : "提示"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consejos"
+          }
         }
       }
     },
@@ -14056,6 +16523,12 @@
             "state" : "translated",
             "value" : "為什麼文字選取和 OCR 需要啟用系統相關權限？"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Por qué la selección de palabras y OCR necesitan habilitar permisos relacionados con el sistema?"
+          }
         }
       }
     },
@@ -14089,6 +16562,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "切換語言"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar idiomas"
           }
         }
       }
@@ -14124,6 +16603,12 @@
             "state" : "translated",
             "value" : "UK"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UK"
+          }
         }
       }
     },
@@ -14153,6 +16638,12 @@
             "state" : "translated",
             "value" : "未實作的功能"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Función no implementada"
+          }
         }
       }
     },
@@ -14181,6 +16672,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未知錯誤"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error desconocido"
           }
         }
       }
@@ -14216,6 +16713,12 @@
             "state" : "translated",
             "value" : "未知錯誤"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error desconocido"
+          }
         }
       }
     },
@@ -14243,6 +16746,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未知選項"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opción desconocida"
           }
         }
       }
@@ -14278,6 +16787,12 @@
             "state" : "translated",
             "value" : "取消釘選"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desfijar"
+          }
         }
       }
     },
@@ -14311,6 +16826,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "不支援的語言"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma no soportado"
           }
         }
       }
@@ -14346,6 +16867,12 @@
             "state" : "translated",
             "value" : "不支援的查詢類型"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de consulta no soportado"
+          }
         }
       }
     },
@@ -14380,6 +16907,12 @@
             "state" : "translated",
             "value" : "不支援的服務類型"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de servicio no soportado"
+          }
         }
       }
     },
@@ -14410,6 +16943,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "US"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "US"
@@ -14449,6 +16988,12 @@
             "state" : "translated",
             "value" : "火山翻譯"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor Volcano"
+          }
         }
       }
     },
@@ -14477,6 +17022,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "有道"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao"
           }
         }
       }
@@ -14512,6 +17063,12 @@
             "state" : "translated",
             "value" : "有道詞典"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diccionario Youdao"
+          }
         }
       }
     },
@@ -14545,6 +17102,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "智譜翻譯"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traductor Zhipu"
           }
         }
       }
