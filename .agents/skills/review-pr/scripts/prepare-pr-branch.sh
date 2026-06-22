@@ -137,11 +137,38 @@ require_clean_worktree() {
   fi
 }
 
+reject_unsafe_normal_branch() {
+  local branch=$1
+
+  if [[ $branch == "$base_branch" ]]; then
+    fail "PR head branch '${branch}' matches the base branch '${base_branch}'. Use --merge-latest or prepare this PR in an isolated checkout."
+  fi
+
+  case "$branch" in
+    dev | main | master | develop | trunk)
+      fail "PR head branch '${branch}' is a protected local branch name. Use --merge-latest or prepare this PR in an isolated checkout."
+      ;;
+  esac
+}
+
+require_expected_upstream() {
+  local branch=$1
+  local expected_upstream=$2
+  local actual_upstream
+
+  actual_upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/${branch}")
+  if [[ $actual_upstream != "$expected_upstream" ]]; then
+    [[ -n $actual_upstream ]] || actual_upstream="no upstream"
+    fail "Local branch '${branch}' already exists with upstream '${actual_upstream}', not '${expected_upstream}'. Use --merge-latest or prepare this PR in an isolated checkout."
+  fi
+}
+
 prepare_pr_branch() {
   local current_branch
   local remote_name=$head_owner
   local remote_ref="refs/remotes/${remote_name}/${head_branch}"
   local upstream_ref="${remote_name}/${head_branch}"
+  local branch_exists=false
 
   current_branch=$(git branch --show-current || true)
 
@@ -153,11 +180,16 @@ prepare_pr_branch() {
     fail "Worktree has uncommitted changes on branch '${current_branch:-detached HEAD}'. Commit, stash, or clean them before switching to PR branch '${head_branch}'."
   fi
 
+  reject_unsafe_normal_branch "$head_branch"
+  if git show-ref --verify --quiet "refs/heads/${head_branch}"; then
+    require_expected_upstream "$head_branch" "$upstream_ref"
+    branch_exists=true
+  fi
+
   ensure_remote "$remote_name" "$head_owner" "$head_repo"
   git fetch "$remote_name" "+refs/heads/${head_branch}:${remote_ref}"
 
-  if git show-ref --verify --quiet "refs/heads/${head_branch}"; then
-    git branch --set-upstream-to="$upstream_ref" "$head_branch"
+  if [[ $branch_exists == true ]]; then
     if [[ $current_branch == "$head_branch" ]]; then
       printf 'Already on branch: %s\n' "$head_branch"
     else
@@ -224,6 +256,8 @@ prepare_merged_review_branch() {
     printf '\nAfter semantic conflict resolution:\n' >&2
     printf '  git add <resolved-files>\n' >&2
     printf '  git commit --no-edit\n' >&2
+    printf '\nIf conflicts cannot be resolved safely:\n' >&2
+    printf '  git merge --abort\n' >&2
     exit 2
   fi
 }
