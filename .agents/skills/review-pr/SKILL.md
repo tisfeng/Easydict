@@ -12,144 +12,91 @@ description: >
 Use this skill when the user asks to review a GitHub pull request, check out a
 PR branch locally, or prepare a review from a PR link such as
 `tisfeng/Easydict#1173` or `https://github.com/tisfeng/Easydict/pull/1173`.
+If the PR reference is missing or ambiguous, ask for it before changing Git
+state.
 
-## Required Input
-
-The user must provide one PR reference:
+Accepted PR references:
 
 - GitHub URL: `https://github.com/<base-owner>/<base-repo>/pull/<number>`
 - Shorthand: `<base-owner>/<base-repo>#<number>`
 - PR number only, when the current checkout belongs to the target repository
 
-If the PR reference is missing or ambiguous, ask for it before changing Git
-state.
+## Guardrails
 
-## Hard Rules
-
-- Keep the local branch name exactly the same as the PR head branch name.
-- Exception: when using the latest-base merge review path, use the local review
-  branch name `review/pr-<number>-merge-<head-short-sha>` instead of the PR head
-  branch name. This avoids clobbering local branches when the PR head is named
-  like `dev`.
+- Start with `git status --short --branch`; stop and ask before switching or
+  preparing branches when the worktree has uncommitted changes.
+- Do not overwrite, delete, rename, rebase, reset, force-update, stash, or
+  discard local branches or changes.
+- Do not push while preparing, merging, resolving conflicts, or reviewing
+  unless the user explicitly asks for a push.
 - Name the contributor remote exactly as the PR head repository owner login.
-- Do not overwrite, delete, rename, rebase, reset, or force-update an existing
-  local branch.
-- Do not push anything while preparing, merging, resolving conflicts, or
-  reviewing the PR unless the user explicitly asks for a push.
-- Do not stash or discard local changes automatically. Stop and ask the user if
-  the worktree is dirty before preparing or switching branches.
-- If a remote with the intended contributor name already exists but points to a
-  different repository, stop and ask the user how to proceed.
+  If that remote name already points elsewhere, stop and ask.
+- Keep the normal local branch name exactly the same as the PR head branch
+  name.
+- For latest-base conflict or update review, use the local-only branch
+  `review/pr-<number>-merge-<head-short-sha>` and merge the latest base into
+  it. Do not use rebase for remote collaboration PRs.
 - Resolve merge conflicts semantically after reading the conflicting code and
   surrounding context. Do not mechanically choose ours/theirs.
-- Do not review from the PR description alone. Inspect the linked issues,
-  changed files, actual diff, and relevant surrounding code.
-- Follow the repository's normal review stance: lead with PR context, then
-  findings. Prioritize bugs and regressions, include file and line references,
-  then list open questions, verification, and a short summary.
+- Do not review from the PR description alone. Inspect linked issues, changed
+  files, actual diff, relevant surrounding code, and CI state.
 
-## Step 1: Check Worktree and Resolve PR Metadata
+## Workflow
 
-Check the current worktree before changing Git state:
+### 1. Collect PR Metadata
+
+Normalize GitHub URLs and `<owner>/<repo>#<number>` shorthands to
+`<number> --repo <owner>/<repo>` when running manual `gh` commands.
 
 ```bash
 git status --short --branch
-```
-
-If the worktree has uncommitted changes, stop and ask the user before preparing
-or switching branches.
-
-Collect PR metadata with GitHub CLI before branch preparation. For a GitHub URL
-or `<owner>/<repo>#<number>` shorthand, convert it to `<number> --repo
-<owner>/<repo>` when running manual `gh` commands. For example,
-`owner/repo#123` becomes `gh pr view 123 --repo owner/repo`:
-
-```bash
 gh pr view <number> [--repo <base-owner>/<base-repo>] \
   --json number,title,url,body,baseRefName,headRefName,headRefOid,headRepository,headRepositoryOwner,closingIssuesReferences
 ```
 
-Extract these fields:
+Record the head owner, fork repository, head branch, head SHA, base branch, PR
+URL, and linked issues. Let the helper script add remotes, fetch branches, and
+set upstream tracking in the normal path.
 
-- `headRepositoryOwner.login`, for the remote name.
-- `headRepository.name`, for the fork repository name.
-- `headRefName`, for the PR branch name.
-- `headRefOid`, for the local merged review branch suffix.
-- `baseRefName`, for the base branch used during diff review.
-- `closingIssuesReferences`, for issue context.
+### 2. Choose Branch Preparation Path
 
-Do not add or update the contributor remote manually in the normal path. Let the
-helper script prepare the remote, fetch, local branch, and upstream tracking.
-
-## Step 2: Decide Whether To Merge Latest Base
-
-Before branch preparation, inspect the PR's merge state:
+Inspect mergeability before branch preparation:
 
 ```bash
 gh pr view <number> [--repo <base-owner>/<base-repo>] \
   --json mergeable,mergeStateStatus,isDraft,state,updatedAt,headRefOid,baseRefOid
 ```
 
-Use the latest-base merge review path when any of these are true:
-
-- The user explicitly asks to merge latest base, update to latest `dev`, update
-  to latest base, or resolve conflicts.
-- `mergeable` is `CONFLICTING`.
-- `mergeStateStatus` is `DIRTY`.
-
-When one of those conditions is true, do not run the normal helper first. This
-matters when the PR head branch is named like the local base branch, such as
-`dev`.
-
-If GitHub reports an unknown or clean mergeability state, use the normal helper
-first, fetch the latest base branch, then check whether the prepared PR branch
-already contains the latest base:
-
-```bash
-git merge-base --is-ancestor <base-remote>/<base-branch> HEAD
-```
-
-If that check fails, run the latest-base merge helper from the clean prepared
-PR branch. Treat `baseRefName` as the latest target branch; do not hard-code
-`dev`.
-
-## Step 3: Prepare the PR Branch
-
-Use the bundled helper script as the default branch preparation path when the
-latest-base merge path is not needed:
+Use the latest-base merge path when the user asks to update to latest base or
+resolve conflicts, or when GitHub reports `mergeable: CONFLICTING` or
+`mergeStateStatus: DIRTY`. Otherwise, start with the normal helper path:
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh <pr-ref>
 ```
 
-The helper script:
+If GitHub reports an unknown or clean merge state, fetch the latest base after
+normal preparation and check whether the PR already contains it:
 
-- Parses a GitHub PR URL, `<owner>/<repo>#<number>`, or PR number.
-- Reads the PR head owner, fork repository, and branch from `gh pr view`.
-- Adds the contributor remote only when missing.
-- Fetches the exact PR head branch into `refs/remotes/<owner>/<branch>`.
-- Creates or switches to a local branch whose name exactly matches the PR head
-  branch, and skips switching when that branch is already current.
-- Sets the local branch upstream to `<owner>/<branch>`.
-- Uses fast-forward-only integration when the local branch already exists.
+```bash
+git merge-base --is-ancestor <base-remote>/<base-branch> HEAD
+```
 
-When the latest-base merge path is needed, use:
+If that check fails, use the latest-base merge helper instead. Treat
+`baseRefName` as the target branch; do not hard-code `dev`.
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --merge-latest <pr-ref>
 ```
 
-The merge helper:
+The merge helper creates `review/pr-<number>-merge-<head-short-sha>` from the PR
+head, fetches the PR base, runs `git merge --no-edit <base-remote>/<base-branch>`,
+and never pushes.
 
-- Fetches the exact PR head branch and latest PR base branch.
-- Creates a local-only branch named
-  `review/pr-<number>-merge-<head-short-sha>` from the PR head.
-- Stops if that local review branch already exists.
-- Merges `<base-remote>/<base-branch>` into the local review branch with
-  `git merge --no-edit`.
-- Never pushes to the contributor remote.
+### 3. Handle Merge Conflicts
 
-If the merge stops with conflicts, inspect:
+If the merge helper stops with conflicts, inspect the actual conflict before
+editing:
 
 ```bash
 git status --short
@@ -157,28 +104,21 @@ git diff --name-only --diff-filter=U
 git diff --cc
 ```
 
-Resolve conflicts semantically by reading the conflicting files, relevant
-surrounding code, tests, configuration, generated files, and documentation.
-Stage only resolved conflict files, then finish the merge:
+After semantic conflict resolution, stage only resolved conflict files and
+finish the merge:
 
 ```bash
 git add <resolved-files>
 git commit --no-edit
 ```
 
-Stop and report a blocker if a conflict requires a product decision or cannot be
-resolved safely from local code and PR context. Do not present a complete review
-from a partially merged tree.
+Stop and report a blocker if a conflict requires a product decision or cannot
+be resolved safely from local code and PR context. Do not present a complete
+review from a partially merged tree.
 
-Use manual remote, fetch, and switch commands only as a fallback when the helper
-script is unavailable or fails for a reason unrelated to PR state. In fallback
-mode, normalize URL and shorthand PR refs the same way as Step 1, add the
-contributor remote only when missing, verify any existing same-name remote points
-to the expected fork, fetch the exact head branch, and then prepare either the
-normal PR branch or the `review/pr-<number>-merge-<head-short-sha>` merged review
-branch according to the same rules above.
+### 4. Verify Checkout And Review Context
 
-After it finishes, verify the checkout:
+After preparation, verify the local state:
 
 ```bash
 git branch --show-current
@@ -186,36 +126,22 @@ git status --short
 git branch -vv
 ```
 
-For normal preparation, if the branch is dirty, detached, missing upstream, or
-not named exactly like the PR head branch, stop and fix that state before
-reviewing. For the latest-base merge path, require the clean local review branch
-`review/pr-<number>-merge-<head-short-sha>` after merge completion.
+For normal preparation, require a clean branch named exactly like the PR head
+branch with upstream set to `<owner>/<branch>`. For latest-base merge
+preparation, require a clean local review branch named
+`review/pr-<number>-merge-<head-short-sha>`.
 
-## Step 4: Review Context
-
-Read PR context and issue context first, using the normalized PR number and
-`--repo` arguments from Step 1 when needed:
+Read PR and issue context before reviewing code:
 
 ```bash
 gh pr view <number> [--repo <base-owner>/<base-repo>] \
   --comments \
   --json number,title,url,body,baseRefName,headRefName,files,commits,closingIssuesReferences,comments,reviews
-```
-
-For every linked issue in `closingIssuesReferences`, inspect the issue body and
-comments:
-
-```bash
 gh issue view <issue-url-or-number> --comments
 ```
 
-Then inspect the code changes against the PR base branch. Use `origin` as
-`<base-remote>` only after confirming it points to the PR base repository. If it
-does not, use the correct base repository remote or stop and ask the user.
-Fetch the base branch from the base repository remote if necessary. After a
-normal preparation, compare the PR branch against the base remote with a
-three-dot diff. After a latest-base merge preparation, compare the local merged
-review branch against the latest fetched base remote:
+Confirm the base repository remote before using `origin`. Fetch the true base
+branch, then inspect the diff and surrounding code:
 
 ```bash
 git fetch <base-remote> <base-branch>
@@ -224,41 +150,30 @@ git diff --name-status <base-remote>/<base-branch>...HEAD
 git diff <base-remote>/<base-branch>...HEAD
 ```
 
-Read relevant surrounding source files, tests, configuration, generated files,
-and documentation before making claims. Use `rg` for fast code search.
-
-## Review Focus
-
-Check the PR against the actual problem it claims to solve:
-
-- Does the implementation fully address the PR description and linked issues?
-- Are there behavior regressions, edge cases, concurrency issues, persistence
-  mistakes, localization gaps, or platform-version problems?
-- Are public contracts, model names, defaults, migrations, and UI states still
-  coherent?
-- Are tests or manual verification sufficient for the changed behavior?
-- Does the code match local project patterns, naming, style, and architecture?
-- Are unrelated refactors, generated churn, or accidental changes present?
-
-Do not run `xcodebuild` during PR review unless the user explicitly asks for a
-local build. When validation status matters, inspect PR checks instead:
+Use `rg` for surrounding source, tests, configuration, generated files, and
+documentation. Do not run `xcodebuild` during PR review unless the user
+explicitly asks for a local build. Inspect PR checks when validation status
+matters:
 
 ```bash
 gh pr checks <number> [--repo <base-owner>/<base-repo>]
 ```
 
-Always run lightweight local checks such as `git diff --check` when they are
-relevant.
+Run lightweight local checks such as `git diff --check` when relevant.
+
+## Review Focus
+
+Check whether the implementation actually solves the PR description and linked
+issues. Prioritize bugs, regressions, edge cases, concurrency issues,
+persistence mistakes, localization gaps, platform-version problems, API
+contract drift, missing verification, and unrelated churn.
 
 ## Output Format
 
 Write the final review in the user's preferred system language unless the user
-asks otherwise.
-
-Preferred system language means the first language in macOS `AppleLanguages`.
-Read it with `defaults read -g AppleLanguages` and use the first list entry.
-If the current agent environment cannot read that value, write in the language
-the user is already using in the current conversation.
+asks otherwise. Preferred system language means the first language in macOS
+`AppleLanguages`; if it cannot be read, use the language from the current
+conversation.
 
 Keep section headings, `PR Context` subheadings, and priority labels exactly as
 written. Use this structure exactly:
