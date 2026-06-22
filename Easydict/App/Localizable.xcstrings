@@ -7404,6 +7404,108 @@
         }
       }
     },
+    "service.configuration.custom_openai.extra_body.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra Request Body Fields"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加リクエストボディ"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ďalšie polia tela požiadavky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "额外请求体字段"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "額外請求體欄位"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.extra_body.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{\"thinking\":{\"type\":\"disabled\"}}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{\"thinking\":{\"type\":\"disabled\"}}"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{\"thinking\":{\"type\":\"disabled\"}}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{\"thinking\":{\"type\":\"disabled\"}}"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{\"thinking\":{\"type\":\"disabled\"}}"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.extra_body.footnote" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra top-level JSON fields merged into the request body. Overwrites built-in fields (model/temperature/etc.) with the same key. Leave empty to disable."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リクエストボディにマージされる追加のトップレベル JSON フィールド。同名キーは組み込みフィールド(model/temperature 等)を上書きします。空欄で無効化。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ďalšie polia JSON najvyššej úrovne zlúčené do tela požiadavky. Prepíše vstavané polia (model/temperature atď.) s rovnakým kľúčom. Prázdne pre deaktiváciu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "额外的顶层 JSON 字段,会合并到请求体;同名键会覆盖内置字段(model/temperature 等)。留空则不启用。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "額外的頂層 JSON 欄位,會合併到請求體;同名鍵會覆蓋內建欄位(model/temperature 等)。留空則不啟用。"
+          }
+        }
+      }
+    },
     "service.configuration.custom_openai.model.placeholder" : {
       "localizations" : {
         "en" : {

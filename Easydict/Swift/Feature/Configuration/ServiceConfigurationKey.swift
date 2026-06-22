@@ -54,5 +54,6 @@ enum ServiceConfigurationKey: String {
     case thinkTag
     case temperature
     case enableStreaming
+    case extraBodyJSON = "ExtraBodyJSON"
     case reasoningEffort = "ReasoningEffort"
 }
