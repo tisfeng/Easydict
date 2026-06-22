@@ -162,14 +162,15 @@ struct GeneralTab: View {
                     }
                     Spacer()
                     Toggle(
-                        "",
                         isOn: $includeBetaUpdates.didSet(execute: { state in
                             logSettings(["include_beta_updates": state])
                             if state {
                                 MyConfiguration.shared.updater.checkForUpdates()
                             }
                         })
-                    )
+                    ) {
+                        EmptyView()
+                    }
                     .labelsHidden()
                 }
 
