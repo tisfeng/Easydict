@@ -29,6 +29,8 @@ Accepted PR references:
   discard local branches or changes.
 - Do not push while preparing, merging, resolving conflicts, or reviewing
   unless the user explicitly asks for a push.
+- For review-only or analysis-only requests, restore original branch after the
+  review, then re-check `git status --short --branch`.
 - Name the contributor remote exactly as the PR head repository owner login.
   If that remote name already points elsewhere, stop and ask.
 - Keep the normal local branch name exactly the same as the PR head branch
@@ -40,6 +42,9 @@ Accepted PR references:
   surrounding context. Do not mechanically choose ours/theirs.
 - Do not review from the PR description alone. Inspect linked issues, changed
   files, actual diff, relevant surrounding code, and CI state.
+- For exact inline review context, unresolved comments, or a `discussion_r...`
+  id, use `gh api` / GraphQL so `isResolved`, `isOutdated`, path, and line stay
+  visible. Do not rely only on `gh pr view --json`.
 
 ## Workflow
 
@@ -67,23 +72,27 @@ gh pr view <number> [--repo <base-owner>/<base-repo>] \
   --json mergeable,mergeStateStatus,isDraft,state,updatedAt,headRefOid,baseRefOid
 ```
 
-Use the latest-base merge path when the user asks to update to latest base or
-resolve conflicts, or when GitHub reports `mergeable: CONFLICTING` or
-`mergeStateStatus: DIRTY`. Otherwise, start with the normal helper path:
+Use the latest-base merge path only when the user asks to update to latest base
+or resolve conflicts, when GitHub reports `mergeable: CONFLICTING` or
+`mergeStateStatus: DIRTY`, or when the PR head branch name collides with the
+base branch or a protected local branch name. Otherwise, start with the normal
+helper path:
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh <pr-ref>
 ```
 
-If GitHub reports an unknown or clean merge state, fetch the latest base after
-normal preparation and check whether the PR already contains it:
+If GitHub reports an unknown or clean merge state, use normal preparation first.
+After checkout, fetch the latest base and check whether the PR already contains
+it:
 
 ```bash
 git merge-base --is-ancestor <base-remote>/<base-branch> HEAD
 ```
 
-If that check fails, use the latest-base merge helper instead. Treat
-`baseRefName` as the target branch; do not hard-code `dev`.
+If that check fails but the PR is otherwise clean, report that it is behind the
+latest base instead of merging automatically. Treat `baseRefName` as the target
+branch; do not hard-code `dev`. When latest-base merge is required, run:
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --merge-latest <pr-ref>
@@ -140,6 +149,11 @@ gh pr view <number> [--repo <base-owner>/<base-repo>] \
 gh issue view <issue-url-or-number> --comments
 ```
 
+For old or stale PRs, check linked issue history, later replacement PRs, and the
+live base tree before deciding whether the branch should still exist. Use
+`git merge-tree <merge-base> <base-remote>/<base-branch> HEAD` as a read-only
+obsolescence or conflict signal when mergeability is central to the review.
+
 Confirm the base repository remote before using `origin`. Fetch the true base
 branch, then inspect the diff and surrounding code:
 
@@ -167,6 +181,10 @@ Check whether the implementation actually solves the PR description and linked
 issues. Prioritize bugs, regressions, edge cases, concurrency issues,
 persistence mistakes, localization gaps, platform-version problems, API
 contract drift, missing verification, and unrelated churn.
+
+When the user asks whether an old PR is still worth keeping, answer the
+keep/modify/close decision first. Then explain the code findings that support
+that decision.
 
 ## Output Format
 
