@@ -96,6 +96,7 @@ final class BaiduService: QueryService {
             Language.korean, "kor",
             Language.french, "fra",
             Language.spanish, "spa",
+            Language.catalan, "cat",
             Language.portuguese, "pt",
             Language.brazilianPortuguese, "pot",
             Language.italian, "it",
