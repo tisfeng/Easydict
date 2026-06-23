@@ -86,7 +86,13 @@ final class BaiduService: QueryService {
 
     override func supportLanguagesDictionary() -> MMOrderedDictionary {
         let orderedDict = MMOrderedDictionary()
-        let items: [Any] = [
+
+        // Baidu Text Translation API language tiers:
+        // https://fanyi-api.baidu.com/product/113
+        // Common languages are available to all users. Uncommon languages are
+        // part of the full language table, but normal users may receive
+        // Baidu error 58001 when requesting them.
+        let commonLanguageItems: [Any] = [
             Language.auto, "auto",
             Language.simplifiedChinese, "zh",
             Language.classicalChinese, "wyw",
@@ -96,9 +102,7 @@ final class BaiduService: QueryService {
             Language.korean, "kor",
             Language.french, "fra",
             Language.spanish, "spa",
-            Language.catalan, "cat",
             Language.portuguese, "pt",
-            Language.brazilianPortuguese, "pot",
             Language.italian, "it",
             Language.german, "de",
             Language.russian, "ru",
@@ -114,16 +118,21 @@ final class BaiduService: QueryService {
             Language.finnish, "fin",
             Language.polish, "pl",
             Language.czech, "cs",
+            Language.bulgarian, "bul",
+            Language.estonian, "est",
+            Language.vietnamese, "vie",
+        ]
+
+        let uncommonLanguageItems: [Any] = [
+            Language.catalan, "cat", // 非常见语种，普通用户可能返回 58001。
+            Language.brazilianPortuguese, "pot",
             Language.turkish, "tr",
             Language.lithuanian, "lit",
             Language.latvian, "lav",
             Language.ukrainian, "ukr",
-            Language.bulgarian, "bul",
             Language.indonesian, "id",
             Language.malay, "msa",
             Language.slovenian, "slv",
-            Language.estonian, "est",
-            Language.vietnamese, "vie",
             Language.persian, "per",
             Language.hindi, "hin",
             Language.telugu, "tel",
@@ -142,6 +151,7 @@ final class BaiduService: QueryService {
             Language.georgian, "geo",
         ]
 
+        let items = commonLanguageItems + uncommonLanguageItems
         for index in stride(from: 0, to: items.count, by: 2) {
             let key = items[index]
             if index + 1 < items.count {
