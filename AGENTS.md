@@ -321,6 +321,15 @@ habits.
 Always use the OpenAI developer documentation MCP server if you need to work with the
 OpenAI API, ChatGPT Apps SDK, Codex, or related developer tools.
 
+### Git Branch Naming Rules
+
+- When creating task branches in this repository, use Angular-style type prefixes
+  matching `.agents/skills/git-commit/SKILL.md`, such as `feat`, `fix`, `docs`, or
+  `refactor`.
+- Name branches as `<type>/<kebab-case-summary>`, using a lowercase kebab-case slug
+  that describes the actual task or module, for example `feat/add-openai-timeout`,
+  `fix/openai-timeout`.
+
 ### Agent Working Principles
 
 #### Think Before Coding
