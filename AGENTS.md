@@ -231,6 +231,9 @@ source files in this repository.
 
 ### Test Code Rules
 
+- Do not use the same agent session to both modify production code and add unit tests.
+- Prefer assigning unit tests to a different agent from the implementation agent, for
+  example Codex for production code and Claude Code for unit tests.
 - Do not add tests for UI code or UI-focused changes.
 - Add or update tests only for changes with meaningful behavior or correctness risk. Skip
   trivial pass-through code, simple glue code, obvious accessors, and behavior already
