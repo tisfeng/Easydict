@@ -9,6 +9,8 @@
 import Defaults
 import Foundation
 
+// MARK: - CustomOpenAIService
+
 @objc(EZCustomOpenAIService)
 class CustomOpenAIService: BaseOpenAIService {
     // MARK: Public

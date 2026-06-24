@@ -97,7 +97,7 @@ struct DisabledAppTab: View {
             }
             .alert(isPresented: $disabledAppViewModel.isShowImportErrorAlert) {
                 Alert(
-                    title: Text(""),
+                    title: Text(verbatim: ""),
                     message: Text("setting.disabled.import_app_error.message"),
                     dismissButton: .default(Text("ok"))
                 )

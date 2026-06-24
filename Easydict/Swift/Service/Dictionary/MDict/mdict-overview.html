@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MDict 离线词典说明</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --text: #111827;
+      --muted: #4b5563;
+      --line: #d1d5db;
+      --soft: #f8fafc;
+      --blue: #2563eb;
+      --green: #16a34a;
+      --amber: #d97706;
+    }
+
+    body {
+      margin: 0;
+      background: #ffffff;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial,
+        "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 40px 24px 56px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.25;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 34px;
+    }
+
+    h2 {
+      margin: 36px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+      font-size: 24px;
+    }
+
+    h3 {
+      margin: 24px 0 10px;
+      font-size: 18px;
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--muted);
+    }
+
+    code {
+      padding: 0.12em 0.35em;
+      border-radius: 4px;
+      background: #f3f4f6;
+      color: #1f2937;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    figure {
+      margin: 24px 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    figcaption {
+      margin-top: 10px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 15px;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f3f4f6;
+      font-weight: 600;
+    }
+
+    ul,
+    ol {
+      margin: 0 0 18px 22px;
+      padding: 0;
+      color: var(--muted);
+    }
+
+    li {
+      margin: 7px 0;
+    }
+
+    .summary {
+      padding: 18px 20px;
+      border-left: 4px solid var(--blue);
+      border-radius: 8px;
+      background: #eff6ff;
+    }
+
+    .summary p {
+      margin: 0;
+      color: #1e3a8a;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin: 16px 0 24px;
+    }
+
+    .panel {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .panel h3 {
+      margin-top: 0;
+    }
+
+    .note {
+      padding: 14px 16px;
+      border-left: 4px solid var(--amber);
+      border-radius: 8px;
+      background: #fffbeb;
+      color: #92400e;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>MDict 离线词典说明</h1>
+
+    <section class="summary" aria-label="目录职责">
+      <p>
+        <code>MDict</code> 实现用户导入的 MDX/MDD 离线词典查询能力。它负责管理词典文件、
+        解析二进制索引、查询条目内容、跟随词条重定向、重写词典内资源链接，并把结果交给
+        共享的词典 HTML 渲染层展示。
+      </p>
+    </section>
+
+    <figure>
+      <img src="./mdict-architecture.svg" alt="MDict 架构图">
+      <figcaption>
+        架构图展示导入、加载、逐条词条 LINK 跳转、搜索 fallback、资源缓存、
+        data URI 预算和 HTML 渲染的主要组件与数据流。
+      </figcaption>
+    </figure>
+
+    <h2>目录结构</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>路径</th>
+          <th>职责</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MDictService.swift</code></td>
+          <td>查询服务入口和结果 HTML 包装。</td>
+        </tr>
+        <tr>
+          <td><code>MDictConfigurationView.swift</code></td>
+          <td>设置页导入、启用、排序和删除 UI。</td>
+        </tr>
+        <tr>
+          <td><code>MDictManager.swift</code></td>
+          <td>导入记录持久化、加载和生命周期管理。</td>
+        </tr>
+        <tr>
+          <td><code>MDictDictionary.swift</code></td>
+          <td>单本词典查询、MDD 资源解析和链接重写。</td>
+        </tr>
+        <tr>
+          <td><code>MDictSearchIndex.swift</code></td>
+          <td>变形词、prefix、substring 和 fuzzy fallback。</td>
+        </tr>
+        <tr>
+          <td><code>MDictReader/</code></td>
+          <td>MDX/MDD 二进制 reader、parser 和底层工具。</td>
+        </tr>
+        <tr>
+          <td><code>mdict-overview.html</code></td>
+          <td>本目录说明。</td>
+        </tr>
+        <tr>
+          <td><code>mdict-architecture.svg</code></td>
+          <td>本目录架构图。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>职责边界</h2>
+    <div class="grid">
+      <section class="panel">
+        <h3>服务与配置</h3>
+        <ul>
+          <li><code>MDictService</code> 是 <code>QueryService</code> 子类，负责读取启用词典、收集查询结果，并调用 <code>DictionaryHTMLRenderer</code> 生成结果面板 HTML。</li>
+          <li><code>MDictConfigurationView</code> 是设置页 UI，负责触发 MDX/MDD 导入，并把启用、排序和删除操作转发给 <code>MDictManager</code>。</li>
+          <li><code>MDictManager</code> 保存导入记录到 <code>Defaults</code>，查询时按需在后台加载启用的 <code>MDictDictionary</code> 实例，并在记录变化时发出通知。</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h3>查询与资源</h3>
+        <ul>
+          <li><code>MDictDictionary</code> 表示一本 MDX 词典和它的 MDD 资源集合，负责查词、查资源、把图片、音频、CSS 和脚本资源重写为 WebKit 可加载的形式。</li>
+          <li>MDD reader 会在首次资源查询时懒加载，并缓存常用 data URI、解析后的 CSS、MDX 同目录同名 CSS 文件和资源缺失结果。</li>
+          <li><code>MDictSearchIndex</code> 在精确查词失败后按需建立轻量 headword 索引，提供变形词、前缀、词头 substring 和小编辑距离 fuzzy fallback。</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h3>二进制解析</h3>
+        <ul>
+          <li><code>MDictReader/</code> 子目录只处理 MDX/MDD 二进制格式，不处理 UI、服务配置或结果面板样式。</li>
+          <li>超大词库会跳过同步 fallback，避免单次 miss 触发全量 key block 解析。</li>
+          <li>正文 HTML 不进入搜索索引，精确查词仍是快速路径。</li>
+        </ul>
+      </section>
+    </div>
+
+    <h2>主要流程</h2>
+    <h3>导入与加载</h3>
+    <p>
+      导入流程从 <code>MDictConfigurationView</code> 的文件选择器开始，
+      <code>MDictManager</code> 根据扩展名导入 MDX 或匹配 MDD，合并同名资源文件并保存
+      <code>MDictDictionaryRecord</code>。MDD 匹配保留精确同名优先，只把短数字后缀当作
+      multipart 资源后缀处理，避免年份等普通文件名误挂到无关 MDX。
+    </p>
+    <p>
+      文件选择器使用 MDX/MDD 扩展名类型并以通用 data 类型兜底，避免系统未注册自定义扩展名时
+      没有可选类型。首次查询启用词典时，<code>MDictManager</code> 在后台创建缺失的
+      <code>MDictDictionary</code>，重叠查询会复用同一个 in-flight 加载任务，避免重复解析同一
+      MDX；返回结果按 <code>records</code> 中的用户排序组织，保证查询优先级和显示顺序一致。
+    </p>
+
+    <h3>查询与 LINK 跳转</h3>
+    <p>
+      查询流程从 <code>MDictService.translate</code> 开始。服务读取启用的
+      <code>MDictDictionary</code>，在调用方任务里逐本调用 <code>lookup</code>，保留结构化并发
+      取消语义，外层 <code>translate</code> 取消时下一本词典前会立即停止。
+    </p>
+    <p>
+      词典内部先通过 <code>MDictReader</code> 精确查找 key entry 和 record block；如果无结果，
+      再尝试常见英文变形词，并按需构建 headword 搜索索引用于 prefix、substring 和 fuzzy
+      fallback。如果命中的任一 record 内容是 <code>@@@LINK=目标词</code>，
+      <code>MDictDictionary</code> 会逐条保留普通释义，并在同一本词典内精确查询 link 目标词，
+      不复用面向用户输入的变形词或 fuzzy fallback，再用深度上限和已访问词集合阻止循环跳转。
+    </p>
+    <p class="note">
+      超大词库只走精确查词和变形词路径，避免一次查询 miss 阻塞 UI。
+    </p>
+
+    <h3>资源重写与渲染</h3>
+    <p>
+      命中最终词条后再把 HTML 中的本地资源链接改写为 data URI 或内部锚点。只有命中结果需要解析
+      MDD 资源时，词典才会创建对应的 resource reader。图片、音频和 CSS url 生成的 data URI
+      会按 LRU 缓存；外链 stylesheet 解析后的 CSS 也会缓存，并复用已缓存的内嵌资源。
+    </p>
+    <p>
+      资源 key 查询会先尝试词条原始路径，再生成反斜杠和前导斜杠变体，兼容不同 MDD 生成器的路径
+      风格。CSS 和脚本等文本资源优先使用 MDX header encoding 解码，再回退到常见 Unicode 编码；
+      如果 CSS 内部资源受单次 data URI 预算影响未完全替换，这份结果不会进入 stylesheet 缓存。
+      最终服务把每本词典的 HTML section 交给 <code>DictionaryHTMLRenderer</code>，由共享词典结果
+      模板渲染。
+    </p>
+    <p>
+      如果 MDX 文件旁边存在同名 <code>.css</code>，例如 <code>concise-enhanced.mdx</code> 对应
+      <code>concise-enhanced.css</code>，<code>MDictDictionary</code> 会在首次命中 HTML 查询时读取
+      并缓存该样式，然后注入到词条内容前面，适配 MDict 词库常见的外置样式优化文件。
+    </p>
+
+    <h3>脚本、音频与跳转</h3>
+    <p>
+      资源改写会优先处理脚本、stylesheet、图片和 CSS url，再处理音频链接；<code>srcset</code>
+      候选写入 data URI 时会把其中的 <code>,</code> 转义为 <code>%2C</code>，避免被浏览器误当作
+      候选分隔符切碎。外链脚本被改写成内联时会保留原 <code>&lt;script&gt;</code> 上的属性
+      （如 <code>type="module"</code>、<code>defer</code>），只剥离 <code>src</code> 和原有
+      <code>nonce</code>，再注入结果页 CSP 所需的 <code>easydict-mdict</code> nonce，并转义
+      <code>&lt;/script</code> 片段，避免 HTML parser 提前截断脚本。
+    </p>
+    <p>
+      普通 <code>sound://</code> 和 <code>mdict-sound://</code> 链接都会被改写为 data URI，避免
+      click handler 把无 scheme 处理器的 URL 喂给 <code>new Audio(...)</code> 而播放失败；负向
+      前缀确保不会重复改写已被替换过的位置。<code>javascript:new Audio(...)</code> 中的本地音频
+      会先被改写为 data URI，并由结果页 click handler 拦截播放，避免被 CSP 当作导航阻断。
+    </p>
+    <p>
+      <code>mdict-entry://</code> 跳转由结果面板按 href payload 查询，而不是依赖锚点展示文本。
+      单次查询有 data URI 数量和总字节预算，避免大词条因为数百个发音资源被同步内联而阻塞查询。
+    </p>
+
+    <h2>调试入口</h2>
+    <ul>
+      <li>导入失败时，先检查文件扩展名、MDX/MDD 同名匹配，以及 <code>MDictManager.loadErrors</code>。</li>
+      <li>查询无结果时，检查 <code>MDictManager.dictionariesForLookup()</code>、词典大小写设置、<code>@@@LINK=</code> 目标词、key block 边界和 <code>MDictSearchIndex</code> fallback candidates。</li>
+      <li>图片、音频或样式缺失时，优先检查 <code>MDictDictionary</code> 的 resource key candidates、同名 <code>.css</code> 文件路径、资源重写和 data URI/CSS cache 命中。</li>
+      <li>解析、解压或加密相关错误，从 <code>MDictReader/</code> 子目录里的 <code>MDictReader</code>、<code>MDictBinary</code>、<code>MDictKeyBlocks</code> 和 <code>MDictRecords</code> 开始定位。</li>
+      <li>结果面板样式或高度异常，回到 <code>MDictService.wrapWithStyle</code> 与 <code>DictionaryHTMLRenderer</code> 排查。</li>
+    </ul>
+  </main>
+</body>
+</html>

@@ -62,6 +62,7 @@ struct VolcanoTranslateType: Equatable {
         .serbian: "sr",
         .hungarian: "hu",
         .georgian: "ka",
+        .uyghur: "ug",
     ]
 
     var sourceLanguage: String
@@ -71,6 +72,14 @@ struct VolcanoTranslateType: Equatable {
         guard let fromLanguage = supportLanguagesDictionary[from],
               let toLanguage = supportLanguagesDictionary[to]
         else {
+            return .unsupported
+        }
+
+        // Volcano currently only supports Uyghur as a source language to Chinese.
+        if from == .uyghur, !to.isChinese {
+            return .unsupported
+        }
+        if to == .uyghur {
             return .unsupported
         }
 

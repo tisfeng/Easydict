@@ -7,12 +7,17 @@
 //
 
 #import "EZWebViewManager.h"
-
+#import "EZConst.h"
+#import <math.h>
 
 static NSString *kObjcHandler = @"objcHandler";
 static NSString *kMethod = @"method";
 
 @interface EZWebViewManager () <WKNavigationDelegate, WKScriptMessageHandler>
+
+@property (nonatomic, assign) BOOL isUpdatingIframe;
+@property (nonatomic, assign) BOOL forceNextScrollHeightCallback;
+@property (nonatomic, assign) CGFloat lastScrollHeight;
 
 - (void)teardownWebView;
 
@@ -49,9 +54,18 @@ static NSString *kMethod = @"method";
         
         if ([body[kMethod] isEqualToString:@"noteToUpdateScrollHeight"]) {
             CGFloat scrollHeight = [body[@"scrollHeight"] floatValue];
-            if (self.didFinishUpdatingIframeHeightBlock) {
-                self.didFinishUpdatingIframeHeightBlock(scrollHeight);
+            BOOL heightChanged = self.lastScrollHeight <= 0 ||
+                                 fabs(scrollHeight - self.lastScrollHeight) >=
+                                 EZLayoutGeometryTolerance_0_5;
+            BOOL shouldNotifyHeight = heightChanged || self.forceNextScrollHeightCallback;
+            if (shouldNotifyHeight) {
+                self.lastScrollHeight = scrollHeight;
+                self.forceNextScrollHeightCallback = NO;
+                if (self.didFinishUpdatingIframeHeightBlock) {
+                    self.didFinishUpdatingIframeHeightBlock(scrollHeight);
+                }
             }
+            self.isUpdatingIframe = NO;
         }
     }
 }
@@ -59,10 +73,30 @@ static NSString *kMethod = @"method";
 #pragma mark - WebView evaluateJavaScript
 
 - (void)updateAllIframe {
+    if (self.isUpdatingIframe) {
+        if (self.needUpdateIframeHeight) {
+            self.forceNextScrollHeightCallback = YES;
+        }
+        return;
+    }
+
+    self.forceNextScrollHeightCallback = self.forceNextScrollHeightCallback ||
+                                          self.needUpdateIframeHeight;
+    self.needUpdateIframeHeight = NO;
+    self.isUpdatingIframe = YES;
+
     CGFloat fontSize = MyConfiguration.shared.fontSizeRatio; // 1.4 --> 140%
-    NSString *script = [NSString stringWithFormat:@"changeIframeBodyFontSize(%.1f); updateAllIframeStyle();", fontSize];
-    [self.webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError *_Nullable error) {
-        if (!error) {
+    NSString *script = [NSString stringWithFormat:
+                        @"changeIframeBodyFontSize(%.1f); updateAllIframeStyle();",
+                        fontSize];
+    [self.webView evaluateJavaScript:script
+                   completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+        if (error) {
+            MMLogError(@"updateAllIframe failed: %@", error);
+        }
+        self.isUpdatingIframe = NO;
+        if (self.needUpdateIframeHeight) {
+            [self updateAllIframe];
         }
     }];
 }
@@ -71,7 +105,11 @@ static NSString *kMethod = @"method";
     self.wordResultViewHeight = 0;
     self.isLoaded = NO;
     self.needUpdateIframeHeight = NO;
+    self.loadedHTMLString = nil;
     self.didFinishUpdatingIframeHeightBlock = nil;
+    self.isUpdatingIframe = NO;
+    self.forceNextScrollHeightCallback = NO;
+    self.lastScrollHeight = 0;
     [self teardownWebView];
 }
 
@@ -82,7 +120,13 @@ static NSString *kMethod = @"method";
 #pragma mark - MJExtension
 
 + (NSArray *)mj_ignoredPropertyNames {
-    return @[ @"webView" ];
+    return @[
+        @"webView",
+        @"loadedHTMLString",
+        @"isUpdatingIframe",
+        @"forceNextScrollHeightCallback",
+        @"lastScrollHeight"
+    ];
 }
 
 - (void)teardownWebView {

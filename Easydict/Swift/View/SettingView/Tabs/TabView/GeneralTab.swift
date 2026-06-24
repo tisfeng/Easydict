@@ -8,6 +8,7 @@
 
 import Defaults
 import LaunchAtLogin
+import SFSafeSymbols
 import SwiftUI
 
 // MARK: - GeneralTab
@@ -105,6 +106,20 @@ struct GeneralTab: View {
             }
 
             Section {
+                Toggle(isOn: $enableMarkdownRendering) {
+                    Label(
+                        "setting.general.display.enable_markdown_rendering",
+                        systemSymbol: .docRichtext
+                    )
+                }
+            } header: {
+                Text("setting.general.display.header")
+            } footer: {
+                Text("setting.general.display.enable_markdown_rendering.description")
+                    .font(.footnote)
+            }
+
+            Section {
                 Picker("setting.general.language", selection: $languageState.language) {
                     ForEach(LanguageState.LanguageType.allCases, id: \.rawValue) { language in
                         Text(language.name)
@@ -147,14 +162,15 @@ struct GeneralTab: View {
                     }
                     Spacer()
                     Toggle(
-                        "",
                         isOn: $includeBetaUpdates.didSet(execute: { state in
                             logSettings(["include_beta_updates": state])
                             if state {
                                 MyConfiguration.shared.updater.checkForUpdates()
                             }
                         })
-                    )
+                    ) {
+                        EmptyView()
+                    }
                     .labelsHidden()
                 }
 
@@ -286,6 +302,7 @@ struct GeneralTab: View {
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
     @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
+    @Default(.enableMarkdownRendering) private var enableMarkdownRendering
 
     @Default(.includeBetaUpdates) private var includeBetaUpdates
 

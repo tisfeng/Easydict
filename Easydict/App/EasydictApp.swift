@@ -23,6 +23,14 @@ enum EasydictCmpatibilityEntry {
         AnalyticsService.setupCrashService()
         AnalyticsService.logAppInfo()
 
+        // Workaround for macOS 26 Tahoe WindowServer high GPU load: NSWindow subclasses
+        // that directly override `_cornerMask` defeat AppKit's mask cache and force the
+        // compositor to re-render every frame. Must run before any window is created.
+        // See https://github.com/electron/electron/issues/48311
+        if #available(macOS 26, *) {
+            EZPatchWindowServerCornerMask()
+        }
+
         // app launch
         EasydictApp.main()
     }
@@ -49,8 +57,8 @@ struct EasydictApp: App {
                         )
                     ) { _ in
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                            // calling `openSettings` immediately doesn't work so wait a quick moment
-                            try? openSettings()
+                            // calling `openSettingsLegacy` immediately doesn't work so wait a quick moment
+                            try? openSettingsLegacy()
                         }
                     }
             } icon: {
@@ -79,7 +87,7 @@ struct EasydictApp: App {
 
     // MARK: Private
 
-    @Environment(\.openSettings) private var openSettings
+    @Environment(\.openSettingsLegacy) private var openSettingsLegacy
     @Environment(\.openWindow) private var openWindow
 
     @NSApplicationDelegateAdaptor private var delegate: AppDelegate

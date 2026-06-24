@@ -69,6 +69,7 @@ final class QueryServiceFactory: NSObject {
 
     private let serviceTypeMappings: [(serviceType: ServiceType, serviceClass: QueryService.Type)] = [
         (.appleDictionary, AppleDictionary.self),
+        (.mDict, MDictService.self),
         (.youdao, YoudaoService.self),
         (.openAI, OpenAIService.self),
         (.deepSeek, DeepSeekService.self),
@@ -78,6 +79,7 @@ final class QueryServiceFactory: NSObject {
         (.gitHub, GitHubService.self),
         (.builtInAI, BuiltInAIService.self),
         (.claudeCode, ClaudeCodeService.self),
+        (.codexCLI, CodexCLIService.self),
         (.gemini, GeminiService.self),
         (.claude, ClaudeService.self),
         (.ollama, OllamaService.self),

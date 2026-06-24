@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600">
+  <style>
+    text {
+      font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC',
+        'Microsoft YaHei', sans-serif;
+    }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9333ea"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="600" fill="#ffffff"/>
+  <text x="480" y="38" text-anchor="middle" font-size="20" font-weight="700" fill="#111827">词典结果渲染架构</text>
+  <text x="480" y="62" text-anchor="middle" font-size="13" fill="#6b7280">Apple Dictionary 与 MDict 共用同一个 HTML 展示壳</text>
+
+  <rect x="70" y="100" width="820" height="120" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="90" y="124" font-size="12" font-weight="700" fill="#1d4ed8">词典服务层</text>
+
+  <rect x="120" y="145" width="230" height="56" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="235" y="168" text-anchor="middle" font-size="14" font-weight="600" fill="#111827">Apple Dictionary</text>
+  <text x="235" y="188" text-anchor="middle" font-size="12" fill="#6b7280">系统词典 HTML 条目</text>
+
+  <rect x="610" y="145" width="230" height="56" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="725" y="168" text-anchor="middle" font-size="14" font-weight="600" fill="#111827">MDict Service</text>
+  <text x="725" y="188" text-anchor="middle" font-size="12" fill="#6b7280">MDX/MDD 条目与资源</text>
+
+  <rect x="70" y="260" width="820" height="185" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="90" y="284" font-size="12" font-weight="700" fill="#15803d">DictionaryRendering</text>
+
+  <rect x="340" y="315" width="310" height="70" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="495" y="342" text-anchor="middle" font-size="15" font-weight="600" fill="#111827">DictionaryHTMLRenderer</text>
+  <text x="495" y="364" text-anchor="middle" font-size="12" fill="#6b7280">过滤 section，生成标题、details 与 iframe</text>
+
+  <path d="M 95 365 L 95 315 L 285 315 L 285 365 Z" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <path d="M 95 365 L 95 392 L 285 392 L 285 365" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="190" y="342" text-anchor="middle" font-size="13" font-weight="600" fill="#111827">dictionary-result.html</text>
+  <text x="190" y="374" text-anchor="middle" font-size="12" fill="#6b7280">外层模板</text>
+
+  <rect x="715" y="320" width="125" height="64" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="778" y="345" text-anchor="middle" font-size="13" font-weight="600" fill="#111827">Section</text>
+  <text x="778" y="366" text-anchor="middle" font-size="12" fill="#6b7280">title + html</text>
+
+  <rect x="300" y="490" width="360" height="62" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="480" y="516" text-anchor="middle" font-size="15" font-weight="600" fill="#111827">结果面板 WKWebView</text>
+  <text x="480" y="538" text-anchor="middle" font-size="12" fill="#6b7280">加载完整 HTML，更新 iframe 高度与显示效果</text>
+
+  <path d="M 235 201 L 235 238 L 410 238 L 410 315" fill="none" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <rect x="330" y="214" width="164" height="22" rx="4" fill="#ffffff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="412" y="230" text-anchor="middle" font-size="12" fill="#1d4ed8">DictionaryHTMLSection</text>
+
+  <path d="M 725 201 L 725 238 L 550 238 L 550 315" fill="none" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+
+  <path d="M 285 353 L 340 353" fill="none" stroke="#16a34a" stroke-width="1.8" marker-end="url(#arrow-green)"/>
+  <rect x="293" y="330" width="40" height="22" rx="4" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="313" y="346" text-anchor="middle" font-size="12" fill="#15803d">模板</text>
+
+  <path d="M 715 352 L 650 352" fill="none" stroke="#16a34a" stroke-width="1.8" marker-end="url(#arrow-green)"/>
+
+  <path d="M 495 385 L 495 490" fill="none" stroke="#9333ea" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
+  <rect x="441" y="426" width="108" height="22" rx="4" fill="#ffffff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="495" y="442" text-anchor="middle" font-size="12" fill="#7e22ce">完整 HTML</text>
+
+  <g transform="translate(70, 565)">
+    <line x1="0" y1="8" x2="30" y2="8" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+    <text x="38" y="12" fill="#6b7280" font-size="12">词典条目输入</text>
+    <line x1="140" y1="8" x2="170" y2="8" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+    <text x="178" y="12" fill="#6b7280" font-size="12">模板与 section</text>
+    <line x1="300" y1="8" x2="330" y2="8" stroke="#9333ea" stroke-width="1.5" marker-end="url(#arrow-purple)"/>
+    <text x="338" y="12" fill="#6b7280" font-size="12">渲染输出</text>
+  </g>
+</svg>

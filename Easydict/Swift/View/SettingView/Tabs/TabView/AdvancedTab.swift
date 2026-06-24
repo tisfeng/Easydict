@@ -47,6 +47,14 @@ struct AdvancedTab: View {
                             .tag(option)
                     }
                 }
+                Toggle(isOn: $preferYoudaoTTSForEnglishWord) {
+                    AdvancedTabItemView(
+                        color: .indigo,
+                        icon: .waveform,
+                        labelText: "setting.advance.prefer_youdao_tts_for_english_word",
+                        subtitleText: "setting.advance.prefer_youdao_tts_for_english_word_desc"
+                    )
+                }
                 Toggle(isOn: $disableTipsView) {
                     AdvancedTabItemView(
                         color: .green,
@@ -69,10 +77,11 @@ struct AdvancedTab: View {
 
                 LabeledContent {
                     TextField(
-                        "",
                         text: $minClassicalChineseTextDetectLength,
                         prompt: Text(verbatim: "\(SharedConstants.minClassicalChineseLength)")
-                    )
+                    ) {
+                        EmptyView()
+                    }
                     .frame(width: 100)
                     .fixedSize(horizontal: true, vertical: false)
                     .onChange(of: minClassicalChineseTextDetectLength) { newValue in
@@ -113,11 +122,13 @@ struct AdvancedTab: View {
 
                 Group {
                     LabeledContent {
-                        Picker("", selection: $autoShowQueryIconExcludedLanguage) {
+                        Picker(selection: $autoShowQueryIconExcludedLanguage) {
                             ForEach(Language.allAvailableOptions, id: \.rawValue) { option in
                                 Text(verbatim: "\(option.flagEmoji) \(option.localizedName)")
                                     .tag(option)
                             }
+                        } label: {
+                            EmptyView()
                         }
                         .labelsHidden()
                     } label: {
@@ -399,13 +410,15 @@ struct AdvancedTab: View {
                 }
 
                 LabeledContent {
-                    TextField("", text: $httpPort, prompt: Text(verbatim: "8080"))
-                        .frame(width: 100)
-                        .fixedSize(horizontal: true, vertical: false)
-                        // Add onChange modifier to filter input
-                        .onChange(of: httpPort) { newValue in
-                            httpPort = newValue.filter { $0.isNumber }
-                        }
+                    TextField(text: $httpPort, prompt: Text(verbatim: "8080")) {
+                        EmptyView()
+                    }
+                    .frame(width: 100)
+                    .fixedSize(horizontal: true, vertical: false)
+                    // Add onChange modifier to filter input
+                    .onChange(of: httpPort) { newValue in
+                        httpPort = newValue.filter { $0.isNumber }
+                    }
                 } label: {
                     AdvancedTabItemView(
                         color: getHttpIconColor(),
@@ -456,6 +469,7 @@ struct AdvancedTab: View {
     @Default(.enableBetaFeature) private var enableBetaFeature
 
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
+    @Default(.preferYoudaoTTSForEnglishWord) private var preferYoudaoTTSForEnglishWord
     @Default(.disableTipsView) private var disableTipsView
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
     @Default(.enableCompatibilityReplace) private var enableCompatibilityReplace

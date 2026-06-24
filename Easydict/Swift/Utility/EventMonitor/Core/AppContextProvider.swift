@@ -24,7 +24,9 @@ final class AppContextProvider {
         let userAppModelList = LocalStorage.shared().selectTextTypeAppModelList
 
         let appBundleID = frontmostApplication?.bundleIdentifier ?? ""
-        let defaultType: EZTriggerType = [.doubleClick, .tripleClick, .dragged, .shift]
+        // Cmd+A follows the same default auto-selection policy as mouse and
+        // Shift triggers, while per-app configs can still opt out.
+        let defaultType: EZTriggerType = [.doubleClick, .tripleClick, .dragged, .shift, .selectAllShortcut]
 
         var type = appSelectTextActionType(
             appBundleID: appBundleID,

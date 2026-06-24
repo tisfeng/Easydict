@@ -71,6 +71,13 @@ extension Defaults.Keys {
         "EZConfiguration_kDefaultTTSServiceTypeKey",
         default: TTSServiceType.youdao
     )
+    /// When enabled, English words are spoken via Youdao TTS regardless of the
+    /// configured default TTS service. Defaults to `true` to preserve the long
+    /// standing behavior of using Youdao's high quality dictionary recordings.
+    static let preferYoudaoTTSForEnglishWord = Key<Bool>(
+        "EZConfiguration_kPreferYoudaoTTSForEnglishWordKey",
+        default: true
+    )
     static let showGoogleQuickLink = Key<Bool>("EZConfiguration_kShowGoogleLinkKey", default: true)
     static let showEudicQuickLink = Key<Bool>("EZConfiguration_kShowEudicLinkKey", default: true)
     static let showAppleDictionaryQuickLink = Key<Bool>(
@@ -182,6 +189,14 @@ extension Defaults.Keys {
 
     static let enableRemoveBooksExcerptInfo = Key<Bool>(
         "EZConfiguration_kEnableRemoveBooksExcerptInfo",
+        default: true
+    )
+
+    /// Whether AI/streaming service results should render Markdown formatting
+    /// (headings, bold, lists, blockquotes, code) in the result label.
+    /// Plain-text services (Google, Bing, DeepL, etc.) ignore this setting.
+    static let enableMarkdownRendering = Key<Bool>(
+        "EZConfiguration_kEnableMarkdownRendering",
         default: true
     )
 
@@ -378,6 +393,9 @@ extension Defaults.Keys {
 extension Defaults.Keys {
     // Global
     static let selectionShortcut = Key<KeyCombo?>("EZSelectionShortcutKey_keyHolder")
+    static let toggleAutoSelectTextShortcut = Key<KeyCombo?>(
+        "EZToggleAutoSelectTextShortcutKey_keyHolder"
+    )
     static let snipShortcut = Key<KeyCombo?>("EZSnipShortcutKey_keyHolder")
     static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder")
     // Note: This key value is not suitable for renaming, because it is used in old versions.

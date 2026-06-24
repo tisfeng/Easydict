@@ -56,6 +56,8 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeGitHub;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeDoubao;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeClaudeCode;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeClaude;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeCodexCLI;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeMDict;
 
 FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
 FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;
@@ -102,6 +104,7 @@ typedef NS_OPTIONS(NSUInteger, EZTriggerType) {
     EZTriggerTypeTripleClick = 1 << 1,
     EZTriggerTypeDragged = 1 << 2,
     EZTriggerTypeShift = 1 << 3,
+    EZTriggerTypeSelectAllShortcut = 1 << 4, // Cmd+A in editable text contexts.
 };
 
 

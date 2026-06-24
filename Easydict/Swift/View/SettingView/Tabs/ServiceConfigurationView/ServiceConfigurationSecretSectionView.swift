@@ -145,6 +145,7 @@ private class ServiceValidationViewModel: ObservableObject {
     init(service: QueryService, observing keys: [Defaults.Key<String>]) {
         self.service = service
         self.name = service.name()
+        self.isValidateBtnDisabled = keys.contains(where: { Defaults[$0].isEmpty })
 
         // check secret key empty input
         Defaults.publisher(keys: keys)
@@ -169,7 +170,7 @@ private class ServiceValidationViewModel: ObservableObject {
 
     @Published var isAlertPresented = false
     @Published var isValidating = false
-    @Published var alertTitle: LocalizedStringKey = ""
+    @Published var alertTitle = LocalizedStringKey(String())
     @Published var errorMessage = ""
     @Published var isValidateBtnDisabled = false
 
@@ -186,7 +187,7 @@ private class ServiceValidationViewModel: ObservableObject {
 
     func reset() {
         isValidating = false
-        alertTitle = ""
+        alertTitle = LocalizedStringKey(String())
         errorMessage = ""
         isAlertPresented = false
     }

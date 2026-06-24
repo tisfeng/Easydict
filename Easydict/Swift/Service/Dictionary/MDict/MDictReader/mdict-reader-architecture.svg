@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 680" width="960" height="680" role="img" aria-labelledby="title desc">
+  <title id="title">MDictReader 架构</title>
+  <desc id="desc">展示 MDictReader 从 MDX/MDD 文件读取、校验 metadata cache schema、定位候选 key block、过滤词条、解压 LZO/zlib 记录块到返回查询结果的数据流。</desc>
+  <style>
+    text {
+      font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    .title { fill: #111827; font-size: 24px; font-weight: 600; }
+    .subtitle { fill: #6b7280; font-size: 13px; }
+    .group-title { fill: #374151; font-size: 15px; font-weight: 600; }
+    .box-title { fill: #111827; font-size: 15px; font-weight: 600; }
+    .box-text { fill: #4b5563; font-size: 12px; }
+    .label { fill: #6b7280; font-size: 12px; }
+    .lane-title { fill: #374151; font-size: 13px; font-weight: 600; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9333ea"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="680" fill="#ffffff"/>
+
+  <text x="48" y="48" class="title">MDictReader 二进制读取层</text>
+  <text x="48" y="72" class="subtitle">复用持久化 metadata cache，按需解压 key/record block，并在候选 block 内精确过滤返回文本定义或资源 Data。</text>
+
+  <rect x="40" y="104" width="880" height="492" rx="10" ry="10" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="62" y="134" class="group-title">Easydict/Swift/Service/Dictionary/MDict/MDictReader</text>
+
+  <rect x="66" y="164" width="828" height="146" rx="8" ry="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="88" y="191" class="lane-title">后台初始化解析</text>
+
+  <rect x="92" y="216" width="142" height="64" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="163" y="241" text-anchor="middle" class="box-title">MDX / MDD</text>
+  <text x="163" y="263" text-anchor="middle" class="box-text">mapped file data</text>
+
+  <rect x="288" y="204" width="160" height="88" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="368" y="235" text-anchor="middle" class="box-title">HeaderParser</text>
+  <text x="368" y="260" text-anchor="middle" class="box-text">版本、编码、格式</text>
+  <text x="368" y="280" text-anchor="middle" class="box-text">加密 bit flag</text>
+
+  <rect x="500" y="204" width="160" height="88" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="580" y="235" text-anchor="middle" class="box-title">KeyBlocks</text>
+  <text x="580" y="260" text-anchor="middle" class="box-text">key block info</text>
+  <text x="580" y="280" text-anchor="middle" class="box-text">按需 key entries</text>
+
+  <rect x="712" y="204" width="142" height="88" rx="8" ry="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="783" y="241" text-anchor="middle" class="box-title">KeyBlockRanges</text>
+  <text x="783" y="263" text-anchor="middle" class="box-text">首尾 key 与块偏移</text>
+  <text x="783" y="283" text-anchor="middle" class="box-text">schema metadata cache</text>
+
+  <path d="M234 248 H288" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
+  <text x="261" y="236" text-anchor="middle" class="label">header</text>
+  <path d="M448 248 H500" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
+  <text x="474" y="236" text-anchor="middle" class="label">encoding</text>
+  <path d="M660 248 H712" stroke="#2563eb" stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
+  <text x="686" y="236" text-anchor="middle" class="label">entries</text>
+
+  <rect x="66" y="348" width="828" height="146" rx="8" ry="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="88" y="375" class="lane-title">查询读取</text>
+
+  <rect x="92" y="402" width="172" height="70" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="178" y="430" text-anchor="middle" class="box-title">lookup / lookupData</text>
+  <text x="178" y="453" text-anchor="middle" class="box-text">word 或 resource key</text>
+
+  <rect x="330" y="390" width="190" height="94" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="425" y="421" text-anchor="middle" class="box-title">Records</text>
+  <text x="425" y="446" text-anchor="middle" class="box-text">record span / block range</text>
+  <text x="425" y="466" text-anchor="middle" class="box-text">按需解压与 LRU 缓存</text>
+
+  <rect x="586" y="390" width="142" height="94" rx="8" ry="8" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1.5"/>
+  <text x="657" y="421" text-anchor="middle" class="box-title">Binary 工具</text>
+  <text x="657" y="446" text-anchor="middle" class="box-text">边界校验</text>
+  <text x="657" y="466" text-anchor="middle" class="box-text">LZO / zlib 解压</text>
+
+  <rect x="776" y="402" width="92" height="70" rx="8" ry="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="822" y="430" text-anchor="middle" class="box-title">结果</text>
+  <text x="822" y="453" text-anchor="middle" class="box-text">String / Data</text>
+
+  <path d="M264 437 H330" stroke="#16a34a" stroke-width="1.8" fill="none" marker-end="url(#arrow-green)"/>
+  <text x="297" y="425" text-anchor="middle" class="label">entry</text>
+  <path d="M520 437 H586" stroke="#16a34a" stroke-width="1.8" fill="none" marker-end="url(#arrow-green)"/>
+  <text x="553" y="425" text-anchor="middle" class="label">block bytes</text>
+  <path d="M728 437 H776" stroke="#16a34a" stroke-width="1.8" fill="none" marker-end="url(#arrow-green)"/>
+  <text x="752" y="425" text-anchor="middle" class="label">decode</text>
+
+  <path d="M783 292 C783 330 178 330 178 402" stroke="#16a34a" stroke-width="1.8" fill="none" marker-end="url(#arrow-green)"/>
+  <rect x="364" y="315" width="248" height="24" rx="4" ry="4" fill="#f9fafb"/>
+  <text x="488" y="332" text-anchor="middle" class="label">二分定位 block，块内精确过滤</text>
+
+  <rect x="328" y="522" width="304" height="58" rx="8" ry="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <text x="480" y="546" text-anchor="middle" class="box-title">加密索引支持</text>
+  <text x="480" y="568" text-anchor="middle" class="box-text">RIPEMD-128 派生 key，解密 key block info</text>
+
+  <path d="M580 292 C580 340 480 474 480 522" stroke="#9333ea" stroke-width="1.8" fill="none" marker-end="url(#arrow-purple)"/>
+  <text x="535" y="512" text-anchor="middle" class="label">decrypt</text>
+
+  <g transform="translate(66, 632)">
+    <line x1="0" y1="8" x2="32" y2="8" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+    <text x="44" y="12" class="label">后台初始化解析</text>
+    <line x1="154" y1="8" x2="186" y2="8" stroke="#16a34a" stroke-width="1.8" marker-end="url(#arrow-green)"/>
+    <text x="198" y="12" class="label">查询读取</text>
+    <line x1="322" y1="8" x2="354" y2="8" stroke="#9333ea" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
+    <text x="366" y="12" class="label">加密 key index</text>
+  </g>
+</svg>

@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" width="960" height="620">
+  <style>
+    text {
+      font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+      fill: #111827;
+    }
+    .title { font-size: 22px; font-weight: 600; }
+    .node-title { font-size: 15px; font-weight: 600; }
+    .node-text { font-size: 12px; fill: #6b7280; }
+    .legend-text { font-size: 12px; fill: #4b5563; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-gray" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6b7280"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ea580c"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="620" fill="#ffffff"/>
+  <text x="40" y="52" class="title">CodexCLI 翻译服务架构</text>
+  <text x="40" y="78" class="node-text">每次翻译启动独立 codex exec --json 子进程，按 JSONL 事件解析文本、用量与错误。</text>
+
+  <!-- Row 1: pipeline top -->
+  <rect x="40" y="120" width="200" height="92" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="60" y="148" class="node-title">CodexCLIService</text>
+  <text x="60" y="172" class="node-text">合并 system + 对话</text>
+  <text x="60" y="192" class="node-text">管理 runner 生命周期</text>
+  <text x="60" y="208" class="node-text">reasoning 不含 none</text>
+
+  <rect x="320" y="120" width="200" height="92" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <text x="340" y="148" class="node-title">CodexCLIRunner</text>
+  <text x="340" y="172" class="node-text">探测 codex 二进制</text>
+  <text x="340" y="192" class="node-text">读取 rc + allowlist env</text>
+  <text x="340" y="208" class="node-text">启动子进程并读取 IO</text>
+
+  <rect x="600" y="120" width="200" height="92" rx="8" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="620" y="148" class="node-title">codex exec --json</text>
+  <text x="620" y="172" class="node-text">--ephemeral</text>
+  <text x="620" y="192" class="node-text">--sandbox + disabled tools</text>
+  <text x="620" y="208" class="node-text">prompt from stdin</text>
+
+  <!-- Row 2 left: Logger sidebar from Runner -->
+  <rect x="320" y="260" width="200" height="80" rx="8" fill="#fefce8" stroke="#fde68a" stroke-width="1.5"/>
+  <text x="340" y="288" class="node-title">CodexCLILogger</text>
+  <text x="340" y="312" class="node-text">logs/codex-cli/*.log</text>
+  <text x="340" y="330" class="node-text">滚动保留 50 个文件</text>
+
+  <!-- Row 2 right: EventParser -->
+  <rect x="600" y="260" width="200" height="80" rx="8" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1.5"/>
+  <text x="620" y="288" class="node-title">CodexCLIEventParser</text>
+  <text x="620" y="312" class="node-text">解析 JSONL 事件</text>
+  <text x="620" y="330" class="node-text">3 类输出</text>
+
+  <!-- Row 3: parser outputs -->
+  <rect x="40" y="430" width="260" height="110" rx="8" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5"/>
+  <text x="60" y="458" class="node-title">extractCodexText</text>
+  <text x="60" y="482" class="node-text">item.completed / agent_message</text>
+  <text x="60" y="502" class="node-text">缓存最新 assistant 文本</text>
+  <text x="60" y="522" class="node-text">成功退出后输出一次</text>
+
+  <rect x="350" y="430" width="260" height="110" rx="8" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5"/>
+  <text x="370" y="458" class="node-title">parseCodexTokenUsage</text>
+  <text x="370" y="482" class="node-text">turn.completed.usage</text>
+  <text x="370" y="502" class="node-text">→ CodexTokenUsage</text>
+  <text x="370" y="522" class="node-text">取最后一次累计值</text>
+
+  <rect x="660" y="430" width="260" height="110" rx="8" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <text x="680" y="458" class="node-title">parseCodexError</text>
+  <text x="680" y="482" class="node-text">turn.failed / 退出码非零</text>
+  <text x="680" y="502" class="node-text">→ notLoggedIn / quotaExceeded</text>
+  <text x="680" y="522" class="node-text">/ cliError(message)</text>
+
+  <!-- Arrows row 1 (forward) -->
+  <line x1="240" y1="166" x2="320" y2="166" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <text x="262" y="158" class="legend-text">prompt</text>
+  <line x1="520" y1="166" x2="600" y2="166" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <text x="540" y="158" class="legend-text">spawn + stdin</text>
+
+  <!-- codex (subprocess stdout JSONL) → Parser -->
+  <line x1="700" y1="212" x2="700" y2="260" stroke="#6b7280" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#arrow-gray)"/>
+  <text x="710" y="240" class="legend-text">JSONL</text>
+
+  <!-- Runner → Logger (write log) -->
+  <line x1="420" y1="212" x2="420" y2="260" stroke="#ea580c" stroke-width="1.6" marker-end="url(#arrow-orange)"/>
+  <text x="430" y="240" class="legend-text">log</text>
+
+  <!-- Parser → outputs (tree split) -->
+  <line x1="700" y1="340" x2="700" y2="400" stroke="#16a34a" stroke-width="1.6"/>
+  <line x1="170" y1="400" x2="790" y2="400" stroke="#16a34a" stroke-width="1.6"/>
+  <line x1="170" y1="400" x2="170" y2="430" stroke="#16a34a" stroke-width="1.6" marker-end="url(#arrow-green)"/>
+  <line x1="480" y1="400" x2="480" y2="430" stroke="#16a34a" stroke-width="1.6" marker-end="url(#arrow-green)"/>
+  <line x1="790" y1="400" x2="790" y2="430" stroke="#16a34a" stroke-width="1.6" marker-end="url(#arrow-green)"/>
+
+  <!-- Legend -->
+  <g transform="translate(40 585)">
+    <line x1="0" y1="0" x2="30" y2="0" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+    <text x="40" y="4" class="legend-text">前向调用</text>
+    <line x1="120" y1="0" x2="150" y2="0" stroke="#6b7280" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#arrow-gray)"/>
+    <text x="160" y="4" class="legend-text">JSONL 事件流</text>
+    <line x1="270" y1="0" x2="300" y2="0" stroke="#16a34a" stroke-width="1.6" marker-end="url(#arrow-green)"/>
+    <text x="310" y="4" class="legend-text">解析后返回</text>
+    <line x1="400" y1="0" x2="430" y2="0" stroke="#ea580c" stroke-width="1.6" marker-end="url(#arrow-orange)"/>
+    <text x="440" y="4" class="legend-text">日志副作用</text>
+  </g>
+</svg>

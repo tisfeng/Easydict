@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import Alamofire
 import Defaults
 import Foundation
 
@@ -53,6 +54,12 @@ public final class ClaudeService: StreamService {
 
     override var observeKeys: [Defaults.Key<String>] {
         [apiKeyKey, supportedModelsKey]
+    }
+
+    // MARK: Remote Models
+
+    override var canFetchRemoteModels: Bool {
+        true
     }
 
     override func contentStreamTranslate(
@@ -115,6 +122,33 @@ public final class ClaudeService: StreamService {
         let messages = chatMessageDicts(chatQuery)
         let (_, userMessages) = separateSystemMessages(messages)
         return userMessages.map { ["role": $0.role.rawValue, "content": $0.content] }
+    }
+
+    override func fetchRemoteModelIDs() async throws -> [String] {
+        guard !apiKey.trim().isEmpty else {
+            throw QueryError(type: .missingSecretKey, message: "Claude API key is empty.")
+        }
+
+        var ids: [String] = []
+        var afterID: String?
+        repeat {
+            let data = try await fetchRemoteModelData(
+                url: try remoteModelsURL(afterID: afterID),
+                headers: HTTPHeaders([
+                    HTTPHeader(name: "x-api-key", value: apiKey),
+                    HTTPHeader(name: "anthropic-version", value: anthropicVersion),
+                    .accept("application/json"),
+                ])
+            )
+
+            guard let modelList = try? JSONDecoder().decode(ClaudeModelListResponse.self, from: data) else {
+                throw QueryError(type: .api, message: "Invalid models response")
+            }
+            ids.append(contentsOf: modelList.data.map(\.id))
+            afterID = modelList.hasMore ? modelList.lastID : nil
+        } while afterID?.isEmpty == false
+
+        return normalizedRemoteModelIDs(ids)
     }
 
     // MARK: Private
@@ -280,6 +314,61 @@ public final class ClaudeService: StreamService {
             }
         }
     }
+
+    private func remoteModelsURL(afterID: String?) throws -> URL {
+        let queryItems = [
+            URLQueryItem(name: "limit", value: "1000"),
+            afterID.map { URLQueryItem(name: "after_id", value: $0) },
+        ].compactMap { $0 }
+        return try remoteModelsURL(queryItems: queryItems)
+    }
+
+    private func remoteModelsURL(queryItems: [URLQueryItem]) throws -> URL {
+        guard let endpointURL = URL(string: endpoint.trim()), endpointURL.isValid,
+              var components = URLComponents(url: endpointURL, resolvingAgainstBaseURL: false)
+        else {
+            throw QueryError(type: .parameter, message: "Claude endpoint is invalid")
+        }
+
+        var parts = components.path.split(separator: "/", omittingEmptySubsequences: true).map(String.init)
+        if parts.isEmpty {
+            parts = ["v1"]
+        } else if ["messages", "models"].contains(parts.last?.lowercased()) {
+            parts.removeLast()
+        }
+
+        parts.append("models")
+        let pageItemNames = Set(queryItems.map(\.name))
+        let existingItems = components.queryItems?.filter { !pageItemNames.contains($0.name) } ?? []
+        components.fragment = nil
+        components.queryItems = existingItems + queryItems
+        components.path = "/" + parts.joined(separator: "/")
+
+        guard let url = components.url, url.isValid else {
+            throw QueryError(type: .parameter, message: "Claude endpoint is invalid")
+        }
+        return url
+    }
+}
+
+// MARK: - ClaudeModelListResponse
+
+private struct ClaudeModelListResponse: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case data
+        case hasMore = "has_more"
+        case lastID = "last_id"
+    }
+
+    let data: [ClaudeRemoteModel]
+    let hasMore: Bool
+    let lastID: String?
+}
+
+// MARK: - ClaudeRemoteModel
+
+private struct ClaudeRemoteModel: Decodable {
+    let id: String
 }
 
 // MARK: - ClaudeModel
@@ -291,4 +380,5 @@ enum ClaudeModel: String, CaseIterable {
     case claude_sonnet_4_6 = "claude-sonnet-4-6"
     case claude_haiku_4_5 = "claude-haiku-4-5"
     case claude_opus_4_6 = "claude-opus-4-6"
+    case claude_opus_4_7 = "claude-opus-4-7"
 }
