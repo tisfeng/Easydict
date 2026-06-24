@@ -79,7 +79,11 @@ extension QueryService: ServiceSecretConfigreDuplicatable {
 
     func remove() {
         for winType in [EZWindowType.fixed, EZWindowType.main, EZWindowType.mini] {
-            LocalStorage.shared().removeServiceType(serviceTypeWithUniqueIdentifier(), windowType: winType)
+            LocalStorage.shared().removeServiceType(
+                serviceTypeWithUniqueIdentifier(),
+                windowType: winType,
+                allowRemovingLast: true
+            )
             NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
         }
         GlobalContext.shared.reloadLLMServicesSubscribers()

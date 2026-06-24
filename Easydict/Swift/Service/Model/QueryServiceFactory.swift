@@ -17,6 +17,7 @@ struct QueryServiceMetadata {
     let title: String
     let apiKeyRequirement: ServiceAPIKeyRequirement
     let isStream: Bool
+    let allowsMultipleInstances: Bool
 }
 
 // MARK: - ServiceRegistration
@@ -28,12 +29,14 @@ private struct ServiceRegistration {
         _ serviceType: ServiceType,
         _ serviceClass: QueryService.Type,
         _ titleKey: String,
-        apiKeyRequirement: ServiceAPIKeyRequirement = .userProvided
+        apiKeyRequirement: ServiceAPIKeyRequirement = .userProvided,
+        allowsMultipleInstances: Bool = false
     ) {
         self.serviceType = serviceType
         self.serviceClass = serviceClass
         self.titleKey = titleKey
         self.apiKeyRequirement = apiKeyRequirement
+        self.allowsMultipleInstances = allowsMultipleInstances
     }
 
     // MARK: Internal
@@ -42,6 +45,7 @@ private struct ServiceRegistration {
     let serviceClass: QueryService.Type
     let titleKey: String
     let apiKeyRequirement: ServiceAPIKeyRequirement
+    let allowsMultipleInstances: Bool
 }
 
 // MARK: - QueryServiceFactory
@@ -100,7 +104,8 @@ final class QueryServiceFactory: NSObject {
                 fallbackKey: registration.titleKey
             ),
             apiKeyRequirement: registration.apiKeyRequirement,
-            isStream: registration.serviceClass is StreamService.Type
+            isStream: registration.serviceClass is StreamService.Type,
+            allowsMultipleInstances: registration.allowsMultipleInstances
         )
     }
 
@@ -124,7 +129,7 @@ final class QueryServiceFactory: NSObject {
         .init(.ollama, OllamaService.self, "ollama_translate", apiKeyRequirement: .none),
         .init(.polishing, PolishingService.self, "polishing_service", apiKeyRequirement: .builtIn),
         .init(.summary, SummaryService.self, "summary_service", apiKeyRequirement: .builtIn),
-        .init(.customOpenAI, CustomOpenAIService.self, "custom_openai"),
+        .init(.customOpenAI, CustomOpenAIService.self, "custom_openai", allowsMultipleInstances: true),
         .init(.deepL, DeepLService.self, "deepL_translate", apiKeyRequirement: .none),
         .init(.google, GoogleService.self, "google_translate", apiKeyRequirement: .none),
         .init(.apple, AppleService.self, "apple_translate", apiKeyRequirement: .none),
