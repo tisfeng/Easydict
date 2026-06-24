@@ -102,14 +102,17 @@ final class LocalStorage: NSObject {
     }
 
     func availableServiceTypeIDs(windowType: EZWindowType) -> [String] {
-        let addedBaseTypes = Set(
-            allServiceTypes(windowType).map {
-                serviceIdentifierComponents(from: $0).rawType
-            }
-        )
+        let addedServiceTypeIds = allServiceTypes(windowType)
 
         return QueryServiceFactory.shared.allServiceTypeIDs.filter { typeId in
-            !addedBaseTypes.contains(serviceIdentifierComponents(from: typeId).rawType)
+            guard let metadata = QueryServiceFactory.shared.metadata(withTypeId: typeId) else {
+                return false
+            }
+            return !containsServiceType(
+                typeId,
+                in: addedServiceTypeIds,
+                metadata: metadata
+            )
         }
     }
 
@@ -120,17 +123,11 @@ final class LocalStorage: NSObject {
         }
 
         var serviceTypeIds = allServiceTypes(windowType)
-        let components = serviceIdentifierComponents(from: serviceTypeId)
-        let isBaseService = components.uuid.isEmpty
-        let alreadyAdded = serviceTypeIds.contains { existingTypeId in
-            if existingTypeId == serviceTypeId {
-                return true
-            }
-            guard isBaseService else {
-                return false
-            }
-            return serviceIdentifierComponents(from: existingTypeId).rawType == components.rawType
-        }
+        let alreadyAdded = containsServiceType(
+            serviceTypeId,
+            in: serviceTypeIds,
+            metadata: metadata
+        )
         guard !alreadyAdded else {
             return false
         }
@@ -143,15 +140,26 @@ final class LocalStorage: NSObject {
 
     @discardableResult
     func removeServiceType(_ serviceTypeId: String, windowType: EZWindowType) -> Bool {
+        removeServiceType(serviceTypeId, windowType: windowType, allowRemovingLast: false)
+    }
+
+    @discardableResult
+    func removeServiceType(
+        _ serviceTypeId: String,
+        windowType: EZWindowType,
+        allowRemovingLast: Bool
+    )
+        -> Bool {
         let serviceTypeIds = allServiceTypes(windowType)
-        guard serviceTypeIds.count > 1 else {
+        guard allowRemovingLast || serviceTypeIds.count > 1 else {
             return false
         }
 
         let updatedServiceTypeIds = serviceTypeIds.filter { $0 != serviceTypeId }
-        guard updatedServiceTypeIds.count != serviceTypeIds.count,
-              !updatedServiceTypeIds.isEmpty
-        else {
+        guard updatedServiceTypeIds.count != serviceTypeIds.count else {
+            return false
+        }
+        guard allowRemovingLast || !updatedServiceTypeIds.isEmpty else {
             return false
         }
 
@@ -492,6 +500,25 @@ final class LocalStorage: NSObject {
         let rawType = String(components.first ?? Substring(serviceTypeId))
         let uuid = components.count > 1 ? String(components[1]) : ""
         return (rawType, uuid)
+    }
+
+    private func containsServiceType(
+        _ serviceTypeId: String,
+        in serviceTypeIds: [String],
+        metadata: QueryServiceMetadata
+    )
+        -> Bool {
+        let components = serviceIdentifierComponents(from: serviceTypeId)
+
+        return serviceTypeIds.contains { existingTypeId in
+            if existingTypeId == serviceTypeId {
+                return true
+            }
+            guard !metadata.allowsMultipleInstances else {
+                return false
+            }
+            return serviceIdentifierComponents(from: existingTypeId).rawType == components.rawType
+        }
     }
 
     /// Reads or creates a per-service query usage record.
