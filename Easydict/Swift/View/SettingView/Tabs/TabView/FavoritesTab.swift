@@ -103,10 +103,10 @@ struct FavoritesTab: View {
         return formatter
     }()
 
-    /// Formats export timestamps in a stable format.
-    private static let exportTimestampFormatter: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime]
+    /// Formats export timestamps as `yyyy-MM-dd HH:mm:ss`.
+    private static let exportTimestampFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         return formatter
     }()
 
@@ -177,7 +177,7 @@ struct FavoritesTab: View {
 
     /// Converts records to a CSV string.
     private func makeCSV(for records: [QueryRecord]) -> String {
-        var rows = ["queryText,queryFromLanguage,queryToLanguage,timestamp"]
+        var rows = ["queryText,queryFromLanguage,queryToLanguage,translatedResult,timestamp"]
         rows.reserveCapacity(records.count + 1)
         for record in records {
             let timestamp = Self.exportTimestampFormatter.string(from: record.timestamp)
@@ -185,6 +185,7 @@ struct FavoritesTab: View {
                 record.queryText,
                 record.queryFromLanguage.localizedName,
                 record.queryToLanguage.localizedName,
+                record.translatedResult ?? "",
                 timestamp,
             ]
             rows.append(values.map(csvEscaped).joined(separator: ","))
@@ -229,8 +230,15 @@ struct QueryRecordRow: View {
                 Text(record.queryText)
                     .font(.body)
                     .lineLimit(1)
+                if let translatedResult = record.translatedResult,
+                   !translatedResult.isEmpty {
+                    Text(translatedResult)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
                 Text(Self.timestampFormatter.string(from: record.timestamp))
-                    .font(.caption)
+                    .font(.caption2)
                     .foregroundColor(.secondary)
             }
             Spacer()
