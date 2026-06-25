@@ -1092,6 +1092,8 @@
 		03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-2.png"; sourceTree = "<group>"; };
 		03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-5.png"; sourceTree = "<group>"; };
 		03C408F32EF472660025A1F0 /* BaiduService+OCR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaiduService+OCR.swift"; sourceTree = "<group>"; };
+		03C408F62EF472660025A1F0 /* baidu-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "baidu-overview.html"; sourceTree = "<group>"; };
+		03C408F72EF472660025A1F0 /* baidu-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "baidu-architecture.svg"; sourceTree = "<group>"; };
 		03C408F82EF5CB830025A1F0 /* ServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTests.swift; sourceTree = "<group>"; };
 		03CA1CED2EDE089E001908D0 /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
 		03CA1CEE2EDE089E001908D0 /* DarkModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeManager.swift; sourceTree = "<group>"; };
@@ -2962,6 +2964,8 @@
 		03D0F0202F00000100ABCDEF /* Baidu */ = {
 			isa = PBXGroup;
 			children = (
+				03C408F62EF472660025A1F0 /* baidu-overview.html */,
+				03C408F72EF472660025A1F0 /* baidu-architecture.svg */,
 				03D0F0022F00000100ABCDEF /* BaiduService.swift */,
 				CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */,
 				CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */,
