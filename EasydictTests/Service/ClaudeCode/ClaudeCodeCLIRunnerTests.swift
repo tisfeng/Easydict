@@ -26,6 +26,28 @@ struct ClaudeCodeCLIRunnerTests {
         #expect(arguments.contains("--include-partial-messages"))
     }
 
+    @Test("buildArguments defaults the model to sonnet")
+    func buildArgumentsDefaultsModelToSonnet() {
+        let arguments = ClaudeCodeRunner.buildArguments(prompt: "Translate this", systemPrompt: nil)
+
+        let modelIndex = arguments.firstIndex(of: "--model")
+        #expect(modelIndex != nil)
+        if let modelIndex {
+            #expect(arguments[modelIndex + 1] == "sonnet")
+        }
+    }
+
+    @Test("buildArguments omits --model when model is empty")
+    func buildArgumentsOmitsModelWhenEmpty() {
+        let arguments = ClaudeCodeRunner.buildArguments(
+            prompt: "Translate this",
+            systemPrompt: nil,
+            model: ""
+        )
+
+        #expect(!arguments.contains("--model"))
+    }
+
     // MARK: - parseError (stderr-only) tests
 
     @Test("parseError returns notLoggedIn when stderr contains 'not logged in'")
