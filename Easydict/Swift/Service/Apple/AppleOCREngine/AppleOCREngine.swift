@@ -230,32 +230,42 @@ public class AppleOCREngine: NSObject {
     private func performSingleLegacyVisionOCR(on cgImage: CGImage, language: Language) async throws
         -> [VNRecognizedTextObservation] {
         try await withCheckedThrowingContinuation { continuation in
+            // Guard against double-resume: Vision may invoke the completion handler
+            // and also throw from perform(), so only resume once.
+            let resumeBox = ResumeBox(continuation: continuation)
+
             let request = VNRecognizeTextRequest { request, error in
                 if let error {
-                    let queryError = QueryError.queryError(from: error, type: .api)!
-                    continuation.resume(throwing: queryError)
+                    let queryError = QueryError.queryError(from: error, type: .api)
+                        ?? QueryError.error(
+                            type: .api,
+                            message: "Vision OCR failed: \(error.localizedDescription)"
+                        )
+                    resumeBox.resume(throwing: queryError)
                     return
                 }
 
-                let results = request.results as! [VNRecognizedTextObservation]
+                // Use safe cast instead of force cast: request.results can be nil
+                // when Vision completes without producing observations.
+                let results = (request.results as? [VNRecognizedTextObservation]) ?? []
                 if results.isEmpty {
                     logInfo("No text recognized in the image with language: \(language)")
 
                     // For empty results, don't throw error - let caller handle retry logic
                     if language == .auto {
                         // Return empty array, caller will handle Japanese retry
-                        continuation.resume(returning: [])
+                        resumeBox.resume(returning: [])
                         return
                     } else {
                         // For specific language, throw error
                         let message = String(localized: "ocr_result_is_empty")
                         let error = QueryError.error(type: .noResult, message: message)
-                        continuation.resume(throwing: error)
+                        resumeBox.resume(throwing: error)
                         return
                     }
                 }
 
-                continuation.resume(returning: results)
+                resumeBox.resume(returning: results)
             }
 
             let enableAutoDetect = !hasValidOCRLanguage(language)
@@ -278,8 +288,12 @@ public class AppleOCREngine: NSObject {
                 do {
                     try requestHandler.perform([request])
                 } catch {
-                    let queryError = QueryError.queryError(from: error, type: .api)!
-                    continuation.resume(throwing: queryError)
+                    let queryError = QueryError.queryError(from: error, type: .api)
+                        ?? QueryError.error(
+                            type: .api,
+                            message: "Vision OCR request failed: \(error.localizedDescription)"
+                        )
+                    resumeBox.resume(throwing: queryError)
                 }
             }
         }
@@ -373,7 +387,12 @@ public class AppleOCREngine: NSObject {
 
         // Return best trusted result, or fallback to highest confidence
         let candidates = trusted.isEmpty ? results : trusted
-        return candidates.max { $0.confidence < $1.confidence }!
+        guard let best = candidates.max(by: { $0.confidence < $1.confidence }) else {
+            // Should not happen since results is guaranteed non-empty by caller,
+            // but guard against unexpected edge cases to avoid a crash.
+            return results[0]
+        }
+        return best
     }
 
     /// Determines if there is a dominant language in the raw probabilities.
@@ -505,5 +524,48 @@ public class AppleOCREngine: NSObject {
                     type: .api, message: "Vision OCR request failed: \(error.localizedDescription)"
                 )
         }
+    }
+}
+
+// MARK: - ResumeBox
+
+/// A thread-safe wrapper around `CheckedContinuation` that ensures it is only resumed once.
+///
+/// Vision's `VNRecognizeTextRequest` may invoke its completion handler and also throw
+/// from `perform()`, which could cause a double-resume crash with `CheckedContinuation`.
+/// This helper uses a lock to guarantee only the first call wins.
+private final class ResumeBox<T, E: Error> {
+    // MARK: Lifecycle
+
+    init(continuation: CheckedContinuation<T, E>) {
+        self.continuation = continuation
+    }
+
+    // MARK: Internal
+
+    func resume(returning value: T) {
+        guard !markResumed() else { return }
+        continuation.resume(returning: value)
+    }
+
+    func resume(throwing error: E) {
+        guard !markResumed() else { return }
+        continuation.resume(throwing: error)
+    }
+
+    // MARK: Private
+
+    private let continuation: CheckedContinuation<T, E>
+    private let lock = NSLock()
+    private var isResumed = false
+
+    /// Returns true if already resumed (caller should skip), false otherwise.
+    @discardableResult
+    private func markResumed() -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        if isResumed { return true }
+        isResumed = true
+        return false
     }
 }
