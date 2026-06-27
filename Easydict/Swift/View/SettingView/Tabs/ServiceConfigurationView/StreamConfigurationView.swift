@@ -289,6 +289,8 @@ struct StreamConfigurationView: View {
     }
 
     private func updateModels(remoteModelIDs: [String], selectedModelIDs: [String]) {
+        guard !remoteModelIDs.isEmpty, !selectedModelIDs.isEmpty else { return }
+
         var models = service.validModels(from: Defaults[service.supportedModelsKey])
         let remoteModels = Set(remoteModelIDs.map { service.remoteModelLookupID($0) })
         let selectedModels = Set(selectedModelIDs.map { service.remoteModelLookupID($0) })
@@ -352,6 +354,7 @@ private struct RemoteModelsSheet: View {
                         onSave(remoteModelIDs, selectedModelIDs)
                     }
                 }
+                .disabled(!canSave)
                 .keyboardShortcut(.defaultAction)
             }
         }
@@ -387,6 +390,10 @@ private struct RemoteModelsSheet: View {
 
     private var isAllSelected: Bool {
         !selectableIDs.isEmpty && selectableIDs.allSatisfy(selectedIDs.contains)
+    }
+
+    private var canSave: Bool {
+        !isLoading && errorMessage.isEmpty && !models.isEmpty && !selectedIDs.isEmpty
     }
 
     private var modelGroups: [String] {
