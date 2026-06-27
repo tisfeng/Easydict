@@ -29,12 +29,15 @@ Accepted PR references:
   discard local branches or changes.
 - Do not push while preparing, merging, resolving conflicts, or reviewing
   unless the user explicitly asks for a push.
-- For review-only or analysis-only requests, restore original branch after the
-  review, then re-check `git status --short --branch`.
 - Name the contributor remote exactly as the PR head repository owner login.
   If that remote name already points elsewhere, stop and ask.
 - Keep the normal local branch name exactly the same as the PR head branch
   name.
+- After a successful review, stay on the prepared PR branch so the user can run
+  and debug it locally. For normal preparation, remain on the PR head branch.
+  For latest-base merge preparation, remain on
+  `review/pr-<number>-merge-<head-short-sha>`. Only switch back when the user
+  explicitly asks.
 - For latest-base conflict or update review, use the local-only branch
   `review/pr-<number>-merge-<head-short-sha>` and merge the latest base into
   it. Do not use rebase for remote collaboration PRs.
@@ -226,9 +229,13 @@ reviewers should inspect.
 
 ## Verification
 - List commands and checks performed, or explain why validation was not run.
+- State the current checkout branch at the end of review. For normal
+  preparation, include the upstream tracking branch. For latest-base merge
+  preparation, include the local review branch name.
 - State whether the latest-base merge path was triggered. If it was, list the
   local review branch name, conflict files, conflict resolution status, and
   confirm that no push was performed.
+- Confirm that no push was performed unless the user explicitly asked for one.
 - If merge conflicts could not be resolved safely, report that blocker here and
   do not claim that a full review was completed.
 
