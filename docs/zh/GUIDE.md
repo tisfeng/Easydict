@@ -103,6 +103,11 @@ brew install --cask easydict
 chmod +x scripts/setup-team.sh && ./scripts/setup-team.sh
 ```
 
+如果你没有 Apple 开发者账号，也可以运行以配置本地 ad-hoc 签名进行免证书编译（注意：在此模式下，系统会在每次重新编译后重置取词或 OCR 等权限弹窗）：
+```bash
+./scripts/setup-team.sh --adhoc
+```
+
 卸载请运行 `./scripts/setup-team.sh --uninstall`。
 
 如果不想使用脚本，你可以手动修改 `Easydict-debug.xcconfig` 文件中的 `DEVELOPMENT_TEAM` 为你自己的 Apple Team ID，并将 `CODE_SIGN_IDENTITY` 改为 `Apple Development`。此时注意不要提交该文件，可以用以下命令忽略本地修改：

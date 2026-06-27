@@ -103,6 +103,11 @@ It is recommended to use the project's built-in `scripts/setup-team.sh` script, 
 chmod +x scripts/setup-team.sh && ./scripts/setup-team.sh
 ```
 
+If you do not have an Apple Developer account, you can configure it for local ad-hoc signing to build without certificates (Note: macOS will reset permission settings such as word-selection or OCR on every build in ad-hoc mode):
+```bash
+./scripts/setup-team.sh --adhoc
+```
+
 To uninstall, run `./scripts/setup-team.sh --uninstall`.
 
 If you prefer not to use the script, you can manually change `DEVELOPMENT_TEAM` in the `Easydict-debug.xcconfig` file to your own Apple Team ID and set `CODE_SIGN_IDENTITY` to `Apple Development`. In this case, be careful not to commit it; you can ignore local changes with:
