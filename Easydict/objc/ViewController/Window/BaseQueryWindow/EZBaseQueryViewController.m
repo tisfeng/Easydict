@@ -1565,6 +1565,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     } else if ([service.serviceType isEqualToString:EZServiceTypeMDict]) {
         EZWebViewManager *webViewManager = result.webViewManager;
         webView = webViewManager.webView;
+        webView.appearance = nil;
         resultCell.wordResultView.webView = webView;
 
         BOOL htmlChanged = ![webViewManager.loadedHTMLString isEqualToString:result.htmlString];
