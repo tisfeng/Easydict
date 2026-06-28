@@ -20,12 +20,18 @@
 
 - (instancetype)initWithWindowType:(EZWindowType)type {
     NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
+    BOOL usesNonactivatingPanel = type != EZWindowTypeMain;
+    if (usesNonactivatingPanel) {
+        style |= NSWindowStyleMaskNonactivatingPanel;
+    }
 
     CGRect frame = [EZLayoutManager.shared windowFrameWithType:type];
 
     if (self = [super initWithContentRect:frame styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
         self.windowType = type;
 
+        self.floatingPanel = usesNonactivatingPanel;
+        self.hidesOnDeactivate = NO;
         self.movableByWindowBackground = YES;
         self.level = NSNormalWindowLevel;
         self.titlebarAppearsTransparent = YES;
