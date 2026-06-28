@@ -13,6 +13,29 @@
 static NSString *kObjcHandler = @"objcHandler";
 static NSString *kMethod = @"method";
 
+@interface EZWeakScriptMessageHandler : NSObject <WKScriptMessageHandler>
+
+@property (nonatomic, weak) id<WKScriptMessageHandler> target;
+
+- (instancetype)initWithTarget:(id<WKScriptMessageHandler>)target;
+
+@end
+
+@implementation EZWeakScriptMessageHandler
+
+- (instancetype)initWithTarget:(id<WKScriptMessageHandler>)target {
+    if (self = [super init]) {
+        _target = target;
+    }
+    return self;
+}
+
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    [self.target userContentController:userContentController didReceiveScriptMessage:message];
+}
+
+@end
+
 @interface EZWebViewManager () <WKNavigationDelegate, WKScriptMessageHandler>
 
 @property (nonatomic, assign) BOOL isUpdatingIframe;
@@ -20,6 +43,7 @@ static NSString *kMethod = @"method";
 @property (nonatomic, assign) CGFloat lastScrollHeight;
 
 - (void)teardownWebView;
+- (void)resetReusableWebView;
 
 @end
 
@@ -34,7 +58,8 @@ static NSString *kMethod = @"method";
 - (WKWebView *)webView {
     if (!_webView) {
         WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
-        [configuration.userContentController addScriptMessageHandler:self name:kObjcHandler];
+        EZWeakScriptMessageHandler *handler = [[EZWeakScriptMessageHandler alloc] initWithTarget:self];
+        [configuration.userContentController addScriptMessageHandler:handler name:kObjcHandler];
         _webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     }
     return _webView;
@@ -110,7 +135,7 @@ static NSString *kMethod = @"method";
     self.isUpdatingIframe = NO;
     self.forceNextScrollHeightCallback = NO;
     self.lastScrollHeight = 0;
-    [self teardownWebView];
+    [self resetReusableWebView];
 }
 
 - (void)dealloc {
@@ -140,6 +165,18 @@ static NSString *kMethod = @"method";
     webView.UIDelegate = nil;
     [webView.configuration.userContentController removeScriptMessageHandlerForName:kObjcHandler];
     _webView = nil;
+}
+
+- (void)resetReusableWebView {
+    WKWebView *webView = _webView;
+    if (!webView) {
+        return;
+    }
+
+    [webView stopLoading];
+    webView.navigationDelegate = nil;
+    webView.UIDelegate = nil;
+    [webView loadHTMLString:@"" baseURL:nil];
 }
 
 @end

@@ -379,6 +379,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (!_tableView) {
         NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
+        tableView.wantsLayer = YES;
+        tableView.layer.drawsAsynchronously = YES;
 
         [tableView executeLight:^(NSTableView *tableView) {
             tableView.backgroundColor = [NSColor ez_mainViewBgLightColor];
@@ -1549,32 +1551,38 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         EZAppleDictionary *appleDictService = (EZAppleDictionary *)service;
 
         EZWebViewManager *webViewManager = result.webViewManager;
-        webView = webViewManager.webView;
-        resultCell.wordResultView.webView = webView;
-
         BOOL needLoadHTML = result.isShowing && result.htmlString.length && !webViewManager.isLoaded;
+        BOOL needUpdateIframe = webViewManager.needUpdateIframeHeight && webViewManager.isLoaded;
+        if (needLoadHTML || needUpdateIframe) {
+            webView = webViewManager.webView;
+            resultCell.wordResultView.webView = webView;
+        }
+
         if (needLoadHTML) {
             webViewManager.isLoaded = YES;
 
             NSURL *htmlFileURL = [NSURL fileURLWithPath:appleDictService.htmlFilePath];
             webView.navigationDelegate = resultCell.wordResultView;
             [webView loadFileURL:htmlFileURL allowingReadAccessToURL:TTTDictionary.userDictionaryDirectoryURL];
-        } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
+        } else if (needUpdateIframe) {
             [webViewManager updateAllIframe];
         }
     } else if ([service.serviceType isEqualToString:EZServiceTypeMDict]) {
         EZWebViewManager *webViewManager = result.webViewManager;
-        webView = webViewManager.webView;
-        resultCell.wordResultView.webView = webView;
-
         BOOL htmlChanged = ![webViewManager.loadedHTMLString isEqualToString:result.htmlString];
         BOOL needLoadHTML = result.isShowing && result.htmlString.length && (!webViewManager.isLoaded || htmlChanged);
+        BOOL needUpdateIframe = webViewManager.needUpdateIframeHeight && webViewManager.isLoaded;
+        if (needLoadHTML || needUpdateIframe) {
+            webView = webViewManager.webView;
+            resultCell.wordResultView.webView = webView;
+        }
+
         if (needLoadHTML) {
             webViewManager.isLoaded = YES;
             webViewManager.loadedHTMLString = result.htmlString;
             webView.navigationDelegate = resultCell.wordResultView;
             [webView loadHTMLString:result.htmlString baseURL:nil];
-        } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
+        } else if (needUpdateIframe) {
             [webViewManager updateAllIframe];
         }
     }
@@ -1826,6 +1834,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     // ???: why this window animation will block cell rendering?
     //    [self.window setFrame:safeFrame display:NO animate:animateFlag];
     self.isUpdatingWindowFrameInternally = YES;
+    [window disableScreenUpdatesUntilFlush];
     [window setFrame:safeFrame display:YES];
     [self restoreFirstResponderIfWindowIsKey];
     dispatch_async(dispatch_get_main_queue(), ^{

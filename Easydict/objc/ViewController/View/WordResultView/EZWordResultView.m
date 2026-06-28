@@ -93,7 +93,9 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
     self.fontSizeRatio = MyConfiguration.shared.fontSizeRatio;
 
     EZTranslateWordResult *wordResult = result.wordResult;
-    self.webView = result.webViewManager.webView;
+    BOOL hasHTMLResult = result.htmlString.length > 0;
+    WKWebView *webView = hasHTMLResult ? result.webViewManager.webView : nil;
+    self.webView = webView;
 
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
@@ -107,8 +109,8 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
 
     mm_weakify(self);
 
-    if (result.htmlString.length) {
-        [self addSubview:self.webView];
+    if (hasHTMLResult) {
+        [self addSubview:webView];
 
         [result.webViewManager setDidFinishUpdatingIframeHeightBlock:^(CGFloat scrollHeight) {
             mm_strongify(self);
@@ -121,14 +123,14 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
             [result.webViewManager updateAllIframe];
         }
 
-        [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
+        [webView mas_makeConstraints:^(MASConstraintMaker *make) {
             CGFloat topOffset = 0;
             make.top.offset(topOffset);
             height += topOffset;
             make.left.right.inset(2);
         }];
 
-        lastView = self.webView;
+        lastView = webView;
     } else {
         BOOL isShortWordLength = result.queryText.length && [EZLanguageManager.shared isShortWordLength:result.queryText language:result.queryFromLanguage];
 
@@ -1174,6 +1176,11 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
 #pragma mark -
 
 - (void)updateWebViewHeight:(CGFloat)scrollHeight {
+    WKWebView *webView = self.webView;
+    if (!webView) {
+        return;
+    }
+
     // Cost ~0.15s
     //    NSString *script = @"document.documentElement.scrollHeight;";
 
@@ -1217,7 +1224,7 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
     }
 
 
-    [self.webView mas_updateConstraints:^(MASConstraintMaker *make) {
+    [webView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(webViewHeight);
     }];
 
@@ -1317,7 +1324,15 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
 }
 
 - (void)evaluateJavaScript:(NSString *)jsCode completionHandler:(void (^_Nullable)(_Nullable id, NSError *_Nullable error))completionHandler {
-    [self.webView evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+    WKWebView *webView = self.webView;
+    if (!webView) {
+        if (completionHandler) {
+            completionHandler(nil, nil);
+        }
+        return;
+    }
+
+    [webView evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (error) {
             MMLogError(@"error: %@", error);
             MMLogError(@"jsCode: %@", jsCode);
