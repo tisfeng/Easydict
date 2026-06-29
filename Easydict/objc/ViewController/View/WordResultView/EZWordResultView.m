@@ -25,6 +25,8 @@
 #import "TTTDictionary.h"
 #import "EZEnumTypes.h"
 #import "EZReplaceTextButton.h"
+#import "EZSymbolImageButton.h"
+#import "EZToast.h"
 #import "EZWrapView.h"
 #import "NSObject+EZDarkMode.h"
 #import <math.h>
@@ -40,6 +42,73 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
     return [result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeAppleDictionary] ||
            [result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeMDict];
+}
+
+static BOOL EZStringHasText(NSString *text) {
+    return [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet].length > 0;
+}
+
+static BOOL EZStringArrayHasText(NSArray<NSString *> *texts) {
+    for (NSString *text in texts) {
+        if (EZStringHasText(text)) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+static BOOL EZTranslatePartsHaveAnkiContent(NSArray<EZTranslatePart *> *parts) {
+    for (EZTranslatePart *part in parts) {
+        if (EZStringHasText(part.part) || EZStringArrayHasText(part.means)) {
+            return YES;
+        }
+    }
+
+    return NO;
+}
+
+static BOOL EZWordResultHasAnkiContent(EZTranslateWordResult *wordResult) {
+    if (!wordResult) {
+        return NO;
+    }
+
+    if (EZStringHasText(wordResult.etymology)) {
+        return YES;
+    }
+
+    for (EZWordPhonetic *phonetic in wordResult.phonetics) {
+        if (EZStringHasText(phonetic.value)) {
+            return YES;
+        }
+    }
+
+    for (EZTranslateExchange *exchange in wordResult.exchanges) {
+        if (EZStringHasText(exchange.name) || EZStringArrayHasText(exchange.words)) {
+            return YES;
+        }
+    }
+
+    for (EZTranslateSimpleWord *simpleWord in wordResult.simpleWords) {
+        if (EZStringHasText(simpleWord.word) ||
+            EZStringHasText(simpleWord.part) ||
+            EZStringArrayHasText(simpleWord.means)) {
+            return YES;
+        }
+    }
+
+    return EZTranslatePartsHaveAnkiContent(wordResult.parts) ||
+           EZTranslatePartsHaveAnkiContent(wordResult.synonyms) ||
+           EZTranslatePartsHaveAnkiContent(wordResult.antonyms) ||
+           EZTranslatePartsHaveAnkiContent(wordResult.collocation);
+}
+
+static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
+    return EZWordResultHasAnkiContent(result.wordResult) ||
+           EZStringHasText(result.translatedText) ||
+           EZStringHasText(result.copiedText) ||
+           EZStringHasText(result.htmlString) ||
+           EZStringArrayHasText(result.innerTexts) ||
+           EZStringArrayHasText(result.htmlStrings);
 }
 
 @interface EZWordResultView () <NSTextViewDelegate>
@@ -917,6 +986,42 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
         make.width.height.bottom.equalTo(audioButton);
     }];
 
+    NSView *rightmostButton = result.showReplaceButton ? (NSView *)replaceTextButton : (NSView *)linkButton;
+
+    BOOL shouldShowAnkiButton = MyConfiguration.shared.enableAnkiConnect &&
+                                EZResultHasAnkiContent(result) &&
+                                (result.wordResult || EZResultNeedsDictionaryHTMLHeight(result));
+    if (shouldShowAnkiButton) {
+        EZSymbolImageButton *ankiButton = [EZSymbolImageButton buttonWithSybolImageName:@"plus.rectangle.on.rectangle"];
+        [self addSubview:ankiButton];
+        ankiButton.enabled = YES;
+        ankiButton.toolTip = NSLocalizedString(@"anki.connect.add_button", nil);
+        ankiButton.mas_key = @"result_ankiButton";
+
+        mm_weakify(ankiButton);
+        [ankiButton setClickBlock:^(EZButton *_Nonnull button) {
+            button.enabled = NO;
+            MMLogInfo(@"AnkiConnect add button clicked: %@", result.queryText);
+            [AnkiConnectClient.shared addNoteWith:result completion:^(BOOL success, NSString *_Nonnull message) {
+                mm_strongify(ankiButton);
+                ankiButton.enabled = !success;
+                if (success) {
+                    MMLogInfo(@"AnkiConnect add note success: %@", result.queryText);
+                } else {
+                    MMLogError(@"AnkiConnect add note failed: %@", message);
+                }
+                [EZToast showText:message toastPostion:CTPositionMouse];
+            }];
+        }];
+
+        [ankiButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(rightmostButton.mas_right).offset(buttonPadding);
+            make.width.height.bottom.equalTo(audioButton);
+        }];
+
+        rightmostButton = ankiButton;
+    }
+
     // Markdown rendering toggle, only on streaming (AI/LLM) services.
     if ([self.service isStream]) {
         EDMarkdownToggleButton *markdownToggleButton = [[EDMarkdownToggleButton alloc] init];
@@ -944,8 +1049,7 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
         };
 
         [markdownToggleButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            NSView *leftAnchor = result.showReplaceButton ? (NSView *)replaceTextButton : (NSView *)linkButton;
-            make.left.equalTo(leftAnchor.mas_right).offset(buttonPadding);
+            make.left.equalTo(rightmostButton.mas_right).offset(buttonPadding);
             make.width.height.bottom.equalTo(audioButton);
         }];
     }

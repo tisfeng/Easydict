@@ -238,6 +238,8 @@ extension AppleDictionary {
             extraCSS: ".\(customIframeContainerClass){margin-top:0;margin-bottom:0;width:100%;}"
         )
         var sections: [DictionaryHTMLSection] = []
+        var allEntryHTMLs: [String] = []
+        var allInnerTexts: [String] = []
 
         for dictionary in dictionaries {
             var wordHtmlString = ""
@@ -245,10 +247,12 @@ extension AppleDictionary {
             // ~/Library/Dictionaries/Apple.dictionary/Contents/
             let contentsURL = dictionary.dictionaryURL.appendingPathComponent("Contents")
 
-            let entryHTMLs = queryEntryHTMLs(
+            let entries = queryEntries(
                 ofWord: word, inDictionary: dictionary, language: fromLanguage
             )
-            result?.htmlStrings = entryHTMLs
+            let entryHTMLs = entries.htmls
+            allEntryHTMLs.append(contentsOf: entryHTMLs)
+            allInnerTexts.append(contentsOf: entries.texts)
 
             for html in entryHTMLs {
                 let absolutePathHTML = replacedAudioPath(
@@ -271,6 +275,8 @@ extension AppleDictionary {
             return nil
         }
 
+        result?.htmlStrings = allEntryHTMLs
+        result?.innerTexts = allInnerTexts
         saveAllDictHTML(renderResult.htmlString)
         return renderResult.htmlString
     }
@@ -293,6 +299,15 @@ extension AppleDictionary {
         language: Language?
     )
         -> [String] {
+        queryEntries(ofWord: word, inDictionary: dictionary, language: language).htmls
+    }
+
+    private func queryEntries(
+        ofWord word: String,
+        inDictionary dictionary: TTTDictionary,
+        language: Language?
+    )
+        -> (htmls: [String], texts: [String]) {
         var entryHTMLs: [String] = []
         var texts: [String] = []
 
@@ -310,11 +325,7 @@ extension AppleDictionary {
             }
         }
 
-        // `detectText` may call this method without setting `result` beforehand.
-        // Avoid crashing when `result` is nil.
-        result?.innerTexts = texts
-
-        return entryHTMLs
+        return (entryHTMLs, texts)
     }
 
     private func saveDictHTML(_ dictHTML: String, dictName: String) {

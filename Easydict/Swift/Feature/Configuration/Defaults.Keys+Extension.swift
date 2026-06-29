@@ -154,6 +154,16 @@ extension Defaults.Keys {
     static var enableHTTPServer = Key<Bool>("enableHTTPServer", default: false)
     static var httpPort = Key<String>("httpPort", default: "8080")
 
+    static var enableAnkiConnect = Key<Bool>("enableAnkiConnect", default: false)
+    static var ankiConnectEndpoint = Key<String>(
+        "ankiConnectEndpoint",
+        default: "http://127.0.0.1:8765"
+    )
+    static var ankiConnectDeck = Key<String>("ankiConnectDeck", default: "Default")
+    static var ankiConnectModel = Key<String>("ankiConnectModel", default: "Basic")
+    static var ankiConnectFrontField = Key<String>("ankiConnectFrontField", default: "Front")
+    static var ankiConnectBackField = Key<String>("ankiConnectBackField", default: "Back")
+
     static var enableAppleOfflineTranslation = Key<Bool>(
         "enableAppleOfflineTranslation", default: false
     )

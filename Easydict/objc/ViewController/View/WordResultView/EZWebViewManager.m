@@ -67,6 +67,7 @@ static NSString *kMethod = @"method";
             }
             self.isUpdatingIframe = NO;
         }
+
     }
 }
 
