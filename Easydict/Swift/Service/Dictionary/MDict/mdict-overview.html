@@ -191,7 +191,15 @@
       <tbody>
         <tr>
           <td><code>MDictService.swift</code></td>
-          <td>查询服务入口和结果 HTML 包装。</td>
+          <td>查询服务入口和结果 HTML 包装，读取外部 JS 资源并拼装 WebView 脚本。</td>
+        </tr>
+        <tr>
+          <td><code>MDictWebViewScript.js</code></td>
+          <td>iframe 高度、暗色文本修正和 WebView 轮询更新脚本。</td>
+        </tr>
+        <tr>
+          <td><code>MDictEntryScript.js</code></td>
+          <td>词条链接点击、音频播放和锚点滚动脚本。</td>
         </tr>
         <tr>
           <td><code>MDictConfigurationView.swift</code></td>
@@ -229,7 +237,7 @@
       <section class="panel">
         <h3>服务与配置</h3>
         <ul>
-          <li><code>MDictService</code> 是 <code>QueryService</code> 子类，负责读取启用词典、收集查询结果，并生成 MDict 专用 WebView HTML 外壳。</li>
+          <li><code>MDictService</code> 是 <code>QueryService</code> 子类，负责读取启用词典、收集查询结果，并生成 MDict 专用 WebView HTML 外壳；它只拼装脚本，不再内嵌长段 JS。</li>
           <li><code>MDictConfigurationView</code> 是设置页 UI，负责触发 MDX/MDD 导入，并把启用、排序和删除操作转发给 <code>MDictManager</code>。</li>
           <li><code>MDictManager</code> 保存导入记录到 <code>Defaults</code>，查询时按需在后台加载启用的 <code>MDictDictionary</code> 实例，并在记录变化时发出通知。</li>
         </ul>
@@ -239,6 +247,7 @@
         <h3>查询与资源</h3>
         <ul>
           <li><code>MDictDictionary</code> 表示一本 MDX 词典和它的 MDD 资源集合，负责查词、查资源、把图片、音频、CSS 和脚本资源重写为 WebKit 可加载的形式。</li>
+          <li><code>MDictWebViewScript.js</code> 和 <code>MDictEntryScript.js</code> 是可独立高亮查看的静态脚本资源，供 <code>MDictService</code> 注入到结果页。</li>
           <li>MDD reader 会在首次资源查询时懒加载，并缓存常用 data URI、解析后的 CSS、MDX 同目录同名 CSS 文件和资源缺失结果。</li>
           <li><code>MDictSearchIndex</code> 在精确查词失败后按需建立轻量 headword 索引，提供变形词、前缀、词头 substring 和小编辑距离 fuzzy fallback。</li>
         </ul>
