@@ -347,6 +347,7 @@
         window.webkit.messageHandlers.objcHandler.postMessage({
           method: "noteToUpdateScrollHeight",
           scrollHeight: scrollHeight,
+          renderGeneration: window.__easydictRenderGeneration || 0,
         });
       }
     }

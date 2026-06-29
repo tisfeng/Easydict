@@ -11,6 +11,8 @@
 #import "EZFixedQueryWindow.h"
 #import "EZCoordinateUtils.h"
 
+static NSTimeInterval const EZFloatingWindowIdleWebViewDiscardDelay = 60.0;
+
 @interface EZWindowManager ()
 
 @property (nonatomic, strong) NSRunningApplication *lastFrontmostApplication;
@@ -28,6 +30,8 @@
 
 /// The window type that is currently showing.
 @property (nonatomic) EZWindowType windowType;
+
+- (void)scheduleDictionaryWebViewDiscardForWindow:(EZBaseQueryWindow *)window;
 
 @end
 
@@ -188,6 +192,7 @@ static EZWindowManager *_instance;
 
 - (void)popButtonWindowClicked {
     // Close pop button window first, and show floating window.
+    [self.eventMonitor consumePopButtonActivation];
     [self.popButtonWindow close];
     
     EZWindowType windowType = MyConfiguration.shared.mouseSelectTranslateWindowType;
@@ -1064,6 +1069,21 @@ static EZWindowManager *_instance;
     }
 
     [self updateFloatingWindowType:windowType isShowing:NO];
+    [self scheduleDictionaryWebViewDiscardForWindow:floatingWindow];
+}
+
+- (void)scheduleDictionaryWebViewDiscardForWindow:(EZBaseQueryWindow *)window {
+    __weak EZBaseQueryWindow *weakWindow = window;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
+                                 (int64_t)(EZFloatingWindowIdleWebViewDiscardDelay * NSEC_PER_SEC)),
+                   dispatch_get_main_queue(), ^{
+        EZBaseQueryWindow *strongWindow = weakWindow;
+        if (!strongWindow || strongWindow.isVisible || strongWindow.isPin) {
+            return;
+        }
+
+        [strongWindow.queryViewController discardDictionaryWebViews];
+    });
 }
 
 #pragma mark -

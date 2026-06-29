@@ -18,6 +18,7 @@
 #import "EZSchemeParser.h"
 #import "EZToast.h"
 #import "DictionaryKit.h"
+#import "EZWebViewManager.h"
 
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
@@ -1328,6 +1329,20 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     return allResults;
 }
 
+- (void)discardDictionaryWebViews {
+    for (EZQueryService *service in self.services) {
+        EZQueryResult *result = service.result;
+        if (!EZResultNeedsDictionaryHTMLHeight(result)) {
+            continue;
+        }
+
+        EZResultView *resultCell = [self resultCellOfResult:result];
+        [resultCell.wordResultView.webView removeFromSuperview];
+        resultCell.wordResultView.webView = nil;
+        [result.webViewManager discardReusableWebView];
+    }
+}
+
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
     NSInteger index = [self.serviceTypeIds indexOfObject:result.serviceTypeWithUniqueIdentifier];
     if (index != NSNotFound) {
@@ -1551,37 +1566,43 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         EZAppleDictionary *appleDictService = (EZAppleDictionary *)service;
 
         EZWebViewManager *webViewManager = result.webViewManager;
-        BOOL needLoadHTML = result.isShowing && result.htmlString.length && !webViewManager.isLoaded;
-        BOOL needUpdateIframe = webViewManager.needUpdateIframeHeight && webViewManager.isLoaded;
+        BOOL shouldRenderHTML = EZResultShouldRenderDictionaryHTML(result);
+        BOOL needLoadHTML = shouldRenderHTML && !webViewManager.isLoaded;
+        BOOL needUpdateIframe = shouldRenderHTML && webViewManager.needUpdateIframeHeight && webViewManager.isLoaded;
         if (needLoadHTML || needUpdateIframe) {
             webView = webViewManager.webView;
             resultCell.wordResultView.webView = webView;
         }
 
         if (needLoadHTML) {
+            NSUInteger renderGeneration = [webViewManager beginRenderingHTML];
             webViewManager.isLoaded = YES;
 
             NSURL *htmlFileURL = [NSURL fileURLWithPath:appleDictService.htmlFilePath];
             webView.navigationDelegate = resultCell.wordResultView;
-            [webView loadFileURL:htmlFileURL allowingReadAccessToURL:TTTDictionary.userDictionaryDirectoryURL];
+            WKNavigation *navigation = [webView loadFileURL:htmlFileURL allowingReadAccessToURL:TTTDictionary.userDictionaryDirectoryURL];
+            [webViewManager trackRenderingNavigation:navigation renderGeneration:renderGeneration];
         } else if (needUpdateIframe) {
             [webViewManager updateAllIframe];
         }
     } else if ([service.serviceType isEqualToString:EZServiceTypeMDict]) {
         EZWebViewManager *webViewManager = result.webViewManager;
+        BOOL shouldRenderHTML = EZResultShouldRenderDictionaryHTML(result);
         BOOL htmlChanged = ![webViewManager.loadedHTMLString isEqualToString:result.htmlString];
-        BOOL needLoadHTML = result.isShowing && result.htmlString.length && (!webViewManager.isLoaded || htmlChanged);
-        BOOL needUpdateIframe = webViewManager.needUpdateIframeHeight && webViewManager.isLoaded;
+        BOOL needLoadHTML = shouldRenderHTML && (!webViewManager.isLoaded || htmlChanged);
+        BOOL needUpdateIframe = shouldRenderHTML && webViewManager.needUpdateIframeHeight && webViewManager.isLoaded;
         if (needLoadHTML || needUpdateIframe) {
             webView = webViewManager.webView;
             resultCell.wordResultView.webView = webView;
         }
 
         if (needLoadHTML) {
+            NSUInteger renderGeneration = [webViewManager beginRenderingHTML];
             webViewManager.isLoaded = YES;
             webViewManager.loadedHTMLString = result.htmlString;
             webView.navigationDelegate = resultCell.wordResultView;
-            [webView loadHTMLString:result.htmlString baseURL:nil];
+            WKNavigation *navigation = [webView loadHTMLString:result.htmlString baseURL:nil];
+            [webViewManager trackRenderingNavigation:navigation renderGeneration:renderGeneration];
         } else if (needUpdateIframe) {
             [webViewManager updateAllIframe];
         }

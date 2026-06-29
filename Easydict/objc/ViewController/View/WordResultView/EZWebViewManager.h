@@ -11,6 +11,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class EZQueryResult;
+
+FOUNDATION_EXPORT BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result);
+FOUNDATION_EXPORT BOOL EZResultShouldRenderDictionaryHTML(EZQueryResult *result);
+
 /// Owns the WKWebView used by dictionary HTML results.
 /// It keeps iframe rendering state beside the query result so reused cells do
 /// not repeatedly propagate unchanged content heights.
@@ -25,6 +30,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) void (^didFinishUpdatingIframeHeightBlock)(CGFloat height);
 
 - (void)reset;
+- (void)discardReusableWebView;
+
+- (NSUInteger)beginRenderingHTML;
+- (void)trackRenderingNavigation:(nullable WKNavigation *)navigation renderGeneration:(NSUInteger)renderGeneration;
+- (BOOL)shouldHandleNavigation:(nullable WKNavigation *)navigation;
 
 - (void)updateAllIframe;
 

@@ -103,6 +103,16 @@ final class EventMonitor: NSObject {
         await selectionWorkflow.getSelectedText()
     }
 
+    /// Clears transient pop-button monitors after the button opens a query window.
+    func consumePopButtonActivation() {
+        cancelDismissPopButton()
+        cancelDelayGetSelectedText()
+        popButtonController.isPopButtonVisible = false
+        mouseMovedThrottleGate.reset()
+        stopHighFrequencyEventMonitor()
+        eventTapMonitor.stop()
+    }
+
     func addLocalMonitorWithEvent(_ mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent) -> ()) {
         eventMonitorEngine.monitor(type: .local, mask: mask, handler: handler)
     }

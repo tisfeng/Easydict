@@ -74,6 +74,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updateActionType:(EZActionType)actionType;
 
+/// Discard cached dictionary WebViews when the query window has been idle.
+- (void)discardDictionaryWebViews;
+
 /// show tips view
 - (void)showTipsView:(BOOL)isVisible;
 

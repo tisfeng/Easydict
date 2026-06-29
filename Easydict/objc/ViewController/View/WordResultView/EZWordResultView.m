@@ -27,6 +27,7 @@
 #import "EZReplaceTextButton.h"
 #import "EZWrapView.h"
 #import "NSObject+EZDarkMode.h"
+#import "EZWebViewManager.h"
 #import <math.h>
 
 static const CGFloat kHorizontalMargin_8 = 8;
@@ -36,11 +37,6 @@ static const CGFloat kBlueTextButtonVerticalPadding_2 = 2;
 
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 static NSString *const kMDictEntryURIScheme = @"mdict-entry";
-
-static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
-    return [result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeAppleDictionary] ||
-           [result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeMDict];
-}
 
 @interface EZWordResultView () <NSTextViewDelegate>
 
@@ -93,8 +89,8 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
     self.fontSizeRatio = MyConfiguration.shared.fontSizeRatio;
 
     EZTranslateWordResult *wordResult = result.wordResult;
-    BOOL hasHTMLResult = result.htmlString.length > 0;
-    WKWebView *webView = hasHTMLResult ? result.webViewManager.webView : nil;
+    BOOL shouldRenderHTML = EZResultShouldRenderDictionaryHTML(result);
+    WKWebView *webView = shouldRenderHTML ? result.webViewManager.webView : nil;
     self.webView = webView;
 
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -109,7 +105,7 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
 
     mm_weakify(self);
 
-    if (hasHTMLResult) {
+    if (shouldRenderHTML) {
         [self addSubview:webView];
 
         [result.webViewManager setDidFinishUpdatingIframeHeightBlock:^(CGFloat scrollHeight) {
@@ -1084,7 +1080,12 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     //    MMLog(@"webView didFinishNavigation");
 
-    [self.result.webViewManager updateAllIframe];
+    EZWebViewManager *webViewManager = self.result.webViewManager;
+    if (![webViewManager shouldHandleNavigation:navigation]) {
+        return;
+    }
+
+    [webViewManager updateAllIframe];
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
