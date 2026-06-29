@@ -113,6 +113,7 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.isScreenshotTipLayerHidden) var isScreenshotTipLayerHidden: Bool
     @DefaultsWrapper(.formerFixedScreenVisibleFrame) var formerFixedScreenVisibleFrame: CGRect
     @DefaultsWrapper(.formerMiniScreenVisibleFrame) var formerMiniScreenVisibleFrame: CGRect
+    @DefaultsWrapper(.enableAnkiConnect) var enableAnkiConnect: Bool
 
     @DefaultsWrapper(.preferAppleScriptAPI) var preferAppleScriptAPI: Bool
 

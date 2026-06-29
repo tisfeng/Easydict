@@ -115,6 +115,7 @@ BOOL EZResultShouldRenderDictionaryHTML(EZQueryResult *result) {
             }
             self.isUpdatingIframe = NO;
         }
+
     }
 }
 

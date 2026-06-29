@@ -10,6 +10,8 @@ import Defaults
 import SFSafeSymbols
 import SwiftUI
 
+// MARK: - AdvancedTab
+
 struct AdvancedTab: View {
     // MARK: Internal
 
@@ -430,11 +432,15 @@ struct AdvancedTab: View {
             } header: {
                 Text("setting.advance.header.http_server")
             }
+
+            ankiConnectSection
         }
         .formStyle(.grouped)
     }
 
     // MARK: Private
+
+    @State private var isFetchingAnkiFields = false
 
     @Default(.enableBetaFeature) private var enableBetaFeature
 
@@ -475,11 +481,139 @@ struct AdvancedTab: View {
     @Default(.enableHTTPServer) private var enableHTTPServer
     @Default(.httpPort) private var httpPort
 
+    @Default(.enableAnkiConnect) private var enableAnkiConnect
+    @Default(.ankiConnectEndpoint) private var ankiConnectEndpoint
+    @Default(.ankiConnectDeck) private var ankiConnectDeck
+    @Default(.ankiConnectModel) private var ankiConnectModel
+    @Default(.ankiConnectFrontField) private var ankiConnectFrontField
+    @Default(.ankiConnectBackField) private var ankiConnectBackField
+
     @Default(.maxWindowHeightPercentage) private var maxWindowHeightPercentageValue
 
     /// Returns Color.green if `enableHTTPServer` is true, returns Color.red otherwise.
     private func getHttpIconColor() -> Color {
         enableHTTPServer ? .green : .red
+    }
+
+    private func getAnkiIconColor() -> Color {
+        enableAnkiConnect ? .green : .red
+    }
+
+    private func fetchAnkiFields() {
+        isFetchingAnkiFields = true
+        AnkiConnectClient.shared.fetchModelFieldNames { success, fields, message in
+            isFetchingAnkiFields = false
+
+            guard success else {
+                EZToast.showText(message)
+                return
+            }
+
+            guard fields.count >= 2 else {
+                EZToast.showText(NSLocalizedString("anki.connect.insufficient_fields", comment: ""))
+                return
+            }
+
+            ankiConnectFrontField = fields[0]
+            ankiConnectBackField = fields[1]
+            EZToast.showText(message)
+        }
+    }
+}
+
+extension AdvancedTab {
+    @ViewBuilder
+    fileprivate var ankiConnectSection: some View {
+        Section {
+            Toggle(isOn: $enableAnkiConnect) {
+                AdvancedTabItemView(
+                    color: getAnkiIconColor(),
+                    icon: .externaldriveConnectedToLineBelow,
+                    labelText: "setting.advance.enable_anki_connect"
+                )
+            }
+
+            LabeledContent {
+                TextField(text: $ankiConnectEndpoint, prompt: Text(verbatim: "http://127.0.0.1:8765")) {
+                    EmptyView()
+                }
+                .frame(width: 260)
+                .fixedSize(horizontal: true, vertical: false)
+            } label: {
+                AdvancedTabItemView(
+                    color: getAnkiIconColor(),
+                    icon: .network,
+                    labelText: "setting.advance.anki_endpoint",
+                    subtitleText: "setting.advance.anki_endpoint_desc"
+                )
+            }
+
+            LabeledContent {
+                TextField(text: $ankiConnectDeck, prompt: Text(verbatim: "Default")) {
+                    EmptyView()
+                }
+                .frame(width: 180)
+                .fixedSize(horizontal: true, vertical: false)
+            } label: {
+                AdvancedTabItemView(
+                    color: getAnkiIconColor(),
+                    icon: .book,
+                    labelText: "setting.advance.anki_deck"
+                )
+            }
+
+            LabeledContent {
+                TextField(text: $ankiConnectModel, prompt: Text(verbatim: "Basic")) {
+                    EmptyView()
+                }
+                .frame(width: 180)
+                .fixedSize(horizontal: true, vertical: false)
+            } label: {
+                AdvancedTabItemView(
+                    color: getAnkiIconColor(),
+                    icon: .ellipsisBubbleFill,
+                    labelText: "setting.advance.anki_model"
+                )
+            }
+
+            LabeledContent {
+                HStack {
+                    TextField(text: $ankiConnectFrontField, prompt: Text(verbatim: "Front")) {
+                        EmptyView()
+                    }
+                    .frame(width: 120)
+                    .fixedSize(horizontal: true, vertical: false)
+
+                    TextField(text: $ankiConnectBackField, prompt: Text(verbatim: "Back")) {
+                        EmptyView()
+                    }
+                    .frame(width: 120)
+                    .fixedSize(horizontal: true, vertical: false)
+
+                    Button {
+                        fetchAnkiFields()
+                    } label: {
+                        if isFetchingAnkiFields {
+                            ProgressView()
+                                .controlSize(.small)
+                        } else {
+                            Image(systemSymbol: .arrowClockwise)
+                        }
+                    }
+                    .disabled(isFetchingAnkiFields)
+                    .help(Text("setting.advance.anki_fetch_fields"))
+                }
+            } label: {
+                AdvancedTabItemView(
+                    color: getAnkiIconColor(),
+                    icon: .textformat,
+                    labelText: "setting.advance.anki_fields",
+                    subtitleText: "setting.advance.anki_fields_desc"
+                )
+            }
+        } header: {
+            Text("setting.advance.header.anki_connect")
+        }
     }
 }
 

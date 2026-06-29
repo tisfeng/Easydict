@@ -70,7 +70,7 @@ enum DictionaryHTMLRenderer {
         guard !visibleSections.isEmpty else { return nil }
 
         var iframesHTML = ""
-        var bigWordHTML = "<h2 class=\"big-word-title\">\(word.escapedXMLString())</h2>"
+        var bigWordHTML = bigWordHTML(for: word)
 
         for section in visibleSections {
             let escapedHTML = section.html.escapedXMLString()
@@ -90,5 +90,10 @@ enum DictionaryHTMLRenderer {
     private static func loadBaseHTML() -> String? {
         Bundle.main.path(forResource: "dictionary-result", ofType: "html")
             .flatMap { try? String(contentsOfFile: $0, encoding: .utf8) }
+    }
+
+    private static func bigWordHTML(for word: String) -> String {
+        let escapedWord = word.escapedXMLString()
+        return "<h2 class=\"big-word-title\">\(escapedWord)</h2>"
     }
 }
