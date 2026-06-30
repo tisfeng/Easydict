@@ -33,7 +33,7 @@
         self.floatingPanel = usesNonactivatingPanel;
         self.hidesOnDeactivate = NO;
         if (usesNonactivatingPanel) {
-            self.collectionBehavior |= NSWindowCollectionBehaviorIgnoresCycle;
+            self.collectionBehavior |= NSWindowCollectionBehaviorTransient | NSWindowCollectionBehaviorIgnoresCycle;
         }
         self.movableByWindowBackground = YES;
         self.level = NSNormalWindowLevel;
