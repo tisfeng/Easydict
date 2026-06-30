@@ -32,6 +32,9 @@
 
         self.floatingPanel = usesNonactivatingPanel;
         self.hidesOnDeactivate = NO;
+        if (usesNonactivatingPanel) {
+            self.collectionBehavior |= NSWindowCollectionBehaviorIgnoresCycle;
+        }
         self.movableByWindowBackground = YES;
         self.level = NSNormalWindowLevel;
         self.titlebarAppearsTransparent = YES;
