@@ -19,7 +19,9 @@
 #import "NSImage+EZSymbolmage.h"
 
 /// Debounce delay before auto querying while the user keeps typing.
-static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.5;
+/// Kept relatively long since each query is heavy, especially for
+/// streaming LLM services that repeatedly re-layout the result view.
+static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
@@ -90,7 +92,17 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.5;
     [textView setPasteTextBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
         [self highlightAllLinks];
-        
+
+        // Pasting already triggered `textDidChange`, which scheduled a
+        // debounced auto query. When paste also triggers an immediate
+        // query below (auto query pasted text), drop the pending
+        // debounce so we don't fire a duplicate request afterwards.
+        if (MyConfiguration.shared.autoQueryPastedText) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self
+                                                     selector:@selector(autoQueryWhenTextChanged)
+                                                       object:nil];
+        }
+
         if (self.pasteTextBlock) {
             self.pasteTextBlock(text);
         }
