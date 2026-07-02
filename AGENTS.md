@@ -57,11 +57,16 @@ Easydict/
 
 Run `xcodebuild` only when:
 
-- The substantive code changes exceed 100 lines. Documentation comment-only edits do not
-  count toward this threshold.
+- Swift, Objective-C, Xcode project metadata, or app runtime source changes exceed 100
+  substantive lines.
 - Unit test source files under `EasydictTests/**/*.swift` are added or changed.
 - The user explicitly asks for a build or test run.
 - The task runs `/code-simplifier`.
+
+Do not run `xcodebuild` only because Python, Shell, JavaScript/TypeScript, documentation,
+or comment-only edits exceed 100 lines. For script changes, prefer script-level validation
+such as `py_compile`, a relevant dry run or CLI smoke test for Python, and `bash -n` or
+the script's own safe check command for Shell.
 
 Do not run multiple `xcodebuild` commands concurrently against the same workspace and
 DerivedData location. Concurrent runs can contend for the shared build database,
@@ -226,6 +231,9 @@ source files in this repository.
 
 ### Test Code Rules
 
+- Do not use the same agent session to both modify production code and add unit tests.
+- Prefer assigning unit tests to a different agent from the implementation agent, for
+  example Codex for production code and Claude Code for unit tests.
 - Do not add tests for UI code or UI-focused changes.
 - Add or update tests only for changes with meaningful behavior or correctness risk. Skip
   trivial pass-through code, simple glue code, obvious accessors, and behavior already
@@ -320,6 +328,15 @@ habits.
 
 Always use the OpenAI developer documentation MCP server if you need to work with the
 OpenAI API, ChatGPT Apps SDK, Codex, or related developer tools.
+
+### Git Branch Naming Rules
+
+- When creating task branches in this repository, use Angular-style type prefixes
+  matching `.agents/skills/git-commit/SKILL.md`, such as `feat`, `fix`, `docs`, or
+  `refactor`.
+- Name branches as `<type>/<kebab-case-summary>`, using a lowercase kebab-case slug
+  that describes the actual task or module, for example `feat/add-openai-timeout`,
+  `fix/openai-timeout`.
 
 ### Agent Working Principles
 

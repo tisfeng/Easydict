@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" width="960" height="640">
+  <style>
+    text {
+      font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+      fill: #111827;
+    }
+    .title { font-size: 24px; font-weight: 700; }
+    .label { font-size: 14px; font-weight: 600; }
+    .small { font-size: 12px; fill: #6b7280; }
+    .tiny { font-size: 11px; fill: #6b7280; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7"
+            refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7"
+            refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="7"
+            refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ea580c"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#111827"
+                    flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="960" height="640" fill="#ffffff"/>
+  <text x="480" y="44" class="title" text-anchor="middle">Baidu 服务架构</text>
+  <text x="480" y="68" class="small" text-anchor="middle">
+    官方文本翻译、网页 OCR、语种映射和错误回填的关系
+  </text>
+
+  <rect x="54" y="106" width="852" height="94" rx="8"
+        fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="74" y="130" class="small" font-weight="700">查询入口</text>
+  <rect x="96" y="146" width="150" height="38" rx="8"
+        fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="171" y="170" class="label" text-anchor="middle">QueryService</text>
+  <rect x="306" y="146" width="154" height="38" rx="8"
+        fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="383" y="170" class="label" text-anchor="middle">BaiduService</text>
+  <rect x="520" y="146" width="146" height="38" rx="8"
+        fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="593" y="170" class="label" text-anchor="middle">QueryResult</text>
+
+  <rect x="54" y="236" width="852" height="134" rx="8"
+        fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="74" y="260" class="small" font-weight="700">语种映射</text>
+  <rect x="96" y="286" width="192" height="54" rx="8"
+        fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="192" y="309" class="label" text-anchor="middle">commonLanguageItems</text>
+  <text x="192" y="328" class="tiny" text-anchor="middle">所有用户可调用</text>
+  <rect x="336" y="286" width="212" height="54" rx="8"
+        fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <text x="442" y="309" class="label" text-anchor="middle">uncommonLanguageItems</text>
+  <text x="442" y="328" class="tiny" text-anchor="middle">cat 可能触发 58001</text>
+  <rect x="608" y="286" width="196" height="54" rx="8"
+        fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="706" y="309" class="label" text-anchor="middle">MMOrderedDictionary</text>
+  <text x="706" y="328" class="tiny" text-anchor="middle">保留完整 code 映射</text>
+
+  <rect x="54" y="406" width="852" height="132" rx="8"
+        fill="#faf5ff" stroke="#e9d5ff" stroke-width="1.5"/>
+  <text x="74" y="430" class="small" font-weight="700">请求路径</text>
+  <rect x="96" y="456" width="166" height="48" rx="8"
+        fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="179" y="476" class="label" text-anchor="middle">BaiduApiTranslate</text>
+  <text x="179" y="493" class="tiny" text-anchor="middle">official API</text>
+  <rect x="330" y="456" width="166" height="48" rx="8"
+        fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="413" y="476" class="label" text-anchor="middle">BaiduService+OCR</text>
+  <text x="413" y="493" class="tiny" text-anchor="middle">web endpoint</text>
+  <rect x="590" y="456" width="184" height="48" rx="8"
+        fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="682" y="476" class="label" text-anchor="middle">Baidu API Response</text>
+  <text x="682" y="493" class="tiny" text-anchor="middle">success or error payload</text>
+
+  <path d="M246 165 L306 165" stroke="#2563eb" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-blue)"/>
+  <path d="M460 165 L520 165" stroke="#2563eb" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-blue)"/>
+  <path d="M383 184 L383 238 L192 238 L192 286" stroke="#16a34a"
+        stroke-width="1.8" fill="none" marker-end="url(#arrow-green)"/>
+  <path d="M383 184 L383 238 L442 238 L442 286" stroke="#16a34a"
+        stroke-width="1.8" fill="none" marker-end="url(#arrow-green)"/>
+  <path d="M288 313 L336 313" stroke="#16a34a" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-green)"/>
+  <path d="M548 313 L608 313" stroke="#16a34a" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-green)"/>
+  <path d="M383 184 L383 398 L179 398 L179 456" stroke="#2563eb"
+        stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
+  <path d="M383 184 L383 456" stroke="#2563eb" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-blue)"/>
+  <path d="M262 480 L590 480" stroke="#2563eb" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-blue)"/>
+  <path d="M496 480 L590 480" stroke="#2563eb" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-blue)"/>
+  <path d="M682 456 L682 388 L593 388 L593 184" stroke="#ea580c"
+        stroke-width="1.8" fill="none" marker-end="url(#arrow-orange)"/>
+
+  <rect x="146" y="217" width="92" height="22" rx="4"
+        fill="#ffffff" opacity="0.96"/>
+  <text x="192" y="233" class="tiny" text-anchor="middle">language code</text>
+  <rect x="627" y="389" width="112" height="22" rx="4"
+        fill="#ffffff" opacity="0.96"/>
+  <text x="683" y="405" class="tiny" text-anchor="middle">errorDataMessage</text>
+
+  <g transform="translate(64 580)">
+    <line x1="0" y1="8" x2="34" y2="8" stroke="#2563eb"
+          stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+    <text x="44" y="12" class="tiny">请求/结果</text>
+    <line x1="142" y1="8" x2="176" y2="8" stroke="#16a34a"
+          stroke-width="1.8" marker-end="url(#arrow-green)"/>
+    <text x="186" y="12" class="tiny">语种映射</text>
+    <line x1="288" y1="8" x2="322" y2="8" stroke="#ea580c"
+          stroke-width="1.8" marker-end="url(#arrow-orange)"/>
+    <text x="332" y="12" class="tiny">错误回填</text>
+  </g>
+</svg>

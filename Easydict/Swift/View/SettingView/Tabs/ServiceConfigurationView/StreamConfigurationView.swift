@@ -148,6 +148,14 @@ struct StreamConfigurationView: View {
                 )
             }
 
+            if service.supportsReasoningEffort {
+                StaticPickerCell(
+                    titleKey: "service.configuration.reasoning_effort.title",
+                    key: service.reasoningEffortDefaultsKey,
+                    values: ReasoningEffort.allCases
+                )
+            }
+
             if showCustomPromptSection {
                 ToggleCell(
                     titleKey: "service.configuration.openai.enable_custom_prompt.title",
@@ -403,11 +411,13 @@ private struct RemoteModelsSheet: View {
 
             HStack {
                 if !modelGroups.isEmpty {
-                    Picker("", selection: $selectedGroup) {
+                    Picker(selection: $selectedGroup) {
                         Text(verbatim: "All").tag("")
                         ForEach(modelGroups, id: \.self) { groupName in
                             Text(groupName).tag(groupName)
                         }
+                    } label: {
+                        EmptyView()
                     }
                     .labelsHidden()
                     .frame(width: 140)

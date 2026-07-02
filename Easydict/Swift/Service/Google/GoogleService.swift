@@ -126,6 +126,7 @@ class GoogleService: QueryService {
             Language.korean, "ko",
             Language.french, "fr",
             Language.spanish, "es",
+            Language.catalan, "ca",
             Language.portuguese, "pt-PT",
             Language.brazilianPortuguese, "pt",
             Language.italian, "it",
