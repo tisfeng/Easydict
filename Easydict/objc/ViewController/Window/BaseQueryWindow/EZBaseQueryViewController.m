@@ -638,9 +638,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)focusInputTextView {
     // Fix ⚠️: ERROR: Setting <EZTextView: 0x13d82c5d0> as the first responder for window <EZFixedQueryWindow: 0x11c607800>, but it is in a different window ((null))! This would eventually crash when the view is freed. The first responder will be set to nil.
     if (self.queryView.window == self.baseQueryWindow) {
-        // Need to activate the current application first.
-        [NSApp activateIgnoringOtherApps:YES];
-
         // Delay to make textView the first responder.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
