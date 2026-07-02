@@ -148,6 +148,14 @@ struct StreamConfigurationView: View {
                 )
             }
 
+            if service.supportsReasoningEffort {
+                StaticPickerCell(
+                    titleKey: "service.configuration.reasoning_effort.title",
+                    key: service.reasoningEffortDefaultsKey,
+                    values: ReasoningEffort.allCases
+                )
+            }
+
             if showCustomPromptSection {
                 ToggleCell(
                     titleKey: "service.configuration.openai.enable_custom_prompt.title",

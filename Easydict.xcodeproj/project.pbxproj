@@ -276,6 +276,7 @@
 		03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A3E1542BEBDB2000E7E210 /* Throttler.swift */; };
 		03A5B4BF2E0AB23900BA8F2E /* String+OCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A5B4BE2E0AB23900BA8F2E /* String+OCR.swift */; };
 		03A5E0922D3C020200FF7D95 /* StreamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A5E0912D3C020200FF7D95 /* StreamService.swift */; };
+		0DEEFE010001000000000015 /* ReasoningEffort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEEFE010002000000000015 /* ReasoningEffort.swift */; };
 		03A8308D2B405F8E00112834 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308C2B405F8E00112834 /* Sparkle */; };
 		03A8846C2F12000100D5C0DE /* Task+Timeout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A8846B2F12000100D5C0DE /* Task+Timeout.swift */; };
 		03A8846E2F12000100D5C0DE /* TaskTimeoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A8846D2F12000100D5C0DE /* TaskTimeoutTests.swift */; };
@@ -934,6 +935,7 @@
 		03A3E1542BEBDB2000E7E210 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 		03A5B4BE2E0AB23900BA8F2E /* String+OCR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+OCR.swift"; sourceTree = "<group>"; };
 		03A5E0912D3C020200FF7D95 /* StreamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamService.swift; sourceTree = "<group>"; };
+		0DEEFE010002000000000015 /* ReasoningEffort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReasoningEffort.swift; sourceTree = "<group>"; };
 		03A8846B2F12000100D5C0DE /* Task+Timeout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Timeout.swift"; sourceTree = "<group>"; };
 		03A8846D2F12000100D5C0DE /* TaskTimeoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimeoutTests.swift; sourceTree = "<group>"; };
 		03A8846F2F13000100D5C0DE /* AppleScriptExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptExecutor.swift; sourceTree = "<group>"; };
@@ -1091,6 +1093,8 @@
 		03C3A5B42E1BFE4900B59152 /* ocr-zh-text-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-text-2.png"; sourceTree = "<group>"; };
 		03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-5.png"; sourceTree = "<group>"; };
 		03C408F32EF472660025A1F0 /* BaiduService+OCR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaiduService+OCR.swift"; sourceTree = "<group>"; };
+		03C408F62EF472660025A1F0 /* baidu-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "baidu-overview.html"; sourceTree = "<group>"; };
+		03C408F72EF472660025A1F0 /* baidu-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "baidu-architecture.svg"; sourceTree = "<group>"; };
 		03C408F82EF5CB830025A1F0 /* ServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTests.swift; sourceTree = "<group>"; };
 		03CA1CED2EDE089E001908D0 /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
 		03CA1CEE2EDE089E001908D0 /* DarkModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeManager.swift; sourceTree = "<group>"; };
@@ -2066,6 +2070,7 @@
 			isa = PBXGroup;
 			children = (
 				03A5E0912D3C020200FF7D95 /* StreamService.swift */,
+				0DEEFE010002000000000015 /* ReasoningEffort.swift */,
 				0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */,
 				0365B0662D3BE26000865F46 /* StreamService+UpdateResult.swift */,
 				03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */,
@@ -2962,6 +2967,8 @@
 		03D0F0202F00000100ABCDEF /* Baidu */ = {
 			isa = PBXGroup;
 			children = (
+				03C408F62EF472660025A1F0 /* baidu-overview.html */,
+				03C408F72EF472660025A1F0 /* baidu-architecture.svg */,
 				03D0F0022F00000100ABCDEF /* BaiduService.swift */,
 				CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */,
 				CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */,
@@ -4432,6 +4439,7 @@
 				8049F36B2F0376B000DD454F /* NSImage+Export.swift in Sources */,
 				8049F36C2F0376B000DD454F /* NSImage+RoundedCorner.swift in Sources */,
 				03A5E0922D3C020200FF7D95 /* StreamService.swift in Sources */,
+				0DEEFE010001000000000015 /* ReasoningEffort.swift in Sources */,
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
 				03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */,
 				035166F92E0C0FF9004C65BB /* Int+ToDouble.swift in Sources */,

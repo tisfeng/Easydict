@@ -8233,7 +8233,7 @@
         }
       }
     },
-    "service.deepseek.reasoning_effort.high" : {
+    "service.reasoning_effort.high" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "High" } },
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
@@ -8243,7 +8243,7 @@
         "es" : { "stringUnit" : { "state" : "translated", "value" : "Alto" } }
       }
     },
-    "service.deepseek.reasoning_effort.max" : {
+    "service.reasoning_effort.max" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Max" } },
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "最大" } },
@@ -8253,7 +8253,7 @@
         "es" : { "stringUnit" : { "state" : "translated", "value" : "Máximo" } }
       }
     },
-    "service.deepseek.reasoning_effort.off" : {
+    "service.reasoning_effort.off" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Off" } },
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "オフ" } },
@@ -8617,7 +8617,7 @@
         "es" : { "stringUnit" : { "state" : "translated", "value" : "Esfuerzo de razonamiento" } }
       }
     },
-    "service.configuration.deepseek.reasoning_effort.title" : {
+    "service.configuration.reasoning_effort.title" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Reasoning Effort" } },
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "推論の度合い" } },
