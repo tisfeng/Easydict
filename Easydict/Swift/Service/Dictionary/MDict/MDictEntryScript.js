@@ -1,4 +1,4 @@
-// MDict entry helper script for audio links and in-page anchor scrolling.
+// MDict page helper script for audio, in-page anchors, and height reporting.
 document.addEventListener('click', function(event) {
   var link = event.target && event.target.closest ? event.target.closest('a[href]') : null;
   if (!link) {
@@ -46,7 +46,8 @@ function handleAnchorLink(href) {
     return false;
   }
   setTimeout(function() {
-    scrollParentToTarget(target);
+    target.scrollIntoView({ block: 'start' });
+    notifyContentHeight();
   }, 0);
   return true;
 }
@@ -77,22 +78,38 @@ function decodeHash(value) {
   }
 }
 
-function scrollParentToTarget(target) {
-  try {
-    var frame = window.frameElement;
-    if (!frame || !window.parent) {
-      target.scrollIntoView({ block: 'start' });
-      return;
-    }
-    if (window.parent.updateAllIframeStyle) {
-      window.parent.updateAllIframeStyle();
-    }
-    var frameRect = frame.getBoundingClientRect();
-    var targetRect = target.getBoundingClientRect();
-    var parentY = window.parent.scrollY || window.parent.pageYOffset || 0;
-    var top = parentY + frameRect.top + targetRect.top - 8;
-    window.parent.scrollTo(0, Math.max(0, top));
-  } catch (error) {
-    target.scrollIntoView({ block: 'start' });
+function changeIframeBodyFontSize(fontSizeRatio) {
+  document.body.style.fontSize = (fontSizeRatio * 100) + '%';
+}
+
+function updateAllIframeStyle() {
+  notifyContentHeight();
+}
+
+function notifyContentHeight() {
+  var body = document.body;
+  var element = document.documentElement;
+  var scrollHeight = Math.max(
+    body ? body.scrollHeight : 0,
+    element ? element.scrollHeight : 0,
+    body ? body.offsetHeight : 0,
+    element ? element.offsetHeight : 0
+  );
+  if (!window.webkit ||
+      !window.webkit.messageHandlers ||
+      !window.webkit.messageHandlers.objcHandler) {
+    return;
   }
+  window.webkit.messageHandlers.objcHandler.postMessage({
+    method: 'noteToUpdateScrollHeight',
+    scrollHeight: scrollHeight
+  });
+}
+
+document.addEventListener('DOMContentLoaded', updateAllIframeStyle);
+window.addEventListener('load', updateAllIframeStyle);
+window.addEventListener('resize', updateAllIframeStyle);
+
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(updateAllIframeStyle);
 }
