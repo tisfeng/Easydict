@@ -401,7 +401,7 @@ private struct RemoteModelsSheet: View {
     }
 
     private var canSave: Bool {
-        !isLoading && errorMessage.isEmpty && !models.isEmpty && !selectedIDs.isEmpty
+        !isLoading && errorMessage.isEmpty && !models.isEmpty
     }
 
     private var modelGroups: [String] {
