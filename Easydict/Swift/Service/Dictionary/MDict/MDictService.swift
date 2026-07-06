@@ -85,7 +85,6 @@ class MDictService: QueryService, @unchecked Sendable {
 
     // MARK: Private
 
-    private static let scriptNonce = "easydict-mdict"
     private static let entryScriptName = "MDictEntryScript"
 
     private static var contentSecurityPolicy: String {
@@ -229,7 +228,7 @@ class MDictService: QueryService, @unchecked Sendable {
             return ""
         }
         return """
-        <script nonce="\(scriptNonce)">
+        <script>
         \(script)
         </script>
         """

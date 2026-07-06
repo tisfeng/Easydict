@@ -9,8 +9,8 @@ WKWebView 高度桥接。
 - `EZWordResultView` 组装词条文本、音标、释义、复制/链接/替换按钮，并把计算
   后的内容高度回传给结果卡片。
 - `EZWebViewManager` 持有词典 WKWebView，记录 HTML 加载状态、重测标记和
-  上一次内容高度。Apple Dictionary 和 MDict 都通过页面脚本测量 iframe 内容，
-  再上报 WebView 内容高度。
+  上一次内容高度。Apple Dictionary 通过页面脚本测量 iframe 内容；MDict 直接
+  测量结果页内容，再上报 WebView 内容高度。
 - `EZResultView` 通过 `updateViewHeightBlock` 接收 word result 高度，再更新
   `EZQueryResult.viewHeight`，供表格和窗口重新计算。
 
@@ -18,7 +18,8 @@ WKWebView 高度桥接。
 
 普通词典结果由 Objective-C 直接按文本内容计算高度。Apple Dictionary 结果先加载
 HTML 文件，WebView 模板完成 iframe 测量后回传 `scrollHeight`；MDict 加载专用
-WebView HTML 外壳，并在其中用 iframe 隔离每本词典的正文样式。随后
+WebView HTML 外壳，把每本词典的正文直接渲染到 `details` section，并由页面脚本
+上报整体内容高度。随后
 `EZWordResultView` 更新 WebView 约束、result 高度和表格行高。
 
 ## 高度更新约束

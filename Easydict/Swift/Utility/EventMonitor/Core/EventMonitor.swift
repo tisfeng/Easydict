@@ -350,7 +350,7 @@ final class EventMonitor: NSObject {
 
         guard enabledAutoSelectText() else { return false }
         guard systemUtility.canInsertText() else {
-            logInfo("Focused element is not editable text element, skip select all shortcut auto get selected text")
+            logInfo("Focused element is not an editable text element, skip select all shortcut auto get selected text")
             return false
         }
 

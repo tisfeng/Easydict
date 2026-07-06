@@ -83,7 +83,20 @@ function changeIframeBodyFontSize(fontSizeRatio) {
 }
 
 function updateAllIframeStyle() {
-  notifyContentHeight();
+  scheduleContentHeight();
+}
+
+var pendingHeightUpdate = false;
+
+function scheduleContentHeight() {
+  if (pendingHeightUpdate) {
+    return;
+  }
+  pendingHeightUpdate = true;
+  window.requestAnimationFrame(function() {
+    pendingHeightUpdate = false;
+    notifyContentHeight();
+  });
 }
 
 function notifyContentHeight() {
@@ -106,7 +119,30 @@ function notifyContentHeight() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', updateAllIframeStyle);
+function observeContentChanges() {
+  document.addEventListener('toggle', scheduleContentHeight, true);
+
+  if (!window.ResizeObserver) {
+    return;
+  }
+
+  var observer = new ResizeObserver(scheduleContentHeight);
+  if (document.documentElement) {
+    observer.observe(document.documentElement);
+  }
+  if (document.body) {
+    observer.observe(document.body);
+  }
+  var entries = document.querySelectorAll('.mdict-entry');
+  for (var index = 0; index < entries.length; index += 1) {
+    observer.observe(entries[index]);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  observeContentChanges();
+  updateAllIframeStyle();
+});
 window.addEventListener('load', updateAllIframeStyle);
 window.addEventListener('resize', updateAllIframeStyle);
 
