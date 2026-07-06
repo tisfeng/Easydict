@@ -78,11 +78,11 @@ function decodeHash(value) {
   }
 }
 
-function changeIframeBodyFontSize(fontSizeRatio) {
+function changeWebViewBodyFontSize(fontSizeRatio) {
   document.body.style.fontSize = (fontSizeRatio * 100) + '%';
 }
 
-function updateAllIframeStyle() {
+function updateWebViewContentStyle() {
   scheduleContentHeight();
 }
 
@@ -141,11 +141,11 @@ function observeContentChanges() {
 
 document.addEventListener('DOMContentLoaded', function() {
   observeContentChanges();
-  updateAllIframeStyle();
+  updateWebViewContentStyle();
 });
-window.addEventListener('load', updateAllIframeStyle);
-window.addEventListener('resize', updateAllIframeStyle);
+window.addEventListener('load', updateWebViewContentStyle);
+window.addEventListener('resize', updateWebViewContentStyle);
 
 if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(updateAllIframeStyle);
+  document.fonts.ready.then(updateWebViewContentStyle);
 }
