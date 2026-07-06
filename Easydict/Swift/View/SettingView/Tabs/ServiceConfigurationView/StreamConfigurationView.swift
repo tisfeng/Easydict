@@ -297,7 +297,7 @@ struct StreamConfigurationView: View {
     }
 
     private func updateModels(remoteModelIDs: [String], selectedModelIDs: [String]) {
-        guard !remoteModelIDs.isEmpty, !selectedModelIDs.isEmpty else { return }
+        guard !remoteModelIDs.isEmpty else { return }
 
         var models = service.validModels(from: Defaults[service.supportedModelsKey])
         let remoteModels = Set(remoteModelIDs.map { service.remoteModelLookupID($0) })

@@ -37,7 +37,7 @@
   <rect x="570" y="120" width="220" height="92" rx="8" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1.5"/>
   <text x="592" y="150" class="node-title">WKWebView</text>
   <text x="592" y="174" class="node-text">加载词典 HTML</text>
-  <text x="592" y="194" class="node-text">触发 iframe 或 direct 高度脚本</text>
+  <text x="592" y="194" class="node-text">Apple iframe / MDict direct 高度脚本</text>
 
   <rect x="570" y="300" width="220" height="100" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
   <text x="592" y="330" class="node-title">EZWebViewManager</text>
