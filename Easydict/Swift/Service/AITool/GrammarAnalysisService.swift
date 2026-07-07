@@ -277,6 +277,7 @@ final class GrammarAnalysisService: AIToolService {
 
                     if self.shouldSkipForModeEligibility(sourceLanguage: from) {
                         activeResult.translatedResults = [self.skipMessage(answerLanguage: answerLanguage)]
+                        self.completeFinalResultState(activeResult)
                         continuation.yield(activeResult)
                         continuation.finish()
                         return
@@ -284,6 +285,7 @@ final class GrammarAnalysisService: AIToolService {
 
                     if self.shouldSkipForLocalHeuristics(text) {
                         activeResult.translatedResults = [self.skipMessage(answerLanguage: answerLanguage)]
+                        self.completeFinalResultState(activeResult)
                         continuation.yield(activeResult)
                         continuation.finish()
                         return
@@ -293,6 +295,7 @@ final class GrammarAnalysisService: AIToolService {
                     if !decision.shouldAnalyze,
                        !self.looksClearlyAnalyzableNaturalLanguage(text) {
                         activeResult.translatedResults = [self.skipMessage(answerLanguage: answerLanguage)]
+                        self.completeFinalResultState(activeResult)
                         continuation.yield(activeResult)
                         continuation.finish()
                         return
@@ -304,12 +307,14 @@ final class GrammarAnalysisService: AIToolService {
                         targetLanguage: to
                     )
                     activeResult.translatedResults = [analysis]
+                    self.completeFinalResultState(activeResult)
                     continuation.yield(activeResult)
                     continuation.finish()
                 } catch is CancellationError {
                     continuation.finish()
                 } catch {
                     activeResult.error = QueryError.queryError(from: error)
+                    self.completeFinalResultState(activeResult)
                     continuation.yield(activeResult)
                     continuation.finish(throwing: error)
                 }
