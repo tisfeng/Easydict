@@ -1001,6 +1001,18 @@
             "value" : "Auto query while typing"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consultar automáticamente al escribir"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力中に自動クエリ"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
