@@ -155,6 +155,10 @@ final class GrammarAnalysisService: AIToolService {
         serviceDefaultsKey(.serviceUsageStatus, defaultValue: .alwaysOn)
     }
 
+    override var usesStreamingTransport: Bool {
+        false
+    }
+
     var analysisModeKey: Defaults.Key<GrammarAnalysisMode> {
         serviceDefaultsKey(.grammarAnalysisMode, defaultValue: .general)
     }
@@ -221,10 +225,6 @@ final class GrammarAnalysisService: AIToolService {
 
     override func intelligentQueryTextType() -> EZQueryTextType {
         [.translation, .sentence]
-    }
-
-    override var usesStreamingTransport: Bool {
-        false
     }
 
     override func isStream() -> Bool {
@@ -331,17 +331,9 @@ final class GrammarAnalysisService: AIToolService {
         }
     }
 
-    func normalizeAnalysisModeIfNeeded() {
-        guard !canUseIELTSMode, Defaults[analysisModeKey] == .ielts else {
-            return
-        }
-
-        Defaults[analysisModeKey] = .general
-    }
-
     override func validate() async -> QueryResult {
         guard analysisMode == .ielts else {
-            return super.validate()
+            return await super.validate()
         }
 
         resetServiceResult()
@@ -361,6 +353,14 @@ final class GrammarAnalysisService: AIToolService {
         }
 
         return latestResult
+    }
+
+    func normalizeAnalysisModeIfNeeded() {
+        guard !canUseIELTSMode, Defaults[analysisModeKey] == .ielts else {
+            return
+        }
+
+        Defaults[analysisModeKey] = .general
     }
 
     // MARK: Private
