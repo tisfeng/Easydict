@@ -335,7 +335,34 @@ final class GrammarAnalysisService: AIToolService {
         Defaults[analysisModeKey] = .general
     }
 
+    override func validate() async -> QueryResult {
+        guard analysisMode == .ielts else {
+            return super.validate()
+        }
+
+        resetServiceResult()
+
+        let text = Self.ieltsValidationSampleText
+        var latestResult = result ?? QueryResult()
+
+        do {
+            for try await result in translateStream(text, from: .english, to: .simplifiedChinese) {
+                latestResult = result
+            }
+        } catch {
+            latestResult = result ?? latestResult
+            if latestResult.error == nil {
+                latestResult.error = QueryError.queryError(from: error)
+            }
+        }
+
+        return latestResult
+    }
+
     // MARK: Private
+
+    private static let ieltsValidationSampleText =
+        "Although the plan changed twice, we still finished the work on time."
 
     private static var isSeedingBuiltInModels = false
 
@@ -421,9 +448,7 @@ final class GrammarAnalysisService: AIToolService {
             defaultValue: targetProvider == .openAI ? Self.openAIDefaultModels.first ?? "" : ""
         )] = migratedModel
 
-        if credentialSource.usesPrivateKey {
-            Defaults[providerKey] = targetProvider
-        }
+        Defaults[providerKey] = targetProvider
 
         Defaults[legacyEndpointKey] = ""
         Defaults[legacyModelsKey] = ""

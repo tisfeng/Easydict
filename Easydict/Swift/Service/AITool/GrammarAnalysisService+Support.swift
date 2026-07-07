@@ -9,9 +9,6 @@ import Defaults
 import Foundation
 
 extension GrammarAnalysisService {
-    private static let ieltsValidationSampleText =
-        "Although the plan changed twice, we still finished the work on time."
-
     var preferredGateModels: [String] {
         [
             ZhipuModel.glm_4_flash_250414.rawValue,
@@ -153,30 +150,6 @@ extension GrammarAnalysisService {
         }
 
         return sourceLanguage != .english
-    }
-
-    override func validate() async -> QueryResult {
-        guard analysisMode == .ielts else {
-            return super.validate()
-        }
-
-        resetServiceResult()
-
-        let text = Self.ieltsValidationSampleText
-        var latestResult = result ?? QueryResult()
-
-        do {
-            for try await result in translateStream(text, from: .english, to: .simplifiedChinese) {
-                latestResult = result
-            }
-        } catch {
-            latestResult = result ?? latestResult
-            if latestResult.error == nil {
-                latestResult.error = QueryError.queryError(from: error)
-            }
-        }
-
-        return latestResult
     }
 
     func completeFinalResultState(_ result: QueryResult) {
