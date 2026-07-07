@@ -282,6 +282,7 @@ final class LocalStorage: NSObject {
     private let userDefaults = UserDefaults.standard
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
+    private let grammarAnalysisMigrationKey = "easydict.service.grammar_analysis.default_enable.v1"
 
     /// Raw dictionary backing service query statistics.
     private var queryServiceRecordDict: [String: [String: Any]] {
@@ -307,11 +308,14 @@ final class LocalStorage: NSObject {
                 let baseType = ServiceType(rawValue: rawType)
 
                 if serviceInfo(withType: baseType, serviceId: uuid, windowType: windowType) == nil {
+                    let shouldEnableQueryByDefault =
+                        baseType == .grammarAnalysis ? true : queryCount == 0
+
                     let serviceInfo = QueryServiceConfiguration(
                         uuid: uuid,
                         type: baseType,
                         enabled: true,
-                        enabledQuery: queryCount == 0,
+                        enabledQuery: shouldEnableQueryByDefault,
                         windowType: windowType
                     )
 
@@ -319,12 +323,15 @@ final class LocalStorage: NSObject {
                         .youdao,
                         .deepL,
                         .builtInAI,
+                        .grammarAnalysis,
                     ]
 
                     serviceInfo.enabled = defaultEnabledServices.contains { $0.rawValue == rawType }
                     setServiceInfo(serviceInfo, windowType: windowType)
                 }
             }
+
+            migrateGrammarAnalysisVisibilityIfNeeded(windowType: windowType)
         }
     }
 
@@ -394,6 +401,36 @@ final class LocalStorage: NSObject {
             "queryCharacterCount": record.queryCharacterCount,
         ]
         queryServiceRecordDict = dict
+    }
+
+    /// Repairs the initial grammar-analysis rollout defaults once.
+    /// Earlier builds could persist the service as hidden for existing users.
+    private func migrateGrammarAnalysisVisibilityIfNeeded(windowType: EZWindowType) {
+        guard !userDefaults.bool(forKey: grammarAnalysisMigrationKey) else {
+            return
+        }
+
+        let serviceType: ServiceType = .grammarAnalysis
+        guard let info = serviceInfo(withType: serviceType, serviceId: "", windowType: windowType) else {
+            return
+        }
+
+        let record = record(with: serviceType)
+        let looksUntouched = !info.enabled && record.queryCount == 0 && record.queryCharacterCount == 0
+        guard looksUntouched else {
+            if windowType == .main {
+                userDefaults.set(true, forKey: grammarAnalysisMigrationKey)
+            }
+            return
+        }
+
+        info.enabled = true
+        info.enabledQuery = true
+        setServiceInfo(info, windowType: windowType)
+
+        if windowType == .main {
+            userDefaults.set(true, forKey: grammarAnalysisMigrationKey)
+        }
     }
 
     /// Calculates a query level bucket for a count.

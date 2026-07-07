@@ -13,6 +13,13 @@
 static NSString *kObjcHandler = @"objcHandler";
 static NSString *kMethod = @"method";
 
+static void EZTeardownWKWebView(WKWebView *webView) {
+    [webView stopLoading];
+    webView.navigationDelegate = nil;
+    webView.UIDelegate = nil;
+    [webView.configuration.userContentController removeScriptMessageHandlerForName:kObjcHandler];
+}
+
 @interface EZWebViewManager () <WKNavigationDelegate, WKScriptMessageHandler>
 
 @property (nonatomic, assign) BOOL isUpdatingIframe;
@@ -102,19 +109,41 @@ static NSString *kMethod = @"method";
 }
 
 - (void)reset {
-    self.wordResultViewHeight = 0;
-    self.isLoaded = NO;
-    self.needUpdateIframeHeight = NO;
-    self.loadedHTMLString = nil;
-    self.didFinishUpdatingIframeHeightBlock = nil;
-    self.isUpdatingIframe = NO;
-    self.forceNextScrollHeightCallback = NO;
-    self.lastScrollHeight = 0;
-    [self teardownWebView];
+    void (^resetBlock)(void) = ^{
+        self.wordResultViewHeight = 0;
+        self.isLoaded = NO;
+        self.needUpdateIframeHeight = NO;
+        self.loadedHTMLString = nil;
+        self.didFinishUpdatingIframeHeightBlock = nil;
+        self.isUpdatingIframe = NO;
+        self.forceNextScrollHeightCallback = NO;
+        self.lastScrollHeight = 0;
+        [self teardownWebView];
+    };
+
+    if ([NSThread isMainThread]) {
+        resetBlock();
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), resetBlock);
+    }
 }
 
 - (void)dealloc {
-    [self teardownWebView];
+    WKWebView *webView = _webView;
+    _webView = nil;
+    if (!webView) {
+        return;
+    }
+
+    void (^teardownBlock)(void) = ^{
+        EZTeardownWKWebView(webView);
+    };
+
+    if ([NSThread isMainThread]) {
+        teardownBlock();
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), teardownBlock);
+    }
 }
 
 #pragma mark - MJExtension
@@ -131,15 +160,20 @@ static NSString *kMethod = @"method";
 
 - (void)teardownWebView {
     WKWebView *webView = _webView;
+    _webView = nil;
     if (!webView) {
         return;
     }
 
-    [webView stopLoading];
-    webView.navigationDelegate = nil;
-    webView.UIDelegate = nil;
-    [webView.configuration.userContentController removeScriptMessageHandlerForName:kObjcHandler];
-    _webView = nil;
+    void (^teardownBlock)(void) = ^{
+        EZTeardownWKWebView(webView);
+    };
+
+    if ([NSThread isMainThread]) {
+        teardownBlock();
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), teardownBlock);
+    }
 }
 
 @end

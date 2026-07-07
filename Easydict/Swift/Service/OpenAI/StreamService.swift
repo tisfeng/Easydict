@@ -326,6 +326,10 @@ public class StreamService: QueryService {
             : LocalizedStringKey(defaultEndpoint)
     }
 
+    var recommendedEndpoint: String? {
+        nil
+    }
+
     var defaultEndpoint: String {
         ""
     }

@@ -83,6 +83,7 @@ final class QueryServiceFactory: NSObject {
         (.gemini, GeminiService.self),
         (.claude, ClaudeService.self),
         (.ollama, OllamaService.self),
+        (.grammarAnalysis, GrammarAnalysisService.self),
         (.polishing, PolishingService.self),
         (.summary, SummaryService.self),
         (.customOpenAI, CustomOpenAIService.self),

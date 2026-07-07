@@ -112,7 +112,9 @@ struct StreamConfigurationView: View {
                     textFieldTitleKey: "service.configuration.openai.endpoint.title",
                     key: service.endpointKey,
                     placeholder: service.endpointPlaceholder,
-                    showText: true
+                    showText: true,
+                    recommendedText: service.recommendedEndpoint,
+                    usesSeparateLabelLayout: true
                 )
             }
 
