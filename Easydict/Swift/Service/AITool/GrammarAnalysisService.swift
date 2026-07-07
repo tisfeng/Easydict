@@ -223,6 +223,10 @@ final class GrammarAnalysisService: AIToolService {
         [.translation, .sentence]
     }
 
+    override var usesStreamingTransport: Bool {
+        false
+    }
+
     override func isStream() -> Bool {
         true
     }
