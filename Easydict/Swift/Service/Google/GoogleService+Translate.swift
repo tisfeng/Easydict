@@ -89,12 +89,17 @@ extension GoogleService {
                 let googleFromString = responseArray[2] as? String ?? ""
                 let googleFrom = languageEnum(fromCode: googleFromString)
                 let googleTo = to
+                let googleFromAccent = googleFrom == .english ? englishTTSAccent() : nil
 
                 result.raw = responseObject
                 result.fromSpeakURL = getAudioURL(
                     withText: text,
-                    language: googleFromString,
-                    sign: signText ?? ""
+                    language: ttsLanguageCode(
+                        for: googleFrom,
+                        fallbackCode: googleFromString
+                    ),
+                    sign: signText ?? "",
+                    accent: googleFromAccent
                 )
 
                 var wordResult: EZTranslateWordResult?
@@ -108,8 +113,14 @@ extension GoogleService {
                     wordResult = EZTranslateWordResult()
 
                     let phonetic = EZWordPhonetic()
-                    phonetic.name = NSLocalizedString("us_phonetic", comment: "")
-                    if EZLanguageManager.shared().isChineseLanguage(from) {
+                    if googleFrom == .english {
+                        let accent = googleFromAccent ?? englishTTSAccent()
+                        phonetic.accent = accent
+                        phonetic.name = NSLocalizedString(
+                            accent == "uk" ? "uk_phonetic" : "us_phonetic",
+                            comment: ""
+                        )
+                    } else {
                         phonetic.name = NSLocalizedString("chinese_phonetic", comment: "")
                     }
 
@@ -198,7 +209,10 @@ extension GoogleService {
                             signFunction.call(withArguments: [mergeString])?.toString() ?? ""
                         result.toSpeakURL = getAudioURL(
                             withText: mergeString,
-                            language: languageCode(for: googleTo) ?? "",
+                            language: ttsLanguageCode(
+                                for: googleTo,
+                                fallbackCode: languageCode(for: googleTo)
+                            ),
                             sign: signTo
                         )
                     }
@@ -470,12 +484,18 @@ extension GoogleService {
 
             if let responseDict = responseObject as? [String: Any] {
                 let googleFromString = responseDict["src"] as? String ?? ""
+                let googleFrom = languageEnum(fromCode: googleFromString)
+                let googleFromAccent = googleFrom == .english ? englishTTSAccent() : nil
 
                 let googleTo = to
                 result.fromSpeakURL = getAudioURL(
                     withText: text,
-                    language: googleFromString,
-                    sign: signText ?? ""
+                    language: ttsLanguageCode(
+                        for: googleFrom,
+                        fallbackCode: googleFromString
+                    ),
+                    sign: signText ?? "",
+                    accent: googleFromAccent
                 )
 
                 // 普通释义
@@ -496,7 +516,10 @@ extension GoogleService {
                         signFunction.call(withArguments: [translatedText])?.toString() ?? ""
                     result.toSpeakURL = getAudioURL(
                         withText: translatedText,
-                        language: languageCode(for: googleTo) ?? "",
+                        language: ttsLanguageCode(
+                            for: googleTo,
+                            fallbackCode: languageCode(for: googleTo)
+                        ),
                         sign: signTo
                     )
                 }

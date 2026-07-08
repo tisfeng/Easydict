@@ -10,11 +10,15 @@ import Foundation
 import JavaScriptCore
 
 private let kGoogleTranslateURL = "https://translate.google.com"
+private let kGoogleUSTTSURL = "https://translate.google.as"
+private let kGoogleUKTTSURL = "https://translate.google.co.uk"
 
 // MARK: - GoogleService
 
 @objc(EZGoogleService)
 class GoogleService: QueryService {
+    // MARK: Internal
+
     // MARK: - JavaScript Context
 
     lazy var jsContext: JSContext = {
@@ -229,21 +233,27 @@ class GoogleService: QueryService {
 
         if fromLanguage == .auto {
             let lang = try await detectText(text)
-            let sign = signFunction.call(withArguments: [text])?.toString() ?? ""
+            let language = getTTSLanguageCode(lang, accent: accent)
+            let sign = ttsSign(for: text, language: language)
             let url = getAudioURL(
                 withText: text,
-                language: getTTSLanguageCode(lang, accent: accent),
-                sign: sign
+                language: language,
+                sign: sign,
+                accent: accent
             )
             return url
         }
 
-        try await updateWebAppTKK()
-        let sign = signFunction.call(withArguments: [text])?.toString() ?? ""
+        let language = getTTSLanguageCode(fromLanguage, accent: accent)
+        if !isEnglishTTSLanguageCode(language) {
+            try await updateWebAppTKK()
+        }
+        let sign = ttsSign(for: text, language: language)
         let url = getAudioURL(
             withText: text,
-            language: getTTSLanguageCode(fromLanguage, accent: accent),
-            sign: sign
+            language: language,
+            sign: sign,
+            accent: accent
         )
         return url
     }
@@ -254,18 +264,81 @@ class GoogleService: QueryService {
         language(fromCode: code) ?? .auto
     }
 
-    internal override func getTTSLanguageCode(_ language: Language, accent: String?) -> String {
-        // TODO: Implement accent handling
-        languageCode(for: language) ?? "en"
+    internal override func getTTSLanguageCode(_ language: Language, accent _: String?) -> String {
+        if language == .english {
+            // Google TTS rejects regional English codes such as en-US/en-GB.
+            // Accent selection is handled by the translate host instead.
+            return "en"
+        }
+
+        return languageCode(for: language) ?? "en"
+    }
+
+    /// Converts a Google response language code into a TTS language code.
+    func ttsLanguageCode(for language: Language, fallbackCode: String? = nil) -> String {
+        if language == .english || fallbackCode?.hasPrefix("en") == true {
+            return getTTSLanguageCode(.english, accent: nil)
+        }
+
+        if language == .auto, let fallbackCode, !fallbackCode.isEmpty {
+            return fallbackCode
+        }
+
+        let languageCode = getTTSLanguageCode(language, accent: nil)
+        return languageCode.isEmpty ? fallbackCode ?? "en" : languageCode
+    }
+
+    func englishTTSAccent(_ accent: String? = nil) -> String {
+        let normalizedAccent = accent?.lowercased()
+        if normalizedAccent == "uk" || normalizedAccent == "us" {
+            return normalizedAccent ?? "us"
+        }
+
+        return MyConfiguration.shared.pronunciation == .uk ? "uk" : "us"
     }
 
     // MARK: - Audio URL
 
-    func getAudioURL(withText text: String, language: String, sign: String) -> String {
+    func getAudioURL(
+        withText text: String,
+        language: String,
+        sign: String,
+        accent: String? = nil
+    )
+        -> String {
         // TODO: text length must <= 200, maybe we can split it.
         let processedText = (text as NSString).trimmingToMaxLength(200)
+        let baseURL = ttsBaseURL(languageCode: language, accent: accent)
+        if isEnglishTTSLanguageCode(language) {
+            return
+                "\(baseURL)/translate_tts?ie=UTF-8&q=\(processedText.encode())&tl=\(language)&client=tw-ob"
+        }
 
-        return
-            "\(kGoogleTranslateURL)/translate_tts?ie=UTF-8&q=\(processedText.encode())&tl=\(language)&total=1&idx=0&textlen=\(processedText.count)&tk=\(sign)&client=webapp&prev=input"
+        let audioURL =
+            "\(baseURL)/translate_tts?ie=UTF-8&q=\(processedText.encode())&tl=\(language)&total=1&idx=0&textlen=\(processedText.count)&tk=\(sign)&client=webapp&prev=input"
+        return audioURL
+    }
+
+    // MARK: Private
+
+    private func ttsBaseURL(languageCode: String, accent: String?) -> String {
+        guard languageCode.hasPrefix("en") else {
+            return kGoogleTranslateURL
+        }
+
+        let selectedAccent = englishTTSAccent(accent)
+        return selectedAccent == "uk" ? kGoogleUKTTSURL : kGoogleUSTTSURL
+    }
+
+    private func ttsSign(for text: String, language: String) -> String {
+        if isEnglishTTSLanguageCode(language) {
+            return ""
+        }
+
+        return signFunction.call(withArguments: [text])?.toString() ?? ""
+    }
+
+    private func isEnglishTTSLanguageCode(_ languageCode: String) -> Bool {
+        languageCode.hasPrefix("en")
     }
 }
