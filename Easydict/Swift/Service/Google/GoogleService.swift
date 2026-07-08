@@ -10,8 +10,8 @@ import Foundation
 import JavaScriptCore
 
 private let kGoogleTranslateURL = "https://translate.google.com"
-private let kGoogleUSTTSURL = "https://translate.google.as"
-private let kGoogleUKTTSURL = "https://translate.google.co.uk"
+private let kGoogleUSTranslateURL = "https://translate.google.as"
+private let kGoogleUKTranslateURL = "https://translate.google.co.uk"
 private let kGoogleTTSRPCID = "jQ1olc"
 
 // MARK: - GoogleService
@@ -238,15 +238,12 @@ class GoogleService: QueryService {
             return try await englishAudioFilePath(withText: text, accent: accent)
         }
 
-        if !isEnglishTTSLanguageCode(language) {
-            try await updateWebAppTKK()
-        }
+        try await updateWebAppTKK()
         let sign = ttsSign(for: text, language: language)
-        let url = getAudioURL(
+        let url = getNonEnglishAudioURL(
             withText: text,
             language: language,
-            sign: sign,
-            accent: accent
+            sign: sign
         )
         return url
     }
@@ -292,22 +289,16 @@ class GoogleService: QueryService {
 
     // MARK: - Audio URL
 
-    func getAudioURL(
+    func getNonEnglishAudioURL(
         withText text: String,
         language: String,
-        sign: String,
-        accent: String? = nil
+        sign: String
     )
         -> String {
         // TODO: text length must <= 200, maybe we can split it.
         let processedText = (text as NSString).trimmingToMaxLength(200)
-        let baseURL = ttsBaseURL(languageCode: language, accent: accent)
-        if isEnglishTTSLanguageCode(language) {
-            return ""
-        }
-
         let audioURL =
-            "\(baseURL)/translate_tts?ie=UTF-8&q=\(processedText.encode())&tl=\(language)&total=1&idx=0&textlen=\(processedText.count)&tk=\(sign)&client=webapp&prev=input"
+            "\(kGoogleTranslateURL)/translate_tts?ie=UTF-8&q=\(processedText.encode())&tl=\(language)&total=1&idx=0&textlen=\(processedText.count)&tk=\(sign)&client=webapp&prev=input"
         return audioURL
     }
 
@@ -340,7 +331,7 @@ class GoogleService: QueryService {
     }
 
     private func requestEnglishTTSAudioData(withText text: String, accent: String) async throws -> Data {
-        let baseURL = ttsBaseURL(languageCode: "en", accent: accent)
+        let baseURL = englishTranslateURL(accent: accent)
         let urlString =
             "\(baseURL)/_/TranslateWebserverUi/data/batchexecute?rpcids=\(kGoogleTTSRPCID)&source-path=%2F&hl=zh-CN&rt=c"
         guard let url = URL(string: urlString) else {
@@ -430,13 +421,8 @@ class GoogleService: QueryService {
         return string.addingPercentEncoding(withAllowedCharacters: allowed) ?? string
     }
 
-    private func ttsBaseURL(languageCode: String, accent: String?) -> String {
-        guard languageCode.hasPrefix("en") else {
-            return kGoogleTranslateURL
-        }
-
-        let selectedAccent = englishTTSAccent(accent)
-        return selectedAccent == "uk" ? kGoogleUKTTSURL : kGoogleUSTTSURL
+    private func englishTranslateURL(accent: String) -> String {
+        accent == "uk" ? kGoogleUKTranslateURL : kGoogleUSTranslateURL
     }
 
     private func ttsSign(for text: String, language: String) -> String {
