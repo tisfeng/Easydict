@@ -12,6 +12,7 @@ import JavaScriptCore
 private let kGoogleTranslateURL = "https://translate.google.com"
 private let kGoogleUSTTSURL = "https://translate.google.as"
 private let kGoogleUKTTSURL = "https://translate.google.co.uk"
+private let kGoogleTTSRPCID = "jQ1olc"
 
 // MARK: - GoogleService
 
@@ -231,20 +232,12 @@ class GoogleService: QueryService {
 
         // TODO: need to optimize, Ref: https://github.com/florabtw/google-translate-tts/blob/master/src/synthesize.js
 
-        if fromLanguage == .auto {
-            let lang = try await detectText(text)
-            let language = getTTSLanguageCode(lang, accent: accent)
-            let sign = ttsSign(for: text, language: language)
-            let url = getAudioURL(
-                withText: text,
-                language: language,
-                sign: sign,
-                accent: accent
-            )
-            return url
+        let detectedLanguage = fromLanguage == .auto ? try await detectText(text) : fromLanguage
+        let language = getTTSLanguageCode(detectedLanguage, accent: accent)
+        if isEnglishTTSLanguageCode(language) {
+            return try await englishAudioFilePath(withText: text, accent: accent)
         }
 
-        let language = getTTSLanguageCode(fromLanguage, accent: accent)
         if !isEnglishTTSLanguageCode(language) {
             try await updateWebAppTKK()
         }
@@ -267,7 +260,7 @@ class GoogleService: QueryService {
     internal override func getTTSLanguageCode(_ language: Language, accent _: String?) -> String {
         if language == .english {
             // Google TTS rejects regional English codes such as en-US/en-GB.
-            // Accent selection is handled by the translate host instead.
+            // Accent selection is handled by the English TTS RPC host.
             return "en"
         }
 
@@ -310,8 +303,7 @@ class GoogleService: QueryService {
         let processedText = (text as NSString).trimmingToMaxLength(200)
         let baseURL = ttsBaseURL(languageCode: language, accent: accent)
         if isEnglishTTSLanguageCode(language) {
-            return
-                "\(baseURL)/translate_tts?ie=UTF-8&q=\(processedText.encode())&tl=\(language)&client=tw-ob"
+            return ""
         }
 
         let audioURL =
@@ -319,7 +311,124 @@ class GoogleService: QueryService {
         return audioURL
     }
 
+    func isEnglishTTSLanguageCode(_ languageCode: String) -> Bool {
+        languageCode.hasPrefix("en")
+    }
+
     // MARK: Private
+
+    private func englishAudioFilePath(withText text: String, accent: String?) async throws -> String {
+        let processedText = (text as NSString).trimmingToMaxLength(200)
+        let selectedAccent = englishTTSAccent(accent)
+        let filePath = audioPlayer.getWordAudioFilePath(
+            processedText,
+            language: .english,
+            accent: selectedAccent,
+            serviceType: serviceType()
+        )
+
+        if FileManager.default.fileExists(atPath: filePath) {
+            return filePath
+        }
+
+        let audioData = try await requestEnglishTTSAudioData(
+            withText: processedText,
+            accent: selectedAccent
+        )
+        try audioData.write(to: URL(fileURLWithPath: filePath), options: .atomic)
+        return filePath
+    }
+
+    private func requestEnglishTTSAudioData(withText text: String, accent: String) async throws -> Data {
+        let baseURL = ttsBaseURL(languageCode: "en", accent: accent)
+        let urlString =
+            "\(baseURL)/_/TranslateWebserverUi/data/batchexecute?rpcids=\(kGoogleTTSRPCID)&source-path=%2F&hl=zh-CN&rt=c"
+        guard let url = URL(string: urlString) else {
+            throw QueryError(type: .api, message: nil)
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.timeoutInterval = EZNetWorkTimeoutInterval
+        request.httpBody = try googleTTSRequestBody(withText: text)
+        request.setValue(
+            "application/x-www-form-urlencoded;charset=UTF-8",
+            forHTTPHeaderField: "Content-Type"
+        )
+        request.setValue("1", forHTTPHeaderField: "X-Same-Domain")
+        request.setValue(baseURL, forHTTPHeaderField: "Origin")
+        request.setValue("\(baseURL)/", forHTTPHeaderField: "Referer")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse,
+              200 ..< 300 ~= httpResponse.statusCode
+        else {
+            throw QueryError(type: .api, message: nil)
+        }
+
+        return try parseGoogleTTSAudioData(data)
+    }
+
+    private func googleTTSRequestBody(withText text: String) throws -> Data {
+        let payload: [Any] = [text, "en", NSNull(), "undefined", [0]]
+        let payloadData = try JSONSerialization.data(withJSONObject: payload)
+        guard let payloadString = String(data: payloadData, encoding: .utf8) else {
+            throw QueryError(type: .api, message: nil)
+        }
+
+        let requestObject: [Any] = [
+            [
+                [kGoogleTTSRPCID, payloadString, NSNull(), "generic"],
+            ],
+        ]
+        let requestData = try JSONSerialization.data(withJSONObject: requestObject)
+        guard let requestString = String(data: requestData, encoding: .utf8) else {
+            throw QueryError(type: .api, message: nil)
+        }
+
+        let body = "f.req=\(formEncoded(requestString))&"
+        guard let bodyData = body.data(using: .utf8) else {
+            throw QueryError(type: .api, message: nil)
+        }
+        return bodyData
+    }
+
+    private func parseGoogleTTSAudioData(_ data: Data) throws -> Data {
+        guard let responseText = String(data: data, encoding: .utf8) else {
+            throw QueryError(type: .api, message: nil)
+        }
+
+        for line in responseText.components(separatedBy: .newlines) {
+            let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard trimmedLine.hasPrefix("[["),
+                  let lineData = trimmedLine.data(using: .utf8),
+                  let rows = try? JSONSerialization.jsonObject(with: lineData) as? [Any]
+            else { continue }
+
+            for row in rows {
+                guard let fields = row as? [Any],
+                      fields.count > 2,
+                      fields[0] as? String == "wrb.fr",
+                      fields[1] as? String == kGoogleTTSRPCID,
+                      let payloadString = fields[2] as? String,
+                      let payloadData = payloadString.data(using: .utf8),
+                      let payload = try? JSONSerialization.jsonObject(with: payloadData) as? [Any],
+                      let audioString = payload.first as? String,
+                      let audioData = Data(base64Encoded: audioString)
+                else { continue }
+
+                return audioData
+            }
+        }
+
+        throw QueryError(type: .api, message: nil)
+    }
+
+    private func formEncoded(_ string: String) -> String {
+        var allowed = CharacterSet.alphanumerics
+        allowed.insert(charactersIn: "-._*")
+        return string.addingPercentEncoding(withAllowedCharacters: allowed) ?? string
+    }
 
     private func ttsBaseURL(languageCode: String, accent: String?) -> String {
         guard languageCode.hasPrefix("en") else {
@@ -336,9 +445,5 @@ class GoogleService: QueryService {
         }
 
         return signFunction.call(withArguments: [text])?.toString() ?? ""
-    }
-
-    private func isEnglishTTSLanguageCode(_ languageCode: String) -> Bool {
-        languageCode.hasPrefix("en")
     }
 }

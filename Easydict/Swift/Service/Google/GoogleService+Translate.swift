@@ -60,6 +60,17 @@ extension GoogleService {
         try JSONSerialization.jsonObject(with: data)
     }
 
+    private func synchronousAudioURL(
+        withText text: String,
+        language: String,
+        sign: String,
+        accent: String? = nil
+    )
+        -> String? {
+        guard !isEnglishTTSLanguageCode(language) else { return nil }
+        return getAudioURL(withText: text, language: language, sign: sign, accent: accent)
+    }
+
     // MARK: - WebApp Translate
 
     /// This API can get word info, like pronunciation, but transaltion may be inaccurate, compare to web transaltion.
@@ -92,7 +103,7 @@ extension GoogleService {
                 let googleFromAccent = googleFrom == .english ? englishTTSAccent() : nil
 
                 result.raw = responseObject
-                result.fromSpeakURL = getAudioURL(
+                result.fromSpeakURL = synchronousAudioURL(
                     withText: text,
                     language: ttsLanguageCode(
                         for: googleFrom,
@@ -125,7 +136,7 @@ extension GoogleService {
                     }
 
                     phonetic.value = phoneticText
-                    phonetic.speakURL = result.fromSpeakURL
+                    phonetic.speakURL = googleFrom == .english ? nil : result.fromSpeakURL
                     phonetic.language = result.queryFromLanguage
                     phonetic.word = text
                     wordResult?.phonetics = [phonetic]
@@ -207,7 +218,7 @@ extension GoogleService {
                             ) ?? ""
                         let signTo =
                             signFunction.call(withArguments: [mergeString])?.toString() ?? ""
-                        result.toSpeakURL = getAudioURL(
+                        result.toSpeakURL = synchronousAudioURL(
                             withText: mergeString,
                             language: ttsLanguageCode(
                                 for: googleTo,
@@ -488,7 +499,7 @@ extension GoogleService {
                 let googleFromAccent = googleFrom == .english ? englishTTSAccent() : nil
 
                 let googleTo = to
-                result.fromSpeakURL = getAudioURL(
+                result.fromSpeakURL = synchronousAudioURL(
                     withText: text,
                     language: ttsLanguageCode(
                         for: googleFrom,
@@ -514,7 +525,7 @@ extension GoogleService {
 
                     let signTo =
                         signFunction.call(withArguments: [translatedText])?.toString() ?? ""
-                    result.toSpeakURL = getAudioURL(
+                    result.toSpeakURL = synchronousAudioURL(
                         withText: translatedText,
                         language: ttsLanguageCode(
                             for: googleTo,
