@@ -487,6 +487,8 @@ struct AdvancedTab: View {
     @Default(.ankiConnectModel) private var ankiConnectModel
     @Default(.ankiConnectFrontField) private var ankiConnectFrontField
     @Default(.ankiConnectBackField) private var ankiConnectBackField
+    @Default(.ankiConnectModelFields) private var ankiConnectModelFields
+    @Default(.ankiConnectFieldMappings) private var ankiConnectFieldMappings
 
     @Default(.maxWindowHeightPercentage) private var maxWindowHeightPercentageValue
 
@@ -498,7 +500,9 @@ struct AdvancedTab: View {
     private func getAnkiIconColor() -> Color {
         enableAnkiConnect ? .green : .red
     }
+}
 
+extension AdvancedTab {
     private func fetchAnkiFields() {
         isFetchingAnkiFields = true
         AnkiConnectClient.shared.fetchModelFieldNames { success, fields, message in
@@ -509,19 +513,90 @@ struct AdvancedTab: View {
                 return
             }
 
-            guard fields.count >= 2 else {
+            guard !fields.isEmpty else {
                 EZToast.showText(NSLocalizedString("anki.connect.insufficient_fields", comment: ""))
                 return
             }
 
-            ankiConnectFrontField = fields[0]
-            ankiConnectBackField = fields[1]
+            ankiConnectModelFields = fields
+            if ankiConnectFieldMappings.isEmpty {
+                ankiConnectFieldMappings = AnkiFieldMapping.defaultMappings(
+                    ankiFields: fields,
+                    frontFallback: ankiConnectFrontField,
+                    backFallback: ankiConnectBackField
+                )
+            }
             EZToast.showText(message)
         }
     }
-}
 
-extension AdvancedTab {
+    private func ensureAnkiMappings() {
+        guard ankiConnectFieldMappings.isEmpty else { return }
+
+        ankiConnectFieldMappings = AnkiFieldMapping.defaultMappings(
+            ankiFields: ankiConnectModelFields,
+            frontFallback: ankiConnectFrontField,
+            backFallback: ankiConnectBackField
+        )
+    }
+
+    private func addAnkiMapping() {
+        ensureAnkiMappings()
+        ankiConnectFieldMappings.append(
+            AnkiFieldMapping(
+                ankiField: nextAnkiField(),
+                easydictField: nextEasydictField()
+            )
+        )
+    }
+
+    private func removeAnkiMapping(id: UUID) {
+        guard ankiConnectFieldMappings.count > 1 else { return }
+        ankiConnectFieldMappings.removeAll { $0.id == id }
+    }
+
+    private func ankiFieldOptions(current: String) -> [String] {
+        let baseFields = ankiConnectModelFields.isEmpty
+            ? [ankiConnectFrontField, ankiConnectBackField]
+            : ankiConnectModelFields
+        return uniqueFields(baseFields + [current])
+    }
+
+    private func nextAnkiField() -> String {
+        let usedFields = Set(ankiConnectFieldMappings.map { cleanField($0.ankiField) })
+        return ankiFieldOptions(current: "")
+            .first { !usedFields.contains(cleanField($0)) } ?? ""
+    }
+
+    private func nextEasydictField() -> AnkiEasydictField {
+        let usedFields = Set(ankiConnectFieldMappings.map(\.fieldRawValue))
+        let candidates: [AnkiEasydictField] = [
+            .phonetic,
+            .definition,
+            .translation,
+            .dictionaryText,
+            .exchange,
+            .related,
+            .etymology,
+            .dictionaryHTML,
+            .fullResult,
+        ]
+        return candidates.first { !usedFields.contains($0.rawValue) } ?? .fullResult
+    }
+
+    private func uniqueFields(_ fields: [String]) -> [String] {
+        var seen = Set<String>()
+        return fields.compactMap { field in
+            let value = cleanField(field)
+            guard !value.isEmpty, seen.insert(value).inserted else { return nil }
+            return value
+        }
+    }
+
+    private func cleanField(_ field: String) -> String {
+        field.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     @ViewBuilder
     fileprivate var ankiConnectSection: some View {
         Section {
@@ -577,42 +652,83 @@ extension AdvancedTab {
             }
 
             LabeledContent {
-                HStack {
-                    TextField(text: $ankiConnectFrontField, prompt: Text(verbatim: "Front")) {
-                        EmptyView()
-                    }
-                    .frame(width: 120)
-                    .fixedSize(horizontal: true, vertical: false)
+                VStack(alignment: .trailing, spacing: 8) {
+                    ForEach($ankiConnectFieldMappings) { mapping in
+                        HStack(spacing: 8) {
+                            Picker(selection: mapping.ankiField) {
+                                ForEach(
+                                    ankiFieldOptions(current: mapping.wrappedValue.ankiField),
+                                    id: \.self
+                                ) { field in
+                                    Text(verbatim: field)
+                                        .tag(field)
+                                }
+                            } label: {
+                                EmptyView()
+                            }
+                            .labelsHidden()
+                            .frame(width: 140)
 
-                    TextField(text: $ankiConnectBackField, prompt: Text(verbatim: "Back")) {
-                        EmptyView()
-                    }
-                    .frame(width: 120)
-                    .fixedSize(horizontal: true, vertical: false)
+                            Image(systemSymbol: .arrowRight)
+                                .foregroundStyle(.secondary)
 
-                    Button {
-                        fetchAnkiFields()
-                    } label: {
-                        if isFetchingAnkiFields {
-                            ProgressView()
-                                .controlSize(.small)
-                        } else {
-                            Image(systemSymbol: .arrowClockwise)
+                            Picker(selection: mapping.fieldRawValue) {
+                                ForEach(AnkiEasydictField.allCases) { field in
+                                    Text(LocalizedStringKey(field.titleKey))
+                                        .tag(field.rawValue)
+                                }
+                            } label: {
+                                EmptyView()
+                            }
+                            .labelsHidden()
+                            .frame(width: 160)
+
+                            Button {
+                                removeAnkiMapping(id: mapping.wrappedValue.id)
+                            } label: {
+                                Image(systemSymbol: .minusCircle)
+                            }
+                            .buttonStyle(.borderless)
+                            .disabled(ankiConnectFieldMappings.count <= 1)
+                            .help(Text("setting.advance.anki_remove_mapping"))
                         }
                     }
-                    .disabled(isFetchingAnkiFields)
-                    .help(Text("setting.advance.anki_fetch_fields"))
+
+                    HStack(spacing: 8) {
+                        Button {
+                            addAnkiMapping()
+                        } label: {
+                            Label("setting.advance.anki_add_mapping", systemSymbol: .plus)
+                        }
+                        .buttonStyle(.borderless)
+
+                        Button {
+                            fetchAnkiFields()
+                        } label: {
+                            if isFetchingAnkiFields {
+                                ProgressView()
+                                    .controlSize(.small)
+                            } else {
+                                Image(systemSymbol: .arrowClockwise)
+                            }
+                        }
+                        .disabled(isFetchingAnkiFields)
+                        .help(Text("setting.advance.anki_fetch_fields"))
+                    }
                 }
             } label: {
                 AdvancedTabItemView(
                     color: getAnkiIconColor(),
                     icon: .textformat,
-                    labelText: "setting.advance.anki_fields",
-                    subtitleText: "setting.advance.anki_fields_desc"
+                    labelText: "setting.advance.anki_field_mapping",
+                    subtitleText: "setting.advance.anki_field_mapping_desc"
                 )
             }
         } header: {
             Text("setting.advance.header.anki_connect")
+        }
+        .onAppear {
+            ensureAnkiMappings()
         }
     }
 }

@@ -166,6 +166,11 @@ extension Defaults.Keys {
     static var ankiConnectModel = Key<String>("ankiConnectModel", default: "Basic")
     static var ankiConnectFrontField = Key<String>("ankiConnectFrontField", default: "Front")
     static var ankiConnectBackField = Key<String>("ankiConnectBackField", default: "Back")
+    static var ankiConnectModelFields = Key<[String]>("ankiConnectModelFields", default: [])
+    static var ankiConnectFieldMappings = Key<[AnkiFieldMapping]>(
+        "ankiConnectFieldMappings",
+        default: []
+    )
 
     static var enableAppleOfflineTranslation = Key<Bool>(
         "enableAppleOfflineTranslation", default: false
