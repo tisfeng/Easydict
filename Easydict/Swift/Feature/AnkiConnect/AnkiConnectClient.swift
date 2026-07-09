@@ -33,13 +33,42 @@ enum AnkiEasydictField: String, CaseIterable, Codable, Defaults.Serializable, Id
     var titleKey: String {
         "anki.easydict_field.\(rawValue)"
     }
+
+    var tokenName: String {
+        switch self {
+        case .word:
+            return "Word"
+        case .fullResult:
+            return "FullResult"
+        case .phonetic:
+            return "Phonetic"
+        case .definition:
+            return "Definition"
+        case .translation:
+            return "Translation"
+        case .dictionaryText:
+            return "DictionaryText"
+        case .dictionaryHTML:
+            return "DictionaryHTML"
+        case .exchange:
+            return "Exchange"
+        case .related:
+            return "Related"
+        case .etymology:
+            return "Etymology"
+        }
+    }
+
+    var templateToken: String {
+        "{\(tokenName)}"
+    }
 }
 
 // MARK: - AnkiFieldMapping
 
-/// Stores one mapping from an Anki note field to one Easydict result field.
-/// The stable id keeps SwiftUI rows editable while the raw value keeps the
-/// persisted Defaults payload resilient to future field additions.
+/// Stores one mapping from an Anki note field to an Easydict template.
+/// The stable id keeps SwiftUI rows editable while the raw value preserves
+/// compatibility with older single-field mapping settings.
 struct AnkiFieldMapping: Codable, Defaults.Serializable, Equatable, Identifiable {
     // MARK: Lifecycle
 
@@ -47,6 +76,22 @@ struct AnkiFieldMapping: Codable, Defaults.Serializable, Equatable, Identifiable
         self.id = id
         self.ankiField = ankiField
         self.fieldRawValue = easydictField.rawValue
+        self.template = easydictField.templateToken
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        self.ankiField = try container.decodeIfPresent(String.self, forKey: .ankiField) ?? ""
+        self.fieldRawValue = try container
+            .decodeIfPresent(String.self, forKey: .fieldRawValue) ?? AnkiEasydictField.fullResult.rawValue
+
+        if let savedTemplate = try container.decodeIfPresent(String.self, forKey: .template) {
+            self.template = savedTemplate
+        } else {
+            let field = AnkiEasydictField(rawValue: fieldRawValue) ?? .fullResult
+            self.template = field.templateToken
+        }
     }
 
     // MARK: Internal
@@ -54,10 +99,14 @@ struct AnkiFieldMapping: Codable, Defaults.Serializable, Equatable, Identifiable
     let id: UUID
     var ankiField: String
     var fieldRawValue: String
+    var template: String
 
     var easydictField: AnkiEasydictField {
         get { AnkiEasydictField(rawValue: fieldRawValue) ?? .fullResult }
-        set { fieldRawValue = newValue.rawValue }
+        set {
+            fieldRawValue = newValue.rawValue
+            template = newValue.templateToken
+        }
     }
 
     static func defaultMappings(
@@ -87,6 +136,291 @@ struct AnkiFieldMapping: Codable, Defaults.Serializable, Equatable, Identifiable
             AnkiFieldMapping(ankiField: front, easydictField: .word),
             AnkiFieldMapping(ankiField: back, easydictField: .fullResult),
         ]
+    }
+
+    // MARK: Private
+
+    /// Persists the current template while still decoding earlier mappings
+    /// that only stored a single Easydict field value.
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case ankiField
+        case fieldRawValue
+        case template
+    }
+}
+
+// MARK: - AnkiFieldPreviewValue
+
+/// Represents one available Easydict variable and the value extracted from a
+/// query result. Settings uses this for previewing what each template token
+/// expands to before a note is sent to Anki.
+struct AnkiFieldPreviewValue: Identifiable {
+    let field: AnkiEasydictField
+    let value: String
+
+    var id: String { field.rawValue }
+}
+
+// MARK: - AnkiRenderedFieldPreview
+
+/// Represents the rendered output for one Anki field mapping. It mirrors the
+/// payload sent to Anki Connect so the settings preview can show the final
+/// field values without creating a card.
+struct AnkiRenderedFieldPreview: Identifiable {
+    let id: UUID
+    let ankiField: String
+    let template: String
+    let value: String
+}
+
+// MARK: - AnkiTemplateRenderer
+
+/// Extracts Easydict result values and renders Anki field templates.
+/// Both card submission and settings preview use this type so users see the
+/// same text that will be written to Anki.
+enum AnkiTemplateRenderer {
+    // MARK: Internal
+
+    static func fieldValues(from result: QueryResult) -> [AnkiEasydictField: String] {
+        [
+            .word: frontText(from: result),
+            .fullResult: backText(from: result),
+            .phonetic: phoneticText(from: result.wordResult) ?? "",
+            .definition: definitionText(from: result.wordResult) ?? "",
+            .translation: result.translatedText?.trimmed ?? "",
+            .dictionaryText: dictionaryText(from: result) ?? "",
+            .dictionaryHTML: dictionaryHTML(from: result) ?? "",
+            .exchange: exchangeText(from: result.wordResult) ?? "",
+            .related: relatedText(from: result.wordResult) ?? "",
+            .etymology: result.wordResult?.etymology?.trimmed ?? "",
+        ]
+    }
+
+    static func previewValues(from result: QueryResult) -> [AnkiFieldPreviewValue] {
+        let values = fieldValues(from: result)
+        return AnkiEasydictField.allCases.map { field in
+            AnkiFieldPreviewValue(field: field, value: values[field] ?? "")
+        }
+    }
+
+    static func renderedFields(
+        from result: QueryResult,
+        mappings: [AnkiFieldMapping]
+    )
+        -> [String: String] {
+        let values = fieldValues(from: result)
+        var fields: [String: String] = [:]
+
+        for mapping in mappings {
+            fields[mapping.ankiField.trimmed] = render(mapping.template, values: values)
+        }
+
+        return fields
+    }
+
+    static func renderedPreviewFields(
+        from result: QueryResult,
+        mappings: [AnkiFieldMapping]
+    )
+        -> [AnkiRenderedFieldPreview] {
+        let values = fieldValues(from: result)
+        return mappings.map { mapping in
+            AnkiRenderedFieldPreview(
+                id: mapping.id,
+                ankiField: mapping.ankiField.trimmed,
+                template: mapping.template,
+                value: render(mapping.template, values: values)
+            )
+        }
+    }
+
+    static func render(
+        _ template: String,
+        values: [AnkiEasydictField: String]
+    )
+        -> String {
+        var rendered = template
+        for field in AnkiEasydictField.allCases {
+            let value = values[field] ?? ""
+            rendered = rendered.replacingOccurrences(
+                of: field.templateToken,
+                with: value,
+                options: [.caseInsensitive]
+            )
+        }
+        return rendered.trimmed
+    }
+
+    // MARK: Private
+
+    private static func frontText(from result: QueryResult) -> String {
+        result.queryText.trimmed.isEmpty ? result.queryModel.queryText : result.queryText.trimmed
+    }
+
+    private static func backText(from result: QueryResult) -> String {
+        let candidates = [
+            wordResultText(from: result.wordResult),
+            result.translatedText,
+            result.copiedText,
+            dictionaryContentForBack(from: result),
+        ]
+
+        return uniqueText(candidates).joined(separator: "\n\n")
+    }
+
+    private static func dictionaryText(from result: QueryResult) -> String? {
+        let innerText = result.innerTexts?.joined(separator: "\n\n")
+        let entryHTML = result.htmlStrings?.joined(separator: "\n\n")
+        let renderedHTML = result.htmlString
+
+        return firstNonEmpty([innerText, entryHTML, renderedHTML])
+    }
+
+    private static func dictionaryContentForBack(from result: QueryResult) -> String? {
+        if prefersRenderedDictionaryHTML(result) {
+            return dictionaryHTML(from: result)
+        }
+
+        return dictionaryText(from: result)
+    }
+
+    private static func dictionaryHTML(from result: QueryResult) -> String? {
+        if prefersRenderedDictionaryHTML(result) {
+            return firstNonEmpty([
+                result.htmlString,
+                result.htmlStrings?.joined(separator: "\n\n"),
+            ])
+        }
+
+        return firstNonEmpty([
+            result.htmlStrings?.joined(separator: "\n\n"),
+            result.htmlString,
+        ])
+    }
+
+    private static func prefersRenderedDictionaryHTML(_ result: QueryResult) -> Bool {
+        result.serviceTypeWithUniqueIdentifier == ServiceType.appleDictionary.rawValue ||
+            result.serviceTypeWithUniqueIdentifier == ServiceType.mDict.rawValue
+    }
+
+    private static func wordResultText(from wordResult: EZTranslateWordResult?) -> String? {
+        guard let wordResult else { return nil }
+
+        let candidates = [
+            phoneticText(from: wordResult),
+            definitionText(from: wordResult),
+            exchangeText(from: wordResult),
+            wordResult.etymology?.trimmed,
+            relatedText(from: wordResult),
+        ]
+
+        return joinedText(candidates)
+    }
+
+    private static func phoneticText(from wordResult: EZTranslateWordResult?) -> String? {
+        guard let phonetics = wordResult?.phonetics else { return nil }
+
+        let values = phonetics.compactMap { phonetic -> String? in
+            guard let value = phonetic.value?.trimmed, !value.isEmpty else { return nil }
+            let name = phonetic.name?.trimmed ?? ""
+            return name.isEmpty ? "/\(value)/" : "\(name) /\(value)/"
+        }
+
+        return joinedText(values)
+    }
+
+    private static func definitionText(from wordResult: EZTranslateWordResult?) -> String? {
+        guard let wordResult else { return nil }
+
+        var lines = partLines(from: wordResult.parts)
+        if let simpleWords = wordResult.simpleWords {
+            lines.append(contentsOf: simpleWords.compactMap { simpleWord in
+                let word = simpleWord.word.trimmed
+                let means = simpleWord.meansText.trimmed
+                guard !word.isEmpty || !means.isEmpty else { return nil }
+
+                let part = simpleWord.part?.trimmed ?? ""
+                let prefix = [word, part].filter { !$0.isEmpty }.joined(separator: " ")
+                return prefix.isEmpty ? means : "\(prefix): \(means)"
+            })
+        }
+
+        return joinedText(lines)
+    }
+
+    private static func exchangeText(from wordResult: EZTranslateWordResult?) -> String? {
+        guard let exchanges = wordResult?.exchanges else { return nil }
+
+        let lines = exchanges.compactMap { exchange -> String? in
+            let words = exchange.words
+                .map(\.trimmed)
+                .filter { !$0.isEmpty }
+                .joined(separator: ", ")
+            guard !words.isEmpty else { return nil }
+
+            let name = exchange.name.trimmed
+            return name.isEmpty ? words : "\(name): \(words)"
+        }
+
+        return joinedText(lines)
+    }
+
+    private static func relatedText(from wordResult: EZTranslateWordResult?) -> String? {
+        guard let wordResult else { return nil }
+
+        let lines = partLines(from: wordResult.synonyms, title: "Synonyms")
+            + partLines(from: wordResult.antonyms, title: "Antonyms")
+            + partLines(from: wordResult.collocation, title: "Collocation")
+        return joinedText(lines)
+    }
+
+    private static func partLines(from parts: [EZTranslatePart]?, title: String? = nil) -> [String] {
+        guard let parts else { return [] }
+
+        var lines = parts.flatMap { part in
+            part.means.compactMap { mean -> String? in
+                let value = mean.trimmed
+                guard !value.isEmpty else { return nil }
+
+                let label = part.part?.trimmed ?? ""
+                return label.isEmpty ? value : "\(label) \(value)"
+            }
+        }
+
+        if !lines.isEmpty, let title {
+            lines.insert(title, at: 0)
+        }
+
+        return lines
+    }
+
+    private static func joinedText(_ candidates: [String?]) -> String? {
+        let text = candidates
+            .compactMap { $0?.trimmed }
+            .filter { !$0.isEmpty }
+            .joined(separator: "\n")
+        return text.isEmpty ? nil : text
+    }
+
+    private static func firstNonEmpty(_ candidates: [String?]) -> String? {
+        candidates
+            .compactMap { $0?.trimmed }
+            .first { !$0.isEmpty }
+    }
+
+    private static func uniqueText(_ candidates: [String?]) -> [String] {
+        var seen = Set<String>()
+        var values: [String] = []
+
+        for candidate in candidates {
+            guard let value = candidate?.trimmed, !value.isEmpty else { continue }
+            let normalized = value.replacingOccurrences(of: "\r\n", with: "\n")
+            guard seen.insert(normalized).inserted else { continue }
+            values.append(value)
+        }
+
+        return values
     }
 }
 
@@ -118,10 +452,12 @@ final class AnkiConnectClient: NSObject {
 
         let mappings = configuredMappings()
         let fields = mappings.map { $0.ankiField.trimmed }
+        let templates = mappings.map { $0.template.trimmed }
         guard !Defaults[.ankiConnectDeck].trimmed.isEmpty,
               !Defaults[.ankiConnectModel].trimmed.isEmpty,
               !mappings.isEmpty,
-              fields.allSatisfy({ !$0.isEmpty })
+              fields.allSatisfy({ !$0.isEmpty }),
+              templates.allSatisfy({ !$0.isEmpty })
         else {
             completion(false, NSLocalizedString("anki.connect.incomplete_configuration", comment: ""))
             return
@@ -270,10 +606,7 @@ final class AnkiConnectClient: NSObject {
     }
 
     private func notePayload(from result: QueryResult, mappings: [AnkiFieldMapping]) -> [String: Any] {
-        var fields: [String: String] = [:]
-        for mapping in mappings {
-            fields[mapping.ankiField.trimmed] = fieldText(mapping.easydictField, from: result)
-        }
+        let fields = AnkiTemplateRenderer.renderedFields(from: result, mappings: mappings)
 
         return [
             "deckName": Defaults[.ankiConnectDeck].trimmed,
@@ -284,182 +617,6 @@ final class AnkiConnectClient: NSObject {
             ],
             "tags": ["easydict"],
         ]
-    }
-
-    private func frontText(from result: QueryResult) -> String {
-        result.queryText.trimmed.isEmpty ? result.queryModel.queryText : result.queryText.trimmed
-    }
-
-    private func backText(from result: QueryResult) -> String {
-        let candidates = [
-            wordResultText(from: result.wordResult),
-            result.translatedText,
-            result.copiedText,
-            dictionaryText(from: result),
-        ]
-
-        return uniqueText(candidates).joined(separator: "\n\n")
-    }
-
-    private func fieldText(_ field: AnkiEasydictField, from result: QueryResult) -> String {
-        switch field {
-        case .word:
-            return frontText(from: result)
-        case .fullResult:
-            return backText(from: result)
-        case .phonetic:
-            return phoneticText(from: result.wordResult) ?? ""
-        case .definition:
-            return definitionText(from: result.wordResult) ?? ""
-        case .translation:
-            return result.translatedText?.trimmed ?? ""
-        case .dictionaryText:
-            return dictionaryText(from: result) ?? ""
-        case .dictionaryHTML:
-            return dictionaryHTML(from: result) ?? ""
-        case .exchange:
-            return exchangeText(from: result.wordResult) ?? ""
-        case .related:
-            return relatedText(from: result.wordResult) ?? ""
-        case .etymology:
-            return result.wordResult?.etymology?.trimmed ?? ""
-        }
-    }
-
-    private func dictionaryText(from result: QueryResult) -> String? {
-        let candidates = [
-            result.innerTexts?.joined(separator: "\n\n"),
-            result.htmlStrings?.joined(separator: "\n\n"),
-            result.htmlString,
-        ]
-
-        return candidates
-            .compactMap { $0?.trimmed }
-            .first { !$0.isEmpty }
-    }
-
-    private func dictionaryHTML(from result: QueryResult) -> String? {
-        let candidates = [
-            result.htmlStrings?.joined(separator: "\n\n"),
-            result.htmlString,
-        ]
-
-        return candidates
-            .compactMap { $0?.trimmed }
-            .first { !$0.isEmpty }
-    }
-
-    private func wordResultText(from wordResult: EZTranslateWordResult?) -> String? {
-        guard let wordResult else { return nil }
-
-        let candidates = [
-            phoneticText(from: wordResult),
-            definitionText(from: wordResult),
-            exchangeText(from: wordResult),
-            wordResult.etymology?.trimmed,
-            relatedText(from: wordResult),
-        ]
-
-        return joinedText(candidates)
-    }
-
-    private func phoneticText(from wordResult: EZTranslateWordResult?) -> String? {
-        guard let phonetics = wordResult?.phonetics else { return nil }
-
-        let values = phonetics.compactMap { phonetic -> String? in
-            guard let value = phonetic.value?.trimmed, !value.isEmpty else { return nil }
-            let name = phonetic.name?.trimmed ?? ""
-            return name.isEmpty ? "/\(value)/" : "\(name) /\(value)/"
-        }
-
-        return joinedText(values)
-    }
-
-    private func definitionText(from wordResult: EZTranslateWordResult?) -> String? {
-        guard let wordResult else { return nil }
-
-        var lines = partLines(from: wordResult.parts)
-        if let simpleWords = wordResult.simpleWords {
-            lines.append(contentsOf: simpleWords.compactMap { simpleWord in
-                let word = simpleWord.word.trimmed
-                let means = simpleWord.meansText.trimmed
-                guard !word.isEmpty || !means.isEmpty else { return nil }
-
-                let part = simpleWord.part?.trimmed ?? ""
-                let prefix = [word, part].filter { !$0.isEmpty }.joined(separator: " ")
-                return prefix.isEmpty ? means : "\(prefix): \(means)"
-            })
-        }
-
-        return joinedText(lines)
-    }
-
-    private func exchangeText(from wordResult: EZTranslateWordResult?) -> String? {
-        guard let exchanges = wordResult?.exchanges else { return nil }
-
-        let lines = exchanges.compactMap { exchange -> String? in
-            let words = exchange.words
-                .map(\.trimmed)
-                .filter { !$0.isEmpty }
-                .joined(separator: ", ")
-            guard !words.isEmpty else { return nil }
-
-            let name = exchange.name.trimmed
-            return name.isEmpty ? words : "\(name): \(words)"
-        }
-
-        return joinedText(lines)
-    }
-
-    private func relatedText(from wordResult: EZTranslateWordResult?) -> String? {
-        guard let wordResult else { return nil }
-
-        let lines = partLines(from: wordResult.synonyms, title: "Synonyms")
-            + partLines(from: wordResult.antonyms, title: "Antonyms")
-            + partLines(from: wordResult.collocation, title: "Collocation")
-        return joinedText(lines)
-    }
-
-    private func partLines(from parts: [EZTranslatePart]?, title: String? = nil) -> [String] {
-        guard let parts else { return [] }
-
-        var lines = parts.flatMap { part in
-            part.means.compactMap { mean -> String? in
-                let value = mean.trimmed
-                guard !value.isEmpty else { return nil }
-
-                let label = part.part?.trimmed ?? ""
-                return label.isEmpty ? value : "\(label) \(value)"
-            }
-        }
-
-        if !lines.isEmpty, let title {
-            lines.insert(title, at: 0)
-        }
-
-        return lines
-    }
-
-    private func joinedText(_ candidates: [String?]) -> String? {
-        let text = candidates
-            .compactMap { $0?.trimmed }
-            .filter { !$0.isEmpty }
-            .joined(separator: "\n")
-        return text.isEmpty ? nil : text
-    }
-
-    private func uniqueText(_ candidates: [String?]) -> [String] {
-        var seen = Set<String>()
-        var values: [String] = []
-
-        for candidate in candidates {
-            guard let value = candidate?.trimmed, !value.isEmpty else { continue }
-            let normalized = value.replacingOccurrences(of: "\r\n", with: "\n")
-            guard seen.insert(normalized).inserted else { continue }
-            values.append(value)
-        }
-
-        return values
     }
 }
 
