@@ -217,6 +217,7 @@ final class GrammarAnalysisService: AIToolService {
     override func cancelStream() {
         currentTask?.cancel()
         currentTask = nil
+        currentTaskID = nil
     }
 
     override func supportedQueryType() -> EZQueryTextType {
@@ -238,6 +239,7 @@ final class GrammarAnalysisService: AIToolService {
     )
         -> AsyncThrowingStream<QueryResult, Error> {
         let activeResult = result ?? QueryResult()
+        let activeGeneration = resultGeneration
         if result == nil {
             result = activeResult
         }
@@ -269,17 +271,25 @@ final class GrammarAnalysisService: AIToolService {
                 return
             }
 
+            let taskID = UUID()
             let task = Task {
                 defer {
                     activeResult.isLoading = false
                     activeResult.isStreamFinished = true
-                    self.currentTask = nil
+                    if self.currentTaskID == taskID {
+                        self.currentTask = nil
+                        self.currentTaskID = nil
+                    }
                 }
 
                 do {
                     let answerLanguage = self.analysisAnswerLanguage(targetLanguage: to)
 
                     if self.shouldSkipForModeEligibility(sourceLanguage: from) {
+                        guard self.resultGeneration == activeGeneration else {
+                            continuation.finish()
+                            return
+                        }
                         activeResult.translatedResults = [self.skipMessage(answerLanguage: answerLanguage)]
                         self.completeFinalResultState(activeResult)
                         continuation.yield(activeResult)
@@ -288,6 +298,10 @@ final class GrammarAnalysisService: AIToolService {
                     }
 
                     if self.shouldSkipForLocalHeuristics(text) {
+                        guard self.resultGeneration == activeGeneration else {
+                            continuation.finish()
+                            return
+                        }
                         activeResult.translatedResults = [self.skipMessage(answerLanguage: answerLanguage)]
                         self.completeFinalResultState(activeResult)
                         continuation.yield(activeResult)
@@ -298,6 +312,10 @@ final class GrammarAnalysisService: AIToolService {
                     let decision = try await self.fetchGateDecision(for: text)
                     if !decision.shouldAnalyze,
                        !self.looksClearlyAnalyzableNaturalLanguage(text) {
+                        guard self.resultGeneration == activeGeneration else {
+                            continuation.finish()
+                            return
+                        }
                         activeResult.translatedResults = [self.skipMessage(answerLanguage: answerLanguage)]
                         self.completeFinalResultState(activeResult)
                         continuation.yield(activeResult)
@@ -305,11 +323,19 @@ final class GrammarAnalysisService: AIToolService {
                         return
                     }
 
+                    guard self.resultGeneration == activeGeneration else {
+                        continuation.finish()
+                        return
+                    }
                     let analysis = try await self.fetchGrammarAnalysis(
                         for: text,
                         sourceLanguage: from,
                         targetLanguage: to
                     )
+                    guard self.resultGeneration == activeGeneration else {
+                        continuation.finish()
+                        return
+                    }
                     activeResult.translatedResults = [analysis]
                     self.completeFinalResultState(activeResult)
                     continuation.yield(activeResult)
@@ -317,6 +343,10 @@ final class GrammarAnalysisService: AIToolService {
                 } catch is CancellationError {
                     continuation.finish()
                 } catch {
+                    guard self.resultGeneration == activeGeneration else {
+                        continuation.finish()
+                        return
+                    }
                     activeResult.error = QueryError.queryError(from: error)
                     self.completeFinalResultState(activeResult)
                     continuation.yield(activeResult)
@@ -325,6 +355,7 @@ final class GrammarAnalysisService: AIToolService {
             }
 
             currentTask = task
+            currentTaskID = taskID
             continuation.onTermination = { @Sendable _ in
                 task.cancel()
             }
@@ -371,6 +402,8 @@ final class GrammarAnalysisService: AIToolService {
     private static var isSeedingBuiltInModels = false
 
     private var currentTask: Task<(), Never>?
+
+    private var currentTaskID: UUID?
 
     private let providerConfigurationMigrationKey = Defaults.Key<Bool>(
         "EZGrammarAnalysisProviderConfigurationMigrationV1Key",

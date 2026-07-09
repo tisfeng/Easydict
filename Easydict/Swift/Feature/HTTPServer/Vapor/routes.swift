@@ -83,6 +83,12 @@ func routes(_ app: Application) throws {
             throw QueryError(type: .api, message: message)
         }
 
+        guard streamService.usesStreamingTransport else {
+            let message =
+                "\(request.serviceType) currently uses non-streaming transport, which does not support 'streamTranslate'. Please use 'translate' instead."
+            throw QueryError(type: .api, message: message)
+        }
+
         let headers = HTTPHeaders([
             ("Content-Type", "text/event-stream"),
             ("Cache-Control", "no-cache"),
