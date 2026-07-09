@@ -381,8 +381,9 @@ extension AdvancedTabAnkiSection {
                 return
             }
 
+            let shouldReplaceMappings = shouldReplaceMappingsAfterFetching()
             ankiConnectModelFields = fields
-            if ankiConnectFieldMappings.isEmpty {
+            if shouldReplaceMappings {
                 ankiConnectFieldMappings = AnkiFieldMapping.defaultMappings(
                     ankiFields: fields,
                     frontFallback: ankiConnectFrontField,
@@ -390,6 +391,33 @@ extension AdvancedTabAnkiSection {
                 )
             }
             EZToast.showText(message)
+        }
+    }
+
+    private func shouldReplaceMappingsAfterFetching() -> Bool {
+        guard !ankiConnectFieldMappings.isEmpty else { return true }
+
+        let fallbackDefaults = AnkiFieldMapping.defaultMappings(
+            frontFallback: ankiConnectFrontField,
+            backFallback: ankiConnectBackField
+        )
+        let currentDefaults = AnkiFieldMapping.defaultMappings(
+            ankiFields: ankiConnectModelFields,
+            frontFallback: ankiConnectFrontField,
+            backFallback: ankiConnectBackField
+        )
+
+        return mappings(ankiConnectFieldMappings, match: fallbackDefaults) ||
+            mappings(ankiConnectFieldMappings, match: currentDefaults)
+    }
+
+    private func mappings(_ lhs: [AnkiFieldMapping], match rhs: [AnkiFieldMapping]) -> Bool {
+        guard lhs.count == rhs.count else { return false }
+
+        return zip(lhs, rhs).allSatisfy { left, right in
+            cleanField(left.ankiField) == cleanField(right.ankiField) &&
+                left.fieldRawValue == right.fieldRawValue &&
+                cleanField(left.template) == cleanField(right.template)
         }
     }
 
