@@ -11,7 +11,7 @@ import Foundation
 
 // MARK: - Constants
 
-private let kHTMLDirectory = "Dict HTML"
+private let kHTMLDirectory = ".Dict HTML"
 private let kHTMLDictFilePath = "all_dict.html"
 
 // MARK: - AppleDictionary
