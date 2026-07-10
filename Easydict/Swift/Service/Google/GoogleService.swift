@@ -9,16 +9,14 @@
 import Foundation
 import JavaScriptCore
 
-private let kGoogleTranslateURL = "https://translate.google.com"
-private let kGoogleUSTranslateURL = "https://translate.google.as"
-private let kGoogleUKTranslateURL = "https://translate.google.co.uk"
-private let kGoogleTTSRPCID = "jQ1olc"
-
 // MARK: - GoogleService
 
 @objc(EZGoogleService)
 class GoogleService: QueryService {
     // MARK: Internal
+
+    /// Default endpoint used by general Google Translate requests.
+    let defaultTranslateURL = "https://translate.google.com"
 
     // MARK: - JavaScript Context
 
@@ -98,7 +96,7 @@ class GoogleService: QueryService {
     }
 
     override func link() -> String {
-        kGoogleTranslateURL
+        defaultTranslateURL
     }
 
     // MARK: - Word Link
@@ -115,7 +113,7 @@ class GoogleService: QueryService {
         )
         let text = maxText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
 
-        return "\(kGoogleTranslateURL)/?sl=\(from)&tl=\(to)&text=\(text)&op=translate"
+        return "\(defaultTranslateURL)/?sl=\(from)&tl=\(to)&text=\(text)&op=translate"
     }
 
     // MARK: - Supported Languages
@@ -298,7 +296,7 @@ class GoogleService: QueryService {
         // TODO: text length must <= 200, maybe we can split it.
         let processedText = (text as NSString).trimmingToMaxLength(200)
         let audioURL =
-            "\(kGoogleTranslateURL)/translate_tts?ie=UTF-8&q=\(processedText.encode())&tl=\(language)&total=1&idx=0&textlen=\(processedText.count)&tk=\(sign)&client=webapp&prev=input"
+            "\(defaultTranslateURL)/translate_tts?ie=UTF-8&q=\(processedText.encode())&tl=\(language)&total=1&idx=0&textlen=\(processedText.count)&tk=\(sign)&client=webapp&prev=input"
         return audioURL
     }
 
@@ -307,6 +305,13 @@ class GoogleService: QueryService {
     }
 
     // MARK: Private
+
+    // Google may choose the `.com` TTS voice based on request region.
+    // These hosts keep the selected English accent stable across regions.
+    // See: https://github.com/tisfeng/Easydict/issues/1229
+    private let usTTSHostURL = "https://translate.google.as"
+    private let ukTTSHostURL = "https://translate.google.co.uk"
+    private let ttsRPCID = "jQ1olc"
 
     private func englishAudioFilePath(withText text: String, accent: String?) async throws -> String {
         let processedText = (text as NSString).trimmingToMaxLength(200)
@@ -331,9 +336,9 @@ class GoogleService: QueryService {
     }
 
     private func requestEnglishTTSAudioData(withText text: String, accent: String) async throws -> Data {
-        let baseURL = englishTranslateURL(accent: accent)
+        let hostURL = englishTTSHostURL(accent: accent)
         let urlString =
-            "\(baseURL)/_/TranslateWebserverUi/data/batchexecute?rpcids=\(kGoogleTTSRPCID)&source-path=%2F&hl=zh-CN&rt=c"
+            "\(hostURL)/_/TranslateWebserverUi/data/batchexecute?rpcids=\(ttsRPCID)&source-path=%2F&hl=zh-CN&rt=c"
         guard let url = URL(string: urlString) else {
             throw QueryError(type: .api, message: nil)
         }
@@ -347,8 +352,8 @@ class GoogleService: QueryService {
             forHTTPHeaderField: "Content-Type"
         )
         request.setValue("1", forHTTPHeaderField: "X-Same-Domain")
-        request.setValue(baseURL, forHTTPHeaderField: "Origin")
-        request.setValue("\(baseURL)/", forHTTPHeaderField: "Referer")
+        request.setValue(hostURL, forHTTPHeaderField: "Origin")
+        request.setValue("\(hostURL)/", forHTTPHeaderField: "Referer")
 
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse,
@@ -369,7 +374,7 @@ class GoogleService: QueryService {
 
         let requestObject: [Any] = [
             [
-                [kGoogleTTSRPCID, payloadString, NSNull(), "generic"],
+                [ttsRPCID, payloadString, NSNull(), "generic"],
             ],
         ]
         let requestData = try JSONSerialization.data(withJSONObject: requestObject)
@@ -400,7 +405,7 @@ class GoogleService: QueryService {
                 guard let fields = row as? [Any],
                       fields.count > 2,
                       fields[0] as? String == "wrb.fr",
-                      fields[1] as? String == kGoogleTTSRPCID,
+                      fields[1] as? String == ttsRPCID,
                       let payloadString = fields[2] as? String,
                       let payloadData = payloadString.data(using: .utf8),
                       let payload = try? JSONSerialization.jsonObject(with: payloadData) as? [Any],
@@ -421,8 +426,8 @@ class GoogleService: QueryService {
         return string.addingPercentEncoding(withAllowedCharacters: allowed) ?? string
     }
 
-    private func englishTranslateURL(accent: String) -> String {
-        accent == "uk" ? kGoogleUKTranslateURL : kGoogleUSTranslateURL
+    private func englishTTSHostURL(accent: String) -> String {
+        accent == "uk" ? ukTTSHostURL : usTTSHostURL
     }
 
     private func ttsSign(for text: String, language: String) -> String {

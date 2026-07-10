@@ -9,7 +9,6 @@
 import Alamofire
 import Foundation
 
-private let kGoogleTranslateURL = "https://translate.google.com"
 private let kGoogleUserAgent =
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36"
 
@@ -247,7 +246,7 @@ extension GoogleService {
     ) {
         let sign = signFunction.call(withArguments: [text])?.toString() ?? ""
 
-        var url = "\(kGoogleTranslateURL)/translate_a/single"
+        var url = "\(defaultTranslateURL)/translate_a/single"
         url += "?dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t"
 
         let sourceLangCode = languageCode(for: from) ?? ""
@@ -309,7 +308,7 @@ extension GoogleService {
     // MARK: - TKK Management
 
     func sendGetWebAppTKKRequest(completion: @escaping (String?, Error?) -> ()) {
-        let url = kGoogleTranslateURL
+        let url = defaultTranslateURL
 
         googleHTMLRequest(url: url).responseData { [weak self] response in
             guard let self = self else {
@@ -412,7 +411,7 @@ extension GoogleService {
         completion: @escaping (Any?, String?, NSMutableDictionary?, Error?) -> ()
     ) {
         let sign = signFunction.call(withArguments: [text])?.toString() ?? ""
-        let url = "\(kGoogleTranslateURL)/translate_a/single"
+        let url = "\(defaultTranslateURL)/translate_a/single"
 
         let fromLanguage = languageCode(for: from) ?? ""
         let toLanguage = languageCode(for: to) ?? ""
