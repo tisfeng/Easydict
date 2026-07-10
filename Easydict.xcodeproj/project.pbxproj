@@ -276,7 +276,6 @@
 		03A3E1552BEBDB2000E7E210 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A3E1542BEBDB2000E7E210 /* Throttler.swift */; };
 		03A5B4BF2E0AB23900BA8F2E /* String+OCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A5B4BE2E0AB23900BA8F2E /* String+OCR.swift */; };
 		03A5E0922D3C020200FF7D95 /* StreamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A5E0912D3C020200FF7D95 /* StreamService.swift */; };
-		0DEEFE010001000000000015 /* ReasoningEffort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEEFE010002000000000015 /* ReasoningEffort.swift */; };
 		03A8308D2B405F8E00112834 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308C2B405F8E00112834 /* Sparkle */; };
 		03A8846C2F12000100D5C0DE /* Task+Timeout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A8846B2F12000100D5C0DE /* Task+Timeout.swift */; };
 		03A8846E2F12000100D5C0DE /* TaskTimeoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A8846D2F12000100D5C0DE /* TaskTimeoutTests.swift */; };
@@ -477,6 +476,7 @@
 		0D124C3E2E8AD3EA00D6B72C /* DoubaoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */; };
 		0D124C3F2E8AD3EA00D6B72C /* DoubaoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */; };
 		0D124C402E8AD3EA00D6B72C /* DoubaoTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */; };
+		0DEEFE010001000000000015 /* ReasoningEffort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEEFE010002000000000015 /* ReasoningEffort.swift */; };
 		1A2B3C4D5E6F7A8B9C0D1E2F /* ClaudeCodeLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3C4D5E6F7A8B9C0D1E2F3A /* ClaudeCodeLogger.swift */; };
 		1CC83D91B3954BE7894CC2C8 /* MDictReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76B47A0150434485FCBBAD /* MDictReaderTests.swift */; };
 		24832952EE17407C852B2258 /* String+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24832951EE17407C852B2258 /* String+Convenience.swift */; };
@@ -934,7 +934,6 @@
 		03A3E1542BEBDB2000E7E210 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 		03A5B4BE2E0AB23900BA8F2E /* String+OCR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+OCR.swift"; sourceTree = "<group>"; };
 		03A5E0912D3C020200FF7D95 /* StreamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamService.swift; sourceTree = "<group>"; };
-		0DEEFE010002000000000015 /* ReasoningEffort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReasoningEffort.swift; sourceTree = "<group>"; };
 		03A8846B2F12000100D5C0DE /* Task+Timeout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Timeout.swift"; sourceTree = "<group>"; };
 		03A8846D2F12000100D5C0DE /* TaskTimeoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimeoutTests.swift; sourceTree = "<group>"; };
 		03A8846F2F13000100D5C0DE /* AppleScriptExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptExecutor.swift; sourceTree = "<group>"; };
@@ -1206,6 +1205,7 @@
 		0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoResponse.swift; sourceTree = "<group>"; };
 		0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoService.swift; sourceTree = "<group>"; };
 		0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoTranslateType.swift; sourceTree = "<group>"; };
+		0DEEFE010002000000000015 /* ReasoningEffort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReasoningEffort.swift; sourceTree = "<group>"; };
 		0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeService.swift; sourceTree = "<group>"; };
 		14921B68C1D645268F93668E /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeRunner.swift; sourceTree = "<group>"; };
@@ -3854,7 +3854,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = EZ;
 				LastSwiftUpdateCheck = 1510;
-				LastUpgradeCheck = 2640;
+				LastUpgradeCheck = 2700;
 				ORGANIZATIONNAME = izual;
 				TargetAttributes = {
 					03022F2D2B370B7100B63209 = {
