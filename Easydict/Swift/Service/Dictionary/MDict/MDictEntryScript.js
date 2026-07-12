@@ -23,7 +23,7 @@ function audioSource(link, href) {
   if (link.matches('a[href^="data:audio"],a[href^="mdict-sound://"],a[href^="sound://"]')) {
     return href;
   }
-  var match = href.match(/^\\s*javascript:\\s*new\\s+Audio\\s*\\(\\s*(['"])(data:[^'"]+)\\1\\s*\\)/i);
+  var match = href.match(/^\s*javascript:\s*new\s+Audio\s*\(\s*(['"])(data:[^'"]+)\1\s*\)/i);
   return match ? match[2] : null;
 }
 
@@ -55,7 +55,7 @@ function handleAnchorLink(href) {
 function isEmptyHashLink(href) {
   var trimmed = href.trim();
   return trimmed === '#' ||
-    /^javascript:\\s*(?:void\\s*\\(\\s*0\\s*\\)|;?)\\s*;?$/i.test(trimmed);
+    /^javascript:\s*(?:void\s*\(\s*0\s*\)|;?)\s*;?$/i.test(trimmed);
 }
 
 function samePageHash(href) {
