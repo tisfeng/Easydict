@@ -115,6 +115,7 @@ function notifyContentHeight() {
   }
   window.webkit.messageHandlers.objcHandler.postMessage({
     method: 'noteToUpdateScrollHeight',
+    renderGeneration: window.__easydictRenderGeneration,
     scrollHeight: scrollHeight
   });
 }
