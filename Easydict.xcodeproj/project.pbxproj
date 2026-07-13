@@ -1213,6 +1213,7 @@
 		223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeRunner.swift; sourceTree = "<group>"; };
 		23C50DB027FC5F26D2AED298 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A17B0C012F9D000100000001 /* 2026-07-13-wordbook-design.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "2026-07-13-wordbook-design.md"; sourceTree = "<group>"; };
+		A17B0C052F9D000100000005 /* 2026-07-13-wordbook.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "2026-07-13-wordbook.md"; sourceTree = "<group>"; };
 		24832951EE17407C852B2258 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
 		26FFFD863EBF442CB4FCE765 /* MDictManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictManager.swift; sourceTree = "<group>"; };
 		2746AEC02AF95138005FE0A1 /* CaiyunService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaiyunService.swift; sourceTree = "<group>"; };
@@ -3618,6 +3619,7 @@
 		A17B0C032F9D000100000003 /* superpowers */ = {
 			isa = PBXGroup;
 			children = (
+				A17B0C062F9D000100000006 /* plans */,
 				A17B0C042F9D000100000004 /* specs */,
 			);
 			path = superpowers;
@@ -3629,6 +3631,14 @@
 				A17B0C012F9D000100000001 /* 2026-07-13-wordbook-design.md */,
 			);
 			path = specs;
+			sourceTree = "<group>";
+		};
+		A17B0C062F9D000100000006 /* plans */ = {
+			isa = PBXGroup;
+			children = (
+				A17B0C052F9D000100000005 /* 2026-07-13-wordbook.md */,
+			);
+			path = plans;
 			sourceTree = "<group>";
 		};
 		C99EEB0F2385796700FEE666 = {
