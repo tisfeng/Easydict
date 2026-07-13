@@ -22,6 +22,7 @@
 		A17B0D1B2F9D10010000001B /* WordbookQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D1C2F9D10010000001C /* WordbookQuery.swift */; };
 		A17B0D1D2F9D10010000001D /* WordbookCSVExporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D1E2F9D10010000001E /* WordbookCSVExporterTests.swift */; };
 		A17B0D1F2F9D10010000001F /* WordbookCSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D202F9D100100000020 /* WordbookCSVExporter.swift */; };
+		A17B0D212F9D100100000021 /* WordbookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D222F9D100100000022 /* WordbookManager.swift */; };
 		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
 		02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000003 /* MarkdownLabel.swift */; };
 		02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000004 /* MarkdownToggleButton.swift */; };
@@ -657,6 +658,7 @@
 		A17B0D1C2F9D10010000001C /* WordbookQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookQuery.swift; sourceTree = "<group>"; };
 		A17B0D1E2F9D10010000001E /* WordbookCSVExporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookCSVExporterTests.swift; sourceTree = "<group>"; };
 		A17B0D202F9D100100000020 /* WordbookCSVExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookCSVExporter.swift; sourceTree = "<group>"; };
+		A17B0D222F9D100100000022 /* WordbookManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookManager.swift; sourceTree = "<group>"; };
 		A17B0D122F9D100100000012 /* WordbookDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookDefaults.swift; sourceTree = "<group>"; };
 		A17B0D142F9D100100000014 /* WordbookMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookMigration.swift; sourceTree = "<group>"; };
 		A17B0D162F9D100100000016 /* WordbookRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookRepository.swift; sourceTree = "<group>"; };
@@ -1466,6 +1468,7 @@
 			children = (
 				A17B0D202F9D100100000020 /* WordbookCSVExporter.swift */,
 				A17B0D122F9D100100000012 /* WordbookDefaults.swift */,
+				A17B0D222F9D100100000022 /* WordbookManager.swift */,
 				A17B0D142F9D100100000014 /* WordbookMigration.swift */,
 				A17B0D052F9D100100000005 /* WordbookModels.swift */,
 				A17B0D1C2F9D10010000001C /* WordbookQuery.swift */,
@@ -4340,6 +4343,7 @@
 			files = (
 				A17B0D1F2F9D10010000001F /* WordbookCSVExporter.swift in Sources */,
 				A17B0D112F9D100100000011 /* WordbookDefaults.swift in Sources */,
+				A17B0D212F9D100100000021 /* WordbookManager.swift in Sources */,
 				A17B0D132F9D100100000013 /* WordbookMigration.swift in Sources */,
 				A17B0D042F9D100100000004 /* WordbookModels.swift in Sources */,
 				A17B0D1B2F9D10010000001B /* WordbookQuery.swift in Sources */,

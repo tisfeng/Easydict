@@ -81,6 +81,11 @@ actor WordbookRepository {
         state
     }
 
+    /// Returns the storage-owned directory containing wordbook data files.
+    func dataDirectoryURL() async -> URL {
+        await storage.dataDirectoryURL()
+    }
+
     /// Streams the current state immediately and every subsequent publication.
     func stateUpdates() -> AsyncStream<WordbookRepositoryState> {
         let id = UUID()

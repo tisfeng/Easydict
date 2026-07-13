@@ -14,4 +14,16 @@ extension Defaults.Keys {
         "EZConfiguration_kWordbookMigrationVersion",
         default: 0
     )
+    static let wordbookSection = Key<String>(
+        "wordbook.section",
+        default: WordbookSection.wordbook.rawValue
+    )
+    static let wordbookSort = Key<String>(
+        "wordbook.sort",
+        default: WordbookSortOrder.newest.rawValue
+    )
+    static let wordbookHistorySort = Key<String>(
+        "wordbook.history_sort",
+        default: WordbookHistorySortOrder.newest.rawValue
+    )
 }
