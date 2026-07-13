@@ -479,6 +479,16 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)startQueryText:(NSString *)text actionType:(EZActionType)actionType {
+    [self startQueryText:text
+            fromLanguage:nil
+              toLanguage:nil
+              actionType:actionType];
+}
+
+- (void)startQueryText:(NSString *)text
+          fromLanguage:(nullable EZLanguage)fromLanguage
+            toLanguage:(nullable EZLanguage)toLanguage
+            actionType:(EZActionType)actionType {
     MMLogInfo(@"query actionType: %@", actionType);
 
     if ([text  ns_trim].length == 0) {
@@ -487,6 +497,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     self.inputText = text;
+    [self applyStoredFromLanguage:fromLanguage toLanguage:toLanguage];
     self.queryModel.actionType = actionType;
     self.queryView.isTypingChinese = NO;
 
@@ -500,8 +511,20 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
         self.inputText = text;
+        [self applyStoredFromLanguage:fromLanguage toLanguage:toLanguage];
         [self queryCurrentModel];
     }];
+}
+
+- (void)applyStoredFromLanguage:(nullable EZLanguage)fromLanguage
+                     toLanguage:(nullable EZLanguage)toLanguage {
+    if (!fromLanguage || !toLanguage) {
+        return;
+    }
+    self.queryModel.userSourceLanguage = fromLanguage;
+    self.queryModel.userTargetLanguage = toLanguage;
+    self.queryModel.needDetectLanguage = [fromLanguage isEqualToString:EZLanguageAuto];
+    [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
 }
 
 /// Handle Easydict scheme.
@@ -1386,6 +1409,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     self.queryView.queryModel = queryModel;
     [self updateQueryCell];
     [self updateSelectLanguageCell];
+    [self.baseQueryWindow.titleBar refreshWordbookButton];
 }
 
 
