@@ -103,8 +103,11 @@ final class LocalStorage: NSObject {
 
     func availableServiceTypeIDs(windowType: EZWindowType) -> [String] {
         let addedServiceTypeIds = allServiceTypes(windowType)
+        let savedServiceTypeIds = [EZWindowType.fixed, .main, .mini]
+            .flatMap { allServiceTypes($0) }
+        let allServiceTypeIds = QueryServiceFactory.shared.allServiceTypeIDs + savedServiceTypeIds
 
-        return QueryServiceFactory.shared.allServiceTypeIDs.filter { typeId in
+        return allServiceTypeIds.removingDuplicates().filter { typeId in
             guard let metadata = QueryServiceFactory.shared.metadata(withTypeId: typeId) else {
                 return false
             }

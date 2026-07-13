@@ -57,9 +57,9 @@ class GlobalContext: NSObject {
             service.cancelSubscribers()
         }
         let storage = LocalStorage.shared()
-        let enabledStreamServiceTypes = storage.enabledServiceTypeIDs(EZWindowType.main)
+        let streamServiceTypes = storage.allServiceTypes(EZWindowType.main)
             .filter { QueryServiceFactory.shared.isStreamService(typeIdIfHave: $0) }
-        services = enabledStreamServiceTypes.compactMap {
+        services = streamServiceTypes.compactMap {
             storage.service($0, windowType: EZWindowType.main) as? StreamService
         }
         for service in services {
