@@ -1212,6 +1212,7 @@
 		14921B68C1D645268F93668E /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeRunner.swift; sourceTree = "<group>"; };
 		23C50DB027FC5F26D2AED298 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		A17B0C012F9D000100000001 /* 2026-07-13-wordbook-design.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "2026-07-13-wordbook-design.md"; sourceTree = "<group>"; };
 		24832951EE17407C852B2258 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
 		26FFFD863EBF442CB4FCE765 /* MDictManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictManager.swift; sourceTree = "<group>"; };
 		2746AEC02AF95138005FE0A1 /* CaiyunService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaiyunService.swift; sourceTree = "<group>"; };
@@ -3606,11 +3607,36 @@
 			path = Tencent;
 			sourceTree = "<group>";
 		};
+		A17B0C022F9D000100000002 /* docs */ = {
+			isa = PBXGroup;
+			children = (
+				A17B0C032F9D000100000003 /* superpowers */,
+			);
+			path = docs;
+			sourceTree = "<group>";
+		};
+		A17B0C032F9D000100000003 /* superpowers */ = {
+			isa = PBXGroup;
+			children = (
+				A17B0C042F9D000100000004 /* specs */,
+			);
+			path = superpowers;
+			sourceTree = "<group>";
+		};
+		A17B0C042F9D000100000004 /* specs */ = {
+			isa = PBXGroup;
+			children = (
+				A17B0C012F9D000100000001 /* 2026-07-13-wordbook-design.md */,
+			);
+			path = specs;
+			sourceTree = "<group>";
+		};
 		C99EEB0F2385796700FEE666 = {
 			isa = PBXGroup;
 			children = (
 				27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */,
 				27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */,
+				A17B0C022F9D000100000002 /* docs */,
 				03B0221829231FA6001C7E63 /* Easydict */,
 				03022F2F2B370B7100B63209 /* EasydictTests */,
 				C99EEB192385796700FEE666 /* Products */,
