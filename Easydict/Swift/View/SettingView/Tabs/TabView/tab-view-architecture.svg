@@ -1,10 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 760" width="960" height="760">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1160" width="1200" height="1160">
   <style>
     text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
-    .title { fill: #111827; font-size: 22px; font-weight: 600; }
-    .box-title { fill: #111827; font-size: 15px; font-weight: 600; }
-    .small { fill: #6b7280; font-size: 12px; }
-    .tag { fill: #111827; font-size: 12px; font-weight: 600; }
+    .diagram-title { fill: #111827; font-size: 24px; font-weight: 600; }
+    .subtitle { fill: #6b7280; font-size: 13px; }
+    .group-title { fill: #374151; font-size: 14px; font-weight: 600; }
+    .node-title { fill: #111827; font-size: 15px; font-weight: 600; }
+    .body { fill: #4b5563; font-size: 13px; }
+    .edge-label { fill: #374151; font-size: 12px; font-weight: 500; }
+    .legend { fill: #6b7280; font-size: 12px; }
   </style>
   <defs>
     <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -16,79 +19,196 @@
     <marker id="arrow-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#9333ea"/>
     </marker>
+    <marker id="arrow-alert" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#dc2626"/>
+    </marker>
   </defs>
-
-  <rect width="960" height="760" fill="#ffffff"/>
-  <text x="480" y="38" text-anchor="middle" class="title">Setting TabView 架构</text>
-  <text x="480" y="62" text-anchor="middle" class="small">服务页使用嵌入式 HSplitView，保持设置 TabView 的窗口级结构</text>
-
-  <rect x="310" y="90" width="340" height="64" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
-  <text x="480" y="118" text-anchor="middle" class="box-title">SettingView</text>
-  <text x="480" y="140" text-anchor="middle" class="small">承载 General / Service / Shortcut 等设置标签页</text>
-
-  <rect x="60" y="205" width="380" height="340" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="250" y="234" text-anchor="middle" class="box-title">HSplitView Left Pane</text>
-  <text x="250" y="256" text-anchor="middle" class="small">左栏：可拖拽宽度、窗口类型、服务列表</text>
-
-  <rect x="100" y="285" width="300" height="52" rx="8" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1.5"/>
-  <text x="250" y="307" text-anchor="middle" class="box-title">WindowTypePicker</text>
-  <text x="250" y="326" text-anchor="middle" class="small">Fixed / Mini / Main 切换</text>
-
-  <rect x="100" y="360" width="300" height="52" rx="8" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
-  <text x="250" y="382" text-anchor="middle" class="box-title">Window Configuration Row</text>
-  <text x="250" y="402" text-anchor="middle" class="small">tag: .windowConfiguration</text>
-
-  <rect x="100" y="435" width="300" height="58" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
-  <text x="250" y="458" text-anchor="middle" class="box-title">ServiceItems</text>
-  <text x="250" y="478" text-anchor="middle" class="small">tag: .service(id), onMove 写回服务顺序</text>
-
-  <rect x="122" y="505" width="54" height="24" rx="12" fill="#f3f4f6" stroke="#d1d5db"/>
-  <text x="149" y="522" text-anchor="middle" class="tag">no-key</text>
-  <rect x="190" y="505" width="64" height="24" rx="12" fill="#dcfce7" stroke="#86efac"/>
-  <text x="222" y="522" text-anchor="middle" class="tag">built-in</text>
-  <rect x="268" y="505" width="40" height="24" rx="12" fill="#fed7aa" stroke="#fdba74"/>
-  <text x="288" y="522" text-anchor="middle" class="tag">key</text>
-  <rect x="322" y="505" width="36" height="24" rx="12" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="340" y="522" text-anchor="middle" class="tag">cli</text>
-
-  <rect x="520" y="205" width="380" height="340" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="710" y="234" text-anchor="middle" class="box-title">HSplitView Right Pane</text>
-  <text x="710" y="256" text-anchor="middle" class="small">右栏：根据 ServiceTabSelection 切换内容</text>
-
-  <rect x="560" y="300" width="300" height="68" rx="8" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
-  <text x="710" y="326" text-anchor="middle" class="box-title">WindowConfigurationView</text>
-  <text x="710" y="348" text-anchor="middle" class="small">默认选择或点击窗口配置入口时展示</text>
-
-  <rect x="560" y="405" width="300" height="78" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
-  <text x="710" y="432" text-anchor="middle" class="box-title">ServiceDetailView</text>
-  <text x="710" y="454" text-anchor="middle" class="small">选中服务时展示 configurationListItems()</text>
-
-  <rect x="95" y="595" width="770" height="84" rx="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="480" y="622" text-anchor="middle" class="box-title">ServiceTabViewModel + LocalStorage + NotificationCenter</text>
-  <text x="480" y="647" text-anchor="middle" class="small">维护 selectedItem、服务数组和窗口类型，持久化排序并响应 serviceHasUpdated 刷新 UI</text>
-
-  <path d="M480 154 L480 178 L250 178 L250 205" fill="none" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow-blue)"/>
-  <path d="M480 154 L480 178 L710 178 L710 205" fill="none" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow-blue)"/>
-  <text x="480" y="173" text-anchor="middle" class="small">Service tab</text>
-
-  <path d="M400 386 L520 330" fill="none" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow-blue)"/>
-  <text x="462" y="345" text-anchor="middle" class="small">选择窗口配置</text>
-
-  <path d="M400 464 L520 444" fill="none" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow-blue)"/>
-  <text x="465" y="443" text-anchor="middle" class="small">选择服务</text>
-
-  <path d="M250 545 L250 575 L420 575 L420 595" fill="none" stroke="#16a34a" stroke-width="1.7" marker-end="url(#arrow-green)"/>
-  <text x="335" y="568" text-anchor="middle" class="small">拖拽排序 / 开关服务</text>
-
-  <path d="M710 545 L710 575 L540 575 L540 595" fill="none" stroke="#9333ea" stroke-width="1.7" marker-end="url(#arrow-purple)"/>
-  <text x="625" y="568" text-anchor="middle" class="small">配置变更</text>
-
-  <g transform="translate(42, 722)">
-    <line x1="0" y1="0" x2="28" y2="0" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow-blue)"/>
-    <text x="36" y="4" class="small">选择导航</text>
-    <line x1="126" y1="0" x2="154" y2="0" stroke="#16a34a" stroke-width="1.7" marker-end="url(#arrow-green)"/>
-    <text x="162" y="4" class="small">持久化与刷新</text>
-    <line x1="276" y1="0" x2="304" y2="0" stroke="#9333ea" stroke-width="1.7" marker-end="url(#arrow-purple)"/>
-    <text x="312" y="4" class="small">配置写入</text>
-  </g>
+  <rect width="1200" height="1160" fill="#ffffff"/>
+  <text x="600" y="36" text-anchor="middle" class="diagram-title">Settings TabView 架构</text>
+  <text x="600" y="60" text-anchor="middle" class="subtitle">七个设置标签、selection 尺寸流、Service HSplitView 与独立 Wordbook 边界</text>
+  <rect x="400" y="85" width="400" height="65" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="400" y="85" width="6" height="65" rx="3" fill="#2563eb"/>
+  <circle cx="424" cy="109" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="424" cy="109" r="3" fill="#2563eb"/>
+  <text x="606" y="114" text-anchor="middle" class="node-title">SettingView + SettingTab selection</text>
+  <text x="606" y="136" text-anchor="middle" class="body">初始 General；标签切换驱动窗口尺寸</text>
+  <rect x="40" y="185" width="1120" height="255" rx="12" fill="#faf5ff" fill-opacity="0.55" stroke="#d8b4fe" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="195" width="257" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="212" class="group-title">当前七个设置标签（Favorites 已移除）</text>
+  <rect x="60" y="230" width="230" height="66" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="60" y="230" width="6" height="66" rx="3" fill="#9333ea"/>
+  <circle cx="84" cy="254" r="9" fill="#9333ea" opacity="0.16"/>
+  <circle cx="84" cy="254" r="3" fill="#9333ea"/>
+  <text x="181" y="259" text-anchor="middle" class="node-title">General</text>
+  <text x="181" y="281" text-anchor="middle" class="body">通用 / 语言</text>
+  <rect x="330" y="230" width="230" height="66" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="330" y="230" width="6" height="66" rx="3" fill="#9333ea"/>
+  <circle cx="354" cy="254" r="9" fill="#9333ea" opacity="0.16"/>
+  <circle cx="354" cy="254" r="3" fill="#9333ea"/>
+  <text x="451" y="259" text-anchor="middle" class="node-title">Service</text>
+  <text x="451" y="281" text-anchor="middle" class="body">服务 / 窗口配置</text>
+  <rect x="600" y="230" width="230" height="66" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="600" y="230" width="6" height="66" rx="3" fill="#9333ea"/>
+  <circle cx="624" cy="254" r="9" fill="#9333ea" opacity="0.16"/>
+  <circle cx="624" cy="254" r="3" fill="#9333ea"/>
+  <text x="721" y="259" text-anchor="middle" class="node-title">Disabled Apps</text>
+  <text x="721" y="281" text-anchor="middle" class="body">禁用应用</text>
+  <rect x="870" y="230" width="230" height="66" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="870" y="230" width="6" height="66" rx="3" fill="#9333ea"/>
+  <circle cx="894" cy="254" r="9" fill="#9333ea" opacity="0.16"/>
+  <circle cx="894" cy="254" r="3" fill="#9333ea"/>
+  <text x="991" y="259" text-anchor="middle" class="node-title">Shortcut</text>
+  <text x="991" y="281" text-anchor="middle" class="body">快捷键</text>
+  <rect x="195" y="335" width="230" height="66" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="195" y="335" width="6" height="66" rx="3" fill="#9333ea"/>
+  <circle cx="219" cy="359" r="9" fill="#9333ea" opacity="0.16"/>
+  <circle cx="219" cy="359" r="3" fill="#9333ea"/>
+  <text x="316" y="364" text-anchor="middle" class="node-title">Advanced</text>
+  <text x="316" y="386" text-anchor="middle" class="body">高级行为</text>
+  <rect x="485" y="335" width="230" height="66" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="485" y="335" width="6" height="66" rx="3" fill="#9333ea"/>
+  <circle cx="509" cy="359" r="9" fill="#9333ea" opacity="0.16"/>
+  <circle cx="509" cy="359" r="3" fill="#9333ea"/>
+  <text x="606" y="364" text-anchor="middle" class="node-title">Privacy</text>
+  <text x="606" y="386" text-anchor="middle" class="body">隐私</text>
+  <rect x="775" y="335" width="230" height="66" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="775" y="335" width="6" height="66" rx="3" fill="#9333ea"/>
+  <circle cx="799" cy="359" r="9" fill="#9333ea" opacity="0.16"/>
+  <circle cx="799" cy="359" r="3" fill="#9333ea"/>
+  <text x="896" y="364" text-anchor="middle" class="node-title">About</text>
+  <text x="896" y="386" text-anchor="middle" class="body">版本 / 致谢</text>
+  <path d="M 600 150 V 175 H 445 V 230" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="479.5" y="154" width="81" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="520" y="169" text-anchor="middle" class="edge-label">selection</text>
+  <path d="M 400 117 H 25 V 548 H 60" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="175" y="92" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="210" y="107" text-anchor="middle" class="edge-label">标签变化</text>
+  <rect x="40" y="470" width="1120" height="145" rx="12" fill="#eff6ff" fill-opacity="0.55" stroke="#bfdbfe" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="480" width="96" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="497" class="group-title">窗口尺寸流</text>
+  <rect x="60" y="515" width="250" height="66" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="60" y="515" width="6" height="66" rx="3" fill="#2563eb"/>
+  <circle cx="84" cy="539" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="84" cy="539" r="3" fill="#2563eb"/>
+  <text x="191" y="544" text-anchor="middle" class="node-title">SettingTab selection</text>
+  <text x="191" y="566" text-anchor="middle" class="body">稳定 enum tag</text>
+  <rect x="450" y="515" width="280" height="66" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="450" y="515" width="6" height="66" rx="3" fill="#2563eb"/>
+  <circle cx="474" cy="539" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="474" cy="539" r="3" fill="#2563eb"/>
+  <text x="596" y="544" text-anchor="middle" class="node-title">WindowAccessor</text>
+  <text x="596" y="566" text-anchor="middle" class="body">取得承载 NSWindow</text>
+  <rect x="870" y="515" width="270" height="66" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="870" y="515" width="6" height="66" rx="3" fill="#2563eb"/>
+  <circle cx="894" cy="539" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="894" cy="539" r="3" fill="#2563eb"/>
+  <text x="1011" y="544" text-anchor="middle" class="node-title">固定尺寸策略</text>
+  <text x="1011" y="566" text-anchor="middle" class="body">宽 900；500 / 340 / 300 / 720</text>
+  <path d="M 310 548 H 450" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="343" y="523" width="74" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="380" y="538" text-anchor="middle" class="edge-label">onChange</text>
+  <path d="M 730 548 H 870" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="732.5" y="523" width="135" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="800" y="538" text-anchor="middle" class="edge-label">保持顶部并禁用缩放</text>
+  <rect x="40" y="645" width="650" height="280" rx="12" fill="#f0fdf4" fill-opacity="0.55" stroke="#bbf7d0" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="655" width="204" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="672" class="group-title">ServiceTab：内嵌 HSplitView</text>
+  <rect x="55" y="690" width="160" height="90" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="55" y="690" width="6" height="90" rx="3" fill="#16a34a"/>
+  <circle cx="79" cy="714" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="79" cy="714" r="3" fill="#16a34a"/>
+  <text x="141" y="719" text-anchor="middle" class="node-title">Service VM</text>
+  <text x="141" y="741" text-anchor="middle" class="body">window type</text>
+  <text x="141" y="759" text-anchor="middle" class="body">selection</text>
+  <rect x="280" y="690" width="160" height="90" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="280" y="690" width="6" height="90" rx="3" fill="#16a34a"/>
+  <circle cx="304" cy="714" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="304" cy="714" r="3" fill="#16a34a"/>
+  <text x="366" y="719" text-anchor="middle" class="node-title">Left Pane</text>
+  <text x="366" y="741" text-anchor="middle" class="body">窗口配置</text>
+  <text x="366" y="759" text-anchor="middle" class="body">完整服务列表</text>
+  <rect x="505" y="690" width="150" height="90" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="505" y="690" width="6" height="90" rx="3" fill="#16a34a"/>
+  <circle cx="529" cy="714" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="529" cy="714" r="3" fill="#16a34a"/>
+  <text x="586" y="719" text-anchor="middle" class="node-title">Right Pane</text>
+  <text x="586" y="741" text-anchor="middle" class="body">配置详情 Form</text>
+  <rect x="200" y="830" width="330" height="72" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="200" y="830" width="6" height="72" rx="3" fill="#16a34a"/>
+  <circle cx="224" cy="854" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="224" cy="854" r="3" fill="#16a34a"/>
+  <text x="371" y="859" text-anchor="middle" class="node-title">LocalStorage + serviceHasUpdated</text>
+  <text x="371" y="881" text-anchor="middle" class="body">排序 / enabled / 刷新</text>
+  <path d="M 215 735 H 280" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="220" y="710" width="54" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="247" y="725" text-anchor="middle" class="edge-label">选择</text>
+  <path d="M 440 735 H 505" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="445" y="710" width="54" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="472" y="725" text-anchor="middle" class="edge-label">详情</text>
+  <path d="M 360 780 V 830" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-green)"/>
+  <rect x="333" y="803" width="54" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="360" y="818" text-anchor="middle" class="edge-label">写回</text>
+  <rect x="730" y="645" width="430" height="280" rx="12" fill="#fff7ed" fill-opacity="0.55" stroke="#fed7aa" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="746" y="655" width="268" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="756" y="672" class="group-title">明确边界：Wordbook / History 独立窗口</text>
+  <rect x="755" y="690" width="150" height="90" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="755" y="690" width="6" height="90" rx="3" fill="#ea580c"/>
+  <circle cx="779" cy="714" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="779" cy="714" r="3" fill="#ea580c"/>
+  <text x="836" y="719" text-anchor="middle" class="node-title">菜单入口</text>
+  <text x="836" y="741" text-anchor="middle" class="body">Wordbook…</text>
+  <rect x="980" y="690" width="150" height="90" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="980" y="690" width="6" height="90" rx="3" fill="#ea580c"/>
+  <circle cx="1004" cy="714" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="1004" cy="714" r="3" fill="#ea580c"/>
+  <text x="1061" y="719" text-anchor="middle" class="node-title">窗口宿主</text>
+  <text x="1061" y="741" text-anchor="middle" class="body">HostWindowManager</text>
+  <text x="1061" y="759" text-anchor="middle" class="body">稳定窗口 id</text>
+  <rect x="845" y="830" width="200" height="72" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="845" y="830" width="6" height="72" rx="3" fill="#ea580c"/>
+  <circle cx="869" cy="854" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="869" cy="854" r="3" fill="#ea580c"/>
+  <text x="951" y="859" text-anchor="middle" class="node-title">Wordbook 窗口</text>
+  <text x="951" y="881" text-anchor="middle" class="body">独立：Wordbook + History</text>
+  <path d="M 905 735 H 980" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="915" y="710" width="54" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="942" y="725" text-anchor="middle" class="edge-label">打开</text>
+  <path d="M 1055 780 V 810 H 945 V 830" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="954.5" y="790" width="91" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="1000" y="805" text-anchor="middle" class="edge-label">创建 / 激活</text>
+  <rect x="40" y="950" width="1120" height="125" rx="12" fill="#fef2f2" fill-opacity="0.55" stroke="#fecaca" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="960" width="130" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="977" class="group-title">失败 / 恢复与调试</text>
+  <rect x="70" y="990" width="300" height="66" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="70" y="990" width="6" height="66" rx="3" fill="#dc2626"/>
+  <circle cx="94" cy="1014" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="94" cy="1014" r="3" fill="#dc2626"/>
+  <text x="226" y="1019" text-anchor="middle" class="node-title">服务校验失败</text>
+  <text x="226" y="1041" text-anchor="middle" class="body">不启用；修正后重试</text>
+  <rect x="450" y="990" width="300" height="66" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="450" y="990" width="6" height="66" rx="3" fill="#dc2626"/>
+  <circle cx="474" cy="1014" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="474" cy="1014" r="3" fill="#dc2626"/>
+  <text x="606" y="1019" text-anchor="middle" class="node-title">selection 失效</text>
+  <text x="606" y="1041" text-anchor="middle" class="body">回退 window configuration</text>
+  <rect x="830" y="990" width="300" height="66" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="830" y="990" width="6" height="66" rx="3" fill="#dc2626"/>
+  <circle cx="854" cy="1014" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="854" cy="1014" r="3" fill="#dc2626"/>
+  <text x="986" y="1019" text-anchor="middle" class="node-title">尺寸 / 边界检查</text>
+  <text x="986" y="1041" text-anchor="middle" class="body">七标签；无 Favorites；独立窗口</text>
+  <path d="M 135 780 V 935 H 220 V 990" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="77" y="910" width="116" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="135" y="925" text-anchor="middle" class="edge-label">validate error</text>
+  <path d="M 1140 548 H 1175 V 935 H 980 V 990" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="1045" y="910" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="1080" y="925" text-anchor="middle" class="edge-label">窗口异常</text>
+  <line x1="55" y1="1125" x2="89" y2="1125" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text x="101" y="1129" class="legend">主流程 / 调用</text>
+  <line x1="315" y1="1125" x2="349" y2="1125" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="361" y="1129" class="legend">数据 / 持久化</text>
+  <line x1="605" y1="1125" x2="639" y2="1125" stroke="#9333ea" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
+  <text x="651" y="1129" class="legend">通知 / 状态同步</text>
+  <line x1="895" y1="1125" x2="929" y2="1125" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <text x="941" y="1129" class="legend">失败 / 恢复</text>
 </svg>

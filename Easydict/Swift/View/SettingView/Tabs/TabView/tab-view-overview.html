@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Easydict 设置标签页架构概览</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; color: #111827; background: #ffffff; }
+    body { max-width: 1080px; margin: 0 auto; padding: 32px; line-height: 1.7; }
+    h1, h2, h3 { line-height: 1.3; }
+    h1 { margin-top: 0; }
+    code { padding: 0.12em 0.35em; border-radius: 4px; background: #f3f4f6; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; }
+    th, td { padding: 10px 12px; border: 1px solid #d1d5db; text-align: left; vertical-align: top; }
+    th { background: #faf5ff; }
+    .boundary { padding: 14px 18px; border-left: 4px solid #7c3aed; background: #faf5ff; }
+    .failure { padding: 14px 18px; border-left: 4px solid #dc2626; background: #fef2f2; }
+  </style>
+</head>
+<body>
+  <div id="main">
+    <h1>设置标签页架构概览</h1>
+    <p>本目录保存设置窗口的七个顶层 SwiftUI 标签页。它负责把偏好、服务、快捷键、隐私与应用信息组织为稳定的设置界面，并把具体业务状态交给 Defaults、LocalStorage、服务对象或对应 view model；不再承担单词本或查询历史浏览。</p>
+
+    <div class="section">
+      <h2>当前标签集合</h2>
+      <table>
+        <thead><tr><th>标签</th><th>主要职责</th><th>状态边界</th></tr></thead>
+        <tbody>
+          <tr><td><code>GeneralTab</code></td><td>通用行为、外观、语言和查询偏好。</td><td>使用配置/Defaults，语言变化通过全局通知传播。</td></tr>
+          <tr><td><code>ServiceTab</code></td><td>按 Fixed、Mini、Main 窗口类型配置服务、顺序与启用状态。</td><td>服务数组来自 LocalStorage；变更通过 serviceHasUpdated 通知同步。</td></tr>
+          <tr><td><code>DisabledAppTab</code></td><td>维护禁用取词的应用列表。</td><td>只管理禁用应用配置，不控制查询窗口生命周期。</td></tr>
+          <tr><td><code>ShortcutTab</code></td><td>展示并编辑应用快捷键。</td><td>快捷键注册由相应模型/管理器负责。</td></tr>
+          <tr><td><code>AdvancedTab</code></td><td>窗口、取词、OCR、音频及高级行为。</td><td>复用 <code>AdvancedTabItemView</code>，写入配置后由通知或消费端响应。</td></tr>
+          <tr><td><code>PrivacyTab</code></td><td>隐私相关开关与说明。</td><td>保持表单简单，不读取 Wordbook 数据文件。</td></tr>
+          <tr><td><code>AboutTab</code></td><td>版本、链接与致谢窗口入口。</td><td>致谢由独立 HostWindowManager 窗口承载。</td></tr>
+        </tbody>
+      </table>
+      <div class="boundary"><strong>明确边界：</strong>原 Favorites 设置标签已移除。Wordbook 与 Query History 现在共享独立的可复用单词本窗口，从菜单栏入口打开；它们不属于设置偏好，也不能重新加入 <code>SettingTab</code>、本目录或设置窗口尺寸分支。</div>
+    </div>
+
+    <div class="section">
+      <h2>标签选择与窗口尺寸流</h2>
+      <ol>
+        <li><code>SettingView</code> 以 <code>SettingTab</code> enum 作为 TabView selection，初始为 General；每个标签有稳定 tag。</li>
+        <li><code>WindowAccessor</code> 通过一个极小的 NSViewRepresentable 取得承载设置页的 NSWindow，首次取得时执行尺寸计算。</li>
+        <li>selection 改变时再次计算尺寸。所有标签宽度固定为 900；Disabled 高 500、Privacy 高 340、About 高 300，其余高 720。</li>
+        <li>调整时保持窗口顶部位置不跳动，禁用 zoom 按钮，并移除 resizable style，避免不同标签内容引发窗口动画和布局振荡。</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>ServiceTab 内部结构</h2>
+      <p>ServiceTab 在设置 TabView 内使用嵌入式 <code>HSplitView</code>，而不是再嵌套一个窗口级 NavigationSplitView。左栏宽度 270–320，右栏获取剩余空间。</p>
+      <table>
+        <thead><tr><th>区域</th><th>行为</th><th>持久化/同步</th></tr></thead>
+        <tbody>
+          <tr><td>窗口类型选择</td><td>在 Fixed、Mini、Main 间切换；切换后 selection 回到窗口配置。</td><td>ViewModel 从 LocalStorage 载入对应窗口的完整服务数组。</td></tr>
+          <tr><td>窗口配置入口</td><td>固定在列表顶部且不参与拖拽，右栏展示 <code>WindowConfigurationView</code>。</td><td>窗口级配置通过其专属 key 和更新通知生效。</td></tr>
+          <tr><td>服务列表</td><td>完整排序，不按凭据类型分组；稳定 service id 维持 selection。</td><td>拖拽把完整 serviceTypeWithUniqueIdentifier 顺序写回 LocalStorage，并发送更新通知后刷新。</td></tr>
+          <tr><td>凭据标签</td><td>行内显示 <code>no-key</code>、<code>built-in</code>、<code>key</code>、<code>cli</code>，只表达服务需求。</td><td>标签不改变排序，也不保存独立状态。</td></tr>
+          <tr><td>详情区</td><td>选中服务时以 grouped Form 展示 <code>configurationListItems()</code>；无配置时显示提示。</td><td>配置写入由服务自身承担。</td></tr>
+          <tr><td>启用开关</td><td>普通服务直接启用；流式服务先 validate；Claude Code/Codex CLI 先经风险确认。</td><td>成功后写 LocalStorage 并发布 serviceHasUpdated；失败显示错误，不写 enabled=true。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>正常、失败与恢复流</h2>
+      <h3>正常流</h3>
+      <ol>
+        <li>用户切换标签，SettingView 调整固定窗口尺寸；标签视图读取其负责的配置源。</li>
+        <li>ServiceTab 切换窗口类型或服务 selection，左右栏在同一 ViewModel 内同步。</li>
+        <li>拖拽、开关或配置更改写入 LocalStorage，通知消费端及 ServiceTab 自身刷新。</li>
+      </ol>
+      <div class="failure">
+        <ul>
+          <li><strong>选中服务在刷新后不存在：</strong>ViewModel 回退到 windowConfiguration，避免详情持有陈旧对象。</li>
+          <li><strong>服务校验失败：</strong>停止 validating，展示错误 alert，保留原 enabled 状态；用户修正配置后可再次启用。</li>
+          <li><strong>窗口类型变化：</strong>先清除旧服务 selection，再读取新窗口类型数组，防止相同 id 指向错误上下文。</li>
+          <li><strong>尺寸异常：</strong>确认 WindowAccessor 已获得当前窗口、selection tag 与 enum 一致，再检查高度 switch；不要在单个标签内另行修改外层 NSWindow。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>调试与验证入口</h2>
+      <ul>
+        <li>逐一切换七个标签，确认宽度始终 900、高度分别命中规则、顶部位置保持且窗口不可缩放；确认界面中没有 Favorites 标签。</li>
+        <li>ServiceTab 布局异常时，确认仍为内嵌 HSplitView；selection 异常时检查 <code>ServiceTabSelection</code> 是否使用 windowConfiguration 或稳定 service id。</li>
+        <li>排序或标签异常时，确认 <code>ServiceItems</code> 遍历完整 <code>viewModel.services</code>，并检查凭据 requirement 到四种 badge 的映射。</li>
+        <li>服务状态异常时，从 validate/risk alert 进入，确认只有成功路径调用 LocalStorage setService 与 postServiceUpdateNotification。</li>
+        <li>从菜单栏打开 Wordbook，确认它出现在独立窗口且 Settings selection/尺寸完全不变；从历史重放也不应打开设置页。</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1030" width="1200" height="1030">
+  <style>
+    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .diagram-title { fill: #111827; font-size: 24px; font-weight: 600; }
+    .subtitle { fill: #6b7280; font-size: 13px; }
+    .group-title { fill: #374151; font-size: 14px; font-weight: 600; }
+    .node-title { fill: #111827; font-size: 15px; font-weight: 600; }
+    .body { fill: #4b5563; font-size: 13px; }
+    .edge-label { fill: #374151; font-size: 12px; font-weight: 500; }
+    .legend { fill: #6b7280; font-size: 12px; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9333ea"/>
+    </marker>
+    <marker id="arrow-alert" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="1030" fill="#ffffff"/>
+  <text x="600" y="36" text-anchor="middle" class="diagram-title">Swift/View 共享视图层</text>
+  <text x="600" y="60" text-anchor="middle" class="subtitle">菜单入口、AppKit 宿主窗口、SwiftUI 根视图与本地化生命周期</text>
+  <rect x="40" y="85" width="1120" height="120" rx="12" fill="#eff6ff" fill-opacity="0.55" stroke="#bfdbfe" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="95" width="109" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="112" class="group-title">入口与全局信号</text>
+  <rect x="70" y="120" width="240" height="60" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="70" y="120" width="6" height="60" rx="3" fill="#2563eb"/>
+  <circle cx="94" cy="144" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="94" cy="144" r="3" fill="#2563eb"/>
+  <text x="196" y="149" text-anchor="middle" class="node-title">MenuItemView</text>
+  <text x="196" y="171" text-anchor="middle" class="body">Wordbook… 菜单动作</text>
+  <rect x="480" y="120" width="240" height="60" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="480" y="120" width="6" height="60" rx="3" fill="#2563eb"/>
+  <circle cx="504" cy="144" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="504" cy="144" r="3" fill="#2563eb"/>
+  <text x="606" y="149" text-anchor="middle" class="node-title">设置 / 其他窗口入口</text>
+  <text x="606" y="171" text-anchor="middle" class="body">共享 Window bridge</text>
+  <rect x="890" y="120" width="240" height="60" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="890" y="120" width="6" height="60" rx="3" fill="#2563eb"/>
+  <circle cx="914" cy="144" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="914" cy="144" r="3" fill="#2563eb"/>
+  <text x="1016" y="149" text-anchor="middle" class="node-title">语言偏好通知</text>
+  <text x="1016" y="171" text-anchor="middle" class="body">I18nHelper + LanguageState</text>
+  <rect x="350" y="245" width="500" height="75" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="350" y="245" width="6" height="75" rx="3" fill="#9333ea"/>
+  <circle cx="374" cy="269" r="9" fill="#9333ea" opacity="0.16"/>
+  <circle cx="374" cy="269" r="3" fill="#9333ea"/>
+  <text x="606" y="274" text-anchor="middle" class="node-title">HostWindowManager @MainActor</text>
+  <text x="606" y="296" text-anchor="middle" class="body">稳定 window id / NSWindowController 所有权 / 激活与复用</text>
+  <path d="M 190 180 V 220 H 450 V 245" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="273.5" y="196" width="83" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="315" y="211" text-anchor="middle" class="edge-label">打开单词本</text>
+  <path d="M 600 180 V 245" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="565" y="200" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="600" y="215" text-anchor="middle" class="edge-label">创建窗口</text>
+  <rect x="40" y="350" width="1120" height="180" rx="12" fill="#fff7ed" fill-opacity="0.55" stroke="#fed7aa" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="360" width="221" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="377" class="group-title">AppKit → SwiftUI 生命周期边界</text>
+  <rect x="60" y="395" width="230" height="80" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="60" y="395" width="6" height="80" rx="3" fill="#ea580c"/>
+  <circle cx="84" cy="419" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="84" cy="419" r="3" fill="#ea580c"/>
+  <text x="181" y="424" text-anchor="middle" class="node-title">控制器缓存</text>
+  <text x="181" y="446" text-anchor="middle" class="body">window id → controller</text>
+  <text x="181" y="464" text-anchor="middle" class="body">red close 后仍强持有</text>
+  <rect x="410" y="395" width="280" height="80" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="410" y="395" width="6" height="80" rx="3" fill="#ea580c"/>
+  <circle cx="434" cy="419" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="434" cy="419" r="3" fill="#ea580c"/>
+  <text x="556" y="424" text-anchor="middle" class="node-title">NSWindow + NSHostingView</text>
+  <text x="556" y="446" text-anchor="middle" class="body">900×640 / 可缩放</text>
+  <text x="556" y="464" text-anchor="middle" class="body">isReleasedWhenClosed = false</text>
+  <rect x="840" y="395" width="290" height="80" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="840" y="395" width="6" height="80" rx="3" fill="#ea580c"/>
+  <circle cx="864" cy="419" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="864" cy="419" r="3" fill="#ea580c"/>
+  <text x="991" y="424" text-anchor="middle" class="node-title">WordbookView</text>
+  <text x="991" y="446" text-anchor="middle" class="body">同一 StateObject / 会话状态</text>
+  <text x="991" y="464" text-anchor="middle" class="body">loading / ready / recovery</text>
+  <path d="M 450 320 V 335 H 25 V 435 H 60" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="204.5" y="313" width="91" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="250" y="328" text-anchor="middle" class="edge-label">查找稳定 id</text>
+  <path d="M 600 320 V 395" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="558.5" y="346" width="83" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="600" y="361" text-anchor="middle" class="edge-label">创建或前置</text>
+  <path d="M 290 435 H 410" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="304.5" y="410" width="91" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="350" y="425" text-anchor="middle" class="edge-label">命中 / 缺失</text>
+  <path d="M 690 435 H 840" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="715" y="410" width="100" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="765" y="425" text-anchor="middle" class="edge-label">托管 SwiftUI</text>
+  <path d="M 1010 180 V 395" fill="none" stroke="#9333ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
+  <rect x="944" y="270" width="132" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="1010" y="285" text-anchor="middle" class="edge-label">更新标题与 locale</text>
+  <rect x="40" y="560" width="1120" height="180" rx="12" fill="#f0fdf4" fill-opacity="0.55" stroke="#bbf7d0" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="570" width="135" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="587" class="group-title">环境与功能状态边界</text>
+  <rect x="70" y="610" width="260" height="85" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="70" y="610" width="6" height="85" rx="3" fill="#16a34a"/>
+  <circle cx="94" cy="634" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="94" cy="634" r="3" fill="#16a34a"/>
+  <text x="206" y="639" text-anchor="middle" class="node-title">LanguageState / Locale</text>
+  <text x="206" y="661" text-anchor="middle" class="body">注入 SwiftUI environment</text>
+  <text x="206" y="679" text-anchor="middle" class="body">日期、计数、完整插值句</text>
+  <rect x="430" y="610" width="300" height="85" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="430" y="610" width="6" height="85" rx="3" fill="#16a34a"/>
+  <circle cx="454" cy="634" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="454" cy="634" r="3" fill="#16a34a"/>
+  <text x="586" y="639" text-anchor="middle" class="node-title">WordbookViewModel</text>
+  <text x="586" y="661" text-anchor="middle" class="body">窗口会话状态 + Repository 流</text>
+  <text x="586" y="679" text-anchor="middle" class="body">History Defaults publisher</text>
+  <rect x="830" y="610" width="300" height="85" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="830" y="610" width="6" height="85" rx="3" fill="#16a34a"/>
+  <circle cx="854" cy="634" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="854" cy="634" r="3" fill="#16a34a"/>
+  <text x="986" y="639" text-anchor="middle" class="node-title">Wordbook Feature</text>
+  <text x="986" y="661" text-anchor="middle" class="body">Repository / CSV / 恢复动作</text>
+  <text x="986" y="679" text-anchor="middle" class="body">视图不直接碰数据文件</text>
+  <path d="M 900 475 V 545 H 580 V 610" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="698.5" y="521" width="83" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="740" y="536" text-anchor="middle" class="edge-label">持有根状态</text>
+  <path d="M 330 652 H 430" fill="none" stroke="#9333ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
+  <rect x="333.5" y="627" width="93" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="380" y="642" text-anchor="middle" class="edge-label">locale 变化</text>
+  <path d="M 730 652 H 830" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-green)"/>
+  <rect x="738.5" y="627" width="83" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="780" y="642" text-anchor="middle" class="edge-label">状态与事务</text>
+  <rect x="40" y="770" width="1120" height="120" rx="12" fill="#fef2f2" fill-opacity="0.55" stroke="#fecaca" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="780" width="96" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="797" class="group-title">失败与恢复</text>
+  <rect x="70" y="812" width="300" height="58" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="70" y="812" width="6" height="58" rx="3" fill="#dc2626"/>
+  <circle cx="94" cy="836" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="94" cy="836" r="3" fill="#dc2626"/>
+  <text x="226" y="841" text-anchor="middle" class="node-title">缓存缺失</text>
+  <text x="226" y="863" text-anchor="middle" class="body">创建新 controller，不伪造旧状态</text>
+  <rect x="450" y="812" width="300" height="58" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="450" y="812" width="6" height="58" rx="3" fill="#dc2626"/>
+  <circle cx="474" cy="836" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="474" cy="836" r="3" fill="#dc2626"/>
+  <text x="606" y="841" text-anchor="middle" class="node-title">Repository 失败 / protected</text>
+  <text x="606" y="863" text-anchor="middle" class="body">WordbookView 显示恢复入口</text>
+  <rect x="830" y="812" width="300" height="58" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="830" y="812" width="6" height="58" rx="3" fill="#dc2626"/>
+  <circle cx="854" cy="836" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="854" cy="836" r="3" fill="#dc2626"/>
+  <text x="986" y="841" text-anchor="middle" class="node-title">red close 后重开</text>
+  <text x="986" y="863" text-anchor="middle" class="body">激活同一窗口并保留会话</text>
+  <path d="M 60 455 H 15 V 841 H 70" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="46" y="745" width="88" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="90" y="760" text-anchor="middle" class="edge-label">cache miss</text>
+  <path d="M 980 695 V 760 H 600 V 812" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="755" y="735" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="790" y="750" text-anchor="middle" class="edge-label">错误状态</text>
+  <path d="M 175 395 V 345 H 1175 V 790 H 980 V 812" fill="none" stroke="#9333ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
+  <rect x="1032" y="765" width="96" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="1080" y="780" text-anchor="middle" class="edge-label">控制器仍存活</text>
+  <rect x="40" y="910" width="1120" height="62" rx="12" fill="#f9fafb" fill-opacity="0.55" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="920" width="581" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="937" class="group-title">调试入口：菜单 → window id → controller → NSWindow；六语言切换；关闭/重开状态复用</text>
+  <line x1="55" y1="1002" x2="89" y2="1002" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text x="101" y="1006" class="legend">主流程 / 调用</text>
+  <line x1="315" y1="1002" x2="349" y2="1002" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="361" y="1006" class="legend">数据 / 持久化</text>
+  <line x1="605" y1="1002" x2="639" y2="1002" stroke="#9333ea" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
+  <text x="651" y="1006" class="legend">通知 / 状态同步</text>
+  <line x1="895" y1="1002" x2="929" y2="1002" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <text x="941" y="1006" class="legend">失败 / 恢复</text>
+</svg>

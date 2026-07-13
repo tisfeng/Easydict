@@ -102,7 +102,7 @@ struct WordbookView: View {
                 Text(bulkDeleteMessage(count: ids.count))
             }
             .alert(
-                "common.delete",
+                "wordbook.group.delete_nonempty.title",
                 isPresented: Binding(get: { viewModel.groupDeletePrompt != nil }, set: { _ in }),
                 presenting: viewModel.groupDeletePrompt
             ) { _ in

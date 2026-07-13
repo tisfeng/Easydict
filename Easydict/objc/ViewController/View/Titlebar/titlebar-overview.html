@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Easydict 查询标题栏与单词本星标架构概览</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; color: #111827; background: #ffffff; }
+    body { max-width: 1080px; margin: 0 auto; padding: 32px; line-height: 1.7; }
+    h1, h2, h3 { line-height: 1.3; }
+    h1 { margin-top: 0; }
+    code { padding: 0.12em 0.35em; border-radius: 4px; background: #f3f4f6; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; }
+    th, td { padding: 10px 12px; border: 1px solid #d1d5db; text-align: left; vertical-align: top; }
+    th { background: #fff7ed; }
+    .boundary { padding: 14px 18px; border-left: 4px solid #ea580c; background: #fff7ed; }
+    .failure { padding: 14px 18px; border-left: 4px solid #dc2626; background: #fef2f2; }
+  </style>
+</head>
+<body>
+  <div id="main">
+    <h1>查询标题栏与单词本星标架构概览</h1>
+    <p>本目录负责查询窗口标题栏的 AppKit 容器、拖动区域、固定按钮、快速操作和外部词典链接。单词本改造后，标题栏只嵌入 SwiftUI 星标并转发当前查询上下文；数据判断与写入由 Swift 的 Wordbook 层完成，旧 Favorites 写入口已彻底移除。</p>
+
+    <div class="section">
+      <h2>组件边界</h2>
+      <table>
+        <thead><tr><th>组件</th><th>职责</th><th>不负责</th></tr></thead>
+        <tbody>
+          <tr><td><code>EZTitlebar</code></td><td>读取所在 <code>EZBaseQueryWindow</code> 的 queryModel，排列 pin、Wordbook star、quick action 与链接按钮，并响应语言/按钮配置通知重建界面。</td><td>不读取 JSON，不判断条目是否存在，不直接写 Favorites 或 Wordbook。</td></tr>
+          <tr><td><code>WordbookStarHost</code></td><td>Objective-C 可见的 MainActor 对象；持有 NSHostingView 与单一 StarModel，将 query 更新转换为 SwiftUI 状态。</td><td>不拥有查询窗口，不选择目标窗口。</td></tr>
+          <tr><td><code>WordbookStarModel</code></td><td>管理 empty/resolving/checking/absent/present/persisting/unavailable，协调 lookup、add、remove、确认和重试。</td><td>不绕过 WordbookManager/Repository。</td></tr>
+          <tr><td><code>WordbookManager</code></td><td>在主线程桥接 Repository，发布 <code>wordbookDidChange</code>，返回 Objective-C 安全的 lookup/remove 结果。</td><td>不渲染按钮或标题栏。</td></tr>
+          <tr><td><code>EZTitleBarMoveView</code></td><td>把标题栏拖动转换为窗口位置更新。</td><td>不参与查询或单词本状态。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>查询状态如何进入星标</h2>
+      <ol>
+        <li>BaseQueryViewController 在输入原文、应用保存语言、完成语言探测或更新查询模型时调用标题栏刷新。</li>
+        <li>EZTitlebar 从当前 queryModel 读取 <code>inputText</code>、<code>queryFromLanguage</code> 和 <code>queryTargetLanguage</code>。使用 inputText 而不是可能被服务规范化的 queryText，保证保存内容与用户当前可见原文一致。</li>
+        <li><code>languageResolved</code> 仅在用户明确源语言，或模型已不需要自动探测时为真。未解析时星标显示 progress，不能使用上一条查询的语言发起 lookup。</li>
+        <li>没有 queryModel 时调用 host reset；有效查询则建立带规范化 key 和原始 text 的 Query，交给 Manager 异步查询 Repository。</li>
+      </ol>
+      <div class="boundary"><strong>跨语言边界：</strong>Objective-C 只传查询快照，Swift 主线程模型负责异步状态。标题栏重建会释放旧 host 并创建新 host；Repository 则保持共享，不因 UI 重建丢失数据。</div>
+    </div>
+
+    <div class="section">
+      <h2>正常交互与通知刷新</h2>
+      <ol>
+        <li>lookup 返回 absent 时显示空心星，present 时显示实心星；Repository loading、protected 或持久化状态分别映射为 unavailable/persisting。</li>
+        <li>点击空心星后 add 原始文本及当前语言方向；点击实心星后按规范化 key 删除。</li>
+        <li>成功写入后 Repository 发布状态，WordbookManager 在主线程发送 <code>wordbookDidChange</code>；所有可见 StarModel 收到通知后再次 lookup，从共享真相刷新。</li>
+        <li>语言偏好或标题栏按钮配置变化时，EZTitlebar 重建按钮栈；新的 host 立即读取当前 queryModel，不依赖旧 SwiftUI view。</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>过期结果保护</h2>
+      <table>
+        <thead><tr><th>风险</th><th>保护手段</th><th>接受回调的条件</th></tr></thead>
+        <tbody>
+          <tr><td>语言探测期间输入已变化</td><td>BaseQueryController 比较探测开始与回调时的 queryText。</td><td>当前文本仍与开始探测时一致。</td></tr>
+          <tr><td>lookup 期间切换了文本/语言</td><td>每次 query 或解析状态变化递增 generation。</td><td>generation、当前 Query 与无 active mutation 同时匹配。</td></tr>
+          <tr><td>写入期间又开始新查询</td><td>每次写入创建 UUID mutation id，query 变化会清空 active id。</td><td>回调 id 与当前 active id 相同，且 Query 未变化。</td></tr>
+          <tr><td>旧错误弹窗出现在新查询上</td><td>query 更新/reset 同时清 pending removal、retry action 和 alert。</td><td>只有当前 mutation 的错误可设置弹窗。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>失败、确认与恢复</h2>
+      <div class="failure">
+        <ul>
+          <li><strong>含备注删除：</strong>Repository 返回 confirmationRequired，StarModel 保存当前 Query 并显示“移除已保存条目”确认；确认后以同一 Query 重新提交 confirmed remove。</li>
+          <li><strong>写入失败：</strong>记录错误，保留精确 add/remove 闭包并显示 Retry；取消只清弹窗，不伪造星标成功状态。重试完成后重新 lookup。</li>
+          <li><strong>Repository 不可用：</strong>按钮禁用并显示 unavailable 帮助文字；数据恢复后 Manager 通知会触发重新查询。</li>
+          <li><strong>空文本或未解析语言：</strong>分别保持 empty/resolving，不产生 Repository 写入。</li>
+          <li><strong>标题栏重建：</strong>旧 observer 随 StarModel deinit 移除；新 host 从当前模型恢复，不让重复 observer 累积。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Legacy Favorites 清理边界</h2>
+      <p>Quick Action 菜单只保留换行替换、注释符移除、分词和打开设置；不再包含 <code>add_to_favorites</code>，也没有 <code>addFavoriteIfNeeded</code> 或 RecordTypeFavorites 写路径。旧 Favorites 数据仅由 WordbookMigration 读取一次，标题栏不能继续双写。</p>
+    </div>
+
+    <div class="section">
+      <h2>调试与手工入口</h2>
+      <ul>
+        <li>从 input setter、stored-language 应用和 detect completion 检查是否都汇合到 <code>updateQueryViewModelAndDetectedLanguage</code>，并最终刷新标题栏。</li>
+        <li>快速输入两条不同文本或切换语言，延迟第一条 lookup/write 回调，确认第二条星标不被覆盖且不弹旧错误。</li>
+        <li>在单词本窗口增删同一 key，确认查询窗口通过 <code>wordbookDidChange</code> 刷新；关闭/重开标题栏相关窗口检查 observer 是否重复。</li>
+        <li>保存带备注条目后从星标删除，确认先显示备注丢失提示；取消保持 present，确认后变 absent；模拟写失败验证 Retry。</li>
+        <li>静态搜索 <code>RecordTypeFavorites</code>、<code>addFavoriteIfNeeded</code>、<code>add_to_favorites</code>，标题栏实现中应为零命中。</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

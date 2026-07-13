@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1050" width="1200" height="1050">
+  <style>
+    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .diagram-title { fill: #111827; font-size: 24px; font-weight: 600; }
+    .subtitle { fill: #6b7280; font-size: 13px; }
+    .group-title { fill: #374151; font-size: 14px; font-weight: 600; }
+    .node-title { fill: #111827; font-size: 15px; font-weight: 600; }
+    .body { fill: #4b5563; font-size: 13px; }
+    .edge-label { fill: #374151; font-size: 12px; font-weight: 500; }
+    .legend { fill: #6b7280; font-size: 12px; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9333ea"/>
+    </marker>
+    <marker id="arrow-alert" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="1050" fill="#ffffff"/>
+  <text x="600" y="36" text-anchor="middle" class="diagram-title">EZTitlebar 与 Wordbook 星标</text>
+  <text x="600" y="60" text-anchor="middle" class="subtitle">当前查询快照进入 SwiftUI；generation / mutation id 阻止过期回调</text>
+  <rect x="40" y="85" width="1120" height="130" rx="12" fill="#eff6ff" fill-opacity="0.55" stroke="#bfdbfe" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="95" width="109" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="112" class="group-title">查询上下文来源</text>
+  <rect x="60" y="125" width="250" height="70" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="60" y="125" width="6" height="70" rx="3" fill="#2563eb"/>
+  <circle cx="84" cy="149" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="84" cy="149" r="3" fill="#2563eb"/>
+  <text x="191" y="154" text-anchor="middle" class="node-title">EZQueryModel</text>
+  <text x="191" y="176" text-anchor="middle" class="body">inputText + from / to</text>
+  <rect x="430" y="125" width="300" height="70" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="430" y="125" width="6" height="70" rx="3" fill="#2563eb"/>
+  <circle cx="454" cy="149" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="454" cy="149" r="3" fill="#2563eb"/>
+  <text x="586" y="154" text-anchor="middle" class="node-title">语言解析门</text>
+  <text x="586" y="176" text-anchor="middle" class="body">用户指定或 detect 完成</text>
+  <rect x="850" y="125" width="290" height="70" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="850" y="125" width="6" height="70" rx="3" fill="#2563eb"/>
+  <circle cx="874" cy="149" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="874" cy="149" r="3" fill="#2563eb"/>
+  <text x="1001" y="154" text-anchor="middle" class="node-title">BaseQuery 刷新触发</text>
+  <text x="1001" y="176" text-anchor="middle" class="body">输入 / 保存语言 / detect 回调</text>
+  <path d="M 310 156 H 430" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="335" y="131" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="370" y="146" text-anchor="middle" class="edge-label">有效方向</text>
+  <path d="M 730 156 H 850" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="755" y="131" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="790" y="146" text-anchor="middle" class="edge-label">统一刷新</text>
+  <rect x="40" y="250" width="1120" height="190" rx="12" fill="#fff7ed" fill-opacity="0.55" stroke="#fed7aa" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="260" width="208" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="277" class="group-title">AppKit → SwiftUI 标题栏边界</text>
+  <rect x="50" y="300" width="220" height="90" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="50" y="300" width="6" height="90" rx="3" fill="#ea580c"/>
+  <circle cx="74" cy="324" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="74" cy="324" r="3" fill="#ea580c"/>
+  <text x="166" y="329" text-anchor="middle" class="node-title">EZTitlebar</text>
+  <text x="166" y="351" text-anchor="middle" class="body">读取当前 queryModel</text>
+  <text x="166" y="369" text-anchor="middle" class="body">无模型时 reset</text>
+  <rect x="370" y="300" width="230" height="90" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="370" y="300" width="6" height="90" rx="3" fill="#ea580c"/>
+  <circle cx="394" cy="324" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="394" cy="324" r="3" fill="#ea580c"/>
+  <text x="491" y="329" text-anchor="middle" class="node-title">WordbookStarHost</text>
+  <text x="491" y="351" text-anchor="middle" class="body">NSHostingView + MainActor</text>
+  <text x="491" y="369" text-anchor="middle" class="body">Objective-C 可见桥</text>
+  <rect x="720" y="300" width="430" height="90" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="720" y="300" width="6" height="90" rx="3" fill="#ea580c"/>
+  <circle cx="744" cy="324" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="744" cy="324" r="3" fill="#ea580c"/>
+  <text x="941" y="329" text-anchor="middle" class="node-title">WordbookStarModel</text>
+  <text x="941" y="351" text-anchor="middle" class="body">empty / resolving / checking / present / absent / persisting</text>
+  <text x="941" y="369" text-anchor="middle" class="body">Query generation + active mutation UUID</text>
+  <path d="M 995 187 V 230 H 160 V 300" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="538.5" y="205" width="83" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="580" y="220" text-anchor="middle" class="edge-label">刷新标题栏</text>
+  <path d="M 270 339 H 370" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="262" y="314" width="116" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="320" y="329" text-anchor="middle" class="edge-label">query snapshot</text>
+  <path d="M 600 339 H 720" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="625" y="314" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="660" y="329" text-anchor="middle" class="edge-label">更新模型</text>
+  <rect x="40" y="480" width="1120" height="145" rx="12" fill="#f0fdf4" fill-opacity="0.55" stroke="#bbf7d0" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="490" width="96" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="507" class="group-title">共享领域状态</text>
+  <rect x="160" y="525" width="300" height="70" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="160" y="525" width="6" height="70" rx="3" fill="#16a34a"/>
+  <circle cx="184" cy="549" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="184" cy="549" r="3" fill="#16a34a"/>
+  <text x="316" y="554" text-anchor="middle" class="node-title">WordbookManager @MainActor</text>
+  <text x="316" y="576" text-anchor="middle" class="body">lookup / add / remove + 变更通知</text>
+  <rect x="740" y="525" width="300" height="70" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="740" y="525" width="6" height="70" rx="3" fill="#16a34a"/>
+  <circle cx="764" cy="549" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="764" cy="549" r="3" fill="#16a34a"/>
+  <text x="896" y="554" text-anchor="middle" class="node-title">WordbookRepository Actor</text>
+  <text x="896" y="576" text-anchor="middle" class="body">已验证快照 + 持久化事务</text>
+  <path d="M 740 390 V 455 H 600 V 500 H 310 V 525" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="611.5" y="432" width="117" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="670" y="447" text-anchor="middle" class="edge-label">异步查询 / 写入</text>
+  <path d="M 400 595 V 615 H 850 V 595" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-green)"/>
+  <rect x="567" y="592" width="116" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="625" y="607" text-anchor="middle" class="edge-label">keyed mutation</text>
+  <path d="M 460 560 H 700 V 470 H 1175 V 345 H 1150" fill="none" stroke="#9333ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
+  <rect x="971.5" y="447" width="137" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="1040" y="462" text-anchor="middle" class="edge-label">wordbookDidChange</text>
+  <rect x="40" y="660" width="1120" height="155" rx="12" fill="#fef2f2" fill-opacity="0.55" stroke="#fecaca" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="670" width="148" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="687" class="group-title">失败、确认与过期保护</text>
+  <rect x="60" y="710" width="300" height="84" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="60" y="710" width="6" height="84" rx="3" fill="#dc2626"/>
+  <circle cx="84" cy="734" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="84" cy="734" r="3" fill="#dc2626"/>
+  <text x="216" y="739" text-anchor="middle" class="node-title">旧回调丢弃</text>
+  <text x="216" y="761" text-anchor="middle" class="body">generation / Query / mutation id</text>
+  <text x="216" y="779" text-anchor="middle" class="body">三者必须仍匹配</text>
+  <rect x="450" y="710" width="300" height="84" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="450" y="710" width="6" height="84" rx="3" fill="#dc2626"/>
+  <circle cx="474" cy="734" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="474" cy="734" r="3" fill="#dc2626"/>
+  <text x="606" y="739" text-anchor="middle" class="node-title">含备注删除 / 写失败</text>
+  <text x="606" y="761" text-anchor="middle" class="body">确认移除；Retry 保留精确动作</text>
+  <rect x="840" y="710" width="300" height="84" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="840" y="710" width="6" height="84" rx="3" fill="#dc2626"/>
+  <circle cx="864" cy="734" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="864" cy="734" r="3" fill="#dc2626"/>
+  <text x="996" y="739" text-anchor="middle" class="node-title">Repository unavailable</text>
+  <text x="996" y="761" text-anchor="middle" class="body">禁用星标；恢复通知后 refresh</text>
+  <path d="M 720 370 H 650 V 445 H 25 V 650 H 600 V 710" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="154.5" y="627" width="91" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="200" y="642" text-anchor="middle" class="edge-label">确认 / 重试</text>
+  <path d="M 950 595 V 680 H 990 V 710" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="898" y="657" width="144" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="970" y="672" text-anchor="middle" class="edge-label">protected / failed</text>
+  <rect x="40" y="845" width="1120" height="120" rx="12" fill="#f9fafb" fill-opacity="0.55" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="855" width="109" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="872" class="group-title">兼容与调试入口</text>
+  <rect x="70" y="883" width="500" height="66" rx="9" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <rect x="70" y="883" width="6" height="66" rx="3" fill="#6b7280"/>
+  <circle cx="94" cy="907" r="9" fill="#6b7280" opacity="0.16"/>
+  <circle cx="94" cy="907" r="3" fill="#6b7280"/>
+  <text x="326" y="912" text-anchor="middle" class="node-title">Legacy Favorites 写路径已移除</text>
+  <text x="326" y="934" text-anchor="middle" class="body">Quick Action 无 add_to_favorites；迁移只在 Store 层读取</text>
+  <rect x="630" y="883" width="500" height="66" rx="9" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <rect x="630" y="883" width="6" height="66" rx="3" fill="#6b7280"/>
+  <circle cx="654" cy="907" r="9" fill="#6b7280" opacity="0.16"/>
+  <circle cx="654" cy="907" r="3" fill="#6b7280"/>
+  <text x="886" y="912" text-anchor="middle" class="node-title">手工检查</text>
+  <text x="886" y="934" text-anchor="middle" class="body">快速换文本/语言、通知刷新、含备注确认、失败重试</text>
+  <line x1="55" y1="1010" x2="89" y2="1010" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text x="101" y="1014" class="legend">主流程 / 调用</text>
+  <line x1="315" y1="1010" x2="349" y2="1010" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="361" y="1014" class="legend">数据 / 持久化</text>
+  <line x1="605" y1="1010" x2="639" y2="1010" stroke="#9333ea" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
+  <text x="651" y="1014" class="legend">通知 / 状态同步</text>
+  <line x1="895" y1="1010" x2="929" y2="1010" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <text x="941" y="1014" class="legend">失败 / 恢复</text>
+</svg>

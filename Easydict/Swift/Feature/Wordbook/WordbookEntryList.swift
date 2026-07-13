@@ -117,7 +117,7 @@ struct WordbookEntryList: View {
                 Label("common.delete", systemSymbol: .trash)
             }
         } label: {
-            Label("wordbook.bulk.actions", systemSymbol: .ellipsisCircle)
+            Label("wordbook.action.move", systemSymbol: .ellipsisCircle)
         }
         .disabled(!canMutate)
     }
@@ -167,7 +167,7 @@ struct WordbookEntryList: View {
                 }
             }
         } label: {
-            Label("wordbook.action.move_to_group", systemSymbol: .folder)
+            Label("wordbook.action.move", systemSymbol: .folder)
         }
     }
 

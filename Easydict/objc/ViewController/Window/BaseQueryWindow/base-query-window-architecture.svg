@@ -1,0 +1,204 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1270" width="1200" height="1270">
+  <style>
+    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .diagram-title { fill: #111827; font-size: 24px; font-weight: 600; }
+    .subtitle { fill: #6b7280; font-size: 13px; }
+    .group-title { fill: #374151; font-size: 14px; font-weight: 600; }
+    .node-title { fill: #111827; font-size: 15px; font-weight: 600; }
+    .body { fill: #4b5563; font-size: 13px; }
+    .edge-label { fill: #374151; font-size: 12px; font-weight: 500; }
+    .legend { fill: #6b7280; font-size: 12px; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9333ea"/>
+    </marker>
+    <marker id="arrow-alert" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="1270" fill="#ffffff"/>
+  <text x="600" y="36" text-anchor="middle" class="diagram-title">Base Query Window 架构</text>
+  <text x="600" y="60" text-anchor="middle" class="subtitle">输入与保存语言方向汇合为有效 QueryModel，再驱动服务、结果、History 与标题栏</text>
+  <rect x="40" y="85" width="1120" height="125" rx="12" fill="#eff6ff" fill-opacity="0.55" stroke="#bfdbfe" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="95" width="96" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="112" class="group-title">调用入口</text>
+  <rect x="60" y="120" width="260" height="72" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="60" y="120" width="6" height="72" rx="3" fill="#2563eb"/>
+  <circle cx="84" cy="144" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="84" cy="144" r="3" fill="#2563eb"/>
+  <text x="196" y="149" text-anchor="middle" class="node-title">普通取词 / 剪贴板</text>
+  <text x="196" y="171" text-anchor="middle" class="body">可清理文本 + 自动探测</text>
+  <rect x="470" y="120" width="260" height="72" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="470" y="120" width="6" height="72" rx="3" fill="#2563eb"/>
+  <circle cx="494" cy="144" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="494" cy="144" r="3" fill="#2563eb"/>
+  <text x="606" y="149" text-anchor="middle" class="node-title">Wordbook / History 重放</text>
+  <text x="606" y="171" text-anchor="middle" class="body">保留原文 + 保存 from / to</text>
+  <rect x="880" y="120" width="260" height="72" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="880" y="120" width="6" height="72" rx="3" fill="#2563eb"/>
+  <circle cx="904" cy="144" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="904" cy="144" r="3" fill="#2563eb"/>
+  <text x="1016" y="149" text-anchor="middle" class="node-title">OCR / URL / 快捷键</text>
+  <text x="1016" y="171" text-anchor="middle" class="body">action type + 可选自动查询</text>
+  <rect x="40" y="235" width="1120" height="155" rx="12" fill="#fff7ed" fill-opacity="0.55" stroke="#fed7aa" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="245" width="135" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="262" class="group-title">窗口与当前查询状态</text>
+  <rect x="60" y="280" width="260" height="76" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="60" y="280" width="6" height="76" rx="3" fill="#ea580c"/>
+  <circle cx="84" cy="304" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="84" cy="304" r="3" fill="#ea580c"/>
+  <text x="196" y="309" text-anchor="middle" class="node-title">EZWindowManager</text>
+  <text x="196" y="331" text-anchor="middle" class="body">选择/复用窗口并安排显示</text>
+  <rect x="450" y="280" width="300" height="76" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="450" y="280" width="6" height="76" rx="3" fill="#ea580c"/>
+  <circle cx="474" cy="304" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="474" cy="304" r="3" fill="#ea580c"/>
+  <text x="606" y="309" text-anchor="middle" class="node-title">EZBaseQueryViewController</text>
+  <text x="606" y="331" text-anchor="middle" class="body">输入、探测、服务与结果协调</text>
+  <rect x="880" y="280" width="260" height="76" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="880" y="280" width="6" height="76" rx="3" fill="#ea580c"/>
+  <circle cx="904" cy="304" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="904" cy="304" r="3" fill="#ea580c"/>
+  <text x="1016" y="309" text-anchor="middle" class="node-title">EZQueryModel</text>
+  <text x="1016" y="331" text-anchor="middle" class="body">input/query + 用户/探测/有效语言</text>
+  <path d="M 190 192 V 260 H 190 V 280" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="155" y="235" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="190" y="250" text-anchor="middle" class="edge-label">普通输入</text>
+  <path d="M 600 192 V 280" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="565" y="217" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="600" y="232" text-anchor="middle" class="edge-label">保存方向</text>
+  <path d="M 1010 192 V 250 H 700 V 280" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="804" y="225" width="102" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="855" y="240" text-anchor="middle" class="edge-label">OCR / invoke</text>
+  <path d="M 320 318 H 450" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="343.5" y="293" width="83" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="385" y="308" text-anchor="middle" class="edge-label">窗口上下文</text>
+  <path d="M 750 318 H 880" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-green)"/>
+  <rect x="772" y="293" width="86" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="815" y="308" text-anchor="middle" class="edge-label">更新 model</text>
+  <rect x="40" y="420" width="1120" height="260" rx="12" fill="#faf5ff" fill-opacity="0.55" stroke="#d8b4fe" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="430" width="96" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="447" class="group-title">有效语言选择</text>
+  <rect x="150" y="470" width="300" height="88" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="150" y="470" width="6" height="88" rx="3" fill="#9333ea"/>
+  <circle cx="174" cy="494" r="9" fill="#9333ea" opacity="0.16"/>
+  <circle cx="174" cy="494" r="3" fill="#9333ea"/>
+  <text x="306" y="499" text-anchor="middle" class="node-title">自动探测分支</text>
+  <text x="306" y="521" text-anchor="middle" class="body">比较当前 queryText</text>
+  <text x="306" y="539" text-anchor="middle" class="body">旧文本回调直接忽略</text>
+  <rect x="750" y="470" width="300" height="88" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="750" y="470" width="6" height="88" rx="3" fill="#9333ea"/>
+  <circle cx="774" cy="494" r="9" fill="#9333ea" opacity="0.16"/>
+  <circle cx="774" cy="494" r="3" fill="#9333ea"/>
+  <text x="906" y="499" text-anchor="middle" class="node-title">保存语言分支</text>
+  <text x="906" y="521" text-anchor="middle" class="body">写 user source / target</text>
+  <text x="906" y="539" text-anchor="middle" class="body">Auto 源语言才继续 detect</text>
+  <rect x="400" y="585" width="400" height="72" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="400" y="585" width="6" height="72" rx="3" fill="#9333ea"/>
+  <circle cx="424" cy="609" r="9" fill="#9333ea" opacity="0.16"/>
+  <circle cx="424" cy="609" r="3" fill="#9333ea"/>
+  <text x="606" y="614" text-anchor="middle" class="node-title">有效 QueryModel 方向</text>
+  <text x="606" y="636" text-anchor="middle" class="body">queryFromLanguage → queryTargetLanguage；同步刷新标题栏</text>
+  <path d="M 560 356 V 405 H 300 V 470" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="383.5" y="380" width="93" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="430" y="395" text-anchor="middle" class="edge-label">需要 detect</text>
+  <path d="M 980 356 V 405 H 900 V 470" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="883" y="380" width="114" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="940" y="395" text-anchor="middle" class="edge-label">已有 from / to</text>
+  <path d="M 300 558 V 572 H 500 V 585" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="365" y="562" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="400" y="577" text-anchor="middle" class="edge-label">探测完成</text>
+  <path d="M 900 558 V 572 H 700 V 585" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="765" y="562" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="800" y="577" text-anchor="middle" class="edge-label">直接应用</text>
+  <rect x="40" y="710" width="1120" height="260" rx="12" fill="#f0fdf4" fill-opacity="0.55" stroke="#bbf7d0" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="720" width="148" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="737" class="group-title">服务、结果与旁路输出</text>
+  <rect x="60" y="760" width="260" height="90" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="60" y="760" width="6" height="90" rx="3" fill="#16a34a"/>
+  <circle cx="84" cy="784" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="84" cy="784" r="3" fill="#16a34a"/>
+  <text x="196" y="789" text-anchor="middle" class="node-title">启用 QueryService</text>
+  <text x="196" y="811" text-anchor="middle" class="body">并行 / streaming</text>
+  <text x="196" y="829" text-anchor="middle" class="body">单服务错误不阻塞其他服务</text>
+  <rect x="440" y="760" width="260" height="90" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="440" y="760" width="6" height="90" rx="3" fill="#16a34a"/>
+  <circle cx="464" cy="784" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="464" cy="784" r="3" fill="#16a34a"/>
+  <text x="576" y="789" text-anchor="middle" class="node-title">Result UI</text>
+  <text x="576" y="811" text-anchor="middle" class="body">loading / translated / error</text>
+  <text x="576" y="829" text-anchor="middle" class="body">iframe 与窗口高度更新</text>
+  <rect x="820" y="760" width="300" height="90" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="820" y="760" width="6" height="90" rx="3" fill="#16a34a"/>
+  <circle cx="844" cy="784" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="844" cy="784" r="3" fill="#16a34a"/>
+  <text x="976" y="789" text-anchor="middle" class="node-title">Query History Defaults</text>
+  <text x="976" y="811" text-anchor="middle" class="body">记录最终 queryText + from / to</text>
+  <text x="976" y="829" text-anchor="middle" class="body">Wordbook 不可用也不影响历史</text>
+  <rect x="440" y="880" width="260" height="72" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="440" y="880" width="6" height="72" rx="3" fill="#16a34a"/>
+  <circle cx="464" cy="904" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="464" cy="904" r="3" fill="#16a34a"/>
+  <text x="576" y="909" text-anchor="middle" class="node-title">EZTitlebar + Wordbook star</text>
+  <text x="576" y="931" text-anchor="middle" class="body">读取 inputText 与有效方向</text>
+  <path d="M 600 657 V 700 H 190 V 760" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="347" y="677" width="96" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="395" y="692" text-anchor="middle" class="edge-label">发起服务查询</text>
+  <path d="M 320 805 H 440" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-green)"/>
+  <rect x="345" y="780" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="380" y="795" text-anchor="middle" class="edge-label">流式结果</text>
+  <path d="M 700 805 H 820" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-green)"/>
+  <rect x="725" y="780" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="760" y="795" text-anchor="middle" class="edge-label">记录历史</text>
+  <path d="M 750 657 V 695 H 1175 V 916 H 700" fill="none" stroke="#9333ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
+  <rect x="902" y="891" width="96" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="950" y="906" text-anchor="middle" class="edge-label">每次模型更新</text>
+  <rect x="40" y="995" width="1120" height="140" rx="12" fill="#fef2f2" fill-opacity="0.55" stroke="#fecaca" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="1005" width="96" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="1022" class="group-title">失败与恢复</text>
+  <rect x="60" y="1040" width="300" height="72" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="60" y="1040" width="6" height="72" rx="3" fill="#dc2626"/>
+  <circle cx="84" cy="1064" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="84" cy="1064" r="3" fill="#dc2626"/>
+  <text x="216" y="1069" text-anchor="middle" class="node-title">旧 detect 回调</text>
+  <text x="216" y="1091" text-anchor="middle" class="body">忽略；按当前文本重新探测</text>
+  <rect x="450" y="1040" width="300" height="72" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="450" y="1040" width="6" height="72" rx="3" fill="#dc2626"/>
+  <circle cx="474" cy="1064" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="474" cy="1064" r="3" fill="#dc2626"/>
+  <text x="606" y="1069" text-anchor="middle" class="node-title">单服务失败 / 布局振荡</text>
+  <text x="606" y="1091" text-anchor="middle" class="body">结果错误 + Retry；尺寸 guard</text>
+  <rect x="840" y="1040" width="300" height="72" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="840" y="1040" width="6" height="72" rx="3" fill="#dc2626"/>
+  <circle cx="864" cy="1064" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="864" cy="1064" r="3" fill="#dc2626"/>
+  <text x="996" y="1069" text-anchor="middle" class="node-title">Wordbook unavailable</text>
+  <text x="996" y="1091" text-anchor="middle" class="body">仅星标禁用；翻译与 History 继续</text>
+  <path d="M 150 514 H 25 V 1076 H 60" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="48" y="965" width="54" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="75" y="980" text-anchor="middle" class="edge-label">stale</text>
+  <path d="M 700 830 H 780 V 1015 H 600 V 1040" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="644.5" y="992" width="91" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="690" y="1007" text-anchor="middle" class="edge-label">错误 / 重试</text>
+  <path d="M 700 916 V 985 H 990 V 1040" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="865" y="962" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="900" y="977" text-anchor="middle" class="edge-label">隔离失败</text>
+  <rect x="40" y="1155" width="1120" height="50" rx="12" fill="#f9fafb" fill-opacity="0.55" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="1165" width="730" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="1182" class="group-title">调试：输入 setter → detect / stored language → QueryModel → service completion → History / titlebar</text>
+  <line x1="55" y1="1235" x2="89" y2="1235" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text x="101" y="1239" class="legend">主流程 / 调用</text>
+  <line x1="315" y1="1235" x2="349" y2="1235" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="361" y="1239" class="legend">数据 / 持久化</text>
+  <line x1="605" y1="1235" x2="639" y2="1235" stroke="#9333ea" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
+  <text x="651" y="1239" class="legend">通知 / 状态同步</text>
+  <line x1="895" y1="1235" x2="929" y2="1235" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <text x="941" y="1239" class="legend">失败 / 恢复</text>
+</svg>

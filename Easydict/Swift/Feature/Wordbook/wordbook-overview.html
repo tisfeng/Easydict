@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Easydict 单词本模块架构概览</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; color: #111827; background: #ffffff; }
+    body { max-width: 1080px; margin: 0 auto; padding: 32px; line-height: 1.7; }
+    h1, h2, h3 { line-height: 1.3; }
+    h1 { margin-top: 0; }
+    code { padding: 0.12em 0.35em; border-radius: 4px; background: #f3f4f6; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; }
+    th, td { padding: 10px 12px; border: 1px solid #d1d5db; text-align: left; vertical-align: top; }
+    th { background: #eff6ff; }
+    .boundary { padding: 14px 18px; border-left: 4px solid #2563eb; background: #eff6ff; }
+    .recovery { padding: 14px 18px; border-left: 4px solid #dc2626; background: #fef2f2; }
+  </style>
+</head>
+<body>
+  <div id="main">
+    <h1>单词本模块架构概览</h1>
+    <p>本目录实现“保存一条带语言方向的查询，并能安全整理、检索、导出和再次查询”的完整功能。核心数据按 <strong>Store → Repository → Manager / ViewModel → 查询窗口星标 / 单词本窗口</strong> 单向分层；持久化错误不能伪装成空数据，异步旧回调也不能改变当前查询的星标。</p>
+
+    <div class="section">
+      <h2>职责与非职责</h2>
+      <ul>
+        <li>负责单词条目、分组、默认分组、搜索排序、CSV 导出、旧 Favorites 一次性迁移，以及损坏或未来版本数据的保护式恢复。</li>
+        <li>负责向 Objective-C 查询标题栏提供可查询、可增删的主线程桥接，并向独立 SwiftUI 单词本窗口提供可观察状态。</li>
+        <li>查询历史仍由 <code>QueryRecordManager</code> 和 Defaults 的 <code>queryHistory</code> 管理；本模块只投影、导出、删除或把历史项加入单词本，不把历史写进 <code>wordbook.json</code>。</li>
+        <li>翻译服务执行、查询窗口选择和 AppKit 窗口布局属于外部边界，本目录只提交“以保存的原文和语言方向重新查询”的意图。</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>关键组件与所有权</h2>
+      <table>
+        <thead><tr><th>层</th><th>核心组件</th><th>责任与边界</th></tr></thead>
+        <tbody>
+          <tr><td>持久化</td><td><code>WordbookStore</code></td><td>Actor 独占 Application Support/Wordbook，读写版本化 JSON，轮换并校验备份，归档损坏原文件；不发布 UI 状态。</td></tr>
+          <tr><td>一致性</td><td><code>WordbookSnapshotValidator</code><br><code>WordbookMigrator</code></td><td>拒绝无法安全修复的结构，允许修复悬空分组引用；把旧 Favorites 合并为候选快照，已存在的规范化条目优先。</td></tr>
+          <tr><td>领域状态</td><td><code>WordbookRepository</code></td><td>Actor 持有唯一已验证内存快照、索引、加载状态与写入串行门；完成持久化后才发布新状态。</td></tr>
+          <tr><td>AppKit 桥</td><td><code>WordbookManager</code></td><td>在主线程把 keyed lookup/add/remove 转为 Objective-C 可用回调，并用 <code>wordbookDidChange</code> 通知查询星标刷新。</td></tr>
+          <tr><td>窗口状态</td><td><code>WordbookViewModel</code></td><td>合并 Repository 状态流与 Defaults 历史流，管理窗口会话内搜索、范围、排序、选择、编辑、错误重试和 CSV 导出。</td></tr>
+          <tr><td>界面</td><td><code>WordbookView</code>、列表、分组菜单、编辑器、历史和恢复视图</td><td>呈现状态与用户意图；不直接接触 JSON 路径，不绕过 mutation gate。</td></tr>
+          <tr><td>查询星标</td><td><code>WordbookStarHost</code> / <code>WordbookStarModel</code></td><td>把 SwiftUI 星标嵌入旧标题栏，以查询 generation 和 mutation id 丢弃过期异步结果。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>数据与进出边界</h2>
+      <div class="boundary">
+        <p><strong>磁盘边界：</strong><code>wordbook.json</code> 是主快照，<code>wordbook.backup.json</code> 是已验证轮换备份，<code>wordbook.corrupt.&lt;timestamp&gt;.json</code> 保存损坏或重置前的原始字节。模型包含 schemaVersion、entries、groups 和 defaultGroupID。</p>
+        <p><strong>Defaults 边界：</strong>旧 Favorites 只作为一次性迁移输入且不被删除；迁移版本只在候选快照连续两次安全保存后推进。查询历史及窗口的 section/sort 偏好继续留在 Defaults。</p>
+        <p><strong>查询边界：</strong>条目身份由修剪边缘空白、忽略大小写但保留内部空白与重音差异的 <code>WordbookEntryKey</code> 决定。再次查询把保存的原文、源语言和目标语言原样交给 <code>EZWindowManager</code>。</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>正常流程</h2>
+      <h3>首次加载与迁移</h3>
+      <ol>
+        <li>Manager 或 ViewModel 订阅 Repository 状态并触发共享的惰性加载任务。</li>
+        <li>Store 读取主文件；不存在时尝试孤立备份，否则返回空快照。Repository 再执行语义校验与可修复引用清理。</li>
+        <li>若迁移版本落后，Migrator 合并旧 Favorites，Repository 验证并连续保存候选快照，使主文件和备份都包含迁移结果，最后更新迁移标记。</li>
+        <li>Repository 重建 key/id 索引，发布 ready；标题栏星标和独立窗口从同一快照刷新。</li>
+      </ol>
+      <h3>保存、管理与重放</h3>
+      <ol>
+        <li>查询标题栏传入当前可见原文和已解析语言方向，星标先 lookup；缺失时 add，已存在时 remove。含备注的删除必须二次确认。</li>
+        <li>窗口内创建分组、编辑备注、移动或批量删除时，ViewModel 先关闭本地 mutation gate，再由 Repository 串行执行事务。</li>
+        <li>事务先生成并验证候选快照，Store 原子保存并校验后才替换内存快照、重建索引和发布状态。</li>
+        <li>点击条目或历史记录时，ViewModel 以保存的语言方向调用 WindowManager；CSV 导出使用完整句式本地化、当前 locale 和确定性转义。</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>失败、回滚与恢复</h2>
+      <div class="recovery">
+        <ul>
+          <li><strong>写入失败：</strong>Store 在覆盖前验证并轮换旧主文件；新主文件写入或校验失败时恢复备份。Repository 不提交候选快照，ViewModel/星标保留可重试动作。</li>
+          <li><strong>损坏主文件：</strong>先把原始字节归档为 corrupt 文件，再只从通过结构校验的备份恢复；恢复成功发布提示，失败则进入 protected，绝不显示“空单词本”。</li>
+          <li><strong>未来 schema：</strong>只读取 JSON header 即进入 newerSchema 保护态，禁止写入和普通 reset，提示用户升级应用并可在 Finder 定位数据。</li>
+          <li><strong>主文件与备份都不可用：</strong>恢复视图提供重试、显示目录与经确认的保护式重置。重置先归档现有文件，再创建并验证空快照。</li>
+          <li><strong>并发或旧 UI 意图：</strong>Repository 写门串行化跨 await 的事务；窗口 mutation gate 阻止重复提交，星标的 generation/mutation id 阻止旧查询回调覆盖新查询。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>调试信号</h2>
+      <table>
+        <thead><tr><th>现象</th><th>优先检查</th><th>可信信号</th></tr></thead>
+        <tbody>
+          <tr><td>启动后一直不可用</td><td>Repository phase、Store 的 primary/backup/header 路径、migration marker</td><td>ready / failed / protected 必须明确，不应以空 entries 推断加载成功。</td></tr>
+          <tr><td>保存后星标或窗口未刷新</td><td>Repository state stream、Manager 的 <code>wordbookDidChange</code>、ViewModel observation task</td><td>只有已持久化快照才能触发最终 present/absent。</td></tr>
+          <tr><td>数据恢复异常</td><td>corrupt 归档、backup 解码、写后再解码比较</td><td>原始损坏文件仍存在；恢复提示只在验证后的 backup 生效。</td></tr>
+          <tr><td>搜索、排序或选择错乱</td><td><code>WordbookQuery</code> 的 locale/scope、ViewModel selection repair</td><td>切换 scope/search/section 会清理不可见选择，语言变化会重新投影。</td></tr>
+          <tr><td>再次查询语言不一致</td><td>历史/条目的 from/to 字段与 WindowManager 的 stored-language 分支</td><td>保存的方向应跳过自动探测并保持原文。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>测试与手工入口</h2>
+      <p>六个核心测试套件覆盖模块的非 UI 行为：</p>
+      <ul>
+        <li><code>WordbookModelsTests</code>：身份规范化和模型语义。</li>
+        <li><code>WordbookQueryTests</code>：范围、搜索、排序和历史投影。</li>
+        <li><code>WordbookMigrationTests</code>：旧 Favorites 合并、幂等与冲突。</li>
+        <li><code>WordbookStoreTests</code>：原子写、备份、损坏归档、未来 schema 与保护式重置。</li>
+        <li><code>WordbookRepositoryTests</code>：加载发布、事务回滚、串行写和分组确认。</li>
+        <li><code>WordbookCSVExporterTests</code>：列顺序、语言/分组显示名和 RFC 4180 转义。</li>
+      </ul>
+      <p>手工检查从菜单栏打开单词本窗口，验证查询星标增删、含备注删除确认、分组重排与非空删除、搜索/排序/批量操作、Wordbook/History 导出、历史重放、切换六种语言、红色关闭后重开状态复用，以及模拟损坏/未来 schema 后的 Finder、重试与重置路径。</p>
+    </div>
+  </div>
+</body>
+</html>
