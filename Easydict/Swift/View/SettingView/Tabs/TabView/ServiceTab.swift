@@ -142,6 +142,7 @@ class ServiceTabViewModel: ObservableObject {
 
         selectedItem = .service(item.id)
         postUpdateServiceNotification()
+        reloadLLMSubscribersIfNeeded(for: item)
         updateServices()
     }
 
