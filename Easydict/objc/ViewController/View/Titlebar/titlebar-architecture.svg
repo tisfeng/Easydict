@@ -150,7 +150,7 @@
   <circle cx="94" cy="907" r="9" fill="#6b7280" opacity="0.16"/>
   <circle cx="94" cy="907" r="3" fill="#6b7280"/>
   <text x="326" y="912" text-anchor="middle" class="node-title">Legacy Favorites 写路径已移除</text>
-  <text x="326" y="934" text-anchor="middle" class="body">Quick Action 无 add_to_favorites；迁移只在 Store 层读取</text>
+  <text x="326" y="934" text-anchor="middle" class="body">Quick Action 已无旧收藏写入；迁移层只读旧 Defaults</text>
   <rect x="630" y="883" width="500" height="66" rx="9" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
   <rect x="630" y="883" width="6" height="66" rx="3" fill="#6b7280"/>
   <circle cx="654" cy="907" r="9" fill="#6b7280" opacity="0.16"/>

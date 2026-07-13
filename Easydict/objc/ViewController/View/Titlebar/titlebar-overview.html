@@ -85,7 +85,7 @@
 
     <div class="section">
       <h2>Legacy Favorites 清理边界</h2>
-      <p>Quick Action 菜单只保留换行替换、注释符移除、分词和打开设置；不再包含 <code>add_to_favorites</code>，也没有 <code>addFavoriteIfNeeded</code> 或 RecordTypeFavorites 写路径。旧 Favorites 数据仅由 WordbookMigration 读取一次，标题栏不能继续双写。</p>
+      <p>Quick Action 菜单只保留换行替换、注释符移除、分词和打开设置，已无旧收藏写入动作。迁移层只读旧 Defaults 数据一次；标题栏不得继续写入旧收藏，也不得与 Wordbook 双写。</p>
     </div>
 
     <div class="section">
@@ -95,7 +95,7 @@
         <li>快速输入两条不同文本或切换语言，延迟第一条 lookup/write 回调，确认第二条星标不被覆盖且不弹旧错误。</li>
         <li>在单词本窗口增删同一 key，确认查询窗口通过 <code>wordbookDidChange</code> 刷新；关闭/重开标题栏相关窗口检查 observer 是否重复。</li>
         <li>保存带备注条目后从星标删除，确认先显示备注丢失提示；取消保持 present，确认后变 absent；模拟写失败验证 Retry。</li>
-        <li>静态搜索 <code>RecordTypeFavorites</code>、<code>addFavoriteIfNeeded</code>、<code>add_to_favorites</code>，标题栏实现中应为零命中。</li>
+        <li>静态检查标题栏及其 Quick Action 源码，确认不存在旧收藏写入入口或旧收藏记录类型引用；迁移代码只允许读取旧 Defaults，不得形成回写或双写。</li>
       </ul>
     </div>
   </div>
