@@ -200,6 +200,9 @@
   <path d="M 135 780 V 935 H 220 V 990" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
   <rect x="77" y="910" width="116" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
   <text x="135" y="925" text-anchor="middle" class="edge-label">validate error</text>
+  <path d="M 530 866 H 675 V 970 H 606 V 990" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="548" y="841" width="109" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="602.5" y="856" text-anchor="middle" class="edge-label">刷新 selection</text>
   <path d="M 1140 548 H 1175 V 935 H 980 V 990" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
   <rect x="1045" y="910" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
   <text x="1080" y="925" text-anchor="middle" class="edge-label">窗口异常</text>

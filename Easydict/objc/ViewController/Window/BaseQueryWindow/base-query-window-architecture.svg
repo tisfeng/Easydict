@@ -184,12 +184,12 @@
   <path d="M 150 514 H 25 V 1076 H 60" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
   <rect x="48" y="965" width="54" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
   <text x="75" y="980" text-anchor="middle" class="edge-label">stale</text>
-  <path d="M 700 830 H 780 V 1015 H 600 V 1040" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
-  <rect x="644.5" y="992" width="91" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
-  <text x="690" y="1007" text-anchor="middle" class="edge-label">错误 / 重试</text>
-  <path d="M 700 916 V 985 H 990 V 1040" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
-  <rect x="865" y="962" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
-  <text x="900" y="977" text-anchor="middle" class="edge-label">隔离失败</text>
+  <path d="M 576 850 V 865 H 400 V 1018 H 600 V 1040" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="454.5" y="1007" width="91" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="500" y="1022" text-anchor="middle" class="edge-label">错误 / 重试</text>
+  <path d="M 680 952 V 1018 H 996 V 1040" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="865" y="1007" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="900" y="1022" text-anchor="middle" class="edge-label">隔离失败</text>
   <rect x="40" y="1155" width="1120" height="50" rx="12" fill="#f9fafb" fill-opacity="0.55" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
   <rect x="56" y="1165" width="730" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
   <text x="66" y="1182" class="group-title">调试：输入 setter → detect / stored language → QueryModel → service completion → History / titlebar</text>

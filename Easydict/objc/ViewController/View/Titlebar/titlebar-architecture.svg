@@ -135,6 +135,9 @@
   <path d="M 720 370 H 650 V 445 H 25 V 650 H 600 V 710" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
   <rect x="154.5" y="627" width="91" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
   <text x="200" y="642" text-anchor="middle" class="edge-label">确认 / 重试</text>
+  <path d="M 1150 370 H 1185 V 830 H 216 V 794" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="1078" y="675" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="1113" y="690" text-anchor="middle" class="edge-label">过期结果</text>
   <path d="M 950 595 V 680 H 990 V 710" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
   <rect x="898" y="657" width="144" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
   <text x="970" y="672" text-anchor="middle" class="edge-label">protected / failed</text>

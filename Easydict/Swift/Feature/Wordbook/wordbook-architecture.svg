@@ -135,6 +135,9 @@
   <path d="M 770 505 V 555 H 820 V 605" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-green)"/>
   <rect x="785" y="559" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
   <text x="820" y="574" text-anchor="middle" class="edge-label">一次迁移</text>
+  <path d="M 1130 650 H 1175 V 375 H 700 V 338" fill="none" stroke="#9333ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
+  <rect x="1039" y="444" width="109" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="1093.5" y="459" text-anchor="middle" class="edge-label">History 更新</text>
   <rect x="40" y="760" width="1120" height="130" rx="12" fill="#fef2f2" fill-opacity="0.55" stroke="#fecaca" stroke-width="1.5" stroke-dasharray="7 5"/>
   <rect x="56" y="770" width="109" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
   <text x="66" y="787" class="group-title">失败与恢复分支</text>

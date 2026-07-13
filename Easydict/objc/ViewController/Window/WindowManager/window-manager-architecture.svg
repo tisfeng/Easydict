@@ -173,9 +173,10 @@
   <path d="M 70 454 H 25 V 926 H 60" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
   <rect x="29" y="820" width="102" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
   <text x="80" y="835" text-anchor="middle" class="edge-label">empty replay</text>
-  <path d="M 600 498 V 535 H 1175 V 980 H 600 V 962" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
-  <rect x="985.5" y="510" width="109" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
-  <text x="1040" y="525" text-anchor="middle" class="edge-label">nil / capture</text>
+  <path d="M 970 520 C 970 509 990 509 990 520" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+  <path d="M 600 498 V 520 H 970 C 970 509 990 509 990 520 H 1175 V 980 H 600 V 962" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="735.5" y="510" width="109" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="790" y="525" text-anchor="middle" class="edge-label">nil / capture</text>
   <path d="M 1020 697 V 835 H 990 V 890" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
   <rect x="985" y="813" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
   <text x="1020" y="828" text-anchor="middle" class="edge-label">边界恢复</text>
