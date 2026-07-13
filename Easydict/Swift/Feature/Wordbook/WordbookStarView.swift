@@ -79,29 +79,33 @@ private final class WordbookStarModel: ObservableObject {
         toLanguage: Language,
         languageResolved: Bool
     ) {
-        generation &+= 1
-        activeMutationID = nil
-        dismissAlert()
-        guard let key = WordbookEntryKey(
+        let nextQuery = WordbookEntryKey(
             text: text,
             fromLanguage: fromLanguage,
             toLanguage: toLanguage
-        ) else {
-            query = nil
+        ).map { key in
+            Query(
+                key: key,
+                text: text,
+                fromLanguage: fromLanguage,
+                toLanguage: toLanguage
+            )
+        }
+        if query != nextQuery || isLanguageResolved != languageResolved {
+            generation &+= 1
+            activeMutationID = nil
+            dismissAlert()
+        }
+        query = nextQuery
+        isLanguageResolved = languageResolved
+        guard nextQuery != nil else {
             state = .empty
             return
         }
         guard languageResolved else {
-            query = nil
             state = .resolvingLanguage
             return
         }
-        query = Query(
-            key: key,
-            text: text,
-            fromLanguage: fromLanguage,
-            toLanguage: toLanguage
-        )
         refresh()
     }
 
@@ -121,6 +125,7 @@ private final class WordbookStarModel: ObservableObject {
         generation &+= 1
         activeMutationID = nil
         query = nil
+        isLanguageResolved = false
         state = .empty
         dismissAlert()
     }
@@ -151,9 +156,12 @@ private final class WordbookStarModel: ObservableObject {
     private var retryAction: (() -> ())?
     private var generation = 0
     private var activeMutationID: UUID?
+    private var isLanguageResolved = false
 
     private func refresh() {
-        guard let query else { return }
+        guard activeMutationID == nil,
+              isLanguageResolved,
+              let query else { return }
         generation &+= 1
         let expectedGeneration = generation
         state = .checking
@@ -164,7 +172,8 @@ private final class WordbookStarModel: ObservableObject {
         ) { [weak self] lookup, error in
             guard let self,
                   generation == expectedGeneration,
-                  self.query?.key == query.key else { return }
+                  activeMutationID == nil,
+                  self.query == query else { return }
             state = error == nil
                 ? (lookup?.state.starState ?? .unavailable)
                 : .unavailable
@@ -172,7 +181,8 @@ private final class WordbookStarModel: ObservableObject {
     }
 
     private func performAdd(_ query: Query) {
-        guard self.query?.key == query.key else { return }
+        guard self.query == query else { return }
+        generation &+= 1
         let mutationID = UUID()
         activeMutationID = mutationID
         state = .persisting
@@ -183,7 +193,7 @@ private final class WordbookStarModel: ObservableObject {
         ) { [weak self] error in
             guard let self,
                   activeMutationID == mutationID,
-                  self.query?.key == query.key else { return }
+                  self.query == query else { return }
             activeMutationID = nil
             if let error {
                 logError("Wordbook star add failed: \(error)")
@@ -195,7 +205,8 @@ private final class WordbookStarModel: ObservableObject {
     }
 
     private func performRemove(_ query: Query, confirmed: Bool) {
-        guard self.query?.key == query.key else { return }
+        guard self.query == query else { return }
+        generation &+= 1
         let mutationID = UUID()
         activeMutationID = mutationID
         state = .persisting
@@ -207,7 +218,7 @@ private final class WordbookStarModel: ObservableObject {
         ) { [weak self] result, error in
             guard let self,
                   activeMutationID == mutationID,
-                  self.query?.key == query.key else { return }
+                  self.query == query else { return }
             activeMutationID = nil
             if let error {
                 logError("Wordbook star removal failed: \(error)")
