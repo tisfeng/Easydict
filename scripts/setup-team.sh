@@ -6,49 +6,31 @@ cd "$(dirname "$0")/.."
 
 die() { echo "fatal: $*" >&2; exit 1; }
 
-[ -d ".git" ] || die "not a git repository"
+git rev-parse --is-inside-work-tree >/dev/null 2>&1 || die "not a git repository"
 
-CONFIG_FILE=".git/setup-team-id"
+CONFIG_FILE=$(git rev-parse --git-path setup-team-id)
+HOOKS_DIR=$(git rev-parse --git-path hooks)
 
 # --- Patching functions ---
 patch_team() {
   team="$1"
-  find . -name "project.pbxproj" -not -path "*/Pods/*" | while read -r proj; do
-    sed -i '' -E "s/DEVELOPMENT_TEAM *= *[^;]*;/DEVELOPMENT_TEAM = ${team};/g" "$proj"
-    sed -i '' -E "s/\"DEVELOPMENT_TEAM\[sdk=macosx\*\]\" *= *[^;]*;/\"DEVELOPMENT_TEAM[sdk=macosx*]\" = ${team};/g" "$proj"
-    git update-index --assume-unchanged "$proj" 2>/dev/null || true
-  done
-  find . -maxdepth 1 -name "*.xcconfig" | while read -r xcconfig; do
-    sed -i '' -E "s/DEVELOPMENT_TEAM *= *.*/DEVELOPMENT_TEAM = ${team}/" "$xcconfig"
-    sed -i '' -E "s/CODE_SIGN_IDENTITY *= *.*/CODE_SIGN_IDENTITY = Apple Development/" "$xcconfig"
-    sed -i '' -E "s/CODE_SIGN_STYLE *= *.*/CODE_SIGN_STYLE = Automatic/" "$xcconfig"
-    git update-index --assume-unchanged "$xcconfig" 2>/dev/null || true
-  done
+  sed -i '' -E "s/DEVELOPMENT_TEAM *= *.*/DEVELOPMENT_TEAM = ${team}/" Easydict-debug.xcconfig
+  sed -i '' -E "s/CODE_SIGN_IDENTITY *= *.*/CODE_SIGN_IDENTITY = Apple Development/" Easydict-debug.xcconfig
+  sed -i '' -E "s/CODE_SIGN_STYLE *= *.*/CODE_SIGN_STYLE = Automatic/" Easydict-debug.xcconfig
+  git update-index --assume-unchanged Easydict-debug.xcconfig 2>/dev/null || true
 }
 
 patch_adhoc() {
-  find . -name "project.pbxproj" -not -path "*/Pods/*" | while read -r proj; do
-    sed -i '' -E 's/DEVELOPMENT_TEAM *= *[^;]*;/DEVELOPMENT_TEAM = "";/g' "$proj"
-    sed -i '' -E 's/"DEVELOPMENT_TEAM\[sdk=macosx\*\]" *= *[^;]*;/"DEVELOPMENT_TEAM[sdk=macosx*]" = "";/g' "$proj"
-    git update-index --assume-unchanged "$proj" 2>/dev/null || true
-  done
-  find . -maxdepth 1 -name "*.xcconfig" | while read -r xcconfig; do
-    sed -i '' -E "s/DEVELOPMENT_TEAM *= *.*/DEVELOPMENT_TEAM =/" "$xcconfig"
-    sed -i '' -E "s/CODE_SIGN_IDENTITY *= *.*/CODE_SIGN_IDENTITY = -/" "$xcconfig"
-    sed -i '' -E "s/CODE_SIGN_STYLE *= *.*/CODE_SIGN_STYLE = Manual/" "$xcconfig"
-    git update-index --assume-unchanged "$xcconfig" 2>/dev/null || true
-  done
+  sed -i '' -E "s/DEVELOPMENT_TEAM *= *.*/DEVELOPMENT_TEAM =/" Easydict-debug.xcconfig
+  sed -i '' -E "s/CODE_SIGN_IDENTITY *= *.*/CODE_SIGN_IDENTITY = -/" Easydict-debug.xcconfig
+  sed -i '' -E "s/CODE_SIGN_STYLE *= *.*/CODE_SIGN_STYLE = Manual/" Easydict-debug.xcconfig
+  git update-index --assume-unchanged Easydict-debug.xcconfig 2>/dev/null || true
 }
 
 # --- Uninstall ---
 if [ "$1" = "--uninstall" ]; then
-  rm -f .git/hooks/post-checkout .git/hooks/post-merge "$CONFIG_FILE"
-  find . -name "project.pbxproj" -not -path "*/Pods/*" | while read -r file; do
-    git update-index --no-assume-unchanged "$file" 2>/dev/null || true
-  done
-  find . -maxdepth 1 -name "*.xcconfig" | while read -r file; do
-    git update-index --no-assume-unchanged "$file" 2>/dev/null || true
-  done
+  rm -f "$HOOKS_DIR/post-checkout" "$HOOKS_DIR/post-merge" "$CONFIG_FILE"
+  git update-index --no-assume-unchanged Easydict-debug.xcconfig 2>/dev/null || true
   echo "Done! setup-team hooks and configuration removed."
   exit 0
 fi
@@ -106,17 +88,17 @@ else
 fi
 
 # Install hooks
-mkdir -p .git/hooks
+mkdir -p "$HOOKS_DIR"
 
-cat > .git/hooks/post-checkout << 'HOOK'
+cat > "$HOOKS_DIR/post-checkout" << 'HOOK'
 #!/bin/sh
 if [ -f "./scripts/setup-team.sh" ]; then
   ./scripts/setup-team.sh --hook
 fi
 HOOK
 
-chmod +x .git/hooks/post-checkout
-cp .git/hooks/post-checkout .git/hooks/post-merge
+chmod +x "$HOOKS_DIR/post-checkout"
+cp "$HOOKS_DIR/post-checkout" "$HOOKS_DIR/post-merge"
 
 # Report
 if [ "$MODE" = "adhoc" ]; then
