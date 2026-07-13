@@ -521,6 +521,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (!fromLanguage || !toLanguage) {
         return;
     }
+    [self cancelDelayDetectQueryText];
     self.queryModel.userSourceLanguage = fromLanguage;
     self.queryModel.userTargetLanguage = toLanguage;
     self.queryModel.needDetectLanguage = [fromLanguage isEqualToString:EZLanguageAuto];
