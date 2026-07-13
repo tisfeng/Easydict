@@ -68,7 +68,7 @@ actor WordbookRepository {
 
     /// Retries a failed or protected bootstrap while preserving ready state.
     func retryLoad() async -> WordbookRepositoryState {
-        guard state.phase != .ready else {
+        guard state.phase != .ready, state.phase != .loading else {
             return state
         }
         didLoad = false
@@ -378,10 +378,7 @@ extension WordbookRepository {
         let normalized = try normalizedGroupName(name)
         return try await transaction { snapshot in
             guard !snapshot.groups.contains(where: {
-                $0.name.folding(
-                    options: [.caseInsensitive],
-                    locale: Locale(identifier: "en_US_POSIX")
-                ) == normalized.key
+                groupNameKey($0.name) == normalized.key
             }) else {
                 throw WordbookRepositoryError.duplicateGroupName
             }
@@ -404,10 +401,7 @@ extension WordbookRepository {
                 throw WordbookRepositoryError.groupNotFound(id)
             }
             guard !snapshot.groups.contains(where: {
-                $0.id != id && $0.name.folding(
-                    options: [.caseInsensitive],
-                    locale: Locale(identifier: "en_US_POSIX")
-                ) == normalized.key
+                $0.id != id && groupNameKey($0.name) == normalized.key
             }) else {
                 throw WordbookRepositoryError.duplicateGroupName
             }
@@ -614,10 +608,14 @@ extension WordbookRepository {
         }
         return (
             stored,
-            stored.folding(
-                options: [.caseInsensitive],
-                locale: Locale(identifier: "en_US_POSIX")
-            )
+            groupNameKey(stored)
+        )
+    }
+
+    fileprivate func groupNameKey(_ name: String) -> String {
+        name.trimmingCharacters(in: .whitespacesAndNewlines).folding(
+            options: [.caseInsensitive],
+            locale: Locale(identifier: "en_US_POSIX")
         )
     }
 

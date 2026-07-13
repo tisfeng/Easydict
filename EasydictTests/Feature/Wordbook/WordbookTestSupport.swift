@@ -285,6 +285,7 @@ actor WordbookStorageSpy: WordbookStorage {
         saveError: WordbookStoreError? = nil,
         saveErrorOnCall: Int = 1,
         saveGate: WordbookTestGate? = nil,
+        resetGate: WordbookTestGate? = nil,
         resetError: WordbookStoreError? = nil,
         eventRecorder: WordbookEventRecorder? = nil,
         directoryURL: URL = FileManager.default.temporaryDirectory
@@ -296,6 +297,7 @@ actor WordbookStorageSpy: WordbookStorage {
         self.saveError = saveError
         self.saveErrorOnCall = saveErrorOnCall
         self.saveGate = saveGate
+        self.resetGate = resetGate
         self.resetError = resetError
         self.eventRecorder = eventRecorder
         self.directoryURL = directoryURL
@@ -338,6 +340,7 @@ actor WordbookStorageSpy: WordbookStorage {
     func resetProtectedData() async throws {
         resetCalls += 1
         await eventRecorder?.record(.reset)
+        await resetGate?.enterAndWait()
         if let resetError {
             throw resetError
         }
@@ -386,6 +389,7 @@ actor WordbookStorageSpy: WordbookStorage {
     private var saveError: WordbookStoreError?
     private var saveErrorOnCall: Int
     private let saveGate: WordbookTestGate?
+    private let resetGate: WordbookTestGate?
     private let resetError: WordbookStoreError?
     private let eventRecorder: WordbookEventRecorder?
     private let directoryURL: URL

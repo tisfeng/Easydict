@@ -167,7 +167,7 @@ struct WordbookRepositoryTests {
         arguments: GroupNameMutation.allCases
     )
     func duplicateGroupNameIsRejected(_ mutation: GroupNameMutation) async {
-        let existing = WordbookFixture.group(name: "Travel")
+        let existing = WordbookFixture.group(name: " Travel ")
         let target = WordbookFixture.group(name: "Work", sortOrder: 1)
         var snapshot = WordbookSnapshot.empty
         snapshot.groups = [existing, target]
@@ -606,6 +606,39 @@ extension WordbookRepositoryTests {
 // MARK: - Runtime Failure and Reset
 
 extension WordbookRepositoryTests {
+    @Test("Retry during corrupt reset does not start a competing bootstrap")
+    func retryDuringCorruptResetDoesNotBootstrap() async {
+        let resetGate = WordbookTestGate()
+        let storage = WordbookStorageSpy(
+            loadResult: .protected(.corrupt(
+                mainURL: URL(fileURLWithPath: "/tmp/corrupt-wordbook.json"),
+                backupURL: nil
+            )),
+            resetGate: resetGate
+        )
+        let repository = WordbookRepository(
+            storage: storage,
+            migrationStore: WordbookMigrationSpy(version: 1, favorites: [])
+        )
+        _ = await repository.loadIfNeeded()
+
+        let resetTask = Task { await repository.resetProtectedData() }
+        await resetGate.waitUntilEntered()
+        defer { Task { await resetGate.open() } }
+
+        #expect(await repository.currentState() == .loading)
+        let retryState = await repository.retryLoad()
+        #expect(retryState == .loading)
+        #expect(await repository.currentState() == .loading)
+        #expect(await storage.loadCount() == 1)
+
+        await resetGate.open()
+        let resetState = await resetTask.value
+        #expect(resetState.phase == .ready)
+        #expect(resetState.snapshot == .empty)
+        #expect(await storage.loadCount() == 2)
+    }
+
     @Test("Newer schema discovered during mutation protects data immediately")
     func mutationNewerSchemaProtectsRepository() async throws {
         let existing = WordbookFixture.entry(text: "Existing")
