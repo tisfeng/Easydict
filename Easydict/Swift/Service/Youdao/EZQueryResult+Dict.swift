@@ -56,9 +56,30 @@ extension QueryResult {
                 phonetics.append(phonetic)
             }
 
-            if !phonetics.isEmpty {
-                wordResult.phonetics = phonetics
+            // Rare words and proper nouns come back without usphone/ukphone
+            // even though Youdao TTS can pronounce them; synthesize a
+            // speaker-only entry so a word lookup always offers pronunciation.
+            if phonetics.isEmpty {
+                let phonetic = EZWordPhonetic()
+                phonetic.language = language
+                phonetic.word = queryText
+                phonetic.accent = "us"
+                // Build the query with URLComponents so delimiter-bearing
+                // words ("rock & roll", "a=b") stay a single `audio` value;
+                // `.urlQueryAllowed` keeps `&` and `=` unescaped.
+                var components = URLComponents(string: audioURL)
+                components?.queryItems = [
+                    URLQueryItem(name: "audio", value: queryText),
+                    URLQueryItem(name: "type", value: "2"),
+                ]
+                if let speechURL = components?.url?.absoluteString {
+                    phonetic.speakURL = speechURL
+                    fromSpeakURL = speechURL
+                    queryModel.audioURL = speechURL
+                    phonetics.append(phonetic)
+                }
             }
+            wordResult.phonetics = phonetics
 
             // Parse word translations
             var parts: [EZTranslatePart] = []
