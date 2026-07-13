@@ -113,3 +113,139 @@ extension WordbookFixture {
         try fileURL.setResourceValues(values)
     }
 }
+
+// MARK: - Migration Test Support
+
+extension WordbookFixture {
+    static func favorite(
+        id: UUID = UUID(),
+        text: String = "Hello",
+        fromLanguage: Language = .english,
+        toLanguage: Language = .simplifiedChinese,
+        timestamp: Date = Date(timeIntervalSince1970: 1_700_000_000)
+    )
+        -> QueryRecord {
+        QueryRecord(
+            id: id,
+            queryText: text,
+            queryFromLanguage: fromLanguage,
+            queryToLanguage: toLanguage,
+            timestamp: timestamp
+        )
+    }
+
+    static func entry(
+        id: UUID = UUID(),
+        text: String = "Hello",
+        fromLanguage: Language = .english,
+        toLanguage: Language = .simplifiedChinese,
+        groupID: UUID? = nil,
+        note: String = "",
+        createdAt: Date = Date(timeIntervalSince1970: 1_700_000_000),
+        updatedAt: Date = Date(timeIntervalSince1970: 1_700_000_000)
+    )
+        -> WordbookEntry {
+        WordbookEntry(
+            id: id,
+            text: text,
+            fromLanguage: fromLanguage,
+            toLanguage: toLanguage,
+            groupID: groupID,
+            note: note,
+            createdAt: createdAt,
+            updatedAt: updatedAt
+        )
+    }
+}
+
+// MARK: - WordbookStorageSpy
+
+/// Isolates repository bootstrap from disk while preserving the complete
+/// storage contract and recording only successfully persisted snapshots.
+actor WordbookStorageSpy: WordbookStorage {
+    // MARK: Lifecycle
+
+    init(
+        loadResult: WordbookLoadResult,
+        saveError: WordbookStoreError? = nil,
+        directoryURL: URL = FileManager.default.temporaryDirectory
+    ) {
+        self.loadResult = loadResult
+        self.saveError = saveError
+        self.directoryURL = directoryURL
+    }
+
+    // MARK: Internal
+
+    func load() async throws -> WordbookLoadResult {
+        loadCalls += 1
+        return loadResult
+    }
+
+    func save(_ snapshot: WordbookSnapshot) async throws {
+        if let saveError {
+            throw saveError
+        }
+        saveCalls.append(snapshot)
+    }
+
+    func resetProtectedData() async throws {}
+
+    func dataDirectoryURL() async -> URL {
+        directoryURL
+    }
+
+    func loadCount() -> Int {
+        loadCalls
+    }
+
+    func savedSnapshots() -> [WordbookSnapshot] {
+        saveCalls
+    }
+
+    // MARK: Private
+
+    private let loadResult: WordbookLoadResult
+    private let saveError: WordbookStoreError?
+    private let directoryURL: URL
+    private var loadCalls = 0
+    private var saveCalls: [WordbookSnapshot] = []
+}
+
+// MARK: - WordbookMigrationSpy
+
+/// Supplies legacy Favorites and a mutable migration marker while retaining
+/// every version write so repository ordering and idempotence remain visible.
+actor WordbookMigrationSpy: WordbookMigrationPersisting {
+    // MARK: Lifecycle
+
+    init(version: Int, favorites: [QueryRecord]) {
+        self.version = version
+        self.favorites = favorites
+    }
+
+    // MARK: Internal
+
+    func currentVersion() async -> Int {
+        version
+    }
+
+    func legacyFavorites() async -> [QueryRecord] {
+        favorites
+    }
+
+    func setCurrentVersion(_ version: Int) async {
+        self.version = version
+        marks.append(version)
+    }
+
+    func markedVersions() -> [Int] {
+        marks
+    }
+
+    // MARK: Private
+
+    private var version: Int
+    private let favorites: [QueryRecord]
+    private var marks: [Int] = []
+}
