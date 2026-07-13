@@ -12,52 +12,72 @@ import SwiftUI
 
 // MARK: - WordbookEntryList
 
-/// Renders the visible saved entries as a native selectable macOS list. Each
-/// row preserves localized language and date metadata, supports explicit and
-/// double-click replay, and exposes Return only when one visible entry is
-/// selected and the root view allows the default action.
+/// Renders saved entries as a native multi-select macOS list with row and batch
+/// commands. Query and copy remain available whenever the ready list is shown,
+/// while editing, moving, and deleting follow the supplied mutation gate and
+/// Return replays only one visible selection when the root permits it.
 struct WordbookEntryList: View {
     // MARK: Internal
 
     let entries: [WordbookEntry]
+    let groups: [WordbookGroup]
     @Binding var selection: Set<UUID>
 
     let allowsReturnReplay: Bool
+    let canMutate: Bool
     let onQuery: (WordbookEntry) -> ()
+    let onEdit: (WordbookEntry) -> ()
+    let onMove: (Set<UUID>, UUID?) -> ()
+    let onCopy: (WordbookEntry) -> ()
+    let onDelete: (Set<UUID>) -> ()
 
     var body: some View {
-        List(selection: $selection) {
-            ForEach(entries) { entry in
-                HStack(spacing: 12) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(entry.text)
-                            .lineLimit(2)
-                        if !entry.note.isEmpty {
-                            Text(entry.note)
-                                .font(.caption)
+        VStack(spacing: 0) {
+            if !selection.isEmpty {
+                HStack {
+                    batchMenu
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
+            }
+
+            List(selection: $selection) {
+                ForEach(entries) { entry in
+                    HStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(entry.text)
+                                .lineLimit(2)
+                            if !entry.note.isEmpty {
+                                Text(entry.note)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
+                            }
+                            Text(metadata(for: entry))
+                                .font(.caption2)
                                 .foregroundStyle(.secondary)
-                                .lineLimit(1)
                         }
-                        Text(metadata(for: entry))
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
+
+                        Spacer(minLength: 12)
+
+                        Button {
+                            onQuery(entry)
+                        } label: {
+                            Label("common.query", systemSymbol: .magnifyingglass)
+                        }
+                        .buttonStyle(.borderless)
                     }
-
-                    Spacer(minLength: 12)
-
-                    Button {
+                    .contentShape(Rectangle())
+                    .onTapGesture(count: 2) {
                         onQuery(entry)
-                    } label: {
-                        Label("common.query", systemSymbol: .magnifyingglass)
                     }
-                    .buttonStyle(.borderless)
+                    .contextMenu {
+                        contextMenu(for: entry)
+                    }
+                    .tag(entry.id)
+                    .padding(.vertical, 4)
                 }
-                .contentShape(Rectangle())
-                .onTapGesture(count: 2) {
-                    onQuery(entry)
-                }
-                .tag(entry.id)
-                .padding(.vertical, 4)
             }
         }
         .background {
@@ -83,6 +103,72 @@ struct WordbookEntryList: View {
         let selectedEntries = entries.filter { selection.contains($0.id) }
         guard selectedEntries.count == 1 else { return nil }
         return selectedEntries.first
+    }
+
+    private var batchMenu: some View {
+        Menu {
+            moveMenu(ids: selection)
+
+            Divider()
+
+            Button(role: .destructive) {
+                onDelete(selection)
+            } label: {
+                Label("common.delete", systemSymbol: .trash)
+            }
+        } label: {
+            Label("wordbook.bulk.actions", systemSymbol: .ellipsisCircle)
+        }
+        .disabled(!canMutate)
+    }
+
+    @ViewBuilder
+    private func contextMenu(for entry: WordbookEntry) -> some View {
+        Button {
+            onQuery(entry)
+        } label: {
+            Label("common.query", systemSymbol: .magnifyingglass)
+        }
+
+        Button {
+            onEdit(entry)
+        } label: {
+            Label("wordbook.action.edit_note", systemSymbol: .squareAndPencil)
+        }
+        .disabled(!canMutate)
+
+        moveMenu(ids: [entry.id])
+            .disabled(!canMutate)
+
+        Button {
+            onCopy(entry)
+        } label: {
+            Label("wordbook.action.copy_text", systemSymbol: .docOnDoc)
+        }
+
+        Divider()
+
+        Button(role: .destructive) {
+            onDelete([entry.id])
+        } label: {
+            Label("common.delete", systemSymbol: .trash)
+        }
+        .disabled(!canMutate)
+    }
+
+    private func moveMenu(ids: Set<UUID>) -> some View {
+        Menu {
+            Button("wordbook.group.ungrouped") {
+                onMove(ids, nil)
+            }
+            ForEach(groups) { group in
+                Button(group.name) {
+                    onMove(ids, group.id)
+                }
+            }
+        } label: {
+            Label("wordbook.action.move_to_group", systemSymbol: .folder)
+        }
     }
 
     /// Formats the stored direction and creation time in the app locale.

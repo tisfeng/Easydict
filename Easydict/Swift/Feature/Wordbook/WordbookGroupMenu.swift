@@ -12,10 +12,10 @@ import SwiftUI
 
 // MARK: - WordbookGroupMenu
 
-/// Presents the read-only scope choices for the Wordbook browser. It keeps
-/// built-in scopes ahead of user groups, marks the active scope, and exposes
-/// the default destination with a localized accessibility label while leaving
-/// group mutation commands to the later management surface.
+/// Presents scope selection and flat group management in one native macOS
+/// menu. Browsing remains available during persistence, while every create,
+/// default, rename, reorder, and delete command follows the supplied mutation
+/// gate and reports intent to the owning view model.
 struct WordbookGroupMenu: View {
     // MARK: Internal
 
@@ -23,7 +23,13 @@ struct WordbookGroupMenu: View {
     let scope: WordbookGroupScope
     let defaultGroupID: UUID?
     let count: Int
+    let canMutate: Bool
     let onSelect: (WordbookGroupScope) -> ()
+    let onCreate: () -> ()
+    let onSetDefault: (UUID?) -> ()
+    let onRename: (WordbookGroup) -> ()
+    let onMove: (WordbookGroup, Int) -> ()
+    let onDelete: (WordbookGroup) -> ()
 
     var body: some View {
         Menu {
@@ -33,15 +39,30 @@ struct WordbookGroupMenu: View {
                 title: Text("wordbook.group.ungrouped"),
                 isDefault: defaultGroupID == nil
             )
-
-            Divider()
-
             ForEach(groups) { group in
                 scopeButton(
                     .group(group.id),
                     title: Text(group.name),
                     isDefault: defaultGroupID == group.id
                 )
+            }
+
+            Divider()
+
+            Button(action: onCreate) {
+                Label("wordbook.group.new", systemSymbol: .plus)
+            }
+            .disabled(!canMutate)
+
+            Button {
+                onSetDefault(nil)
+            } label: {
+                defaultLabel(isDefault: defaultGroupID == nil)
+            }
+            .disabled(!canMutate || defaultGroupID == nil)
+
+            ForEach(Array(groups.enumerated()), id: \.element.id) { index, group in
+                managementMenu(for: group, index: index)
             }
         } label: {
             HStack(spacing: 6) {
@@ -64,6 +85,13 @@ struct WordbookGroupMenu: View {
         )
     }
 
+    private var defaultIcon: some View {
+        Image(systemSymbol: .starFill)
+            .accessibilityLabel(
+                Text("wordbook.group.default.accessibility")
+            )
+    }
+
     @ViewBuilder private var currentScopeLabel: some View {
         switch scope {
         case .all:
@@ -76,6 +104,71 @@ struct WordbookGroupMenu: View {
             } else {
                 Text("wordbook.group.all")
             }
+        }
+    }
+
+    private func managementMenu(
+        for group: WordbookGroup,
+        index: Int
+    )
+        -> some View {
+        Menu {
+            Button {
+                onSetDefault(group.id)
+            } label: {
+                defaultLabel(isDefault: defaultGroupID == group.id)
+            }
+            .disabled(!canMutate || defaultGroupID == group.id)
+
+            Button {
+                onRename(group)
+            } label: {
+                Label("wordbook.group.rename", systemSymbol: .pencil)
+            }
+            .disabled(!canMutate)
+
+            Button {
+                onMove(group, -1)
+            } label: {
+                Label("wordbook.group.move_up", systemSymbol: .arrowUp)
+            }
+            .disabled(!canMutate || index == groups.startIndex)
+
+            Button {
+                onMove(group, 1)
+            } label: {
+                Label("wordbook.group.move_down", systemSymbol: .arrowDown)
+            }
+            .disabled(!canMutate || index == groups.index(before: groups.endIndex))
+
+            Divider()
+
+            Button(role: .destructive) {
+                onDelete(group)
+            } label: {
+                Label("common.delete", systemSymbol: .trash)
+            }
+            .disabled(!canMutate)
+        } label: {
+            HStack {
+                Text(group.name)
+                if defaultGroupID == group.id {
+                    defaultIcon
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func defaultLabel(isDefault: Bool) -> some View {
+        if isDefault {
+            Label {
+                Text("wordbook.group.set_default")
+            } icon: {
+                defaultIcon
+            }
+        } else {
+            Label("wordbook.group.set_default", systemSymbol: .star)
         }
     }
 

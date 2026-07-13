@@ -44,16 +44,130 @@ struct WordbookView: View {
                     )
                 )
             }
+            .sheet(item: $viewModel.editingEntry) { entry in
+                WordbookEntryEditor(
+                    entry: entry,
+                    groups: viewModel.groups,
+                    canSave: viewModel.canMutate
+                ) { note, groupID in
+                    viewModel.saveEntry(
+                        entry,
+                        note: note,
+                        groupID: groupID
+                    )
+                }
+            }
+            .alert(
+                "wordbook.group.new",
+                isPresented: $showsNewGroup
+            ) {
+                TextField("wordbook.group.name", text: $groupName)
+                Button("cancel", role: .cancel) {
+                    groupName = ""
+                }
+                Button("wordbook.action.save") {
+                    let name = groupName
+                    groupName = ""
+                    viewModel.createGroup(name: name)
+                }
+                .disabled(groupNameIsEmpty || !viewModel.canMutate)
+            }
+            .alert(
+                "wordbook.group.rename",
+                isPresented: renamePresented,
+                presenting: groupToRename
+            ) { group in
+                TextField("wordbook.group.name", text: $groupName)
+                Button("cancel", role: .cancel) {
+                    groupName = ""
+                }
+                Button("wordbook.action.save") {
+                    let name = groupName
+                    groupName = ""
+                    viewModel.renameGroup(group, name: name)
+                }
+                .disabled(groupNameIsEmpty || !viewModel.canMutate)
+            }
+            .alert(
+                "common.delete",
+                isPresented: entryDeletePresented,
+                presenting: deleteEntryIDs
+            ) { ids in
+                Button("cancel", role: .cancel) {}
+                Button("common.delete", role: .destructive) {
+                    viewModel.deleteEntries(ids)
+                }
+                .disabled(!viewModel.canMutate)
+            } message: { ids in
+                Text(bulkDeleteMessage(count: ids.count))
+            }
+            .alert(item: $viewModel.groupDeletePrompt) { prompt in
+                Alert(
+                    title: Text("common.delete"),
+                    message: Text(
+                        groupDeleteMessage(count: prompt.entryCount)
+                    ),
+                    primaryButton: .destructive(Text("common.delete")) {
+                        viewModel.confirmDeleteGroup()
+                    },
+                    secondaryButton: .cancel(Text("cancel"))
+                )
+            }
+            .alert(item: $viewModel.failure) { failure in
+                Alert(
+                    title: Text(failure.titleKey),
+                    message: Text(failure.messageKey),
+                    primaryButton: .default(Text("retry")) {
+                        viewModel.retryFailedMutation()
+                    },
+                    secondaryButton: .cancel(Text("cancel"))
+                )
+            }
     }
 
     // MARK: Private
 
     @StateObject private var languageState = LanguageState()
     @StateObject private var viewModel = WordbookViewModel()
+    @State private var groupName = ""
+    @State private var groupToRename: WordbookGroup?
+    @State private var showsNewGroup = false
+    @State private var deleteEntryIDs = Set<UUID>()
     @FocusState private var searchFocused: Bool
 
-    private var locale: Locale {
-        Locale(identifier: languageState.language.rawValue)
+    private var locale: Locale { Locale(identifier: languageState.language.rawValue) }
+    private var groupNameIsEmpty: Bool { groupName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+
+    private var renamePresented: Binding<Bool> {
+        Binding(
+            get: { groupToRename != nil },
+            set: { isPresented in
+                if !isPresented {
+                    groupToRename = nil
+                }
+            }
+        )
+    }
+
+    private var entryDeletePresented: Binding<Bool> {
+        Binding(
+            get: { deleteEntryIDs.count > 1 },
+            set: { isPresented in
+                if !isPresented {
+                    deleteEntryIDs.removeAll()
+                }
+            }
+        )
+    }
+
+    private var allowsReturnReplay: Bool {
+        !searchFocused
+            && viewModel.editingEntry == nil
+            && !showsNewGroup
+            && groupToRename == nil
+            && viewModel.failure == nil
+            && viewModel.groupDeletePrompt == nil
+            && deleteEntryIDs.isEmpty
     }
 
     @ViewBuilder private var content: some View {
@@ -108,10 +222,23 @@ struct WordbookView: View {
                     groups: viewModel.groups,
                     scope: viewModel.scope,
                     defaultGroupID: viewModel.snapshot.defaultGroupID,
-                    count: viewModel.scopeCount
-                ) { scope in
-                    viewModel.scope = scope
-                }
+                    count: viewModel.scopeCount,
+                    canMutate: viewModel.canMutate,
+                    onSelect: { scope in
+                        viewModel.scope = scope
+                    },
+                    onCreate: presentNewGroup,
+                    onSetDefault: { id in
+                        viewModel.setDefaultGroup(id)
+                    },
+                    onRename: presentRename,
+                    onMove: { group, offset in
+                        viewModel.moveGroup(group, offset: offset)
+                    },
+                    onDelete: { group in
+                        viewModel.deleteGroup(group)
+                    }
+                )
                 .frame(minWidth: 190, alignment: .leading)
             }
 
@@ -134,11 +261,24 @@ struct WordbookView: View {
             } else {
                 WordbookEntryList(
                     entries: viewModel.displayedEntries,
+                    groups: viewModel.groups,
                     selection: $viewModel.selection,
-                    allowsReturnReplay: !searchFocused
-                ) { entry in
-                    viewModel.replay(entry)
-                }
+                    allowsReturnReplay: allowsReturnReplay,
+                    canMutate: viewModel.canMutate,
+                    onQuery: { entry in
+                        viewModel.replay(entry)
+                    },
+                    onEdit: { entry in
+                        viewModel.editingEntry = entry
+                    },
+                    onMove: { ids, groupID in
+                        viewModel.moveEntries(ids, to: groupID)
+                    },
+                    onCopy: { entry in
+                        viewModel.copyText(entry)
+                    },
+                    onDelete: requestEntryDelete
+                )
             }
         case .history:
             if viewModel.displayedHistory.isEmpty {
@@ -304,6 +444,47 @@ struct WordbookView: View {
                 title
             }
         }
+    }
+
+    private func presentNewGroup() {
+        groupName = ""
+        showsNewGroup = true
+    }
+
+    private func presentRename(_ group: WordbookGroup) {
+        groupName = group.name
+        groupToRename = group
+    }
+
+    private func requestEntryDelete(_ ids: Set<UUID>) {
+        guard viewModel.canMutate, !ids.isEmpty else { return }
+        if ids.count == 1 {
+            viewModel.deleteEntries(ids)
+        } else {
+            deleteEntryIDs = ids
+        }
+    }
+
+    private func groupDeleteMessage(count: Int) -> String {
+        String(
+            format: String(
+                localized: "wordbook.group.delete_nonempty.message",
+                locale: locale
+            ),
+            locale: locale,
+            arguments: [Int64(count) as CVarArg]
+        )
+    }
+
+    private func bulkDeleteMessage(count: Int) -> String {
+        String(
+            format: String(
+                localized: "wordbook.bulk.delete.message",
+                locale: locale
+            ),
+            locale: locale,
+            arguments: [Int64(count) as CVarArg]
+        )
     }
 
     private func newerSchemaMessage(version: Int) -> String {
