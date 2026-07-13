@@ -87,12 +87,92 @@ struct WordbookMigrationTests {
         #expect(markedVersions.isEmpty)
     }
 
-    @Test("Verified migration marks version one and concurrent loads bootstrap once")
-    func marksAfterVerifiedSave() async {
-        let storage = WordbookStorageSpy(loadResult: .missing)
+    @Test("Second verified save failure leaves migration marker pending")
+    func secondSaveFailureDoesNotMark() async {
+        let eventRecorder = WordbookEventRecorder()
+        let storage = WordbookStorageSpy(
+            loadResult: .missing,
+            saveError: .io,
+            saveErrorOnCall: 2,
+            eventRecorder: eventRecorder
+        )
         let migration = WordbookMigrationSpy(
             version: 0,
-            favorites: [WordbookFixture.favorite()]
+            favorites: [WordbookFixture.favorite()],
+            eventRecorder: eventRecorder
+        )
+        let repository = WordbookRepository(
+            storage: storage,
+            migrationStore: migration
+        )
+
+        let state = await repository.loadIfNeeded()
+        let savedSnapshots = await storage.savedSnapshots()
+        let markedVersions = await migration.markedVersions()
+        let events = await eventRecorder.recordedEvents()
+
+        #expect(state.phase == .failed(.write))
+        #expect(state.snapshot == nil)
+        #expect(savedSnapshots.count == 1)
+        #expect(markedVersions.isEmpty)
+        #expect(events == [.saved(1)])
+    }
+
+    @Test("Immediate retry after published failure starts a fresh load")
+    func retryAfterPublishedFailureStartsFreshLoad() async {
+        let loadGate = WordbookTestGate()
+        let observerGate = WordbookTestGate()
+        let storage = WordbookStorageSpy(
+            loadResult: .missing,
+            loadError: .io,
+            loadGate: loadGate
+        )
+        let migration = WordbookMigrationSpy(version: 1, favorites: [])
+        let repository = WordbookRepository(
+            storage: storage,
+            migrationStore: migration
+        )
+        let updates = await repository.stateUpdates()
+
+        let retryTask = Task {
+            var iterator = updates.makeAsyncIterator()
+            let initialState = await iterator.next()
+            #expect(initialState?.phase == .loading)
+            await observerGate.enterAndWait()
+
+            let failedState = await iterator.next()
+            #expect(failedState?.phase == .failed(.read))
+            return await repository.retryLoad()
+        }
+
+        await observerGate.waitUntilEntered()
+        await observerGate.open()
+        let initialTask = Task { await repository.loadIfNeeded() }
+        await loadGate.waitUntilEntered()
+        await loadGate.open()
+
+        let retriedState = await retryTask.value
+        let initialState = await initialTask.value
+        let currentState = await repository.currentState()
+        let loadCount = await storage.loadCount()
+
+        #expect(initialState.phase == .failed(.read))
+        #expect(retriedState.phase == .ready)
+        #expect(currentState.phase == .ready)
+        #expect(loadCount == 2)
+    }
+
+    @Test("Verified migration marks version one and concurrent loads bootstrap once")
+    func marksAfterVerifiedSave() async {
+        let eventRecorder = WordbookEventRecorder()
+        let storage = WordbookStorageSpy(
+            loadResult: .missing,
+            eventRecorder: eventRecorder
+        )
+        let migration = WordbookMigrationSpy(
+            version: 0,
+            favorites: [WordbookFixture.favorite()],
+            eventRecorder: eventRecorder
         )
         let repository = WordbookRepository(
             storage: storage,
@@ -105,6 +185,7 @@ struct WordbookMigrationTests {
         let loadCount = await storage.loadCount()
         let savedSnapshots = await storage.savedSnapshots()
         let markedVersions = await migration.markedVersions()
+        let events = await eventRecorder.recordedEvents()
 
         #expect(states.allSatisfy {
             $0.phase == .ready && $0.snapshot?.entries.count == 1
@@ -112,6 +193,7 @@ struct WordbookMigrationTests {
         #expect(loadCount == 1)
         #expect(savedSnapshots.count == 2)
         #expect(markedVersions == [1])
+        #expect(events == [.saved(1), .saved(2), .marked(1)])
     }
 
     @Test("Marker-zero bootstrap deduplicates an already migrated entry")

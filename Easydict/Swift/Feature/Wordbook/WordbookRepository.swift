@@ -47,9 +47,7 @@ actor WordbookRepository {
         }
         let task = Task { await self.bootstrap() }
         loadTask = task
-        let result = await task.value
-        loadTask = nil
-        return result
+        return await task.value
     }
 
     /// Retries a failed or protected bootstrap while preserving ready state.
@@ -97,6 +95,7 @@ actor WordbookRepository {
 
     /// Builds a publishable snapshot without exposing partially migrated data.
     private func bootstrap() async -> WordbookRepositoryState {
+        defer { loadTask = nil }
         var isSaving = false
         do {
             let loaded = try await storage.load()

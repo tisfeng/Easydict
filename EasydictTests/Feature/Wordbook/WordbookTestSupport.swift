@@ -158,6 +158,87 @@ extension WordbookFixture {
     }
 }
 
+// MARK: - WordbookEventRecorder
+
+/// Records successful storage writes and migration-marker updates in one
+/// serial history so tests can assert ordering across both dependency actors.
+actor WordbookEventRecorder {
+    // MARK: Internal
+
+    /// Identifies one externally visible bootstrap persistence event.
+    enum Event: Equatable, Sendable {
+        case saved(Int)
+        case marked(Int)
+    }
+
+    func record(_ event: Event) {
+        history.append(event)
+    }
+
+    func recordedEvents() -> [Event] {
+        history
+    }
+
+    // MARK: Private
+
+    private var history: [Event] = []
+}
+
+// MARK: - WordbookTestGate
+
+/// Coordinates a one-shot test rendezvous: one task announces arrival and
+/// suspends until another task explicitly opens the gate.
+actor WordbookTestGate {
+    // MARK: Internal
+
+    /// Announces arrival, wakes observers, and waits until the gate opens.
+    func enterAndWait() async {
+        entered = true
+        let observers = entryObservers
+        entryObservers.removeAll()
+        for observer in observers {
+            observer.resume()
+        }
+
+        guard !isOpen else {
+            return
+        }
+        await withCheckedContinuation { continuation in
+            releaseObservers.append(continuation)
+        }
+    }
+
+    /// Suspends until another task has entered the gate.
+    func waitUntilEntered() async {
+        guard !entered else {
+            return
+        }
+        await withCheckedContinuation { continuation in
+            entryObservers.append(continuation)
+        }
+    }
+
+    /// Releases the entered task exactly once.
+    func open() {
+        guard !isOpen else {
+            return
+        }
+        isOpen = true
+        let observers = releaseObservers
+        releaseObservers.removeAll()
+        for observer in observers {
+            observer.resume()
+        }
+    }
+
+    // MARK: Private
+
+    private var entered = false
+    private var isOpen = false
+    private var entryObservers: [CheckedContinuation<(), Never>] = []
+    private var releaseObservers: [CheckedContinuation<(), Never>] = []
+}
+
 // MARK: - WordbookStorageSpy
 
 /// Isolates repository bootstrap from disk while preserving the complete
@@ -167,11 +248,21 @@ actor WordbookStorageSpy: WordbookStorage {
 
     init(
         loadResult: WordbookLoadResult,
+        loadError: WordbookStoreError? = nil,
+        loadErrorOnCall: Int = 1,
+        loadGate: WordbookTestGate? = nil,
         saveError: WordbookStoreError? = nil,
+        saveErrorOnCall: Int = 1,
+        eventRecorder: WordbookEventRecorder? = nil,
         directoryURL: URL = FileManager.default.temporaryDirectory
     ) {
         self.loadResult = loadResult
+        self.loadError = loadError
+        self.loadErrorOnCall = loadErrorOnCall
+        self.loadGate = loadGate
         self.saveError = saveError
+        self.saveErrorOnCall = saveErrorOnCall
+        self.eventRecorder = eventRecorder
         self.directoryURL = directoryURL
     }
 
@@ -179,14 +270,23 @@ actor WordbookStorageSpy: WordbookStorage {
 
     func load() async throws -> WordbookLoadResult {
         loadCalls += 1
+        let call = loadCalls
+        if call == 1 {
+            await loadGate?.enterAndWait()
+        }
+        if call == loadErrorOnCall, let loadError {
+            throw loadError
+        }
         return loadResult
     }
 
     func save(_ snapshot: WordbookSnapshot) async throws {
-        if let saveError {
+        saveAttempts += 1
+        if saveAttempts == saveErrorOnCall, let saveError {
             throw saveError
         }
         saveCalls.append(snapshot)
+        await eventRecorder?.record(.saved(saveCalls.count))
     }
 
     func resetProtectedData() async throws {}
@@ -206,9 +306,15 @@ actor WordbookStorageSpy: WordbookStorage {
     // MARK: Private
 
     private let loadResult: WordbookLoadResult
+    private let loadError: WordbookStoreError?
+    private let loadErrorOnCall: Int
+    private let loadGate: WordbookTestGate?
     private let saveError: WordbookStoreError?
+    private let saveErrorOnCall: Int
+    private let eventRecorder: WordbookEventRecorder?
     private let directoryURL: URL
     private var loadCalls = 0
+    private var saveAttempts = 0
     private var saveCalls: [WordbookSnapshot] = []
 }
 
@@ -219,9 +325,14 @@ actor WordbookStorageSpy: WordbookStorage {
 actor WordbookMigrationSpy: WordbookMigrationPersisting {
     // MARK: Lifecycle
 
-    init(version: Int, favorites: [QueryRecord]) {
+    init(
+        version: Int,
+        favorites: [QueryRecord],
+        eventRecorder: WordbookEventRecorder? = nil
+    ) {
         self.version = version
         self.favorites = favorites
+        self.eventRecorder = eventRecorder
     }
 
     // MARK: Internal
@@ -237,6 +348,7 @@ actor WordbookMigrationSpy: WordbookMigrationPersisting {
     func setCurrentVersion(_ version: Int) async {
         self.version = version
         marks.append(version)
+        await eventRecorder?.record(.marked(version))
     }
 
     func markedVersions() -> [Int] {
@@ -247,5 +359,6 @@ actor WordbookMigrationSpy: WordbookMigrationPersisting {
 
     private var version: Int
     private let favorites: [QueryRecord]
+    private let eventRecorder: WordbookEventRecorder?
     private var marks: [Int] = []
 }
