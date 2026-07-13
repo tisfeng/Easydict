@@ -1078,7 +1078,8 @@ static EZWindowManager *_instance;
                                  (int64_t)(EZFloatingWindowIdleWebViewDiscardDelay * NSEC_PER_SEC)),
                    dispatch_get_main_queue(), ^{
         EZBaseQueryWindow *strongWindow = weakWindow;
-        if (!strongWindow || strongWindow.isVisible || strongWindow.isPin) {
+        if (!strongWindow || strongWindow.isVisible || strongWindow.isPin ||
+            MyConfiguration.shared.keepPrevResultWhenEmpty) {
             return;
         }
 
