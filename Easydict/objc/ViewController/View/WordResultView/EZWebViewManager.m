@@ -148,8 +148,19 @@ BOOL EZResultShouldRenderDictionaryHTML(EZQueryResult *result) {
 
     CGFloat fontSize = MyConfiguration.shared.fontSizeRatio; // 1.4 --> 140%
     NSString *script = [NSString stringWithFormat:
-                        @"window.__easydictRenderGeneration = %lu; changeIframeBodyFontSize(%.1f); updateAllIframeStyle();",
+                        @"window.__easydictRenderGeneration = %lu; "
+                        @"if (typeof changeWebViewBodyFontSize === 'function') { "
+                        @"changeWebViewBodyFontSize(%.1f); "
+                        @"} else { "
+                        @"changeIframeBodyFontSize(%.1f); "
+                        @"} "
+                        @"if (typeof updateWebViewContentStyle === 'function') { "
+                        @"updateWebViewContentStyle(); "
+                        @"} else { "
+                        @"updateAllIframeStyle(); "
+                        @"}",
                         (unsigned long)renderGeneration,
+                        fontSize,
                         fontSize];
     [webView evaluateJavaScript:script
               completionHandler:^(id _Nullable result, NSError *_Nullable error) {

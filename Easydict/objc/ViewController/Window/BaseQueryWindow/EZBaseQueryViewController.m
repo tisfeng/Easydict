@@ -1590,6 +1590,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         BOOL needUpdateIframe = shouldRenderHTML && webViewManager.needUpdateIframeHeight && webViewManager.isLoaded;
         if (needLoadHTML || needUpdateIframe) {
             webView = webViewManager.webView;
+            webView.appearance = nil;
             resultCell.wordResultView.webView = webView;
         }
 
