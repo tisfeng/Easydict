@@ -14,6 +14,7 @@ import SwiftUI
 /// Bridge host window manager for managing SwiftUI windows.
 /// Since SwiftUI windows may cause some strange behaviors, such as showing the window automatically when the app launches, we need to use AppKit to manage the windows.
 /// FIX: https://github.com/tisfeng/Easydict/issues/767
+@MainActor
 final class HostWindowManager {
     // MARK: Internal
 
@@ -25,8 +26,13 @@ final class HostWindowManager {
         width: CGFloat = 700,
         height: CGFloat = 600,
         resizable: Bool = true,
+        reuseExisting: Bool = false,
+        initialSizeIsMinimum: Bool = true,
         @ViewBuilder content: () -> Content
     ) {
+        if reuseExisting, activateWindow(windowId: windowId, title: title) {
+            return
+        }
         closeWindow(windowId: windowId)
 
         var styleMask: NSWindow.StyleMask = [.titled, .closable, .miniaturizable]
@@ -40,20 +46,23 @@ final class HostWindowManager {
             backing: .buffered,
             defer: false
         )
-
         window.title = title ?? NSLocalizedString(windowId, comment: "")
         window.titlebarAppearsTransparent = true
         window.center()
 
         let wrappedContent = content()
             .frame(
-                minWidth: width, maxWidth: .infinity,
-                minHeight: height, maxHeight: .infinity
+                minWidth: initialSizeIsMinimum ? width : nil,
+                maxWidth: .infinity,
+                minHeight: initialSizeIsMinimum ? height : nil,
+                maxHeight: .infinity
             )
-
         window.contentView = NSHostingView(rootView: wrappedContent)
 
         let windowController = NSWindowController(window: window)
+        if reuseExisting {
+            window.isReleasedWhenClosed = false
+        }
         windowControllers[windowId] = windowController
         windowController.showWindow(nil)
     }
@@ -65,14 +74,49 @@ final class HostWindowManager {
         }
     }
 
+    func updateWindowTitle(windowId: String, title: String) {
+        windowControllers[windowId]?.window?.title = title
+    }
+
     // MARK: Private
 
     private var windowControllers: [String: NSWindowController] = [:]
+
+    @discardableResult
+    private func activateWindow(windowId: String, title: String?) -> Bool {
+        guard let controller = windowControllers[windowId],
+              let window = controller.window else {
+            return false
+        }
+        window.title = title ?? NSLocalizedString(windowId, comment: "")
+        NSApplication.shared.activateApp()
+        controller.showWindow(nil)
+        window.makeKeyAndOrderFront(nil)
+        return true
+    }
 }
 
 // MARK: - Window Creation Methods
 
 extension HostWindowManager {
+    /// Shows or reactivates the reusable Wordbook browsing window.
+    func showWordbookWindow() {
+        showWindow(
+            windowId: .wordbookWindowId,
+            title: String(
+                localized: "wordbook.window.title",
+                locale: Locale(identifier: I18nHelper.shared.localizeCode)
+            ),
+            width: 900,
+            height: 640,
+            resizable: true,
+            reuseExisting: true,
+            initialSizeIsMinimum: false
+        ) {
+            WordbookView()
+        }
+    }
+
     /// Show the acknowledgements window.
     func showAcknowWindow() {
         showWindow(windowId: .acknowledgementsWindowId) {
@@ -89,6 +133,9 @@ extension HostWindowManager {
 }
 
 extension String {
+    /// Wordbook browsing window id.
+    static let wordbookWindowId = "wordbook.window"
+
     // Acknowledgements window id.
     static let acknowledgementsWindowId = "setting.about.acknowledgements"
 
