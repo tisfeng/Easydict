@@ -349,10 +349,8 @@ final class EventMonitor: NSObject {
         }
 
         guard enabledAutoSelectText() else { return false }
-        // Only editable contexts can update their selection in response to
-        // Cmd+A. Read-only text keeps using the normal selection heuristics.
         guard systemUtility.canInsertText() else {
-            logInfo("Focused element cannot insert text, skip select all shortcut auto get selected text")
+            logInfo("Focused element is not an editable text element, skip select all shortcut auto get selected text")
             return false
         }
 
