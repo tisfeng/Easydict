@@ -101,27 +101,27 @@ struct WordbookView: View {
             } message: { ids in
                 Text(bulkDeleteMessage(count: ids.count))
             }
-            .alert(item: $viewModel.groupDeletePrompt) { prompt in
-                Alert(
-                    title: Text("common.delete"),
-                    message: Text(
-                        groupDeleteMessage(count: prompt.entryCount)
-                    ),
-                    primaryButton: .destructive(Text("common.delete")) {
-                        viewModel.confirmDeleteGroup()
-                    },
-                    secondaryButton: .cancel(Text("cancel"))
-                )
+            .alert(
+                "common.delete",
+                isPresented: Binding(get: { viewModel.groupDeletePrompt != nil }, set: { _ in }),
+                presenting: viewModel.groupDeletePrompt
+            ) { _ in
+                Button("cancel", role: .cancel) { viewModel.groupDeletePrompt = nil }
+                Button("common.delete", role: .destructive) { viewModel.confirmDeleteGroup() }
+                    .disabled(!viewModel.canMutate)
+            } message: { prompt in
+                Text(groupDeleteMessage(count: prompt.entryCount))
             }
-            .alert(item: $viewModel.failure) { failure in
-                Alert(
-                    title: Text(failure.titleKey),
-                    message: Text(failure.messageKey),
-                    primaryButton: .default(Text("retry")) {
-                        viewModel.retryFailedMutation()
-                    },
-                    secondaryButton: .cancel(Text("cancel"))
-                )
+            .alert(
+                viewModel.failure?.titleKey ?? "wordbook.error.write.title",
+                isPresented: Binding(get: { viewModel.failure != nil }, set: { _ in }),
+                presenting: viewModel.failure
+            ) { _ in
+                Button("cancel", role: .cancel) { viewModel.failure = nil }
+                Button("retry") { viewModel.retryFailedMutation() }
+                    .disabled(!viewModel.canMutate)
+            } message: { failure in
+                Text(failure.messageKey)
             }
     }
 

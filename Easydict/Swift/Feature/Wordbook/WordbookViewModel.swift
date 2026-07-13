@@ -227,8 +227,9 @@ final class WordbookViewModel: ObservableObject {
 
     func confirmDeleteGroup() {
         guard let prompt = groupDeletePrompt else { return }
-        groupDeletePrompt = nil
-        perform(.deleteGroup(prompt.group, confirmed: true))
+        if perform(.deleteGroup(prompt.group, confirmed: true)) {
+            groupDeletePrompt = nil
+        }
     }
 
     func setDefaultGroup(_ id: UUID?) {
@@ -258,8 +259,9 @@ final class WordbookViewModel: ObservableObject {
 
     func retryFailedMutation() {
         guard let failedMutation else { return }
-        failure = nil
-        perform(failedMutation)
+        if perform(failedMutation) {
+            failure = nil
+        }
     }
 
     func copyText(_ entry: WordbookEntry) {
@@ -275,11 +277,12 @@ final class WordbookViewModel: ObservableObject {
     private var historyCancellable: AnyCancellable?
     private var failedMutation: WordbookMutation?
 
-    /// Runs every management write through one immediate UI gate and retry
-    /// slot. The repository transaction gate remains the final serialization
-    /// boundary across storage awaits.
-    private func perform(_ mutation: WordbookMutation) {
-        guard canMutate else { return }
+    /// Accepts a management write only after synchronously closing the local
+    /// UI gate. The repository gate remains the final serialization boundary
+    /// across storage awaits, and rejected writes keep their pending UI state.
+    @discardableResult
+    private func perform(_ mutation: WordbookMutation) -> Bool {
+        guard canMutate else { return false }
         mutationInFlight = true
         let repository = repository
         Task { [weak self, repository] in
@@ -339,6 +342,7 @@ final class WordbookViewModel: ObservableObject {
                 )
             }
         }
+        return true
     }
 
     /// Drops stale group scopes and IDs that are no longer visible.
