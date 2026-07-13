@@ -14361,6 +14361,18 @@
             "value" : "Add Service"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir servicio"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サービスを追加"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14387,6 +14399,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "All services have been added"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se han añadido todos los servicios"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのサービスが追加されています"
           }
         },
         "sk" : {
@@ -14536,6 +14560,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remove from List"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar de la lista"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リストから削除"
           }
         },
         "sk" : {

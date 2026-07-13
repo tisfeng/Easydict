@@ -445,7 +445,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (EZQueryService *)defaultTTSService {
     EZServiceType defaultTTSServiceType = self.config.defaultTTSServiceType;
     if (![_defaultTTSService.serviceType isEqualToString:defaultTTSServiceType]) {
-        _defaultTTSService = [EZLocalStorage.shared service:defaultTTSServiceType windowType:self.windowType];
+        _defaultTTSService = [QueryServiceFactory.shared serviceWithTypeId:defaultTTSServiceType];
     }
     return _defaultTTSService;
 }
