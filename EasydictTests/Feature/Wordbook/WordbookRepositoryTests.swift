@@ -284,6 +284,19 @@ struct WordbookRepositoryTests {
         #expect(ordered.map(\.sortOrder) == [0, 1, 2])
         #expect(await storage.savedSnapshots().count == 1)
     }
+
+    @Test("Ten thousand loaded entries are indexed", .tags(.performance))
+    func tenThousandIndex() async throws {
+        var snapshot = WordbookSnapshot.empty
+        snapshot.entries = (0 ..< 10_000).map { WordbookFixture.entry(id: UUID(), text: "indexed \($0)") }
+        let (repository, storage) = WordbookFixture.repository(snapshot: snapshot)
+        #expect(await repository.loadIfNeeded().snapshot?.entries.count == 10_000)
+        for item in [snapshot.entries[0], snapshot.entries[4_999], snapshot.entries[9_999]] {
+            let key = WordbookEntryKey(text: item.text, fromLanguage: item.fromLanguage, toLanguage: item.toLanguage)!
+            #expect(await repository.entry(for: key)?.id == item.id)
+        }
+        #expect(await storage.loadCount() == 1)
+    }
 }
 
 // MARK: - Entry and Transaction Mutations
