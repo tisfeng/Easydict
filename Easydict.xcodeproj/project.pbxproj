@@ -30,6 +30,7 @@
 		A17B0D2B2F9D10010000002B /* WordbookEntryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D2C2F9D10010000002C /* WordbookEntryList.swift */; };
 		A17B0D2D2F9D10010000002D /* WordbookHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D2E2F9D10010000002E /* WordbookHistoryView.swift */; };
 		A17B0D2F2F9D10010000002F /* WordbookEntryEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D302F9D100100000030 /* WordbookEntryEditor.swift */; };
+		A17B0D312F9D100100000031 /* WordbookRecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D322F9D100100000032 /* WordbookRecoveryView.swift */; };
 		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
 		02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000003 /* MarkdownLabel.swift */; };
 		02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000004 /* MarkdownToggleButton.swift */; };
@@ -242,7 +243,6 @@
 		0377C08F2F13EAAC00302A2C /* View+BorderedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C08B2F13EAAC00302A2C /* View+BorderedCard.swift */; };
 		0377C0922F13EAFE00302A2C /* BuildConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C0902F13EAFE00302A2C /* BuildConfig.swift */; };
 		0377C0DA2F13F97100302A2C /* QueryRecordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C0D92F13F97100302A2C /* QueryRecordManager.swift */; };
-		0377C0F32F13FA4B00302A2C /* FavoritesTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */; };
 		037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B8295D49F900D0E2CF /* EZTableRowView.m */; };
 		03792EA22C3831040074A145 /* OllamaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03792EA12C3831040074A145 /* OllamaService.swift */; };
 		037A9CC72E24A73500668C49 /* ocr-zh-text-list-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 037A9CC62E24A73500668C49 /* ocr-zh-text-list-1.png */; };
@@ -673,6 +673,7 @@
 		A17B0D2C2F9D10010000002C /* WordbookEntryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookEntryList.swift; sourceTree = "<group>"; };
 		A17B0D2E2F9D10010000002E /* WordbookHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookHistoryView.swift; sourceTree = "<group>"; };
 		A17B0D302F9D100100000030 /* WordbookEntryEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookEntryEditor.swift; sourceTree = "<group>"; };
+		A17B0D322F9D100100000032 /* WordbookRecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookRecoveryView.swift; sourceTree = "<group>"; };
 		A17B0D122F9D100100000012 /* WordbookDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookDefaults.swift; sourceTree = "<group>"; };
 		A17B0D142F9D100100000014 /* WordbookMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookMigration.swift; sourceTree = "<group>"; };
 		A17B0D162F9D100100000016 /* WordbookRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookRepository.swift; sourceTree = "<group>"; };
@@ -913,7 +914,6 @@
 		0377C08C2F13EAAC00302A2C /* View+DebugOnly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DebugOnly.swift"; sourceTree = "<group>"; };
 		0377C0902F13EAFE00302A2C /* BuildConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildConfig.swift; sourceTree = "<group>"; };
 		0377C0D92F13F97100302A2C /* QueryRecordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecordManager.swift; sourceTree = "<group>"; };
-		0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesTab.swift; sourceTree = "<group>"; };
 		037852B7295D49F900D0E2CF /* EZTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableRowView.h; sourceTree = "<group>"; };
 		037852B8295D49F900D0E2CF /* EZTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableRowView.m; sourceTree = "<group>"; };
 		03792EA12C3831040074A145 /* OllamaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaService.swift; sourceTree = "<group>"; };
@@ -1486,6 +1486,7 @@
 				A17B0D2C2F9D10010000002C /* WordbookEntryList.swift */,
 				A17B0D2A2F9D10010000002A /* WordbookGroupMenu.swift */,
 				A17B0D2E2F9D10010000002E /* WordbookHistoryView.swift */,
+				A17B0D322F9D100100000032 /* WordbookRecoveryView.swift */,
 				A17B0D222F9D100100000022 /* WordbookManager.swift */,
 				A17B0D242F9D100100000024 /* WordbookStarView.swift */,
 				A17B0D282F9D100100000028 /* WordbookView.swift */,
@@ -1545,7 +1546,6 @@
 				0A057D6C2B499A000025C51D /* ServiceTab.swift */,
 				0A057D6E2F7000000025C51D /* tab-view-overview.md */,
 				0A057D6F2F7000000025C51D /* tab-view-architecture.svg */,
-				0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */,
 				0A8685C72B552A590022534F /* DisabledAppTab.swift */,
 				96099AE12B5D40330055C4DD /* ShortcutTab.swift */,
 				03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */,
@@ -4368,6 +4368,7 @@
 				A17B0D2B2F9D10010000002B /* WordbookEntryList.swift in Sources */,
 				A17B0D292F9D100100000029 /* WordbookGroupMenu.swift in Sources */,
 				A17B0D2D2F9D10010000002D /* WordbookHistoryView.swift in Sources */,
+				A17B0D312F9D100100000031 /* WordbookRecoveryView.swift in Sources */,
 				A17B0D212F9D100100000021 /* WordbookManager.swift in Sources */,
 				A17B0D232F9D100100000023 /* WordbookStarView.swift in Sources */,
 				A17B0D272F9D100100000027 /* WordbookView.swift in Sources */,
@@ -4655,7 +4656,6 @@
 				03715A2A2E6D253E0067259C /* FocusedElementInfo.swift in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
 				031C66DB2EDA14E90025D190 /* String+Split.swift in Sources */,
-				0377C0F32F13FA4B00302A2C /* FavoritesTab.swift in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
 				0327A5A82CCB3339002BA81B /* UpdateNotificationInfo.swift in Sources */,

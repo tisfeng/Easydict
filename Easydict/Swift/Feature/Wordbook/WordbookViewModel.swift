@@ -11,6 +11,7 @@ import Combine
 import Defaults
 import Foundation
 import SwiftUI
+import UniformTypeIdentifiers
 
 // MARK: - WordbookUIFailure
 
@@ -37,6 +38,7 @@ struct WordbookGroupDeletePrompt: Identifiable {
 
 /// Captures one repository write so the same executor can retry it unchanged.
 private enum WordbookMutation {
+    case addEntry(String, Language, Language)
     case createGroup(String)
     case renameGroup(UUID, String)
     case reorderGroups([UUID])
@@ -87,6 +89,7 @@ final class WordbookViewModel: ObservableObject {
     @Published var editingEntry: WordbookEntry?
     @Published var failure: WordbookUIFailure?
     @Published var groupDeletePrompt: WordbookGroupDeletePrompt?
+    @Published var recoveryNotice: WordbookRecoveryNotice?
     @Published private(set) var mutationInFlight = false
 
     @Published var section: WordbookSection {
@@ -157,11 +160,21 @@ final class WordbookViewModel: ObservableObject {
         ).count
     }
 
-    var canMutate: Bool {
-        repositoryState.phase == .ready
-            && !repositoryState.isPersisting
-            && !mutationInFlight
+    var savedKeys: Set<WordbookEntryKey> {
+        Set(snapshot.entries.compactMap {
+            WordbookEntryKey(
+                text: $0.text,
+                fromLanguage: $0.fromLanguage,
+                toLanguage: $0.toLanguage
+            )
+        })
     }
+
+    var canMutate: Bool {
+        repositoryState.phase == .ready && !repositoryState.isPersisting && !mutationInFlight
+    }
+
+    var canRetryFailure: Bool { failedMutation != nil }
 
     /// Starts one repository observation and triggers its lazy bootstrap.
     func start() {
@@ -173,6 +186,11 @@ final class WordbookViewModel: ObservableObject {
             for await state in updates {
                 guard let self else { return }
                 repositoryState = state
+                if let notice = state.recoveryNotice,
+                   notice != observedRecoveryNotice {
+                    recoveryNotice = notice
+                }
+                observedRecoveryNotice = state.recoveryNotice
                 repairSelection(for: state.snapshot)
             }
         }
@@ -211,6 +229,62 @@ final class WordbookViewModel: ObservableObject {
 
     func deleteHistory(_ record: QueryRecord) {
         QueryRecordManager.shared.removeRecord(id: record.id, from: .history)
+    }
+
+    func addHistory(_ record: QueryRecord) {
+        perform(.addEntry(record.queryText, record.queryFromLanguage, record.queryToLanguage))
+    }
+
+    func dismissRecoveryNotice() { recoveryNotice = nil }
+
+    func showWordbookDataInFinder() {
+        Task { [repository] in
+            let url = await repository.dataDirectoryURL()
+            NSWorkspace.shared.activateFileViewerSelecting([url])
+        }
+    }
+
+    func resetProtectedData() {
+        Task { [weak self, repository] in
+            let state = await repository.resetProtectedData()
+            self?.repositoryState = state
+        }
+    }
+
+    /// Exports the complete current group scope while ignoring search text.
+    func exportWordbook() {
+        let entries = query.entries(
+            in: snapshot,
+            scope: scope,
+            searchText: "",
+            sortOrder: wordbookSort,
+            locale: queryLocale
+        )
+        let csv = exporter.makeWordbookCSV(
+            entries: entries,
+            groups: groups,
+            ungroupedName: String(localized: "wordbook.group.ungrouped", locale: queryLocale),
+            languageName: { $0.localizedName }
+        )
+        presentExport(
+            csv: csv,
+            filenameFormat: String(localized: "wordbook.export.filename", locale: queryLocale)
+        )
+    }
+
+    /// Exports complete query history in its current order without filtering.
+    func exportHistory() {
+        let records = query.history(
+            history,
+            searchText: "",
+            sortOrder: historySort,
+            locale: queryLocale
+        )
+        let csv = exporter.makeHistoryCSV(records: records, languageName: { $0.localizedName })
+        presentExport(
+            csv: csv,
+            filenameFormat: String(localized: "wordbook.history_export.filename", locale: queryLocale)
+        )
     }
 
     func createGroup(name: String) {
@@ -273,9 +347,20 @@ final class WordbookViewModel: ObservableObject {
 
     private let repository: WordbookRepository
     private let query = WordbookQuery()
+    private let exporter = WordbookCSVExporter()
+    private let exportFilenameFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.timeZone = .current
+        formatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+        return formatter
+    }()
+
     private var stateTask: Task<(), Never>?
     private var historyCancellable: AnyCancellable?
     private var failedMutation: WordbookMutation?
+    private var observedRecoveryNotice: WordbookRecoveryNotice?
 
     /// Accepts a management write only after synchronously closing the local
     /// UI gate. The repository gate remains the final serialization boundary
@@ -290,6 +375,8 @@ final class WordbookViewModel: ObservableObject {
             defer { mutationInFlight = false }
             do {
                 switch mutation {
+                case let .addEntry(text, from, to):
+                    _ = try await repository.add(text: text, fromLanguage: from, toLanguage: to)
                 case let .createGroup(name):
                     _ = try await repository.createGroup(name: name)
                 case let .renameGroup(id, name):
@@ -343,6 +430,40 @@ final class WordbookViewModel: ObservableObject {
             }
         }
         return true
+    }
+
+    /// Presents a CSV save panel and reports write failures as non-retryable.
+    private func presentExport(csv: String, filenameFormat: String) {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.commaSeparatedText]
+        panel.canCreateDirectories = true
+        panel.isExtensionHidden = false
+        let stamp = exportFilenameFormatter.string(from: .now)
+        panel.nameFieldStringValue = String(
+            format: filenameFormat,
+            locale: queryLocale,
+            arguments: [stamp as CVarArg]
+        )
+        let data = Data(csv.utf8)
+        panel.begin { [weak self] response in
+            guard response == .OK, let url = panel.url else { return }
+            Task { @MainActor [weak self, data, url] in
+                guard let self else { return }
+                do {
+                    try await Task.detached(priority: .utility) {
+                        try data.write(to: url, options: .atomic)
+                    }.value
+                    NSWorkspace.shared.activateFileViewerSelecting([url])
+                } catch {
+                    logError("Wordbook export failed: \(error)")
+                    failedMutation = nil
+                    failure = WordbookUIFailure(
+                        titleKey: "wordbook.export.error.title",
+                        messageKey: "wordbook.export.error.message"
+                    )
+                }
+            }
+        }
     }
 
     /// Drops stale group scopes and IDs that are no longer visible.

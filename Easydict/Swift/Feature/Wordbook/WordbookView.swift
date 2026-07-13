@@ -117,11 +117,26 @@ struct WordbookView: View {
                 isPresented: Binding(get: { viewModel.failure != nil }, set: { _ in }),
                 presenting: viewModel.failure
             ) { _ in
-                Button("cancel", role: .cancel) { viewModel.failure = nil }
-                Button("retry") { viewModel.retryFailedMutation() }
-                    .disabled(!viewModel.canMutate)
+                if viewModel.canRetryFailure {
+                    Button("cancel", role: .cancel) { viewModel.failure = nil }
+                    Button("retry") { viewModel.retryFailedMutation() }
+                        .disabled(!viewModel.canMutate)
+                } else {
+                    Button("wordbook.action.dismiss") { viewModel.failure = nil }
+                }
             } message: { failure in
                 Text(failure.messageKey)
+            }
+            .alert(
+                "wordbook.recovery.reset.title",
+                isPresented: $confirmsProtectedReset
+            ) {
+                Button("wordbook.recovery.reset", role: .destructive) {
+                    viewModel.resetProtectedData()
+                }
+                Button("cancel", role: .cancel) {}
+            } message: {
+                Text("wordbook.recovery.reset.message")
             }
     }
 
@@ -133,6 +148,7 @@ struct WordbookView: View {
     @State private var groupToRename: WordbookGroup?
     @State private var showsNewGroup = false
     @State private var deleteEntryIDs = Set<UUID>()
+    @State private var confirmsProtectedReset = false
     @FocusState private var searchFocused: Bool
 
     private var locale: Locale { Locale(identifier: languageState.language.rawValue) }
@@ -168,6 +184,7 @@ struct WordbookView: View {
             && viewModel.failure == nil
             && viewModel.groupDeletePrompt == nil
             && deleteEntryIDs.isEmpty
+            && !confirmsProtectedReset
     }
 
     @ViewBuilder private var content: some View {
@@ -176,12 +193,12 @@ struct WordbookView: View {
             loadingView
         case .ready:
             readyView
-        case let .protected(protection):
-            protectedView(protection)
-        case .failed:
-            statusView(
-                title: Text("wordbook.recovery.failed.title"),
-                message: Text("wordbook.recovery.failed.message")
+        case .failed, .protected:
+            WordbookRecoveryView(
+                state: viewModel.repositoryState,
+                onRetry: viewModel.retryLoad,
+                onShowInFinder: viewModel.showWordbookDataInFinder,
+                onReset: { confirmsProtectedReset = true }
             )
         }
     }
@@ -197,6 +214,15 @@ struct WordbookView: View {
 
     private var readyView: some View {
         VStack(spacing: 12) {
+            if let notice = viewModel.recoveryNotice {
+                WordbookRecoveryNoticeView(
+                    notice: notice,
+                    onDismiss: viewModel.dismissRecoveryNotice
+                )
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+            }
+
             Picker("wordbook.section.label", selection: $viewModel.section) {
                 Text("wordbook.section.wordbook")
                     .tag(WordbookSection.wordbook)
@@ -250,6 +276,8 @@ struct WordbookView: View {
 
             sortMenu
                 .frame(minWidth: 130)
+
+            exportButton
         }
     }
 
@@ -286,12 +314,11 @@ struct WordbookView: View {
             } else {
                 WordbookHistoryView(
                     records: viewModel.displayedHistory,
-                    onQuery: { record in
-                        viewModel.replay(record)
-                    },
-                    onDelete: { record in
-                        viewModel.deleteHistory(record)
-                    }
+                    savedKeys: viewModel.savedKeys,
+                    canAdd: viewModel.canMutate,
+                    onAdd: viewModel.addHistory,
+                    onQuery: viewModel.replay,
+                    onDelete: viewModel.deleteHistory
                 )
             }
         }
@@ -342,6 +369,25 @@ struct WordbookView: View {
         }
     }
 
+    @ViewBuilder private var exportButton: some View {
+        switch viewModel.section {
+        case .wordbook:
+            Button(action: viewModel.exportWordbook) {
+                Label("common.export", systemSymbol: .squareAndArrowUp)
+                    .labelStyle(.iconOnly)
+            }
+            .disabled(viewModel.scopeCount == 0)
+            .help("common.export")
+        case .history:
+            Button(action: viewModel.exportHistory) {
+                Label("common.export", systemSymbol: .squareAndArrowUp)
+                    .labelStyle(.iconOnly)
+            }
+            .disabled(viewModel.history.isEmpty)
+            .help("common.export")
+        }
+    }
+
     @ViewBuilder private var wordbookSortLabel: some View {
         switch viewModel.wordbookSort {
         case .newest:
@@ -389,42 +435,6 @@ struct WordbookView: View {
             Text("wordbook.empty.history.message")
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-        }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    @ViewBuilder
-    private func protectedView(
-        _ protection: WordbookProtection
-    )
-        -> some View {
-        switch protection {
-        case .corrupt:
-            statusView(
-                title: Text("wordbook.recovery.corrupt.title"),
-                message: Text("wordbook.recovery.corrupt.message")
-            )
-        case let .newerSchema(version, _):
-            statusView(
-                title: Text("wordbook.recovery.newer.title"),
-                message: Text(newerSchemaMessage(version: version))
-            )
-        }
-    }
-
-    private func statusView(title: Text, message: Text) -> some View {
-        VStack(spacing: 12) {
-            title
-                .font(.title2)
-                .fontWeight(.semibold)
-            message
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 460)
-            Button("retry") {
-                viewModel.retryLoad()
-            }
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -484,17 +494,6 @@ struct WordbookView: View {
             ),
             locale: locale,
             arguments: [Int64(count) as CVarArg]
-        )
-    }
-
-    private func newerSchemaMessage(version: Int) -> String {
-        String(
-            format: String(
-                localized: "wordbook.recovery.newer.message",
-                locale: locale
-            ),
-            locale: locale,
-            arguments: [Int64(version) as CVarArg]
         )
     }
 }
