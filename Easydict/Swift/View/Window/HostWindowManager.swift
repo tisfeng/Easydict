@@ -78,9 +78,30 @@ final class HostWindowManager {
         windowControllers[windowId]?.window?.title = title
     }
 
+    /// Refreshes the reusable Wordbook window title for an exact app language.
+    func updateWordbookTitle(languageCode: String) {
+        updateWindowTitle(
+            windowId: .wordbookWindowId,
+            title: wordbookTitle(languageCode: languageCode)
+        )
+    }
+
     // MARK: Private
 
     private var windowControllers: [String: NSWindowController] = [:]
+
+    /// Uses the exact resource bundle because Locale does not select an lproj.
+    private func wordbookTitle(languageCode: String) -> String {
+        guard let path = Bundle.main.path(forResource: languageCode, ofType: "lproj"),
+              let bundle = Bundle(path: path) else {
+            return NSLocalizedString("wordbook.window.title", comment: "")
+        }
+        return bundle.localizedString(
+            forKey: "wordbook.window.title",
+            value: nil,
+            table: nil
+        )
+    }
 
     @discardableResult
     private func activateWindow(windowId: String, title: String?) -> Bool {
@@ -103,10 +124,7 @@ extension HostWindowManager {
     func showWordbookWindow() {
         showWindow(
             windowId: .wordbookWindowId,
-            title: String(
-                localized: "wordbook.window.title",
-                locale: Locale(identifier: I18nHelper.shared.localizeCode)
-            ),
+            title: wordbookTitle(languageCode: I18nHelper.shared.localizeCode),
             width: 900,
             height: 640,
             resizable: true,

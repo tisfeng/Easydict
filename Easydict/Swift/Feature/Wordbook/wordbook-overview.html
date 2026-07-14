@@ -42,7 +42,7 @@
           <tr><td>领域状态</td><td><code>WordbookRepository</code></td><td>Actor 持有唯一已验证内存快照、索引、加载状态与写入串行门；完成持久化后才发布新状态。</td></tr>
           <tr><td>AppKit 桥</td><td><code>WordbookManager</code></td><td>在主线程把 keyed lookup/add/remove 转为 Objective-C 可用回调，并用 <code>wordbookDidChange</code> 通知查询星标刷新。</td></tr>
           <tr><td>窗口状态</td><td><code>WordbookViewModel</code></td><td>合并 Repository 状态流与 Defaults 历史流，管理窗口会话内搜索、范围、排序、选择、编辑、错误重试和 CSV 导出。</td></tr>
-          <tr><td>界面</td><td><code>WordbookView</code>、列表、分组菜单、编辑器、历史和恢复视图</td><td>呈现状态与用户意图；不直接接触 JSON 路径，不绕过 mutation gate。</td></tr>
+          <tr><td>界面</td><td><code>WordbookView</code>、列表、分组菜单、编辑器、历史和恢复视图</td><td>呈现状态与用户意图；语言变化以自身 <code>LanguageState</code> 的新值重投影，并把精确语言代码交给窗口宿主刷新标题；不直接接触 JSON 路径，不绕过 mutation gate。</td></tr>
           <tr><td>查询星标</td><td><code>WordbookStarHost</code> / <code>WordbookStarModel</code></td><td>把 SwiftUI 星标嵌入旧标题栏，以查询 generation 和 mutation id 丢弃过期异步结果。</td></tr>
         </tbody>
       </table>
@@ -97,6 +97,7 @@
           <tr><td>保存后星标或窗口未刷新</td><td>Repository state stream、Manager 的 <code>wordbookDidChange</code>、ViewModel observation task</td><td>只有已持久化快照才能触发最终 present/absent。</td></tr>
           <tr><td>数据恢复异常</td><td>corrupt 归档、backup 解码、写后再解码比较</td><td>原始损坏文件仍存在；恢复提示只在验证后的 backup 生效。</td></tr>
           <tr><td>搜索、排序或选择错乱</td><td><code>WordbookQuery</code> 的 locale/scope、ViewModel selection repair</td><td>切换 scope/search/section 会清理不可见选择，语言变化会重新投影。</td></tr>
+          <tr><td>正文已换语言但窗口标题未更新</td><td><code>.onChange(of: languageState.language)</code>、HostWindowManager 的精确 <code>.lproj</code> 查找</td><td>同一语言代码必须同时驱动 SwiftUI locale 与 AppKit 标题，不能依赖同步通知中的旧状态。</td></tr>
           <tr><td>再次查询语言不一致</td><td>历史/条目的 from/to 字段与 WindowManager 的 stored-language 分支</td><td>保存的方向应跳过自动探测并保持原文。</td></tr>
         </tbody>
       </table>

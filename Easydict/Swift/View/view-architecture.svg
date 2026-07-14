@@ -45,8 +45,8 @@
   <rect x="890" y="120" width="6" height="60" rx="3" fill="#2563eb"/>
   <circle cx="914" cy="144" r="9" fill="#2563eb" opacity="0.16"/>
   <circle cx="914" cy="144" r="3" fill="#2563eb"/>
-  <text x="1016" y="149" text-anchor="middle" class="node-title">语言偏好通知</text>
-  <text x="1016" y="171" text-anchor="middle" class="body">I18nHelper + LanguageState</text>
+  <text x="1016" y="149" text-anchor="middle" class="node-title">语言偏好状态</text>
+  <text x="1016" y="171" text-anchor="middle" class="body">LanguageState + 精确 .lproj</text>
   <rect x="350" y="245" width="500" height="75" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
   <rect x="350" y="245" width="6" height="75" rx="3" fill="#9333ea"/>
   <circle cx="374" cy="269" r="9" fill="#9333ea" opacity="0.16"/>
@@ -97,7 +97,7 @@
   <text x="765" y="425" text-anchor="middle" class="edge-label">托管 SwiftUI</text>
   <path d="M 1010 180 V 395" fill="none" stroke="#9333ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
   <rect x="944" y="270" width="132" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
-  <text x="1010" y="285" text-anchor="middle" class="edge-label">更新标题与 locale</text>
+  <text x="1010" y="285" text-anchor="middle" class="edge-label">新值 → 标题与 locale</text>
   <rect x="40" y="560" width="1120" height="180" rx="12" fill="#f0fdf4" fill-opacity="0.55" stroke="#bbf7d0" stroke-width="1.5" stroke-dasharray="7 5"/>
   <rect x="56" y="570" width="135" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
   <text x="66" y="587" class="group-title">环境与功能状态边界</text>
@@ -107,7 +107,7 @@
   <circle cx="94" cy="634" r="3" fill="#16a34a"/>
   <text x="206" y="639" text-anchor="middle" class="node-title">LanguageState / Locale</text>
   <text x="206" y="661" text-anchor="middle" class="body">注入 SwiftUI environment</text>
-  <text x="206" y="679" text-anchor="middle" class="body">日期、计数、完整插值句</text>
+  <text x="206" y="679" text-anchor="middle" class="body">新值驱动标题、日期与计数</text>
   <rect x="430" y="610" width="300" height="85" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
   <rect x="430" y="610" width="6" height="85" rx="3" fill="#16a34a"/>
   <circle cx="454" cy="634" r="9" fill="#16a34a" opacity="0.16"/>
@@ -127,7 +127,7 @@
   <text x="740" y="536" text-anchor="middle" class="edge-label">持有根状态</text>
   <path d="M 330 652 H 430" fill="none" stroke="#9333ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
   <rect x="333.5" y="627" width="93" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
-  <text x="380" y="642" text-anchor="middle" class="edge-label">locale 变化</text>
+  <text x="380" y="642" text-anchor="middle" class="edge-label">已更新 locale</text>
   <path d="M 730 652 H 830" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-green)"/>
   <rect x="738.5" y="627" width="83" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
   <text x="780" y="642" text-anchor="middle" class="edge-label">状态与事务</text>

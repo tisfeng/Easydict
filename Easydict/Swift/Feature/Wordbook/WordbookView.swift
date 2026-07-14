@@ -27,21 +27,13 @@ struct WordbookView: View {
                 viewModel.updateLocale(locale)
                 viewModel.start()
             }
-            .onReceive(
-                NotificationCenter.default.publisher(
-                    for: .languagePreferenceChanged
-                )
-            ) { _ in
+            .onChange(of: languageState.language) { language in
                 let locale = Locale(
-                    identifier: languageState.language.rawValue
+                    identifier: language.rawValue
                 )
                 viewModel.updateLocale(locale)
-                HostWindowManager.shared.updateWindowTitle(
-                    windowId: .wordbookWindowId,
-                    title: String(
-                        localized: "wordbook.window.title",
-                        locale: locale
-                    )
+                HostWindowManager.shared.updateWordbookTitle(
+                    languageCode: language.rawValue
                 )
             }
             .sheet(item: $viewModel.editingEntry) { entry in

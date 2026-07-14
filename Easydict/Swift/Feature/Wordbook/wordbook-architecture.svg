@@ -40,7 +40,7 @@
   <circle cx="494" cy="144" r="9" fill="#2563eb" opacity="0.16"/>
   <circle cx="494" cy="144" r="3" fill="#2563eb"/>
   <text x="606" y="149" text-anchor="middle" class="node-title">Wordbook 独立窗口</text>
-  <text x="606" y="171" text-anchor="middle" class="body">分组 / 搜索 / 编辑 / 导出</text>
+  <text x="606" y="171" text-anchor="middle" class="body">分组 / 搜索 / 六语言标题 / 导出</text>
   <rect x="870" y="120" width="260" height="66" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
   <rect x="870" y="120" width="6" height="66" rx="3" fill="#2563eb"/>
   <circle cx="894" cy="144" r="9" fill="#2563eb" opacity="0.16"/>
@@ -182,7 +182,7 @@
   <circle cx="644" cy="974" r="9" fill="#6b7280" opacity="0.16"/>
   <circle cx="644" cy="974" r="3" fill="#6b7280"/>
   <text x="881" y="979" text-anchor="middle" class="node-title">手工与故障定位</text>
-  <text x="881" y="1001" text-anchor="middle" class="body">phase / notice / 文件归档 / 六语言 / 星标与窗口</text>
+  <text x="881" y="1001" text-anchor="middle" class="body">phase / 文件归档 / 精确 .lproj / 六语言标题 / 星标</text>
   <line x1="55" y1="1070" x2="89" y2="1070" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
   <text x="101" y="1074" class="legend">主流程 / 调用</text>
   <line x1="315" y1="1070" x2="349" y2="1070" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>

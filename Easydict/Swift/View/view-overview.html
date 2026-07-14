@@ -50,9 +50,9 @@
     <div class="section">
       <h2>本地化环境</h2>
       <ul>
-        <li>打开窗口时，HostWindowManager 使用 <code>I18nHelper.shared.localizeCode</code> 构造 locale，并以 <code>wordbook.window.title</code> 生成标题。</li>
+        <li>打开窗口时，HostWindowManager 使用 <code>I18nHelper.shared.localizeCode</code> 选择精确的 <code>.lproj</code> bundle，并以 <code>wordbook.window.title</code> 生成标题；不假设 <code>String(localized:locale:)</code> 会切换资源 bundle。</li>
         <li><code>WordbookView</code> 持有 <code>LanguageState</code>，把对应 <code>Locale</code> 注入 SwiftUI environment；列表元数据、日期、计数、完整提示句和导出文件名都从同一 locale 计算。</li>
-        <li>收到 <code>languagePreferenceChanged</code> 后，根视图更新 ViewModel 的查询 locale，同时通过 HostWindowManager 更新现有 NSWindow 标题。</li>
+        <li><code>WordbookView</code> 观察自身 <code>LanguageState</code> 已更新后的新值，用同一语言代码更新 ViewModel 查询 locale，并通过 HostWindowManager 更新现有 NSWindow 标题，避免同步通知早于另一个 <code>AppStorage</code> 实例刷新的竞态。</li>
         <li>动态语言名、日期与插值句由 ViewModel/子视图在 locale 边界一次性格式化；共享视图层不拼接本地化片段，也不构造动态 catalog key。</li>
       </ul>
     </div>
@@ -88,7 +88,7 @@
       <h2>调试与验证入口</h2>
       <ul>
         <li>从菜单栏连续两次打开 Wordbook，确认同一窗口被前置且没有重复 NSWindowController；红色关闭后重开，确认搜索和当前 section 保留。</li>
-        <li>切换六种应用语言，检查菜单项、窗口标题、日期/计数和错误提示同步更新；特别检查窗口已打开时的通知路径。</li>
+        <li>切换六种应用语言，检查菜单项、窗口标题、日期/计数和错误提示同步更新；特别检查窗口已打开时的 <code>.onChange(of: languageState.language)</code> 路径及精确 <code>.lproj</code> 查找。</li>
         <li>窗口未出现时从 <code>MenuItemView.wordbookItem</code> → <code>showWordbookWindow</code> → <code>activateWindow/showWindow</code> 排查；观察 window id 是否一致。</li>
         <li>设置窗口尺寸异常时检查 <code>WindowAccessor</code> 是否取得当前 NSWindow，以及 selection 变化是否触发 resize；点击与拖拽冲突则检查 <code>TapHandlerView</code> 的 AppKit 事件边界。</li>
         <li>手工验证 Finder/保存面板等系统出口时，同时确认取消操作不会产生 Repository 写入或清除窗口状态。</li>
