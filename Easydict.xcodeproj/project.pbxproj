@@ -290,6 +290,7 @@
 		03B022E829231FA6001C7E63 /* entry.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222129231FA6001C7E63 /* entry.m */; };
 		03B022E929231FA6001C7E63 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222329231FA6001C7E63 /* AppDelegate.m */; };
 		03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */ = {isa = PBXBuildFile; fileRef = 03B0223529231FA6001C7E63 /* google-translate-sign.js */; };
+		4D4D6D6F0000000000000002 /* MDictEntryScript.js in Resources */ = {isa = PBXBuildFile; fileRef = 4D4D6D6F0000000000000012 /* MDictEntryScript.js */; };
 		03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0225229231FA6001C7E63 /* EZFixedQueryWindow.m */; };
 		03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0225329231FA6001C7E63 /* EZBaseQueryViewController.m */; };
 		03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0225C29231FA6001C7E63 /* EZQueryView.m */; };
@@ -954,6 +955,7 @@
 		03B0222229231FA6001C7E63 /* EZConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZConst.h; sourceTree = "<group>"; };
 		03B0222329231FA6001C7E63 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		03B0223529231FA6001C7E63 /* google-translate-sign.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "google-translate-sign.js"; sourceTree = "<group>"; };
+		4D4D6D6F0000000000000012 /* MDictEntryScript.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "MDictEntryScript.js"; sourceTree = "<group>"; };
 		03B0225129231FA6001C7E63 /* EZBaseQueryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZBaseQueryViewController.h; sourceTree = "<group>"; };
 		03B0225229231FA6001C7E63 /* EZFixedQueryWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZFixedQueryWindow.m; sourceTree = "<group>"; };
 		03B0225329231FA6001C7E63 /* EZBaseQueryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZBaseQueryViewController.m; sourceTree = "<group>"; };
@@ -3357,6 +3359,7 @@
 				031C66EA2EDB01000025D190 /* mdict-overview.html */,
 				031C66EB2EDB01000025D190 /* mdict-architecture.svg */,
 				983925DCBA81465EAE22415B /* MDictService.swift */,
+				4D4D6D6F0000000000000012 /* MDictEntryScript.js */,
 				30215FF66EE44A0F932E70CF /* MDictDictionary.swift */,
 				5F8B9C002F1D4E5A9C730401 /* MDictSearchIndex.swift */,
 				26FFFD863EBF442CB4FCE765 /* MDictManager.swift */,
@@ -4014,6 +4017,7 @@
 				03BFBB772923A09B00C48725 /* white-blue-icon@2x.png in Resources */,
 				030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */,
 				03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */,
+				4D4D6D6F0000000000000002 /* MDictEntryScript.js in Resources */,
 				03779F142BB256B5008D3C42 /* EncryptedSecretKeys.plist in Resources */,
 				E34250B62E681A3100CEC295 /* Easydict-26.icon in Resources */,
 				03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */,
