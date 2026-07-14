@@ -167,8 +167,8 @@
     <section class="summary" aria-label="目录职责">
       <p>
         <code>MDict</code> 实现用户导入的 MDX/MDD 离线词典查询能力。它负责管理词典文件、
-        解析二进制索引、查询条目内容、跟随词条重定向、重写词典内资源链接，并把结果交给
-        共享的词典 HTML 渲染层展示。
+        解析二进制索引、查询条目内容、跟随词条重定向、重写词典内资源链接，并生成
+        MDict 专用的 WebView HTML 展示。
       </p>
     </section>
 
@@ -191,7 +191,11 @@
       <tbody>
         <tr>
           <td><code>MDictService.swift</code></td>
-          <td>查询服务入口和结果 HTML 包装。</td>
+          <td>查询服务入口和结果 HTML 包装，把词条内容直接拼装进 WebView 页面。</td>
+        </tr>
+        <tr>
+          <td><code>MDictEntryScript.js</code></td>
+          <td>词条链接点击、音频播放、锚点滚动和页面高度通知脚本。</td>
         </tr>
         <tr>
           <td><code>MDictConfigurationView.swift</code></td>
@@ -229,7 +233,7 @@
       <section class="panel">
         <h3>服务与配置</h3>
         <ul>
-          <li><code>MDictService</code> 是 <code>QueryService</code> 子类，负责读取启用词典、收集查询结果，并调用 <code>DictionaryHTMLRenderer</code> 生成结果面板 HTML。</li>
+          <li><code>MDictService</code> 是 <code>QueryService</code> 子类，负责读取启用词典、收集查询结果，并生成 MDict 专用 WebView HTML 外壳；它只拼装脚本，不再内嵌长段 JS。</li>
           <li><code>MDictConfigurationView</code> 是设置页 UI，负责触发 MDX/MDD 导入，并把启用、排序和删除操作转发给 <code>MDictManager</code>。</li>
           <li><code>MDictManager</code> 保存导入记录到 <code>Defaults</code>，查询时按需在后台加载启用的 <code>MDictDictionary</code> 实例，并在记录变化时发出通知。</li>
         </ul>
@@ -239,6 +243,7 @@
         <h3>查询与资源</h3>
         <ul>
           <li><code>MDictDictionary</code> 表示一本 MDX 词典和它的 MDD 资源集合，负责查词、查资源、把图片、音频、CSS 和脚本资源重写为 WebKit 可加载的形式。</li>
+          <li><code>MDictEntryScript.js</code> 是可独立高亮查看的静态脚本资源，供 <code>MDictService</code> 注入到结果页。</li>
           <li>MDD reader 会在首次资源查询时懒加载，并缓存常用 data URI、解析后的 CSS、MDX 同目录同名 CSS 文件和资源缺失结果。</li>
           <li><code>MDictSearchIndex</code> 在精确查词失败后按需建立轻量 headword 索引，提供变形词、前缀、词头 substring 和小编辑距离 fuzzy fallback。</li>
         </ul>
@@ -296,8 +301,14 @@
       资源 key 查询会先尝试词条原始路径，再生成反斜杠和前导斜杠变体，兼容不同 MDD 生成器的路径
       风格。CSS 和脚本等文本资源优先使用 MDX header encoding 解码，再回退到常见 Unicode 编码；
       如果 CSS 内部资源受单次 data URI 预算影响未完全替换，这份结果不会进入 stylesheet 缓存。
-      最终服务把每本词典的 HTML section 交给 <code>DictionaryHTMLRenderer</code>，由共享词典结果
-      模板渲染。
+      最终服务把每本词典的 HTML section 直接放入 MDict 专用结果页的
+      <code>details</code> 区块，再交给 <code>WKWebView</code> 加载。外层结果页负责词典间距、
+      标题、基础颜色和高度测量；词典 CSS 仍可作用于自己的内容，但不再需要 iframe 高度、
+      字体同步和父子页面滚动补偿。
+    </p>
+    <p>
+      深色模式下，MDict 结果页不对整本词典使用反转滤镜。页面依赖 WebKit 的颜色方案和结果页
+      基础样式保持文字可读，并显式避免图片、音频图标和视频被二次过滤。
     </p>
     <p>
       如果 MDX 文件旁边存在同名 <code>.css</code>，例如 <code>concise-enhanced.mdx</code> 对应
@@ -311,7 +322,7 @@
       候选写入 data URI 时会把其中的 <code>,</code> 转义为 <code>%2C</code>，避免被浏览器误当作
       候选分隔符切碎。外链脚本被改写成内联时会保留原 <code>&lt;script&gt;</code> 上的属性
       （如 <code>type="module"</code>、<code>defer</code>），只剥离 <code>src</code> 和原有
-      <code>nonce</code>，再注入结果页 CSP 所需的 <code>easydict-mdict</code> nonce，并转义
+      <code>nonce</code>。MDict 结果页的 CSP 允许词典自带内联脚本和事件属性执行，并转义
       <code>&lt;/script</code> 片段，避免 HTML parser 提前截断脚本。
     </p>
     <p>
@@ -319,6 +330,7 @@
       click handler 把无 scheme 处理器的 URL 喂给 <code>new Audio(...)</code> 而播放失败；负向
       前缀确保不会重复改写已被替换过的位置。<code>javascript:new Audio(...)</code> 中的本地音频
       会先被改写为 data URI，并由结果页 click handler 拦截播放，避免被 CSP 当作导航阻断。
+      页内锚点会换算成外层结果页的滚动位置；如果词典自身脚本已经处理点击，结果页不会再次抢占。
     </p>
     <p>
       <code>mdict-entry://</code> 跳转由结果面板按 href payload 查询，而不是依赖锚点展示文本。
@@ -331,7 +343,7 @@
       <li>查询无结果时，检查 <code>MDictManager.dictionariesForLookup()</code>、词典大小写设置、<code>@@@LINK=</code> 目标词、key block 边界和 <code>MDictSearchIndex</code> fallback candidates。</li>
       <li>图片、音频或样式缺失时，优先检查 <code>MDictDictionary</code> 的 resource key candidates、同名 <code>.css</code> 文件路径、资源重写和 data URI/CSS cache 命中。</li>
       <li>解析、解压或加密相关错误，从 <code>MDictReader/</code> 子目录里的 <code>MDictReader</code>、<code>MDictBinary</code>、<code>MDictKeyBlocks</code> 和 <code>MDictRecords</code> 开始定位。</li>
-      <li>结果面板样式或高度异常，回到 <code>MDictService.wrapWithStyle</code> 与 <code>DictionaryHTMLRenderer</code> 排查。</li>
+      <li>结果面板样式或高度异常，回到 <code>MDictService.renderWebViewHTML</code> 和 <code>MDictEntryScript.js</code> 的页面高度回调排查。</li>
     </ul>
   </main>
 </body>
