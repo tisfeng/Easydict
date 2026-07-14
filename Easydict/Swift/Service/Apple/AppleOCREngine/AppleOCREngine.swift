@@ -232,16 +232,12 @@ public class AppleOCREngine: NSObject {
         try await withCheckedThrowingContinuation { continuation in
             // Guard against double-resume: Vision may invoke the completion handler
             // and also throw from perform(), so only resume once.
-            let resumeBox = ResumeBox(continuation: continuation)
+            let continuationGate = ContinuationGate(continuation: continuation)
 
             let request = VNRecognizeTextRequest { request, error in
                 if let error {
-                    let queryError = QueryError.queryError(from: error, type: .api)
-                        ?? QueryError.error(
-                            type: .api,
-                            message: "Vision OCR failed: \(error.localizedDescription)"
-                        )
-                    resumeBox.resume(throwing: queryError)
+                    let queryError = QueryError.queryError(from: error, type: .api)!
+                    continuationGate.resume(throwing: queryError)
                     return
                 }
 
@@ -254,18 +250,18 @@ public class AppleOCREngine: NSObject {
                     // For empty results, don't throw error - let caller handle retry logic
                     if language == .auto {
                         // Return empty array, caller will handle Japanese retry
-                        resumeBox.resume(returning: [])
+                        continuationGate.resume(returning: [])
                         return
                     } else {
                         // For specific language, throw error
                         let message = String(localized: "ocr_result_is_empty")
                         let error = QueryError.error(type: .noResult, message: message)
-                        resumeBox.resume(throwing: error)
+                        continuationGate.resume(throwing: error)
                         return
                     }
                 }
 
-                resumeBox.resume(returning: results)
+                continuationGate.resume(returning: results)
             }
 
             let enableAutoDetect = !hasValidOCRLanguage(language)
@@ -288,12 +284,8 @@ public class AppleOCREngine: NSObject {
                 do {
                     try requestHandler.perform([request])
                 } catch {
-                    let queryError = QueryError.queryError(from: error, type: .api)
-                        ?? QueryError.error(
-                            type: .api,
-                            message: "Vision OCR request failed: \(error.localizedDescription)"
-                        )
-                    resumeBox.resume(throwing: queryError)
+                    let queryError = QueryError.queryError(from: error, type: .api)!
+                    continuationGate.resume(throwing: queryError)
                 }
             }
         }
@@ -527,14 +519,13 @@ public class AppleOCREngine: NSObject {
     }
 }
 
-// MARK: - ResumeBox
+// MARK: - ContinuationGate
 
-/// A thread-safe wrapper around `CheckedContinuation` that ensures it is only resumed once.
+/// Coordinates a checked continuation so only the first completion wins.
 ///
-/// Vision's `VNRecognizeTextRequest` may invoke its completion handler and also throw
-/// from `perform()`, which could cause a double-resume crash with `CheckedContinuation`.
-/// This helper uses a lock to guarantee only the first call wins.
-private final class ResumeBox<T, E: Error> {
+/// Vision can call its completion handler and also throw from `perform()`.
+/// The lock keeps that race from resuming the same continuation twice.
+private final class ContinuationGate<T, E: Error>: @unchecked Sendable {
     // MARK: Lifecycle
 
     init(continuation: CheckedContinuation<T, E>) {
@@ -544,28 +535,27 @@ private final class ResumeBox<T, E: Error> {
     // MARK: Internal
 
     func resume(returning value: T) {
-        guard !markResumed() else { return }
+        guard let continuation = takeContinuation() else { return }
         continuation.resume(returning: value)
     }
 
     func resume(throwing error: E) {
-        guard !markResumed() else { return }
+        guard let continuation = takeContinuation() else { return }
         continuation.resume(throwing: error)
     }
 
     // MARK: Private
 
-    private let continuation: CheckedContinuation<T, E>
     private let lock = NSLock()
-    private var isResumed = false
+    private var continuation: CheckedContinuation<T, E>?
 
-    /// Returns true if already resumed (caller should skip), false otherwise.
-    @discardableResult
-    private func markResumed() -> Bool {
+    /// Takes the stored continuation once, returning nil after completion.
+    private func takeContinuation() -> CheckedContinuation<T, E>? {
         lock.lock()
         defer { lock.unlock() }
-        if isResumed { return true }
-        isResumed = true
-        return false
+
+        let continuation = continuation
+        self.continuation = nil
+        return continuation
     }
 }
