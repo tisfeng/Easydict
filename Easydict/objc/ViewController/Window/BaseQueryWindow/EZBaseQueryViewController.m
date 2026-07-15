@@ -654,6 +654,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         self.queryModel.needDetectLanguage = NO;
     }
 
+    [self.baseQueryWindow.titleBar refreshWordbookButton];
+
     [self closeAllResultView:^{
         [self startQueryWithType:self.queryModel.actionType];
     }];

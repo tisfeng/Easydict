@@ -42,7 +42,8 @@
         <li>普通取词路径清理不可见字符、边缘空白和 Books 摘录信息；Wordbook/History 重放路径开启 preserveQueryText，不重写保存原文。</li>
         <li>没有保存语言时，needDetectLanguage 为真则异步探测；完成回调先比较当前 queryText，旧文本的探测结果直接丢弃。</li>
         <li>有保存的 from/to 时，先取消延迟探测，把 userSourceLanguage/userTargetLanguage 写入 model，并据源语言是否 Auto 决定是否仍需探测。</li>
-        <li>模型更新统一刷新输入单元格、语言单元格和标题栏 Wordbook star；因此星标总是看到当前 inputText 与有效方向。</li>
+        <li>手动切换 source/target 或修正探测语言时，retry 路径在关闭旧结果前同步刷新标题栏；Auto 源语言会立即让星标进入等待探测状态。</li>
+        <li>文本写入和异步探测完成仍通过统一模型更新刷新输入单元格、语言单元格和 Wordbook star；因此星标只使用当前 inputText 与有效方向。</li>
       </ol>
       <div class="boundary"><strong>可见原文与服务文本：</strong>服务可以使用规范化后的 queryText，但标题栏保存必须使用 inputText。有效语言方向来自 queryFromLanguage/queryTargetLanguage；未解析自动源语言时星标保持禁用。</div>
     </div>

@@ -105,7 +105,7 @@
   <circle cx="424" cy="609" r="9" fill="#9333ea" opacity="0.16"/>
   <circle cx="424" cy="609" r="3" fill="#9333ea"/>
   <text x="606" y="614" text-anchor="middle" class="node-title">有效 QueryModel 方向</text>
-  <text x="606" y="636" text-anchor="middle" class="body">queryFromLanguage → queryTargetLanguage；同步刷新标题栏</text>
+  <text x="606" y="636" text-anchor="middle" class="body">手动选择立即刷新；自动探测完成后再次刷新</text>
   <path d="M 560 356 V 405 H 300 V 470" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
   <rect x="383.5" y="380" width="93" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
   <text x="430" y="395" text-anchor="middle" class="edge-label">需要 detect</text>
