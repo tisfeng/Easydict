@@ -883,6 +883,10 @@ static EZWindowManager *_instance;
     MMLogInfo(@"Screenshot OCR");
 
     [self captureWithRestorePreviousApp:YES completion:^(NSImage *_Nullable image) {
+        if (!image) {
+            MMLogWarn(@"Screenshot OCR skipped: captured image is nil");
+            return;
+        }
         AppleOCREngine *appleOCREngine = [AppleOCREngine new];
         [appleOCREngine showOCRWindowWithImage:image language:EZLanguageAuto completionHandler:^(NSError *error) {
             if (error) {
