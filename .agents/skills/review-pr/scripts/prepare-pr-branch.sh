@@ -19,7 +19,9 @@ Options:
   --merge-latest
       Create review/pr-<number>-merge-<head-sha> from the PR head and merge
       the latest base branch into it. Combine with --worktree to perform the
-      merge in an isolated worktree. The branch is local-only and never pushed.
+      merge in an isolated worktree. Use only after the user explicitly asks
+      for latest-base integration or conflict resolution. The branch is
+      local-only and never pushed.
 USAGE
 }
 
@@ -134,12 +136,18 @@ reject_unsafe_normal_branch() {
   local branch=$1
 
   if [[ $branch == "$base_branch" ]]; then
-    fail "PR head branch '${branch}' matches the base branch '${base_branch}'. Use --merge-latest or prepare this PR in an isolated checkout."
+    fail \
+      "PR head branch '${branch}' matches the base branch '${base_branch}'." \
+      "Ask whether to prepare this PR in an isolated worktree." \
+      "Use --merge-latest only for an explicitly requested latest-base review."
   fi
 
   case "$branch" in
     dev | main | master | develop | trunk)
-      fail "PR head branch '${branch}' is a protected local branch name. Use --merge-latest or prepare this PR in an isolated checkout."
+      fail \
+        "PR head branch '${branch}' is a protected local branch name." \
+        "Ask whether to prepare this PR in an isolated worktree." \
+        "Use --merge-latest only for an explicitly requested latest-base review."
       ;;
   esac
 }
@@ -152,7 +160,11 @@ require_expected_upstream() {
   actual_upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/${branch}")
   if [[ $actual_upstream != "$expected_upstream" ]]; then
     [[ -n $actual_upstream ]] || actual_upstream="no upstream"
-    fail "Local branch '${branch}' already exists with upstream '${actual_upstream}', not '${expected_upstream}'. Use --merge-latest or prepare this PR in an isolated checkout."
+    fail \
+      "Local branch '${branch}' has upstream '${actual_upstream}'," \
+      "not '${expected_upstream}'." \
+      "Ask whether to use an isolated worktree or another checkout." \
+      "Use --merge-latest only for an explicitly requested latest-base review."
   fi
 }
 
