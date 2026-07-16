@@ -9,7 +9,6 @@
 import Alamofire
 import Foundation
 
-private let kGoogleTranslateURL = "https://translate.google.com"
 private let kGoogleUserAgent =
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36"
 
@@ -60,6 +59,16 @@ extension GoogleService {
         try JSONSerialization.jsonObject(with: data)
     }
 
+    private func nonEnglishAudioURL(
+        withText text: String,
+        language: String,
+        sign: String
+    )
+        -> String? {
+        guard !isEnglishTTSLanguageCode(language) else { return nil }
+        return getNonEnglishAudioURL(withText: text, language: language, sign: sign)
+    }
+
     // MARK: - WebApp Translate
 
     /// This API can get word info, like pronunciation, but transaltion may be inaccurate, compare to web transaltion.
@@ -89,11 +98,15 @@ extension GoogleService {
                 let googleFromString = responseArray[2] as? String ?? ""
                 let googleFrom = languageEnum(fromCode: googleFromString)
                 let googleTo = to
+                let googleFromAccent = googleFrom == .english ? englishTTSAccent() : nil
 
                 result.raw = responseObject
-                result.fromSpeakURL = getAudioURL(
+                result.fromSpeakURL = nonEnglishAudioURL(
                     withText: text,
-                    language: googleFromString,
+                    language: ttsLanguageCode(
+                        for: googleFrom,
+                        fallbackCode: googleFromString
+                    ),
                     sign: signText ?? ""
                 )
 
@@ -108,13 +121,19 @@ extension GoogleService {
                     wordResult = EZTranslateWordResult()
 
                     let phonetic = EZWordPhonetic()
-                    phonetic.name = NSLocalizedString("us_phonetic", comment: "")
-                    if EZLanguageManager.shared().isChineseLanguage(from) {
+                    if googleFrom == .english {
+                        let accent = googleFromAccent ?? englishTTSAccent()
+                        phonetic.accent = accent
+                        phonetic.name = NSLocalizedString(
+                            accent == "uk" ? "uk_phonetic" : "us_phonetic",
+                            comment: ""
+                        )
+                    } else {
                         phonetic.name = NSLocalizedString("chinese_phonetic", comment: "")
                     }
 
                     phonetic.value = phoneticText
-                    phonetic.speakURL = result.fromSpeakURL
+                    phonetic.speakURL = googleFrom == .english ? nil : result.fromSpeakURL
                     phonetic.language = result.queryFromLanguage
                     phonetic.word = text
                     wordResult?.phonetics = [phonetic]
@@ -196,9 +215,12 @@ extension GoogleService {
                             ) ?? ""
                         let signTo =
                             signFunction.call(withArguments: [mergeString])?.toString() ?? ""
-                        result.toSpeakURL = getAudioURL(
+                        result.toSpeakURL = nonEnglishAudioURL(
                             withText: mergeString,
-                            language: languageCode(for: googleTo) ?? "",
+                            language: ttsLanguageCode(
+                                for: googleTo,
+                                fallbackCode: languageCode(for: googleTo)
+                            ),
                             sign: signTo
                         )
                     }
@@ -224,7 +246,7 @@ extension GoogleService {
     ) {
         let sign = signFunction.call(withArguments: [text])?.toString() ?? ""
 
-        var url = "\(kGoogleTranslateURL)/translate_a/single"
+        var url = "\(defaultTranslateURL)/translate_a/single"
         url += "?dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t"
 
         let sourceLangCode = languageCode(for: from) ?? ""
@@ -286,7 +308,7 @@ extension GoogleService {
     // MARK: - TKK Management
 
     func sendGetWebAppTKKRequest(completion: @escaping (String?, Error?) -> ()) {
-        let url = kGoogleTranslateURL
+        let url = defaultTranslateURL
 
         googleHTMLRequest(url: url).responseData { [weak self] response in
             guard let self = self else {
@@ -389,7 +411,7 @@ extension GoogleService {
         completion: @escaping (Any?, String?, NSMutableDictionary?, Error?) -> ()
     ) {
         let sign = signFunction.call(withArguments: [text])?.toString() ?? ""
-        let url = "\(kGoogleTranslateURL)/translate_a/single"
+        let url = "\(defaultTranslateURL)/translate_a/single"
 
         let fromLanguage = languageCode(for: from) ?? ""
         let toLanguage = languageCode(for: to) ?? ""
@@ -470,11 +492,15 @@ extension GoogleService {
 
             if let responseDict = responseObject as? [String: Any] {
                 let googleFromString = responseDict["src"] as? String ?? ""
+                let googleFrom = languageEnum(fromCode: googleFromString)
 
                 let googleTo = to
-                result.fromSpeakURL = getAudioURL(
+                result.fromSpeakURL = nonEnglishAudioURL(
                     withText: text,
-                    language: googleFromString,
+                    language: ttsLanguageCode(
+                        for: googleFrom,
+                        fallbackCode: googleFromString
+                    ),
                     sign: signText ?? ""
                 )
 
@@ -494,9 +520,12 @@ extension GoogleService {
 
                     let signTo =
                         signFunction.call(withArguments: [translatedText])?.toString() ?? ""
-                    result.toSpeakURL = getAudioURL(
+                    result.toSpeakURL = nonEnglishAudioURL(
                         withText: translatedText,
-                        language: languageCode(for: googleTo) ?? "",
+                        language: ttsLanguageCode(
+                            for: googleTo,
+                            fallbackCode: languageCode(for: googleTo)
+                        ),
                         sign: signTo
                     )
                 }
