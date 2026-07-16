@@ -33,15 +33,21 @@ Accepted PR references:
   If that remote name already points elsewhere, stop and ask.
 - Keep the normal local branch name exactly the same as the PR head branch
   name.
+- Do not create a differently named local branch unless the user explicitly
+  requests or approves an isolated worktree or latest-base integration review.
 - In explicit worktree mode, use `review/pr-<number>-<head-short-sha>` for a
   normal review and `review/pr-<number>-merge-<head-short-sha>` for a
   latest-base review. Keep the worktree under
   `../.review-pr-worktrees/<repo>/pr-<number>[-merge]-<head-short-sha>`.
 - Keep the prepared branch or worktree after review so the user can run and
   debug it. Never remove a review worktree automatically.
-- For latest-base conflict or update review, use the local-only branch
-  `review/pr-<number>-merge-<head-short-sha>` and merge the latest base into
-  it. Do not use rebase for remote collaboration PRs.
+- For an explicitly requested latest-base conflict or update review, use the
+  local-only branch `review/pr-<number>-merge-<head-short-sha>` and merge the
+  latest base into it. Do not use rebase for remote collaboration PRs.
+- Do not treat `mergeable: CONFLICTING`, `mergeStateStatus: DIRTY`, or a base
+  branch that is ahead of the PR as permission to merge. These states are
+  review context unless the user explicitly requests a latest-base integration
+  review or conflict resolution.
 - Resolve merge conflicts semantically after reading the conflicting code and
   surrounding context. Do not mechanically choose ours/theirs.
 - Do not review from the PR description alone. Inspect linked issues, changed
@@ -85,24 +91,41 @@ bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh <pr-ref>
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --worktree <pr-ref>
 ```
 
-Use the latest-base merge path only when the user asks to update to latest base
-or resolve conflicts, when GitHub reports `mergeable: CONFLICTING` or
-`mergeStateStatus: DIRTY`, or when the PR head branch name collides with the
-base branch or a protected local branch name. Worktree mode isolates protected
-head names with its unique review branch, but does not otherwise change the
-latest-base decision.
+Use normal preparation for a review even when GitHub reports
+`mergeable: CONFLICTING` or `mergeStateStatus: DIRTY`. Check out the PR head on
+the same-named local branch, inspect the PR as submitted, and report the merge
+state without changing its history.
 
-If GitHub reports an unknown or clean merge state, use normal preparation first.
-After checkout, fetch the latest base and check whether the PR already contains
-it:
+Use the latest-base merge path only when the user explicitly asks to update to
+the latest base, resolve conflicts, or review the integrated result. Before
+running it, state that it will create the local-only branch
+`review/pr-<number>-merge-<head-short-sha>` and a local merge commit. If the
+request did not already explicitly include one of those actions, stop and ask
+before creating the branch.
+
+If the PR head branch name collides with the base branch, a protected local
+branch name, or an existing same-named branch with a different upstream, stop
+and ask whether to use an isolated worktree. Do not select latest-base mode
+solely to avoid the branch-name collision.
+
+After normal checkout, fetch the latest base and check whether the PR already
+contains it:
 
 ```bash
 git merge-base --is-ancestor <base-remote>/<base-branch> HEAD
 ```
 
-If that check fails but the PR is otherwise clean, report that it is behind the
-latest base instead of merging automatically. Treat `baseRefName` as the target
-branch; do not hard-code `dev`. When latest-base merge is required, run:
+If that check fails, report that the PR is behind the latest base instead of
+merging automatically. When GitHub reports conflicts, use `git merge-tree` as
+a read-only conflict signal when useful:
+
+```bash
+merge_base=$(git merge-base <base-remote>/<base-branch> HEAD)
+git merge-tree "$merge_base" <base-remote>/<base-branch> HEAD
+```
+
+Treat `baseRefName` as the target branch; do not hard-code `dev`. Only after an
+explicit latest-base request, run:
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --merge-latest <pr-ref>
