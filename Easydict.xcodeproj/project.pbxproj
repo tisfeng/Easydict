@@ -1249,6 +1249,8 @@
 		6A8C988D2BAC88B500DB835A /* I18nHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = I18nHelper.swift; sourceTree = "<group>"; };
 		6A8C98942BAE841600DB835A /* LocalizedBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedBundle.swift; sourceTree = "<group>"; };
 		6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Localization.m"; sourceTree = "<group>"; };
+		A5A33E8E2F1A000100000001 /* localization-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "localization-overview.html"; sourceTree = "<group>"; };
+		A5A33E8E2F1A000100000002 /* localization-localization-flow.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "localization-localization-flow.svg"; sourceTree = "<group>"; };
 		6C3F84B513D845C38F346217 /* ClaudeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeResponse.swift; sourceTree = "<group>"; };
 		7F35C93D0925433FA0AD6066 /* ClaudeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeService.swift; sourceTree = "<group>"; };
 		8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemUtilitiesTests.swift; sourceTree = "<group>"; };
@@ -3434,6 +3436,8 @@
 				6A8C988C2BAC88B500DB835A /* LanguageState.swift */,
 				6A8C98942BAE841600DB835A /* LocalizedBundle.swift */,
 				6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */,
+				A5A33E8E2F1A000100000002 /* localization-localization-flow.svg */,
+				A5A33E8E2F1A000100000001 /* localization-overview.html */,
 			);
 			path = Localization;
 			sourceTree = "<group>";
@@ -3879,6 +3883,7 @@
 				en,
 				Base,
 				es,
+				tr,
 				"zh-Hans",
 				"zh-Hant",
 			);

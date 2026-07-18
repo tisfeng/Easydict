@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" role="img" aria-labelledby="title desc">
+  <title id="title">Easydict 本地化流程</title>
+  <desc id="desc">展示界面语言检测、资源包选择、字符串查询、回退路径及语言维护验证流程。</desc>
+  <style>text { font-family: Helvetica Neue, Helvetica, Arial, PingFang SC, Microsoft YaHei, sans-serif; } .title { font-size: 24px; font-weight: 600; fill: #111827; } .section { font-size: 16px; font-weight: 600; fill: #111827; } .label { font-size: 14px; font-weight: 600; fill: #111827; } .sub { font-size: 12px; fill: #6b7280; } .edge { font-size: 12px; fill: #374151; }</style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/></marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#ea580c"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/></marker>
+  </defs>
+  <rect width="1200" height="720" fill="#ffffff"/>
+  <text x="48" y="48" class="title">Easydict 本地化流程</text>
+  <text x="48" y="74" class="sub">运行时语言选择、资源查找、回退，以及新增语言的维护入口</text>
+  <rect x="40" y="104" width="1120" height="292" rx="12" fill="#f8fafc" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="64" y="136" class="section">运行时查询</text>
+  <rect x="64" y="168" width="176" height="88" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="152" y="202" text-anchor="middle" class="label">语言输入</text>
+  <text x="152" y="226" text-anchor="middle" class="sub">用户偏好 / 系统 Locale</text>
+  <rect x="288" y="168" width="176" height="88" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="376" y="202" text-anchor="middle" class="label">LanguageState</text>
+  <text x="376" y="226" text-anchor="middle" class="sub">代码匹配与显示名称</text>
+  <rect x="512" y="168" width="176" height="88" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="600" y="202" text-anchor="middle" class="label">I18nHelper</text>
+  <text x="600" y="226" text-anchor="middle" class="sub">定位语言 .lproj</text>
+  <rect x="736" y="168" width="176" height="88" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="824" y="202" text-anchor="middle" class="label">String Catalog</text>
+  <text x="824" y="226" text-anchor="middle" class="sub">Localizable / InfoPlist</text>
+  <rect x="960" y="168" width="176" height="88" rx="8" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1.5"/>
+  <text x="1048" y="202" text-anchor="middle" class="label">界面文案</text>
+  <text x="1048" y="226" text-anchor="middle" class="sub">SwiftUI / AppKit</text>
+  <path d="M240 212 H288" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <path d="M464 212 H512" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <path d="M688 212 H736" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <path d="M912 212 H960" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <rect x="247" y="190" width="34" height="18" rx="3" fill="#ffffff" opacity="0.95"/><text x="264" y="203" text-anchor="middle" class="edge">解析</text>
+  <rect x="471" y="190" width="34" height="18" rx="3" fill="#ffffff" opacity="0.95"/><text x="488" y="203" text-anchor="middle" class="edge">代码</text>
+  <rect x="695" y="190" width="34" height="18" rx="3" fill="#ffffff" opacity="0.95"/><text x="712" y="203" text-anchor="middle" class="edge">资源</text>
+  <rect x="919" y="190" width="34" height="18" rx="3" fill="#ffffff" opacity="0.95"/><text x="936" y="203" text-anchor="middle" class="edge">查询</text>
+  <rect x="512" y="304" width="176" height="64" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <text x="600" y="330" text-anchor="middle" class="label">主 Bundle / 英语</text>
+  <text x="600" y="350" text-anchor="middle" class="sub">偏好无效或资源缺失</text>
+  <path d="M600 256 V304" fill="none" stroke="#ea580c" stroke-width="1.8" stroke-dasharray="5 3" marker-end="url(#arrow-orange)"/>
+  <rect x="610" y="270" width="58" height="18" rx="3" fill="#ffffff" opacity="0.95"/><text x="639" y="283" text-anchor="middle" class="edge">回退</text>
+  <rect x="40" y="424" width="1120" height="210" rx="12" fill="#f8fafc" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="64" y="456" class="section">新增语言与验证</text>
+  <rect x="64" y="488" width="216" height="80" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="172" y="520" text-anchor="middle" class="label">注册语言</text>
+  <text x="172" y="544" text-anchor="middle" class="sub">枚举代码 + 原生名称</text>
+  <rect x="344" y="488" width="216" height="80" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="452" y="520" text-anchor="middle" class="label">补齐 Catalog</text>
+  <text x="452" y="544" text-anchor="middle" class="sub">所有键、占位符与格式</text>
+  <rect x="624" y="488" width="216" height="80" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="732" y="520" text-anchor="middle" class="label">注册 knownRegions</text>
+  <text x="732" y="544" text-anchor="middle" class="sub">Xcode 项目区域</text>
+  <rect x="904" y="488" width="216" height="80" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <text x="1012" y="520" text-anchor="middle" class="label">静态验证</text>
+  <text x="1012" y="544" text-anchor="middle" class="sub">JSON / 覆盖率 / 占位符 / Diff</text>
+  <path d="M280 528 H344" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <path d="M560 528 H624" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <path d="M840 528 H904" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <rect x="289" y="506" width="46" height="18" rx="3" fill="#ffffff" opacity="0.95"/><text x="312" y="519" text-anchor="middle" class="edge">翻译</text>
+  <rect x="569" y="506" width="46" height="18" rx="3" fill="#ffffff" opacity="0.95"/><text x="592" y="519" text-anchor="middle" class="edge">登记</text>
+  <rect x="849" y="506" width="46" height="18" rx="3" fill="#ffffff" opacity="0.95"/><text x="872" y="519" text-anchor="middle" class="edge">检查</text>
+  <g transform="translate(64 670)"><line x1="0" y1="0" x2="34" y2="0" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/><text x="44" y="4" class="sub">运行时数据流</text><line x1="170" y1="0" x2="204" y2="0" stroke="#ea580c" stroke-width="1.8" stroke-dasharray="5 3" marker-end="url(#arrow-orange)"/><text x="214" y="4" class="sub">回退路径</text><line x1="330" y1="0" x2="364" y2="0" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/><text x="374" y="4" class="sub">维护与验证</text></g>
+</svg>

@@ -32,11 +32,25 @@
             "state" : "translated",
             "value" : "%@ Clave API"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ API Anahtarı"
+          }
         }
       }
     },
     "%lld" : {
-      "shouldTranslate" : false
+      "shouldTranslate" : false,
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
     },
     "add_to_favorites" : {
       "extractionState" : "manual",
@@ -75,6 +89,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Añadir a favoritos"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorilere ekle"
           }
         }
       }
@@ -115,6 +135,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avanzado"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelişmiş"
           }
         }
       }
@@ -157,6 +183,12 @@
             "state" : "translated",
             "value" : "Traductor Ali"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ali Çevir"
+          }
         }
       }
     },
@@ -191,6 +223,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Error de alineación"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hizalama Hatası"
           }
         }
       }
@@ -232,6 +270,12 @@
             "state" : "translated",
             "value" : "Permitir recopilación de análisis"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analitiklerin toplanmasına izin ver"
+          }
         }
       }
     },
@@ -272,6 +316,12 @@
             "state" : "translated",
             "value" : "Permitir recopilación de registros de errores"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilitlenme günlüklerinin toplanmasına izin ver"
+          }
         }
       }
     },
@@ -311,6 +361,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Análisis:"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analitik:"
           }
         }
       }
@@ -353,6 +409,12 @@
             "state" : "translated",
             "value" : "Antónimos"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zıt anlamlılar"
+          }
         }
       }
     },
@@ -392,6 +454,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Error de API"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Hatası"
           }
         }
       }
@@ -434,6 +502,12 @@
             "state" : "translated",
             "value" : "Atajo de la aplicación"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama Kısayolu"
+          }
         }
       }
     },
@@ -473,6 +547,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oscuro"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koyu"
           }
         }
       }
@@ -514,6 +594,12 @@
             "state" : "translated",
             "value" : "Seguir sistema"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistemi Takip Et"
+          }
         }
       }
     },
@@ -554,6 +640,12 @@
             "state" : "translated",
             "value" : "Claro"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açık"
+          }
         }
       }
     },
@@ -585,6 +677,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple"
@@ -629,6 +727,12 @@
             "state" : "translated",
             "value" : "Diccionario Apple"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Sözlüğü"
+          }
         }
       }
     },
@@ -670,6 +774,12 @@
             "state" : "translated",
             "value" : "Error de Apple Script"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Komut Dosyası Hatası"
+          }
         }
       }
     },
@@ -709,6 +819,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Traductor de Apple"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Çeviri"
           }
         }
       }
@@ -750,6 +866,12 @@
             "state" : "translated",
             "value" : "Buscar actualizaciones automáticamente"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama güncellemelerini otomatik olarak kontrol et"
+          }
         }
       }
     },
@@ -789,6 +911,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copiar automáticamente el primer texto traducido"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İlk çevrilen metni otomatik kopyala"
           }
         }
       }
@@ -830,6 +958,12 @@
             "state" : "translated",
             "value" : "Copiar automáticamente texto OCR después de OCR"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR metnini OCR'dan sonra otomatik olarak kopyala"
+          }
         }
       }
     },
@@ -869,6 +1003,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copiar automáticamente texto seleccionado"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçilen metni otomatik kopyala"
           }
         }
       }
@@ -910,6 +1050,12 @@
             "state" : "translated",
             "value" : "Consultar automáticamente después de OCR"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR'dan sonra otomatik sorgulama"
+          }
         }
       }
     },
@@ -949,6 +1095,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Consultar automáticamente después de pegar texto"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metni yapıştırdıktan sonra otomatik sorgu"
           }
         }
       }
@@ -990,6 +1142,12 @@
             "state" : "translated",
             "value" : "Consultar automáticamente después de seleccionar texto"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metni seçtikten sonra otomatik sorgu"
+          }
         }
       }
     },
@@ -1021,6 +1179,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baidu"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Baidu"
@@ -1066,6 +1230,12 @@
             "state" : "translated",
             "value" : "Traductor Baidu"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baidu Çeviri"
+          }
         }
       }
     },
@@ -1106,6 +1276,12 @@
             "state" : "translated",
             "value" : "Traductor Bing"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bing Çeviri"
+          }
         }
       }
     },
@@ -1140,6 +1316,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Búfer demasiado pequeño"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arabellek Çok Küçük"
           }
         }
       }
@@ -1181,6 +1363,12 @@
             "state" : "translated",
             "value" : "Traducción IA integrada"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yerleşik Yapay Zeka Çevirisi"
+          }
         }
       }
     },
@@ -1218,6 +1406,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LingoCloud"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "LingoCloud"
@@ -1262,6 +1456,12 @@
             "state" : "translated",
             "value" : "Cancelar"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İptal"
+          }
         }
       }
     },
@@ -1301,6 +1501,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buscar actualizaciones"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncellemeleri kontrol edin"
           }
         }
       }
@@ -1342,6 +1548,12 @@
             "state" : "translated",
             "value" : "Buscar ahora"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şimdi Kontrol Et"
+          }
         }
       }
     },
@@ -1382,6 +1594,12 @@
             "state" : "translated",
             "value" : "Buscar actualizaciones"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncellemeleri Kontrol Et"
+          }
         }
       }
     },
@@ -1421,6 +1639,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pronunciación"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telaffuz"
           }
         }
       }
@@ -1463,6 +1687,12 @@
             "state" : "translated",
             "value" : "Claude Translate"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Çeviri"
+          }
         }
       }
     },
@@ -1503,6 +1733,12 @@
             "state" : "translated",
             "value" : "Limpiar todo"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tümünü Temizle"
+          }
         }
       }
     },
@@ -1542,6 +1778,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Limpiar entrada al traducir"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çeviri sırasında girişi temizle"
           }
         }
       }
@@ -1584,6 +1826,12 @@
             "state" : "translated",
             "value" : "Colocación"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eşdizim"
+          }
         }
       }
     },
@@ -1623,6 +1871,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eliminar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sil"
           }
         }
       }
@@ -1664,6 +1918,12 @@
             "state" : "translated",
             "value" : "Exportar"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dışa Aktar"
+          }
         }
       }
     },
@@ -1703,6 +1963,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Consulta"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgu"
           }
         }
       }
@@ -1745,6 +2011,12 @@
             "state" : "translated",
             "value" : "Comparativo"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karşılaştırmalı"
+          }
         }
       }
     },
@@ -1784,6 +2056,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Content-Type no coincide"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İçerik Türü Uyuşmazlığı"
           }
         }
       }
@@ -1825,6 +2103,12 @@
             "state" : "translated",
             "value" : "Copiar texto"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metni Kopyala"
+          }
         }
       }
     },
@@ -1865,6 +2149,12 @@
             "state" : "translated",
             "value" : "Registro de errores:"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilitlenme Günlüğü:"
+          }
         }
       }
     },
@@ -1904,6 +2194,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Versión %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sürüm %@"
           }
         }
       }
@@ -1946,6 +2242,12 @@
             "state" : "translated",
             "value" : "OpenAI personalizado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özel OpenAI"
+          }
         }
       }
     },
@@ -1980,6 +2282,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Error de decodificación"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kod Çözme Hatası"
           }
         }
       }
@@ -2020,6 +2328,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Traductor DeepL"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepL Çeviri"
           }
         }
       }
@@ -2062,6 +2376,12 @@
             "state" : "translated",
             "value" : "Traductor DeepSeek"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepSeek Çeviri"
+          }
         }
       }
     },
@@ -2102,6 +2422,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Detectado"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saptanmış"
           }
         }
       }
@@ -2144,6 +2470,12 @@
             "state" : "translated",
             "value" : "Deshabilitado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Devre Dışı"
+          }
         }
       }
     },
@@ -2183,6 +2515,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Si la aplicación está en la \"Lista de aplicaciones deshabilitadas\", el ratón no activará la recuperación automática de palabras."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama \"Devre Dışı Uygulama Listesi\"ndeyse fare otomatik kelime alımını tetiklemez."
           }
         }
       }
@@ -2225,6 +2563,12 @@
             "state" : "translated",
             "value" : "Traductor Doubao"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doubao Çeviri"
+          }
         }
       }
     },
@@ -2265,6 +2609,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Error HTTP: %d"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP hatası: %d"
           }
         }
       }
@@ -2307,6 +2657,12 @@
             "state" : "translated",
             "value" : "Respuesta inválida"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçersiz yanıt"
+          }
         }
       }
     },
@@ -2348,6 +2704,12 @@
             "state" : "translated",
             "value" : "Falta la clave API de Doubao. Obtén tu clave API en https://www.volcengine.com/product/doubao"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doubao API Anahtarı eksik. API anahtarınızı şu adresten alın: https://www.volcengine.com/product/doubao"
+          }
         }
       }
     },
@@ -2382,6 +2744,12 @@
             "state" : "translated",
             "value" : "Easydict"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
         }
       }
     },
@@ -2412,6 +2780,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict 🍃"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Easydict 🍃"
@@ -2456,6 +2830,12 @@
             "state" : "translated",
             "value" : "El endpoint devolvió una página HTML"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uç nokta bir HTML sayfası döndürdü"
+          }
         }
       }
     },
@@ -2495,6 +2875,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Comprueba que la URL del endpoint sea correcta e incluya la ruta completa de la API."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lütfen URL uç noktasının doğru olduğunu ve API yolunun tamamını içerdiğini kontrol edin."
           }
         }
       }
@@ -2536,6 +2922,12 @@
             "state" : "translated",
             "value" : "El endpoint devolvió JSON en lugar de un flujo"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uç nokta, akış yerine JSON'u döndürdü"
+          }
         }
       }
     },
@@ -2575,6 +2967,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prueba a desactivar \"Habilitar streaming\" en los ajustes del servicio."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hizmet ayarlarında \"Akışı Etkinleştir\" seçeneğini devre dışı bırakmayı deneyin."
           }
         }
       }
@@ -2616,6 +3014,12 @@
             "state" : "translated",
             "value" : "Formato de respuesta inesperado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beklenmeyen yanıt biçimi"
+          }
         }
       }
     },
@@ -2655,6 +3059,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Es posible que el endpoint no sea totalmente compatible con OpenAI. Comprueba la URL del endpoint y la documentación de la API."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uç nokta tam olarak OpenAI uyumlu olmayabilir. Uç nokta URL ve API belgelerine bakın."
           }
         }
       }
@@ -2696,6 +3106,12 @@
             "state" : "translated",
             "value" : "Etimología:"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etimoloji:"
+          }
         }
       }
     },
@@ -2729,6 +3145,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exportar registro"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günlüğü Dışa Aktar"
           }
         }
       }
@@ -2764,6 +3186,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No se pudo asignar memoria"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bellek ayrılamadı"
           }
         }
       }
@@ -2805,6 +3233,12 @@
             "state" : "translated",
             "value" : "Aún no hay favoritos"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henüz favori yok"
+          }
         }
       }
     },
@@ -2844,6 +3278,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exportar favoritos"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorileri Dışa Aktar"
           }
         }
       }
@@ -2885,6 +3325,12 @@
             "state" : "translated",
             "value" : "Favoritos"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favoriler"
+          }
         }
       }
     },
@@ -2924,6 +3370,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Favoritos"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favoriler"
           }
         }
       }
@@ -2965,6 +3417,12 @@
             "state" : "translated",
             "value" : "Comentarios"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri bildirim"
+          }
         }
       }
     },
@@ -3004,6 +3462,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ventana fija"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sabit pencere"
           }
         }
       }
@@ -3045,6 +3509,12 @@
             "state" : "translated",
             "value" : "Centro de la pantalla"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekranın merkezi"
+          }
         }
       }
     },
@@ -3084,6 +3554,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Última posición"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son konum"
           }
         }
       }
@@ -3125,6 +3601,12 @@
             "state" : "translated",
             "value" : "Posición del ratón"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fare konumu"
+          }
         }
       }
     },
@@ -3164,6 +3646,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lado derecho de la pantalla"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekranın sağ tarafı"
           }
         }
       }
@@ -3206,6 +3694,12 @@
             "state" : "translated",
             "value" : "Tamaño de fuente:"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yazı Tipi Boyutu:"
+          }
         }
       }
     },
@@ -3240,6 +3734,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Función no implementada para el algoritmo actual"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçerli algoritma için uygulanmayan işlev"
           }
         }
       }
@@ -3282,6 +3782,12 @@
             "state" : "translated",
             "value" : "Traductor Gemini"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemini Çeviri"
+          }
         }
       }
     },
@@ -3321,6 +3827,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modelos de GitHub"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Modelleri"
           }
         }
       }
@@ -3363,6 +3875,12 @@
             "state" : "translated",
             "value" : "Atajo global"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genel Kısayol"
+          }
         }
       }
     },
@@ -3402,6 +3920,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Traductor de Google"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Çeviri"
           }
         }
       }
@@ -3443,6 +3967,12 @@
             "state" : "translated",
             "value" : "Traductor de Groq"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groq Çeviri"
+          }
         }
       }
     },
@@ -3476,6 +4006,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ayuda"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yardım"
           }
         }
       }
@@ -3517,6 +4053,12 @@
             "state" : "translated",
             "value" : "Ocultar"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizle"
+          }
         }
       }
     },
@@ -3557,6 +4099,12 @@
             "state" : "translated",
             "value" : "Ocultar icono de la barra de menús"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menü Çubuğu Simgesini Gizle"
+          }
         }
       }
     },
@@ -3596,6 +4144,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Si quieres restaurar, abre la página de configuración en la ventana de consulta usando el atajo `Cmd + ,` y luego cancela la opción [Ocultar icono de barra de estado]."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri yüklemek için sorgu penceresindeki `Cmd + ,` kısayoluyla ayarlar sayfasını açın, ardından [Durum Çubuğu Simgesini Gizle] seçeneğini kapatın."
           }
         }
       }
@@ -3638,6 +4192,12 @@
             "state" : "translated",
             "value" : "El tamaño de fuente se puede cambiar usando el atajo ⌘ +/- en las ventanas de traducción."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yazı tipi boyutu Çeviri pencerelerindeki ⌘ +/- kısayolu kullanılarak değiştirilebilir."
+          }
         }
       }
     },
@@ -3677,6 +4237,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sin historial de consultas"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgu geçmişi yok"
           }
         }
       }
@@ -3718,6 +4284,12 @@
             "state" : "translated",
             "value" : "Exportar historial"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçmişi Dışa Aktar"
+          }
         }
       }
     },
@@ -3757,6 +4329,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Historial"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçmiş"
           }
         }
       }
@@ -3798,6 +4376,12 @@
             "state" : "translated",
             "value" : "Historial de consultas"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgu Geçmişi"
+          }
         }
       }
     },
@@ -3832,6 +4416,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Parámetro ilegal proporcionado al algoritmo de cifrado/descifrado"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şifreleme/şifre çözme algoritmasına geçersiz parametre sağlandı"
           }
         }
       }
@@ -3868,6 +4458,12 @@
             "state" : "translated",
             "value" : "Los datos de entrada no se decodificaron o descifraron correctamente"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş verilerinin kodu veya şifresi doğru şekilde çözülmedi"
+          }
         }
       }
     },
@@ -3903,6 +4499,12 @@
             "state" : "translated",
             "value" : "El tamaño de entrada al algoritmo de cifrado no estaba alineado correctamente"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şifreleme algoritmasına giriş boyutu doğru şekilde hizalanmadı"
+          }
         }
       }
     },
@@ -3937,6 +4539,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Búfer insuficiente proporcionado para la operación especificada"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belirtilen işlem için yetersiz arabellek sağlandı"
           }
         }
       }
@@ -3979,6 +4587,12 @@
             "state" : "translated",
             "value" : "Cuota insuficiente"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yetersiz kota"
+          }
         }
       }
     },
@@ -4018,6 +4632,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Por favor, ve al sitio web oficial del servicio para registrarte y solicitar una clave API personal."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kişisel API anahtarına kaydolmak ve başvurmak için lütfen resmi hizmet web sitesine gidin."
           }
         }
       }
@@ -4060,6 +4680,12 @@
             "state" : "translated",
             "value" : "Mantener resultado anterior cuando el texto seleccionado está vacío"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçilen metin boş olduğunda önceki sonucu koru"
+          }
         }
       }
     },
@@ -4101,6 +4727,12 @@
             "state" : "translated",
             "value" : "Mantener resultado:"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonucu koru:"
+          }
         }
       }
     },
@@ -4140,6 +4772,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar detección de idioma de Baidu para optimizar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optimizasyon için Baidu dil algılamayı kullanın"
           }
         }
       }
@@ -4181,6 +4819,12 @@
             "state" : "translated",
             "value" : "Usar detección de Google"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optimizasyon için Google dil algılamayı kullanın"
+          }
         }
       }
     },
@@ -4220,6 +4864,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar solo detección de idioma del sistema"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yalnızca Sistem dili algılamayı kullan"
           }
         }
       }
@@ -4262,6 +4912,12 @@
             "state" : "translated",
             "value" : "Idioma de visualización"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekran Dili"
+          }
         }
       }
     },
@@ -4303,6 +4959,12 @@
             "state" : "translated",
             "value" : "Grande"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Büyük"
+          }
         }
       }
     },
@@ -4342,6 +5004,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Última versión %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En son sürüm %@"
           }
         }
       }
@@ -4383,6 +5051,12 @@
             "state" : "translated",
             "value" : "Iniciar al arrancar"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş sırasında başlat"
+          }
         }
       }
     },
@@ -4416,6 +5090,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Directorio de registros"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günlük Dizini"
           }
         }
       }
@@ -4457,6 +5137,12 @@
             "state" : "translated",
             "value" : "Cambiar a renderizado Markdown"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markdown oluşturmaya geç"
+          }
         }
       }
     },
@@ -4496,6 +5182,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cambiar a texto sin formato"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düz metne geç"
           }
         }
       }
@@ -4537,6 +5229,12 @@
             "state" : "translated",
             "value" : "Ventana principal"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ana pencere"
+          }
         }
       }
     },
@@ -4571,6 +5269,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fallo de memoria"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bellek Arızası"
           }
         }
       }
@@ -4611,6 +5315,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Comentarios"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri bildirim"
           }
         }
       }
@@ -4653,6 +5363,12 @@
             "state" : "translated",
             "value" : "Traducir entrada"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş Çevirisi"
+          }
         }
       }
     },
@@ -4693,6 +5409,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OCR del portapapeles"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panodan OCR"
           }
         }
       }
@@ -4735,6 +5457,12 @@
             "state" : "translated",
             "value" : "Traducir portapapeles"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panodan Çevir"
+          }
         }
       }
     },
@@ -4775,6 +5503,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pulir y reemplazar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düzelt ve Değiştir"
           }
         }
       }
@@ -4817,6 +5551,12 @@
             "state" : "translated",
             "value" : "OCR de captura de pantalla"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekran görüntüsü OCR"
+          }
         }
       }
     },
@@ -4857,6 +5597,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Traducir captura de pantalla"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekran Görüntüsünü Çevir"
           }
         }
       }
@@ -4899,6 +5645,12 @@
             "state" : "translated",
             "value" : "Traducir selección"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçili Metni Çevir"
+          }
         }
       }
     },
@@ -4939,6 +5691,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ventana de Show Mini"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini Pencereyi Göster"
           }
         }
       }
@@ -4981,6 +5739,12 @@
             "state" : "translated",
             "value" : "Ventana de Show OCR"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR Penceresini Göster"
+          }
         }
       }
     },
@@ -5021,6 +5785,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OCR de captura silenciosa"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessiz Ekran Görüntüsü OCR"
           }
         }
       }
@@ -5063,6 +5833,12 @@
             "state" : "translated",
             "value" : "Traducir y reemplazar"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çevir ve Değiştir"
+          }
         }
       }
     },
@@ -5102,6 +5878,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Acerca de Easydict"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict Hakkında"
           }
         }
       }
@@ -5143,6 +5925,12 @@
             "state" : "translated",
             "value" : "Ventana mini"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini pencere"
+          }
         }
       }
     },
@@ -5183,6 +5971,12 @@
             "state" : "translated",
             "value" : "Traductor de MiniMax"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MiniMax Çeviri"
+          }
         }
       }
     },
@@ -5222,6 +6016,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Falta la clave secreta"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizli anahtar eksik"
           }
         }
       }
@@ -5264,6 +6064,12 @@
             "state" : "translated",
             "value" : "Icono de la barra de menú"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menü çubuğu simgesi"
+          }
         }
       }
     },
@@ -5304,6 +6110,12 @@
             "state" : "translated",
             "value" : "Se necesita permiso de captura de pantalla"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekran yakalama iznine ihtiyacınız var"
+          }
         }
       }
     },
@@ -5340,6 +6152,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NiuTrans"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "NiuTrans"
@@ -5384,6 +6202,12 @@
             "state" : "translated",
             "value" : "Sin resultado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonuç yok"
+          }
         }
       }
     },
@@ -5424,6 +6248,12 @@
             "state" : "translated",
             "value" : "No se encontraron resultados"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonuç bulunamadı"
+          }
         }
       }
     },
@@ -5457,6 +6287,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sin ventana"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pencere Yok"
           }
         }
       }
@@ -5498,6 +6334,12 @@
             "state" : "translated",
             "value" : "El resultado de OCR está vacío.\n⚠️ Por favor, selecciona manualmente el idioma e inténtalo de nuevo."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR sonucu boş.\n⚠️ Lütfen dili manuel olarak seçip tekrar deneyin."
+          }
         }
       }
     },
@@ -5538,6 +6380,12 @@
             "state" : "translated",
             "value" : "OK"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamam"
+          }
         }
       }
     },
@@ -5577,6 +6425,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Traductor de Ollama"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama Çeviri"
           }
         }
       }
@@ -5619,6 +6473,12 @@
             "state" : "translated",
             "value" : "Abrir configuración de la app"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama Ayarlarını Aç"
+          }
         }
       }
     },
@@ -5658,6 +6518,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrir en el Diccionario de Apple"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Sözlüğü'nde Aç"
           }
         }
       }
@@ -5699,6 +6565,12 @@
             "state" : "translated",
             "value" : "Abrir en Eudic"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eudic'te aç"
+          }
         }
       }
     },
@@ -5738,6 +6610,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrir en Google"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google'de aç"
           }
         }
       }
@@ -5779,6 +6657,12 @@
             "state" : "translated",
             "value" : "Abrir configuración del sistema"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistem Ayarlarını Aç"
+          }
         }
       }
     },
@@ -5818,6 +6702,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrir enlace web"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web Bağlantısını Aç"
           }
         }
       }
@@ -5859,6 +6749,12 @@
             "state" : "translated",
             "value" : "Traductor de OpenAI"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI Çeviri"
+          }
         }
       }
     },
@@ -5893,6 +6789,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Error de parámetro"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parametre Hatası"
           }
         }
       }
@@ -5933,6 +6835,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Error de parámetro"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parametre Hatası"
           }
         }
       }
@@ -5975,6 +6883,12 @@
             "state" : "translated",
             "value" : "Pasado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçmiş zaman"
+          }
         }
       }
     },
@@ -6016,6 +6930,12 @@
             "state" : "translated",
             "value" : "Participio pasado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçmiş Zaman Ortacı"
+          }
         }
       }
     },
@@ -6055,6 +6975,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fijar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sabitle"
           }
         }
       }
@@ -6096,6 +7022,12 @@
             "state" : "translated",
             "value" : "`Enter` para consultar, `Shift + Enter` para nueva línea"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgulamak için `Enter`, yeni satır için `Shift + Enter`"
+          }
         }
       }
     },
@@ -6136,6 +7068,12 @@
             "state" : "translated",
             "value" : "Reproducir audio"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses Çal"
+          }
         }
       }
     },
@@ -6175,6 +7113,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Por favor mira 👉"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lütfen bakın 👉"
           }
         }
       }
@@ -6217,6 +7161,12 @@
             "state" : "translated",
             "value" : "Plural"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çoğul"
+          }
         }
       }
     },
@@ -6256,6 +7206,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pulido"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parlatma"
           }
         }
       }
@@ -6298,6 +7254,12 @@
             "state" : "translated",
             "value" : "Gerundio"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şimdiki Zaman Ortacı"
+          }
         }
       }
     },
@@ -6339,6 +7301,12 @@
             "state" : "translated",
             "value" : "Privacidad"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizlilik"
+          }
         }
       }
     },
@@ -6378,6 +7346,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Declaración de privacidad"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizlilik Bildirimi"
           }
         }
       }
@@ -6419,6 +7393,12 @@
             "state" : "translated",
             "value" : "Easydict usa Sentry y Firebase para recopilar registros de errores (para corrección de errores) y datos analíticos anónimos, pero estos datos no se asociarán con tu identidad, solo para mejorar la experiencia del usuario, y nunca se compartirán con otras plataformas.\n\nEasydict es software de código abierto, si estás interesado, puedes verificar el código."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict, kilitlenme günlüklerini (hata düzeltmeleri için) ve anonim analiz verilerini toplamak için Sentry ve Firebase'i kullanır, ancak bu veriler yalnızca kullanıcı deneyimini iyileştirmek amacıyla kimliğinizle ilişkilendirilmeyecek ve hiçbir zaman diğer platformlarla paylaşılmayacaktır.\n\nEasydict açık kaynaklı bir yazılımdır, eğer ilgileniyorsanız kodu kontrol edebilirsiniz."
+          }
         }
       }
     },
@@ -6456,6 +7436,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BrE"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "BrE"
@@ -6501,6 +7487,12 @@
             "state" : "translated",
             "value" : "AmE"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AmE"
+          }
         }
       }
     },
@@ -6540,6 +7532,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "💥 Fallido"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "💥 Başarısız"
           }
         }
       }
@@ -6581,6 +7579,12 @@
             "state" : "translated",
             "value" : "Consultar en la aplicación"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamada Sorgula"
+          }
         }
       }
     },
@@ -6621,6 +7625,12 @@
             "state" : "translated",
             "value" : "Acción rápida"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hızlı eylem"
+          }
         }
       }
     },
@@ -6660,6 +7670,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salir"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çık"
           }
         }
       }
@@ -6702,6 +7718,12 @@
             "state" : "translated",
             "value" : "¡Se detectó que no hay configurada tecla de atajo para traducción de entrada o traducción de selección!\n\nConfigura la tecla de atajo para asegurarte de poder acceder a Easydict y ocultar el icono de la barra de menú."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Artık giriş çeviri kısayol tuşunun veya seçim çeviri kısayol tuşunun ayarlanmadığı algılandı!\n\nEasydict'ye gidip menü çubuğu simgesini gizleyebildiğinizden emin olmak için kısayol tuşunu ayarlayın."
+          }
         }
       }
     },
@@ -6742,6 +7764,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eliminar símbolos de comentarios de código"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kod yorumu sembollerini kaldır"
           }
         }
       }
@@ -6784,6 +7812,12 @@
             "state" : "translated",
             "value" : "Reemplazar salto de línea con espacio"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni satırı boşlukla değiştirin"
+          }
         }
       }
     },
@@ -6823,6 +7857,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reemplazar con traducción"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çeviriyle Değiştir"
           }
         }
       }
@@ -6864,6 +7904,12 @@
             "state" : "translated",
             "value" : "Por favor, ve a Configuración del Sistema - Privacidad y Seguridad - Grabación de pantalla y audio del sistema para habilitar los permisos para Easydict."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict izinlerini etkinleştirmek için lütfen Sistem Ayarları - Gizlilik ve Güvenlik - Ekran Kaydı ve Sistem Sesi sayfasına gidin."
+          }
         }
       }
     },
@@ -6903,6 +7949,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reintentar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeniden dene"
           }
         }
       }
@@ -6945,6 +7997,12 @@
             "state" : "translated",
             "value" : "Raíz"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kök"
+          }
         }
       }
     },
@@ -6985,6 +8043,12 @@
             "state" : "translated",
             "value" : "Clic en Esc o clic derecho para cancelar la captura"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yakalamayı iptal etmek için Esc'ye tıklayın veya sağ tıklayın"
+          }
         }
       }
     },
@@ -7024,6 +8088,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clic en D para seleccionar el área de la última captura"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son ekran görüntüsü alanını seçmek için D'ye tıklayın"
           }
         }
       }
@@ -7066,6 +8136,12 @@
             "state" : "translated",
             "value" : "Seleccionar texto de consulta al activar la ventana"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pencere etkinleştirildiğinde sorgu metnini seçin"
+          }
         }
       }
     },
@@ -7107,6 +8183,12 @@
             "state" : "translated",
             "value" : "Servicio"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hizmet"
+          }
         }
       }
     },
@@ -7146,6 +8228,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Error de CLI: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CLI hatası: %@"
           }
         }
       }
@@ -7187,6 +8275,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "salida distinta de cero, sin salida de stderr"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sıfır olmayan çıkış, stderr çıkışı yok"
           }
         }
       }
@@ -7230,6 +8324,12 @@
             "state" : "translated",
             "value" : "Borrar"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temizle"
+          }
         }
       }
     },
@@ -7271,6 +8371,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar en Finder"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder'da Göster"
           }
         }
       }
@@ -7314,6 +8420,12 @@
             "state" : "translated",
             "value" : "Mostrar ventana de registro de depuración"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hata Ayıklama Günlüğü Penceresini Göster"
+          }
         }
       }
     },
@@ -7356,6 +8468,12 @@
             "state" : "translated",
             "value" : "Registro de depuración de Claude Code"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code Hata Ayıklama Günlüğü"
+          }
         }
       }
     },
@@ -7396,6 +8514,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Este servicio usa la CLI oficial de Claude Code instalada localmente y con sesión iniciada. No usa OAuth, API privadas ni soluciones con proxy. Anthropic puede cambiar las políticas de la CLI o las reglas de cuenta en el futuro. Continúa solo si entiendes y aceptas el posible riesgo para la cuenta o las políticas."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu hizmet, yerel olarak yüklenmiş ve oturum açılmış resmi Claude Code CLI'yi kullanır. OAuth, özel API'ler veya proxy geçici çözümleri kullanmaz. Anthropic gelecekte CLI politikalarını veya hesap kurallarını değiştirebilir. Yalnızca olası hesap veya politika riskini anlıyor ve kabul ediyorsanız devam edin."
           }
         }
       }
@@ -7438,6 +8562,12 @@
             "state" : "translated",
             "value" : "Aviso de riesgo de Claude Code"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code Risk Bildirimi"
+          }
         }
       }
     },
@@ -7475,6 +8605,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claude Code"
@@ -7519,6 +8655,12 @@
             "state" : "translated",
             "value" : "No se encontró Claude Code. Instálalo primero."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code bulunamadı. Lütfen önce yükleyin."
+          }
         }
       }
     },
@@ -7559,6 +8701,12 @@
             "state" : "translated",
             "value" : "Claude Code no tiene sesión iniciada. Ejecuta `claude` para iniciar sesión."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code oturumu açık değil. Oturum açmak için `claude` komutunu çalıştırın."
+          }
         }
       }
     },
@@ -7598,6 +8746,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Se alcanzó el límite de uso de Claude Code."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code kullanım sınırına ulaşıldı."
           }
         }
       }
@@ -7640,6 +8794,12 @@
             "state" : "translated",
             "value" : "Usa tu CLI oficial local de Claude Code. La disponibilidad puede cambiar en el futuro y puede implicar riesgos para la cuenta o las políticas."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yerel resmi Claude Code CLI'yi kullanır. Kullanılabilirlik gelecekte değişebilir ve hesap veya politika riski taşıyabilir."
+          }
         }
       }
     },
@@ -7679,6 +8839,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Error de CLI: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CLI hatası: %@"
           }
         }
       }
@@ -7721,6 +8887,12 @@
             "state" : "translated",
             "value" : "salida distinta de cero, sin salida de stderr"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sıfır olmayan çıkış, stderr çıkışı yok"
+          }
         }
       }
     },
@@ -7761,6 +8933,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Borrar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temizle"
           }
         }
       }
@@ -7803,6 +8981,12 @@
             "state" : "translated",
             "value" : "Mostrar en Finder"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder'da Göster"
+          }
         }
       }
     },
@@ -7843,6 +9027,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar ventana de registro de depuración"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hata Ayıklama Günlüğü Penceresini Göster"
           }
         }
       }
@@ -7885,6 +9075,12 @@
             "state" : "translated",
             "value" : "Registro de depuración de Codex"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex Hata Ayıklama Günlüğü"
+          }
         }
       }
     },
@@ -7925,6 +9121,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Este servicio usa la CLI oficial de Codex instalada localmente y con sesión iniciada. No usa OAuth, API privadas ni soluciones con proxy. OpenAI puede cambiar las políticas de la CLI o las reglas de cuenta en el futuro. Continúa solo si entiendes y aceptas el posible riesgo para la cuenta o las políticas."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu hizmet, yerel olarak yüklenmiş ve oturum açmış resmi Codex CLI'nizi kullanır. OAuth, özel API'ler veya proxy geçici çözümleri kullanmaz. OpenAI, gelecekte CLI politikalarını veya hesap kurallarını değiştirebilir. Yalnızca potansiyel hesap veya politika riskini anlayıp kabul ederseniz devam edin."
           }
         }
       }
@@ -7967,6 +9169,12 @@
             "state" : "translated",
             "value" : "Aviso de riesgo de Codex"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex Risk Bildirimi"
+          }
         }
       }
     },
@@ -8004,6 +9212,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Codex"
@@ -8048,6 +9262,12 @@
             "state" : "translated",
             "value" : "No se encontró Codex CLI. Instálalo primero."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex CLI bulunamadı. Lütfen önce onu yükleyin."
+          }
         }
       }
     },
@@ -8087,6 +9307,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Codex no tiene sesión iniciada. Ejecuta `codex login` para iniciar sesión."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex oturumu açık değil. Oturum açmak için `codex login` komutunu çalıştırın."
           }
         }
       }
@@ -8128,6 +9354,12 @@
             "state" : "translated",
             "value" : "Se alcanzó el límite de uso de Codex."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex kullanım sınırına ulaşıldı."
+          }
         }
       }
     },
@@ -8139,7 +9371,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Predvolené (z config.toml)" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "默认（沿用 config.toml）" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "預設（沿用 config.toml）" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Predeterminado (usar config.toml)" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Predeterminado (usar config.toml)" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsayılan (config.toml kullanın)"
+          }
+        }
       }
     },
     "service.codex_cli.reasoning_effort.high" : {
@@ -8149,7 +9387,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vysoké" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Alto" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Alto" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüksek"
+          }
+        }
       }
     },
     "service.codex_cli.reasoning_effort.low" : {
@@ -8159,7 +9403,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Nízke" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "低" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "低" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Bajo" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Bajo" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düşük"
+          }
+        }
       }
     },
     "service.codex_cli.reasoning_effort.medium" : {
@@ -8169,7 +9419,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Stredné" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "中" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "中" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Medio" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Medio" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orta"
+          }
+        }
       }
     },
     "service.codex_cli.reasoning_effort.minimal" : {
@@ -8179,7 +9435,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Minimálne" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "最小" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最小" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mínimo" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mínimo" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asgari"
+          }
+        }
       }
     },
     "service.codex_cli.reasoning_effort.xhigh" : {
@@ -8189,7 +9451,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Veľmi vysoké" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "极高" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "極高" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Extra alto" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Extra alto" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekstra Yüksek"
+          }
+        }
       }
     },
     "service.codex_cli.risk_warning" : {
@@ -8230,6 +9498,12 @@
             "state" : "translated",
             "value" : "Usa tu CLI oficial local de Codex. La disponibilidad puede cambiar en el futuro y puede implicar riesgos para la cuenta o las políticas."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yerel resmi Codex CLI'nizi kullanır. Kullanılabilirlik gelecekte değişebilir ve hesap veya politika riski taşıyabilir."
+          }
         }
       }
     },
@@ -8240,7 +9514,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vysoké" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "高" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Alto" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Alto" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüksek"
+          }
+        }
       }
     },
     "service.reasoning_effort.max" : {
@@ -8250,7 +9530,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Maximálne" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "最大" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "最大" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Máximo" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Máximo" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maksimum"
+          }
+        }
       }
     },
     "service.reasoning_effort.off" : {
@@ -8260,7 +9546,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vypnuté" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关闭" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "關閉" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Desactivado" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Desactivado" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapalı"
+          }
+        }
       }
     },
     "service.configuration.ali.access_key_id.title" : {
@@ -8299,6 +9591,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ID de clave de acceso"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erişim Anahtarı Kimliği"
           }
         }
       }
@@ -8339,6 +9637,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secreto de clave de acceso"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erişim Anahtarı Sırrı"
           }
         }
       }
@@ -8381,6 +9685,12 @@
             "state" : "translated",
             "value" : "Actualmente usando el tipo de API de clave secreta, pero una cierta clave secreta está vacía. Por favor, ve a Configuración > Servicio > %@, completa la información de configuración requerida, o cambia el tipo de API."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şu anda Gizli Anahtar API türü kullanılıyor ancak belirli bir Gizli Anahtar boş. Lütfen Ayarlar > Servis > %@'ye gidin, gerekli yapılandırma bilgilerini doldurun veya API türlerini değiştirin."
+          }
         }
       }
     },
@@ -8421,6 +9731,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tipo de API"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Türü"
           }
         }
       }
@@ -8463,6 +9779,12 @@
             "state" : "translated",
             "value" : "ID de aplicación"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama kimliği"
+          }
         }
       }
     },
@@ -8504,6 +9826,12 @@
             "state" : "translated",
             "value" : "Clave secreta"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizli Anahtar"
+          }
         }
       }
     },
@@ -8543,6 +9871,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clave de cookie"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çerez Anahtarı"
           }
         }
       }
@@ -8584,6 +9918,12 @@
             "state" : "translated",
             "value" : "Token"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeton"
+          }
         }
       }
     },
@@ -8594,7 +9934,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Prázdne = predvolený z config.toml" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "留空则使用 config.toml 默认" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "留空則使用 config.toml 預設" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Déjalo vacío para usar el valor predeterminado de config.toml" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Déjalo vacío para usar el valor predeterminado de config.toml" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "config.toml varsayılanını kullanmak için boş bırakın"
+          }
+        }
       }
     },
     "service.configuration.codex_cli.model.title" : {
@@ -8604,7 +9950,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Model" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "模型" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "模型" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Modelo" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Modelo" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modeli"
+          }
+        }
       }
     },
     "service.configuration.codex_cli.reasoning_effort.title" : {
@@ -8614,7 +9966,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Úroveň uvažovania" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Esfuerzo de razonamiento" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Esfuerzo de razonamiento" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muhakeme Çabası"
+          }
+        }
       }
     },
     "service.configuration.reasoning_effort.title" : {
@@ -8624,7 +9982,13 @@
         "sk" : { "stringUnit" : { "state" : "translated", "value" : "Úroveň uvažovania" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "思考程度" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Esfuerzo de razonamiento" } }
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Esfuerzo de razonamiento" } },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muhakeme Çabası"
+          }
+        }
       }
     },
     "service.configuration.custom_openai.enable_streaming.footnote" : {
@@ -8663,6 +10027,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desactívalo si el endpoint no admite respuestas en streaming."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uç nokta akış yanıtlarını desteklemiyorsa devre dışı bırakın."
           }
         }
       }
@@ -8704,6 +10074,12 @@
             "state" : "translated",
             "value" : "Habilitar streaming"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akışı Etkinleştir"
+          }
         }
       }
     },
@@ -8743,6 +10119,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nombre del modelo, usa comas (,) para separar múltiples modelos."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model adı, birden fazla modeli ayırmak için virgül (,) kullanın."
           }
         }
       }
@@ -8784,6 +10166,12 @@
             "state" : "translated",
             "value" : "Nombre de servicio personalizado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özel Hizmet Adı"
+          }
         }
       }
     },
@@ -8823,6 +10211,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modelos soportados"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desteklenen Modeller"
           }
         }
       }
@@ -8864,6 +10258,12 @@
             "state" : "translated",
             "value" : "Clave de autenticación"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kimlik Doğrulama Anahtarı"
+          }
         }
       }
     },
@@ -8903,6 +10303,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clave de autenticación primero"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önce Kimlik Doğrulama Anahtarı"
           }
         }
       }
@@ -8944,6 +10350,12 @@
             "state" : "translated",
             "value" : "Solo clave de autenticación"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yalnızca Kimlik Doğrulama Anahtarı"
+          }
         }
       }
     },
@@ -8980,6 +10392,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://api-free.deepl.com/v2/translate"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "https://api-free.deepl.com/v2/translate"
@@ -9024,6 +10442,12 @@
             "state" : "translated",
             "value" : "Endpoint de API"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Uç Nokta"
+          }
         }
       }
     },
@@ -9063,6 +10487,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prioridad de uso de API"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Kullanım Önceliği"
           }
         }
       }
@@ -9104,6 +10534,12 @@
             "state" : "translated",
             "value" : "API web primero"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önce Web API"
+          }
         }
       }
     },
@@ -9143,6 +10579,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eliminar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sil"
           }
         }
       }
@@ -9184,6 +10626,12 @@
             "state" : "translated",
             "value" : "Clave API"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Anahtarı"
+          }
         }
       }
     },
@@ -9224,6 +10672,12 @@
             "state" : "translated",
             "value" : "Modelo"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modeli"
+          }
         }
       }
     },
@@ -9263,6 +10717,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Duplicar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çoğalt"
           }
         }
       }
@@ -9305,6 +10765,12 @@
             "state" : "translated",
             "value" : "Añadir"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekle"
+          }
         }
       }
     },
@@ -9344,6 +10810,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deseleccionar todo"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tümünün Seçimini Kaldır"
           }
         }
       }
@@ -9385,6 +10857,12 @@
             "state" : "translated",
             "value" : "Obtener modelos locales"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yerel Modelleri Getir"
+          }
         }
       }
     },
@@ -9424,6 +10902,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buscar modelos"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelleri ara"
           }
         }
       }
@@ -9465,6 +10949,12 @@
             "state" : "translated",
             "value" : "Seleccionar todo"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tümünü Seç"
+          }
         }
       }
     },
@@ -9505,6 +10995,12 @@
             "state" : "translated",
             "value" : "Obtener modelos"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelleri Getir"
+          }
         }
       }
     },
@@ -9541,6 +11037,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxxxxxxxxx"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "xxxxxxxxxx"
@@ -9585,6 +11087,12 @@
             "state" : "translated",
             "value" : "Clave API"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Anahtarı"
+          }
         }
       }
     },
@@ -9624,6 +11132,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clave API"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Anahtarı"
           }
         }
       }
@@ -9665,6 +11179,12 @@
             "state" : "translated",
             "value" : "Diccionario"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sözlük"
+          }
         }
       }
     },
@@ -9704,6 +11224,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cuando el prompt personalizado está habilitado, el prompt de traducción, análisis de oraciones y diccionario por defecto serán deshabilitados."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özel bilgi istemi etkinleştirildiğinde, varsayılan çeviri, cümle analizi ve sözlük istemi devre dışı bırakılır."
           }
         }
       }
@@ -9745,6 +11271,12 @@
             "state" : "translated",
             "value" : "Habilitar prompt personalizado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özel İstemi Etkinleştir"
+          }
         }
       }
     },
@@ -9784,6 +11316,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "La URL completa de la solicitud, por ejemplo https://api.openai.com/v1/chat/completions"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tam istek URL, örneğin https://api.openai.com/v1/chat/completions"
           }
         }
       }
@@ -9825,6 +11363,12 @@
             "state" : "translated",
             "value" : "Endpoint de API"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Uç Nokta"
+          }
         }
       }
     },
@@ -9864,6 +11408,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ocultar <think> Tag Content"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "<think> Etiket İçeriğini Gizle"
           }
         }
       }
@@ -9905,6 +11455,12 @@
             "state" : "translated",
             "value" : "Usar modelo"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modeli Kullan"
+          }
         }
       }
     },
@@ -9944,6 +11500,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oración"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cümle"
           }
         }
       }
@@ -9985,6 +11547,12 @@
             "state" : "translated",
             "value" : "Eres un asistente de traducción útil."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siz yardımsever bir çeviri asistanısınız."
+          }
         }
       }
     },
@@ -10024,6 +11592,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prompt del sistema"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistem İstemi"
           }
         }
       }
@@ -10065,6 +11639,12 @@
             "state" : "translated",
             "value" : "Temperatura"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıcaklık"
+          }
         }
       }
     },
@@ -10104,6 +11684,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Traducción"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çeviri"
           }
         }
       }
@@ -10145,6 +11731,12 @@
             "state" : "translated",
             "value" : "Siempre apagado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daima Kapalı"
+          }
         }
       }
     },
@@ -10184,6 +11776,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Siempre encendido"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daima Açık"
           }
         }
       }
@@ -10225,6 +11823,12 @@
             "state" : "translated",
             "value" : "Predeterminado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsayılan"
+          }
         }
       }
     },
@@ -10264,6 +11868,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estado de uso"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanım Durumu"
           }
         }
       }
@@ -10305,6 +11915,12 @@
             "state" : "translated",
             "value" : "Soporta las siguientes variables de entorno:\n\n${{queryText}}: Texto de consulta\n${{queryFromLanguage}}: Idioma de origen\n${{queryTargetLanguage}}: Idioma de destino\n${{firstLanguage}}: Primer idioma del usuario\n\nEjemplo: Traduce el siguiente texto de ${{queryFromLanguage}} a ${{queryTargetLanguage}}: ${{queryText}}"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aşağıdaki ortam değişkenlerini destekler:\n\n${{queryText}}: Sorgu metni\n${{queryFromLanguage}}: Sorgu dili\n${{queryTargetLanguage}}: Hedef dil\n${{firstLanguage}}: Kullanıcının ilk dili\n\nÖrnek: Aşağıdaki ${{queryFromLanguage}} metnini ${{queryTargetLanguage}} diline çevirin: ${{queryText}}"
+          }
         }
       }
     },
@@ -10344,6 +11960,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Traducir el siguiente texto de ${{queryFromLanguage}} a ${{queryTargetLanguage}}: ${{queryText}}"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aşağıdaki ${{queryFromLanguage}} metnini ${{queryTargetLanguage}} diline çevirin: ${{queryText}}"
           }
         }
       }
@@ -10385,6 +12007,12 @@
             "state" : "translated",
             "value" : "Prompt del usuario"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanıcı İstemi"
+          }
         }
       }
     },
@@ -10424,6 +12052,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ID secreto"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizli Kimlik"
           }
         }
       }
@@ -10465,6 +12099,12 @@
             "state" : "translated",
             "value" : "Clave secreta"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizli Anahtar"
+          }
         }
       }
     },
@@ -10504,6 +12144,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Validar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doğrula"
           }
         }
       }
@@ -10545,6 +12191,12 @@
             "state" : "translated",
             "value" : "Validación fallida 💔"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doğrulama başarısız oldu 💔"
+          }
         }
       }
     },
@@ -10584,6 +12236,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Validación exitosa 🎉"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doğrulama başarısı 🎉"
           }
         }
       }
@@ -10625,6 +12283,12 @@
             "state" : "translated",
             "value" : "Este endpoint no admite streaming y se ha desactivado automáticamente."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akış bu uç nokta tarafından desteklenmiyor ve otomatik olarak devre dışı bırakıldı."
+          }
         }
       }
     },
@@ -10664,6 +12328,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ID de clave de acceso"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erişim Anahtarı Kimliği"
           }
         }
       }
@@ -10705,6 +12375,12 @@
             "state" : "translated",
             "value" : "Clave secreta de acceso"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizli Erişim Anahtarı"
+          }
         }
       }
     },
@@ -10744,6 +12420,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Importar diccionario"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sözlüğü İçe Aktar"
           }
         }
       }
@@ -10785,6 +12467,12 @@
             "state" : "translated",
             "value" : "Error al importar"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İçe Aktarma Başarısız"
+          }
         }
       }
     },
@@ -10824,6 +12512,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No hay diccionarios MDict habilitados. Importa diccionarios en los ajustes del servicio."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiçbir MDict sözlüğü etkin değil. Lütfen sözlükleri hizmet ayarlarından içe aktarın."
           }
         }
       }
@@ -10865,6 +12559,12 @@
             "state" : "translated",
             "value" : "No se importaron diccionarios. Pulsa + para importar un archivo MDX."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiçbir sözlük içe aktarılmadı. Bir MDX dosyasını içe aktarmak için + öğesine dokunun."
+          }
         }
       }
     },
@@ -10904,6 +12604,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diccionario MDict"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MDict Sözlüğü"
           }
         }
       }
@@ -10945,6 +12651,12 @@
             "state" : "translated",
             "value" : "Diccionarios"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sözlükler"
+          }
         }
       }
     },
@@ -10984,6 +12696,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "General"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genel"
           }
         }
       }
@@ -11026,6 +12744,12 @@
             "state" : "translated",
             "value" : "Acerca de"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hakkında"
+          }
         }
       }
     },
@@ -11067,6 +12791,12 @@
             "state" : "translated",
             "value" : "Agradecimientos"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teşekkür"
+          }
         }
       }
     },
@@ -11107,6 +12837,12 @@
             "state" : "translated",
             "value" : "Colaboradores"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katkıda Bulunanlar"
+          }
         }
       }
     },
@@ -11143,6 +12879,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub"
@@ -11187,6 +12929,12 @@
             "state" : "translated",
             "value" : "Traducción sin conexión de Apple"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Çevrimdışı Çeviri"
+          }
         }
       }
     },
@@ -11226,6 +12974,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "La traducción sin conexión requiere descargar idiomas en el dispositivo, que se pueden gestionar en \"Configuración del Sistema\"."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çevrimdışı çeviri, cihaza \"Sistem Ayarları\"ndan yönetilebilen dillerin indirilmesini gerektirir."
           }
         }
       }
@@ -11267,6 +13021,12 @@
             "state" : "translated",
             "value" : "Seleccionar automáticamente todo el texto"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm Metni Otomatik Seç"
+          }
         }
       }
     },
@@ -11306,6 +13066,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Si no hay texto seleccionado actualmente en el campo de texto, seleccionar automáticamente todo el contenido del texto durante las operaciones de traducción y reemplazo"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metin alanında seçili metin yoksa çevirme ve değiştirme işlemleri sırasında tüm metin içeriğini otomatik olarak seçin"
           }
         }
       }
@@ -11347,6 +13113,12 @@
             "state" : "translated",
             "value" : "Mostrar automáticamente el icono de consulta tras seleccionar texto"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metin seçildikten sonra sorgu simgesini otomatik göster"
+          }
         }
       }
     },
@@ -11386,6 +13158,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar el icono de consulta solo cuando el idioma del texto seleccionado sea diferente y la cantidad de caracteres alcance este valor."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgu simgesini yalnızca seçilen metin dili farklı olduğunda ve karakter sayısı bu değere ulaştığında göster."
           }
         }
       }
@@ -11427,6 +13205,12 @@
             "state" : "translated",
             "value" : "Mostrar solo cuando el idioma del texto seleccionado no sea"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yalnızca seçilen metin dili şu olmadığında göster"
+          }
         }
       }
     },
@@ -11466,6 +13250,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Longitud mínima de caracteres"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum karakter uzunluğu"
           }
         }
       }
@@ -11507,6 +13297,12 @@
             "state" : "translated",
             "value" : "Al consultar, eliminar automáticamente el símbolo de comentario de código \"/*#\" del texto."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgulama sırasında \"/*#\" kod açıklaması sembolünü metinden otomatik olarak kaldırın."
+          }
         }
       }
     },
@@ -11546,6 +13342,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Al consultar, reemplazar automáticamente el \"salto de línea\" en el texto con \"espacio\""
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgularken metindeki \"yeni satırı\" otomatik olarak \"boşluk\" ile değiştirin"
           }
         }
       }
@@ -11587,6 +13389,12 @@
             "state" : "translated",
             "value" : "Al consultar, dividir automáticamente el texto de una sola palabra en clave_valor —> clave valor"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgulama sırasında tek sözcüklü metni otomatik olarak anahtar_değer —> anahtar değere bölün"
+          }
         }
       }
     },
@@ -11627,6 +13435,12 @@
             "state" : "translated",
             "value" : "Consultar solo al hacer clic en el icono de consulta de selección (cuando la ventana principal está oculta)"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yalnızca sorgu seç simgesine tıklandığında sorgula (ana pencere gizlendiğinde)"
+          }
         }
       }
     },
@@ -11666,6 +13480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Servicio TTS por defecto"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsayılan TTS Hizmeti"
           }
         }
       }
@@ -11708,6 +13528,12 @@
             "state" : "translated",
             "value" : "Deshabilitar Tips View"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İpuçları Görünümünü Devre Dışı Bırak"
+          }
         }
       }
     },
@@ -11747,6 +13573,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Habilitar funciones beta"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beta özelliklerini etkinleştir"
           }
         }
       }
@@ -11788,6 +13620,12 @@
             "state" : "translated",
             "value" : "Reemplazo de compatibilidad"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uyumluluk Değiştir"
+          }
         }
       }
     },
@@ -11827,6 +13665,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cuando está habilitado, el reemplazo de texto usará el modo de compatibilidad, que funciona mejor en ciertas aplicaciones."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etkinleştirildiğinde, metin değiştirme işlemi belirli uygulamalarda daha iyi çalışan uyumluluk modunu kullanır."
           }
         }
       }
@@ -11868,6 +13712,12 @@
             "state" : "translated",
             "value" : "Habilitar obtención forzada de texto seleccionado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçili Metni Almaya Zorlamayı Etkinleştir"
+          }
         }
       }
     },
@@ -11907,6 +13757,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nota: Esto puede afectar el contenido del portapapeles"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not: Bu, pano içeriğini etkileyebilir"
           }
         }
       }
@@ -11948,6 +13804,12 @@
             "state" : "translated",
             "value" : "Habilitar servidor HTTP"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP Sunucusunu Etkinleştir"
+          }
         }
       }
     },
@@ -11987,6 +13849,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Habilitar optimización de formato de texto OCR"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR Metin Formatı Optimizasyonunu Etkinleştir"
           }
         }
       }
@@ -12028,6 +13896,12 @@
             "state" : "translated",
             "value" : "El formato del texto reconocido por OCR original puede ser incorrecto. Habilitar esta opción optimizará el formato del texto reconocido."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orijinal OCR tarafından tanınan metin biçimi yanlış olabilir. Bu seçeneğin etkinleştirilmesi tanınan metin biçimini optimize edecektir."
+          }
         }
       }
     },
@@ -12067,6 +13941,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Al buscar texto, eliminar el aviso de derechos de autor del extracto de Books"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metin ararken Books alıntısındaki telif hakkı bildirimini kaldır"
           }
         }
       }
@@ -12108,6 +13988,12 @@
             "state" : "translated",
             "value" : "Reconocimiento OCR de Youdao"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao OCR tanıma"
+          }
         }
       }
     },
@@ -12147,6 +14033,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar OCR de Youdao si el OCR por defecto falla"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsayılan OCR başarısız olursa Youdao OCR'ye geri dönüş"
           }
         }
       }
@@ -12188,6 +14080,12 @@
             "state" : "translated",
             "value" : "Nota: Esto no modificará el texto original, solo procesará el contenido de la consulta."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not: Bu, orijinal metni değiştirmez, yalnızca sorgu içeriğini işler."
+          }
         }
       }
     },
@@ -12227,6 +14125,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Acción de barra de menú copiar primero"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menü Çubuğu Eylemi Önce Kopyala"
           }
         }
       }
@@ -12268,6 +14172,12 @@
             "state" : "translated",
             "value" : "Atajo simulado copiar primero"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önce Simüle Edilmiş Kısayol Kopyası"
+          }
         }
       }
     },
@@ -12307,6 +14217,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tipo de obtención forzada de texto seleccionado"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçili Metin Türünü Almaya Zorla"
           }
         }
       }
@@ -12348,6 +14264,12 @@
             "state" : "translated",
             "value" : "Configuración de General"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genel Ayarlar"
+          }
         }
       }
     },
@@ -12387,6 +14309,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Servidor HTTP"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP Sunucu"
           }
         }
       }
@@ -12428,6 +14356,12 @@
             "state" : "translated",
             "value" : "Configuración de OCR"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR Ayarları"
+          }
         }
       }
     },
@@ -12467,6 +14401,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Procesamiento de texto de consulta"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgu Metni İşleme"
           }
         }
       }
@@ -12508,6 +14448,12 @@
             "state" : "translated",
             "value" : "Selección y reemplazo de texto"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metin Seçimi ve Değiştirme"
+          }
         }
       }
     },
@@ -12547,6 +14493,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ocultar ventana principal al iniciar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başlangıçta ana pencereyi gizle"
           }
         }
       }
@@ -12588,6 +14540,12 @@
             "state" : "translated",
             "value" : "Ocultar consejos de captura de pantalla"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekran Görüntüsü İpuçlarını Gizle"
+          }
         }
       }
     },
@@ -12627,6 +14585,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ocultar la vista de consejos al iniciar la captura de pantalla."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekran görüntüsü yakalamayı başlatırken ipucu görünümünü gizleyin."
           }
         }
       }
@@ -12668,6 +14632,12 @@
             "state" : "translated",
             "value" : "Puerto HTTP"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP Bağlantı Noktası"
+          }
         }
       }
     },
@@ -12707,6 +14677,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Después de modificar el puerto, necesitas reiniciar el servidor"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bağlantı noktasını değiştirdikten sonra sunucuyu yeniden başlatmanız gerekir"
           }
         }
       }
@@ -12748,6 +14724,12 @@
             "state" : "translated",
             "value" : "Longitud mínima de texto para detectar chino clásico"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klasik Çinceyi tespit etmek için minimum metin uzunluğu"
+          }
         }
       }
     },
@@ -12787,6 +14769,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Consulta de selección con ratón"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fare Seçme Sorgusu"
           }
         }
       }
@@ -12828,6 +14816,12 @@
             "state" : "translated",
             "value" : "Fijar automáticamente la ventana cuando se muestra."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pencere görüntülendiğinde otomatik olarak sabitleyin."
+          }
         }
       }
     },
@@ -12867,6 +14861,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Preferir API de AppleScript"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AppleScript API'yi tercih edin"
           }
         }
       }
@@ -12908,6 +14908,12 @@
             "state" : "translated",
             "value" : "En navegadores, priorizar la API de AppleScript para la selección y reemplazo de texto. Habilitar esta opción mejora la precisión y la tasa de éxito."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarayıcılarda, metin seçimi ve değiştirme için AppleScript API'ye öncelik verin. Bu seçeneğin etkinleştirilmesi doğruluğu ve başarı oranını artırır."
+          }
         }
       }
     },
@@ -12947,6 +14953,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Preferir Youdao TTS para palabras en inglés"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İngilizce Kelimeler için Youdao TTS'yi Tercih Edin"
           }
         }
       }
@@ -12988,6 +15000,12 @@
             "state" : "translated",
             "value" : "Cuando está desactivado, la pronunciación de palabras en inglés usa el servicio TTS predeterminado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapalıyken, İngilizce sözcük telaffuzu varsayılan TTS hizmetini kullanır"
+          }
         }
       }
     },
@@ -13027,6 +15045,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar elementos del menú OCR"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR Menü Öğelerini Göster"
           }
         }
       }
@@ -13068,6 +15092,12 @@
             "state" : "translated",
             "value" : "Mostrar los elementos del menú relacionados con OCR (OCR de captura de pantalla, OCR del portapapeles, Ventana OCR) en la barra de menús."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menü çubuğunda OCR ile ilgili menü öğelerini (Ekran Görüntüsü OCR, Panodan OCR, OCR Penceresi) göster."
+          }
         }
       }
     },
@@ -13107,6 +15137,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gestión de ventanas"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pencere Yönetimi"
           }
         }
       }
@@ -13148,6 +15184,12 @@
             "state" : "translated",
             "value" : "Posición de ventana flotante"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüzen Pencere Konumu"
+          }
         }
       }
     },
@@ -13187,6 +15229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Porcentaje máximo de altura de ventana"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pencere Maksimum Yükseklik Yüzdesi"
           }
         }
       }
@@ -13228,6 +15276,12 @@
             "state" : "translated",
             "value" : "Posición de ventana mini"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini Pencere Konumu"
+          }
         }
       }
     },
@@ -13268,6 +15322,12 @@
             "state" : "translated",
             "value" : "Tipo de ventana del ratón"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fare Pencere Türü"
+          }
         }
       }
     },
@@ -13307,6 +15367,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tipo de ventana de atajo"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kısayol Penceresi Türü"
           }
         }
       }
@@ -13349,6 +15415,12 @@
             "state" : "translated",
             "value" : "No se puede agregar la aplicación"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama eklenemiyor"
+          }
         }
       }
     },
@@ -13388,6 +15460,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configuración de la App"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama Ayarı"
           }
         }
       }
@@ -13429,6 +15507,12 @@
             "state" : "translated",
             "value" : "Apariencia"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dış görünüş"
+          }
         }
       }
     },
@@ -13468,6 +15552,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto Copiar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otomatik Kopyalama"
           }
         }
       }
@@ -13509,6 +15599,12 @@
             "state" : "translated",
             "value" : "Consulta automática"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otomatik Sorgulama"
+          }
         }
       }
     },
@@ -13548,6 +15644,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Habilitar renderizado Markdown"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markdown görüntülemeyi etkinleştir"
           }
         }
       }
@@ -13589,6 +15691,12 @@
             "state" : "translated",
             "value" : "Los resultados de traducción de IA renderizan encabezados, listas y énfasis como texto con formato. Haz clic en el icono junto a un resultado para cambiarlo por tarjeta."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI çeviri sonuçlarındaki başlıkları, listeleri ve vurguları biçimlendirilmiş metin olarak görüntüler. Her kart için geçersiz kılmak üzere sonucun yanındaki simgeye tıklayın."
+          }
         }
       }
     },
@@ -13628,6 +15736,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Visualización"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Görüntü"
           }
         }
       }
@@ -13669,6 +15783,12 @@
             "state" : "translated",
             "value" : "Tamaño de fuente"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yazı Tipi Boyutu"
+          }
         }
       }
     },
@@ -13708,6 +15828,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fuente"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yazı tipi"
           }
         }
       }
@@ -13749,6 +15875,12 @@
             "state" : "translated",
             "value" : "Campo de entrada"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş Alanı"
+          }
         }
       }
     },
@@ -13788,6 +15920,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Idioma"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dil"
           }
         }
       }
@@ -13829,6 +15967,12 @@
             "state" : "translated",
             "value" : "El primer idioma no debe ser el mismo que el segundo idioma (%1$@). %2$@ fue reemplazado por %3$@."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birinci dil ikinci dille (%1$@) aynı olmamalıdır. %2$@, %3$@ ile değiştirildi."
+          }
         }
       }
     },
@@ -13868,6 +16012,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "primer idioma"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ilk dil"
           }
         }
       }
@@ -13909,6 +16059,12 @@
             "state" : "translated",
             "value" : "segundo idioma"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ikinci dil"
+          }
         }
       }
     },
@@ -13948,6 +16104,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Idioma duplicado"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dil Çoğaltıldı"
           }
         }
       }
@@ -13989,6 +16151,12 @@
             "state" : "translated",
             "value" : "Primer idioma"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birinci Dil"
+          }
         }
       }
     },
@@ -14029,6 +16197,12 @@
             "state" : "translated",
             "value" : "Detección de idioma"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dil Algılama"
+          }
         }
       }
     },
@@ -14068,6 +16242,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Segundo idioma"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İkinci Dil"
           }
         }
       }
@@ -14110,6 +16290,12 @@
             "state" : "translated",
             "value" : "Otro"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diğer"
+          }
         }
       }
     },
@@ -14149,6 +16335,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Idioma de consulta"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorgu Dili"
           }
         }
       }
@@ -14190,6 +16382,12 @@
             "state" : "translated",
             "value" : "Enlace rápido"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hızlı Bağlantı"
+          }
         }
       }
     },
@@ -14229,6 +16427,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Incluir versiones beta"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beta sürümlerini dahil et"
           }
         }
       }
@@ -14270,6 +16474,12 @@
             "state" : "translated",
             "value" : "Obtener acceso anticipado a nuevas funciones, pero puede ser inestable"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni özelliklere erken erişim sağlayın ancak istikrarsız olabilir"
+          }
         }
       }
     },
@@ -14310,6 +16520,12 @@
             "state" : "translated",
             "value" : "Reproducir pronunciación automáticamente después de consultar palabras en inglés"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İngilizce kelimeleri sorguladıktan sonra telaffuzu otomatik oynat"
+          }
         }
       }
     },
@@ -14349,6 +16565,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pronunciación en inglés"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İngilizce Telaffuz"
           }
         }
       }
@@ -14391,6 +16613,12 @@
             "state" : "translated",
             "value" : "Volver"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri"
+          }
         }
       }
     },
@@ -14430,6 +16658,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sin configuración para %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ için yapılandırma yok"
           }
         }
       }
@@ -14471,6 +16705,12 @@
             "state" : "translated",
             "value" : "Error al habilitar el servicio [%@]"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[%@] hizmeti etkinleştirilemedi"
+          }
         }
       }
     },
@@ -14510,6 +16750,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar campo de entrada de texto"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş Metin Alanını Göster"
           }
         }
       }
@@ -14551,6 +16797,12 @@
             "state" : "translated",
             "value" : "Mostrar barra de selección de idioma"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dil Seçim Çubuğunu Göster"
+          }
         }
       }
     },
@@ -14591,6 +16843,12 @@
             "state" : "translated",
             "value" : "Configuración de ventana"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pencere Yapılandırması"
+          }
         }
       }
     },
@@ -14627,6 +16885,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple"
@@ -14671,6 +16935,12 @@
             "state" : "translated",
             "value" : "Baidu"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baidu"
+          }
         }
       }
     },
@@ -14707,6 +16977,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bing"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bing"
@@ -14751,6 +17027,12 @@
             "state" : "translated",
             "value" : "Google"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google"
+          }
         }
       }
     },
@@ -14791,6 +17073,12 @@
             "state" : "translated",
             "value" : "Youdao"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao"
+          }
         }
       }
     },
@@ -14824,6 +17112,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajustes..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarlar..."
           }
         }
       }
@@ -14864,6 +17158,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Atajo"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kısayol"
           }
         }
       }
@@ -14906,6 +17206,12 @@
             "state" : "translated",
             "value" : "Traducción por selección desactivada"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çeviri devre dışı seçeneğini seçin"
+          }
         }
       }
     },
@@ -14946,6 +17252,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Traducción por selección activada"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çeviri etkin seçeneğini seçin"
           }
         }
       }
@@ -14988,6 +17300,12 @@
             "state" : "translated",
             "value" : "Limpiar todo"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tümünü Temizle"
+          }
         }
       }
     },
@@ -15029,6 +17347,12 @@
             "state" : "translated",
             "value" : "Limpiar entrada"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Girişi Temizle"
+          }
         }
       }
     },
@@ -15066,6 +17390,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@"
@@ -15111,6 +17441,12 @@
             "state" : "translated",
             "value" : "Confirmar"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onayla"
+          }
         }
       }
     },
@@ -15151,6 +17487,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "El atajo actual no se puede usar porque ya está en uso \"%@\""
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mevcut kısayol zaten kullanıldığı için kullanılamıyor \"%@\""
           }
         }
       }
@@ -15193,6 +17535,12 @@
             "state" : "translated",
             "value" : "Conflicto de atajo con \"%@\" No se puede usar este"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@\" ile Kısayol Çatışması Bunu Kullanılamıyor"
+          }
         }
       }
     },
@@ -15233,6 +17581,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copiar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopyala"
           }
         }
       }
@@ -15275,6 +17629,12 @@
             "state" : "translated",
             "value" : "Copiar el primer texto traducido"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İlk çevrilmiş metni kopyala"
+          }
         }
       }
     },
@@ -15315,6 +17675,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Disminuir tamaño de fuente"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yazı Tipi Boyutunu Azalt"
           }
         }
       }
@@ -15357,6 +17723,12 @@
             "state" : "translated",
             "value" : "Enfoque"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odak"
+          }
         }
       }
     },
@@ -15397,6 +17769,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aumentar tamaño de fuente"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yazı Tipi Boyutunu Artır"
           }
         }
       }
@@ -15439,6 +17817,12 @@
             "state" : "translated",
             "value" : "Reproducir"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynat"
+          }
         }
       }
     },
@@ -15480,6 +17864,12 @@
             "state" : "translated",
             "value" : "Alternar traducción por selección"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çevirmeyi Seç'i aç / kapat"
+          }
         }
       }
     },
@@ -15519,6 +17909,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Göster"
           }
         }
       }
@@ -15560,6 +17956,12 @@
             "state" : "translated",
             "value" : "Mostrar icono de enlace rápido del Diccionario de Apple"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Sözlüğü hızlı bağlantı simgesini göster"
+          }
         }
       }
     },
@@ -15599,6 +18001,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar icono de enlace rápido de Eudic"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eudic hızlı bağlantı simgesini göster"
           }
         }
       }
@@ -15640,6 +18048,12 @@
             "state" : "translated",
             "value" : "Mostrar icono de enlace rápido de Google"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google hızlı bağlantı simgesini göster"
+          }
         }
       }
     },
@@ -15679,6 +18093,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar icono de enlace rápido de configuración"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayar hızlı bağlantı simgesini göster"
           }
         }
       }
@@ -15721,6 +18141,12 @@
             "state" : "translated",
             "value" : "Tercera persona singular"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Üçüncü tekil şahıs"
+          }
         }
       }
     },
@@ -15761,6 +18187,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pequeño"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Küçük"
           }
         }
       }
@@ -15803,6 +18235,12 @@
             "state" : "translated",
             "value" : "Dividir palabras"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kelimeleri böl"
+          }
         }
       }
     },
@@ -15842,6 +18280,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "💥 Error al iniciar el servidor local, puerto: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "💥 Yerel sunucu başlatılamadı, bağlantı noktası: %@"
           }
         }
       }
@@ -15883,6 +18327,12 @@
             "state" : "translated",
             "value" : "Detener"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durdur"
+          }
         }
       }
     },
@@ -15923,6 +18373,12 @@
             "state" : "translated",
             "value" : "Detener audio"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses Çalmayı Durdur"
+          }
         }
       }
     },
@@ -15957,6 +18413,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Éxito"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başarı"
           }
         }
       }
@@ -15997,6 +18459,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resumen"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özet"
           }
         }
       }
@@ -16039,6 +18507,12 @@
             "state" : "translated",
             "value" : "Superlativo"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Üstünlük Derecesi"
+          }
         }
       }
     },
@@ -16079,6 +18553,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sinónimos"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eş anlamlılar"
           }
         }
       }
@@ -16121,6 +18601,12 @@
             "state" : "translated",
             "value" : "Traductor Tencent"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tencent Çeviri"
+          }
         }
       }
     },
@@ -16160,6 +18646,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Error de tiempo de espera"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zaman aşımı hatası"
           }
         }
       }
@@ -16202,6 +18694,12 @@
             "state" : "translated",
             "value" : "¿Por qué el botón de edición en la esquina superior derecha parpadea al seleccionar palabras en algunas aplicaciones?"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bazı uygulamalarda kelime seçerken sağ üst köşedeki düzenleme düğmesi neden titriyor?"
+          }
         }
       }
     },
@@ -16242,6 +18740,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ver más"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha Fazlasını Gör"
           }
         }
       }
@@ -16284,6 +18788,12 @@
             "state" : "translated",
             "value" : "¿Por qué no puedo usar el ratón para seleccionar palabras en algunas aplicaciones?"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bazı uygulamalarda kelimeleri seçmek için neden fareyle üzerine gelmeyi kullanamıyorum?"
+          }
         }
       }
     },
@@ -16325,6 +18835,12 @@
             "state" : "translated",
             "value" : "¿Por qué no puedo seleccionar palabras en algunas páginas web del navegador?"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarayıcıda neden bazı web sayfalarındaki kelimeleri seçemiyorum?"
+          }
         }
       }
     },
@@ -16364,6 +18880,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resolver esto"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bunu Çöz"
           }
         }
       }
@@ -16406,6 +18928,12 @@
             "state" : "translated",
             "value" : "¿Por qué macOS sigue pidiendo permisos aunque ya he dado a Easydict los permisos de Accesibilidad/Grabación de pantalla?"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict'ye Erişilebilirlik/Ekran Kaydı izinlerini vermeme rağmen neden macOS hala izin istiyor?"
+          }
         }
       }
     },
@@ -16446,6 +18974,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¿Por qué el texto está vacío cuando selecciono palabras en algunas aplicaciones?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bazı uygulamalarda kelimeleri seçtiğimde metin neden boş çıkıyor?"
           }
         }
       }
@@ -16488,6 +19022,12 @@
             "state" : "translated",
             "value" : "Consejos"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İpuçları"
+          }
         }
       }
     },
@@ -16529,6 +19069,12 @@
             "state" : "translated",
             "value" : "¿Por qué la selección de palabras y OCR necesitan habilitar permisos relacionados con el sistema?"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kelime seçimi ve OCR'nin neden sistemle ilgili izinleri etkinleştirmesi gerekiyor?"
+          }
         }
       }
     },
@@ -16568,6 +19114,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cambiar idiomas"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dilleri Değiştir"
           }
         }
       }
@@ -16609,6 +19161,12 @@
             "state" : "translated",
             "value" : "UK"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UK"
+          }
         }
       }
     },
@@ -16644,6 +19202,12 @@
             "state" : "translated",
             "value" : "Función no implementada"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulanmamış İşlev"
+          }
         }
       }
     },
@@ -16678,6 +19242,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Error desconocido"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilinmeyen Hata"
           }
         }
       }
@@ -16719,6 +19289,12 @@
             "state" : "translated",
             "value" : "Error desconocido"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilinmeyen hata"
+          }
         }
       }
     },
@@ -16752,6 +19328,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Opción desconocida"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilinmeyen Seçenek"
           }
         }
       }
@@ -16793,6 +19375,12 @@
             "state" : "translated",
             "value" : "Desfijar"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sabitlemeyi kaldır"
+          }
         }
       }
     },
@@ -16832,6 +19420,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Idioma no soportado"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desteklenmeyen dil"
           }
         }
       }
@@ -16873,6 +19467,12 @@
             "state" : "translated",
             "value" : "Tipo de consulta no soportado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desteklenmeyen sorgu türü"
+          }
         }
       }
     },
@@ -16913,6 +19513,12 @@
             "state" : "translated",
             "value" : "Tipo de servicio no soportado"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desteklenmeyen hizmet türü"
+          }
         }
       }
     },
@@ -16949,6 +19555,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "US"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "US"
@@ -16994,6 +19606,12 @@
             "state" : "translated",
             "value" : "Traductor Volcano"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volcano Çeviri"
+          }
         }
       }
     },
@@ -17025,6 +19643,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Youdao"
@@ -17069,6 +19693,12 @@
             "state" : "translated",
             "value" : "Diccionario Youdao"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao Sözlük"
+          }
         }
       }
     },
@@ -17108,6 +19738,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Traductor Zhipu"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zhipu Çeviri"
           }
         }
       }
