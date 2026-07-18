@@ -42,15 +42,7 @@
       }
     },
     "%lld" : {
-      "shouldTranslate" : false,
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "add_to_favorites" : {
       "extractionState" : "manual",
