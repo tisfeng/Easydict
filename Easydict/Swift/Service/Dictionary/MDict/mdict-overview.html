@@ -195,7 +195,11 @@
         </tr>
         <tr>
           <td><code>MDictEntryScript.js</code></td>
-          <td>词条链接点击、音频播放、锚点滚动和页面高度通知脚本。</td>
+          <td>词条链接点击、音频播放、section 内锚点滚动和页面高度通知脚本。</td>
+        </tr>
+        <tr>
+          <td><code>MDictStyleScript.js</code></td>
+          <td>调用 Dark Reader 浏览器 API，并让生成主题自动跟随系统深浅色。</td>
         </tr>
         <tr>
           <td><code>MDictConfigurationView.swift</code></td>
@@ -243,7 +247,8 @@
         <h3>查询与资源</h3>
         <ul>
           <li><code>MDictDictionary</code> 表示一本 MDX 词典和它的 MDD 资源集合，负责查词、查资源、把图片、音频、CSS 和脚本资源重写为 WebKit 可加载的形式。</li>
-          <li><code>MDictEntryScript.js</code> 是可独立高亮查看的静态脚本资源，供 <code>MDictService</code> 注入到结果页。</li>
+          <li><code>MDictEntryScript.js</code> 负责词条交互和高度回调；<code>MDictStyleScript.js</code> 是薄适配层，按需调用共享 Utility 层的 Dark Reader API。三个脚本按 Dark Reader、样式适配、词条交互的顺序由 <code>MDictService</code> 注入结果页。</li>
+          <li><code>Swift/Utility/DarkReader/</code> 保存可供其他 WebView 页面复用的离线运行时；是否启用和启用时机仍由 MDict 等具体页面决定。</li>
           <li>MDD reader 会在首次资源查询时懒加载，并缓存常用 data URI、解析后的 CSS、MDX 同目录同名 CSS 文件和资源缺失结果。</li>
           <li><code>MDictSearchIndex</code> 在精确查词失败后按需建立轻量 headword 索引，提供变形词、前缀、词头 substring 和小编辑距离 fuzzy fallback。</li>
         </ul>
@@ -308,7 +313,9 @@
     </p>
     <p>
       深色模式下，MDict 结果页不对整本词典使用反转滤镜。页面依赖 WebKit 的颜色方案和结果页
-      基础样式保持文字可读，并显式避免图片、音频图标和视频被二次过滤。
+      基础样式提供页面结构和颜色变量；<code>MDictStyleScript.js</code> 使用 Dark Reader 的
+      <code>auto</code> API 分析词典 CSS 并生成主题，自动跟随系统深浅色。Dark Reader 4.9.128
+      以 MIT 许可证放在共享 Utility 层并随应用离线打包，因此查词时不依赖 CDN 或网络请求。
     </p>
     <p>
       如果 MDX 文件旁边存在同名 <code>.css</code>，例如 <code>concise-enhanced.mdx</code> 对应
@@ -330,10 +337,13 @@
       click handler 把无 scheme 处理器的 URL 喂给 <code>new Audio(...)</code> 而播放失败；负向
       前缀确保不会重复改写已被替换过的位置。<code>javascript:new Audio(...)</code> 中的本地音频
       会先被改写为 data URI，并由结果页 click handler 拦截播放，避免被 CSP 当作导航阻断。
-      页内锚点会换算成外层结果页的滚动位置；如果词典自身脚本已经处理点击，结果页不会再次抢占。
+      直接渲染页面中的页内锚点会限定在当前 <code>.mdict-entry</code> section 查找，避免多本词典
+      的重复 ID 串台；<code>entry://#fragment</code> 被重写成
+      <code>mdict-entry://#fragment</code> 后仍优先按当前 section 的锚点滚动，即使目标缺失也不会把
+      hash 误交给查询框。如果词典自身脚本已经处理点击，结果页不会再次抢占。
     </p>
     <p>
-      <code>mdict-entry://</code> 跳转由结果面板按 href payload 查询，而不是依赖锚点展示文本。
+      不带 fragment 的 <code>mdict-entry://目标词</code> 跳转仍由结果面板按 href payload 查询。
       单次查询有 data URI 数量和总字节预算，避免大词条因为数百个发音资源被同步内联而阻塞查询。
     </p>
 
@@ -343,7 +353,7 @@
       <li>查询无结果时，检查 <code>MDictManager.dictionariesForLookup()</code>、词典大小写设置、<code>@@@LINK=</code> 目标词、key block 边界和 <code>MDictSearchIndex</code> fallback candidates。</li>
       <li>图片、音频或样式缺失时，优先检查 <code>MDictDictionary</code> 的 resource key candidates、同名 <code>.css</code> 文件路径、资源重写和 data URI/CSS cache 命中。</li>
       <li>解析、解压或加密相关错误，从 <code>MDictReader/</code> 子目录里的 <code>MDictReader</code>、<code>MDictBinary</code>、<code>MDictKeyBlocks</code> 和 <code>MDictRecords</code> 开始定位。</li>
-      <li>结果面板样式或高度异常，回到 <code>MDictService.renderWebViewHTML</code> 和 <code>MDictEntryScript.js</code> 的页面高度回调排查。</li>
+      <li>结果面板样式或深色文字异常，检查 <code>MDictService.renderWebViewHTML</code>、<code>MDictStyleScript.js</code> 和共享 Utility 层 vendored Dark Reader 版本；section 内锚点或高度异常则检查 <code>MDictEntryScript.js</code> 的 fragment 路由及页面高度回调。</li>
     </ul>
   </main>
 </body>
