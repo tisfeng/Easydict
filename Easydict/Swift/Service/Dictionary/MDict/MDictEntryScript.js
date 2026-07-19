@@ -103,6 +103,9 @@ function changeWebViewBodyFontSize(fontSizeRatio) {
 }
 
 function updateWebViewContentStyle() {
+  if (typeof updateMDictStyle === 'function') {
+    updateMDictStyle();
+  }
   scheduleContentHeight();
 }
 
