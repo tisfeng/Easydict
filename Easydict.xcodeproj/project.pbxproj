@@ -291,6 +291,7 @@
 		03B022E929231FA6001C7E63 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222329231FA6001C7E63 /* AppDelegate.m */; };
 		03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */ = {isa = PBXBuildFile; fileRef = 03B0223529231FA6001C7E63 /* google-translate-sign.js */; };
 		4D4D6D6F0000000000000002 /* MDictEntryScript.js in Resources */ = {isa = PBXBuildFile; fileRef = 4D4D6D6F0000000000000012 /* MDictEntryScript.js */; };
+		4D4D6D6F0000000000000003 /* MDictStyleScript.js in Resources */ = {isa = PBXBuildFile; fileRef = 4D4D6D6F0000000000000013 /* MDictStyleScript.js */; };
 		4D4D6D6F0000000000000004 /* darkreader.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 4D4D6D6F0000000000000014 /* darkreader.min.js */; };
 		4D4D6D6F0000000000000005 /* DarkReader-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4D4D6D6F0000000000000015 /* DarkReader-LICENSE.txt */; };
 		03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0225229231FA6001C7E63 /* EZFixedQueryWindow.m */; };
@@ -959,6 +960,7 @@
 		03B0222329231FA6001C7E63 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		03B0223529231FA6001C7E63 /* google-translate-sign.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "google-translate-sign.js"; sourceTree = "<group>"; };
 		4D4D6D6F0000000000000012 /* MDictEntryScript.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "MDictEntryScript.js"; sourceTree = "<group>"; };
+		4D4D6D6F0000000000000013 /* MDictStyleScript.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "MDictStyleScript.js"; sourceTree = "<group>"; };
 		4D4D6D6F0000000000000014 /* darkreader.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "darkreader.min.js"; sourceTree = "<group>"; };
 		4D4D6D6F0000000000000015 /* DarkReader-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "DarkReader-LICENSE.txt"; sourceTree = "<group>"; };
 		03B0225129231FA6001C7E63 /* EZBaseQueryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZBaseQueryViewController.h; sourceTree = "<group>"; };
@@ -3366,6 +3368,7 @@
 				031C66EB2EDB01000025D190 /* mdict-architecture.svg */,
 				983925DCBA81465EAE22415B /* MDictService.swift */,
 				4D4D6D6F0000000000000012 /* MDictEntryScript.js */,
+				4D4D6D6F0000000000000013 /* MDictStyleScript.js */,
 				30215FF66EE44A0F932E70CF /* MDictDictionary.swift */,
 				5F8B9C002F1D4E5A9C730401 /* MDictSearchIndex.swift */,
 				26FFFD863EBF442CB4FCE765 /* MDictManager.swift */,
@@ -4034,6 +4037,7 @@
 				030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */,
 				03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */,
 				4D4D6D6F0000000000000002 /* MDictEntryScript.js in Resources */,
+				4D4D6D6F0000000000000003 /* MDictStyleScript.js in Resources */,
 				4D4D6D6F0000000000000004 /* darkreader.min.js in Resources */,
 				4D4D6D6F0000000000000005 /* DarkReader-LICENSE.txt in Resources */,
 				03779F142BB256B5008D3C42 /* EncryptedSecretKeys.plist in Resources */,

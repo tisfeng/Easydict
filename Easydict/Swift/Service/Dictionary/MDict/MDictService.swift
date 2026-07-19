@@ -85,7 +85,11 @@ class MDictService: QueryService, @unchecked Sendable {
 
     // MARK: Private
 
-    private static let entryScriptName = "MDictEntryScript"
+    private static let scriptNames = [
+        "darkreader.min",
+        "MDictStyleScript",
+        "MDictEntryScript",
+    ]
 
     private static var contentSecurityPolicy: String {
         """
@@ -218,8 +222,10 @@ class MDictService: QueryService, @unchecked Sendable {
         """
     }
 
-    private static var entryScript: String {
-        Self.scriptHTML(named: Self.entryScriptName)
+    private static var pageScripts: String {
+        scriptNames
+            .map { Self.scriptHTML(named: $0) }
+            .joined(separator: "\n")
     }
 
     private static func scriptHTML(named scriptName: String) -> String {
@@ -297,7 +303,7 @@ class MDictService: QueryService, @unchecked Sendable {
         <meta name="color-scheme" content="light dark">
         \(contentSecurityPolicy)
         \(webViewStyle)
-        \(entryScript)
+        \(pageScripts)
         </head>
         <body>
         \(sectionsHTML)
