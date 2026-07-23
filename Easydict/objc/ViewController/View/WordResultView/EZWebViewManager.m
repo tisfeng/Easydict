@@ -94,7 +94,17 @@ static void EZTeardownWKWebView(WKWebView *webView) {
 
     CGFloat fontSize = MyConfiguration.shared.fontSizeRatio; // 1.4 --> 140%
     NSString *script = [NSString stringWithFormat:
-                        @"changeIframeBodyFontSize(%.1f); updateAllIframeStyle();",
+                        @"if (typeof changeWebViewBodyFontSize === 'function') { "
+                        @"changeWebViewBodyFontSize(%.1f); "
+                        @"} else { "
+                        @"changeIframeBodyFontSize(%.1f); "
+                        @"} "
+                        @"if (typeof updateWebViewContentStyle === 'function') { "
+                        @"updateWebViewContentStyle(); "
+                        @"} else { "
+                        @"updateAllIframeStyle(); "
+                        @"}",
+                        fontSize,
                         fontSize];
     [self.webView evaluateJavaScript:script
                    completionHandler:^(id _Nullable result, NSError *_Nullable error) {
