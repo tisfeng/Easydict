@@ -12,7 +12,6 @@
 
 #pragma mark - EZServiceType
 NSString *const EZServiceTypeGoogle = @"Google";
-NSString *const EZServiceTypeYandex = @"Yandex";
 NSString *const EZServiceTypeBaidu = @"Baidu";
 NSString *const EZServiceTypeYoudao = @"Youdao";
 NSString *const EZServiceTypeApple = @"Apple";

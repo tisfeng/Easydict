@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>查询服务模型目录概览</title>
+  <style>
+    :root {
+      --background: #f7f8fa;
+      --surface: #ffffff;
+      --text: #1f2937;
+      --muted: #667085;
+      --border: #d9dee7;
+      --accent: #2563eb;
+      --code: #eef2f7;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #151922;
+        --surface: #202632;
+        --text: #f3f4f6;
+        --muted: #b8c0cc;
+        --border: #384150;
+        --accent: #60a5fa;
+        --code: #2b3340;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.68;
+    }
+    main {
+      width: min(980px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 44px 0 64px;
+    }
+    header {
+      margin-bottom: 28px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--border);
+    }
+    h1 { margin: 0 0 12px; font-size: 34px; }
+    h2 { margin: 34px 0 14px; font-size: 22px; }
+    p { margin: 0 0 14px; }
+    ul { margin: 0; padding-left: 1.35rem; }
+    li { margin-bottom: 9px; }
+    code {
+      padding: 0.12rem 0.32rem;
+      border-radius: 5px;
+      background: var(--code);
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .lead { color: var(--muted); font-size: 17px; }
+    .panel, .diagram {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 22px 24px;
+    }
+    .diagram { margin: 28px 0; }
+    .diagram img { display: block; width: 100%; height: auto; }
+    .diagram figcaption {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .tag { color: var(--accent); font-weight: 650; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>查询服务模型目录概览</h1>
+      <p class="lead">
+        本目录定义翻译服务的公共生命周期、注册表、结果模型、使用状态和
+        TTS 类型，是各服务实现与窗口、存储及测试之间的稳定边界。
+      </p>
+    </header>
+
+    <section class="panel">
+      <p>
+        <span class="tag">职责边界：</span>
+        <code>QueryService</code> 组织查询预处理、取消、异步结果和错误回填；
+        <code>QueryServiceFactory</code> 把稳定的服务标识映射到具体服务类；
+        <code>QueryResult</code> 保存翻译、词典、HTML 和错误状态。
+      </p>
+    </section>
+
+    <figure class="diagram">
+      <img src="model-architecture.svg" alt="查询服务模型架构图">
+      <figcaption>
+        从服务注册、实例化、查询执行到结果展示和持久化的主要数据流。
+      </figcaption>
+    </figure>
+
+    <section>
+      <h2>关键组件</h2>
+      <ul>
+        <li>
+          <code>QueryServiceFactory</code> 是服务发现入口。新增翻译器必须使用
+          唯一 <code>ServiceType</code> 并在映射表中注册。
+        </li>
+        <li>
+          <code>QueryService</code> 负责统一语言检查、查询类型、取消句柄、
+          流式与非流式调用，以及把异常转换为 <code>QueryError</code>。
+        </li>
+        <li>
+          <code>QueryResult</code> 是 UI 观察到的结果容器；服务只应通过公开
+          字段写入翻译结果、原始数据和错误。
+        </li>
+        <li>
+          <code>ServiceUsageStatus</code> 与 <code>TTSServiceType</code>
+          描述跨服务的策略值，不承载网络请求。
+        </li>
+        <li>
+          <code>Storage</code> 子目录保存窗口级服务顺序、启用状态和查询统计。
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>失败与调试入口</h2>
+      <ul>
+        <li>
+          服务未出现时，先检查 <code>QueryServiceFactory.serviceTypeMappings</code>
+          和 Xcode Sources build phase。
+        </li>
+        <li>
+          请求未执行时，检查 <code>prehandleQueryText</code> 的语言、配额和
+          query-type 分支。
+        </li>
+        <li>
+          取消或错误显示异常时，检查服务保存的 stop closure、
+          <code>QueryError</code> 转换和 <code>QueryResult.error</code>。
+        </li>
+        <li>
+          单元测试应从公开的 <code>translate</code> / <code>startQuery</code>
+          seam 验证行为；真实网络只用于独立 smoke 检查。
+        </li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

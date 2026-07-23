@@ -195,7 +195,6 @@
         EZTencentSecretId,
         EZTencentSecretKey,
         EZBingCookieKey,
-        EZYandexMozhiEndpointKey,
         
         EZAliAccessKeyId,
         EZAliAccessKeySecret,

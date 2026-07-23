@@ -947,6 +947,8 @@
 		03A884792F14000100D5C0DE /* BingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingServiceTests.swift; sourceTree = "<group>"; };
 		7A4D59012F16000100D5C0DE /* YandexServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexServiceTests.swift; sourceTree = "<group>"; };
 		7A4D59112F16000100D5C0DE /* YandexService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexService.swift; sourceTree = "<group>"; };
+		7A4D59212F16000100D5C0DE /* model-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "model-overview.html"; sourceTree = "<group>"; };
+		7A4D59222F16000100D5C0DE /* model-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "model-architecture.svg"; sourceTree = "<group>"; };
 		03A8847B2F15000100D5C0DE /* apple-script-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "apple-script-architecture.svg"; sourceTree = "<group>"; };
 		03A91F142E63E1FB00896B17 /* FocusedElementInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusedElementInfo.swift; sourceTree = "<group>"; };
 		03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Selection.swift"; sourceTree = "<group>"; };
@@ -3400,6 +3402,8 @@
 				3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */,
 				0337D0082C109D0C002ACE72 /* ServiceUsageStatus.swift */,
 				03825DE12F13B4FB005C1BC6 /* TTSServiceType.swift */,
+				7A4D59212F16000100D5C0DE /* model-overview.html */,
+				7A4D59222F16000100D5C0DE /* model-architecture.svg */,
 			);
 			path = Model;
 			sourceTree = "<group>";

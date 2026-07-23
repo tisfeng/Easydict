@@ -11,6 +11,21 @@ import Defaults
 import Foundation
 import SwiftUI
 
+// MARK: - ServiceType
+
+extension ServiceType {
+    static let yandex = ServiceType(rawValue: "Yandex")
+}
+
+// MARK: - Defaults.Keys
+
+extension Defaults.Keys {
+    static let yandexMozhiEndpoint = Key<String>(
+        "EZYandexMozhiEndpointKey",
+        default: "https://mozhi.aryak.me"
+    )
+}
+
 // MARK: - YandexService
 
 /// Translates text with Yandex through a Mozhi proxy instance.

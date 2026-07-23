@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600">
+  <style>
+    text {
+      font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+      fill: #111827;
+    }
+    .title { font-size: 24px; font-weight: 700; }
+    .label { font-size: 14px; font-weight: 600; }
+    .small { font-size: 12px; fill: #6b7280; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7"
+            refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7"
+            refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="7"
+            refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ea580c"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="600" fill="#ffffff"/>
+  <text x="480" y="42" class="title" text-anchor="middle">查询服务模型架构</text>
+  <text x="480" y="66" class="small" text-anchor="middle">
+    注册、生命周期、结果、存储和测试边界
+  </text>
+
+  <rect x="54" y="100" width="852" height="100" rx="8"
+        fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <text x="74" y="124" class="small" font-weight="700">注册与实例化</text>
+  <rect x="104" y="146" width="190" height="38" rx="8"
+        fill="#ffffff" stroke="#d1d5db"/>
+  <text x="199" y="170" class="label" text-anchor="middle">ServiceType</text>
+  <rect x="385" y="146" width="190" height="38" rx="8"
+        fill="#ffffff" stroke="#d1d5db"/>
+  <text x="480" y="170" class="label" text-anchor="middle">QueryServiceFactory</text>
+  <rect x="666" y="146" width="190" height="38" rx="8"
+        fill="#ffffff" stroke="#d1d5db"/>
+  <text x="761" y="170" class="label" text-anchor="middle">Concrete Service</text>
+
+  <rect x="54" y="236" width="852" height="118" rx="8"
+        fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <text x="74" y="260" class="small" font-weight="700">查询生命周期</text>
+  <rect x="104" y="286" width="190" height="42" rx="8"
+        fill="#ffffff" stroke="#d1d5db"/>
+  <text x="199" y="312" class="label" text-anchor="middle">QueryModel</text>
+  <rect x="385" y="286" width="190" height="42" rx="8"
+        fill="#ffffff" stroke="#d1d5db"/>
+  <text x="480" y="312" class="label" text-anchor="middle">QueryService</text>
+  <rect x="666" y="286" width="190" height="42" rx="8"
+        fill="#ffffff" stroke="#d1d5db"/>
+  <text x="761" y="312" class="label" text-anchor="middle">QueryResult</text>
+
+  <rect x="54" y="390" width="852" height="112" rx="8"
+        fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <text x="74" y="414" class="small" font-weight="700">边界与诊断</text>
+  <rect x="104" y="442" width="190" height="38" rx="8"
+        fill="#ffffff" stroke="#d1d5db"/>
+  <text x="199" y="466" class="label" text-anchor="middle">Storage</text>
+  <rect x="385" y="442" width="190" height="38" rx="8"
+        fill="#ffffff" stroke="#d1d5db"/>
+  <text x="480" y="466" class="label" text-anchor="middle">QueryError / Cancel</text>
+  <rect x="666" y="442" width="190" height="38" rx="8"
+        fill="#ffffff" stroke="#d1d5db"/>
+  <text x="761" y="466" class="label" text-anchor="middle">Unit / Smoke Tests</text>
+
+  <path d="M294 165 L385 165" stroke="#2563eb" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-blue)"/>
+  <path d="M575 165 L666 165" stroke="#2563eb" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-blue)"/>
+  <path d="M761 184 L761 222 L480 222 L480 286" stroke="#2563eb"
+        stroke-width="1.8" fill="none" marker-end="url(#arrow-blue)"/>
+  <path d="M294 307 L385 307" stroke="#16a34a" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-green)"/>
+  <path d="M575 307 L666 307" stroke="#16a34a" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-green)"/>
+  <path d="M199 328 L199 442" stroke="#ea580c" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-orange)"/>
+  <path d="M480 328 L480 442" stroke="#ea580c" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-orange)"/>
+  <path d="M761 328 L761 442" stroke="#ea580c" stroke-width="1.8"
+        fill="none" marker-end="url(#arrow-orange)"/>
+
+  <text x="480" y="548" class="small" text-anchor="middle">
+    新服务通过稳定 ServiceType 注册，并通过公共 QueryService seam 验证行为
+  </text>
+</svg>
