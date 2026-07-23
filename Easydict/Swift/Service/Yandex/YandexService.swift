@@ -196,6 +196,7 @@ final class YandexService: QueryService {
     private let session: Session
     private let baseURL: URL
 
+    /// Uses source-target, or target-only when Yandex should auto-detect.
     private func languagePair(from: Language, to: Language) -> String {
         let targetCode = languageCode(forLanguage: to) ?? ""
         guard from != .auto,
@@ -205,6 +206,7 @@ final class YandexService: QueryService {
         return "\(sourceCode)-\(targetCode)"
     }
 
+    /// Creates the lowercase identifier required by Yandex's mobile contract.
     private func sessionIdentifier() -> String {
         let identifier = UUID().uuidString
             .replacingOccurrences(of: "-", with: "")

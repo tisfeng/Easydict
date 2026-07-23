@@ -68,8 +68,11 @@ struct YandexServiceTests {
             #expect(components.queryItems?.first { $0.name == "text" }?.value == "Hello")
             #expect(components.queryItems?.first { $0.name == "srv" }?.value == "android")
             let sid = components.queryItems?.first { $0.name == "sid" }?.value
-            #expect(sid?.isEmpty == false)
-            #expect(sid?.hasSuffix("-0-0") == true)
+            let sidRange = sid?.range(
+                of: #"^[0-9a-f]{32}-0-0$"#,
+                options: .regularExpression
+            )
+            #expect(sidRange != nil)
 
             let response = try #require(
                 HTTPURLResponse(
