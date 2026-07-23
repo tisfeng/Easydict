@@ -26,6 +26,7 @@ private final class MozhiURLProtocolStub: URLProtocol {
         request
     }
 
+    /// Executes the stubbed response or error at the URL loading boundary.
     override func startLoading() {
         guard let handler = Self.handler else {
             Issue.record("Mozhi URL protocol handler was not configured")

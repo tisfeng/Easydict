@@ -150,6 +150,7 @@ final class YandexService: QueryService {
         return orderedDictionary
     }
 
+    /// Sends a cancellable Mozhi request and maps its response or failure.
     override func translate(
         _ text: String,
         from: Language,
@@ -244,6 +245,7 @@ private struct MozhiResponse: Decodable {
 
     // MARK: Private
 
+    /// Maps Swift property names to Mozhi's response fields.
     private enum CodingKeys: String, CodingKey {
         case translatedText = "translated-text"
     }
