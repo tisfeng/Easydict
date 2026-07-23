@@ -30,8 +30,9 @@ extension Defaults.Keys {
 
 /// Translates text with Yandex through a Mozhi proxy instance.
 ///
-/// The service follows the same public Mozhi API contract used by Crow Translate,
-/// avoiding a Yandex Cloud account while allowing the proxy endpoint to be replaced.
+/// The service follows the public Mozhi API contract used by Crow
+/// Translate. It avoids a Yandex Cloud account while allowing the proxy
+/// endpoint to be replaced.
 @objc(EZYandexService)
 @objcMembers
 final class YandexService: QueryService {

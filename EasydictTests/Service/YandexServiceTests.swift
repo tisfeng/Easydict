@@ -13,7 +13,8 @@ import Testing
 
 // MARK: - MozhiURLProtocolStub
 
-/// Intercepts Mozhi requests at the URL loading boundary and returns a deterministic response.
+/// Intercepts Mozhi requests at the URL loading boundary and returns a
+/// deterministic response.
 private final class MozhiURLProtocolStub: URLProtocol {
     nonisolated(unsafe) static var handler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
 
@@ -49,7 +50,8 @@ private final class MozhiURLProtocolStub: URLProtocol {
 /// Verifies Yandex translation behavior through the public query-service seam.
 @Suite("Yandex Service", .serialized, .tags(.unit))
 struct YandexServiceTests {
-    /// Verifies the current Mozhi/Crow request and response contract end to end.
+    /// Verifies the current Mozhi/Crow request and response contract end to
+    /// end.
     @Test("Translates English to Russian through Mozhi Yandex")
     func translatesEnglishToRussianThroughMozhiYandex() async throws {
         let configuration = URLSessionConfiguration.ephemeral
@@ -92,7 +94,8 @@ struct YandexServiceTests {
         #expect(result.translatedText == "Привет")
     }
 
-    /// Verifies that Mozhi server failures preserve their response body in a service error.
+    /// Verifies that Mozhi server failures preserve their response body in a
+    /// service error.
     @Test("Maps Mozhi server failures to QueryError")
     func mapsMozhiServerFailuresToQueryError() async throws {
         let configuration = URLSessionConfiguration.ephemeral
