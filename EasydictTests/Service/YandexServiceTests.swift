@@ -17,6 +17,7 @@ import Testing
 /// deterministic response.
 private final class YandexURLProtocolStub: URLProtocol {
     nonisolated(unsafe) static var handler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
+    nonisolated(unsafe) static var onStart: ((URLRequest) -> ())?
 
     override static func canInit(with _: URLRequest) -> Bool {
         true
@@ -28,6 +29,11 @@ private final class YandexURLProtocolStub: URLProtocol {
 
     /// Executes the stubbed response or error at the URL loading boundary.
     override func startLoading() {
+        if let onStart = Self.onStart {
+            onStart(request)
+            return
+        }
+
         guard let handler = Self.handler else {
             Issue.record("Yandex URL protocol handler was not configured")
             return
@@ -95,6 +101,49 @@ struct YandexServiceTests {
         let result = try await service.translate("Hello", from: .english, to: .russian)
 
         #expect(result.translatedText == "Привет")
+    }
+
+    /// Verifies that cancelling an in-flight Yandex request is reported as
+    /// cancellation instead of an API failure.
+    @Test("Surfaces request cancellation as CancellationError")
+    func surfacesRequestCancellationAsCancellationError() async throws {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [YandexURLProtocolStub.self]
+        let session = Session(configuration: configuration)
+        let baseURL = try #require(URL(string: "https://translate.yandex.net"))
+        let (requestStarts, startContinuation) = AsyncStream<()>.makeStream()
+
+        YandexURLProtocolStub.onStart = { _ in
+            startContinuation.yield()
+        }
+        defer {
+            YandexURLProtocolStub.onStart = nil
+            startContinuation.finish()
+        }
+
+        let service = YandexService(session: session, baseURL: baseURL)
+        _ = service.resetServiceResult()
+        let translationTask = Task {
+            try await service.translate("Hello", from: .english, to: .russian)
+        }
+
+        for await _ in requestStarts {
+            break
+        }
+        let serviceType = ServiceType.yandex.rawValue
+        while service.queryModel.isServiceStopped(serviceType) {
+            await Task.yield()
+        }
+        service.queryModel.stopServiceRequest(serviceType)
+
+        do {
+            _ = try await translationTask.value
+            Issue.record("Expected the cancelled Yandex request to throw CancellationError")
+        } catch is CancellationError {
+            // Expected user-initiated cancellation.
+        } catch {
+            Issue.record("Unexpected error type: \(error)")
+        }
     }
 
     /// Verifies that Yandex server failures preserve their response body in a

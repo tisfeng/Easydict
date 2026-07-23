@@ -179,6 +179,10 @@ final class YandexService: QueryService {
         } catch let queryError as QueryError {
             throw queryError
         } catch {
+            if isCancellation(error) {
+                throw CancellationError()
+            }
+
             let response = await dataTask.response
             let responseBody = response.data.flatMap {
                 String(data: $0, encoding: .utf8)
@@ -195,6 +199,26 @@ final class YandexService: QueryService {
 
     private let session: Session
     private let baseURL: URL
+
+    /// Detects task cancellation through Alamofire and URLSession wrappers.
+    private func isCancellation(_ error: Error) -> Bool {
+        if error is CancellationError {
+            return true
+        }
+
+        if let alamofireError = error.asAFError {
+            if case .explicitlyCancelled = alamofireError {
+                return true
+            }
+            if let underlyingError = alamofireError.underlyingError {
+                return isCancellation(underlyingError)
+            }
+        }
+
+        let nsError = error as NSError
+        return nsError.domain == NSURLErrorDomain
+            && nsError.code == NSURLErrorCancelled
+    }
 
     /// Uses source-target, or target-only when Yandex should auto-detect.
     private func languagePair(from: Language, to: Language) -> String {
