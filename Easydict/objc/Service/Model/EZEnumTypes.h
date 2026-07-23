@@ -30,6 +30,7 @@ typedef NS_ENUM(NSUInteger, EZShowWindowPosition) {
 
 typedef NSString *EZServiceType NS_STRING_ENUM NS_SWIFT_NAME(ServiceType);
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeGoogle;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeYandex;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeBaidu;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeYoudao;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeApple;

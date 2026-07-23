@@ -284,6 +284,8 @@
 		03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884732F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift */; };
 		03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */; };
 		03A8847A2F14000100D5C0DE /* BingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884792F14000100D5C0DE /* BingServiceTests.swift */; };
+		7A4D59022F16000100D5C0DE /* YandexServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4D59012F16000100D5C0DE /* YandexServiceTests.swift */; };
+		7A4D59122F16000100D5C0DE /* YandexService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4D59112F16000100D5C0DE /* YandexService.swift */; };
 		03A9BE952E70631B0013E645 /* SystemUtility+Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */; };
 		03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
@@ -943,6 +945,8 @@
 		03A884752F13000100D5C0DE /* apple-script-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "apple-script-overview.md"; sourceTree = "<group>"; };
 		03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptExecutorTests.swift; sourceTree = "<group>"; };
 		03A884792F14000100D5C0DE /* BingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingServiceTests.swift; sourceTree = "<group>"; };
+		7A4D59012F16000100D5C0DE /* YandexServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexServiceTests.swift; sourceTree = "<group>"; };
+		7A4D59112F16000100D5C0DE /* YandexService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexService.swift; sourceTree = "<group>"; };
 		03A8847B2F15000100D5C0DE /* apple-script-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "apple-script-architecture.svg"; sourceTree = "<group>"; };
 		03A91F142E63E1FB00896B17 /* FocusedElementInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusedElementInfo.swift; sourceTree = "<group>"; };
 		03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Selection.swift"; sourceTree = "<group>"; };
@@ -1625,6 +1629,14 @@
 			path = AppleDictionary;
 			sourceTree = "<group>";
 		};
+		7A4D59132F16000100D5C0DE /* Yandex */ = {
+			isa = PBXGroup;
+			children = (
+				7A4D59112F16000100D5C0DE /* YandexService.swift */,
+			);
+			path = Yandex;
+			sourceTree = "<group>";
+		};
 		031C66E42EDB00100025D190 /* DictionaryRendering */ = {
 			isa = PBXGroup;
 			children = (
@@ -2061,6 +2073,7 @@
 				033C6DC32ED9D6D700AC39FC /* DeepL */,
 				033C6DC92ED9E2E500AC39FC /* NiuTrans */,
 				031C66CB2ED9EB290025D190 /* Bing */,
+				7A4D59132F16000100D5C0DE /* Yandex */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -2843,6 +2856,7 @@
 				FA76B47A0150434485FCBBAD /* MDictReaderTests.swift */,
 				03C408F82EF5CB830025A1F0 /* ServiceTests.swift */,
 				03A884792F14000100D5C0DE /* BingServiceTests.swift */,
+				7A4D59012F16000100D5C0DE /* YandexServiceTests.swift */,
 				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
 				034080A12F6B1C75005C8508 /* AppleSpeechServiceTests.swift */,
 				A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */,
@@ -4194,6 +4208,7 @@
 				03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */,
 				03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */,
 				03A8847A2F14000100D5C0DE /* BingServiceTests.swift in Sources */,
+				7A4D59022F16000100D5C0DE /* YandexServiceTests.swift in Sources */,
 				03D486532E3F2190009313B3 /* ListRegexTests.swift in Sources */,
 				0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */,
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
@@ -4591,6 +4606,7 @@
 				031C66CD2ED9EB290025D190 /* BingService+Translate.swift in Sources */,
 				031C66CE2ED9EB290025D190 /* BingTranslateResponse.swift in Sources */,
 				031C66CF2ED9EB290025D190 /* BingService.swift in Sources */,
+				7A4D59122F16000100D5C0DE /* YandexService.swift in Sources */,
 				031C66D02ED9EB290025D190 /* BingLookupResponse.swift in Sources */,
 				031C66D12ED9EB290025D190 /* BingLanguageVoice.swift in Sources */,
 				031C66D22ED9EB290025D190 /* BingConfig.swift in Sources */,

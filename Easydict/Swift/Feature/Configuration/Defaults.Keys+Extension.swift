@@ -351,6 +351,12 @@ extension Defaults.Keys {
     // Bing
     static let bingCookieKey = Key<String>(EZBingCookieKey, default: "")
 
+    // Yandex through Mozhi
+    static let yandexMozhiEndpoint = Key<String>(
+        EZYandexMozhiEndpointKey,
+        default: "https://mozhi.aryak.me"
+    )
+
     // niu
     static let niuTransAPIKey = Key<String>(EZNiuTransAPIKey, default: "")
 

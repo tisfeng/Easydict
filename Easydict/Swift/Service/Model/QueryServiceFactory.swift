@@ -88,6 +88,7 @@ final class QueryServiceFactory: NSObject {
         (.customOpenAI, CustomOpenAIService.self),
         (.deepL, DeepLService.self),
         (.google, GoogleService.self),
+        (.yandex, YandexService.self),
         (.apple, AppleService.self),
         (.baidu, BaiduService.self),
         (.bing, BingService.self),
