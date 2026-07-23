@@ -11,25 +11,25 @@ import Testing
 
 @testable import Easydict
 
-// MARK: - MozhiURLProtocolStub
+// MARK: - YandexURLProtocolStub
 
-/// Intercepts Mozhi requests at the URL loading boundary and returns a
+/// Intercepts Yandex requests at the URL loading boundary and returns a
 /// deterministic response.
-private final class MozhiURLProtocolStub: URLProtocol {
+private final class YandexURLProtocolStub: URLProtocol {
     nonisolated(unsafe) static var handler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
 
-    override class func canInit(with _: URLRequest) -> Bool {
+    override static func canInit(with _: URLRequest) -> Bool {
         true
     }
 
-    override class func canonicalRequest(for request: URLRequest) -> URLRequest {
+    override static func canonicalRequest(for request: URLRequest) -> URLRequest {
         request
     }
 
     /// Executes the stubbed response or error at the URL loading boundary.
     override func startLoading() {
         guard let handler = Self.handler else {
-            Issue.record("Mozhi URL protocol handler was not configured")
+            Issue.record("Yandex URL protocol handler was not configured")
             return
         }
 
@@ -51,24 +51,25 @@ private final class MozhiURLProtocolStub: URLProtocol {
 /// Verifies Yandex translation behavior through the public query-service seam.
 @Suite("Yandex Service", .serialized, .tags(.unit))
 struct YandexServiceTests {
-    /// Verifies the current Mozhi/Crow request and response contract end to
-    /// end.
-    @Test("Translates English to Russian through Mozhi Yandex")
-    func translatesEnglishToRussianThroughMozhiYandex() async throws {
+    /// Verifies the direct unofficial Yandex request and response contract.
+    @Test("Translates English to Russian through direct Yandex")
+    func translatesEnglishToRussianThroughDirectYandex() async throws {
         let configuration = URLSessionConfiguration.ephemeral
-        configuration.protocolClasses = [MozhiURLProtocolStub.self]
+        configuration.protocolClasses = [YandexURLProtocolStub.self]
         let session = Session(configuration: configuration)
-        let baseURL = try #require(URL(string: "https://mozhi.example"))
+        let baseURL = try #require(URL(string: "https://translate.yandex.net"))
 
-        MozhiURLProtocolStub.handler = { request in
+        YandexURLProtocolStub.handler = { request in
             let components = try #require(URLComponents(url: request.url!, resolvingAgainstBaseURL: false))
 
-            #expect(request.httpMethod == "GET")
-            #expect(components.path == "/api/translate")
-            #expect(components.queryItems?.first { $0.name == "engine" }?.value == "yandex")
-            #expect(components.queryItems?.first { $0.name == "from" }?.value == "en")
-            #expect(components.queryItems?.first { $0.name == "to" }?.value == "ru")
+            #expect(request.httpMethod == "POST")
+            #expect(components.path == "/api/v1/tr.json/translate")
+            #expect(components.queryItems?.first { $0.name == "lang" }?.value == "en-ru")
             #expect(components.queryItems?.first { $0.name == "text" }?.value == "Hello")
+            #expect(components.queryItems?.first { $0.name == "srv" }?.value == "android")
+            let sid = components.queryItems?.first { $0.name == "sid" }?.value
+            #expect(sid?.isEmpty == false)
+            #expect(sid?.hasSuffix("-0-0") == true)
 
             let response = try #require(
                 HTTPURLResponse(
@@ -78,13 +79,11 @@ struct YandexServiceTests {
                     headerFields: ["Content-Type": "application/json"]
                 )
             )
-            let data = Data(
-                #"{"engine":"yandex","detected":"en","translated-text":"Привет"}"#.utf8
-            )
+            let data = Data(#"{"code":200,"lang":"en-ru","text":["Привет"]}"#.utf8)
             return (response, data)
         }
         defer {
-            MozhiURLProtocolStub.handler = nil
+            YandexURLProtocolStub.handler = nil
         }
 
         let service = YandexService(session: session, baseURL: baseURL)
@@ -95,17 +94,17 @@ struct YandexServiceTests {
         #expect(result.translatedText == "Привет")
     }
 
-    /// Verifies that Mozhi server failures preserve their response body in a
+    /// Verifies that Yandex server failures preserve their response body in a
     /// service error.
-    @Test("Maps Mozhi server failures to QueryError")
-    func mapsMozhiServerFailuresToQueryError() async throws {
+    @Test("Maps Yandex server failures to QueryError")
+    func mapsYandexServerFailuresToQueryError() async throws {
         let configuration = URLSessionConfiguration.ephemeral
-        configuration.protocolClasses = [MozhiURLProtocolStub.self]
+        configuration.protocolClasses = [YandexURLProtocolStub.self]
         let session = Session(configuration: configuration)
-        let baseURL = try #require(URL(string: "https://mozhi.example"))
+        let baseURL = try #require(URL(string: "https://translate.yandex.net"))
         let responseBody = "Source language code invalid"
 
-        MozhiURLProtocolStub.handler = { request in
+        YandexURLProtocolStub.handler = { request in
             let response = try #require(
                 HTTPURLResponse(
                     url: request.url!,
@@ -117,7 +116,7 @@ struct YandexServiceTests {
             return (response, Data(responseBody.utf8))
         }
         defer {
-            MozhiURLProtocolStub.handler = nil
+            YandexURLProtocolStub.handler = nil
         }
 
         let service = YandexService(session: session, baseURL: baseURL)
@@ -125,7 +124,7 @@ struct YandexServiceTests {
 
         do {
             _ = try await service.translate("Hello", from: .english, to: .russian)
-            Issue.record("Expected Mozhi HTTP 500 response to throw QueryError")
+            Issue.record("Expected Yandex HTTP 500 response to throw QueryError")
         } catch let error as QueryError {
             #expect(error.type == .api)
             #expect(error.errorDataMessage == responseBody)

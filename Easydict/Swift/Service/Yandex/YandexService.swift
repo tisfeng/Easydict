@@ -7,9 +7,7 @@
 //
 
 import Alamofire
-import Defaults
 import Foundation
-import SwiftUI
 
 // MARK: - ServiceType
 
@@ -17,22 +15,13 @@ extension ServiceType {
     static let yandex = ServiceType(rawValue: "Yandex")
 }
 
-// MARK: - Defaults.Keys
-
-extension Defaults.Keys {
-    static let yandexMozhiEndpoint = Key<String>(
-        "EZYandexMozhiEndpointKey",
-        default: "https://mozhi.aryak.me"
-    )
-}
-
 // MARK: - YandexService
 
-/// Translates text with Yandex through a Mozhi proxy instance.
+/// Translates text through Yandex's unofficial mobile endpoint.
 ///
-/// The service follows the public Mozhi API contract used by Crow
-/// Translate. It avoids a Yandex Cloud account while allowing the proxy
-/// endpoint to be replaced.
+/// It follows the direct request contract used by the legacy Crow
+/// Translate integration. No Yandex Cloud account or intermediary proxy is
+/// required.
 @objc(EZYandexService)
 @objcMembers
 final class YandexService: QueryService {
@@ -40,31 +29,18 @@ final class YandexService: QueryService {
 
     required init() {
         self.session = .default
-        self.baseURLOverride = nil
+        self.baseURL = URL(string: "https://translate.yandex.net")!
         super.init()
     }
 
     @nonobjc
     init(session: Session, baseURL: URL) {
         self.session = session
-        self.baseURLOverride = baseURL
+        self.baseURL = baseURL
         super.init()
     }
 
     // MARK: Internal
-
-    override func configurationListItems() -> Any? {
-        ServiceConfigurationSecretSectionView(
-            service: self,
-            observeKeys: [.yandexMozhiEndpoint]
-        ) {
-            InputCell(
-                textFieldTitleKey: "service.configuration.yandex.endpoint.title",
-                key: .yandexMozhiEndpoint,
-                placeholder: "service.configuration.yandex.endpoint.placeholder"
-            )
-        }
-    }
 
     override func serviceType() -> ServiceType {
         .yandex
@@ -150,7 +126,7 @@ final class YandexService: QueryService {
         return orderedDictionary
     }
 
-    /// Sends a cancellable Mozhi request and maps its response or failure.
+    /// Sends a cancellable Yandex request and maps its response or failure.
     override func translate(
         _ text: String,
         from: Language,
@@ -163,15 +139,20 @@ final class YandexService: QueryService {
         }
 
         let parameters = [
-            "engine": "yandex",
-            "from": languageCode(forLanguage: from) ?? "auto",
-            "to": languageCode(forLanguage: to) ?? "",
+            "lang": languagePair(from: from, to: to),
             "text": text,
+            "srv": "android",
+            "sid": sessionIdentifier(),
         ]
-        let baseURL = try mozhiBaseURL()
         let request = session.request(
-            baseURL.appendingPathComponent("api/translate"),
+            baseURL.appendingPathComponent("api/v1/tr.json/translate"),
+            method: .post,
             parameters: parameters,
+            encoding: URLEncoding(destination: .queryString),
+            headers: [
+                .accept("application/json"),
+                .contentType("application/json"),
+            ],
             requestModifier: { request in
                 request.timeoutInterval = EZNetWorkTimeoutInterval
             }
@@ -183,16 +164,17 @@ final class YandexService: QueryService {
 
         let dataTask = request
             .validate(statusCode: 200 ..< 300)
-            .serializingDecodable(MozhiResponse.self)
+            .serializingDecodable(YandexResponse.self)
 
         do {
             let response = try await dataTask.value
+            let translatedText = response.text.joined(separator: "\n")
 
-            guard !response.translatedText.isEmpty else {
+            guard !translatedText.isEmpty else {
                 throw QueryError(type: .noResult)
             }
 
-            currentResult.translatedResults = response.translatedText.toParagraphs()
+            currentResult.translatedResults = translatedText.toParagraphs()
             return currentResult
         } catch let queryError as QueryError {
             throw queryError
@@ -212,41 +194,28 @@ final class YandexService: QueryService {
     // MARK: Private
 
     private let session: Session
-    private let baseURLOverride: URL?
+    private let baseURL: URL
 
-    /// Resolves and validates the configured Mozhi instance root URL.
-    private func mozhiBaseURL() throws -> URL {
-        if let baseURLOverride {
-            return baseURLOverride
+    private func languagePair(from: Language, to: Language) -> String {
+        let targetCode = languageCode(forLanguage: to) ?? ""
+        guard from != .auto,
+              let sourceCode = languageCode(forLanguage: from) else {
+            return targetCode
         }
+        return "\(sourceCode)-\(targetCode)"
+    }
 
-        let endpoint = Defaults[.yandexMozhiEndpoint].trim()
-        guard let url = URL(string: endpoint),
-              let scheme = url.scheme?.lowercased(),
-              ["http", "https"].contains(scheme),
-              url.host != nil
-        else {
-            throw QueryError(
-                type: .parameter,
-                errorDataMessage: endpoint
-            )
-        }
-        return url
+    private func sessionIdentifier() -> String {
+        let identifier = UUID().uuidString
+            .replacingOccurrences(of: "-", with: "")
+            .lowercased()
+        return "\(identifier)-0-0"
     }
 }
 
-// MARK: - MozhiResponse
+// MARK: - YandexResponse
 
-/// Decodes the translation fields returned by Mozhi's provider-neutral API.
-private struct MozhiResponse: Decodable {
-    // MARK: Internal
-
-    let translatedText: String
-
-    // MARK: Private
-
-    /// Maps Swift property names to Mozhi's response fields.
-    private enum CodingKeys: String, CodingKey {
-        case translatedText = "translated-text"
-    }
+/// Decodes the translation fields returned by Yandex's mobile endpoint.
+private struct YandexResponse: Decodable {
+    let text: [String]
 }
