@@ -101,6 +101,7 @@ struct GeneralTab: View {
                 Toggle("show_eudic_quick_link", isOn: $showEudicQuickLink)
                 Toggle("show_apple_dictionary_quick_link", isOn: $showAppleDictionaryQuickLink)
                 Toggle("show_setting_quick_link", isOn: $showQuickActionButton)
+                Toggle("show_screenshot_ocr_quick_link", isOn: $showScreenshotOCRQuickLink)
             } header: {
                 Text("setting.general.quick_link.header")
             }
@@ -297,6 +298,7 @@ struct GeneralTab: View {
     @Default(.showEudicQuickLink) private var showEudicQuickLink
     @Default(.showAppleDictionaryQuickLink) private var showAppleDictionaryQuickLink
     @Default(.showQuickActionButton) private var showQuickActionButton
+    @Default(.showScreenshotOCRQuickLink) private var showScreenshotOCRQuickLink
 
     @Default(.appearanceType) private var appearanceType
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon

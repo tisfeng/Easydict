@@ -15683,6 +15683,46 @@
         }
       }
     },
+    "show_screenshot_ocr_quick_link" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Screenshot OCR quick link icon"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクリーンショット OCR クイックリンクアイコンを表示"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť ikonu rýchleho odkazu OCR snímky obrazovky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示截图 OCR 快捷图标"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示截圖 OCR 快速連結圖示"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar icono de enlace rápido de OCR de captura de pantalla"
+          }
+        }
+      }
+    },
     "singular" : {
       "extractionState" : "stale",
       "localizations" : {

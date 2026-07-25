@@ -13,6 +13,7 @@
 #import "NSImage+EZSymbolmage.h"
 #import "NSObject+EZDarkMode.h"
 #import "EZBaseQueryWindow.h"
+#import "EZWindowManager.h"
 
 
 typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
@@ -20,6 +21,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     EZTitlebarButtonTypeGoogle,
     EZTitlebarButtonTypeAppleDic,
     EZTitlebarButtonTypeEudicDic,
+    EZTitlebarButtonTypeScreenshotOCR,
 };
 
 @interface EZTitlebar ()
@@ -81,6 +83,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     _stackView = nil;
     _quickActionButton = nil;
     _quickActionMenu = nil;
+    _screenshotOCRButton = nil;
 
     [self updatePinButton];
     
@@ -146,6 +149,10 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
 
 - (void)goToSettings {
     [[NSNotificationCenter defaultCenter] postNotificationName:EZOpenSettingsNotification object:nil];
+}
+
+- (void)screenshotOCR {
+    [EZWindowManager.shared screenshotOCR];
 }
 
 #pragma mark - Getter && Setter
@@ -303,6 +310,36 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     return _eudicButton;
 }
 
+- (EZOpenLinkButton *)screenshotOCRButton {
+    if (!_screenshotOCRButton) {
+        EZOpenLinkButton *button = [[EZOpenLinkButton alloc] init];
+        _screenshotOCRButton = button;
+        NSImage *image = [NSImage ez_imageWithSymbolName:@"camera.metering.multispot"];
+        button.image = image;
+        button.toolTip = [self toolTipStrWithButtonType:EZTitlebarButtonTypeScreenshotOCR];
+
+        mm_weakify(self);
+        [button setClickBlock:^(EZButton *_Nonnull button) {
+            mm_strongify(self);
+            [self screenshotOCR];
+        }];
+
+        NSColor *lightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
+        NSColor *darkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
+        CGSize imageSize = CGSizeMake(20, 20);
+
+        [button executeOnAppearanceChange:^(EZButton *button, BOOL isDarkMode) {
+            NSColor *tintColor = isDarkMode ? darkTintColor : lightTintColor;
+            button.image = [[image imageWithTintColor:tintColor] resizeToSize:imageSize];
+        }];
+
+        [button mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(24);
+        }];
+    }
+    return _screenshotOCRButton;
+}
+
 
 - (BOOL)pin {
     EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
@@ -334,7 +371,12 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         // Since edudic has multiple bundle ids, we don't check if installed.
         [shortcutButtonTypes addObject:@(EZTitlebarButtonTypeEudicDic)];
     }
-    
+
+    // Screenshot OCR
+    if (MyConfiguration.shared.showScreenshotOCRQuickLink) {
+        [shortcutButtonTypes addObject:@(EZTitlebarButtonTypeScreenshotOCR)];
+    }
+
     return shortcutButtonTypes.copy;
 }
 
@@ -372,6 +414,10 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
             button = self.eudicButton;
             break;
         }
+        case EZTitlebarButtonTypeScreenshotOCR: {
+            button = self.screenshotOCRButton;
+            break;
+        }
         default:
             break;
     }
@@ -396,6 +442,9 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     } else if (type == EZTitlebarButtonTypeEudicDic) {
         shortcutStr = MyConfiguration.shared.eudicDictShortcutString;
         hint = NSLocalizedString(@"open_in_eudic", nil);
+    } else if (type == EZTitlebarButtonTypeScreenshotOCR) {
+        shortcutStr = MyConfiguration.shared.screenshotOCRShortcutString;
+        hint = NSLocalizedString(@"menu_screenshot_OCR", nil);
     }
     if (shortcutStr.length != 0) {
         toolTipStr = [NSString stringWithFormat:@"%@, %@", hint, shortcutStr];

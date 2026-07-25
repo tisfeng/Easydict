@@ -86,6 +86,9 @@ extension Defaults.Keys {
     static let showQuickActionButton = Key<Bool>(
         "EZConfiguration_kShowSettingQuickLink", default: true
     )
+    static let showScreenshotOCRQuickLink = Key<Bool>(
+        "EZConfiguration_kShowScreenshotOCRLinkKey", default: true
+    )
     static let hideMenuBarIcon = Key<Bool>("EZConfiguration_kHideMenuBarIconKey", default: false)
     static let includeBetaUpdates = Key<Bool>("EZConfiguration_kIncludeBetaUpdatesKey", default: false)
     static let fixedWindowPosition = Key<EZShowWindowPosition>(

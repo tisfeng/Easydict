@@ -93,6 +93,7 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.showEudicQuickLink) var showEudicQuickLink: Bool
     @DefaultsWrapper(.showAppleDictionaryQuickLink) var showAppleDictionaryQuickLink: Bool
     @DefaultsWrapper(.showQuickActionButton) var showQuickActionButton: Bool
+    @DefaultsWrapper(.showScreenshotOCRQuickLink) var showScreenshotOCRQuickLink: Bool
 
     @DefaultsWrapper(.appearanceType) var appearance: AppearanceType
     @DefaultsWrapper(.hideMenuBarIcon) var hideMenuBarIcon: Bool
@@ -125,6 +126,7 @@ class MyConfiguration: NSObject {
     @ShortcutWrapper(.googleShortcut) var googleShortcutString: String
     @ShortcutWrapper(.appleDictionaryShortcut) var appleDictShortcutString: String
     @ShortcutWrapper(.eudicShortcut) var eudicDictShortcutString: String
+    @ShortcutWrapper(.screenshotOCRShortcut) var screenshotOCRShortcutString: String
 
     let updater = GlobalContext.shared.updaterController.updater
     let fontSizes: [CGFloat] = [1, 1.1, 1.2, 1.3, 1.4]
@@ -320,6 +322,13 @@ class MyConfiguration: NSObject {
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.didSetShowSettingQuickLink()
+            }
+            .store(in: &cancellables)
+
+        Defaults.publisher(.showScreenshotOCRQuickLink, options: [])
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetShowScreenshotOCRQuickLink()
             }
             .store(in: &cancellables)
 
@@ -522,6 +531,11 @@ extension MyConfiguration {
         postUpdateQuickLinkButtonNotification()
 
         logSettings(["showSettingQuickLink": showQuickActionButton])
+    }
+
+    fileprivate func didSetShowScreenshotOCRQuickLink() {
+        postUpdateQuickLinkButtonNotification()
+        logSettings(["show_screenshot_ocr_link": showScreenshotOCRQuickLink])
     }
 
     fileprivate func didSetHideMenuBarIcon() {
