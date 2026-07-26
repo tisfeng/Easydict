@@ -198,33 +198,7 @@ extension GoogleService {
                     result.wordResult = wordResult
                 }
 
-                // 普通释义
-                if let normalArray = responseArray[0] as? [[Any]] {
-                    let normalResults = normalArray.compactMap { obj -> String? in
-                        guard let first = obj.first as? String else { return nil }
-                        return first.trim()
-                    }.filter { !$0.isEmpty }
-
-                    if !normalResults.isEmpty {
-                        result.translatedResults = normalResults
-
-                        let mergeString =
-                            String.combined(
-                                components: normalResults,
-                                separatedBy: "\n"
-                            ) ?? ""
-                        let signTo =
-                            signFunction.call(withArguments: [mergeString])?.toString() ?? ""
-                        result.toSpeakURL = nonEnglishAudioURL(
-                            withText: mergeString,
-                            language: ttsLanguageCode(
-                                for: googleTo,
-                                fallbackCode: languageCode(for: googleTo)
-                            ),
-                            sign: signTo
-                        )
-                    }
-                }
+                applyTranslation(from: responseArray, to: googleTo, result: result)
 
                 if result.wordResult != nil || result.translatedResults != nil {
                     completion(result, nil)
@@ -234,6 +208,39 @@ extension GoogleService {
 
             gtxTranslate(text, from: from, to: to, completion: completion)
         }
+    }
+
+    /// Applies the translated text and its audio URL from a WebApp response.
+    private func applyTranslation(
+        from responseArray: [Any],
+        to language: Language,
+        result: QueryResult
+    ) {
+        guard let normalArray = responseArray[0] as? [[Any]] else { return }
+
+        let normalResults = normalArray.compactMap { obj -> String? in
+            guard let first = obj.first as? String else { return nil }
+            return first.trim()
+        }.filter { !$0.isEmpty }
+
+        guard !normalResults.isEmpty else { return }
+
+        result.translatedResults = normalResults
+
+        let mergedText =
+            String.combined(
+                components: normalResults,
+                separatedBy: "\n"
+            ) ?? ""
+        let sign = signFunction.call(withArguments: [mergedText])?.toString() ?? ""
+        result.toSpeakURL = nonEnglishAudioURL(
+            withText: mergedText,
+            language: ttsLanguageCode(
+                for: language,
+                fallbackCode: languageCode(for: language)
+            ),
+            sign: sign
+        )
     }
 
     // MARK: - WebApp Network Request
