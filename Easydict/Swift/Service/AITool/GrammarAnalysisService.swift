@@ -274,8 +274,12 @@ final class GrammarAnalysisService: AIToolService {
             let taskID = UUID()
             let task = Task {
                 defer {
-                    activeResult.isLoading = false
-                    activeResult.isStreamFinished = true
+                    // `resetServiceResult()` reuses the same result object across generations.
+                    // Only the active generation should finalize the shared loading flags.
+                    if self.resultGeneration == activeGeneration {
+                        activeResult.isLoading = false
+                        activeResult.isStreamFinished = true
+                    }
                     if self.currentTaskID == taskID {
                         self.currentTask = nil
                         self.currentTaskID = nil
