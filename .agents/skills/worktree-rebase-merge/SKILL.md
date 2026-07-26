@@ -21,10 +21,14 @@ skill. Delegate all source-branch and direct-commit mechanics to `git-commit`.
 - Use the user-named target branch when provided. Otherwise resolve the
   repository remote default branch.
 - Resolve the remote default by preferring `origin`; if no `origin` exists and
-  exactly one remote exists, use that remote. Read
-  `refs/remotes/<remote>/HEAD` with
-  `git symbolic-ref --quiet --short refs/remotes/<remote>/HEAD`, then strip the
-  `<remote>/` prefix.
+  exactly one remote exists, use that remote. Query the live remote HEAD with
+  `git ls-remote --symref <remote> HEAD`, read the
+  `ref: refs/heads/<branch> HEAD` line, then strip the `refs/heads/` prefix.
+  This read-only query is not a fetch or pull.
+- If the live remote HEAD query fails or has no branch ref, do not silently
+  trust the cached `refs/remotes/<remote>/HEAD`. You may read that symbolic ref
+  only to report a fallback candidate, then stop and ask the user to name or
+  confirm the target branch.
 - Treat the current checkout as the source branch. If it is detached, create a
   source branch before continuing.
 - Do not fetch, pull, or push unless the user explicitly asks.
@@ -34,8 +38,9 @@ skill. Delegate all source-branch and direct-commit mechanics to `git-commit`.
 ## Preflight
 
 - Resolve the target branch before branch checks. If remote selection is
-  ambiguous, the remote HEAD is missing, or the resolved local target branch
-  does not exist, stop and ask the user to name a target branch.
+  ambiguous, the live remote HEAD is unavailable or unparseable, or the
+  resolved local target branch does not exist, stop and ask the user to name
+  or confirm a target branch.
 - Run `git branch --show-current`, `git branch --list <target-branch>`,
   and `git status --short`.
 - If source and target both resolve to `dev`, enter direct commit mode.
@@ -88,6 +93,13 @@ skill. Delegate all source-branch and direct-commit mechanics to `git-commit`.
 
 ## Rebase
 
+- Before rebasing, inspect the complete integration scope with
+  `git log --oneline <target-branch>..<source-branch>` and
+  `git diff --stat <target-branch>...<source-branch>`.
+- Compare that range with the current request and the source commits handled by
+  this workflow. When the target was inferred and the range contains unrelated
+  or unexpectedly broad pre-existing history, stop and ask the user to confirm
+  the target branch. A successful or no-op rebase is not scope validation.
 - From the source worktree, run `git rebase <target-branch>`.
 - On conflicts, inspect `git status --short`, resolve semantically, stage only
   resolved files, and run `git rebase --continue`. Stop for product decisions
