@@ -12,9 +12,9 @@ description: >
 
 Use this skill to finish a worktree branch by committing the source branch,
 rebasing it onto a target branch, then merging it from the target checkout.
-When the current checkout is already `dev` and the resolved target branch is
-also `dev`, skip the rebase/merge path and commit directly via the `git-commit`
-skill. Delegate all source-branch and direct-commit mechanics to `git-commit`.
+When the current branch is already the resolved target branch, skip the
+rebase/merge path and commit directly via the `git-commit` skill. Delegate all
+source-branch and direct-commit mechanics to `git-commit`.
 
 ## Defaults
 
@@ -43,9 +43,7 @@ skill. Delegate all source-branch and direct-commit mechanics to `git-commit`.
   or confirm a target branch.
 - Run `git branch --show-current`, `git branch --list <target-branch>`,
   and `git status --short`.
-- If source and target both resolve to `dev`, enter direct commit mode.
-- Stop if source and target resolve to the same branch and that branch is not
-  `dev`; ask the user to name a distinct source or target branch.
+- If source and target resolve to the same branch, enter direct commit mode.
 - For normal rebase/merge mode, run `git worktree list`.
 - Locate the target checkout from `git worktree list`. Use that path for the
   final merge when the target is already checked out elsewhere.
@@ -56,7 +54,7 @@ skill. Delegate all source-branch and direct-commit mechanics to `git-commit`.
 ## Direct Target-Branch Commit
 
 - Use direct commit mode only when the current source branch and the resolved
-  target branch are both `dev`.
+  target branch are the same branch.
 - In direct commit mode, delegate completely to the `git-commit` skill:
   staging scope, the single empty-index `git add .` pass, message drafting,
   commit execution, permission retry, and cleanup all follow `git-commit`.
@@ -104,8 +102,9 @@ skill. Delegate all source-branch and direct-commit mechanics to `git-commit`.
 - On conflicts, inspect `git status --short`, resolve semantically, stage only
   resolved files, and run `git rebase --continue`. Stop for product decisions
   or unsafe conflicts.
-- After rebase, require a clean source worktree, run `git diff --check`, and run
-  broader validation only when repository rules or touched code require it.
+- After rebase, require a clean source worktree, run
+  `git diff --check <target-branch>...HEAD`, and run broader validation only
+  when repository rules or touched code require it.
 
 ## Merge And Final Response
 
