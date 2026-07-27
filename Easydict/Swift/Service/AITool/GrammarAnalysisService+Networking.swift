@@ -194,8 +194,20 @@ extension GrammarAnalysisService {
         }
         request.httpBody = try JSONEncoder().encode(requestBody)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
-        try Task.checkCancellation()
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await URLSession.shared.data(for: request)
+            try Task.checkCancellation()
+        } catch let urlError as URLError where urlError.code == .cancelled {
+            // URLSession may surface Stop-triggered cancellation as URLError.
+            throw CancellationError()
+        } catch let nsError as NSError
+            where nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled {
+            throw CancellationError()
+        } catch is CancellationError {
+            throw CancellationError()
+        }
 
         if let httpResponse = response as? HTTPURLResponse,
            !(200 ... 299).contains(httpResponse.statusCode) {
