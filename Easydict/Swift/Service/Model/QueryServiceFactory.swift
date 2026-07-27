@@ -88,7 +88,6 @@ final class QueryServiceFactory: NSObject {
         (.customOpenAI, CustomOpenAIService.self),
         (.deepL, DeepLService.self),
         (.google, GoogleService.self),
-        (.grammarAnalysis, GrammarAnalysisService.self),
         (.apple, AppleService.self),
         (.baidu, BaiduService.self),
         (.bing, BingService.self),
@@ -98,5 +97,6 @@ final class QueryServiceFactory: NSObject {
         (.tencent, TencentService.self),
         (.alibaba, AliService.self),
         (.doubao, DoubaoService.self),
+        (.grammarAnalysis, GrammarAnalysisService.self),
     ]
 }
