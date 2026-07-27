@@ -5,6 +5,7 @@
 //  Created by Yi Miao on 2026/7/7.
 //
 
+import Alamofire
 import Foundation
 
 // MARK: - GrammarAnalysisGateDecision
@@ -194,33 +195,39 @@ extension GrammarAnalysisService {
         }
         request.httpBody = try JSONEncoder().encode(requestBody)
 
-        let data: Data
-        let response: URLResponse
+        let response = await AF.request(request)
+            .serializingData(automaticallyCancelling: true)
+            .response
+
         do {
-            (data, response) = try await URLSession.shared.data(for: request)
             try Task.checkCancellation()
-        } catch let urlError as URLError where urlError.code == .cancelled {
-            // URLSession may surface Stop-triggered cancellation as URLError.
-            throw CancellationError()
-        } catch let nsError as NSError
-            where nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled {
-            throw CancellationError()
         } catch is CancellationError {
             throw CancellationError()
         }
 
-        if let httpResponse = response as? HTTPURLResponse,
+        if let httpResponse = response.response as? HTTPURLResponse,
            !(200 ... 299).contains(httpResponse.statusCode) {
             let providerError = try? JSONDecoder().decode(
                 GrammarAnalysisChatCompletionErrorResponse.self,
-                from: data
+                from: response.data ?? Data()
             )
             throw QueryError(
                 type: .api,
                 message: providerError?.error.message ??
                     "HTTP \(httpResponse.statusCode)",
-                errorDataMessage: String(data: data, encoding: .utf8)
+                errorDataMessage: response.data.flatMap {
+                    String(data: $0, encoding: .utf8)
+                }
             )
+        }
+
+        let data: Data
+        do {
+            data = try response.result.get()
+        } catch let afError as AFError where afError.isExplicitlyCancelledError {
+            throw CancellationError()
+        } catch is CancellationError {
+            throw CancellationError()
         }
 
         let completion = try JSONDecoder().decode(
