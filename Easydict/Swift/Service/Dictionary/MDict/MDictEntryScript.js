@@ -1,4 +1,4 @@
-// MDict page helper script for audio, in-page anchors, and height reporting.
+// MDict entry helper for audio, in-page anchors, and height reporting.
 document.addEventListener('click', function(event) {
   var link = event.target && event.target.closest ? event.target.closest('a[href]') : null;
   if (!link) {
@@ -14,7 +14,7 @@ document.addEventListener('click', function(event) {
     playAudio(source);
     return;
   }
-  if (isEmptyHashLink(href) || handleAnchorLink(href)) {
+  if (isEmptyHashLink(href) || handleAnchorLink(link, href)) {
     event.preventDefault();
   }
 }, false);
@@ -35,21 +35,37 @@ function playAudio(source) {
   window.__mdictAudio.play();
 }
 
-function handleAnchorLink(href) {
+function handleAnchorLink(link, href) {
   var hash = samePageHash(href);
-  if (!hash || hash.length < 2) {
+  if (!hash) {
     return false;
   }
+  if (hash.length < 2) {
+    return true;
+  }
   var id = decodeHash(hash.slice(1));
-  var target = document.getElementById(id) || document.getElementsByName(id)[0];
+  var entry = link.closest ? link.closest('.mdict-entry') : null;
+  var target = anchorTarget(id, entry);
   if (!target) {
-    return false;
+    return true;
   }
   setTimeout(function() {
     target.scrollIntoView({ block: 'start' });
     notifyContentHeight();
   }, 0);
   return true;
+}
+
+function anchorTarget(id, entry) {
+  var scope = entry || document;
+  var candidates = scope.querySelectorAll('[id], [name]');
+  for (var index = 0; index < candidates.length; index += 1) {
+    var candidate = candidates[index];
+    if (candidate.id === id || candidate.getAttribute('name') === id) {
+      return candidate;
+    }
+  }
+  return null;
 }
 
 function isEmptyHashLink(href) {
@@ -62,6 +78,10 @@ function samePageHash(href) {
   var trimmed = href.trim();
   if (trimmed.charAt(0) === '#') {
     return trimmed;
+  }
+  var mdictHash = trimmed.match(/^(?:mdict-entry|entry):(?:\/\/)?(#.*)$/i);
+  if (mdictHash) {
+    return mdictHash[1];
   }
   if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) {
     return '';
@@ -83,6 +103,9 @@ function changeWebViewBodyFontSize(fontSizeRatio) {
 }
 
 function updateWebViewContentStyle() {
+  if (typeof updateMDictStyle === 'function') {
+    updateMDictStyle();
+  }
   scheduleContentHeight();
 }
 

@@ -54,6 +54,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)focusInputTextView;
 
+/// Cancel the pending auto-query-while-typing debounce.
+- (void)cancelAutoQuery;
+
 - (void)stopPlayingQueryText;
 - (void)togglePlayQueryText;
 - (void)togglePlayQueryText:(BOOL)playFlag;

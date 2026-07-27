@@ -507,6 +507,7 @@ static EZWindowManager *_instance;
     // But `orderBack:` will cause the query window to fail to display in stage manager mode (#385)
 
     if ([EZMainQueryWindow isAlive]) {
+        [_mainWindow.queryViewController cancelAutoQuery];
         [_mainWindow orderOut:nil];
     }
 

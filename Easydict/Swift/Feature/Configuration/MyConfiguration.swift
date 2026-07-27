@@ -81,6 +81,7 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.autoQueryOCRText) var autoQueryOCRText: Bool
     @DefaultsWrapper(.autoQuerySelectedText) var autoQuerySelectedText: Bool
     @DefaultsWrapper(.autoQueryPastedText) var autoQueryPastedText: Bool
+    @DefaultsWrapper(.autoQueryWhenTextChanged) var autoQueryWhenTextChanged: Bool
     @DefaultsWrapper(.autoPlayAudio) var autoPlayAudio: Bool
     @DefaultsWrapper(.pronunciation) var pronunciation: EnglishPronunciation
     @DefaultsWrapper(.preferYoudaoTTSForEnglishWord) var preferYoudaoTTSForEnglishWord: Bool
