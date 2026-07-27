@@ -19,9 +19,9 @@ final class GrammarAnalysisService: AIToolService {
     // MARK: Lifecycle
 
     required init() {
-        Self.isSeedingBuiltInModels = true
+        isSeedingBuiltInModels = true
         super.init()
-        Self.isSeedingBuiltInModels = false
+        isSeedingBuiltInModels = false
         migrateLegacyProviderConfigurationIfNeeded()
         migrateLegacyCustomConfigurationIfNeeded()
     }
@@ -87,7 +87,7 @@ final class GrammarAnalysisService: AIToolService {
             return Defaults[builtInSupportedModelsStorageKey]
         }
         set {
-            if Self.isSeedingBuiltInModels {
+            if isSeedingBuiltInModels {
                 Defaults[builtInSupportedModelsStorageKey] = newValue
                 Defaults[builtInValidModelsStorageKey] = validModels(from: newValue)
                 return
@@ -403,7 +403,7 @@ final class GrammarAnalysisService: AIToolService {
     private static let ieltsValidationSampleText =
         "Although the plan changed twice, we still finished the work on time."
 
-    private static var isSeedingBuiltInModels = false
+    private var isSeedingBuiltInModels = false
 
     private var currentTask: Task<(), Never>?
 
