@@ -3409,650 +3409,5066 @@
         }
       }
     },
-    "grammar_analysis_service" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grammar Analysis"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Análisis gramatical"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文法解析"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gramatická analýza"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "语法分析"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "語法分析"
-          }
-        }
-      }
-    },
-    "grammar.analysis.credential_source.built_in.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Built-in Key"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Clave integrada"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "内蔵キー"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vstavaný kľúč"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "内置 Key"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "內建 Key"
-          }
-        }
-      }
-    },
-    "grammar.analysis.credential_source.openai_key.footnote" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fill in your own OpenAI API key. The endpoint supports the recommended official address and can still be edited manually."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solo tienes que rellenar tu propia clave de OpenAI. El endpoint admite la dirección oficial recomendada y aún puedes editarlo manualmente."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "独自の OpenAI API キーを入力してください。エンドポイントには推奨の公式アドレスを使えますが、手動で編集することもできます。"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vyplňte vlastný OpenAI API kľúč. Endpoint podporuje odporúčanú oficiálnu adresu a stále ho môžete ručne upraviť."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "填写你自己的 OpenAI Key 即可。Endpoint 支持使用推荐的官方地址，你也仍然可以手动修改。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "填寫你自己的 OpenAI Key 即可。Endpoint 支援使用推薦的官方位址，你也仍可手動修改。"
-          }
-        }
-      }
-    },
-    "grammar.analysis.credential_source.openai_key.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI Key"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI Key"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI Key"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI Key"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI Key"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI Key"
-          }
-        }
-      }
-    },
-    "grammar.analysis.credential_source.deepseek_key.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DeepSeek Key"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DeepSeek Key"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DeepSeek Key"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DeepSeek Key"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DeepSeek Key"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DeepSeek Key"
-          }
-        }
-      }
-    },
-    "grammar.analysis.credential_source.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Key Source"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Origen de credenciales"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "認証情報のソース"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zdroj poverení"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Key 来源"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Key 來源"
-          }
-        }
-      }
-    },
-    "grammar.analysis.missing_model" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Please fetch or fill in Supported Models first, then choose one model."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Primero obtén o rellena Modelos compatibles y luego elige un modelo."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "先に対応モデルを取得または入力してから、使用モデルを選択してください。"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Najprv načítajte alebo zadajte podporované modely a potom vyberte jeden model."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "请先拉取或填写 Supported Models，再选择一个使用模型。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請先擷取或填寫 Supported Models，再選擇一個使用模型。"
-          }
-        }
-      }
-    },
-    "grammar.analysis.mode.general.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "General"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "General"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "通常"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bežná"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "常规"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "常規"
+      "grammar_analysis_service": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "تحليل القواعد"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Граматичен анализ"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ব্যাকরণ বিশ্লেষণ"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Anàlisi gramatical"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Gramatická analýza"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Grammatikanalyse"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Grammatikanalyse"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Γραμματική ανάλυση"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Grammar Analysis"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Análisis gramatical"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Grammatika analüüs"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "تحلیل دستور زبان"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Kielioppianalyysi"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Pagsusuri ng gramatika"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Analyse grammaticale"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ניתוח דקדוקי"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "व्याकरण विश्लेषण"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Gramatička analiza"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Nyelvtani elemzés"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Analisis tata bahasa"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Analisi grammaticale"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "文法解析"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "გრამატიკული ანალიზი"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ការវិភាគវេយ្យាករណ៍"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "문법 분석"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ການວິເຄາະໄວຍາກອນ"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Gramatikos analizė"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Gramatikas analīze"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Дүрмийн шинжилгээ"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Analisis tatabahasa"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "သဒ္ဒါခွဲခြမ်းစိတ်ဖြာမှု"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Grammatikkanalyse"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Grammatica-analyse"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Analiza gramatyczna"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Análise gramatical"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Análise gramatical"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Analiză gramaticală"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Грамматический анализ"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Gramatická analýza"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Slovnična analiza"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Граматичка анализа"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Grammatikanalys"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "இலக்கண பகுப்பாய்வு"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "వ్యాకరణ విశ్లేషణ"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "การวิเคราะห์ไวยากรณ์"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Dil bilgisi analizi"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "گرامماتىكا تەھلىلى"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Граматичний аналіз"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "گرامر تجزیہ"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Phân tích ngữ pháp"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "语法分析"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "語法分析"
+            }
           }
         }
-      }
-    },
-    "grammar.analysis.mode.ielts.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "IELTS"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "IELTS"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "IELTS"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "IELTS"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "雅思"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "雅思"
-          }
-        }
-      }
-    },
-    "grammar.analysis.mode.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mode"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "モード"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Režim"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模式"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模式"
-          }
-        }
-      }
-    },
-    "grammar.analysis.provider.custom_compatible.footnote" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Use any OpenAI-compatible chat/completions endpoint. Fill in the endpoint and models yourself, or fetch models if the provider supports it."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usa cualquier endpoint `chat/completions` compatible con OpenAI. Rellena el endpoint y los modelos manualmente, o recupéralos si el proveedor lo permite."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "任意の OpenAI 互換 chat/completions エンドポイントを使用します。エンドポイントとモデルは自分で入力するか、対応していればモデル取得を使ってください。"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Použite ľubovoľný OpenAI-kompatibilný endpoint chat/completions. Endpoint a modely zadajte ručne alebo ich načítajte, ak to poskytovateľ podporuje."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用任意 OpenAI 兼容的 `chat/completions` 地址。Endpoint 和模型需要你自己填写，或在对方支持时通过 Fetch Models 拉取。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用任意 OpenAI 相容的 `chat/completions` 位址。Endpoint 與模型需要你自行填寫，或在對方支援時透過 Fetch Models 擷取。"
-          }
-        }
-      }
-    },
-    "grammar.analysis.provider.custom_compatible.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Custom OpenAI-Compatible"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compatible con OpenAI personalizado"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カスタム OpenAI 互換"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vlastný OpenAI-kompatibilný"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自定义 OpenAI 兼容"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自訂 OpenAI 相容"
-          }
-        }
-      }
-    },
-    "grammar.analysis.provider.deepseek.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DeepSeek"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DeepSeek"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DeepSeek"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DeepSeek"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DeepSeek"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DeepSeek"
-          }
-        }
-      }
-    },
-    "grammar.analysis.provider.openai.footnote" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pre-fills OpenAI's official chat/completions endpoint and the recommended default model. You can still edit the endpoint if needed."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rellena automáticamente el endpoint oficial `chat/completions` de OpenAI y el modelo predeterminado recomendado. Aun así puedes editar el endpoint si lo necesitas."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI 公式の chat/completions エンドポイントと推奨デフォルトモデルを自動入力します。必要に応じてエンドポイントは編集できます。"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Predvyplní oficiálny OpenAI endpoint chat/completions a odporúčaný predvolený model. Endpoint môžete podľa potreby upraviť."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "会自动填入 OpenAI 官方 `chat/completions` 地址和推荐默认模型，你仍然可以按需修改 Endpoint。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "會自動填入 OpenAI 官方 `chat/completions` 位址與建議預設模型，你仍可依需求修改 Endpoint。"
-          }
-        }
-      }
-    },
-    "grammar.analysis.provider.openai.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI"
-          }
-        }
-      }
-    },
-    "grammar.analysis.provider.title" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Provider"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Proveedor"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "プロバイダ"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Poskytovateľ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "提供方"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "提供方"
+      },
+      "grammar.analysis.credential_source.built_in.title": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "المفتاح المدمج"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Вграден ключ"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "অন্তর্নির্মিত Key"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Clau integrada"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vestavěný klíč"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Indbygget nøgle"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Integrierter Schlüssel"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Ενσωματωμένο κλειδί"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Built-in Key"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Clave integrada"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Sisseehitatud võti"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "کلید داخلی"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Sisäänrakennettu avain"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Nakapaloob na Key"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Clé intégrée"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "מפתח מובנה"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "अंतर्निहित Key"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Ugrađeni ključ"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Beépített kulcs"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key bawaan"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Chiave integrata"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "内蔵キー"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ჩაშენებული გასაღები"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key ក្នុងកម្មវិធី"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "내장 Key"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key ໃນຕົວ"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vidinis raktas"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Iebūvēta atslēga"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Суурилуулсан түлхүүр"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key terbina dalam"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "အတွင်းပါ Key"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Innebygd nøkkel"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Ingebouwde sleutel"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Wbudowany klucz"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Chave integrada"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Chave integrada"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Cheie încorporată"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Встроенный ключ"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vstavaný kľúč"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vgrajeni ključ"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Уграђени кључ"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Inbyggd nyckel"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "உள்ளமைக்கப்பட்ட Key"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "అంతర్నిర్మిత Key"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "คีย์ในตัว"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Yerleşik anahtar"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ئىچكى ئاچقۇچ"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Вбудований ключ"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "بلٹ اِن Key"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Khóa tích hợp"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "内置 Key"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "內建 Key"
+            }
           }
         }
-      }
-    },
+      },
+      "grammar.analysis.credential_source.openai_key.footnote": {
+        "extractionState": "stale",
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "أدخل مفتاح OpenAI API الخاص بك. يدعم Endpoint العنوان الرسمي الموصى به، وما زال بإمكانك تعديله يدويًا."
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Въведете свой собствен OpenAI API ключ. Endpoint поддържа препоръчания официален адрес и все още може да се редактира ръчно."
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "আপনার নিজস্ব OpenAI API key দিন। Endpoint-এ প্রস্তাবিত অফিসিয়াল ঠিকানা ব্যবহার করা যায়, তবে আপনি চাইলে হাতে বদলাতেও পারবেন।"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Introdueix la teva pròpia clau API d’OpenAI. L’endpoint admet l’adreça oficial recomanada i encara es pot editar manualment."
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vyplňte svůj vlastní OpenAI API klíč. Endpoint podporuje doporučenou oficiální adresu a stále ho můžete ručně upravit."
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Indtast din egen OpenAI API-nøgle. Endpoint understøtter den anbefalede officielle adresse og kan stadig redigeres manuelt."
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Geben Sie Ihren eigenen OpenAI-API-Schlüssel ein. Der Endpoint unterstützt die empfohlene offizielle Adresse und kann weiterhin manuell bearbeitet werden."
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Συμπληρώστε το δικό σας κλειδί OpenAI API. Το Endpoint υποστηρίζει τη συνιστώμενη επίσημη διεύθυνση και μπορεί ακόμη να τροποποιηθεί χειροκίνητα."
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Fill in your own OpenAI API key. The endpoint supports the recommended official address and can still be edited manually."
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Solo tienes que rellenar tu propia clave de OpenAI. El endpoint admite la dirección oficial recomendada y aún puedes editarlo manualmente."
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Sisestage oma OpenAI API võti. Endpoint toetab soovitatud ametlikku aadressi ja seda saab endiselt käsitsi muuta."
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "کلید API اوپن‌اِی‌آی خود را وارد کنید. Endpoint از نشانی رسمیِ پیشنهادی پشتیبانی می‌کند و همچنان می‌توانید آن را دستی ویرایش کنید."
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Täytä oma OpenAI API -avaimesi. Endpoint tukee suositeltua virallista osoitetta ja sitä voi silti muokata käsin."
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Ilagay ang sarili mong OpenAI API key. Sinusuportahan ng Endpoint ang inirerekomendang opisyal na address at maaari mo pa rin itong manu-manong baguhin."
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Renseignez votre propre clé API OpenAI. L’endpoint prend en charge l’adresse officielle recommandée et peut toujours être modifié manuellement."
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "מלא את מפתח ה-API האישי שלך של OpenAI. ה-Endpoint תומך בכתובת הרשמית המומלצת ועדיין ניתן לערוך אותו ידנית."
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "अपना OpenAI API key भरें। Endpoint अनुशंसित आधिकारिक पते का समर्थन करता है, और आप इसे अभी भी हाथ से बदल सकते हैं।"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Unesite vlastiti OpenAI API ključ. Endpoint podržava preporučenu službenu adresu i još ga uvijek možete ručno urediti."
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Adja meg saját OpenAI API-kulcsát. Az Endpoint támogatja az ajánlott hivatalos címet, és továbbra is kézzel szerkeszthető."
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Isi OpenAI API key milik Anda sendiri. Endpoint mendukung alamat resmi yang direkomendasikan dan tetap bisa diedit secara manual."
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Inserisci la tua chiave API OpenAI. L’endpoint supporta l’indirizzo ufficiale consigliato e può ancora essere modificato manualmente."
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "独自の OpenAI API キーを入力してください。エンドポイントには推奨の公式アドレスを使えますが、手動で編集することもできます。"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "შეიყვანეთ თქვენი OpenAI API key. Endpoint მხარს უჭერს რეკომენდებულ ოფიციალურ მისამართს და მისი ხელით შეცვლაც კვლავ შესაძლებელია."
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "បំពេញ OpenAI API key ផ្ទាល់ខ្លួនរបស់អ្នក។ Endpoint គាំទ្រអាសយដ្ឋានផ្លូវការដែលបានណែនាំ ហើយអ្នកនៅតែអាចកែដោយដៃបាន។"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "자신의 OpenAI API Key를 입력하세요. Endpoint는 권장 공식 주소를 지원하며, 필요하면 수동으로 수정할 수도 있습니다."
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ກອກ OpenAI API key ຂອງທ່ານເອງ. Endpoint ຮອງຮັບທີ່ຢູ່ທາງການທີ່ແນະນຳ ແລະທ່ານຍັງສາມາດແກ້ໄຂດ້ວຍມືໄດ້."
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Įveskite savo OpenAI API raktą. Endpoint palaiko rekomenduojamą oficialų adresą ir vis dar gali būti redaguojamas rankiniu būdu."
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Ievadiet savu OpenAI API atslēgu. Endpoint atbalsta ieteikto oficiālo adresi un to joprojām var rediģēt manuāli."
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Өөрийн OpenAI API түлхүүрээ оруулна уу. Endpoint нь санал болгосон албан ёсны хаягийг дэмждэг бөгөөд та үүнийг гараар засварлаж болно."
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Isi OpenAI API key anda sendiri. Endpoint menyokong alamat rasmi yang disyorkan dan masih boleh diedit secara manual."
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "သင်၏ OpenAI API key ကို ဖြည့်ပါ။ Endpoint သည် အကြံပြုထားသော တရားဝင်လိပ်စာကို ပံ့ပိုးပေးပြီး လက်ဖြင့်လည်း ပြင်ဆင်နိုင်ပါသေးသည်။"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Fyll inn din egen OpenAI API-nøkkel. Endpoint støtter den anbefalte offisielle adressen og kan fortsatt redigeres manuelt."
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vul je eigen OpenAI API-sleutel in. De Endpoint ondersteunt het aanbevolen officiële adres en kan nog steeds handmatig worden aangepast."
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Wpisz własny klucz OpenAI API. Endpoint obsługuje zalecany oficjalny adres i nadal można go edytować ręcznie."
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Preencha a sua própria chave da API OpenAI. O Endpoint suporta o endereço oficial recomendado e ainda pode ser editado manualmente."
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Preencha sua própria chave da API OpenAI. O Endpoint suporta o endereço oficial recomendado e ainda pode ser editado manualmente."
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Introduce cheia ta OpenAI API. Endpoint acceptă adresa oficială recomandată și poate fi editat manual în continuare."
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Введите свой OpenAI API key. Endpoint поддерживает рекомендуемый официальный адрес, и его по-прежнему можно изменить вручную."
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vyplňte vlastný OpenAI API kľúč. Endpoint podporuje odporúčanú oficiálnu adresu a stále ho môžete ručne upraviť."
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vnesite svoj OpenAI API ključ. Endpoint podpira priporočeni uradni naslov in ga je še vedno mogoče ročno urediti."
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Унесите свој OpenAI API кључ. Endpoint подржава препоручену званичну адресу и и даље се може ручно уредити."
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Fyll i din egen OpenAI API-nyckel. Endpoint stöder den rekommenderade officiella adressen och kan fortfarande redigeras manuellt."
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "உங்கள் சொந்த OpenAI API Key-ஐ நிரப்புங்கள். Endpoint பரிந்துரைக்கப்பட்ட அதிகாரப்பூர்வ முகவரியை ஆதரிக்கிறது; வேண்டுமெனில் அதை கைமுறையாக மாற்றலாம்."
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "మీ స్వంత OpenAI API Key‌ను పూరించండి. Endpoint సిఫార్సు చేసిన అధికారిక చిరునామాను మద్దతు ఇస్తుంది, అవసరమైతే మీరు దాన్ని చేతితో మార్చవచ్చు."
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "กรอก OpenAI API Key ของคุณเองได้เลย Endpoint รองรับที่อยู่ทางการที่แนะนำ และคุณยังแก้ไขเองได้เช่นกัน"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Kendi OpenAI API anahtarınızı girin. Endpoint önerilen resmî adresi destekler ve hâlâ elle düzenlenebilir."
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ئۆزىڭىزنىڭ OpenAI API key نى تولدۇرۇڭ. Endpoint تەۋسىيە قىلىنغان رەسمىي ئادرېسنى قوللايدۇ، يەنىلا قولدا ئۆزگەرتەلەيسىز."
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Введіть власний OpenAI API key. Endpoint підтримує рекомендовану офіційну адресу, і його все ще можна редагувати вручну."
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "اپنی OpenAI API key درج کریں۔ Endpoint تجویز کردہ سرکاری پتے کو سپورٹ کرتا ہے، اور آپ اسے اب بھی دستی طور پر تبدیل کر سکتے ہیں۔"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Hãy điền OpenAI API key của riêng bạn. Endpoint hỗ trợ địa chỉ chính thức được đề xuất và bạn vẫn có thể chỉnh sửa thủ công."
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "填写你自己的 OpenAI Key 即可。Endpoint 支持使用推荐的官方地址，你也仍然可以手动修改。"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "填寫你自己的 OpenAI Key 即可。Endpoint 支援使用推薦的官方位址，你也仍可手動修改。"
+            }
+          }
+        }
+      },
+      "grammar.analysis.credential_source.openai_key.title": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          }
+        }
+      },
+      "grammar.analysis.credential_source.deepseek_key.title": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          }
+        }
+      },
+      "grammar.analysis.credential_source.title": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "مصدر المفتاح"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Източник на ключа"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key উৎস"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Origen de la clau"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Zdroj klíče"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Nøglekilde"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Schlüsselquelle"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Πηγή κλειδιού"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key Source"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Origen de credenciales"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Võtme allikas"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "منبع کلید"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Avaimen lähde"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Pinagmulan ng Key"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Source de la clé"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "מקור המפתח"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key स्रोत"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Izvor ključa"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Kulcsforrás"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Sumber Key"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Origine della chiave"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "認証情報のソース"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "გასაღების წყარო"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ប្រភព Key"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key 출처"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ແຫຼ່ງຂອງ Key"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Rakto šaltinis"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Atslēgas avots"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Түлхүүрийн эх сурвалж"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Sumber Key"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key အရင်းအမြစ်"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Nøkkelkilde"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Sleutelbron"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Źródło klucza"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Origem da chave"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Origem da chave"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Sursa cheii"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Источник ключа"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Zdroj poverení"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vir ključa"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Извор кључа"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Nyckelkälla"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key மூலம்"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key మూలం"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "แหล่งที่มาของคีย์"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Anahtar kaynağı"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key مەنبەسى"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Джерело ключа"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key ماخذ"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Nguồn Key"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key 来源"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key 來源"
+            }
+          }
+        }
+      },
+      "grammar.analysis.missing_model": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "يُرجى أولاً جلب Supported Models أو تعبئتها، ثم اختيار نموذج واحد."
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Моля, първо извлечете или попълнете Supported Models и след това изберете един модел."
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "দয়া করে আগে Supported Models টেনে আনুন বা পূরণ করুন, তারপর একটি মডেল বেছে নিন।"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Primer recupera o omple Supported Models i després tria un model."
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Nejprve načtěte nebo vyplňte Supported Models a potom vyberte jeden model."
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Hent eller udfyld først Supported Models, og vælg derefter én model."
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Bitte rufen Sie zuerst Supported Models ab oder tragen Sie sie ein und wählen Sie dann ein Modell aus."
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Ανακτήστε ή συμπληρώστε πρώτα τα Supported Models και έπειτα επιλέξτε ένα μοντέλο."
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Please fetch or fill in Supported Models first, then choose one model."
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Primero obtén o rellena Modelos compatibles y luego elige un modelo."
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Too esmalt Supported Models või täitke see ja seejärel valige üks mudel."
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "لطفاً ابتدا Supported Models را دریافت یا تکمیل کنید و سپس یک مدل را انتخاب کنید."
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Hae tai täytä ensin Supported Models ja valitse sitten yksi malli."
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Pakikuha o punan muna ang Supported Models, pagkatapos ay pumili ng isang modelo."
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Récupérez ou renseignez d’abord les Supported Models, puis choisissez un modèle."
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "יש למשוך או למלא תחילה את Supported Models ולאחר מכן לבחור מודל אחד."
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "कृपया पहले Supported Models प्राप्त करें या भरें, फिर एक मॉडल चुनें।"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Najprije dohvatite ili ispunite Supported Models, a zatim odaberite jedan model."
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Először töltse le vagy adja meg a Supported Models értékeit, majd válasszon egy modellt."
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Silakan ambil atau isi Supported Models terlebih dahulu, lalu pilih satu model."
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Recupera o compila prima Supported Models, poi scegli un modello."
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "先に対応モデルを取得または入力してから、使用モデルを選択してください。"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ჯერ მოითხოვეთ ან შეავსეთ Supported Models, შემდეგ კი აირჩიეთ ერთი მოდელი."
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "សូមទាញយក ឬបំពេញ Supported Models ជាមុនសិន បន្ទាប់មកជ្រើសរើសម៉ូដែលមួយ។"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "먼저 Supported Models를 가져오거나 입력한 뒤 사용할 모델 하나를 선택하세요."
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ກະລຸນາດຶງຫຼືກອກ Supported Models ກ່ອນ ແລ້ວຈຶ່ງເລືອກໂມເດວໜຶ່ງ."
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Pirmiausia nuskaitykite arba užpildykite Supported Models, tada pasirinkite vieną modelį."
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vispirms iegūstiet vai aizpildiet Supported Models un pēc tam izvēlieties vienu modeli."
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Эхлээд Supported Models-ийг татаж авах эсвэл бөглөж, дараа нь нэг загвар сонгоно уу."
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Sila ambil atau isi Supported Models terlebih dahulu, kemudian pilih satu model."
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ကျေးဇူးပြု၍ Supported Models ကို အရင်ရယူပါ သို့မဟုတ် ဖြည့်ပါ၊ ထို့နောက် မော်ဒယ်တစ်ခုကို ရွေးပါ။"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Hent eller fyll inn Supported Models først, og velg deretter én modell."
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Haal eerst Supported Models op of vul ze in en kies daarna één model."
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Najpierw pobierz lub uzupełnij Supported Models, a następnie wybierz jeden model."
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Primeiro obtenha ou preencha Supported Models e depois escolha um modelo."
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Primeiro busque ou preencha Supported Models e depois escolha um modelo."
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mai întâi preia sau completează Supported Models, apoi alege un model."
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Сначала получите или заполните Supported Models, а затем выберите одну модель."
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Najprv načítajte alebo zadajte podporované modely a potom vyberte jeden model."
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Najprej pridobite ali izpolnite Supported Models, nato izberite en model."
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Прво преузмите или попуните Supported Models, па затим изаберите један модел."
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Hämta eller fyll först i Supported Models och välj sedan en modell."
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "முதலில் Supported Models-ஐ பெறுங்கள் அல்லது நிரப்புங்கள், பின்னர் ஒரு மாடலைத் தேர்ந்தெடுக்கவும்."
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "దయచేసి ముందుగా Supported Models‌ను పొందండి లేదా పూరించండి, ఆ తర్వాత ఒక మోడల్‌ను ఎంచుకోండి."
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "โปรดดึงหรือกรอก Supported Models ก่อน แล้วค่อยเลือกโมเดลหนึ่งรายการ"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Lütfen önce Supported Models listesini alın veya doldurun, ardından bir model seçin."
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ئاۋۋال Supported Models نى تارتىۋېلىڭ ياكى تولدۇرۇڭ، ئاندىن بىر مودېل تاللاڭ."
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Спочатку отримайте або заповніть Supported Models, а потім виберіть одну модель."
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "براہِ کرم پہلے Supported Models حاصل کریں یا بھریں، پھر ایک ماڈل منتخب کریں۔"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vui lòng tải hoặc điền Supported Models trước, sau đó chọn một model."
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "请先拉取或填写 Supported Models，再选择一个使用模型。"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "請先擷取或填寫 Supported Models，再選擇一個使用模型。"
+            }
+          }
+        }
+      },
+      "grammar.analysis.mode.general.title": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "عام"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Общ"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "সাধারণ"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "General"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Obecný"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Generel"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Allgemein"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Γενικό"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "General"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "General"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Üldine"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "عمومی"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Yleinen"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Pangkalahatan"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Général"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "כללי"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "सामान्य"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Općenito"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Általános"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Umum"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Generale"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "通常"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ზოგადი"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ទូទៅ"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "일반"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ທົ່ວໄປ"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Bendras"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vispārīgs"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Ерөнхий"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Umum"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "အထွေထွေ"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Generell"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Algemeen"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Ogólny"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Geral"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Geral"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "General"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Общий"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Bežná"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Splošno"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Опште"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Allmänt"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "பொது"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "సాధారణ"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ทั่วไป"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Genel"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ئادەتتىكى"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Загальний"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "عام"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Chung"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "常规"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "常規"
+            }
+          }
+        }
+      },
+      "grammar.analysis.mode.ielts.title": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          }
+        }
+      },
+      "grammar.analysis.mode.title": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "الوضع"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Режим"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "মোড"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mode"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Režim"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Tilstand"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Modus"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Λειτουργία"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mode"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Modo"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Režiim"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "حالت"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Tila"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mode"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mode"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "מצב"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "मोड"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Način"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mód"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mode"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Modalità"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "モード"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "რეჟიმი"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "របៀប"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "모드"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ໂໝດ"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Režimas"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Režīms"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Горим"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mod"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "မုဒ်"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Modus"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Modus"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Tryb"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Modo"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Modo"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mod"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Режим"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Režim"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Način"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Режим"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Läge"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "பயன்முறை"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "మోడ్"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "โหมด"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mod"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ھالەت"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Режим"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "موڈ"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Chế độ"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "模式"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "模式"
+            }
+          }
+        }
+      },
+      "grammar.analysis.provider.custom_compatible.footnote": {
+        "extractionState": "stale",
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "استخدم أي Endpoint متوافق مع OpenAI من نوع `chat/completions`. املأ الـ Endpoint والنماذج بنفسك، أو استخدم Fetch Models إذا كان المزوّد يدعم ذلك."
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Използвайте всеки OpenAI-съвместим `chat/completions` Endpoint. Попълнете сами Endpoint и моделите или използвайте Fetch Models, ако доставчикът го поддържа."
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "যেকোনো OpenAI-compatible `chat/completions` Endpoint ব্যবহার করুন। Endpoint আর model নিজে পূরণ করুন, অথবা provider সমর্থন করলে Fetch Models ব্যবহার করুন।"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Utilitza qualsevol Endpoint `chat/completions` compatible amb OpenAI. Omple tu mateix l’Endpoint i els models, o bé usa Fetch Models si el proveïdor ho admet."
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Použijte libovolný OpenAI-kompatibilní `chat/completions` Endpoint. Endpoint a modely vyplňte sami, případně použijte Fetch Models, pokud to poskytovatel podporuje."
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Brug et vilkårligt OpenAI-kompatibelt `chat/completions` Endpoint. Udfyld selv Endpoint og modeller, eller brug Fetch Models, hvis udbyderen understøtter det."
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Verwenden Sie einen beliebigen OpenAI-kompatiblen `chat/completions`-Endpoint. Tragen Sie Endpoint und Modelle selbst ein oder verwenden Sie Fetch Models, wenn der Anbieter dies unterstützt."
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Χρησιμοποιήστε οποιοδήποτε συμβατό με OpenAI `chat/completions` Endpoint. Συμπληρώστε μόνοι σας το Endpoint και τα μοντέλα ή χρησιμοποιήστε το Fetch Models, αν το υποστηρίζει ο πάροχος."
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Use any OpenAI-compatible chat/completions endpoint. Fill in the endpoint and models yourself, or fetch models if the provider supports it."
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Usa cualquier endpoint `chat/completions` compatible con OpenAI. Rellena el endpoint y los modelos manualmente, o recupéralos si el proveedor lo permite."
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Kasutage mis tahes OpenAI-ga ühilduvat `chat/completions` Endpointi. Täitke Endpoint ja mudelid ise või kasutage Fetch Models funktsiooni, kui teenusepakkuja seda toetab."
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "از هر Endpoint سازگار با OpenAI از نوع `chat/completions` استفاده کنید. Endpoint و مدل‌ها را خودتان وارد کنید، یا اگر ارائه‌دهنده پشتیبانی می‌کند از Fetch Models استفاده کنید."
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Käytä mitä tahansa OpenAI-yhteensopivaa `chat/completions` Endpointia. Täytä Endpoint ja mallit itse tai käytä Fetch Models -toimintoa, jos palveluntarjoaja tukee sitä."
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Gumamit ng anumang OpenAI-compatible na `chat/completions` Endpoint. Ikaw mismo ang maglagay ng Endpoint at mga modelo, o gumamit ng Fetch Models kung sinusuportahan ito ng provider."
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Utilisez n’importe quel endpoint `chat/completions` compatible OpenAI. Renseignez vous-même l’endpoint et les modèles, ou utilisez Fetch Models si le fournisseur le prend en charge."
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "השתמש בכל Endpoint תואם OpenAI מסוג `chat/completions`. מלא בעצמך את ה-Endpoint ואת המודלים, או השתמש ב-Fetch Models אם הספק תומך בכך."
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "किसी भी OpenAI-compatible `chat/completions` Endpoint का उपयोग करें। Endpoint और models खुद भरें, या अगर provider सपोर्ट करता हो तो Fetch Models इस्तेमाल करें।"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Koristite bilo koji OpenAI-kompatibilan `chat/completions` Endpoint. Endpoint i modele unesite sami ili upotrijebite Fetch Models ako to pružatelj podržava."
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Bármilyen OpenAI-kompatibilis `chat/completions` Endpoint használható. Az Endpointot és a modelleket adja meg kézzel, vagy használja a Fetch Models lehetőséget, ha a szolgáltató támogatja."
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Gunakan Endpoint `chat/completions` apa pun yang kompatibel dengan OpenAI. Isi sendiri Endpoint dan modelnya, atau gunakan Fetch Models jika penyedia mendukungnya."
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Usa qualsiasi Endpoint `chat/completions` compatibile con OpenAI. Compila manualmente Endpoint e modelli oppure usa Fetch Models se il provider lo supporta."
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "任意の OpenAI 互換 chat/completions エンドポイントを使用します。エンドポイントとモデルは自分で入力するか、対応していればモデル取得を使ってください。"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "გამოიყენეთ ნებისმიერი OpenAI-თავსებადი `chat/completions` Endpoint. Endpoint და მოდელები თავად შეავსეთ, ან გამოიყენეთ Fetch Models, თუ provider ამას მხარს უჭერს."
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ប្រើ Endpoint `chat/completions` ណាមួយដែលឆបគ្នានឹង OpenAI។ សូមបំពេញ Endpoint និងម៉ូដែលដោយខ្លួនឯង ឬប្រើ Fetch Models ប្រសិនបើអ្នកផ្ដល់សេវាគាំទ្រ។"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI 호환 `chat/completions` Endpoint라면 무엇이든 사용할 수 있습니다. Endpoint와 모델은 직접 입력하거나, 제공자가 지원하면 Fetch Models를 사용하세요."
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ໃຊ້ Endpoint `chat/completions` ທີ່ເຂົ້າກັນໄດ້ກັບ OpenAI ໃດກໍໄດ້. ກອກ Endpoint ແລະໂມເດວດ້ວຍຕົນເອງ ຫຼືໃຊ້ Fetch Models ຖ້າ provider ຮອງຮັບ."
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Naudokite bet kurį su OpenAI suderinamą `chat/completions` Endpoint. Endpoint ir modelius užpildykite patys arba naudokite Fetch Models, jei teikėjas tai palaiko."
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Izmantojiet jebkuru ar OpenAI saderīgu `chat/completions` Endpoint. Ievadiet Endpoint un modeļus paši vai izmantojiet Fetch Models, ja pakalpojumu sniedzējs to atbalsta."
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI-тэй нийцтэй дурын `chat/completions` Endpoint ашиглана уу. Endpoint болон загваруудыг өөрөө бөглөх эсвэл нийлүүлэгч дэмждэг бол Fetch Models ашиглана уу."
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Gunakan mana-mana Endpoint `chat/completions` yang serasi dengan OpenAI. Isi Endpoint dan model sendiri, atau gunakan Fetch Models jika penyedia menyokongnya."
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI နှင့် ကိုက်ညီသော `chat/completions` Endpoint မည်သည့်တစ်ခုကိုမဆို အသုံးပြုပါ။ Endpoint နှင့် model များကို ကိုယ်တိုင်ဖြည့်ပါ၊ သို့မဟုတ် provider က ပံ့ပိုးလျှင် Fetch Models ကို သုံးပါ။"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Bruk en hvilken som helst OpenAI-kompatibel `chat/completions` Endpoint. Fyll inn Endpoint og modeller selv, eller bruk Fetch Models hvis leverandøren støtter det."
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Gebruik een willekeurige OpenAI-compatibele `chat/completions` Endpoint. Vul de Endpoint en modellen zelf in, of gebruik Fetch Models als de provider dat ondersteunt."
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Użyj dowolnego zgodnego z OpenAI Endpointu `chat/completions`. Wpisz Endpoint i modele ręcznie albo użyj Fetch Models, jeśli dostawca to obsługuje."
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Use qualquer Endpoint `chat/completions` compatível com OpenAI. Preencha o Endpoint e os modelos manualmente ou use Fetch Models se o fornecedor oferecer suporte."
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Use qualquer Endpoint `chat/completions` compatível com OpenAI. Preencha o Endpoint e os modelos manualmente ou use Fetch Models se o provedor oferecer suporte."
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Folosește orice Endpoint `chat/completions` compatibil cu OpenAI. Completează manual Endpoint-ul și modelele sau folosește Fetch Models dacă furnizorul acceptă acest lucru."
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Используйте любой OpenAI-совместимый `chat/completions` Endpoint. Заполните Endpoint и модели вручную или используйте Fetch Models, если провайдер это поддерживает."
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Použite ľubovoľný OpenAI-kompatibilný endpoint chat/completions. Endpoint a modely zadajte ručne alebo ich načítajte, ak to poskytovateľ podporuje."
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Uporabite katerikoli z OpenAI združljiv `chat/completions` Endpoint. Endpoint in modele izpolnite sami ali uporabite Fetch Models, če to ponudnik podpira."
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Користите било који OpenAI-компатибилан `chat/completions` Endpoint. Endpoint и моделе унесите ручно или употребите Fetch Models ако provider то подржава."
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Använd valfri OpenAI-kompatibel `chat/completions` Endpoint. Fyll i Endpoint och modeller själv, eller använd Fetch Models om leverantören stöder det."
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "எந்த OpenAI-compatible `chat/completions` Endpoint-யையும் பயன்படுத்தலாம். Endpoint மற்றும் model-களை நீங்களே நிரப்புங்கள், அல்லது provider ஆதரித்தால் Fetch Models பயன்படுத்துங்கள்."
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ఏదైనా OpenAI-compatible `chat/completions` Endpoint‌ను ఉపయోగించండి. Endpoint మరియు models‌ను మీరు స్వయంగా పూరించండి, లేదా provider మద్దతు ఇస్తే Fetch Models ఉపయోగించండి."
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ใช้ Endpoint `chat/completions` ใดก็ได้ที่เข้ากันได้กับ OpenAI กรอก Endpoint และโมเดลด้วยตัวเอง หรือใช้ Fetch Models หากผู้ให้บริการรองรับ"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI uyumlu herhangi bir `chat/completions` Endpoint kullanın. Endpoint ve modelleri kendiniz doldurun veya sağlayıcı destekliyorsa Fetch Models kullanın."
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ھەر قانداق OpenAI ماس كېلىدىغان `chat/completions` Endpoint نى ئىشلىتىڭ. Endpoint ۋە مودېللەرنى ئۆزىڭىز تولدۇرۇڭ ياكى provider قوللىسا Fetch Models نى ئىشلىتىڭ."
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Використовуйте будь-який сумісний з OpenAI Endpoint `chat/completions`. Заповніть Endpoint і моделі вручну або використайте Fetch Models, якщо провайдер це підтримує."
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "کسی بھی OpenAI-compatible `chat/completions` Endpoint کو استعمال کریں۔ Endpoint اور models خود بھریں، یا اگر provider سپورٹ کرتا ہو تو Fetch Models استعمال کریں۔"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Sử dụng bất kỳ Endpoint `chat/completions` nào tương thích với OpenAI. Tự điền Endpoint và các model, hoặc dùng Fetch Models nếu nhà cung cấp hỗ trợ."
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "使用任意 OpenAI 兼容的 `chat/completions` 地址。Endpoint 和模型需要你自己填写，或在对方支持时通过 Fetch Models 拉取。"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "使用任意 OpenAI 相容的 `chat/completions` 位址。Endpoint 與模型需要你自行填寫，或在對方支援時透過 Fetch Models 擷取。"
+            }
+          }
+        }
+      },
+      "grammar.analysis.provider.custom_compatible.title": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "متوافق OpenAI مخصص"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Потребителски OpenAI-съвместим"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "কাস্টম OpenAI-সামঞ্জস্যপূর্ণ"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI compatible personalitzat"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vlastní OpenAI-kompatibilní"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Brugerdefineret OpenAI-kompatibel"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Benutzerdefiniert OpenAI-kompatibel"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Προσαρμοσμένο συμβατό με OpenAI"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Custom OpenAI-Compatible"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Compatible con OpenAI personalizado"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Kohandatud OpenAI-ühilduv"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "سفارشیِ سازگار با OpenAI"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mukautettu OpenAI-yhteensopiva"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Custom OpenAI-Compatible"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Compatible OpenAI personnalisé"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "מותאם אישית ותואם OpenAI"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "कस्टम OpenAI-संगत"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Prilagođeni OpenAI-kompatibilan"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Egyéni OpenAI-kompatibilis"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Kustom kompatibel OpenAI"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Compatibile OpenAI personalizzato"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "カスタム OpenAI 互換"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "მორგებული OpenAI-თავსებადი"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ផ្ទាល់ខ្លួនដែលឆបគ្នានឹង OpenAI"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "사용자 지정 OpenAI 호환"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI ທີ່ກຳນົດເອງແບບເຂົ້າກັນໄດ້"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Pasirinktinis su OpenAI suderinamas"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Pielāgots ar OpenAI saderīgs"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Тусгай OpenAI-тэй нийцтэй"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Tersuai serasi OpenAI"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "စိတ်ကြိုက် OpenAI ကိုက်ညီသော"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Egendefinert OpenAI-kompatibel"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Aangepast OpenAI-compatibel"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Niestandardowy zgodny z OpenAI"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Compatível com OpenAI personalizado"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Compatível com OpenAI personalizado"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Compatibil OpenAI personalizat"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Пользовательский OpenAI-совместимый"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vlastný OpenAI-kompatibilný"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Prilagojen, združljiv z OpenAI"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Прилагођен и OpenAI-компатибилан"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Anpassad OpenAI-kompatibel"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "தனிப்பயன் OpenAI-இணக்கமான"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "కస్టమ్ OpenAI-అనుకూలమైన"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "กำหนดเองที่เข้ากันได้กับ OpenAI"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Özel OpenAI uyumlu"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ئىختىيارى OpenAI ماس كېلىدىغان"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Користувацький сумісний з OpenAI"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "کسٹم OpenAI-مطابقت پذیر"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Tùy chỉnh tương thích OpenAI"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "自定义 OpenAI 兼容"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "自訂 OpenAI 相容"
+            }
+          }
+        }
+      },
+      "grammar.analysis.provider.deepseek.title": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          }
+        }
+      },
+      "grammar.analysis.provider.openai.footnote": {
+        "extractionState": "stale",
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "سيُملأ تلقائيًا Endpoint `chat/completions` الرسمي الخاص بـ OpenAI والنموذج الافتراضي الموصى به. وما زال بإمكانك تعديل Endpoint عند الحاجة."
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Автоматично попълва официалния Endpoint `chat/completions` на OpenAI и препоръчания модел по подразбиране. Endpoint все още може да се редактира при нужда."
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "এটি OpenAI-এর অফিসিয়াল `chat/completions` Endpoint আর প্রস্তাবিত ডিফল্ট model আগে থেকেই বসিয়ে দেবে। প্রয়োজনে Endpoint আপনি এখনও বদলাতে পারবেন।"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Omple automàticament l’Endpoint oficial `chat/completions` d’OpenAI i el model predeterminat recomanat. Encara pots editar l’Endpoint si cal."
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Automaticky předvyplní oficiální OpenAI `chat/completions` Endpoint a doporučený výchozí model. Endpoint můžete v případě potřeby stále upravit."
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Udfylder automatisk OpenAIs officielle `chat/completions` Endpoint og den anbefalede standardmodel. Du kan stadig redigere Endpoint om nødvendigt."
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Füllt automatisch den offiziellen `chat/completions`-Endpoint von OpenAI und das empfohlene Standardmodell aus. Bei Bedarf können Sie den Endpoint weiterhin bearbeiten."
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Συμπληρώνει αυτόματα το επίσημο Endpoint `chat/completions` της OpenAI και το προτεινόμενο προεπιλεγμένο μοντέλο. Μπορείτε ακόμη να επεξεργαστείτε το Endpoint αν χρειάζεται."
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Pre-fills OpenAI's official chat/completions endpoint and the recommended default model. You can still edit the endpoint if needed."
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Rellena automáticamente el endpoint oficial `chat/completions` de OpenAI y el modelo predeterminado recomendado. Aun así puedes editar el endpoint si lo necesitas."
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Täidab automaatselt OpenAI ametliku `chat/completions` Endpointi ja soovitatud vaikemudeli. Vajadusel saate Endpointi siiski muuta."
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint رسمی `chat/completions` اوپن‌اِی‌آی و مدل پیش‌فرض پیشنهادی را به‌صورت خودکار پر می‌کند. در صورت نیاز همچنان می‌توانید Endpoint را ویرایش کنید."
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Täyttää automaattisesti OpenAI:n virallisen `chat/completions` Endpointin ja suositellun oletusmallin. Voit silti muokata Endpointia tarvittaessa."
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Awtomatikong pinupunan ang opisyal na `chat/completions` Endpoint ng OpenAI at ang inirerekomendang default model. Maaari mo pa ring baguhin ang Endpoint kung kailangan."
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Préremplit l’endpoint officiel `chat/completions` d’OpenAI et le modèle par défaut recommandé. Vous pouvez toujours modifier l’endpoint si nécessaire."
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ממלא מראש את Endpoint ה-`chat/completions` הרשמי של OpenAI ואת מודל ברירת המחדל המומלץ. עדיין ניתן לערוך את ה-Endpoint לפי הצורך."
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "यह OpenAI के आधिकारिक `chat/completions` Endpoint और अनुशंसित डिफ़ॉल्ट model को पहले से भर देता है। जरूरत पड़ने पर आप Endpoint को फिर भी बदल सकते हैं।"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Automatski ispunjava službeni OpenAI `chat/completions` Endpoint i preporučeni zadani model. Endpoint i dalje možete urediti po potrebi."
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Automatikusan kitölti az OpenAI hivatalos `chat/completions` Endpointját és az ajánlott alapértelmezett modellt. Az Endpoint szükség esetén továbbra is szerkeszthető."
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Secara otomatis mengisi Endpoint resmi `chat/completions` milik OpenAI dan model default yang direkomendasikan. Anda tetap bisa mengedit Endpoint jika diperlukan."
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Compila automaticamente l’Endpoint ufficiale `chat/completions` di OpenAI e il modello predefinito consigliato. Puoi comunque modificare l’Endpoint se necessario."
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI 公式の chat/completions エンドポイントと推奨デフォルトモデルを自動入力します。必要に応じてエンドポイントは編集できます。"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ავტომატურად ავსებს OpenAI-ის ოფიციალურ `chat/completions` Endpoint-ს და რეკომენდებულ ნაგულისხმებ მოდელს. საჭიროების შემთხვევაში Endpoint-ის შეცვლა კვლავ შეგიძლიათ."
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "វានឹងបំពេញ Endpoint `chat/completions` ផ្លូវការរបស់ OpenAI និងម៉ូដែលលំនាំដើមដែលបានណែនាំដោយស្វ័យប្រវត្តិ។ អ្នកនៅតែអាចកែ Endpoint បាន ប្រសិនបើចាំបាច់។"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI 공식 `chat/completions` Endpoint와 권장 기본 모델을 자동으로 채워 넣습니다. 필요하면 Endpoint는 직접 수정할 수 있습니다."
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ຈະເຕີມ Endpoint `chat/completions` ທາງການຂອງ OpenAI ແລະໂມເດວເລີ່ມຕົ້ນທີ່ແນະນຳໃຫ້ໂດຍອັດຕະໂນມັດ. ທ່ານຍັງແກ້ Endpoint ເອງໄດ້ຖ້າຈຳເປັນ."
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Automatiškai užpildo oficialų OpenAI `chat/completions` Endpoint ir rekomenduojamą numatytąjį modelį. Jei reikia, Endpoint vis tiek galite redaguoti."
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Automātiski aizpilda OpenAI oficiālo `chat/completions` Endpoint un ieteikto noklusējuma modeļa vērtību. Vajadzības gadījumā Endpoint joprojām var rediģēt."
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI-ийн албан ёсны `chat/completions` Endpoint болон санал болгосон үндсэн загварыг автоматаар бөглөнө. Шаардлагатай бол Endpoint-ийг гараар өөрчилж болно."
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mengisi secara automatik Endpoint rasmi `chat/completions` OpenAI dan model lalai yang disyorkan. Anda masih boleh mengedit Endpoint jika perlu."
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI ၏ တရားဝင် `chat/completions` Endpoint နှင့် အကြံပြု default model ကို အလိုအလျောက်ဖြည့်ပေးမည်။ လိုအပ်ပါက Endpoint ကို သင်တိုင် ပြင်ဆင်နိုင်ပါသည်."
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Fyller automatisk inn OpenAIs offisielle `chat/completions` Endpoint og den anbefalte standardmodellen. Du kan fortsatt redigere Endpoint ved behov."
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vult automatisch de officiële `chat/completions` Endpoint van OpenAI en het aanbevolen standaardmodel in. Je kunt de Endpoint nog steeds aanpassen indien nodig."
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Automatycznie uzupełnia oficjalny Endpoint `chat/completions` OpenAI oraz zalecany domyślny model. W razie potrzeby nadal możesz edytować Endpoint ręcznie."
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Preenche automaticamente o Endpoint oficial `chat/completions` da OpenAI e o modelo predefinido recomendado. Ainda pode editar o Endpoint, se necessário."
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Preenche automaticamente o Endpoint oficial `chat/completions` da OpenAI e o modelo padrão recomendado. Você ainda pode editar o Endpoint, se precisar."
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Completează automat Endpoint-ul oficial `chat/completions` al OpenAI și modelul implicit recomandat. Poți totuși să editezi Endpoint-ul dacă este nevoie."
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Автоматически заполняет официальный `chat/completions` Endpoint OpenAI и рекомендуемую модель по умолчанию. При необходимости Endpoint всё ещё можно изменить вручную."
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Predvyplní oficiálny OpenAI endpoint chat/completions a odporúčaný predvolený model. Endpoint môžete podľa potreby upraviť."
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Samodejno izpolni uradni OpenAI `chat/completions` Endpoint in priporočeni privzeti model. Endpoint lahko po potrebi še vedno uredite."
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Аутоматски попуњава OpenAI званични `chat/completions` Endpoint и препоручени подразумевани модел. Endpoint и даље можете уредити ако затреба."
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Fyller automatiskt i OpenAIs officiella `chat/completions` Endpoint och den rekommenderade standardmodellen. Du kan fortfarande redigera Endpoint vid behov."
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI-யின் அதிகாரப்பூர்வ `chat/completions` Endpoint மற்றும் பரிந்துரைக்கப்பட்ட இயல்புநிலை model-ஐ தானாக நிரப்பும். தேவையெனில் Endpoint-ஐ நீங்கள் இன்னும் மாற்றலாம்."
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI యొక్క అధికారిక `chat/completions` Endpoint మరియు సిఫార్సు చేసిన default model‌ను ఇది స్వయంచాలకంగా నింపుతుంది. అవసరమైతే మీరు Endpoint‌ను ఇంకా మార్చవచ్చు."
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ระบบจะกรอก Endpoint `chat/completions` ทางการของ OpenAI และโมเดลเริ่มต้นที่แนะนำให้อัตโนมัติ คุณยังแก้ไข Endpoint เองได้หากจำเป็น"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI’nin resmî `chat/completions` Endpointini ve önerilen varsayılan modeli otomatik olarak doldurur. Gerekirse Endpointi yine düzenleyebilirsiniz."
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI نىڭ رەسمىي `chat/completions` Endpoint ى ۋە تەۋسىيە قىلىنغان كۆڭۈلدىكى مودېلىنى ئاپتوماتىك تولدۇرىدۇ. زۆرۈر بولسا Endpoint نى يەنىلا قولدا ئۆزگەرتەلەيسىز."
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Автоматично заповнює офіційний Endpoint `chat/completions` OpenAI і рекомендовану типову модель. За потреби Endpoint все одно можна відредагувати."
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "یہ OpenAI کے سرکاری `chat/completions` Endpoint اور تجویز کردہ default model کو خودکار طور پر بھر دیتا ہے۔ ضرورت ہو تو آپ Endpoint کو پھر بھی تبدیل کر سکتے ہیں۔"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Tự động điền Endpoint `chat/completions` chính thức của OpenAI và model mặc định được đề xuất. Bạn vẫn có thể chỉnh sửa Endpoint nếu cần."
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "会自动填入 OpenAI 官方 `chat/completions` 地址和推荐默认模型，你仍然可以按需修改 Endpoint。"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "會自動填入 OpenAI 官方 `chat/completions` 位址與建議預設模型，你仍可依需求修改 Endpoint。"
+            }
+          }
+        }
+      },
+      "grammar.analysis.provider.openai.title": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          }
+        }
+      },
+      "grammar.analysis.provider.title": {
+        "extractionState": "stale",
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "المزوّد"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Доставчик"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "প্রদানকারী"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Proveïdor"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Poskytovatel"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Udbyder"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Anbieter"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Πάροχος"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Provider"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Proveedor"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Teenusepakkuja"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ارائه‌دهنده"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Palveluntarjoaja"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Provider"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Fournisseur"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ספק"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "प्रदाता"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Pružatelj"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Szolgáltató"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Penyedia"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Provider"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "プロバイダ"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "პროვაიდერი"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "អ្នកផ្ដល់សេវា"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "제공자"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ຜູ້ໃຫ້ບໍລິການ"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Teikėjas"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Pakalpojumu sniedzējs"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Нийлүүлэгч"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Penyedia"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ပံ့ပိုးသူ"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Leverandør"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Provider"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Dostawca"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Fornecedor"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Fornecedor"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Furnizor"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Провайдер"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Poskytovateľ"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Ponudnik"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Провајдер"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Leverantör"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "வழங்குபவர்"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ప్రొవైడర్"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "ผู้ให้บริการ"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Sağlayıcı"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "تەمىنلىگۈچى"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Провайдер"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "فراہم کنندہ"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Nhà cung cấp"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "提供方"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "提供方"
+            }
+          }
+        }
+      },
     "grammar.analysis.general.section.judgment" : {
       "localizations" : {
         "ar" : { "stringUnit" : { "state" : "translated", "value" : "## البنية" } },
