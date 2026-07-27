@@ -99,9 +99,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         // drop that pending debounce and let `pasteTextBlock` decide whether
         // to query. This avoids a duplicate request when paste auto-query is
         // on, and honors the paste preference when it is off.
-        [NSObject cancelPreviousPerformRequestsWithTarget:self
-                                                 selector:@selector(autoQueryWhenTextChanged)
-                                                   object:nil];
+        [self cancelAutoQuery];
 
         if (self.pasteTextBlock) {
             self.pasteTextBlock(text);
@@ -420,9 +418,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         } else {
             // Pressing Enter queries immediately, so drop any pending
             // debounced auto query to avoid a duplicate request.
-            [NSObject cancelPreviousPerformRequestsWithTarget:self
-                                                     selector:@selector(autoQueryWhenTextChanged)
-                                                       object:nil];
+            [self cancelAutoQuery];
             if (self.enterActionBlock) {
                 MMLogInfo(@"enterActionBlock");
                 self.enterActionBlock(self.copiedText);
@@ -513,14 +509,10 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     [self scheduleAutoQueryWhenTextChanged];
 }
 
-// !!!: Cancel any pending auto query once the input view loses focus, e.g.
-// the query window was closed via Escape or lost key status. These windows
-// are kept alive (releasedWhenClosed = NO), so an uncancelled debounce could
-// otherwise fire a hidden query after the user already left.
+// Cancel the pending auto query when the text view ends editing. Window
+// closing and hiding are handled separately by the window lifecycle.
 - (void)textDidEndEditing:(NSNotification *)notification {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self
-                                             selector:@selector(autoQueryWhenTextChanged)
-                                               object:nil];
+    [self cancelAutoQuery];
 }
 
 /// Schedule a debounced auto query when "auto query when text changed" is
@@ -528,9 +520,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 /// committed CJK text still queries: at commit `hasMarkedText` may still be
 /// YES, but by the time the debounce fires composition has settled.
 - (void)scheduleAutoQueryWhenTextChanged {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self
-                                             selector:@selector(autoQueryWhenTextChanged)
-                                               object:nil];
+    [self cancelAutoQuery];
 
     if (!MyConfiguration.shared.autoQueryWhenTextChanged) {
         return;
@@ -539,6 +529,12 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     [self performSelector:@selector(autoQueryWhenTextChanged)
                withObject:nil
                afterDelay:EZAutoQueryWhenTextChangedDelay];
+}
+
+- (void)cancelAutoQuery {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self
+                                             selector:@selector(autoQueryWhenTextChanged)
+                                               object:nil];
 }
 
 - (void)autoQueryWhenTextChanged {
