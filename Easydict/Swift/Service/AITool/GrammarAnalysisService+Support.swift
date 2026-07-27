@@ -158,12 +158,15 @@ extension GrammarAnalysisService {
     }
 
     func skipMessage(answerLanguage: Language) -> String {
-        localizedSkipMessageFallback(answerLanguage: answerLanguage)
+        localizedAnswerString(
+            forKey: "grammar.analysis.skipped",
+            answerLanguage: answerLanguage
+        )
     }
 
-    func localizedSkipMessageFallback(answerLanguage: Language) -> String {
+    func localizedAnswerString(forKey key: String, answerLanguage: Language) -> String {
         let availableLocalizations = Bundle.main.localizations.filter { $0 != "Base" }
-        let preferredLocalizations = skipMessageFallbackLocalizations(for: answerLanguage)
+        let preferredLocalizations = answerStringFallbackLocalizations(for: answerLanguage)
         let resolvedLocalization = Bundle.preferredLocalizations(
             from: availableLocalizations,
             forPreferences: preferredLocalizations
@@ -176,20 +179,20 @@ extension GrammarAnalysisService {
               ),
               let bundle = Bundle(path: bundlePath)
         else {
-            return String(localized: "grammar.analysis.skipped")
+            return Bundle.main.localizedString(forKey: key, value: nil, table: nil)
         }
 
         let localizedValue = bundle.localizedString(
-            forKey: "grammar.analysis.skipped",
+            forKey: key,
             value: nil,
             table: nil
         )
-        return localizedValue == "grammar.analysis.skipped"
-            ? String(localized: "grammar.analysis.skipped")
+        return localizedValue == key
+            ? Bundle.main.localizedString(forKey: key, value: nil, table: nil)
             : localizedValue
     }
 
-    func skipMessageFallbackLocalizations(for answerLanguage: Language) -> [String] {
+    func answerStringFallbackLocalizations(for answerLanguage: Language) -> [String] {
         switch answerLanguage {
         case .classicalChinese, .simplifiedChinese:
             return ["zh-Hans", "zh"]

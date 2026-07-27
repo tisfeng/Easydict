@@ -8,7 +8,8 @@
 import Foundation
 
 extension GrammarAnalysisService {
-    var analysisSystemPrompt: String {
+    func analysisSystemPrompt(answerLanguage: Language) -> String {
+        let titles = analysisSectionTitles(answerLanguage: answerLanguage)
         switch analysisMode {
         case .general:
             """
@@ -61,19 +62,19 @@ extension GrammarAnalysisService {
             I goes to library yesterday because I need finish my assignment.
 
             Example output:
-            ## IELTS View
+            \(titles.judgment)
             Closer to IELTS Writing than Speaking because it attempts a formal \
             explanatory sentence. Grammatical Range is limited: the sentence \
             mainly uses one simple cause pattern. Accuracy is weakened by \
             several basic verb-form errors.
 
-            ## Structure Breakdown
+            \(titles.breakdown)
             The sentence has a simple main statement followed by a reason \
             clause introduced by "because". The relationship is clear, but \
             both parts show weak verb control, so the structure is basic and \
             error-prone rather than flexible.
 
-            ## Band Risks
+            \(titles.focus)
             - High: "I goes" should be "I went" because "yesterday" requires a \
             past-tense verb.
             - High: "need finish" should be "needed to finish" or "need to \
@@ -81,7 +82,7 @@ extension GrammarAnalysisService {
             - Medium: "to library" is unnatural here; "to the library" is \
             more natural.
 
-            ## Higher-Band Rewrite
+            \(titles.rewrite)
             Minimal correction: I went to the library yesterday because I \
             needed to finish my assignment.
             Higher-band version: I went to the library yesterday to finish my \
@@ -97,24 +98,24 @@ extension GrammarAnalysisService {
             displacement.
 
             Example output:
-            ## IELTS View
+            \(titles.judgment)
             Closer to IELTS Writing than Speaking because the sentence is \
             dense, formal, and argumentative. Grammatical Range is strong: it \
             controls subordination and a conditional idea within one sentence. \
             Accuracy is also strong, with no major band-limiting grammar \
             errors.
 
-            ## Structure Breakdown
+            \(titles.breakdown)
             The sentence opens with a concessive frame and then moves to the \
             writer's main claim. It combines two passive reporting structures \
             and finishes with an "unless" condition, showing controlled \
             subordination across the whole sentence.
 
-            ## Band Risks
+            \(titles.focus)
             - Low: The sentence is grammatically sound overall. The main \
             improvement area is concision rather than correction.
 
-            ## Higher-Band Rewrite
+            \(titles.rewrite)
             Minimal correction: No major grammar correction is needed.
             Higher-band version: While the rapid advancement of artificial \
             intelligence is widely acknowledged as transformative, many \
@@ -143,7 +144,10 @@ extension GrammarAnalysisService {
 
         let response = try await requestChatCompletion(
             messages: [
-                .init(role: "system", content: analysisSystemPrompt),
+                .init(
+                    role: "system",
+                    content: analysisSystemPrompt(answerLanguage: answerLanguage)
+                ),
                 .init(role: "user", content: userPrompt),
             ],
             model: model,
