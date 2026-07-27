@@ -158,8 +158,7 @@ extension GrammarAnalysisService {
     }
 
     func skipMessage(answerLanguage: Language) -> String {
-        skipMessageText(answerLanguage: answerLanguage) ??
-            localizedSkipMessageFallback(answerLanguage: answerLanguage)
+        localizedSkipMessageFallback(answerLanguage: answerLanguage)
     }
 
     func localizedSkipMessageFallback(answerLanguage: Language) -> String {
@@ -200,7 +199,9 @@ extension GrammarAnalysisService {
             return ["en"]
         case .japanese:
             return ["ja"]
-        case .catalan, .spanish:
+        case .catalan:
+            return ["ca", "es"]
+        case .spanish:
             return ["es"]
         case .slovak:
             return ["sk"]
