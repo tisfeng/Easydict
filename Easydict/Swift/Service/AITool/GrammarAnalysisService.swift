@@ -133,13 +133,17 @@ final class GrammarAnalysisService: AIToolService {
     }
 
     override var recommendedEndpoint: String? {
-        switch credentialSource {
-        case .builtIn:
-            nil
-        case .userKey:
+        guard credentialSource.usesPrivateKey else {
+            return nil
+        }
+
+        switch provider {
+        case .openAI:
             Self.openAIOfficialEndpoint
-        case .deepSeekKey:
+        case .deepSeek:
             Self.deepSeekOfficialEndpoint
+        case .customOpenAICompatible:
+            nil
         }
     }
 
