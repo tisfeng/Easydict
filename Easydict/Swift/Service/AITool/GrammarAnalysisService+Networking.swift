@@ -176,7 +176,7 @@ extension GrammarAnalysisService {
         }
 
         if apiKeyRequirement().requiresKeyForRequest, apiKey.trim().isEmpty {
-            throw QueryError(type: .missingSecretKey, message: "API key is empty")
+            throw QueryError(type: .missingSecretKey)
         }
 
         let requestBody = GrammarAnalysisChatCompletionRequest(

@@ -83,7 +83,8 @@ func routes(_ app: Application) throws {
             throw QueryError(type: .api, message: message)
         }
 
-        guard streamService.usesStreamingTransport else {
+        // BaseOpenAIService can still wrap a non-streaming response into one SSE chunk.
+        guard streamService.usesStreamingTransport || streamService is BaseOpenAIService else {
             let message =
                 "\(request.serviceType) currently uses non-streaming transport, which does not support 'streamTranslate'. Please use 'translate' instead."
             throw QueryError(type: .api, message: message)
