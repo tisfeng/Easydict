@@ -168,7 +168,10 @@ extension GrammarAnalysisService {
         guard let url = URL(string: endpoint), url.isValid else {
             throw QueryError(
                 type: .parameter,
-                message: "`\(serviceType().rawValue)` endpoint is invalid"
+                message: String(
+                    format: String(localized: "grammar.analysis.endpoint.invalid %@"),
+                    name()
+                )
             )
         }
 

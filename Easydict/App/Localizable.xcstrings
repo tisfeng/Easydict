@@ -8469,6 +8469,322 @@
           }
         }
       },
+      "grammar.analysis.endpoint.invalid %@": {
+        "localizations": {
+          "ar": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint غير صالح"
+            }
+          },
+          "bg": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint на %@ е невалиден"
+            }
+          },
+          "bn": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint অবৈধ"
+            }
+          },
+          "ca": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "L'endpoint de %@ no és vàlid"
+            }
+          },
+          "cs": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint služby %@ je neplatný"
+            }
+          },
+          "da": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint for %@ er ugyldig"
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Der Endpoint von %@ ist ungültig"
+            }
+          },
+          "el": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Το endpoint του %@ δεν είναι έγκυρο"
+            }
+          },
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint is invalid"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "El endpoint de %@ no es válido"
+            }
+          },
+          "et": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint on vigane"
+            }
+          },
+          "fa": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint سرویس %@ نامعتبر است"
+            }
+          },
+          "fi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@-palvelun endpoint ei kelpaa"
+            }
+          },
+          "fil": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Hindi wasto ang endpoint ng %@"
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "L'endpoint de %@ est invalide"
+            }
+          },
+          "he": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "נקודת הקצה של %@ אינה תקינה"
+            }
+          },
+          "hi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint अमान्य है"
+            }
+          },
+          "hr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint za %@ nije valjan"
+            }
+          },
+          "hu": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "A(z) %@ endpoint érvénytelen"
+            }
+          },
+          "id": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint %@ tidak valid"
+            }
+          },
+          "it": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "L'endpoint di %@ non è valido"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ のエンドポイントが無効です"
+            }
+          },
+          "ka": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@-ის endpoint არასწორია"
+            }
+          },
+          "km": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint របស់ %@ មិនត្រឹមត្រូវទេ"
+            }
+          },
+          "ko": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ Endpoint가 올바르지 않습니다"
+            }
+          },
+          "lo": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint ຂອງ %@ ບໍ່ຖືກຕ້ອງ"
+            }
+          },
+          "lt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint netinkamas"
+            }
+          },
+          "lv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ galapunkts nav derīgs"
+            }
+          },
+          "mn-Mong": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint буруу байна"
+            }
+          },
+          "ms": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint %@ tidak sah"
+            }
+          },
+          "my": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint မမှန်ကန်ပါ"
+            }
+          },
+          "nb": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpointen for %@ er ugyldig"
+            }
+          },
+          "nl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "De endpoint van %@ is ongeldig"
+            }
+          },
+          "pl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint usługi %@ jest nieprawidłowy"
+            }
+          },
+          "pt": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "O endpoint de %@ é inválido"
+            }
+          },
+          "pt-BR": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "O endpoint de %@ é inválido"
+            }
+          },
+          "ro": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint-ul pentru %@ nu este valid"
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint для %@ недействителен"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint služby %@ je neplatný"
+            }
+          },
+          "sl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Končna točka za %@ ni veljavna"
+            }
+          },
+          "sr-Cyrl": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint за %@ није важећи"
+            }
+          },
+          "sv": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpointen för %@ är ogiltig"
+            }
+          },
+          "ta": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint செல்லாதது"
+            }
+          },
+          "te": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint చెల్లదు"
+            }
+          },
+          "th": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint ของ %@ ไม่ถูกต้อง"
+            }
+          },
+          "tr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint geçersiz"
+            }
+          },
+          "ug": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ نىڭ endpointى ئىناۋەتسىز"
+            }
+          },
+          "uk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint для %@ недійсний"
+            }
+          },
+          "ur": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint درست نہیں ہے"
+            }
+          },
+          "vi": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint của %@ không hợp lệ"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ 的 Endpoint 无效"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ 的 Endpoint 無效"
+            }
+          }
+        }
+      },
     "grammar.analysis.general.section.judgment" : {
       "localizations" : {
         "ar" : { "stringUnit" : { "state" : "translated", "value" : "## البنية" } },
