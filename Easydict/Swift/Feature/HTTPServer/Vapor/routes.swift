@@ -83,8 +83,12 @@ func routes(_ app: Application) throws {
             throw QueryError(type: .api, message: message)
         }
 
-        // BaseOpenAIService can still wrap a non-streaming response into one SSE chunk.
-        guard streamService.usesStreamingTransport || streamService is BaseOpenAIService else {
+        // BaseOpenAIService can still wrap a non-streaming response into one SSE chunk,
+        // but GrammarAnalysis must stay on its dedicated gate + analysis path.
+        let canUseGenericStreamRoute =
+            streamService.usesStreamingTransport ||
+            (streamService is BaseOpenAIService && !(streamService is GrammarAnalysisService))
+        guard canUseGenericStreamRoute else {
             let message =
                 "\(request.serviceType) currently uses non-streaming transport, which does not support 'streamTranslate'. Please use 'translate' instead."
             throw QueryError(type: .api, message: message)

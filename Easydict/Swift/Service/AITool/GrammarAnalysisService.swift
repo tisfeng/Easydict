@@ -7,6 +7,7 @@
 
 import Defaults
 import Foundation
+import SwiftUI
 
 // MARK: - GrammarAnalysisService
 
@@ -117,6 +118,17 @@ final class GrammarAnalysisService: AIToolService {
 
     override var apiKeyKey: Defaults.Key<String> {
         userCredentialStringDefaultsKey(.apiKey)
+    }
+
+    override var apiKeyPlaceholder: LocalizedStringKey {
+        switch credentialSource {
+        case .builtIn:
+            super.apiKeyPlaceholder
+        case .userKey:
+            "grammar.analysis.credential_source.openai_key.title"
+        case .deepSeekKey:
+            "grammar.analysis.credential_source.deepseek_key.title"
+        }
     }
 
     override var endpoint: String {
