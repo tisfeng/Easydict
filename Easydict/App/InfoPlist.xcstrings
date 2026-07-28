@@ -40,6 +40,12 @@
             "state" : "translated",
             "value" : "Easydict"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
         }
       }
     },
@@ -78,6 +84,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Easydict"
@@ -124,6 +136,12 @@
             "state" : "translated",
             "value" : "Easydict requiere permiso para ejecutar AppleScript."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict, AppleScript'i çalıştırmak için izin gerektirir."
+          }
         }
       }
     },
@@ -165,6 +183,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copyright © 2023-2025 tisfeng. Todos los derechos reservados."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telif Hakkı © 2023-2025 tisfeng. Tüm hakları saklıdır."
           }
         }
       }

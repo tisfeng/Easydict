@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Easydict 本地化模块概览</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      line-height: 1.65;
+    }
+    body {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 32px 24px 56px;
+    }
+    h1, h2 {
+      line-height: 1.25;
+    }
+    code {
+      padding: 0.1em 0.35em;
+      border-radius: 4px;
+      background: color-mix(in srgb, CanvasText 8%, Canvas);
+    }
+    .card {
+      margin: 16px 0;
+      padding: 16px 20px;
+      border: 1px solid color-mix(in srgb, CanvasText 18%, Canvas);
+      border-radius: 10px;
+    }
+    li + li {
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Easydict 本地化模块概览</h1>
+  <p>
+    本目录负责应用界面语言的选择、系统语言识别和运行时资源包切换。
+    翻译内容由 <code>Localizable.xcstrings</code> 与
+    <code>InfoPlist.xcstrings</code> 管理；本目录不负责翻译服务的源语言或目标语言能力。
+  </p>
+
+  <section class="card">
+    <h2>职责与边界</h2>
+    <ul>
+      <li><code>LanguageState.swift</code> 定义可选界面语言、显示名称和用户偏好。</li>
+      <li><code>I18nHelper.swift</code> 解析偏好或系统区域设置，并定位对应的 <code>.lproj</code>。</li>
+      <li><code>LocalizedBundle.swift</code> 将字符串查询转发到当前语言资源包。</li>
+      <li><code>NSBundle+Localization.m</code> 在启动时替换主资源包的字符串查找行为。</li>
+      <li>String Catalog 是文案的唯一来源；服务提供商的语言映射属于各 Service 模块。</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>运行流程</h2>
+    <ol>
+      <li>启动时读取 <code>LanguagePreferenceLocalKey</code>；没有有效偏好时检查系统语言。</li>
+      <li><code>Locale.languageType</code> 按语言、文字和地区组合匹配支持的界面语言。</li>
+      <li><code>I18nHelper</code> 使用语言代码打开对应的 <code>.lproj</code> 资源包。</li>
+      <li>SwiftUI 与 AppKit 的本地化查询经 <code>LocalizedBundle</code> 返回当前语言文案。</li>
+      <li>用户切换语言后发布通知，使依赖界面语言的视图刷新。</li>
+    </ol>
+    <p>
+      若偏好无效或资源包缺失，语言代码回退到英语，资源包查找最终回退到主 Bundle。
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>添加或维护语言</h2>
+    <ol>
+      <li>在 <code>LanguageState.LanguageType</code> 注册稳定的 BCP 47 语言代码和原生显示名称。</li>
+      <li>为两个 String Catalog 的每个键补齐目标语言，保留占位符、URL、格式和产品名称。</li>
+      <li>在 Xcode 项目的 <code>knownRegions</code> 注册语言代码。</li>
+      <li>验证 JSON、键覆盖率、占位符一致性，并审查差异中是否混入无关改动。</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>故障与调试入口</h2>
+    <ul>
+      <li>语言未显示：检查枚举是否包含该代码，以及显示名称分支是否完整。</li>
+      <li>系统语言未命中：检查 <code>Locale.languageType</code> 的语言、文字、地区组合。</li>
+      <li>文案仍为英语：确认目标语言单元存在、资源已生成，并检查 <code>localizedBundle</code> 路径。</li>
+      <li>格式异常：比较英语与目标语言中的 printf 占位符、插值变量、标签、换行和 URL。</li>
+      <li>基础验证无需启动应用；编译风险或资源生成异常时再运行 Xcode 构建。</li>
+    </ul>
+  </section>
+
+  <p>
+    配套流程图：<a href="localization-localization-flow.svg">localization-localization-flow.svg</a>
+  </p>
+</body>
+</html>
