@@ -307,18 +307,9 @@ private struct AddServiceSheet: View {
         }
         .padding(18)
         .frame(width: 640, height: 540)
-        .opacity(isVisible ? 1 : 0)
-        .scaleEffect(isVisible ? 1 : 0.985)
-        .onAppear {
-            withAnimation(.easeOut(duration: 0.16)) {
-                isVisible = true
-            }
-        }
     }
 
     // MARK: Private
-
-    @State private var isVisible = false
 
     @Environment(\.dismiss) private var dismiss
 

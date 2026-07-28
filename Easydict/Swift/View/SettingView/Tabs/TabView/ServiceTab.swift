@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Foundation
 import SwiftUI
 
 // MARK: - ServiceTab
@@ -136,11 +137,14 @@ class ServiceTabViewModel: ObservableObject {
     }
 
     func addService(_ item: ServiceListItem) {
-        guard LocalStorage.shared().addServiceType(item.id, windowType: windowType) else {
+        let serviceTypeId = item.createsNewInstance
+            ? "\(item.type.rawValue)#\(UUID().uuidString)"
+            : item.id
+        guard LocalStorage.shared().addServiceType(serviceTypeId, windowType: windowType) else {
             return
         }
 
-        selectedItem = .service(item.id)
+        selectedItem = .service(serviceTypeId)
         postUpdateServiceNotification()
         reloadLLMSubscribersIfNeeded(for: item)
         updateServices()
@@ -197,18 +201,32 @@ class ServiceTabViewModel: ObservableObject {
             return
         }
 
-        guard let service = LocalStorage.shared().service(item.id, windowType: windowType) else {
+        let validationWindowType = windowType
+        guard let service = LocalStorage.shared().service(
+            item.id,
+            windowType: validationWindowType
+        ) else {
             return
         }
         let result = await service.validate()
+        guard LocalStorage.shared()
+            .allServiceTypes(validationWindowType)
+            .contains(item.id) else {
+            return
+        }
         if let error = result.error {
             throw error
         }
         service.enabled = true
-        LocalStorage.shared().setService(service, windowType: windowType)
+        LocalStorage.shared().setService(service, windowType: validationWindowType)
+        NotificationCenter.default.postServiceUpdateNotification(
+            windowType: validationWindowType
+        )
+        if validationWindowType == .main {
+            GlobalContext.shared.reloadLLMServicesSubscribers()
+        }
+        guard windowType == validationWindowType else { return }
         selectedService = selectedItem == .service(item.id) ? service : selectedService
-        postUpdateServiceNotification()
-        reloadLLMSubscribersIfNeeded(for: item)
         updateServices()
     }
 
@@ -232,15 +250,24 @@ class ServiceTabViewModel: ObservableObject {
     private static func loadAvailableServiceItems(_ windowType: EZWindowType) -> [ServiceListItem] {
         serviceItems(
             from: LocalStorage.shared().availableServiceTypeIDs(windowType: windowType),
-            windowType: windowType
+            windowType: windowType,
+            forAddition: true
         )
     }
 
-    private static func serviceItems(from serviceTypeIds: [String], windowType: EZWindowType) -> [ServiceListItem] {
+    private static func serviceItems(
+        from serviceTypeIds: [String],
+        windowType: EZWindowType,
+        forAddition: Bool = false
+    )
+        -> [ServiceListItem] {
         serviceTypeIds.compactMap { typeId in
             guard let metadata = QueryServiceFactory.shared.metadata(withTypeId: typeId) else {
                 return nil
             }
+            let createsNewInstance = forAddition
+                && metadata.allowsMultipleInstances
+                && metadata.uuid.isEmpty
             let info = LocalStorage.shared().serviceInfo(
                 withType: metadata.serviceType,
                 serviceId: metadata.uuid,
@@ -249,10 +276,13 @@ class ServiceTabViewModel: ObservableObject {
             return ServiceListItem(
                 id: typeId,
                 type: metadata.serviceType,
-                name: metadata.title,
+                name: createsNewInstance
+                    ? NSLocalizedString("custom_openai", comment: "")
+                    : metadata.title,
                 enabled: info?.enabled == true,
                 requirement: metadata.apiKeyRequirement,
-                isStream: metadata.isStream
+                isStream: metadata.isStream,
+                createsNewInstance: createsNewInstance
             )
         }
     }
@@ -284,6 +314,7 @@ struct ServiceListItem: Identifiable {
     let enabled: Bool
     let requirement: ServiceAPIKeyRequirement
     let isStream: Bool
+    let createsNewInstance: Bool
 }
 
 // MARK: - WindowConfigurationItem
