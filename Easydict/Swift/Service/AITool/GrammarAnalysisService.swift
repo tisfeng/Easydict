@@ -159,6 +159,27 @@ final class GrammarAnalysisService: AIToolService {
         }
     }
 
+    override var remoteModelsEndpoint: String? {
+        guard credentialSource.usesPrivateKey else {
+            return nil
+        }
+
+        switch provider {
+        case .deepSeek:
+            "https://api.deepseek.com/models"
+        case .openAI, .customOpenAICompatible:
+            nil
+        }
+    }
+
+    override var remoteModelFetchRequiresEndpoint: Bool {
+        guard credentialSource.usesPrivateKey else {
+            return false
+        }
+
+        return provider != .deepSeek
+    }
+
     override var observeKeys: [Defaults.Key<String>] {
         if credentialSource.usesPrivateKey {
             [apiKeyKey, endpointKey, supportedModelsKey]
