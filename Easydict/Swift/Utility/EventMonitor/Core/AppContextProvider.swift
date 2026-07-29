@@ -73,6 +73,14 @@ final class AppContextProvider {
 
     private enum Constants {
         static let hasUsedAutoSelectTextKey = "kHasUsedAutoSelectTextKey"
+        /// Screen mirroring hosts where drags represent remote touch input.
+        /// See Easydict issue #1254, comment 5106847698:
+        /// https://github.com/tisfeng/Easydict/issues/1254#issuecomment-5106847698
+        static let screenMirrorIDs = [
+            "com.apple.ScreenContinuity",
+            "com.catchingnow.andfiles.fusionhost",
+            "com.catchingnow.andfiles.phonescreenhost",
+        ]
     }
 
     private func appSelectTextActionType(
@@ -90,7 +98,9 @@ final class AppContextProvider {
     }
 
     private func defaultAppTriggerList(forceGetSelectedTextType: ForceGetSelectedTextType) -> [AppTriggerConfig] {
-        var appTriggerList: [AppTriggerConfig] = []
+        var appTriggerList = Constants.screenMirrorIDs.map {
+            AppTriggerConfig(appBundleID: $0, triggerType: [])
+        }
         if forceGetSelectedTextType == .simulatedShortcutCopy {
             let wechat = AppTriggerConfig()
             wechat.appBundleID = AppBundleIDs.weChat
