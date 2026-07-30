@@ -170,6 +170,9 @@ extension Defaults.Keys {
     static var isScreenshotTipLayerHidden = Key<Bool>(
         "isScreenshotTipLayerHidden", default: false
     )
+    static var screenshotTranslateDisplayMode = Key<ScreenshotTranslateDisplayMode>(
+        "screenshotTranslateDisplayMode", default: .queryWindow
+    )
 
     static var minClassicalChineseTextDetectLength = Key<String>(
         "minClassicalChineseTextDetectLength",

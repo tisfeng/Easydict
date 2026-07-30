@@ -4861,6 +4861,26 @@
         }
       }
     },
+    "screenshot.overlay.error.capture_location" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Unable to locate the captured area" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "No se puede localizar el área capturada" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "キャプチャ範囲を特定できません" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Oblasť snímky sa nepodarilo nájsť" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "无法定位截图区域" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "無法定位螢幕截圖區域" } }
+      }
+    },
+    "screenshot.overlay.error.translation_failed" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Screenshot overlay translation failed" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Error en la traducción superpuesta de la captura" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "スクリーンショットのオーバーレイ翻訳に失敗しました" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Preklad prekrytia snímky zlyhal" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "截图覆盖翻译失败" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "螢幕截圖覆蓋翻譯失敗" } }
+      }
+    },
     "menu_screenshot_Translate" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12822,6 +12842,56 @@
             "value" : "HTTP 伺服器"
           }
         }
+      }
+    },
+    "setting.advance.screenshot_translate_display_mode" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Screenshot Translation Display" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Visualización de traducción de capturas" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "スクリーンショット翻訳の表示" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Zobrazenie prekladu snímky" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "截图翻译显示方式" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "螢幕截圖翻譯顯示方式" } }
+      }
+    },
+    "setting.advance.screenshot_translate_display_mode_desc" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Show results in the query window or over the captured image" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mostrar resultados en la ventana de consulta o sobre la imagen capturada" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "検索ウインドウまたはキャプチャ画像上に結果を表示します" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Zobraziť výsledky v okne vyhľadávania alebo nad zachyteným obrázkom" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "在查询窗口中显示，或覆盖在截图原位置" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "在查詢視窗中顯示，或覆蓋在螢幕截圖原位置" } }
+      }
+    },
+    "setting.advance.screenshot_translate_display_mode.image_overlay" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Image Overlay" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Superposición en imagen" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "画像オーバーレイ" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Prekrytie obrázka" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "覆盖原图" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "覆蓋原圖" } }
+      }
+    },
+    "setting.advance.screenshot_translate_display_mode.image_side_by_side" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Beside Original" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Junto al original" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "原文の横に表示" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vedľa originálu" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "原图旁边" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "原圖旁邊" } }
+      }
+    },
+    "setting.advance.screenshot_translate_display_mode.query_window" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Query Window" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ventana de consulta" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "検索ウインドウ" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Okno vyhľadávania" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "查询窗口" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "查詢視窗" } }
       }
     },
     "setting.advance.header.ocr_settings" : {

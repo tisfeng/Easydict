@@ -263,6 +263,19 @@ struct AdvancedTab: View {
 
             // OCR settings section
             Section {
+                Picker(
+                    selection: $screenshotTranslateDisplayMode,
+                    label: AdvancedTabItemView(
+                        color: .indigo,
+                        icon: .rectangleOnRectangle,
+                        labelText: "setting.advance.screenshot_translate_display_mode",
+                        subtitleText: "setting.advance.screenshot_translate_display_mode_desc"
+                    )
+                ) {
+                    ForEach(ScreenshotTranslateDisplayMode.allCases, id: \.self) { mode in
+                        Text(mode.localizedStringResource).tag(mode)
+                    }
+                }
                 Toggle(isOn: $enableYoudaoOCR) {
                     AdvancedTabItemView(
                         color: .blue,
@@ -448,6 +461,7 @@ struct AdvancedTab: View {
     @Default(.enableOCRTextNormalization) private var enableOCRTextNormalization
     @Default(.showOCRMenuItems) private var showOCRMenuItems
     @Default(.isScreenshotTipLayerHidden) private var isScreenshotTipLayerHidden
+    @Default(.screenshotTranslateDisplayMode) private var screenshotTranslateDisplayMode
     @Default(.autoSelectAllTextFieldText) private var autoSelectAllTextFieldText
     @Default(.preferAppleScriptAPI) private var preferAppleScriptAPI
 
