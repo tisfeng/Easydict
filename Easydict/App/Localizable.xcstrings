@@ -4881,6 +4881,16 @@
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "螢幕截圖覆蓋翻譯失敗" } }
       }
     },
+    "screenshot.overlay.status.ocr" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Recognizing text" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reconociendo texto" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "テキストを認識中" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Rozpoznávanie textu" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "正在识别文字" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "正在辨識文字" } }
+      }
+    },
     "menu_screenshot_Translate" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12844,6 +12854,76 @@
         }
       }
     },
+    "setting.advance.allow_multiple_screenshot_overlays" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Allow Multiple OCR Translation Windows" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Permitir varias ventanas de traducción OCR" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "複数のOCR翻訳ウインドウを許可" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Povoliť viac okien prekladu OCR" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "允许多个 OCR 翻译窗口" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "允許多個 OCR 翻譯視窗" } }
+      }
+    },
+    "setting.advance.allow_multiple_screenshot_overlays_desc" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Keep existing overlay or side-by-side results when starting another screenshot translation" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Conservar los resultados existentes al iniciar otra traducción de captura" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "別のスクリーンショット翻訳を開始しても既存の結果を残します" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Zachovať existujúce výsledky pri spustení ďalšieho prekladu snímky" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "开始新的截图翻译时保留已有的覆盖或旁边结果窗口" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "開始新的螢幕截圖翻譯時保留現有的覆蓋或旁邊結果視窗" } }
+      }
+    },
+    "setting.advance.screenshot_overlay_dismiss_mode" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Close OCR Translation Results" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cerrar resultados de traducción OCR" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "OCR翻訳結果を閉じる方法" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Zatváranie výsledkov prekladu OCR" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "OCR 翻译结果退出方式" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "OCR 翻譯結果退出方式" } }
+      }
+    },
+    "setting.advance.screenshot_overlay_dismiss_mode_desc" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose whether Escape, clicking outside, or either action closes the latest result" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Elige si Escape, un clic fuera o ambas acciones cierran el último resultado" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Esc、外側のクリック、またはその両方で最新の結果を閉じます" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Vyberte, či najnovší výsledok zatvorí Escape, kliknutie mimo alebo obe možnosti" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "选择按 Esc、点击窗口外部或两种方式均可关闭最近的结果" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "選擇按 Esc、點擊視窗外部或兩種方式均可關閉最近的結果" } }
+      }
+    },
+    "setting.advance.screenshot_overlay_dismiss_mode.escape" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Escape" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Escape" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Esc" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Escape" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "Esc" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Esc" } }
+      }
+    },
+    "setting.advance.screenshot_overlay_dismiss_mode.outside_click" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Click Outside" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Clic fuera" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "外側をクリック" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Kliknutie mimo" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "点击窗口外部" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "點擊視窗外部" } }
+      }
+    },
+    "setting.advance.screenshot_overlay_dismiss_mode.escape_or_outside_click" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Escape or Click Outside" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Escape o clic fuera" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Esc または外側をクリック" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Escape alebo kliknutie mimo" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "Esc 或点击窗口外部" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Esc 或點擊視窗外部" } }
+      }
+    },
     "setting.advance.screenshot_translate_display_mode" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Screenshot Translation Display" } },
@@ -15175,6 +15255,26 @@
             "value" : "顯示語言選擇欄"
           }
         }
+      }
+    },
+    "setting.service.screenshot_overlay" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "OCR Overlay" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Superposición OCR" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "OCRオーバーレイ" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Prekrytie OCR" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "OCR 覆盖" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "OCR 覆蓋" } }
+      }
+    },
+    "setting.service.screenshot_overlay_desc" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Enable and order the translation services used after OCR. The first enabled compatible service is selected automatically." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Activa y ordena los servicios de traducción utilizados después del OCR. Se selecciona automáticamente el primer servicio compatible habilitado." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "OCR 後に使用する翻訳サービスを有効化して並べ替えます。有効な互換サービスのうち最初のものが自動的に選択されます。" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "Povoľte a usporiadajte prekladateľské služby používané po OCR. Automaticky sa vyberie prvá povolená kompatibilná služba." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "启用并排序 OCR 后使用的翻译服务，系统会自动选择首个已启用且兼容的服务。" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "啟用並排序 OCR 後使用的翻譯服務，系統會自動選擇首個已啟用且相容的服務。" } }
       }
     },
     "setting.service.window_configuration" : {

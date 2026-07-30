@@ -8,6 +8,8 @@
 
 import AppKit
 
+// MARK: - ScreenshotOverlayTranslator
+
 /// Coordinates Apple OCR, the selected translation service, and spatial overlay presentation.
 @MainActor
 @objcMembers
@@ -28,30 +30,52 @@ final class ScreenshotOverlayTranslator: NSObject {
 
         Task {
             do {
-                let result = try await AppleOCREngine().recognizeText(image: image)
+                let excludedRegions = ScreenshotTranslationOverlay.shared.excludedRegions(
+                    screen: screen,
+                    rect: rect,
+                    sessionID: sessionID
+                )
+                let visibleImage = image.masking(excludedRegions)
+                let result = try await AppleOCREngine().recognizeText(image: visibleImage)
                 guard let observations = result.raw as? [EZRecognizedTextObservation],
                       !observations.isEmpty else {
                     throw QueryError.error(type: .noResult)
+                }
+
+                let visibleObservations = observations.filter { observation in
+                    !excludedRegions.contains { region in
+                        region.intersects(observation.boundingBox)
+                    }
+                }
+                guard !visibleObservations.isEmpty else {
+                    ScreenshotTranslationOverlay.shared.close(sessionID)
+                    return
                 }
 
                 let source = result.from
                 let target = EZLanguageManager.shared().userTargetLanguage(
                     withSourceLanguage: source
                 )
-                let serviceID = try translationServiceID(from: source, to: target)
-                let items = try await translate(
-                    observations,
-                    with: serviceID,
+                let translation = try await translate(
+                    visibleObservations,
                     from: source,
                     to: target
-                )
-                guard !items.isEmpty else {
-                    throw QueryError.error(type: .noResult)
+                ) { service in
+                    ScreenshotTranslationOverlay.shared.showTranslationProgress(
+                        service: service,
+                        screen: screen,
+                        rect: rect,
+                        sessionID: sessionID
+                    )
                 }
 
                 ScreenshotTranslationOverlay.shared.show(
-                    image: image,
-                    items: items,
+                    content: ScreenshotTranslationContent(
+                        image: image,
+                        items: translation.items,
+                        serviceName: translation.serviceName,
+                        serviceIconName: translation.serviceIconName
+                    ),
                     screen: screen,
                     rect: rect,
                     mode: mode,
@@ -60,7 +84,7 @@ final class ScreenshotOverlayTranslator: NSObject {
             } catch {
                 logError("Screenshot overlay translation failed: \(error)")
                 guard ScreenshotTranslationOverlay.shared.isActive(sessionID) else { return }
-                ScreenshotTranslationOverlay.shared.close()
+                ScreenshotTranslationOverlay.shared.close(sessionID)
                 showError("screenshot.overlay.error.translation_failed")
             }
         }
@@ -68,31 +92,66 @@ final class ScreenshotOverlayTranslator: NSObject {
 
     // MARK: Private
 
-    private func translationServiceID(from: Language, to: Language) throws -> String {
-        let services = LocalStorage.shared().allServices(.main)
-        guard let service = services.first(where: {
+    private func translationServices(from: Language, to: Language) throws
+        -> [QueryService] {
+        let services = LocalStorage.shared().allServices(.screenshotOverlay).filter {
             $0.enabled
-                && $0.enabledQuery
+                && $0.supportsOverlayTranslation
                 && $0.languageCode(forLanguage: from) != nil
                 && $0.languageCode(forLanguage: to) != nil
-        }) else {
+        }
+        guard !services.isEmpty else {
             throw QueryError.error(type: .unsupportedLanguage)
         }
-        return service.serviceTypeWithUniqueIdentifier()
+        return services
     }
 
     private func translate(
         _ observations: [EZRecognizedTextObservation],
-        with serviceID: String,
+        from: Language,
+        to: Language,
+        onServiceStart: (QueryService) -> ()
+    ) async throws
+        -> ScreenshotOverlayResult {
+        let services = try translationServices(from: from, to: to)
+        var latestError: (any Error)?
+
+        for service in services {
+            onServiceStart(service)
+            do {
+                guard let result = try await translate(
+                    observations,
+                    with: service,
+                    from: from,
+                    to: to
+                ) else {
+                    continue
+                }
+                return result
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch {
+                latestError = error
+                logError(
+                    "Screenshot overlay service failed: "
+                        + "\(service.serviceTypeWithUniqueIdentifier()), \(error)"
+                )
+            }
+        }
+
+        throw latestError ?? QueryError.error(type: .noResult)
+    }
+
+    private func translate(
+        _ observations: [EZRecognizedTextObservation],
+        with service: QueryService,
         from: Language,
         to: Language
     ) async throws
-        -> [ScreenshotTranslationItem] {
+        -> ScreenshotOverlayResult? {
         var items: [ScreenshotTranslationItem] = []
+        var usedServiceID: String?
         for observation in observations where !observation.firstText.trim().isEmpty {
-            guard let service = QueryServiceFactory.shared.service(withTypeId: serviceID) else {
-                throw QueryError.error(type: .api)
-            }
             let model = QueryModel()
             model.inputText = observation.firstText
             model.userSourceLanguage = from
@@ -100,15 +159,77 @@ final class ScreenshotOverlayTranslator: NSObject {
             model.detectedLanguage = from
             model.needDetectLanguage = false
             let result = try await service.startQuery(model)
+            if let error = result.error {
+                throw error
+            }
             guard let text = result.translatedText?.trim(), !text.isEmpty else { continue }
+            usedServiceID = result.serviceTypeWithUniqueIdentifier
             items.append(
                 ScreenshotTranslationItem(text: text, boundingBox: observation.boundingBox)
             )
         }
-        return items
+        guard !items.isEmpty,
+              let usedServiceID,
+              let usedService = QueryServiceFactory.shared.service(withTypeId: usedServiceID) else {
+            return nil
+        }
+        return ScreenshotOverlayResult(
+            items: items,
+            serviceName: usedService.name(),
+            serviceIconName: usedService.serviceType().rawValue
+        )
     }
 
     private func showError(_ key: String) {
         EZToast.showText(NSLocalizedString(key, comment: ""))
+    }
+}
+
+// MARK: - ScreenshotOverlayResult
+
+/// Couples translated items with the service that actually produced them.
+private struct ScreenshotOverlayResult {
+    let items: [ScreenshotTranslationItem]
+    let serviceName: String
+    let serviceIconName: String
+}
+
+extension QueryService {
+    /// Whether this service can provide translated text for screenshot overlays.
+    var supportsOverlayTranslation: Bool {
+        let unsupportedTypes: [ServiceType] = [
+            .appleDictionary,
+            .mDict,
+            .polishing,
+            .summary,
+        ]
+        return !unsupportedTypes.contains(serviceType())
+            && supportedQueryType().contains(.translation)
+    }
+}
+
+extension NSImage {
+    /// Clears normalized regions that belong to earlier OCR result windows.
+    fileprivate func masking(_ regions: [CGRect]) -> NSImage {
+        guard !regions.isEmpty else { return self }
+
+        return NSImage(size: size, flipped: false) { bounds in
+            self.draw(in: bounds)
+            guard let context = NSGraphicsContext.current else { return true }
+            context.saveGraphicsState()
+            context.compositingOperation = .clear
+            for region in regions {
+                NSBezierPath(
+                    rect: CGRect(
+                        x: region.minX * bounds.width,
+                        y: region.minY * bounds.height,
+                        width: region.width * bounds.width,
+                        height: region.height * bounds.height
+                    )
+                ).fill()
+            }
+            context.restoreGraphicsState()
+            return true
+        }
     }
 }

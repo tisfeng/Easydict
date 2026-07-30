@@ -276,6 +276,27 @@ struct AdvancedTab: View {
                         Text(mode.localizedStringResource).tag(mode)
                     }
                 }
+                Picker(
+                    selection: $screenshotOverlayDismissMode,
+                    label: AdvancedTabItemView(
+                        color: .cyan,
+                        icon: .xmarkCircleFill,
+                        labelText: "setting.advance.screenshot_overlay_dismiss_mode",
+                        subtitleText: "setting.advance.screenshot_overlay_dismiss_mode_desc"
+                    )
+                ) {
+                    ForEach(ScreenshotOverlayDismissMode.allCases, id: \.self) { mode in
+                        Text(mode.localizedStringResource).tag(mode)
+                    }
+                }
+                Toggle(isOn: $allowMultipleScreenshotOverlays) {
+                    AdvancedTabItemView(
+                        color: .mint,
+                        icon: .rectangleOnRectangle,
+                        labelText: "setting.advance.allow_multiple_screenshot_overlays",
+                        subtitleText: "setting.advance.allow_multiple_screenshot_overlays_desc"
+                    )
+                }
                 Toggle(isOn: $enableYoudaoOCR) {
                     AdvancedTabItemView(
                         color: .blue,
@@ -462,6 +483,8 @@ struct AdvancedTab: View {
     @Default(.showOCRMenuItems) private var showOCRMenuItems
     @Default(.isScreenshotTipLayerHidden) private var isScreenshotTipLayerHidden
     @Default(.screenshotTranslateDisplayMode) private var screenshotTranslateDisplayMode
+    @Default(.screenshotOverlayDismissMode) private var screenshotOverlayDismissMode
+    @Default(.allowMultipleScreenshotOverlays) private var allowMultipleScreenshotOverlays
     @Default(.autoSelectAllTextFieldText) private var autoSelectAllTextFieldText
     @Default(.preferAppleScriptAPI) private var preferAppleScriptAPI
 

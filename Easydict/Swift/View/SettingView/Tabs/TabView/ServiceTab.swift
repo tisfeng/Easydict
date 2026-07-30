@@ -29,7 +29,7 @@ struct ServiceTab: View {
                             set: { viewModel.selectItems($0) }
                         )
                     ) {
-                        WindowConfigurationItem()
+                        WindowConfigurationItem(windowType: viewModel.windowType)
                             .tag(ServiceTabSelection.windowConfiguration)
 
                         ServiceItems()
@@ -281,6 +281,12 @@ class ServiceTabViewModel: ObservableObject {
             guard let metadata = QueryServiceFactory.shared.metadata(withTypeId: typeId) else {
                 return nil
             }
+            if windowType == .screenshotOverlay {
+                guard let service = QueryServiceFactory.shared.service(withTypeId: typeId),
+                      service.supportsOverlayTranslation else {
+                    return nil
+                }
+            }
             let createsNewInstance = forAddition
                 && metadata.allowsMultipleInstances
                 && metadata.uuid.isEmpty
@@ -364,14 +370,22 @@ struct ServiceListItem: Identifiable {
 // MARK: - WindowConfigurationItem
 
 private struct WindowConfigurationItem: View {
+    let windowType: EZWindowType
+
     var body: some View {
-        Text("setting.service.window_configuration")
-            .lineLimit(1)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, 8)
-            .contentShape(Rectangle())
-            .listRowSeparator(.hidden)
-            .listRowInsets(.init())
+        Group {
+            if windowType == .screenshotOverlay {
+                Text("setting.service.screenshot_overlay")
+            } else {
+                Text("setting.service.window_configuration")
+            }
+        }
+        .lineLimit(1)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, 8)
+        .contentShape(Rectangle())
+        .listRowSeparator(.hidden)
+        .listRowInsets(.init())
     }
 }
 
@@ -399,7 +413,11 @@ private struct ServiceDetailView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } else {
-                WindowConfigurationView(windowType: viewModel.windowType)
+                if viewModel.windowType == .screenshotOverlay {
+                    ScreenshotOverlayConfigView()
+                } else {
+                    WindowConfigurationView(windowType: viewModel.windowType)
+                }
             }
         }
     }
@@ -409,6 +427,25 @@ private struct ServiceDetailView: View {
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 }
 
+// MARK: - ScreenshotOverlayConfigView
+
+/// Explains how the dedicated screenshot overlay service scope is applied.
+private struct ScreenshotOverlayConfigView: View {
+    var body: some View {
+        VStack(spacing: 12) {
+            Text("setting.service.screenshot_overlay")
+                .font(.title3.weight(.semibold))
+
+            Text("setting.service.screenshot_overlay_desc")
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 420)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
+    }
+}
+
 // MARK: - WindowTypePicker
 
 private struct WindowTypePicker: View {
@@ -416,7 +453,10 @@ private struct WindowTypePicker: View {
 
     var body: some View {
         Picker(selection: $windowType) {
-            ForEach([EZWindowType]([.fixed, .mini, .main]), id: \.rawValue) { windowType in
+            ForEach(
+                [EZWindowType]([.fixed, .mini, .main, .screenshotOverlay]),
+                id: \.rawValue
+            ) { windowType in
                 Text(windowType.localizedStringResource)
                     .tag(windowType)
             }

@@ -19,6 +19,45 @@ struct ScreenshotTranslationItem: Identifiable {
     let boundingBox: CGRect
 }
 
+// MARK: - ScreenshotTranslationContent
+
+/// Bundles overlay output with the service identity that produced the displayed translation.
+struct ScreenshotTranslationContent {
+    let image: NSImage
+    let items: [ScreenshotTranslationItem]
+    let serviceName: String
+    let serviceIconName: String
+}
+
+// MARK: - ScreenshotTranslationStatus
+
+/// Describes the OCR or translation service shown beside an active screenshot overlay.
+private struct ScreenshotTranslationStatus {
+    let name: String
+    let iconName: String?
+    let isProcessing: Bool
+}
+
+// MARK: - ScreenshotTranslationSession
+
+/// Owns the main and status windows for one independent screenshot translation.
+private final class ScreenshotTranslationSession {
+    // MARK: Lifecycle
+
+    init(id: UUID) {
+        self.id = id
+    }
+
+    // MARK: Internal
+
+    let id: UUID
+    var window: NSWindow?
+    var statusWindow: NSWindow?
+    var status: ScreenshotTranslationStatus?
+    weak var statusScreen: NSScreen?
+    var frameObserverTokens: [NSObjectProtocol] = []
+}
+
 // MARK: - ScreenshotTranslationOverlay
 
 /// Displays a captured image with translated text covering the original OCR regions.
@@ -30,65 +69,157 @@ final class ScreenshotTranslationOverlay {
 
     /// Keeps the selected region visible while OCR and translation are in progress.
     func begin(screen: NSScreen, rect: CGRect) -> UUID {
-        close()
+        if !MyConfiguration.shared.allowMultipleScreenshotOverlays {
+            closeAll()
+        }
+
         let sessionID = UUID()
-        activeSessionID = sessionID
+        let session = ScreenshotTranslationSession(id: sessionID)
+        sessions[sessionID] = session
+        sessionOrder.append(sessionID)
+        let frame = screenRect(screen: screen, rect: rect)
         installWindow(
-            frame: screenRect(screen: screen, rect: rect),
+            session: session,
+            frame: frame,
             view: ScreenshotTranslationWaitingView()
+        )
+        installStatusWindow(
+            session: session,
+            beside: frame,
+            screen: screen,
+            status: ScreenshotTranslationStatus(
+                name: NSLocalizedString("screenshot.overlay.status.ocr", comment: ""),
+                iconName: nil,
+                isProcessing: true
+            )
         )
         installEventMonitors()
         return sessionID
     }
 
     func isActive(_ sessionID: UUID) -> Bool {
-        activeSessionID == sessionID
+        sessions[sessionID] != nil
+    }
+
+    /// Returns normalized capture regions already occupied by earlier OCR result windows.
+    func excludedRegions(
+        screen: NSScreen,
+        rect: CGRect,
+        sessionID: UUID
+    )
+        -> [CGRect] {
+        guard MyConfiguration.shared.allowMultipleScreenshotOverlays else { return [] }
+
+        let captureFrame = screenRect(screen: screen, rect: rect)
+        guard captureFrame.width > 0, captureFrame.height > 0 else { return [] }
+
+        return sessionOrder.flatMap { id -> [CGRect] in
+            guard id != sessionID, let session = sessions[id] else { return [] }
+            return [session.window?.frame, session.statusWindow?.frame].compactMap { frame in
+                guard let frame else { return nil }
+                let overlap = captureFrame.intersection(frame)
+                guard !overlap.isNull, !overlap.isEmpty else { return nil }
+                return CGRect(
+                    x: (overlap.minX - captureFrame.minX) / captureFrame.width,
+                    y: (overlap.minY - captureFrame.minY) / captureFrame.height,
+                    width: overlap.width / captureFrame.width,
+                    height: overlap.height / captureFrame.height
+                )
+            }
+        }
+    }
+
+    /// Shows the service currently attempting to translate the recognized text.
+    func showTranslationProgress(
+        service: QueryService,
+        screen: NSScreen,
+        rect: CGRect,
+        sessionID: UUID
+    ) {
+        guard let session = sessions[sessionID] else { return }
+
+        installStatusWindow(
+            session: session,
+            beside: screenRect(screen: screen, rect: rect),
+            screen: screen,
+            status: ScreenshotTranslationStatus(
+                name: service.name(),
+                iconName: service.serviceType().rawValue,
+                isProcessing: true
+            )
+        )
     }
 
     func show(
-        image: NSImage,
-        items: [ScreenshotTranslationItem],
+        content: ScreenshotTranslationContent,
         screen: NSScreen,
         rect: CGRect,
         mode: ScreenshotTranslateDisplayMode,
         sessionID: UUID
     ) {
-        guard isActive(sessionID) else { return }
+        guard let session = sessions[sessionID] else { return }
 
         let sourceRect = screenRect(screen: screen, rect: rect)
         let frame = resultFrame(sourceRect: sourceRect, screen: screen, mode: mode)
         let view = ScreenshotTranslationOverlayView(
-            image: image,
-            items: items,
+            content: content,
             mode: mode,
-            close: { [weak self] in self?.close() }
+            close: { [weak self] in self?.close(sessionID) }
         )
-        installWindow(frame: frame, view: view)
+        installWindow(session: session, frame: frame, view: view)
+        if mode == .imageSideBySide {
+            configureResultWindow(session.window, aspectRatio: frame.size)
+        }
+        installStatusWindow(
+            session: session,
+            beside: frame,
+            screen: screen,
+            status: ScreenshotTranslationStatus(
+                name: content.serviceName,
+                iconName: content.serviceIconName,
+                isProcessing: false
+            )
+        )
     }
 
-    func close() {
-        activeSessionID = nil
-        if let keyEventMonitor {
-            NSEvent.removeMonitor(keyEventMonitor)
-            self.keyEventMonitor = nil
+    func close(_ sessionID: UUID) {
+        guard let session = sessions.removeValue(forKey: sessionID) else { return }
+        sessionOrder.removeAll { $0 == sessionID }
+        removeStatusWindow(session)
+        session.window?.orderOut(nil)
+        session.window = nil
+        removeFrameObservers(session)
+
+        if sessions.isEmpty {
+            removeEventMonitors()
+        } else {
+            latestSession?.window?.makeKeyAndOrderFront(nil)
         }
-        if let mouseEventMonitor {
-            NSEvent.removeMonitor(mouseEventMonitor)
-            self.mouseEventMonitor = nil
-        }
-        window?.orderOut(nil)
-        window = nil
     }
 
     // MARK: Private
 
-    private var window: NSWindow?
-    private var activeSessionID: UUID?
+    private var sessions: [UUID: ScreenshotTranslationSession] = [:]
+    private var sessionOrder: [UUID] = []
     private var keyEventMonitor: Any?
-    private var mouseEventMonitor: Any?
+    private var localMouseEventMonitor: Any?
+    private var globalMouseEventMonitor: Any?
 
-    private func installWindow<Content: View>(frame: CGRect, view: Content) {
-        window?.orderOut(nil)
+    private var latestSession: ScreenshotTranslationSession? {
+        if let keySession = sessions.values.first(where: { $0.window?.isKeyWindow == true }) {
+            return keySession
+        }
+        return sessionOrder.reversed().lazy.compactMap { self.sessions[$0] }.first
+    }
+
+    private func installWindow<Content: View>(
+        session: ScreenshotTranslationSession,
+        frame: CGRect,
+        view: Content
+    ) {
+        removeStatusWindow(session)
+        removeFrameObservers(session)
+        session.window?.orderOut(nil)
         let window = ScreenshotTranslationWindow(
             contentRect: frame,
             styleMask: [.borderless],
@@ -104,27 +235,178 @@ final class ScreenshotTranslationOverlay {
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         window.contentView = ScreenshotTranslationHostingView(rootView: view)
         window.makeKeyAndOrderFront(nil)
-        self.window = window
+        session.window = window
+        installFrameObservers(for: session, window: window)
+    }
+
+    private func configureResultWindow(_ window: NSWindow?, aspectRatio: CGSize) {
+        guard let window, aspectRatio.width > 0, aspectRatio.height > 0 else { return }
+        window.styleMask.insert(.resizable)
+        window.contentAspectRatio = aspectRatio
+        let minimumWidth = min(120, aspectRatio.width)
+        window.contentMinSize = CGSize(
+            width: minimumWidth,
+            height: minimumWidth * aspectRatio.height / aspectRatio.width
+        )
+    }
+
+    private func installStatusWindow(
+        session: ScreenshotTranslationSession,
+        beside contentFrame: CGRect,
+        screen: NSScreen,
+        status: ScreenshotTranslationStatus
+    ) {
+        removeStatusWindow(session)
+
+        session.status = status
+        session.statusScreen = screen
+
+        let frame = statusFrame(
+            beside: contentFrame,
+            screen: screen,
+            isProcessing: status.isProcessing
+        )
+        let statusWindow = ScreenshotTranslationWindow(
+            contentRect: frame,
+            styleMask: [.borderless],
+            backing: .buffered,
+            defer: false
+        )
+        statusWindow.level = .screenSaver
+        statusWindow.backgroundColor = .clear
+        statusWindow.isOpaque = false
+        statusWindow.hasShadow = true
+        statusWindow.ignoresMouseEvents = true
+        statusWindow.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        statusWindow.contentView = NSHostingView(
+            rootView: ScreenshotTranslationStatusView(status: status)
+        )
+        statusWindow.orderFront(nil)
+        session.window?.addChildWindow(statusWindow, ordered: .above)
+        session.statusWindow = statusWindow
+    }
+
+    private func removeStatusWindow(_ session: ScreenshotTranslationSession) {
+        guard let statusWindow = session.statusWindow else { return }
+        statusWindow.parent?.removeChildWindow(statusWindow)
+        statusWindow.orderOut(nil)
+        session.statusWindow = nil
+    }
+
+    private func installFrameObservers(
+        for session: ScreenshotTranslationSession,
+        window: NSWindow
+    ) {
+        let notificationCenter = NotificationCenter.default
+        let names = [NSWindow.didMoveNotification, NSWindow.didResizeNotification]
+        let sessionID = session.id
+        session.frameObserverTokens = names.map { name in
+            notificationCenter.addObserver(forName: name, object: window, queue: .main) { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    self?.repositionStatusWindow(for: sessionID)
+                }
+            }
+        }
+    }
+
+    private func removeFrameObservers(_ session: ScreenshotTranslationSession) {
+        let notificationCenter = NotificationCenter.default
+        for token in session.frameObserverTokens {
+            notificationCenter.removeObserver(token)
+        }
+        session.frameObserverTokens.removeAll()
+    }
+
+    /// Keeps the fixed-size status badge outside the result window's top-right corner.
+    private func repositionStatusWindow(for sessionID: UUID) {
+        guard let session = sessions[sessionID] else { return }
+        guard let window = session.window,
+              let statusWindow = session.statusWindow,
+              let status = session.status,
+              let screen = window.screen ?? session.statusScreen ?? NSScreen.main else {
+            return
+        }
+        statusWindow.setFrame(
+            statusFrame(
+                beside: window.frame,
+                screen: screen,
+                isProcessing: status.isProcessing
+            ),
+            display: true
+        )
     }
 
     private func installEventMonitors() {
+        guard keyEventMonitor == nil else { return }
+
         keyEventMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard event.keyCode == 53 else { return event }
-            self?.close()
+            guard event.keyCode == 53,
+                  MyConfiguration.shared.screenshotOverlayDismissMode.allowsEscape else {
+                return event
+            }
+            self?.closeLatest()
             return nil
         }
 
-        mouseEventMonitor = NSEvent.addGlobalMonitorForEvents(matching: .leftMouseDown) {
-            [weak self] _ in
+        localMouseEventMonitor = NSEvent.addLocalMonitorForEvents(
+            matching: .leftMouseDown
+        ) { [weak self] event in
+            self?.closeLatestForOutsideClick()
+            return event
+        }
+
+        globalMouseEventMonitor = NSEvent.addGlobalMonitorForEvents(
+            matching: .leftMouseDown
+        ) { [weak self] _ in
             Task { @MainActor [weak self] in
-                guard let self,
-                      let activeWindow = window,
-                      !activeWindow.frame.contains(NSEvent.mouseLocation) else {
-                    return
-                }
-                close()
+                self?.closeLatestForOutsideClick()
             }
         }
+    }
+
+    private func removeEventMonitors() {
+        if let keyEventMonitor {
+            NSEvent.removeMonitor(keyEventMonitor)
+            self.keyEventMonitor = nil
+        }
+        if let localMouseEventMonitor {
+            NSEvent.removeMonitor(localMouseEventMonitor)
+            self.localMouseEventMonitor = nil
+        }
+        if let globalMouseEventMonitor {
+            NSEvent.removeMonitor(globalMouseEventMonitor)
+            self.globalMouseEventMonitor = nil
+        }
+    }
+
+    private func closeLatest() {
+        guard let sessionID = latestSession?.id else { return }
+        close(sessionID)
+    }
+
+    private func closeLatestForOutsideClick() {
+        guard MyConfiguration.shared.screenshotOverlayDismissMode.allowsOutsideClick else {
+            return
+        }
+        let location = NSEvent.mouseLocation
+        let isInsideOverlay = sessions.values.contains { session in
+            session.window?.frame.contains(location) == true
+                || session.statusWindow?.frame.contains(location) == true
+        }
+        guard !isInsideOverlay else { return }
+        closeLatest()
+    }
+
+    private func closeAll() {
+        for session in sessions.values {
+            removeStatusWindow(session)
+            removeFrameObservers(session)
+            session.window?.orderOut(nil)
+            session.window = nil
+        }
+        sessions.removeAll()
+        sessionOrder.removeAll()
+        removeEventMonitors()
     }
 
     private func screenRect(screen: NSScreen, rect: CGRect) -> CGRect {
@@ -145,12 +427,55 @@ final class ScreenshotTranslationOverlay {
         guard mode == .imageSideBySide else { return sourceRect }
         let gap = 8.0
         let resultWidth = min(sourceRect.width, max(180, screen.visibleFrame.width * 0.42))
+        let scale = resultWidth / sourceRect.width
+        let resultHeight = sourceRect.height * scale
         let rightX = sourceRect.maxX + gap
         let leftX = sourceRect.minX - resultWidth - gap
         let x = rightX + resultWidth <= screen.visibleFrame.maxX
             ? rightX
             : max(screen.visibleFrame.minX, leftX)
-        return CGRect(x: x, y: sourceRect.minY, width: resultWidth, height: sourceRect.height)
+        let y = min(
+            max(sourceRect.minY, screen.visibleFrame.minY),
+            screen.visibleFrame.maxY - resultHeight
+        )
+        return CGRect(x: x, y: y, width: resultWidth, height: resultHeight)
+    }
+
+    private func statusFrame(
+        beside contentFrame: CGRect,
+        screen: NSScreen,
+        isProcessing: Bool
+    )
+        -> CGRect {
+        let gap = 6.0
+        let size = CGSize(width: isProcessing ? 66 : 34, height: 34)
+        let visibleFrame = screen.visibleFrame
+        var origin = CGPoint(
+            x: contentFrame.maxX - size.width,
+            y: contentFrame.maxY + gap
+        )
+
+        if origin.y + size.height > visibleFrame.maxY {
+            let rightX = contentFrame.maxX + gap
+            if rightX + size.width <= visibleFrame.maxX {
+                origin = CGPoint(
+                    x: rightX,
+                    y: contentFrame.maxY - size.height
+                )
+            } else {
+                origin.y = contentFrame.minY - size.height - gap
+            }
+        }
+
+        origin.x = min(
+            max(origin.x, visibleFrame.minX),
+            visibleFrame.maxX - size.width
+        )
+        origin.y = min(
+            max(origin.y, visibleFrame.minY),
+            visibleFrame.maxY - size.height
+        )
+        return CGRect(origin: origin, size: size)
     }
 }
 
@@ -182,66 +507,66 @@ private struct ScreenshotTranslationWaitingView: View {
     }
 }
 
-// MARK: - ScreenshotTranslationOverlayView
+// MARK: - ScreenshotTranslationStatusView
 
-/// Renders translated labels in the same normalized regions returned by Vision OCR.
-private struct ScreenshotTranslationOverlayView: View {
-    // MARK: Internal
-
-    let image: NSImage
-    let items: [ScreenshotTranslationItem]
-    let mode: ScreenshotTranslateDisplayMode
-    let close: () -> ()
+/// Displays the current OCR or translation service without covering the captured image.
+private struct ScreenshotTranslationStatusView: View {
+    let status: ScreenshotTranslationStatus
 
     var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .topLeading) {
-                Image(nsImage: image)
-                    .resizable()
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-
-                ForEach(items) { item in
-                    let rect = displayRect(item.boundingBox, in: geometry.size)
-                    Text(item.text)
-                        .font(.system(size: max(11, min(rect.height * 0.72, 28))))
-                        .lineLimit(nil)
-                        .minimumScaleFactor(0.35)
-                        .multilineTextAlignment(.leading)
-                        .foregroundStyle(.primary)
-                        .padding(.horizontal, 3)
-                        .padding(.vertical, 1)
-                        .frame(width: max(rect.width, 24), height: max(rect.height, 18), alignment: .leading)
-                        .background {
-                            RoundedRectangle(cornerRadius: 3)
-                                .fill(.regularMaterial)
-                        }
-                        .position(x: rect.midX, y: rect.midY)
+        HStack(spacing: 7) {
+            Group {
+                if let iconName = status.iconName {
+                    Image(iconName)
+                        .resizable()
+                        .scaledToFit()
+                } else {
+                    Image(systemSymbol: .characterCursorIbeam)
+                        .font(.system(size: 16, weight: .medium))
                 }
+            }
+            .frame(width: 18, height: 18)
 
-                Button(action: close) {
-                    Image(systemSymbol: .xmarkCircleFill)
-                        .font(.system(size: 20))
-                        .foregroundStyle(.white, .black.opacity(0.65))
-                }
-                .buttonStyle(.plain)
-                .padding(8)
+            if status.isProcessing {
+                ScreenshotTranslationWaveView()
             }
         }
-        .clipShape(RoundedRectangle(cornerRadius: 4))
-        .overlay {
-            RoundedRectangle(cornerRadius: 4)
-                .stroke(.white.opacity(0.35), lineWidth: 1)
+        .padding(.horizontal, 8)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background {
+            RoundedRectangle(cornerRadius: 9)
+                .fill(.regularMaterial)
         }
+        .overlay {
+            RoundedRectangle(cornerRadius: 9)
+                .stroke(.white.opacity(0.35), lineWidth: 0.5)
+        }
+        .help(status.name)
+        .accessibilityLabel(Text(verbatim: status.name))
     }
+}
 
-    // MARK: Private
+// MARK: - ScreenshotTranslationWaveView
 
-    private func displayRect(_ visionRect: CGRect, in size: CGSize) -> CGRect {
-        CGRect(
-            x: visionRect.minX * size.width,
-            y: (1 - visionRect.maxY) * size.height,
-            width: visionRect.width * size.width,
-            height: visionRect.height * size.height
-        )
+/// Animates four dots as a small wave that travels left-to-right and back.
+private struct ScreenshotTranslationWaveView: View {
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1 / 30)) { context in
+            let elapsed = context.date.timeIntervalSinceReferenceDate
+            let cycle = elapsed.truncatingRemainder(dividingBy: 1.6) / 1.6
+            let cursor = cycle < 0.5 ? cycle * 6 : (1 - cycle) * 6
+
+            HStack(spacing: 3) {
+                ForEach(0 ..< 4, id: \.self) { index in
+                    let distance = abs(Double(index) - cursor)
+                    let lift = max(0, 1 - distance) * 4
+                    Circle()
+                        .fill(.secondary)
+                        .frame(width: 4, height: 4)
+                        .offset(y: -lift)
+                }
+            }
+            .frame(width: 25, height: 14)
+        }
     }
 }

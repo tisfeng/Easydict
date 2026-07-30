@@ -173,6 +173,14 @@ extension Defaults.Keys {
     static var screenshotTranslateDisplayMode = Key<ScreenshotTranslateDisplayMode>(
         "screenshotTranslateDisplayMode", default: .queryWindow
     )
+    static var screenshotOverlayDismissMode = Key<ScreenshotOverlayDismissMode>(
+        "screenshotOverlayDismissMode",
+        default: .escapeOrOutsideClick
+    )
+    static var allowMultipleScreenshotOverlays = Key<Bool>(
+        "allowMultipleScreenshotOverlays",
+        default: false
+    )
 
     static var minClassicalChineseTextDetectLength = Key<String>(
         "minClassicalChineseTextDetectLength",

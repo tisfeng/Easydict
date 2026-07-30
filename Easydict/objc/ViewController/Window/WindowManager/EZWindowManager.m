@@ -443,6 +443,7 @@ static EZWindowManager *_instance;
             window = self.miniWindow;
             break;
         }
+        case EZWindowTypeScreenshotOverlay:
         case EZWindowTypeNone: {
             break;
         }
@@ -466,6 +467,7 @@ static EZWindowManager *_instance;
             location = [self getFloatingWindowLocation:MyConfiguration.shared.miniWindowPosition];
             break;
         }
+        case EZWindowTypeScreenshotOverlay:
         case EZWindowTypeNone: {
             break;
         }

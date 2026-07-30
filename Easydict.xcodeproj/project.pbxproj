@@ -203,6 +203,7 @@
 		ED1157010000000000000001 /* ScreenshotTranslateDisplayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1157020000000000000001 /* ScreenshotTranslateDisplayMode.swift */; };
 		ED1157010000000000000002 /* ScreenshotTranslationOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1157020000000000000002 /* ScreenshotTranslationOverlay.swift */; };
 		ED1157010000000000000003 /* ScreenshotOverlayTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1157020000000000000003 /* ScreenshotOverlayTranslator.swift */; };
+		ED1157010000000000000004 /* ScreenshotTranslationOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1157020000000000000004 /* ScreenshotTranslationOverlayView.swift */; };
 		036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 036806572CA829F100800B76 /* SFSafeSymbols */; };
 		036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */; };
 		036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */; };
@@ -860,6 +861,7 @@
 		ED1157020000000000000001 /* ScreenshotTranslateDisplayMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTranslateDisplayMode.swift; sourceTree = "<group>"; };
 		ED1157020000000000000002 /* ScreenshotTranslationOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTranslationOverlay.swift; sourceTree = "<group>"; };
 		ED1157020000000000000003 /* ScreenshotOverlayTranslator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOverlayTranslator.swift; sourceTree = "<group>"; };
+		ED1157020000000000000004 /* ScreenshotTranslationOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTranslationOverlayView.swift; sourceTree = "<group>"; };
 		036A0DB92AD941F9006E6D4F /* EZReplaceTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZReplaceTextButton.h; sourceTree = "<group>"; };
 		036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZReplaceTextButton.m; sourceTree = "<group>"; };
 		036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowConfigurationKey.swift; sourceTree = "<group>"; };
@@ -1341,7 +1343,6 @@
 		DC46DF7F2B4417B900DEAE3E /* MyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyConfiguration.swift; sourceTree = "<group>"; };
 		DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+UserData.swift"; sourceTree = "<group>"; };
 		E34250B52E681A3100CEC295 /* Easydict-26.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Easydict-26.icon"; sourceTree = "<group>"; };
-		ED1256040000000000000004 /* 2026-07-30-screenshot-overlay-service-picker-design.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "2026-07-30-screenshot-overlay-service-picker-design.md"; sourceTree = "<group>"; };
 		E54300FF4F544CC2A180FE53 /* DeviceSystemInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSystemInfo.swift; sourceTree = "<group>"; };
 		EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyCombo+Defaults.Serializable.swift"; sourceTree = "<group>"; };
 		EA3B81F82B5254AA004C0E8B /* Defaults.Keys+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Defaults.Keys+Extension.swift"; sourceTree = "<group>"; };
@@ -1941,6 +1942,7 @@
 				03675A2B2D7FE598004E780A /* ScreenshotOverlayView.swift */,
 				ED1157020000000000000001 /* ScreenshotTranslateDisplayMode.swift */,
 				ED1157020000000000000002 /* ScreenshotTranslationOverlay.swift */,
+				ED1157020000000000000004 /* ScreenshotTranslationOverlayView.swift */,
 				ED1157020000000000000003 /* ScreenshotOverlayTranslator.swift */,
 				03D9D6FE2D8C186F009E0CEC /* NSScreen+Extention.swift */,
 			);
@@ -3623,7 +3625,6 @@
 			children = (
 				27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */,
 				27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */,
-				ED1256010000000000000001 /* docs */,
 				03B0221829231FA6001C7E63 /* Easydict */,
 				03022F2F2B370B7100B63209 /* EasydictTests */,
 				C99EEB192385796700FEE666 /* Products */,
@@ -3632,30 +3633,6 @@
 			);
 			sourceTree = "<group>";
 			usesTabs = 0;
-		};
-		ED1256010000000000000001 /* docs */ = {
-			isa = PBXGroup;
-			children = (
-				ED1256020000000000000002 /* superpowers */,
-			);
-			path = docs;
-			sourceTree = "<group>";
-		};
-		ED1256020000000000000002 /* superpowers */ = {
-			isa = PBXGroup;
-			children = (
-				ED1256030000000000000003 /* specs */,
-			);
-			path = superpowers;
-			sourceTree = "<group>";
-		};
-		ED1256030000000000000003 /* specs */ = {
-			isa = PBXGroup;
-			children = (
-				ED1256040000000000000004 /* 2026-07-30-screenshot-overlay-service-picker-design.md */,
-			);
-			path = specs;
-			sourceTree = "<group>";
 		};
 		C99EEB192385796700FEE666 /* Products */ = {
 			isa = PBXGroup;
@@ -4703,6 +4680,7 @@
 				03675A3D2D7FE598004E780A /* ScreenshotOverlayView.swift in Sources */,
 				ED1157010000000000000001 /* ScreenshotTranslateDisplayMode.swift in Sources */,
 				ED1157010000000000000002 /* ScreenshotTranslationOverlay.swift in Sources */,
+				ED1157010000000000000004 /* ScreenshotTranslationOverlayView.swift in Sources */,
 				ED1157010000000000000003 /* ScreenshotOverlayTranslator.swift in Sources */,
 				0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */,
 			);
