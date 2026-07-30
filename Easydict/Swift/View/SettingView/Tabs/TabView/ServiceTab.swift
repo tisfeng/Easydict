@@ -23,7 +23,12 @@ struct ServiceTab: View {
                     .padding(.top)
 
                 VStack(alignment: .leading, spacing: 8) {
-                    List(selection: $viewModel.selectedItem) {
+                    List(
+                        selection: Binding(
+                            get: { viewModel.selectedItems },
+                            set: { viewModel.selectItems($0) }
+                        )
+                    ) {
                         WindowConfigurationItem()
                             .tag(ServiceTabSelection.windowConfiguration)
 
@@ -90,23 +95,18 @@ class ServiceTabViewModel: ObservableObject {
 
     @Published var windowType: EZWindowType
 
-    @Published var selectedItem: ServiceTabSelection? = .windowConfiguration {
-        didSet {
-            DispatchQueue.main.async { [self] in
-                updateSelectedService()
-            }
-        }
-    }
+    @Published private(set) var selectedItems: Set<ServiceTabSelection> = [
+        .windowConfiguration,
+    ]
 
-    var canRemoveSelectedService: Bool {
-        guard let selectedServiceItem else { return false }
-        return canRemoveService(selectedServiceItem)
+    var canRemoveSelectedServices: Bool {
+        let selectedCount = selectedServiceItems.count
+        return selectedCount > 0 && selectedCount < serviceItems.count
     }
 
     /// Refresh services when the window type changes.
     func handleWindowTypeChange() {
-        selectedItem = .windowConfiguration
-        selectedService = nil
+        setSelection([.windowConfiguration])
         updateServices()
     }
 
@@ -114,15 +114,13 @@ class ServiceTabViewModel: ObservableObject {
         serviceItems = Self.loadServiceItems(windowType)
         availableServiceItems = Self.loadAvailableServiceItems(windowType)
 
-        guard case let .service(selectedServiceID) = selectedItem else { return }
-
-        let isSelectedServiceAvailable = serviceItems.contains { $0.id == selectedServiceID }
-        if !isSelectedServiceAvailable {
-            selectedItem = .windowConfiguration
-            selectedService = nil
-        } else {
-            updateSelectedService()
+        let availableSelections = Set(
+            serviceItems.map { ServiceTabSelection.service($0.id) }
+        )
+        let validSelections = selectedItems.filter {
+            $0 == .windowConfiguration || availableSelections.contains($0)
         }
+        setSelection(Set(validSelections), preferred: selectedItem)
     }
 
     func moveServices(fromOffsets: IndexSet, toOffset: Int) {
@@ -136,44 +134,63 @@ class ServiceTabViewModel: ObservableObject {
         updateServices()
     }
 
-    func addService(_ item: ServiceListItem) {
-        let serviceTypeId = item.createsNewInstance
-            ? "\(item.type.rawValue)#\(UUID().uuidString)"
-            : item.id
-        guard LocalStorage.shared().addServiceType(serviceTypeId, windowType: windowType) else {
-            return
+    func addServices(_ items: [ServiceListItem]) {
+        var addedTypeIds: [String] = []
+        var addedItems: [ServiceListItem] = []
+
+        for item in items {
+            let serviceTypeId = item.createsNewInstance
+                ? "\(item.type.rawValue)#\(UUID().uuidString)"
+                : item.id
+            guard LocalStorage.shared().addServiceType(
+                serviceTypeId,
+                windowType: windowType
+            ) else {
+                continue
+            }
+            addedTypeIds.append(serviceTypeId)
+            addedItems.append(item)
         }
 
-        selectedItem = .service(serviceTypeId)
+        guard let selectedTypeId = addedTypeIds.last else { return }
+        setSelection([.service(selectedTypeId)])
         postUpdateServiceNotification()
-        reloadLLMSubscribersIfNeeded(for: item)
+        reloadLLMSubscribersIfNeeded(for: addedItems)
         updateServices()
     }
 
-    func canRemoveService(_ item: ServiceListItem) -> Bool {
-        serviceItems.contains { $0.id == item.id } && serviceItems.count > 1
-    }
+    func removeSelectedServices() {
+        let selectedItems = selectedServiceItems
+        guard !selectedItems.isEmpty, selectedItems.count < serviceItems.count else { return }
 
-    func removeService(_ item: ServiceListItem) {
-        guard LocalStorage.shared().removeServiceType(item.id, windowType: windowType) else {
-            return
-        }
+        let selectedTypeIds = Set(selectedItems.map(\.id))
+        let remainingTypeIds = serviceItems
+            .map(\.id)
+            .filter { !selectedTypeIds.contains($0) }
+        LocalStorage.shared().setAllServiceTypes(
+            remainingTypeIds,
+            windowType: windowType
+        )
 
-        if selectedItem == .service(item.id) {
-            selectedItem = .windowConfiguration
-            selectedService = nil
-        }
-
+        setSelection([.windowConfiguration])
         postUpdateServiceNotification()
-        reloadLLMSubscribersIfNeeded(for: item)
+        reloadLLMSubscribersIfNeeded(for: selectedItems)
         updateServices()
     }
 
-    func removeSelectedService() {
-        guard let selectedServiceItem else {
-            return
+    func selectItems(_ items: Set<ServiceTabSelection>) {
+        let addedItems = items.subtracting(selectedItems)
+        var selection = items
+
+        if addedItems.contains(.windowConfiguration) {
+            selection = [.windowConfiguration]
+        } else {
+            selection.remove(.windowConfiguration)
         }
-        removeService(selectedServiceItem)
+
+        let preferredItem = orderedSelection(in: addedItems)
+            ?? selectedItem
+        setSelection(selection, preferred: preferredItem)
     }
 
     func setServiceEnabled(_ enabled: Bool, for item: ServiceListItem) {
@@ -191,7 +208,7 @@ class ServiceTabViewModel: ObservableObject {
         }
 
         postUpdateServiceNotification()
-        reloadLLMSubscribersIfNeeded(for: item)
+        reloadLLMSubscribersIfNeeded(for: [item])
         updateServices()
     }
 
@@ -236,11 +253,12 @@ class ServiceTabViewModel: ObservableObject {
 
     // MARK: Private
 
-    private var selectedServiceItem: ServiceListItem? {
-        guard case let .service(serviceID) = selectedItem else {
-            return nil
+    private var selectedItem: ServiceTabSelection? = .windowConfiguration
+
+    private var selectedServiceItems: [ServiceListItem] {
+        serviceItems.filter {
+            selectedItems.contains(.service($0.id))
         }
-        return serviceItems.first { $0.id == serviceID }
     }
 
     private static func loadServiceItems(_ windowType: EZWindowType) -> [ServiceListItem] {
@@ -299,8 +317,34 @@ class ServiceTabViewModel: ObservableObject {
         selectedService = LocalStorage.shared().service(serviceID, windowType: windowType)
     }
 
-    private func reloadLLMSubscribersIfNeeded(for item: ServiceListItem) {
-        guard windowType == .main, item.isStream else { return }
+    private func orderedSelection(
+        in selections: Set<ServiceTabSelection>
+    )
+        -> ServiceTabSelection? {
+        if selections.contains(.windowConfiguration) {
+            return .windowConfiguration
+        }
+        return serviceItems.reversed().lazy
+            .map { ServiceTabSelection.service($0.id) }
+            .first { selections.contains($0) }
+    }
+
+    private func setSelection(
+        _ selection: Set<ServiceTabSelection>,
+        preferred: ServiceTabSelection? = nil
+    ) {
+        let selection = selection.isEmpty
+            ? Set([ServiceTabSelection.windowConfiguration])
+            : selection
+        selectedItems = selection
+        selectedItem = preferred.flatMap {
+            selection.contains($0) ? $0 : nil
+        } ?? orderedSelection(in: selection)
+        updateSelectedService()
+    }
+
+    private func reloadLLMSubscribersIfNeeded(for items: [ServiceListItem]) {
+        guard windowType == .main, items.contains(where: { $0.isStream }) else { return }
         GlobalContext.shared.reloadLLMServicesSubscribers()
     }
 }

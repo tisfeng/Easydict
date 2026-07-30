@@ -171,12 +171,12 @@ struct ServiceListControls: View {
 
     var body: some View {
         ServiceListControl(
-            canRemove: viewModel.canRemoveSelectedService,
+            canRemove: viewModel.canRemoveSelectedServices,
             addAction: {
                 isShowingAddServiceSheet = true
             },
             removeAction: {
-                viewModel.removeSelectedService()
+                viewModel.removeSelectedServices()
             }
         )
         .frame(width: 112, height: 24)
@@ -282,8 +282,11 @@ private struct AddServiceSheet: View {
 
                                 LazyVGrid(columns: gridColumns, alignment: .leading, spacing: 12) {
                                     ForEach(group.items) { item in
-                                        AddServiceTile(item: item) {
-                                            add(item)
+                                        AddServiceTile(
+                                            item: item,
+                                            isSelected: selectedTypeIds.contains(item.id)
+                                        ) {
+                                            toggleSelection(item)
                                         }
                                     }
                                 }
@@ -303,6 +306,13 @@ private struct AddServiceSheet: View {
                 }
                 .keyboardShortcut(.cancelAction)
                 .frame(width: 76)
+
+                Button("ok") {
+                    addSelectedServices()
+                }
+                .keyboardShortcut(.defaultAction)
+                .disabled(selectedServiceItems.isEmpty)
+                .frame(width: 76)
             }
         }
         .padding(18)
@@ -310,6 +320,8 @@ private struct AddServiceSheet: View {
     }
 
     // MARK: Private
+
+    @State private var selectedTypeIds: Set<String> = []
 
     @Environment(\.dismiss) private var dismiss
 
@@ -319,6 +331,12 @@ private struct AddServiceSheet: View {
         [
             GridItem(.adaptive(minimum: 142, maximum: 180), spacing: 12),
         ]
+    }
+
+    private var selectedServiceItems: [ServiceListItem] {
+        viewModel.availableServiceItems.filter {
+            selectedTypeIds.contains($0.id)
+        }
     }
 
     private var requirementGroups: [ServiceGroup] {
@@ -333,8 +351,14 @@ private struct AddServiceSheet: View {
         }
     }
 
-    private func add(_ item: ServiceListItem) {
-        viewModel.addService(item)
+    private func toggleSelection(_ item: ServiceListItem) {
+        if !selectedTypeIds.insert(item.id).inserted {
+            selectedTypeIds.remove(item.id)
+        }
+    }
+
+    private func addSelectedServices() {
+        viewModel.addServices(selectedServiceItems)
         dismiss()
     }
 }
@@ -345,6 +369,7 @@ private struct AddServiceTile: View {
     // MARK: Internal
 
     let item: ServiceListItem
+    let isSelected: Bool
     let addAction: () -> ()
 
     var body: some View {
@@ -368,7 +393,7 @@ private struct AddServiceTile: View {
                 .fill(Color(nsColor: .controlBackgroundColor))
                 .overlay {
                     RoundedRectangle(cornerRadius: 8)
-                        .fill(.primary.opacity(isHovered ? 0.08 : 0))
+                        .fill(.primary.opacity(isSelected || isHovered ? 0.08 : 0))
                 }
         }
         .onHover { hovering in
