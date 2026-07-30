@@ -512,6 +512,7 @@ static EZWindowManager *_instance;
     // But `orderBack:` will cause the query window to fail to display in stage manager mode (#385)
 
     if ([EZMainQueryWindow isAlive]) {
+        [_mainWindow.queryViewController cancelAutoQuery];
         [_mainWindow orderOut:nil];
     }
 
@@ -888,6 +889,10 @@ static EZWindowManager *_instance;
     MMLogInfo(@"Screenshot OCR");
 
     [self captureWithRestorePreviousApp:YES completion:^(NSImage *_Nullable image) {
+        if (!image) {
+            MMLogWarn(@"Screenshot OCR skipped: captured image is nil");
+            return;
+        }
         AppleOCREngine *appleOCREngine = [AppleOCREngine new];
         [appleOCREngine showOCRWindowWithImage:image language:EZLanguageAuto completionHandler:^(NSError *error) {
             if (error) {

@@ -1,19 +1,17 @@
 ---
 name: review-pr
 description: >
-  Prepare a GitHub pull request branch locally, add the contributor fork as a
-  remote when missing, optionally create a local merged review branch against
-  the latest base branch, and produce a rigorous code review based on the PR
-  description, linked issues, and actual code changes.
+  Prepare a GitHub pull request on a local branch by default or in an isolated
+  worktree when explicitly requested, optionally merge the latest base branch,
+  and produce a rigorous review from PR context and actual code changes. Use
+  for local PR checkout, worktree review, parallel review, or concurrent review.
 ---
 
 # Review PR Workflow
 
-Use this skill when the user asks to review a GitHub pull request, check out a
-PR branch locally, or prepare a review from a PR link such as
-`tisfeng/Easydict#1173` or `https://github.com/tisfeng/Easydict/pull/1173`.
-If the PR reference is missing or ambiguous, ask for it before changing Git
-state.
+Use the local checkout by default. Use an isolated Git worktree only when the
+user explicitly asks for a worktree, parallel review, or concurrent review. If
+the PR reference is missing or ambiguous, ask for it before changing Git state.
 
 Accepted PR references:
 
@@ -23,24 +21,33 @@ Accepted PR references:
 
 ## Guardrails
 
-- Start with `git status --short --branch`; stop and ask before switching or
-  preparing branches when the worktree has uncommitted changes.
+- Start with `git status --short --branch`. In default local mode, stop before
+  switching branches when the checkout has uncommitted changes. Explicit
+  worktree mode may proceed from a dirty checkout because it must not switch or
+  modify that checkout.
 - Do not overwrite, delete, rename, rebase, reset, force-update, stash, or
-  discard local branches or changes.
+  discard local branches, worktrees, or changes.
 - Do not push while preparing, merging, resolving conflicts, or reviewing
   unless the user explicitly asks for a push.
 - Name the contributor remote exactly as the PR head repository owner login.
   If that remote name already points elsewhere, stop and ask.
 - Keep the normal local branch name exactly the same as the PR head branch
   name.
-- After a successful review, stay on the prepared PR branch so the user can run
-  and debug it locally. For normal preparation, remain on the PR head branch.
-  For latest-base merge preparation, remain on
-  `review/pr-<number>-merge-<head-short-sha>`. Only switch back when the user
-  explicitly asks.
-- For latest-base conflict or update review, use the local-only branch
-  `review/pr-<number>-merge-<head-short-sha>` and merge the latest base into
-  it. Do not use rebase for remote collaboration PRs.
+- Do not create a differently named local branch unless the user explicitly
+  requests or approves an isolated worktree or latest-base integration review.
+- In explicit worktree mode, use `review/pr-<number>-<head-short-sha>` for a
+  normal review and `review/pr-<number>-merge-<head-short-sha>` for a
+  latest-base review. Keep the worktree under
+  `../.review-pr-worktrees/<repo>/pr-<number>[-merge]-<head-short-sha>`.
+- Keep the prepared branch or worktree after review so the user can run and
+  debug it. Never remove a review worktree automatically.
+- For an explicitly requested latest-base conflict or update review, use the
+  local-only branch `review/pr-<number>-merge-<head-short-sha>` and merge the
+  latest base into it. Do not use rebase for remote collaboration PRs.
+- Do not treat `mergeable: CONFLICTING`, `mergeStateStatus: DIRTY`, or a base
+  branch that is ahead of the PR as permission to merge. These states are
+  review context unless the user explicitly requests a latest-base integration
+  review or conflict resolution.
 - Resolve merge conflicts semantically after reading the conflicting code and
   surrounding context. Do not mechanically choose ours/theirs.
 - Do not review from the PR description alone. Inspect linked issues, changed
@@ -75,30 +82,54 @@ gh pr view <number> [--repo <base-owner>/<base-repo>] \
   --json mergeable,mergeStateStatus,isDraft,state,updatedAt,headRefOid,baseRefOid
 ```
 
-Use the latest-base merge path only when the user asks to update to latest base
-or resolve conflicts, when GitHub reports `mergeable: CONFLICTING` or
-`mergeStateStatus: DIRTY`, or when the PR head branch name collides with the
-base branch or a protected local branch name. Otherwise, start with the normal
-helper path:
+Use local branch preparation unless the user explicitly requests a worktree or
+parallel review. Do not infer worktree mode only because the current checkout
+is dirty. For a normal PR, run one of:
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh <pr-ref>
+bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --worktree <pr-ref>
 ```
 
-If GitHub reports an unknown or clean merge state, use normal preparation first.
-After checkout, fetch the latest base and check whether the PR already contains
-it:
+Use normal preparation for a review even when GitHub reports
+`mergeable: CONFLICTING` or `mergeStateStatus: DIRTY`. Check out the PR head on
+the same-named local branch, inspect the PR as submitted, and report the merge
+state without changing its history.
+
+Use the latest-base merge path only when the user explicitly asks to update to
+the latest base, resolve conflicts, or review the integrated result. Before
+running it, state that it will create the local-only branch
+`review/pr-<number>-merge-<head-short-sha>` and a local merge commit. If the
+request did not already explicitly include one of those actions, stop and ask
+before creating the branch.
+
+If the PR head branch name collides with the base branch, a protected local
+branch name, or an existing same-named branch with a different upstream, stop
+and ask whether to use an isolated worktree. Do not select latest-base mode
+solely to avoid the branch-name collision.
+
+After normal checkout, fetch the latest base and check whether the PR already
+contains it:
 
 ```bash
 git merge-base --is-ancestor <base-remote>/<base-branch> HEAD
 ```
 
-If that check fails but the PR is otherwise clean, report that it is behind the
-latest base instead of merging automatically. Treat `baseRefName` as the target
-branch; do not hard-code `dev`. When latest-base merge is required, run:
+If that check fails, report that the PR is behind the latest base instead of
+merging automatically. When GitHub reports conflicts, use `git merge-tree` as
+a read-only conflict signal when useful:
+
+```bash
+merge_base=$(git merge-base <base-remote>/<base-branch> HEAD)
+git merge-tree "$merge_base" <base-remote>/<base-branch> HEAD
+```
+
+Treat `baseRefName` as the target branch; do not hard-code `dev`. Only after an
+explicit latest-base request, run:
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --merge-latest <pr-ref>
+bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --worktree --merge-latest <pr-ref>
 ```
 
 The merge helper creates `review/pr-<number>-merge-<head-short-sha>` from the PR
@@ -124,6 +155,10 @@ git add <resolved-files>
 git commit --no-edit
 ```
 
+For worktree mode, run every conflict command in the reported worktree path,
+for example `git -C <worktree-path> status --short`. Do not resolve the merge
+from the original checkout.
+
 Stop and report a blocker if a conflict requires a product decision or cannot
 be resolved safely from local code and PR context. Do not present a complete
 review from a partially merged tree.
@@ -142,6 +177,12 @@ For normal preparation, require a clean branch named exactly like the PR head
 branch with upstream set to `<owner>/<branch>`. For latest-base merge
 preparation, require a clean local review branch named
 `review/pr-<number>-merge-<head-short-sha>`.
+
+For worktree preparation, require the reported worktree to be clean and on its
+SHA-specific review branch. Require a normal worktree branch to track
+`<owner>/<head-branch>`; keep a merged worktree branch local-only. Confirm the
+source checkout branch, HEAD, and file status were unchanged, then run every
+remaining review command with that worktree as its working directory.
 
 Read PR and issue context before reviewing code:
 
@@ -229,9 +270,10 @@ reviewers should inspect.
 
 ## Verification
 - List commands and checks performed, or explain why validation was not run.
-- State the current checkout branch at the end of review. For normal
-  preparation, include the upstream tracking branch. For latest-base merge
-  preparation, include the local review branch name.
+- State whether local or worktree preparation was used. For local preparation,
+  include the checkout branch and upstream when applicable. For worktree
+  preparation, include its absolute path, review branch, upstream or local-only
+  status, and confirm the source checkout remained unchanged.
 - State whether the latest-base merge path was triggered. If it was, list the
   local review branch name, conflict files, conflict resolution status, and
   confirm that no push was performed.

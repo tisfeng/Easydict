@@ -57,16 +57,16 @@ Easydict/
 
 Run `xcodebuild` only when:
 
-- Swift, Objective-C, Xcode project metadata, or app runtime source changes exceed 100
-  substantive lines.
+- Swift, Objective-C, or other Xcode-compiled app source changes exceed 100
+  substantive lines. Xcode project/workspace metadata, documentation, scripts,
+  and comment-only edits do not count toward this trigger.
 - Unit test source files under `EasydictTests/**/*.swift` are added or changed.
 - The user explicitly asks for a build or test run.
-- The task runs `/code-simplifier`.
 
-Do not run `xcodebuild` only because Python, Shell, JavaScript/TypeScript, documentation,
-or comment-only edits exceed 100 lines. For script changes, prefer script-level validation
-such as `py_compile`, a relevant dry run or CLI smoke test for Python, and `bash -n` or
-the script's own safe check command for Shell.
+Evaluate the 100-line trigger only after implementation is complete. Use the final
+task-owned diff, count added and deleted substantive lines together instead of using
+an estimate or net line count, exclude blank lines and unrelated pre-existing changes,
+and recalculate before finishing if the implementation changes again.
 
 Do not run multiple `xcodebuild` commands concurrently against the same workspace and
 DerivedData location. Concurrent runs can contend for the shared build database,
@@ -169,25 +169,6 @@ source files in this repository.
 - Use the language's normal section markers in longer files to group lifecycle, state
   updates, command handling, I/O, parsing, and private helpers. Do not add a section
   marker for a single isolated function unless it materially improves navigation.
-
-### Directory Documentation Rules
-
-- Every non-exempt handwritten source directory, including Swift, Python, Shell,
-  JavaScript/TypeScript, and other source areas, with more than one direct child
-  source or documentation file must include a Chinese HTML overview and a companion
-  SVG diagram using the same kebab-case directory prefix:
-  `<directory-kebab>-overview.html` and `<directory-kebab>-<diagram-type>.svg`.
-- Count only files directly in the current directory when applying this threshold; do not
-  include files nested in child directories.
-- Exempt generated directories, third-party directories, platform scaffold directories,
-  and test directories from the overview/SVG requirement.
-- Build the prefix by converting `UpperCamelCase` and spaces to kebab-case; keep existing
-  kebab-case names unchanged. Use a diagram type such as `architecture`, `flow`, or
-  `sequence` that reflects the SVG content.
-- Generate the SVG from the complete overview with `fireworks-tech-graph`, covering
-  responsibilities, key components, flows, boundaries, failures, and debugging or test
-  entry points. When directory files change, update the overview and SVG in the same
-  change, avoiding method-by-method API indexes.
 
 ### Naming Rules
 
@@ -328,15 +309,6 @@ habits.
 
 Always use the OpenAI developer documentation MCP server if you need to work with the
 OpenAI API, ChatGPT Apps SDK, Codex, or related developer tools.
-
-### Git Branch Naming Rules
-
-- When creating task branches in this repository, use Angular-style type prefixes
-  matching `.agents/skills/git-commit/SKILL.md`, such as `feat`, `fix`, `docs`, or
-  `refactor`.
-- Name branches as `<type>/<kebab-case-summary>`, using a lowercase kebab-case slug
-  that describes the actual task or module, for example `feat/add-openai-timeout`,
-  `fix/openai-timeout`.
 
 ### Agent Working Principles
 
