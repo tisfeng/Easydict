@@ -1341,6 +1341,7 @@
 		DC46DF7F2B4417B900DEAE3E /* MyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyConfiguration.swift; sourceTree = "<group>"; };
 		DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+UserData.swift"; sourceTree = "<group>"; };
 		E34250B52E681A3100CEC295 /* Easydict-26.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Easydict-26.icon"; sourceTree = "<group>"; };
+		ED1256040000000000000004 /* 2026-07-30-screenshot-overlay-service-picker-design.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "2026-07-30-screenshot-overlay-service-picker-design.md"; sourceTree = "<group>"; };
 		E54300FF4F544CC2A180FE53 /* DeviceSystemInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSystemInfo.swift; sourceTree = "<group>"; };
 		EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyCombo+Defaults.Serializable.swift"; sourceTree = "<group>"; };
 		EA3B81F82B5254AA004C0E8B /* Defaults.Keys+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Defaults.Keys+Extension.swift"; sourceTree = "<group>"; };
@@ -3622,6 +3623,7 @@
 			children = (
 				27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */,
 				27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */,
+				ED1256010000000000000001 /* docs */,
 				03B0221829231FA6001C7E63 /* Easydict */,
 				03022F2F2B370B7100B63209 /* EasydictTests */,
 				C99EEB192385796700FEE666 /* Products */,
@@ -3630,6 +3632,30 @@
 			);
 			sourceTree = "<group>";
 			usesTabs = 0;
+		};
+		ED1256010000000000000001 /* docs */ = {
+			isa = PBXGroup;
+			children = (
+				ED1256020000000000000002 /* superpowers */,
+			);
+			path = docs;
+			sourceTree = "<group>";
+		};
+		ED1256020000000000000002 /* superpowers */ = {
+			isa = PBXGroup;
+			children = (
+				ED1256030000000000000003 /* specs */,
+			);
+			path = superpowers;
+			sourceTree = "<group>";
+		};
+		ED1256030000000000000003 /* specs */ = {
+			isa = PBXGroup;
+			children = (
+				ED1256040000000000000004 /* 2026-07-30-screenshot-overlay-service-picker-design.md */,
+			);
+			path = specs;
+			sourceTree = "<group>";
 		};
 		C99EEB192385796700FEE666 /* Products */ = {
 			isa = PBXGroup;
