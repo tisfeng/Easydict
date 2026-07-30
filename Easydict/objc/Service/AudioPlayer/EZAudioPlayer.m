@@ -227,7 +227,8 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
                          language:language
                            accent:accent
                          audioURL:url
-                designatedService:service];
+                designatedService:service
+                         forceURL:forceURL];
         } else {
             MMLogError(@"get audio url error: %@", error);
 

@@ -648,6 +648,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 }
 
+- (void)cancelAutoQuery {
+    [self.queryView cancelAutoQuery];
+}
+
 - (void)clearInput {
     // Clear query text, detect language and clear button right now;
     self.inputText = @"";
