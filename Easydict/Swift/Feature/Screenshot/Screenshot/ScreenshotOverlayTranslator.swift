@@ -53,9 +53,7 @@ final class ScreenshotOverlayTranslator: NSObject {
                 }
 
                 let source = result.from
-                let target = EZLanguageManager.shared().userTargetLanguage(
-                    withSourceLanguage: source
-                )
+                let target = overlayTargetLanguage(for: source)
                 let translation = try await translate(
                     visibleObservations,
                     from: source,
@@ -91,6 +89,13 @@ final class ScreenshotOverlayTranslator: NSObject {
     }
 
     // MARK: Private
+
+    /// Uses the configured target language unless the user selected automatic translation.
+    private func overlayTargetLanguage(for source: Language) -> Language {
+        let configuredTarget = MyConfiguration.shared.toLanguage
+        guard configuredTarget == .auto else { return configuredTarget }
+        return EZLanguageManager.shared().userTargetLanguage(withSourceLanguage: source)
+    }
 
     private func translationServices(from: Language, to: Language) throws
         -> [QueryService] {
