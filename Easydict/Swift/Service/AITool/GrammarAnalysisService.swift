@@ -20,9 +20,9 @@ final class GrammarAnalysisService: AIToolService {
     // MARK: Lifecycle
 
     required init() {
-        isSeedingBuiltInModels = true
+        self.isSeedingBuiltInModels = true
         super.init()
-        isSeedingBuiltInModels = false
+        self.isSeedingBuiltInModels = false
         migrateLegacyProviderConfigurationIfNeeded()
         migrateLegacyCustomConfigurationIfNeeded()
     }
@@ -149,7 +149,7 @@ final class GrammarAnalysisService: AIToolService {
             return nil
         }
 
-        switch provider {
+        return switch provider {
         case .openAI:
             Self.openAIOfficialEndpoint
         case .deepSeek:
@@ -164,10 +164,10 @@ final class GrammarAnalysisService: AIToolService {
             return nil
         }
 
-        switch provider {
+        return switch provider {
         case .deepSeek:
             "https://api.deepseek.com/models"
-        case .openAI, .customOpenAICompatible:
+        case .customOpenAICompatible, .openAI:
             nil
         }
     }

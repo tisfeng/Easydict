@@ -10,7 +10,7 @@ import Foundation
 extension GrammarAnalysisService {
     func analysisSystemPrompt(answerLanguage: Language) -> String {
         let titles = analysisSectionTitles(answerLanguage: answerLanguage)
-        switch analysisMode {
+        return switch analysisMode {
         case .general:
             """
             You are an expert grammar tutor inside a dictionary application.
