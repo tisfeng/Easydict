@@ -99,7 +99,9 @@ struct SettingView: View {
         let newRect = NSRect(origin: CGPoint(x: originalFrame.origin.x, y: newY), size: newSize)
 
         window.setFrame(newRect, display: true, animate: false)
-        window.styleMask.remove(.fullSizeContentView)
+        if #available(macOS 27.0, *) {
+            window.styleMask.remove(.fullSizeContentView)
+        }
         window.styleMask.remove(.resizable)
     }
 
