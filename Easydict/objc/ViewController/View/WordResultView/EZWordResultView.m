@@ -1333,10 +1333,14 @@ static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
     NSString *jsCode = @""
     "var iframes = document.querySelectorAll('iframe');"
     "var text = '';"
-    "for (var i = 0; i < iframes.length; i++) {"
-    "   text += iframes[i].contentDocument.body.innerText;"
-    "   text += '\\n\\n';"
-    "};"
+    "if (iframes.length === 0) {"
+    "   text = document.body.innerText;"
+    "} else {"
+    "   for (var i = 0; i < iframes.length; i++) {"
+    "      text += iframes[i].contentDocument.body.innerText;"
+    "      text += '\\n\\n';"
+    "   };"
+    "}"
     "text;";
 
     [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {

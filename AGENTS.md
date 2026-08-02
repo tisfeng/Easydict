@@ -57,11 +57,16 @@ Easydict/
 
 Run `xcodebuild` only when:
 
-- The substantive code changes exceed 100 lines. Documentation comment-only edits do not
-  count toward this threshold.
+- Swift, Objective-C, or other Xcode-compiled app source changes exceed 100
+  substantive lines. Xcode project/workspace metadata, documentation, scripts,
+  and comment-only edits do not count toward this trigger.
 - Unit test source files under `EasydictTests/**/*.swift` are added or changed.
 - The user explicitly asks for a build or test run.
-- The task runs `/code-simplifier`.
+
+Evaluate the 100-line trigger only after implementation is complete. Use the final
+task-owned diff, count added and deleted substantive lines together instead of using
+an estimate or net line count, exclude blank lines and unrelated pre-existing changes,
+and recalculate before finishing if the implementation changes again.
 
 Do not run multiple `xcodebuild` commands concurrently against the same workspace and
 DerivedData location. Concurrent runs can contend for the shared build database,
@@ -165,25 +170,6 @@ source files in this repository.
   updates, command handling, I/O, parsing, and private helpers. Do not add a section
   marker for a single isolated function unless it materially improves navigation.
 
-### Directory Documentation Rules
-
-- Every non-exempt handwritten source directory, including Swift, Python, Shell,
-  JavaScript/TypeScript, and other source areas, with more than one direct child
-  source or documentation file must include a Chinese HTML overview and a companion
-  SVG diagram using the same kebab-case directory prefix:
-  `<directory-kebab>-overview.html` and `<directory-kebab>-<diagram-type>.svg`.
-- Count only files directly in the current directory when applying this threshold; do not
-  include files nested in child directories.
-- Exempt generated directories, third-party directories, platform scaffold directories,
-  and test directories from the overview/SVG requirement.
-- Build the prefix by converting `UpperCamelCase` and spaces to kebab-case; keep existing
-  kebab-case names unchanged. Use a diagram type such as `architecture`, `flow`, or
-  `sequence` that reflects the SVG content.
-- Generate the SVG from the complete overview with `fireworks-tech-graph`, covering
-  responsibilities, key components, flows, boundaries, failures, and debugging or test
-  entry points. When directory files change, update the overview and SVG in the same
-  change, avoiding method-by-method API indexes.
-
 ### Naming Rules
 
 - Use each language and toolchain's normal naming conventions for compiled or imported
@@ -226,6 +212,9 @@ source files in this repository.
 
 ### Test Code Rules
 
+- Do not use the same agent session to both modify production code and add unit tests.
+- Prefer assigning unit tests to a different agent from the implementation agent, for
+  example Codex for production code and Claude Code for unit tests.
 - Do not add tests for UI code or UI-focused changes.
 - Add or update tests only for changes with meaningful behavior or correctness risk. Skip
   trivial pass-through code, simple glue code, obvious accessors, and behavior already

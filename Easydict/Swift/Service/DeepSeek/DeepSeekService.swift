@@ -8,7 +8,6 @@
 
 import Defaults
 import Foundation
-import SwiftUI
 
 // MARK: - DeepSeekService
 
@@ -34,10 +33,6 @@ class DeepSeekService: OpenAIService {
 
     public override func link() -> String? {
         "https://www.deepseek.com/"
-    }
-
-    public override func configurationListItems() -> Any {
-        DeepSeekConfigurationView(service: self)
     }
 
     // MARK: Internal
@@ -66,15 +61,10 @@ class DeepSeekService: OpenAIService {
         false
     }
 
-    /// Per-service reasoning effort. Defaults to off because Easydict's
-    /// translation workflows prioritize lower latency; users can still choose
-    /// high or max when quality needs outweigh response speed.
-    var reasoningEffortKey: Defaults.Key<DeepSeekReasoningEffort> {
-        serviceDefaultsKey(.reasoningEffort, defaultValue: .off)
-    }
-
-    var reasoningEffort: DeepSeekReasoningEffort {
-        Defaults[reasoningEffortKey]
+    /// DeepSeek V4 supports reasoning effort, exposing the shared picker and
+    /// sending `thinking` and `reasoning_effort` to the API.
+    override var supportsReasoningEffort: Bool {
+        true
     }
 
     override func contentStreamTranslate(
@@ -150,8 +140,8 @@ class DeepSeekService: OpenAIService {
             model: model,
             temperature: temperature,
             stream: true,
-            thinking: .init(type: effort.thinkingType),
-            reasoningEffort: effort.reasoningEffortValue
+            thinking: .init(type: effort.isEnabled ? "enabled" : "disabled"),
+            reasoningEffort: effort.requestValue
         )
 
         var request = URLRequest(url: url, timeoutInterval: EZNetWorkTimeoutInterval)
@@ -250,78 +240,6 @@ enum DeepSeekModel: String, CaseIterable {
     // Pricing: https://api-docs.deepseek.com/quick_start/pricing
     case deepseekV4Flash = "deepseek-v4-flash"
     case deepseekV4Pro = "deepseek-v4-pro"
-}
-
-// MARK: - DeepSeekReasoningEffort
-
-/// User-selectable reasoning effort for DeepSeek V4. Stays orthogonal to the
-/// model identifier so the same setting applies across `deepseek-v4-flash`,
-/// `deepseek-v4-pro`, and any future DeepSeek-compatible model.
-enum DeepSeekReasoningEffort: String, CaseIterable, Defaults.Serializable {
-    case off
-    case high
-    case max
-
-    // MARK: Internal
-
-    /// Value for the `thinking.type` request field.
-    var thinkingType: String {
-        switch self {
-        case .off:
-            "disabled"
-        case .high, .max:
-            "enabled"
-        }
-    }
-
-    /// Value for the `reasoning_effort` request field. Returns `nil` when
-    /// thinking is disabled, because the API rejects an effort level in that
-    /// mode.
-    var reasoningEffortValue: String? {
-        switch self {
-        case .off:
-            nil
-        case .high:
-            "high"
-        case .max:
-            "max"
-        }
-    }
-}
-
-// MARK: EnumLocalizedStringConvertible
-
-extension DeepSeekReasoningEffort: EnumLocalizedStringConvertible {
-    var title: LocalizedStringKey {
-        switch self {
-        case .off:
-            "service.deepseek.reasoning_effort.off"
-        case .high:
-            "service.deepseek.reasoning_effort.high"
-        case .max:
-            "service.deepseek.reasoning_effort.max"
-        }
-    }
-}
-
-// MARK: - DeepSeekConfigurationView
-
-/// Configuration UI for DeepSeek. Reuses the standard stream service form and
-/// adds a reasoning effort picker so the level can be tuned independently of
-/// the chosen model.
-private struct DeepSeekConfigurationView: View {
-    let service: DeepSeekService
-
-    var body: some View {
-        StreamConfigurationView(service: service)
-        Section {
-            StaticPickerCell(
-                titleKey: "service.configuration.deepseek.reasoning_effort.title",
-                key: service.reasoningEffortKey,
-                values: DeepSeekReasoningEffort.allCases
-            )
-        }
-    }
 }
 
 // MARK: - DeepSeekChatRequest
