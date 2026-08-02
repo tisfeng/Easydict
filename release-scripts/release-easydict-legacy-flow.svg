@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1260" width="1600" height="1260" role="img" aria-labelledby="title desc">
-  <title id="title">release-easydict.sh 发布流程</title>
+  <title id="title">Legacy release-easydict.sh 发布流程</title>
   <desc id="desc">展示 Easydict 发布脚本从环境预检、Release 构建、签名公证、Sparkle appcast 到 DMG 输出的完整流程。</desc>
   <style>
     text {
@@ -34,7 +34,7 @@
 
   <rect width="1600" height="1260" fill="#ffffff"/>
 
-  <text x="800" y="52" text-anchor="middle" class="title">release-easydict.sh 发布流程</text>
+  <text x="800" y="52" text-anchor="middle" class="title">Legacy release-easydict.sh 发布流程</text>
   <text x="800" y="82" text-anchor="middle" class="subtitle">从本地 Release 构建到 Sparkle appcast、ZIP、DMG 和 Apple 公证产物</text>
 
   <rect x="48" y="116" width="1504" height="218" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="8 6"/>
