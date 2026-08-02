@@ -239,9 +239,7 @@ class ServiceTabViewModel: ObservableObject {
         NotificationCenter.default.postServiceUpdateNotification(
             windowType: validationWindowType
         )
-        if validationWindowType == .main {
-            GlobalContext.shared.reloadLLMServicesSubscribers()
-        }
+        GlobalContext.shared.reloadLLMServicesSubscribers()
         guard windowType == validationWindowType else { return }
         selectedService = selectedItem == .service(item.id) ? service : selectedService
         updateServices()
@@ -344,7 +342,9 @@ class ServiceTabViewModel: ObservableObject {
     }
 
     private func reloadLLMSubscribersIfNeeded(for items: [ServiceListItem]) {
-        guard windowType == .main, items.contains(where: { $0.isStream }) else { return }
+        // Stream configuration observers cover all window memberships, so any
+        // window can add or remove a service that changes the observed union.
+        guard items.contains(where: { $0.isStream }) else { return }
         GlobalContext.shared.reloadLLMServicesSubscribers()
     }
 }
