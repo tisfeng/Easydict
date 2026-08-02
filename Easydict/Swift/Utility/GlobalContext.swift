@@ -49,7 +49,11 @@ class GlobalContext: NSObject {
 
     let updaterController: SPUStandardUpdaterController
 
-    // refresh subscribed services after duplicate service
+    /// Rebuilds configuration observers for stream services used by any window.
+    ///
+    /// Service membership is window-scoped, but stream configuration is shared
+    /// by service identifier. Observe the window union once per exact identifier
+    /// so Fixed- or Mini-only services stay synchronized without duplicate events.
     func reloadLLMServicesSubscribers() {
         logInfo("reloadLLMServicesSubscribers")
 
@@ -57,10 +61,20 @@ class GlobalContext: NSObject {
             service.cancelSubscribers()
         }
         let storage = LocalStorage.shared()
-        let streamServiceTypes = storage.allServiceTypes(EZWindowType.main)
-            .filter { QueryServiceFactory.shared.isStreamService(typeIdIfHave: $0) }
-        services = streamServiceTypes.compactMap {
-            storage.service($0, windowType: EZWindowType.main) as? StreamService
+        let serviceEntries = [EZWindowType.main, .fixed, .mini]
+            .flatMap { windowType in
+                storage.allServiceTypes(windowType).map {
+                    (typeId: $0, windowType: windowType)
+                }
+            }
+        var seenTypeIds = Set<String>()
+        services = serviceEntries.compactMap { entry in
+            guard seenTypeIds.insert(entry.typeId).inserted,
+                  QueryServiceFactory.shared.isStreamService(typeIdIfHave: entry.typeId)
+            else {
+                return nil
+            }
+            return storage.service(entry.typeId, windowType: entry.windowType) as? StreamService
         }
         for service in services {
             service.setupSubscribers()
