@@ -1,11 +1,11 @@
 ---
 name: worktree-rebase-merge
 description: >
-  Use when the user asks to commit a worktree branch, rebase it onto the
-  specified target branch, resolve conflicts, then merge the branch from that
-  target checkout. Also use it to directly commit changes that are already on
-  the default target branch. If no target branch is specified, default to the
-  repository remote default branch.
+  Use when the user asks to finish worktree changes by attaching a detached
+  checkout to an automatically named Conventional branch when needed,
+  committing, rebasing onto the specified target, resolving conflicts, and
+  merging from that target checkout. Also use it to commit changes already on
+  the target branch. Default to the repository remote default branch.
 ---
 
 # Worktree Rebase/Merge Workflow
@@ -43,13 +43,45 @@ source-branch and direct-commit mechanics to `git-commit`.
   or confirm a target branch.
 - Run `git branch --show-current`, `git branch --list <target-branch>`,
   and `git status --short`.
+- For detached HEAD, follow **Attach Detached HEAD** before selecting direct or
+  normal rebase/merge mode.
 - If source and target resolve to the same branch, enter direct commit mode.
 - For normal rebase/merge mode, run `git worktree list`.
 - Locate the target checkout from `git worktree list`. Use that path for the
   final merge when the target is already checked out elsewhere.
-- For detached HEAD, infer an Angular-style `<type>/<kebab-slug>` branch name
-  from the request, status/diff, or `git log -1 --format=%s`; append a numeric
-  suffix if needed, then run `git switch -c <branch-name>`.
+
+## Attach Detached HEAD
+
+When `git branch --show-current` is empty, create a source branch automatically
+without staging files or changing the current commit:
+
+1. Record `git rev-parse HEAD` and the exact `git status --short` output.
+2. Infer the work's primary intent from the first useful source below. Inspect
+   later sources only when an earlier source is empty or ambiguous:
+   - staged diff;
+   - unstaged diff and the contents of relevant untracked files;
+   - commits in `git log <target-branch>..HEAD`.
+3. If all three sources are empty, report that there is nothing to commit or
+   merge and stop without creating a branch.
+4. Apply the `git-commit` skill's **Branch Name Guidance** to derive the
+   candidate from the evidence above. Derive the name only; do not enter that
+   skill's staging or commit workflow yet.
+5. Validate the candidate with
+   `git check-ref-format --branch <branch-name>`.
+6. Resolve local name collisions without overwriting branches:
+   - If the candidate does not exist, run `git switch -c <branch-name>`.
+   - If it points to the recorded detached commit and is not checked out in
+     another worktree, run `git switch <branch-name>` and reuse it.
+   - Otherwise, append `-2`, `-3`, and so on until an unused valid name is
+     found, then run `git switch -c <numbered-branch-name>`.
+   Use `git show-ref --verify` and `git worktree list --porcelain` to distinguish
+   these cases. Never reset or move an existing branch.
+7. Verify the selected source branch, confirm `git rev-parse HEAD` still matches
+   the recorded commit, and require `git status --short` to preserve the exact
+   staged, unstaged, and untracked state. Stop if attachment changes content.
+
+Do not stage files solely to generate the branch name. Continue with the normal
+commit, rebase, and merge workflow after attachment.
 
 ## Direct Target-Branch Commit
 
@@ -116,8 +148,9 @@ source-branch and direct-commit mechanics to `git-commit`.
 - On merge conflicts, use the same semantic resolution rule as rebase, then
   stage resolved files only and run `git merge --continue`.
 - Report the source branch, target branch, target checkout path, commit hash,
-  merge result, final clean status, any generated detached-HEAD branch name,
-  and that no push was performed unless the user asked for one.
+  merge result, and final clean status. For an attached checkout, also report
+  the original detached commit and whether the source branch was created or
+  reused. State that no push was performed unless the user asked for one.
 - Include a final-response `提交信息预览` fenced `text` code block with the
   actual committed message, so the preview remains visible even if intermediate
   assistant updates are collapsed.
