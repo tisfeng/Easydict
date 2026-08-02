@@ -33,8 +33,15 @@ Accepted PR references:
   If that remote name already points elsewhere, stop and ask.
 - Keep the normal local branch name exactly the same as the PR head branch
   name.
+- Treat the PR metadata `headRefOid` as the only valid normal-review HEAD. A
+  same-named local branch may fast-forward to that SHA, but it must not contain
+  additional local commits or diverge from it.
 - Do not create a differently named local branch unless the user explicitly
   requests or approves an isolated worktree or latest-base integration review.
+- If normal preparation refuses an existing branch, do not bypass it by
+  checking out a remote-tracking ref, entering detached HEAD, or reviewing the
+  fetched ref in place. Preserve the branch and ask whether to use an isolated
+  worktree or how to repair the local branch.
 - In explicit worktree mode, use `review/pr-<number>-<head-short-sha>` for a
   normal review and `review/pr-<number>-merge-<head-short-sha>` for a
   latest-base review. Keep the worktree under
@@ -147,6 +154,11 @@ The merge helper creates `review/pr-<number>-merge-<head-short-sha>` from the PR
 head, fetches the PR base, runs `git merge --no-edit <base-remote>/<base-branch>`,
 and never pushes.
 
+Normal preparation must stop before switching branches when an existing local
+PR branch is ahead of or diverged from the fetched head. It may update only an
+exact match or a branch that can fast-forward to `headRefOid`. If it stops,
+offer the isolated `--worktree` path; do not improvise a detached checkout.
+
 ### 3. Handle Merge Conflicts
 
 If the merge helper stops with conflicts, inspect the actual conflict before
@@ -180,12 +192,15 @@ After preparation, verify the local state:
 
 ```bash
 git branch --show-current
+git rev-parse HEAD
 git status --short
 git branch -vv
 ```
 
 For normal preparation, require a clean branch named exactly like the PR head
-branch with upstream set to `<owner>/<branch>`. For latest-base merge
+branch with upstream set to `<owner>/<branch>`, and require `HEAD` to equal the
+recorded `headRefOid`. A matching upstream alone is insufficient because the
+local branch may contain commits that are not in the PR. For latest-base merge
 preparation, require a clean local review branch named
 `review/pr-<number>-merge-<head-short-sha>`.
 
