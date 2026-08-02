@@ -490,11 +490,13 @@ final class LocalStorage: NSObject {
             return
         }
 
+        // A newly added service should join queries once the user enables it.
+        // Existing records return above and keep their persisted query setting.
         let serviceInfo = QueryServiceConfiguration(
             uuid: metadata.uuid,
             type: metadata.serviceType,
             enabled: false,
-            enabledQuery: queryCount == 0,
+            enabledQuery: true,
             windowType: windowType
         )
         setServiceInfo(serviceInfo, windowType: windowType)
