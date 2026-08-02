@@ -270,6 +270,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     NSMutableArray *services = [NSMutableArray array];
 
     self.youdaoService = nil;
+    _defaultTTSService = nil;
     EZServiceType defaultTTSServiceType = self.config.defaultTTSServiceType;
 
     for (EZQueryService *service in allServices) {
@@ -294,7 +295,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     self.audioPlayer = [[EZAudioPlayer alloc] init];
     if (!self.youdaoService) {
-        self.youdaoService = [self serviceWithType:EZServiceTypeYoudao];
+        self.youdaoService = [EZLocalStorage.shared service:EZServiceTypeYoudao windowType:self.windowType];
     }
 }
 
@@ -1283,6 +1284,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             }
 
             EZQueryService *updatedService = [EZLocalStorage.shared service:serviceTypeWithUniqueIdentifier windowType:self.windowType];
+            if (!updatedService) {
+                return;
+            }
 
             // For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
             if ([service isKindOfClass:EZStreamService.class]) {
@@ -1307,7 +1311,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 /// Get latest services from local storage.
 - (NSArray<EZQueryService *> *)latestServices {
-    return [EZLocalStorage.shared allServices:self.windowType];
+    return [EZLocalStorage.shared enabledServices:self.windowType];
 }
 
 

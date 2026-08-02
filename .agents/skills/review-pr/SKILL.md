@@ -55,6 +55,17 @@ Accepted PR references:
 - For exact inline review context, unresolved comments, or a `discussion_r...`
   id, use `gh api` / GraphQL so `isResolved`, `isOutdated`, path, and line stay
   visible. Do not rely only on `gh pr view --json`.
+- Give every finding a separate `Suggested Fix` grounded in the actual diff,
+  surrounding code, and project patterns. Recommend the smallest concrete
+  change that resolves the issue, including the affected logic, expected
+  behavior, and targeted verification when relevant.
+- Do not use vague advice such as "fix this issue." When multiple approaches are
+  valid, recommend one and state the important tradeoff. If the fix depends on
+  a product decision, give conditional options and surface that decision in
+  `Open Questions`.
+- Treat fix suggestions as review guidance. Do not modify the PR unless the
+  user explicitly asks; include a short code example only when it makes the
+  proposed change materially clearer.
 
 ## Workflow
 
@@ -237,8 +248,8 @@ asks otherwise. Preferred system language means the first language in macOS
 `AppleLanguages`; if it cannot be read, use the language from the current
 conversation.
 
-Keep section headings, `PR Context` subheadings, and priority labels exactly as
-written. Use this structure exactly:
+Keep section headings, `PR Context` subheadings, priority labels, and
+`Suggested Fix` labels exactly as written. Use this structure exactly:
 
 ```markdown
 ## PR Context
@@ -260,9 +271,12 @@ reviewers should inspect.
 ---
 
 ## Findings
-- [P1] path:line - Describe each issue, trigger condition, risk, and suggested
-  change.
-- If there are no findings, say so clearly.
+
+- [P1] path:line - Describe the issue, trigger condition, and risk.
+  - **Suggested Fix:** Describe the smallest concrete change, affected logic,
+    and expected behavior. Include targeted verification when relevant.
+- If there are no findings, write `No findings` clearly. Do not invent fix
+  suggestions.
 
 ## Open Questions
 - List correctness-affecting questions, or say clearly that there are no
