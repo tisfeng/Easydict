@@ -11,8 +11,9 @@ import Foundation
 
 // MARK: - Constants
 
-private let kHTMLDirectory = ".Dict HTML"
+private let kHTMLDirectory = ".easydict-apple-dictionary-html.noindex"
 private let kHTMLDictFilePath = "all_dict.html"
+private let kLegacyHTMLDirectory = "Dict HTML"
 
 // MARK: - AppleDictionary
 
@@ -319,13 +320,13 @@ extension AppleDictionary {
 
     private func saveDictHTML(_ dictHTML: String, dictName: String) {
         let dictionaryURL = TTTDictionary.userDictionaryDirectoryURL()
-        let htmlDirectory = dictionaryURL.appendingPathComponent(kHTMLDirectory).path
+        let htmlDirectoryURL = dictionaryURL.appendingPathComponent(kHTMLDirectory, isDirectory: true)
 
-        createHTMLDirectoryIfNeeded(htmlDirectory)
+        createHTMLDirectoryIfNeeded(htmlDirectoryURL, in: dictionaryURL)
 
-        let htmlFilePath = "\(htmlDirectory)/\(dictName).html"
+        let htmlFileURL = htmlDirectoryURL.appendingPathComponent("\(dictName).html")
         do {
-            try dictHTML.write(toFile: htmlFilePath, atomically: true, encoding: .utf8)
+            try dictHTML.write(to: htmlFileURL, atomically: true, encoding: .utf8)
         } catch {
             logError("writeToFile error: \(error)")
         }
@@ -333,21 +334,33 @@ extension AppleDictionary {
 
     private func saveAllDictHTML(_ htmlString: String) {
         let dictionaryURL = TTTDictionary.userDictionaryDirectoryURL()
-        let htmlDirectory = dictionaryURL.appendingPathComponent(kHTMLDirectory).path
-        createHTMLDirectoryIfNeeded(htmlDirectory)
+        let htmlDirectoryURL = dictionaryURL.appendingPathComponent(kHTMLDirectory, isDirectory: true)
+        createHTMLDirectoryIfNeeded(htmlDirectoryURL, in: dictionaryURL)
 
-        let filePath = "\(htmlDirectory)/\(kHTMLDictFilePath)"
-        htmlFilePath = filePath
-        try? htmlString.write(toFile: filePath, atomically: true, encoding: .utf8)
+        let fileURL = htmlDirectoryURL.appendingPathComponent(kHTMLDictFilePath)
+        htmlFilePath = fileURL.path
+        try? htmlString.write(to: fileURL, atomically: true, encoding: .utf8)
     }
 
-    private func createHTMLDirectoryIfNeeded(_ htmlDirectory: String) {
+    private func createHTMLDirectoryIfNeeded(_ htmlDirectoryURL: URL, in dictionaryURL: URL) {
         let fileManager = FileManager.default
-        guard !fileManager.fileExists(atPath: htmlDirectory) else { return }
+        let legacyHTMLDirectoryURL = dictionaryURL.appendingPathComponent(
+            kLegacyHTMLDirectory,
+            isDirectory: true
+        )
+        if fileManager.fileExists(atPath: legacyHTMLDirectoryURL.path) {
+            do {
+                try fileManager.removeItem(at: legacyHTMLDirectoryURL)
+            } catch {
+                logError("remove legacy HTML directory error: \(error)")
+            }
+        }
+
+        guard !fileManager.fileExists(atPath: htmlDirectoryURL.path) else { return }
 
         do {
             try fileManager.createDirectory(
-                atPath: htmlDirectory,
+                at: htmlDirectoryURL,
                 withIntermediateDirectories: true
             )
         } catch {
