@@ -1568,11 +1568,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     WKWebView *webView = nil;
     if ([service.serviceType isEqualToString:EZServiceTypeAppleDictionary]) {
-        EZAppleDictionary *appleDictService = (EZAppleDictionary *)service;
-
         EZWebViewManager *webViewManager = result.webViewManager;
         BOOL shouldRenderHTML = EZResultShouldRenderDictionaryHTML(result);
-        BOOL needLoadHTML = shouldRenderHTML && !webViewManager.isLoaded;
+        BOOL htmlChanged = ![webViewManager.loadedHTMLString isEqualToString:result.htmlString];
+        BOOL needLoadHTML = shouldRenderHTML && (!webViewManager.isLoaded || htmlChanged);
         BOOL needUpdateIframe = shouldRenderHTML && webViewManager.needUpdateIframeHeight && webViewManager.isLoaded;
         if (needLoadHTML || needUpdateIframe) {
             webView = webViewManager.webView;
@@ -1582,10 +1581,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         if (needLoadHTML) {
             NSUInteger renderGeneration = [webViewManager beginRenderingHTML];
             webViewManager.isLoaded = YES;
-
-            NSURL *htmlFileURL = [NSURL fileURLWithPath:appleDictService.htmlFilePath];
+            webViewManager.loadedHTMLString = result.htmlString;
             webView.navigationDelegate = resultCell.wordResultView;
-            WKNavigation *navigation = [webView loadFileURL:htmlFileURL allowingReadAccessToURL:TTTDictionary.userDictionaryDirectoryURL];
+            WKNavigation *navigation = [webView loadHTMLString:result.htmlString baseURL:nil];
             [webViewManager trackRenderingNavigation:navigation renderGeneration:renderGeneration];
         } else if (needUpdateIframe) {
             [webViewManager updateAllIframe];

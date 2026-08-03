@@ -48,6 +48,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 @property (nonatomic, assign) CGFloat fontSizeRatio;
 
 + (void)applyTagButtonAppearance:(NSButton *)tagButton tagColor:(NSColor *)tagColor fontSize:(CGFloat)fontSize;
+- (void)fetchDictionaryHTMLTextIfNeeded;
 
 @end
 
@@ -106,17 +107,21 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
     mm_weakify(self);
 
     if (shouldRenderHTML) {
+        EZWebViewManager *webViewManager = result.webViewManager;
         [self addSubview:webView];
 
-        [result.webViewManager setDidFinishUpdatingIframeHeightBlock:^(CGFloat scrollHeight) {
+        [webViewManager setDidFinishUpdatingIframeHeightBlock:^(CGFloat scrollHeight) {
             mm_strongify(self);
 
             [self updateWebViewHeight:scrollHeight];
         }];
 
-        if (result.webViewManager.isLoaded &&
-            result.webViewManager.needUpdateIframeHeight) {
-            [result.webViewManager updateAllIframe];
+        if (webViewManager.isLoaded && webViewManager.wordResultViewHeight <= 0) {
+            webViewManager.needUpdateIframeHeight = YES;
+        }
+
+        if (webViewManager.isLoaded && webViewManager.needUpdateIframeHeight) {
+            [webViewManager updateAllIframe];
         }
 
         [webView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -953,7 +958,16 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
         BOOL hasHTML = result.htmlString.length > 0;
         linkButton.enabled = hasHTML;
 
-        if (hasHTML) {
+        WKWebView *attachedWebView = self.webView;
+        if (hasHTML && attachedWebView && result.webViewManager.wordResultViewHeight > 0) {
+            CGFloat viewHeight = result.webViewManager.wordResultViewHeight;
+            CGFloat webViewHeight = MAX(viewHeight - self.bottomViewHeight, 0);
+            [attachedWebView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(webViewHeight);
+            }];
+            _viewHeight = viewHeight;
+            [self fetchDictionaryHTMLTextIfNeeded];
+        } else if (hasHTML) {
             _viewHeight = 0;
         }
     }
@@ -1178,9 +1192,6 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
 - (void)updateWebViewHeight:(CGFloat)scrollHeight {
     WKWebView *webView = self.webView;
-    if (!webView) {
-        return;
-    }
 
     // Cost ~0.15s
     //    NSString *script = @"document.documentElement.scrollHeight;";
@@ -1203,6 +1214,9 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
     CGFloat webViewHeight = ceil(MIN(maxHeight, scrollHeight));
     CGFloat viewHeight = self.bottomViewHeight + webViewHeight;
     CGFloat previousViewHeight = self.result.webViewManager.wordResultViewHeight;
+    self.result.webViewManager.wordResultViewHeight = viewHeight;
+    _viewHeight = viewHeight;
+
     if (previousViewHeight > 0 &&
         fabs(viewHeight - previousViewHeight) < EZLayoutGeometryTolerance_0_5) {
         return;
@@ -1220,14 +1234,16 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
         [jsCode appendString:[self jsCodeOfOptimizeScrollableWebView]];
     }
 
-    if (jsCode.length) {
+    if (webView && jsCode.length) {
         [self evaluateJavaScript:jsCode];
     }
 
 
-    [webView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(webViewHeight);
-    }];
+    if (webView) {
+        [webView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(webViewHeight);
+        }];
+    }
 
 
     /**
@@ -1249,21 +1265,27 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
     // Notify tableView to update cell height.
     [queryViewController updateCellWithResult:self.result reloadData:NO];
 
+    [self fetchDictionaryHTMLTextIfNeeded];
+}
+
+- (void)fetchDictionaryHTMLTextIfNeeded {
     // Extract iframe text only once; later height callbacks are layout-only.
-    if (self.result.copiedText.length == 0) {
-        [self fetchWebViewAllIframeText:^(NSString *text) {
-            self.result.copiedText = text;
-            self.result.translatedResults = @[ text ];
-
-            if (self.didFinishLoadingHTMLBlock) {
-                self.didFinishLoadingHTMLBlock();
-            }
-
-            if (self.result.didFinishLoadingHTMLBlock) {
-                self.result.didFinishLoadingHTMLBlock();
-            }
-        }];
+    if (!self.webView || self.result.copiedText.length > 0) {
+        return;
     }
+
+    [self fetchWebViewAllIframeText:^(NSString *text) {
+        self.result.copiedText = text;
+        self.result.translatedResults = @[ text ];
+
+        if (self.didFinishLoadingHTMLBlock) {
+            self.didFinishLoadingHTMLBlock();
+        }
+
+        if (self.result.didFinishLoadingHTMLBlock) {
+            self.result.didFinishLoadingHTMLBlock();
+        }
+    }];
 }
 
 - (void)updateWebViewBackgroundColorWithDarkMode:(BOOL)isDark {

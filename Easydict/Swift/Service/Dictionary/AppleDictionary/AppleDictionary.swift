@@ -11,9 +11,9 @@ import Foundation
 
 // MARK: - Constants
 
-private let kHTMLDirectory = ".easydict-apple-dictionary-html.noindex"
+private let kHTMLDirectory = "easydict-apple-dictionary-html"
 private let kHTMLDictFilePath = "all_dict.html"
-private let kLegacyHTMLDirectory = "Dict HTML"
+private let kLegacyHTMLDirectories = ["Dict HTML"]
 
 // MARK: - AppleDictionary
 
@@ -39,10 +39,6 @@ class AppleDictionary: QueryService, @unchecked Sendable {
     // MARK: - Singleton
 
     static let shared = AppleDictionary()
-
-    // MARK: - Public Properties
-
-    var htmlFilePath: String = ""
 
     var appleDictionaryNames: [String] {
         get {
@@ -338,21 +334,26 @@ extension AppleDictionary {
         createHTMLDirectoryIfNeeded(htmlDirectoryURL, in: dictionaryURL)
 
         let fileURL = htmlDirectoryURL.appendingPathComponent(kHTMLDictFilePath)
-        htmlFilePath = fileURL.path
-        try? htmlString.write(to: fileURL, atomically: true, encoding: .utf8)
+        do {
+            try htmlString.write(to: fileURL, atomically: true, encoding: .utf8)
+        } catch {
+            logError("writeToFile error: \(error)")
+        }
     }
 
     private func createHTMLDirectoryIfNeeded(_ htmlDirectoryURL: URL, in dictionaryURL: URL) {
         let fileManager = FileManager.default
-        let legacyHTMLDirectoryURL = dictionaryURL.appendingPathComponent(
-            kLegacyHTMLDirectory,
-            isDirectory: true
-        )
-        if fileManager.fileExists(atPath: legacyHTMLDirectoryURL.path) {
-            do {
-                try fileManager.removeItem(at: legacyHTMLDirectoryURL)
-            } catch {
-                logError("remove legacy HTML directory error: \(error)")
+        for legacyHTMLDirectory in kLegacyHTMLDirectories {
+            let legacyHTMLDirectoryURL = dictionaryURL.appendingPathComponent(
+                legacyHTMLDirectory,
+                isDirectory: true
+            )
+            if fileManager.fileExists(atPath: legacyHTMLDirectoryURL.path) {
+                do {
+                    try fileManager.removeItem(at: legacyHTMLDirectoryURL)
+                } catch {
+                    logError("remove legacy HTML directory error: \(error)")
+                }
             }
         }
 
