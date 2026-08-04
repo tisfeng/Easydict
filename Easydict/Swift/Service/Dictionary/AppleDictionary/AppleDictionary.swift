@@ -427,9 +427,21 @@ extension AppleDictionary {
         ),
             resourceValues.isRegularFile == true,
             let fileSize = resourceValues.fileSize,
-            fileSize <= kMaxEmbeddedAudioSize,
-            let audioData = try? Data(contentsOf: audioURL)
+            fileSize <= kMaxEmbeddedAudioSize
         else {
+            return nil
+        }
+
+        let rootURL = contentsURL.standardizedFileURL.resolvingSymlinksInPath()
+        let rootPath = FilePath(rootURL.path).lexicallyNormalized()
+        let resolvedPath = FilePath(audioURL.path).lexicallyNormalized()
+        let audioData: Data?
+        if resolvedPath.starts(with: rootPath), resolvedPath != rootPath {
+            audioData = try? Data(contentsOf: audioURL)
+        } else {
+            return nil
+        }
+        guard let audioData else {
             return nil
         }
 
