@@ -18,6 +18,7 @@
 #import "EZSchemeParser.h"
 #import "EZToast.h"
 #import "DictionaryKit.h"
+#import "EZWebViewManager.h"
 
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
@@ -380,6 +381,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (!_tableView) {
         NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
+        tableView.wantsLayer = YES;
+        tableView.layer.drawsAsynchronously = YES;
 
         [tableView executeLight:^(NSTableView *tableView) {
             tableView.backgroundColor = [NSColor ez_mainViewBgLightColor];
@@ -1331,6 +1334,20 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     return allResults;
 }
 
+- (void)discardDictionaryWebViews {
+    for (EZQueryService *service in self.services) {
+        EZQueryResult *result = service.result;
+        if (!EZResultNeedsDictionaryHTMLHeight(result)) {
+            continue;
+        }
+
+        EZResultView *resultCell = [self resultCellOfResult:result];
+        [resultCell.wordResultView.webView removeFromSuperview];
+        resultCell.wordResultView.webView = nil;
+        [result.webViewManager discardReusableWebView];
+    }
+}
+
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
     NSInteger index = [self.serviceTypeIds indexOfObject:result.serviceTypeWithUniqueIdentifier];
     if (index != NSNotFound) {
@@ -1551,36 +1568,44 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     WKWebView *webView = nil;
     if ([service.serviceType isEqualToString:EZServiceTypeAppleDictionary]) {
-        EZAppleDictionary *appleDictService = (EZAppleDictionary *)service;
-
         EZWebViewManager *webViewManager = result.webViewManager;
-        webView = webViewManager.webView;
-        resultCell.wordResultView.webView = webView;
+        BOOL shouldRenderHTML = EZResultShouldRenderDictionaryHTML(result);
+        BOOL htmlChanged = ![webViewManager.loadedHTMLString isEqualToString:result.htmlString];
+        BOOL needLoadHTML = shouldRenderHTML && (!webViewManager.isLoaded || htmlChanged);
+        BOOL needUpdateIframe = shouldRenderHTML && webViewManager.needUpdateIframeHeight && webViewManager.isLoaded;
+        if (needLoadHTML || needUpdateIframe) {
+            webView = webViewManager.webView;
+            resultCell.wordResultView.webView = webView;
+        }
 
-        BOOL needLoadHTML = result.isShowing && result.htmlString.length && !webViewManager.isLoaded;
         if (needLoadHTML) {
+            NSUInteger renderGeneration = [webViewManager beginRenderingHTML];
             webViewManager.isLoaded = YES;
-
-            NSURL *htmlFileURL = [NSURL fileURLWithPath:appleDictService.htmlFilePath];
-            webView.navigationDelegate = resultCell.wordResultView;
-            [webView loadFileURL:htmlFileURL allowingReadAccessToURL:TTTDictionary.userDictionaryDirectoryURL];
-        } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
+            webViewManager.loadedHTMLString = result.htmlString;
+            WKNavigation *navigation = [webView loadHTMLString:result.htmlString baseURL:nil];
+            [webViewManager trackRenderingNavigation:navigation renderGeneration:renderGeneration];
+        } else if (needUpdateIframe) {
             [webViewManager updateAllIframe];
         }
     } else if ([service.serviceType isEqualToString:EZServiceTypeMDict]) {
         EZWebViewManager *webViewManager = result.webViewManager;
-        webView = webViewManager.webView;
-        webView.appearance = nil;
-        resultCell.wordResultView.webView = webView;
-
+        BOOL shouldRenderHTML = EZResultShouldRenderDictionaryHTML(result);
         BOOL htmlChanged = ![webViewManager.loadedHTMLString isEqualToString:result.htmlString];
-        BOOL needLoadHTML = result.isShowing && result.htmlString.length && (!webViewManager.isLoaded || htmlChanged);
+        BOOL needLoadHTML = shouldRenderHTML && (!webViewManager.isLoaded || htmlChanged);
+        BOOL needUpdateIframe = shouldRenderHTML && webViewManager.needUpdateIframeHeight && webViewManager.isLoaded;
+        if (needLoadHTML || needUpdateIframe) {
+            webView = webViewManager.webView;
+            webView.appearance = nil;
+            resultCell.wordResultView.webView = webView;
+        }
+
         if (needLoadHTML) {
+            NSUInteger renderGeneration = [webViewManager beginRenderingHTML];
             webViewManager.isLoaded = YES;
             webViewManager.loadedHTMLString = result.htmlString;
-            webView.navigationDelegate = resultCell.wordResultView;
-            [webView loadHTMLString:result.htmlString baseURL:nil];
-        } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
+            WKNavigation *navigation = [webView loadHTMLString:result.htmlString baseURL:nil];
+            [webViewManager trackRenderingNavigation:navigation renderGeneration:renderGeneration];
+        } else if (needUpdateIframe) {
             [webViewManager updateAllIframe];
         }
     }
