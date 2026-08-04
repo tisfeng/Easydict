@@ -33,8 +33,15 @@ Accepted PR references:
   If that remote name already points elsewhere, stop and ask.
 - Keep the normal local branch name exactly the same as the PR head branch
   name.
+- Treat the PR metadata `headRefOid` as the only valid normal-review HEAD. A
+  same-named local branch may fast-forward to that SHA, but it must not contain
+  additional local commits or diverge from it.
 - Do not create a differently named local branch unless the user explicitly
   requests or approves an isolated worktree or latest-base integration review.
+- If normal preparation refuses an existing branch, do not bypass it by
+  checking out a remote-tracking ref, entering detached HEAD, or reviewing the
+  fetched ref in place. Preserve the branch and ask whether to use an isolated
+  worktree or how to repair the local branch.
 - In explicit worktree mode, use `review/pr-<number>-<head-short-sha>` for a
   normal review and `review/pr-<number>-merge-<head-short-sha>` for a
   latest-base review. Keep the worktree under
@@ -55,6 +62,10 @@ Accepted PR references:
 - For exact inline review context, unresolved comments, or a `discussion_r...`
   id, use `gh api` / GraphQL so `isResolved`, `isOutdated`, path, and line stay
   visible. Do not rely only on `gh pr view --json`.
+- Treat PR feedback as live state. Opening a PR, marking a draft ready, bot
+  workflows, and manual review requests can add reviews or threads while the
+  local review is in progress. Never assume the initial comment snapshot is
+  still current when writing the final response.
 - Give every finding a separate `Suggested Fix` grounded in the actual diff,
   surrounding code, and project patterns. Recommend the smallest concrete
   change that resolves the issue, including the affected logic, expected
@@ -147,6 +158,11 @@ The merge helper creates `review/pr-<number>-merge-<head-short-sha>` from the PR
 head, fetches the PR base, runs `git merge --no-edit <base-remote>/<base-branch>`,
 and never pushes.
 
+Normal preparation must stop before switching branches when an existing local
+PR branch is ahead of or diverged from the fetched head. It may update only an
+exact match or a branch that can fast-forward to `headRefOid`. If it stops,
+offer the isolated `--worktree` path; do not improvise a detached checkout.
+
 ### 3. Handle Merge Conflicts
 
 If the merge helper stops with conflicts, inspect the actual conflict before
@@ -180,12 +196,15 @@ After preparation, verify the local state:
 
 ```bash
 git branch --show-current
+git rev-parse HEAD
 git status --short
 git branch -vv
 ```
 
 For normal preparation, require a clean branch named exactly like the PR head
-branch with upstream set to `<owner>/<branch>`. For latest-base merge
+branch with upstream set to `<owner>/<branch>`, and require `HEAD` to equal the
+recorded `headRefOid`. A matching upstream alone is insufficient because the
+local branch may contain commits that are not in the PR. For latest-base merge
 preparation, require a clean local review branch named
 `review/pr-<number>-merge-<head-short-sha>`.
 
@@ -195,14 +214,22 @@ SHA-specific review branch. Require a normal worktree branch to track
 source checkout branch, HEAD, and file status were unchanged, then run every
 remaining review command with that worktree as its working directory.
 
-Read PR and issue context before reviewing code:
+Snapshot PR and issue context before reviewing code:
 
 ```bash
 gh pr view <number> [--repo <base-owner>/<base-repo>] \
   --comments \
-  --json number,title,url,body,baseRefName,headRefName,files,commits,closingIssuesReferences,comments,reviews
+  --json number,title,url,body,baseRefName,headRefName,headRefOid,updatedAt,files,commits,closingIssuesReferences,comments,reviews
 gh issue view <issue-url-or-number> --comments
 ```
+
+Record `headRefOid`, `updatedAt`, the latest review `submittedAt`, and the full
+inline review-thread set. The `comments` and `reviews` fields do not contain
+complete inline thread content, so always use GraphQL `reviewThreads` as well.
+For every thread, retain its id, `isResolved`, `isOutdated`, path, line, and all
+comments with database id, URL, body, author, timestamps, and commit OID.
+Paginate until `pageInfo.hasNextPage` is false instead of assuming the first
+page contains every thread.
 
 For old or stale PRs, check linked issue history, later replacement PRs, and the
 live base tree before deciding whether the branch should still exist. Use
@@ -229,6 +256,33 @@ gh pr checks <number> [--repo <base-owner>/<base-repo>]
 ```
 
 Run lightweight local checks such as `git diff --check` when relevant.
+
+### 5. Refresh Live PR State Before Finalizing
+
+Immediately before writing the final response, refresh all mutable review
+state even when the initial checks were green:
+
+```bash
+gh pr view <number> [--repo <base-owner>/<base-repo>] \
+  --json headRefOid,updatedAt,state,mergeStateStatus,comments,reviews
+gh pr checks <number> [--repo <base-owner>/<base-repo>]
+```
+
+Repeat the same fully paginated GraphQL `reviewThreads` query used for the
+initial snapshot, then compare the two snapshots.
+
+- If `headRefOid` changed, stop finalization, update the prepared checkout to
+  the new head, inspect the new diff against the true base, and revalidate both
+  earlier findings and new changes.
+- If a new review, thread, reply, or resolution/outdated-state change appeared,
+  read its exact content, validate it against the current head and surrounding
+  code, and update `Findings`, `Open Questions`, and `Verification` before
+  finalizing. Treat automated and human feedback the same way.
+- If analyzing new activity leaves enough time for another review to arrive,
+  refresh again. Finish only when the latest snapshot contains no uninspected
+  feedback.
+- If the final refresh is unavailable, report that limitation and do not claim
+  that every current comment or thread was inspected.
 
 ## Review Focus
 
@@ -291,6 +345,10 @@ reviewers should inspect.
 - State whether the latest-base merge path was triggered. If it was, list the
   local review branch name, conflict files, conflict resolution status, and
   confirm that no push was performed.
+- Report the final live-state refresh: final `headRefOid`, PR `updatedAt`, and
+  whether new reviews, threads, replies, or thread-state changes appeared after
+  the initial snapshot. State that each new item was inspected, or describe the
+  remaining limitation.
 - Confirm that no push was performed unless the user explicitly asked for one.
 - If merge conflicts could not be resolved safely, report that blocker here and
   do not claim that a full review was completed.

@@ -288,7 +288,8 @@ print_source_checkout() {
 }
 
 prepare_pr_branch() {
-  local current_branch branch_exists=false
+  local current_branch branch_exists=false fetched_head local_head
+  local ahead_count behind_count actual_head
   local remote_name=$head_owner
   local remote_ref="refs/remotes/${remote_name}/${head_branch}"
   local upstream_ref="${remote_name}/${head_branch}"
@@ -311,8 +312,25 @@ prepare_pr_branch() {
 
   ensure_remote "$remote_name" "$head_owner" "$head_repo"
   git fetch "$remote_name" "+refs/heads/${head_branch}:${remote_ref}"
+  fetched_head=$(git rev-parse "$remote_ref")
+  [[ $fetched_head == "$head_oid" ]] || \
+    fail "PR head moved from '${head_oid}' to '${fetched_head}'. Rerun preparation."
 
   if [[ $branch_exists == true ]]; then
+    local_head=$(git rev-parse "refs/heads/${head_branch}")
+    if [[ $local_head != "$head_oid" ]] && \
+      ! git merge-base --is-ancestor "$local_head" "$remote_ref"; then
+      read -r ahead_count behind_count < <(
+        git rev-list --left-right --count \
+          "refs/heads/${head_branch}...${remote_ref}"
+      )
+      fail \
+        "Local branch '${head_branch}' does not safely fast-forward to PR head '${head_oid}'" \
+        "(ahead ${ahead_count}, behind ${behind_count})." \
+        "The branch was preserved. Ask whether to use an isolated worktree" \
+        "or how to repair the local branch; do not review a detached or remote-tracking ref."
+    fi
+
     if [[ $current_branch == "$head_branch" ]]; then
       printf 'Already on branch: %s\n' "$head_branch"
     else
@@ -323,10 +341,19 @@ prepare_pr_branch() {
     git switch --create "$head_branch" --track "$upstream_ref"
   fi
 
+  current_branch=$(git branch --show-current || true)
+  [[ $current_branch == "$head_branch" ]] || \
+    fail "Prepared checkout is not on PR branch '${head_branch}'."
+  require_expected_upstream "$head_branch" "$upstream_ref"
+  actual_head=$(git rev-parse HEAD)
+  [[ $actual_head == "$head_oid" ]] || \
+    fail "Prepared branch '${head_branch}' is at '${actual_head}', not PR head '${head_oid}'."
+
   printf '\nPrepared PR #%s: %s\n' "$pr_number" "$pr_url"
   printf 'Remote: %s (%s)\n' "$remote_name" "https://github.com/${head_owner}/${head_repo}.git"
   printf 'Branch: %s\n' "$head_branch"
   printf 'Upstream: %s\n' "$upstream_ref"
+  printf 'Head SHA: %s\n' "$head_oid"
 }
 
 # Fetch the exact PR head and latest base refs used by merged review modes.
