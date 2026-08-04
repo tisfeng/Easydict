@@ -8,6 +8,7 @@
 
 import AppKit
 import Foundation
+import SystemPackage
 import UniformTypeIdentifiers
 
 // MARK: - Constants
@@ -452,7 +453,7 @@ extension AppleDictionary {
         }
 
         let rootURL = contentsURL.standardizedFileURL.resolvingSymlinksInPath()
-        let rootComponents = rootURL.pathComponents
+        let rootPath = FilePath(rootURL.path).lexicallyNormalized()
         let resourceRoots = [
             rootURL.appendingPathComponent("Resources", isDirectory: true),
             rootURL,
@@ -461,13 +462,10 @@ extension AppleDictionary {
             let audioURL = resourceRoot.appendingPathComponent(audioPath)
                 .standardizedFileURL
                 .resolvingSymlinksInPath()
-            let audioComponents = audioURL.pathComponents
-            guard audioComponents.count > rootComponents.count,
-                  Array(audioComponents.prefix(rootComponents.count)) == rootComponents
-            else {
-                continue
-            }
-            if (try? audioURL.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true {
+            let resolvedPath = FilePath(audioURL.path).lexicallyNormalized()
+            if resolvedPath.starts(with: rootPath),
+               resolvedPath != rootPath,
+               (try? audioURL.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true {
                 return audioURL
             }
         }
