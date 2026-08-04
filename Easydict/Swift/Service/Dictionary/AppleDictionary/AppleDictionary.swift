@@ -8,12 +8,17 @@
 
 import AppKit
 import Foundation
+import UniformTypeIdentifiers
 
 // MARK: - Constants
 
-private let kHTMLDirectory = "easydict-apple-dictionary-html"
+private let kHTMLDirectory = ".easydict-apple-dictionary-html.noindex"
 private let kHTMLDictFilePath = "all_dict.html"
-private let kLegacyHTMLDirectories = ["Dict HTML"]
+private let kLegacyHTMLDirectories = [
+    "Dict HTML",
+    ".Dict HTML",
+    "easydict-apple-dictionary-html",
+]
 
 // MARK: - AppleDictionary
 
@@ -248,10 +253,10 @@ extension AppleDictionary {
             result?.htmlStrings = entryHTMLs
 
             for html in entryHTMLs {
-                let absolutePathHTML = replacedAudioPath(
+                let resolvedAudioHTML = replacedAudioSource(
                     ofHTML: html, withBasePath: contentsURL.path
                 )
-                wordHtmlString += absolutePathHTML
+                wordHtmlString += resolvedAudioHTML
             }
 
             if !wordHtmlString.isEmpty {
@@ -375,13 +380,8 @@ extension AppleDictionary {
 extension AppleDictionary {
     // MARK: Private
 
-    /// Replace HTML all audio relative path with absolute path
-    ///
-    /// &quot; is " in HTML
-    ///
-    /// javascript:new Audio(&quot;uk/apple__gb_1.mp3&quot;) -->
-    /// javascript:new Audio('/Users/tisfeng/Library/Contents/uk/apple__gb_1.mp3')
-    private func replacedAudioPath(ofHTML html: String, withBasePath basePath: String) -> String {
+    /// Embeds dictionary audio so in-memory HTML does not require file access.
+    private func replacedAudioSource(ofHTML html: String, withBasePath basePath: String) -> String {
         let pattern = "new Audio\\((.*?)\\)"
         guard let regex = try? NSRegularExpression(pattern: pattern) else {
             return html
@@ -397,7 +397,9 @@ extension AppleDictionary {
             guard let matchRange = Range(match.range(at: 1), in: mutableHTML) else { continue }
 
             let filePath = String(mutableHTML[matchRange])
-            let relativePath = filePath.replacingOccurrences(of: "&quot;", with: "")
+            let relativePath = filePath
+                .replacingOccurrences(of: "&quot;", with: "")
+                .trimmingCharacters(in: CharacterSet(charactersIn: "\"' "))
 
             var fileBasePath = basePath
 
@@ -412,7 +414,13 @@ extension AppleDictionary {
             }
 
             let absolutePath = (fileBasePath as NSString).appendingPathComponent(relativePath)
-            let replacement = "new Audio('\(absolutePath)')"
+            let audioURL = URL(fileURLWithPath: absolutePath)
+            guard let audioData = try? Data(contentsOf: audioURL) else { continue }
+
+            let mimeType = UTType(filenameExtension: audioURL.pathExtension)?.preferredMIMEType
+                ?? "application/octet-stream"
+            let dataURL = "data:\(mimeType);base64,\(audioData.base64EncodedString())"
+            let replacement = "new Audio('\(dataURL)')"
 
             if let fullMatchRange = Range(match.range, in: mutableHTML) {
                 mutableHTML.replaceSubrange(fullMatchRange, with: replacement)
