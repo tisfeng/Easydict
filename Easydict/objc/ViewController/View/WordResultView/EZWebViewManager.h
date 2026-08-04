@@ -35,6 +35,7 @@ FOUNDATION_EXPORT BOOL EZResultShouldRenderDictionaryHTML(EZQueryResult *result)
 - (NSUInteger)beginRenderingHTML;
 - (void)trackRenderingNavigation:(nullable WKNavigation *)navigation renderGeneration:(NSUInteger)renderGeneration;
 - (BOOL)shouldHandleNavigation:(nullable WKNavigation *)navigation;
+- (void)invalidateRenderingNavigation:(nullable WKNavigation *)navigation;
 
 - (void)updateAllIframe;
 

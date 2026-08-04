@@ -20,6 +20,7 @@ final class SelectionWorkflow {
 
     var isSelectedTextEditable: Bool = false
 
+    var onStartMonitoringKeyboard: (@MainActor () -> ())?
     var onBrowserURLUpdated: ((String?) -> ())?
 
     func getSelectedTextSnapshot(
@@ -52,7 +53,8 @@ final class SelectionWorkflow {
 
                 if !text.isEmpty {
                     if MyConfiguration.shared.autoSelectText {
-                        await onStartMonitoringKeyboard?()
+                        let startMonitoring = onStartMonitoringKeyboard ?? self.onStartMonitoringKeyboard
+                        await startMonitoring?()
                     }
                     if !isBrowser || !preferAppleScript {
                         completion(
@@ -97,21 +99,15 @@ final class SelectionWorkflow {
         }
     }
 
-    func getSelectedText(
-        onStartMonitoringKeyboard: (@MainActor () -> ())? = nil,
-        completion: @escaping (String?) -> ()
-    ) {
-        getSelectedTextSnapshot(onStartMonitoringKeyboard: onStartMonitoringKeyboard) { snapshot in
+    func getSelectedText(completion: @escaping (String?) -> ()) {
+        getSelectedTextSnapshot { snapshot in
             completion(snapshot?.text)
         }
     }
 
-    func getSelectedText(
-        onStartMonitoringKeyboard: (@MainActor () -> ())? = nil
-    ) async
-        -> String? {
+    func getSelectedText() async -> String? {
         await withCheckedContinuation { continuation in
-            getSelectedText(onStartMonitoringKeyboard: onStartMonitoringKeyboard) { text in
+            getSelectedText { text in
                 continuation.resume(returning: text)
             }
         }

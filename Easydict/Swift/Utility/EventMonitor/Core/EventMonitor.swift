@@ -82,10 +82,7 @@ final class EventMonitor: NSObject {
     /// Fetches selected text using the active strategy pipeline.
     /// - Important: Completion is not guaranteed to be called on main thread.
     func getSelectedTextWithCompletion(_ completion: @escaping (String?) -> ()) {
-        selectionWorkflow.getSelectedTextSnapshot(onStartMonitoringKeyboard: { [weak self] in
-            guard MyConfiguration.shared.autoSelectText else { return }
-            self?.eventTapMonitor.start()
-        }) { [weak self] snapshot in
+        selectionWorkflow.getSelectedTextSnapshot { [weak self] snapshot in
             guard let self else {
                 completion(snapshot?.text)
                 return
@@ -103,10 +100,7 @@ final class EventMonitor: NSObject {
 
     /// Async Swift-only convenience.
     func getSelectedText() async -> String? {
-        await selectionWorkflow.getSelectedText(onStartMonitoringKeyboard: { [weak self] in
-            guard MyConfiguration.shared.autoSelectText else { return }
-            self?.eventTapMonitor.start()
-        })
+        await selectionWorkflow.getSelectedText()
     }
 
     /// Clears transient pop-button monitors after the button opens a query window.
@@ -246,6 +240,11 @@ final class EventMonitor: NSObject {
         selectionWorkflow.systemUtility = systemUtility
         selectionWorkflow.onBrowserURLUpdated = { [weak self] urlString in
             self?.browserTabURLString = urlString
+        }
+
+        selectionWorkflow.onStartMonitoringKeyboard = { [weak self] in
+            guard MyConfiguration.shared.autoSelectText else { return }
+            self?.eventTapMonitor.start()
         }
 
         triggerEvaluator.onTrigger = { [weak self] trigger in

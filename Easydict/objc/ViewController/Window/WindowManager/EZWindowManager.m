@@ -32,6 +32,7 @@ static NSTimeInterval const EZFloatingWindowIdleWebViewDiscardDelay = 60.0;
 @property (nonatomic) EZWindowType windowType;
 
 - (void)scheduleDictionaryWebViewDiscardForWindow:(EZBaseQueryWindow *)window;
+- (void)discardDictionaryWebViewsIfIdleForWindow:(EZBaseQueryWindow *)window;
 
 @end
 
@@ -1078,18 +1079,19 @@ static EZWindowManager *_instance;
 }
 
 - (void)scheduleDictionaryWebViewDiscardForWindow:(EZBaseQueryWindow *)window {
-    __weak EZBaseQueryWindow *weakWindow = window;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
-                                 (int64_t)(EZFloatingWindowIdleWebViewDiscardDelay * NSEC_PER_SEC)),
-                   dispatch_get_main_queue(), ^{
-        EZBaseQueryWindow *strongWindow = weakWindow;
-        if (!strongWindow || strongWindow.isVisible || strongWindow.isPin ||
-            MyConfiguration.shared.keepPrevResultWhenEmpty) {
-            return;
-        }
+    SEL selector = @selector(discardDictionaryWebViewsIfIdleForWindow:);
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:selector object:window];
+    [self performSelector:selector
+               withObject:window
+               afterDelay:EZFloatingWindowIdleWebViewDiscardDelay];
+}
 
-        [strongWindow.queryViewController discardDictionaryWebViews];
-    });
+- (void)discardDictionaryWebViewsIfIdleForWindow:(EZBaseQueryWindow *)window {
+    if (window.isVisible || window.isPin || MyConfiguration.shared.keepPrevResultWhenEmpty) {
+        return;
+    }
+
+    [window.queryViewController discardDictionaryWebViews];
 }
 
 #pragma mark -

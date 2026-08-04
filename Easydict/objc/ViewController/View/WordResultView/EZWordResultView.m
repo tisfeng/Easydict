@@ -1122,11 +1122,13 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     MMLogError(@"didFailNavigation: %@", error);
+    [self.result.webViewManager invalidateRenderingNavigation:navigation];
 }
 
 /** 请求服务器发生错误 (如果是goBack时，当前页面也会回调这个方法，原因是NSURLErrorCancelled取消加载) */
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     MMLogError(@"didFailProvisionalNavigation: %@", error);
+    [self.result.webViewManager invalidateRenderingNavigation:navigation];
 }
 
 // 监听 JavaScript 代码是否执行

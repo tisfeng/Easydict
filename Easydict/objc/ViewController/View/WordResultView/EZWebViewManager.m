@@ -192,6 +192,10 @@ BOOL EZResultShouldRenderDictionaryHTML(EZQueryResult *result) {
     if (![self isCurrentRenderGeneration:renderGeneration]) {
         return;
     }
+    if (!navigation) {
+        [self resetRenderingState];
+        return;
+    }
 
     self.renderNavigation = navigation;
     self.renderNavigationGeneration = renderGeneration;
@@ -201,6 +205,13 @@ BOOL EZResultShouldRenderDictionaryHTML(EZQueryResult *result) {
     return navigation &&
            navigation == self.renderNavigation &&
            [self isCurrentRenderGeneration:self.renderNavigationGeneration];
+}
+
+- (void)invalidateRenderingNavigation:(nullable WKNavigation *)navigation {
+    if (![self shouldHandleNavigation:navigation]) {
+        return;
+    }
+    [self resetRenderingState];
 }
 
 - (void)reset {
