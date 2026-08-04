@@ -20,10 +20,12 @@ final class SelectionWorkflow {
 
     var isSelectedTextEditable: Bool = false
 
-    var onStartMonitoringKeyboard: (@MainActor () -> ())?
     var onBrowserURLUpdated: ((String?) -> ())?
 
-    func getSelectedTextSnapshot(completion: @escaping (SelectedTextSnapshot?) -> ()) {
+    func getSelectedTextSnapshot(
+        onStartMonitoringKeyboard: (@MainActor () -> ())? = nil,
+        completion: @escaping (SelectedTextSnapshot?) -> ()
+    ) {
         recordSelectTextInfo()
         let frontmostApp = contextProvider?.frontmostApplication
         logInfo("getSelectedText in App: \(String(describing: frontmostApp))")
@@ -95,15 +97,21 @@ final class SelectionWorkflow {
         }
     }
 
-    func getSelectedText(completion: @escaping (String?) -> ()) {
-        getSelectedTextSnapshot { snapshot in
+    func getSelectedText(
+        onStartMonitoringKeyboard: (@MainActor () -> ())? = nil,
+        completion: @escaping (String?) -> ()
+    ) {
+        getSelectedTextSnapshot(onStartMonitoringKeyboard: onStartMonitoringKeyboard) { snapshot in
             completion(snapshot?.text)
         }
     }
 
-    func getSelectedText() async -> String? {
+    func getSelectedText(
+        onStartMonitoringKeyboard: (@MainActor () -> ())? = nil
+    ) async
+        -> String? {
         await withCheckedContinuation { continuation in
-            getSelectedText { text in
+            getSelectedText(onStartMonitoringKeyboard: onStartMonitoringKeyboard) { text in
                 continuation.resume(returning: text)
             }
         }

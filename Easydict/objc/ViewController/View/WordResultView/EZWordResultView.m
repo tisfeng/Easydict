@@ -86,11 +86,19 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
 // TODO: This method is too long, need to refactor.
 - (void)refreshWithResult:(EZQueryResult *)result {
+    BOOL shouldRenderHTML = EZResultShouldRenderDictionaryHTML(result);
+    EZQueryResult *previousResult = self.result;
+    WKWebView *previousWebView = self.webView;
+    if (previousResult && (previousResult != result || !shouldRenderHTML)) {
+        if (previousWebView.navigationDelegate == self) {
+            previousWebView.navigationDelegate = nil;
+        }
+    }
+
     self.result = result;
     self.fontSizeRatio = MyConfiguration.shared.fontSizeRatio;
 
     EZTranslateWordResult *wordResult = result.wordResult;
-    BOOL shouldRenderHTML = EZResultShouldRenderDictionaryHTML(result);
     WKWebView *webView = shouldRenderHTML ? result.webViewManager.webView : nil;
     self.webView = webView;
 
@@ -108,10 +116,20 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
     if (shouldRenderHTML) {
         EZWebViewManager *webViewManager = result.webViewManager;
+        webView.navigationDelegate = self;
         [self addSubview:webView];
 
+        __weak EZQueryResult *expectedResult = result;
+        __weak EZWebViewManager *expectedWebViewManager = webViewManager;
         [webViewManager setDidFinishUpdatingIframeHeightBlock:^(CGFloat scrollHeight) {
             mm_strongify(self);
+            EZQueryResult *strongResult = expectedResult;
+            EZWebViewManager *strongWebViewManager = expectedWebViewManager;
+            if (!strongResult || !strongWebViewManager ||
+                self.result != strongResult ||
+                self.result.webViewManager != strongWebViewManager) {
+                return;
+            }
 
             [self updateWebViewHeight:scrollHeight];
         }];
@@ -1198,11 +1216,14 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
     //    MMLog(@"scrollHeight: %.1f", scrollHeight);
 
-    CGFloat visibleFrameHeight = EZLayoutManager.shared.screen.visibleFrame.size.height;
+    EZBaseQueryWindow *queryWindow = [self.window isKindOfClass:[EZBaseQueryWindow class]]
+        ? (EZBaseQueryWindow *)self.window
+        : nil;
+    NSScreen *screen = queryWindow.screen ?: EZLayoutManager.shared.screen;
+    CGFloat visibleFrameHeight = screen.visibleFrame.size.height;
     CGFloat maxHeight = visibleFrameHeight * 0.55;
 
-    EZBaseQueryWindow *floatingWindow = EZWindowManager.shared.floatingWindow;
-    EZBaseQueryViewController *queryViewController = floatingWindow.queryViewController;
+    EZBaseQueryViewController *queryViewController = queryWindow.queryViewController;
     if (queryViewController.services.count == 1) {
         CGSize maximumWindowSize =
             [EZLayoutManager.shared maximumWindowSize:queryViewController.windowType];
@@ -1219,6 +1240,10 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
     if (previousViewHeight > 0 &&
         fabs(viewHeight - previousViewHeight) < EZLayoutGeometryTolerance_0_5) {
+        return;
+    }
+
+    if (!queryViewController) {
         return;
     }
 
@@ -1274,16 +1299,31 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
         return;
     }
 
+    __weak WKWebView *expectedWebView = self.webView;
+    __weak EZQueryResult *expectedResult = self.result;
+    NSString *expectedHTML = [self.result.htmlString copy];
+    NSString *expectedQueryText = [self.result.queryText copy];
     [self fetchWebViewAllIframeText:^(NSString *text) {
-        self.result.copiedText = text;
-        self.result.translatedResults = @[ text ];
+        WKWebView *strongWebView = expectedWebView;
+        EZQueryResult *strongResult = expectedResult;
+        if (!strongWebView || !strongResult ||
+            self.webView != strongWebView ||
+            self.result != strongResult ||
+            ![strongResult.htmlString isEqualToString:expectedHTML] ||
+            ![strongResult.queryText isEqualToString:expectedQueryText] ||
+            ![strongResult.webViewManager.loadedHTMLString isEqualToString:expectedHTML]) {
+            return;
+        }
+
+        strongResult.copiedText = text;
+        strongResult.translatedResults = @[ text ];
 
         if (self.didFinishLoadingHTMLBlock) {
             self.didFinishLoadingHTMLBlock();
         }
 
-        if (self.result.didFinishLoadingHTMLBlock) {
-            self.result.didFinishLoadingHTMLBlock();
+        if (strongResult.didFinishLoadingHTMLBlock) {
+            strongResult.didFinishLoadingHTMLBlock();
         }
     }];
 }

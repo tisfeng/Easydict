@@ -1582,7 +1582,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             NSUInteger renderGeneration = [webViewManager beginRenderingHTML];
             webViewManager.isLoaded = YES;
             webViewManager.loadedHTMLString = result.htmlString;
-            webView.navigationDelegate = resultCell.wordResultView;
             WKNavigation *navigation = [webView loadHTMLString:result.htmlString baseURL:nil];
             [webViewManager trackRenderingNavigation:navigation renderGeneration:renderGeneration];
         } else if (needUpdateIframe) {
@@ -1604,7 +1603,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             NSUInteger renderGeneration = [webViewManager beginRenderingHTML];
             webViewManager.isLoaded = YES;
             webViewManager.loadedHTMLString = result.htmlString;
-            webView.navigationDelegate = resultCell.wordResultView;
             WKNavigation *navigation = [webView loadHTMLString:result.htmlString baseURL:nil];
             [webViewManager trackRenderingNavigation:navigation renderGeneration:renderGeneration];
         } else if (needUpdateIframe) {
@@ -1859,7 +1857,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     // ???: why this window animation will block cell rendering?
     //    [self.window setFrame:safeFrame display:NO animate:animateFlag];
     self.isUpdatingWindowFrameInternally = YES;
-    [window disableScreenUpdatesUntilFlush];
     [window setFrame:safeFrame display:YES];
     [self restoreFirstResponderIfWindowIsKey];
     dispatch_async(dispatch_get_main_queue(), ^{

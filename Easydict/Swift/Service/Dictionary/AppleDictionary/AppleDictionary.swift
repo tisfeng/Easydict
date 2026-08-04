@@ -14,6 +14,7 @@ import UniformTypeIdentifiers
 
 private let kHTMLDirectory = ".easydict-apple-dictionary-html.noindex"
 private let kHTMLDictFilePath = "all_dict.html"
+private let kMaxEmbeddedResourceSize = 20 * 1024 * 1024
 private let kLegacyHTMLDirectories = [
     "Dict HTML",
     ".Dict HTML",
@@ -253,10 +254,8 @@ extension AppleDictionary {
             result?.htmlStrings = entryHTMLs
 
             for html in entryHTMLs {
-                let resolvedAudioHTML = replacedAudioSource(
-                    ofHTML: html, withBasePath: contentsURL.path
-                )
-                wordHtmlString += resolvedAudioHTML
+                let resolvedHTML = embedLocalResources(ofHTML: html, in: contentsURL)
+                wordHtmlString += resolvedHTML
             }
 
             if !wordHtmlString.isEmpty {
@@ -380,87 +379,145 @@ extension AppleDictionary {
 extension AppleDictionary {
     // MARK: Private
 
-    /// Embeds dictionary audio so in-memory HTML does not require file access.
-    private func replacedAudioSource(ofHTML html: String, withBasePath basePath: String) -> String {
-        let pattern = "new Audio\\((.*?)\\)"
-        guard let regex = try? NSRegularExpression(pattern: pattern) else {
-            return html
-        }
+    /// Embeds local media used by in-memory dictionary HTML.
+    private func embedLocalResources(ofHTML html: String, in contentsURL: URL) -> String {
+        let patterns: [(pattern: String, pathGroup: Int)] = [
+            (#"new\s+Audio\(\s*(?:&quot;|&apos;|["'])(.*?)(?:&quot;|&apos;|["'])\s*\)"#, 1),
+            (#"<(?:audio|source|img|video)\b[^>]*?\bsrc\s*=\s*(["'])(.*?)\1"#, 2),
+            (#"url\(\s*(["']?)(.*?)\1\s*\)"#, 2),
+        ]
+        var embeddedResources: [URL: String] = [:]
+        var resolvedHTML = html
 
-        var mutableHTML = html
-        let matches = regex.matches(
-            in: mutableHTML, range: NSRange(mutableHTML.startIndex..., in: mutableHTML)
-        )
-
-        // Process matches in reverse order to preserve indices
-        for match in matches.reversed() {
-            guard let matchRange = Range(match.range(at: 1), in: mutableHTML) else { continue }
-
-            let filePath = String(mutableHTML[matchRange])
-            let relativePath = filePath
-                .replacingOccurrences(of: "&quot;", with: "")
-                .trimmingCharacters(in: CharacterSet(charactersIn: "\"' "))
-
-            var fileBasePath = basePath
-
-            let components = relativePath.components(separatedBy: "/")
-            let isDirectoryPath = components.count > 1
-            if isDirectoryPath, let directoryName = components.first {
-                if let directoryPath = findFilePath(
-                    inDirectory: basePath, withTargetDirectory: directoryName
-                ) {
-                    fileBasePath = (directoryPath as NSString).deletingLastPathComponent
+        for item in patterns {
+            guard let regex = try? NSRegularExpression(
+                pattern: item.pattern,
+                options: [.caseInsensitive, .dotMatchesLineSeparators]
+            ) else {
+                continue
+            }
+            let matches = regex.matches(
+                in: resolvedHTML,
+                range: NSRange(resolvedHTML.startIndex..., in: resolvedHTML)
+            )
+            for match in matches.reversed() {
+                guard let pathRange = Range(match.range(at: item.pathGroup), in: resolvedHTML),
+                      let dataURL = resourceDataURL(
+                          for: String(resolvedHTML[pathRange]),
+                          in: contentsURL,
+                          embeddedResources: &embeddedResources
+                      )
+                else {
+                    continue
                 }
-            }
-
-            let absolutePath = (fileBasePath as NSString).appendingPathComponent(relativePath)
-            let audioURL = URL(fileURLWithPath: absolutePath)
-            guard let audioData = try? Data(contentsOf: audioURL) else { continue }
-
-            let mimeType = UTType(filenameExtension: audioURL.pathExtension)?.preferredMIMEType
-                ?? "application/octet-stream"
-            let dataURL = "data:\(mimeType);base64,\(audioData.base64EncodedString())"
-            let replacement = "new Audio('\(dataURL)')"
-
-            if let fullMatchRange = Range(match.range, in: mutableHTML) {
-                mutableHTML.replaceSubrange(fullMatchRange, with: replacement)
+                resolvedHTML.replaceSubrange(pathRange, with: dataURL)
             }
         }
-
-        return mutableHTML
+        return resolvedHTML
     }
 
-    /// Find file path in directory.
-    private func findFilePath(
-        inDirectory directoryPath: String,
-        withTargetDirectory targetDirectory: String
+    private func resourceDataURL(
+        for resourcePath: String,
+        in contentsURL: URL,
+        embeddedResources: inout [URL: String]
     )
         -> String? {
-        let fileManager = FileManager.default
-
-        guard let contents = try? fileManager.contentsOfDirectory(atPath: directoryPath) else {
+        let fragment = resourcePath.firstIndex(of: "#").map {
+            String(resourcePath[$0...])
+        } ?? ""
+        let fragmentIndex = resourcePath.firstIndex(of: "#") ?? resourcePath.endIndex
+        let pathWithoutFragment = resourcePath[..<fragmentIndex]
+        let queryIndex = pathWithoutFragment.firstIndex(of: "?") ?? pathWithoutFragment.endIndex
+        let escapedPath = String(pathWithoutFragment[..<queryIndex]).unescapedXMLString().trim()
+        let decodedPath = escapedPath.removingPercentEncoding ?? escapedPath
+        guard !decodedPath.isEmpty,
+              let resourceURL = localResourceURL(for: decodedPath, in: contentsURL)
+        else {
             return nil
         }
 
-        for content in contents {
-            let fullPath = (directoryPath as NSString).appendingPathComponent(content)
-
-            var isDirectory: ObjCBool = false
-            fileManager.fileExists(atPath: fullPath, isDirectory: &isDirectory)
-
-            if isDirectory.boolValue {
-                if content == targetDirectory {
-                    return fullPath
-                }
-
-                if let subDirectoryPath = findFilePath(
-                    inDirectory: fullPath, withTargetDirectory: targetDirectory
-                ) {
-                    return subDirectoryPath
-                }
-            }
+        if let dataURL = embeddedResources[resourceURL] {
+            return dataURL + fragment
         }
 
+        guard let resourceValues = try? resourceURL.resourceValues(
+            forKeys: [.fileSizeKey, .isRegularFileKey]
+        ),
+            resourceValues.isRegularFile == true,
+            let fileSize = resourceValues.fileSize,
+            fileSize <= kMaxEmbeddedResourceSize,
+            let resourceData = try? Data(contentsOf: resourceURL)
+        else {
+            return nil
+        }
+
+        let mimeType = UTType(filenameExtension: resourceURL.pathExtension)?.preferredMIMEType
+            ?? "application/octet-stream"
+        let dataURL = "data:\(mimeType);base64,\(resourceData.base64EncodedString())"
+        embeddedResources[resourceURL] = dataURL
+        return dataURL + fragment
+    }
+
+    private func localResourceURL(for resourcePath: String, in contentsURL: URL) -> URL? {
+        let fileManager = FileManager.default
+        let rootURL = contentsURL.standardizedFileURL.resolvingSymlinksInPath()
+        let resourceURL: URL
+
+        if resourcePath.hasPrefix("file://") {
+            resourceURL = URL(fileURLWithPath: String(resourcePath.dropFirst("file://".count)))
+        } else if resourcePath.hasPrefix("/") {
+            resourceURL = URL(fileURLWithPath: resourcePath)
+        } else {
+            guard URL(string: resourcePath)?.scheme == nil,
+                  !resourcePath.hasPrefix("//")
+            else {
+                return nil
+            }
+
+            var resourceBaseURL = rootURL
+            let components = resourcePath.split(separator: "/")
+            if components.count > 1,
+               let directoryURL = findDirectory(in: rootURL, named: String(components[0])) {
+                resourceBaseURL = directoryURL.deletingLastPathComponent()
+            }
+            resourceURL = resourceBaseURL.appendingPathComponent(resourcePath)
+        }
+
+        guard fileManager.fileExists(atPath: resourceURL.path) else { return nil }
+        let resolvedURL = resourceURL.standardizedFileURL.resolvingSymlinksInPath()
+        let rootComponents = rootURL.pathComponents
+        let resourceComponents = resolvedURL.pathComponents
+        guard resourceComponents.count > rootComponents.count,
+              Array(resourceComponents.prefix(rootComponents.count)) == rootComponents
+        else {
+            return nil
+        }
+        return resolvedURL
+    }
+
+    private func findDirectory(in rootURL: URL, named directoryName: String) -> URL? {
+        let fileManager = FileManager.default
+        guard let enumerator = fileManager.enumerator(
+            at: rootURL,
+            includingPropertiesForKeys: [.isDirectoryKey, .isSymbolicLinkKey]
+        ) else {
+            return nil
+        }
+
+        for case let url as URL in enumerator {
+            guard let values = try? url.resourceValues(
+                forKeys: [.isDirectoryKey, .isSymbolicLinkKey]
+            ) else {
+                continue
+            }
+            if values.isSymbolicLink == true {
+                enumerator.skipDescendants()
+                continue
+            }
+            if values.isDirectory == true, url.lastPathComponent == directoryName {
+                return url
+            }
+        }
         return nil
     }
 }

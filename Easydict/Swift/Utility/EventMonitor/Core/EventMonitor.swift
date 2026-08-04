@@ -82,7 +82,10 @@ final class EventMonitor: NSObject {
     /// Fetches selected text using the active strategy pipeline.
     /// - Important: Completion is not guaranteed to be called on main thread.
     func getSelectedTextWithCompletion(_ completion: @escaping (String?) -> ()) {
-        selectionWorkflow.getSelectedTextSnapshot { [weak self] snapshot in
+        selectionWorkflow.getSelectedTextSnapshot(onStartMonitoringKeyboard: { [weak self] in
+            guard MyConfiguration.shared.autoSelectText else { return }
+            self?.eventTapMonitor.start()
+        }) { [weak self] snapshot in
             guard let self else {
                 completion(snapshot?.text)
                 return
@@ -100,11 +103,15 @@ final class EventMonitor: NSObject {
 
     /// Async Swift-only convenience.
     func getSelectedText() async -> String? {
-        await selectionWorkflow.getSelectedText()
+        await selectionWorkflow.getSelectedText(onStartMonitoringKeyboard: { [weak self] in
+            guard MyConfiguration.shared.autoSelectText else { return }
+            self?.eventTapMonitor.start()
+        })
     }
 
     /// Clears transient pop-button monitors after the button opens a query window.
     func consumePopButtonActivation() {
+        autoSelectionGeneration &+= 1
         cancelDismissPopButton()
         cancelDelayGetSelectedText()
         popButtonController.isPopButtonVisible = false
@@ -224,6 +231,7 @@ final class EventMonitor: NSObject {
     private var mouseMovedThrottleGate: ThrottleGate
     private var escapeKeyMonitor: Any?
     private var isAutoSelectTextMonitoringEnabled = false
+    private var autoSelectionGeneration: UInt = 0
 
     private func configureDependencies() {
         eventMonitorEngine.eventHandler = { [weak self] event in
@@ -238,11 +246,6 @@ final class EventMonitor: NSObject {
         selectionWorkflow.systemUtility = systemUtility
         selectionWorkflow.onBrowserURLUpdated = { [weak self] urlString in
             self?.browserTabURLString = urlString
-        }
-
-        selectionWorkflow.onStartMonitoringKeyboard = { [weak self] in
-            guard MyConfiguration.shared.autoSelectText else { return }
-            self?.eventTapMonitor.start()
         }
 
         triggerEvaluator.onTrigger = { [weak self] trigger in
@@ -487,10 +490,21 @@ final class EventMonitor: NSObject {
 
         popButtonController.resetScrollState()
         actionType = .autoSelectQuery
+        autoSelectionGeneration &+= 1
+        let selectionGeneration = autoSelectionGeneration
 
-        selectionWorkflow.getSelectedTextSnapshot { [weak self] snapshot in
+        selectionWorkflow.getSelectedTextSnapshot(onStartMonitoringKeyboard: { [weak self] in
+            guard let self,
+                  autoSelectionGeneration == selectionGeneration,
+                  MyConfiguration.shared.autoSelectText
+            else {
+                return
+            }
+            eventTapMonitor.start()
+        }) { [weak self] snapshot in
             guard let self else { return }
             DispatchQueue.main.async {
+                guard self.autoSelectionGeneration == selectionGeneration else { return }
                 if let snapshot {
                     self.selectTextType = snapshot.selectTextType
                     self.isSelectedTextEditable = snapshot.isEditable
@@ -561,6 +575,7 @@ final class EventMonitor: NSObject {
         if shouldBypassDismissIgnore == false, popButtonController.shouldIgnoreDismiss() {
             return
         }
+        autoSelectionGeneration &+= 1
         dismissPopButtonBlock?()
         popButtonController.isPopButtonVisible = false
         mouseMovedThrottleGate.reset()
