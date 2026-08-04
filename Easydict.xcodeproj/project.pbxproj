@@ -461,6 +461,7 @@
 		03FF0D5F2E1959EC00ABBF17 /* String+Removing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF0D5E2E1959EC00ABBF17 /* String+Removing.swift */; };
 		04D7C0A22F00000100D1C7A1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 04D7C0A12F00000100D1C7A1 /* libz.tbd */; };
 		0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A057D6C2B499A000025C51D /* ServiceTab.swift */; };
+		0A1189A22F700001005C51D /* ServiceTabListViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1189A12F700001005C51D /* ServiceTabListViews.swift */; };
 		0A2A05A62B59757100EEA142 /* Bundle+AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A05A52B59757100EEA142 /* Bundle+AppInfo.swift */; };
 		0A2BA9602B49A989002872A4 /* Binding+DidSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */; };
 		0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */; };
@@ -632,6 +633,22 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A5C000000000000000000001 /* workflow.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = workflow.json; sourceTree = "<group>"; };
+		A5C000000000000000000002 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		A5C000000000000000000003 /* export-options.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "export-options.plist"; sourceTree = "<group>"; };
+		A5C000000000000000000004 /* release-appcast.py */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.python; path = "release-appcast.py"; sourceTree = "<group>"; };
+		A5C000000000000000000005 /* release-appcast.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-appcast.sh"; sourceTree = "<group>"; };
+		A5C000000000000000000006 /* release-branch-sync.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-branch-sync.sh"; sourceTree = "<group>"; };
+		A5C000000000000000000007 /* release-build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-build.sh"; sourceTree = "<group>"; };
+		A5C000000000000000000008 /* release-common.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-common.sh"; sourceTree = "<group>"; };
+		A5C000000000000000000009 /* release-easydict-legacy-flow.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "release-easydict-legacy-flow.svg"; sourceTree = "<group>"; };
+		A5C00000000000000000000A /* release-easydict-legacy-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "release-easydict-legacy-overview.html"; sourceTree = "<group>"; };
+		A5C00000000000000000000B /* release-easydict-legacy.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-easydict-legacy.sh"; sourceTree = "<group>"; };
+		A5C00000000000000000000C /* release-easydict.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-easydict.sh"; sourceTree = "<group>"; };
+		A5C00000000000000000000D /* release-github.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-github.sh"; sourceTree = "<group>"; };
+		A5C00000000000000000000E /* release-package.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-package.sh"; sourceTree = "<group>"; };
+		A5C00000000000000000000F /* release-preflight.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-preflight.sh"; sourceTree = "<group>"; };
+		A5C000000000000000000010 /* release-verify.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-verify.sh"; sourceTree = "<group>"; };
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
@@ -1193,8 +1210,7 @@
 		0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleServiceTests.swift; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
 		0A057D6C2B499A000025C51D /* ServiceTab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceTab.swift; sourceTree = "<group>"; };
-		0A057D6E2F7000000025C51D /* tab-view-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "tab-view-overview.md"; sourceTree = "<group>"; };
-		0A057D6F2F7000000025C51D /* tab-view-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "tab-view-architecture.svg"; sourceTree = "<group>"; };
+		0A1189A12F700001005C51D /* ServiceTabListViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTabListViews.swift; sourceTree = "<group>"; };
 		0A2A05A52B59757100EEA142 /* Bundle+AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+AppInfo.swift"; sourceTree = "<group>"; };
 		0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+DidSet.swift"; sourceTree = "<group>"; };
 		0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
@@ -1402,6 +1418,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A5C000000000000000000011 /* .asc */ = {
+			isa = PBXGroup;
+			children = (
+				A5C000000000000000000001 /* workflow.json */,
+			);
+			path = .asc;
+			sourceTree = "<group>";
+		};
+		A5C000000000000000000012 /* release-scripts */ = {
+			isa = PBXGroup;
+			children = (
+				A5C000000000000000000002 /* README.md */,
+				A5C000000000000000000003 /* export-options.plist */,
+				A5C000000000000000000004 /* release-appcast.py */,
+				A5C000000000000000000005 /* release-appcast.sh */,
+				A5C000000000000000000006 /* release-branch-sync.sh */,
+				A5C000000000000000000007 /* release-build.sh */,
+				A5C000000000000000000008 /* release-common.sh */,
+				A5C000000000000000000009 /* release-easydict-legacy-flow.svg */,
+				A5C00000000000000000000A /* release-easydict-legacy-overview.html */,
+				A5C00000000000000000000B /* release-easydict-legacy.sh */,
+				A5C00000000000000000000C /* release-easydict.sh */,
+				A5C00000000000000000000D /* release-github.sh */,
+				A5C00000000000000000000E /* release-package.sh */,
+				A5C00000000000000000000F /* release-preflight.sh */,
+				A5C000000000000000000010 /* release-verify.sh */,
+			);
+			path = "release-scripts";
+			sourceTree = "<group>";
+		};
 		02DEDC042026043000000001 /* Markdown */ = {
 			isa = PBXGroup;
 			children = (
@@ -1465,8 +1511,7 @@
 			children = (
 				278540332B3DE04F004E9488 /* GeneralTab.swift */,
 				0A057D6C2B499A000025C51D /* ServiceTab.swift */,
-				0A057D6E2F7000000025C51D /* tab-view-overview.md */,
-				0A057D6F2F7000000025C51D /* tab-view-architecture.svg */,
+				0A1189A12F700001005C51D /* ServiceTabListViews.swift */,
 				0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */,
 				0A8685C72B552A590022534F /* DisabledAppTab.swift */,
 				96099AE12B5D40330055C4DD /* ShortcutTab.swift */,
@@ -3627,6 +3672,8 @@
 		C99EEB0F2385796700FEE666 = {
 			isa = PBXGroup;
 			children = (
+				A5C000000000000000000011 /* .asc */,
+				A5C000000000000000000012 /* release-scripts */,
 				27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */,
 				27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */,
 				03B0221829231FA6001C7E63 /* Easydict */,
@@ -4443,6 +4490,7 @@
 				03916D712E68154F007E50D7 /* Task+Sleep.swift in Sources */,
 				03A8846C2F12000100D5C0DE /* Task+Timeout.swift in Sources */,
 				0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */,
+				0A1189A22F700001005C51D /* ServiceTabListViews.swift in Sources */,
 				031760EB2E065EF500CE8FD7 /* AppleOCREngine.swift in Sources */,
 				03882F8D29D95044005B5A52 /* CTView.m in Sources */,
 				0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */,
