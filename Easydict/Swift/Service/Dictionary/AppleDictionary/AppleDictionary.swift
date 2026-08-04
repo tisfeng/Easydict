@@ -435,13 +435,10 @@ extension AppleDictionary {
         let rootURL = contentsURL.standardizedFileURL.resolvingSymlinksInPath()
         let rootPath = FilePath(rootURL.path).lexicallyNormalized()
         let resolvedPath = FilePath(audioURL.path).lexicallyNormalized()
-        let audioData: Data?
-        if resolvedPath.starts(with: rootPath), resolvedPath != rootPath {
-            audioData = try? Data(contentsOf: audioURL)
-        } else {
-            return nil
-        }
-        guard let audioData else {
+        guard resolvedPath.starts(with: rootPath),
+              resolvedPath != rootPath,
+              let audioData = FileManager.default.contents(atPath: resolvedPath.string)
+        else {
             return nil
         }
 
