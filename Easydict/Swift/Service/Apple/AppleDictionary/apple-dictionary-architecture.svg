@@ -27,13 +27,13 @@
   <text x="62" y="194" class="node-text">生成 iframe srcdoc</text>
 
   <rect x="300" y="120" width="220" height="92" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
-  <text x="322" y="150" class="node-title">all_dict.html</text>
-  <text x="322" y="174" class="node-text">写入 Dict HTML 目录</text>
+  <text x="322" y="150" class="node-title">内存 HTML</text>
+  <text x="322" y="174" class="node-text">生成 WebView 内容</text>
   <text x="322" y="194" class="node-text">保留词典资源路径</text>
 
   <rect x="570" y="120" width="220" height="92" rx="8" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1.5"/>
   <text x="592" y="150" class="node-title">WKWebView</text>
-  <text x="592" y="174" class="node-text">loadFileURL 加载模板</text>
+  <text x="592" y="174" class="node-text">loadHTMLString 加载内容</text>
   <text x="592" y="194" class="node-text">didFinish 后触发重测</text>
 
   <rect x="570" y="300" width="220" height="100" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>

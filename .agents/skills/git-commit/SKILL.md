@@ -1,6 +1,9 @@
 ---
 name: git-commit
-description: Create staged-only Angular-style commits. Runs `git commit` by default, supports confirmation or preview-only requests, and writes bilingual local-language + separator + English commit messages for non-English users.
+description: >
+  Create staged-only Angular-style commits and derive Conventional task branch
+  names for calling workflows. Runs `git commit` by default, supports preview
+  modes, and writes bilingual messages for non-English users.
 ---
 
 # Git Commit Workflow
@@ -127,6 +130,22 @@ Choose the narrowest commit type that matches the staged diff:
 Choose `scope` from the touched module, feature, service, or component whenever
 possible. Prefer specific scopes such as `openai`, `screenshot`, or `settings`
 over broad labels like `app` or `misc`.
+
+## Branch Name Guidance
+
+Use this guidance only when another workflow needs a task branch name before a
+commit exists:
+
+1. Inspect the task and read-only diff evidence without staging files.
+2. Use **Type Guidance** to infer the narrowest Angular `type`, then summarize
+   the primary intent in concise English.
+3. Convert the summary to lowercase kebab-case and form
+   `<type>/<kebab-case-summary>`. Omit Angular scope punctuation from the
+   branch name.
+
+This guidance derives a name only. It does not authorize staging, committing,
+or creating a branch. The calling workflow owns those Git operations, name
+collision handling, and state validation.
 
 ## Examples
 

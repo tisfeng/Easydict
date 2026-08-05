@@ -11,7 +11,7 @@ import Foundation
 
 // MARK: - ServiceAPIKeyRequirement
 
-public enum ServiceAPIKeyRequirement {
+public enum ServiceAPIKeyRequirement: Equatable {
     /// No API key is needed; all requests can be made without authentication.
     case none
     /// API key is required, but the service provider offers a built-in key for users to use out of the box.

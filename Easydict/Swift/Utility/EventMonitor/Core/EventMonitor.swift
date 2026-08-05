@@ -103,6 +103,17 @@ final class EventMonitor: NSObject {
         await selectionWorkflow.getSelectedText()
     }
 
+    /// Clears transient pop-button monitors after the button opens a query window.
+    func consumePopButtonActivation() {
+        autoSelectionGeneration &+= 1
+        cancelDismissPopButton()
+        cancelDelayGetSelectedText()
+        popButtonController.isPopButtonVisible = false
+        mouseMovedThrottleGate.reset()
+        stopHighFrequencyEventMonitor()
+        eventTapMonitor.stop()
+    }
+
     func addLocalMonitorWithEvent(_ mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent) -> ()) {
         eventMonitorEngine.monitor(type: .local, mask: mask, handler: handler)
     }
@@ -214,6 +225,7 @@ final class EventMonitor: NSObject {
     private var mouseMovedThrottleGate: ThrottleGate
     private var escapeKeyMonitor: Any?
     private var isAutoSelectTextMonitoringEnabled = false
+    private var autoSelectionGeneration: UInt = 0
 
     private func configureDependencies() {
         eventMonitorEngine.eventHandler = { [weak self] event in
@@ -349,10 +361,8 @@ final class EventMonitor: NSObject {
         }
 
         guard enabledAutoSelectText() else { return false }
-        // Only editable contexts can update their selection in response to
-        // Cmd+A. Read-only text keeps using the normal selection heuristics.
         guard systemUtility.canInsertText() else {
-            logInfo("Focused element cannot insert text, skip select all shortcut auto get selected text")
+            logInfo("Focused element is not an editable text element, skip select all shortcut auto get selected text")
             return false
         }
 
@@ -479,10 +489,21 @@ final class EventMonitor: NSObject {
 
         popButtonController.resetScrollState()
         actionType = .autoSelectQuery
+        autoSelectionGeneration &+= 1
+        let selectionGeneration = autoSelectionGeneration
 
-        selectionWorkflow.getSelectedTextSnapshot { [weak self] snapshot in
+        selectionWorkflow.getSelectedTextSnapshot(onStartMonitoringKeyboard: { [weak self] in
+            guard let self,
+                  autoSelectionGeneration == selectionGeneration,
+                  MyConfiguration.shared.autoSelectText
+            else {
+                return
+            }
+            eventTapMonitor.start()
+        }) { [weak self] snapshot in
             guard let self else { return }
             DispatchQueue.main.async {
+                guard self.autoSelectionGeneration == selectionGeneration else { return }
                 if let snapshot {
                     self.selectTextType = snapshot.selectTextType
                     self.isSelectedTextEditable = snapshot.isEditable
@@ -553,6 +574,7 @@ final class EventMonitor: NSObject {
         if shouldBypassDismissIgnore == false, popButtonController.shouldIgnoreDismiss() {
             return
         }
+        autoSelectionGeneration &+= 1
         dismissPopButtonBlock?()
         popButtonController.isPopButtonVisible = false
         mouseMovedThrottleGate.reset()
