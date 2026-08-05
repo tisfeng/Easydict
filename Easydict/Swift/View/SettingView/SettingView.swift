@@ -99,6 +99,10 @@ struct SettingView: View {
         let newRect = NSRect(origin: CGPoint(x: originalFrame.origin.x, y: newY), size: newSize)
 
         window.setFrame(newRect, display: true, animate: false)
+        // macOS 27: keep the sidebar below the title bar by removing the
+        // `.fullSizeContentView` style SwiftUI keeps after resize. Older macOS
+        // versions are unaffected.
+        // Refer: https://github.com/tisfeng/Easydict/pull/1258#issuecomment-5186918247
         if #available(macOS 27.0, *) {
             window.styleMask.remove(.fullSizeContentView)
         }
