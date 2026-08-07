@@ -32,16 +32,23 @@ Accepted PR references:
 - Name the contributor remote exactly as the PR head repository owner login.
   If that remote name already points elsewhere, stop and ask.
 - Keep the normal local branch name exactly the same as the PR head branch
-  name.
+  name. The only automatic exception is the collision fallback branch
+  `review/pr-<number>-<head-short-sha>` created when the exact name is
+  unusable.
 - Treat the PR metadata `headRefOid` as the only valid normal-review HEAD. A
   same-named local branch may fast-forward to that SHA, but it must not contain
   additional local commits or diverge from it.
-- Do not create a differently named local branch unless the user explicitly
-  requests or approves an isolated worktree or latest-base integration review.
-- If normal preparation refuses an existing branch, do not bypass it by
+- On a branch-name collision, automatically fall back to the local review
+  branch `review/pr-<number>-<head-short-sha>` and continue. Never bypass by
   checking out a remote-tracking ref, entering detached HEAD, or reviewing the
-  fetched ref in place. Preserve the branch and ask whether to use an isolated
-  worktree or how to repair the local branch.
+  fetched ref in place. Keep the colliding branch untouched.
+- Stop instead of falling back only when the worktree is dirty, the
+  contributor remote points elsewhere, the fetched head differs from
+  `headRefOid`, or an existing review branch is incompatible.
+- Do not create any other differently named local branch unless the user
+  explicitly requests an isolated worktree or latest-base integration review.
+- If normal preparation refuses an existing branch for any other reason, do not
+  bypass it; preserve the branch and ask how to proceed.
 - In explicit worktree mode, use `review/pr-<number>-<head-short-sha>` for a
   normal review and `review/pr-<number>-merge-<head-short-sha>` for a
   latest-base review. Keep the worktree under
@@ -126,9 +133,14 @@ request did not already explicitly include one of those actions, stop and ask
 before creating the branch.
 
 If the PR head branch name collides with the base branch, a protected local
-branch name, or an existing same-named branch with a different upstream, stop
-and ask whether to use an isolated worktree. Do not select latest-base mode
-solely to avoid the branch-name collision.
+branch name, or an existing same-named branch with a different upstream, the
+helper automatically creates the local review branch
+`review/pr-<number>-<head-short-sha>` and continues. The colliding branch is
+never rebound, renamed, or deleted. The helper reuses an existing
+`review/pr-<number>-<head-short-sha>` only when it is clean, at `headRefOid`,
+and tracking `<owner>/<branch>`; otherwise it stops and asks you to inspect or
+remove it. Do not select latest-base mode solely to avoid the branch-name
+collision.
 
 After normal checkout, fetch the latest base and check whether the PR already
 contains it:
@@ -158,10 +170,11 @@ The merge helper creates `review/pr-<number>-merge-<head-short-sha>` from the PR
 head, fetches the PR base, runs `git merge --no-edit <base-remote>/<base-branch>`,
 and never pushes.
 
-Normal preparation must stop before switching branches when an existing local
-PR branch is ahead of or diverged from the fetched head. It may update only an
-exact match or a branch that can fast-forward to `headRefOid`. If it stops,
-offer the isolated `--worktree` path; do not improvise a detached checkout.
+Normal preparation updates only an exact match or a branch that can fast-forward
+to `headRefOid`. When an existing local PR branch is ahead of or diverged from
+the fetched head, the helper automatically falls back to
+`review/pr-<number>-<head-short-sha>`; it never mutates the diverged branch or
+improvises a detached checkout.
 
 ### 3. Handle Merge Conflicts
 
@@ -204,9 +217,11 @@ git branch -vv
 For normal preparation, require a clean branch named exactly like the PR head
 branch with upstream set to `<owner>/<branch>`, and require `HEAD` to equal the
 recorded `headRefOid`. A matching upstream alone is insufficient because the
-local branch may contain commits that are not in the PR. For latest-base merge
-preparation, require a clean local review branch named
-`review/pr-<number>-merge-<head-short-sha>`.
+local branch may contain commits that are not in the PR. When a collision
+fallback occurred, require the clean local review branch
+`review/pr-<number>-<head-short-sha>` at `headRefOid` with upstream
+`<owner>/<branch>` instead. For latest-base merge preparation, require a clean
+local review branch named `review/pr-<number>-merge-<head-short-sha>`.
 
 For worktree preparation, require the reported worktree to be clean and on its
 SHA-specific review branch. Require a normal worktree branch to track
@@ -342,6 +357,8 @@ reviewers should inspect.
   include the checkout branch and upstream when applicable. For worktree
   preparation, include its absolute path, review branch, upstream or local-only
   status, and confirm the source checkout remained unchanged.
+- When a collision fallback was used, name the
+  `review/pr-<number>-<head-short-sha>` branch and the collision reason.
 - State whether the latest-base merge path was triggered. If it was, list the
   local review branch name, conflict files, conflict resolution status, and
   confirm that no push was performed.
