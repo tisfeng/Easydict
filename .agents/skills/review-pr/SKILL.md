@@ -69,14 +69,25 @@ Accepted PR references:
 - For exact inline review context, unresolved comments, or a `discussion_r...`
   id, use `gh api` / GraphQL so `isResolved`, `isOutdated`, path, and line stay
   visible. Do not rely only on `gh pr view --json`.
+- Treat every review thread with `isResolved == false` as an open review
+  comment that must be enumerated and individually assessed, including comments
+  from bots, comments with replies, and comments marked `isOutdated == true`.
+  Never omit an open thread because it looks plausible, is automated, or is not
+  independently identified as a new finding.
 - Treat PR feedback as live state. Opening a PR, marking a draft ready, bot
   workflows, and manual review requests can add reviews or threads while the
   local review is in progress. Never assume the initial comment snapshot is
   still current when writing the final response.
-- Give every finding a separate `Suggested Fix` grounded in the actual diff,
-  surrounding code, and project patterns. Recommend the smallest concrete
-  change that resolves the issue, including the affected logic, expected
-  behavior, and targeted verification when relevant.
+- For every open comment assessed as `reasonable` or `partially reasonable`,
+  provide a separate `Suggested Fix` grounded in the actual diff, surrounding
+  code, and project patterns. Recommend the smallest concrete change that
+  resolves the issue, including the affected logic, expected behavior, and
+  targeted verification when relevant. This requirement applies even when the
+  comment came from a bot or is also reported as a finding.
+- Give every independent finding the same concrete `Suggested Fix` treatment.
+  Cross-reference an open-comment item instead of duplicating its full
+  explanation, but do not use the cross-reference to hide the comment's own
+  assessment or fix.
 - Do not use vague advice such as "fix this issue." When multiple approaches are
   valid, recommend one and state the important tradeoff. If the fix depends on
   a product decision, give conditional options and surface that decision in
@@ -246,6 +257,24 @@ comments with database id, URL, body, author, timestamps, and commit OID.
 Paginate until `pageInfo.hasNextPage` is false instead of assuming the first
 page contains every thread.
 
+Before reviewing the diff as a whole, build an inventory of every open review
+thread (`isResolved == false`). Include unresolved outdated threads and all
+replies in the inventory; label `isOutdated` explicitly rather than silently
+discarding the thread. Review each inventory item against the current PR head,
+the changed diff, the relevant call chain, and surrounding code. The reviewer
+must decide whether the comment is `reasonable`, `partially reasonable`,
+`unreasonable`, `outdated/not applicable`, or requires a product decision.
+
+For `reasonable` and `partially reasonable` comments, identify the exact
+behavioral risk and provide a concrete `Suggested Fix`, expected behavior, and
+targeted verification. For `unreasonable` or `outdated/not applicable`
+comments, explain the code evidence that rejects or supersedes the concern.
+For a product-decision comment, recommend one option, include its
+`Suggested Fix`, and repeat the unresolved choice under `Open Questions`.
+Do not conclude `No findings` while an open comment has not received one of
+these explicit assessments. If the inventory is empty, report
+`No open review comments` separately from the `Findings` result.
+
 For old or stale PRs, check linked issue history, later replacement PRs, and the
 live base tree before deciding whether the branch should still exist. Use
 `git merge-tree <merge-base> <base-remote>/<base-branch> HEAD` as a read-only
@@ -284,20 +313,24 @@ gh pr checks <number> [--repo <base-owner>/<base-repo>]
 ```
 
 Repeat the same fully paginated GraphQL `reviewThreads` query used for the
-initial snapshot, then compare the two snapshots.
+initial snapshot, then compare the two snapshots, including the open-thread
+inventory, comment replies, `isResolved`, and `isOutdated` state.
 
 - If `headRefOid` changed, stop finalization, update the prepared checkout to
   the new head, inspect the new diff against the true base, and revalidate both
   earlier findings and new changes.
 - If a new review, thread, reply, or resolution/outdated-state change appeared,
   read its exact content, validate it against the current head and surrounding
-  code, and update `Findings`, `Open Questions`, and `Verification` before
-  finalizing. Treat automated and human feedback the same way.
+  code, add or update its individual entry in `Open Review Comments`, and
+  update `Findings`, `Open Questions`, and `Verification` before finalizing.
+  Reassess any existing item whose reply or resolution/outdated state changed.
+  Treat automated and human feedback the same way.
 - If analyzing new activity leaves enough time for another review to arrive,
   refresh again. Finish only when the latest snapshot contains no uninspected
   feedback.
 - If the final refresh is unavailable, report that limitation and do not claim
-  that every current comment or thread was inspected.
+  that every current comment or thread was inspected. A final response is
+  complete only when the latest open-comment inventory has no uninspected item.
 
 ## Review Focus
 
@@ -339,11 +372,29 @@ reviewers should inspect.
 
 ---
 
+## Open Review Comments
+
+- If there are open review threads, enumerate them one by one. Use a stable
+  item id such as `C1`, include the comment permalink, author, path and line,
+  `isResolved`/`isOutdated` state, a concise summary of the full thread, the
+  current-code evidence, and exactly one assessment: `reasonable`, `partially
+  reasonable`, `unreasonable`, `outdated/not applicable`, or `needs product
+  decision`.
+  - For `reasonable`, `partially reasonable`, or `needs product decision`, add
+    a visually separate `**Suggested Fix:**` with the smallest concrete
+    remediation, expected behavior, and targeted verification.
+  - For `unreasonable` or `outdated/not applicable`, explain why the comment
+    does not require a code change; do not invent a fix.
+- If there are no open review threads, write `No open review comments`.
+
 ## Findings
 
-- [P1] path:line - Describe the issue, trigger condition, and risk.
+- [P1] path:line - **Title** Describe the issue, trigger condition, and risk.
+  - Evidence and impact: Ground the conclusion in the current diff and
+    surrounding code.
   - **Suggested Fix:** Describe the smallest concrete change, affected logic,
-    and expected behavior. Include targeted verification when relevant.
+    expected behavior, and targeted verification when relevant. If this finding
+    comes from `Open Review Comments`, cross-reference its `C<number>` item.
 - If there are no findings, write `No findings` clearly. Do not invent fix
   suggestions.
 
@@ -364,7 +415,8 @@ reviewers should inspect.
   confirm that no push was performed.
 - Report the final live-state refresh: final `headRefOid`, PR `updatedAt`, and
   whether new reviews, threads, replies, or thread-state changes appeared after
-  the initial snapshot. State that each new item was inspected, or describe the
+  the initial snapshot. Report the final open-comment inventory and state that
+  every new or changed item was individually assessed, or describe the
   remaining limitation.
 - Confirm that no push was performed unless the user explicitly asked for one.
 - If merge conflicts could not be resolved safely, report that blocker here and
