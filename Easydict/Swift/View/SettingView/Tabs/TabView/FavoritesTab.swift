@@ -196,7 +196,10 @@ struct FavoritesTab: View {
     /// Escapes a value for CSV output.
     private func csvEscaped(_ value: String) -> String {
         let escaped = value.replacingOccurrences(of: "\"", with: "\"\"")
-        if escaped.contains(",") || escaped.contains("\n") || escaped.contains("\r") {
+        if value.contains("\"")
+            || value.contains(",")
+            || value.contains("\n")
+            || value.contains("\r") {
             return "\"\(escaped)\""
         }
         return escaped
