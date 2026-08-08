@@ -83,11 +83,11 @@ Accepted PR references:
   code, and project patterns. Recommend the smallest concrete change that
   resolves the issue, including the affected logic, expected behavior, and
   targeted verification when relevant. This requirement applies even when the
-  comment came from a bot or is also reported as a finding.
+  comment came from a bot. Keep the complete assessment and fix in
+  `Open Review Comments`; do not repeat the same issue in `Findings`.
 - Give every independent finding the same concrete `Suggested Fix` treatment.
-  Cross-reference an open-comment item instead of duplicating its full
-  explanation, but do not use the cross-reference to hide the comment's own
-  assessment or fix.
+  Only an issue with a distinct trigger, risk, and remediation from all open
+  comments may appear in `Findings`.
 - Do not use vague advice such as "fix this issue." When multiple approaches are
   valid, recommend one and state the important tradeoff. If the fix depends on
   a product decision, give conditional options and surface that decision in
@@ -271,9 +271,12 @@ targeted verification. For `unreasonable` or `outdated/not applicable`
 comments, explain the code evidence that rejects or supersedes the concern.
 For a product-decision comment, recommend one option, include its
 `Suggested Fix`, and repeat the unresolved choice under `Open Questions`.
-Do not conclude `No findings` while an open comment has not received one of
-these explicit assessments. If the inventory is empty, report
-`No open review comments` separately from the `Findings` result.
+Assign every reviewed issue to exactly one output section. If an issue is
+raised by an open review comment, keep its assessment and fix only in `Open
+Review Comments`; do not repeat it in `Findings`. Reserve `Findings` for
+additional issues with a distinct trigger, risk, and remediation. If the
+inventory is empty, report `No open review comments` separately. If no
+additional issues remain after the assignment, report `No additional findings`.
 
 For old or stale PRs, check linked issue history, later replacement PRs, and the
 live base tree before deciding whether the branch should still exist. Use
@@ -321,8 +324,9 @@ inventory, comment replies, `isResolved`, and `isOutdated` state.
   earlier findings and new changes.
 - If a new review, thread, reply, or resolution/outdated-state change appeared,
   read its exact content, validate it against the current head and surrounding
-  code, add or update its individual entry in `Open Review Comments`, and
-  update `Findings`, `Open Questions`, and `Verification` before finalizing.
+  code, add or update its individual entry in `Open Review Comments`, and only
+  update `Findings` when the re-review identifies a distinct additional issue.
+  Update `Open Questions` and `Verification` before finalizing.
   Reassess any existing item whose reply or resolution/outdated state changed.
   Treat automated and human feedback the same way.
 - If analyzing new activity leaves enough time for another review to arrive,
@@ -389,14 +393,15 @@ reviewers should inspect.
 
 ## Findings
 
+- List only additional issues that are not already represented in `Open Review
+  Comments`. Each item must have a distinct trigger, risk, and remediation.
 - [P1] path:line - **Title** Describe the issue, trigger condition, and risk.
   - Evidence and impact: Ground the conclusion in the current diff and
     surrounding code.
   - **Suggested Fix:** Describe the smallest concrete change, affected logic,
-    expected behavior, and targeted verification when relevant. If this finding
-    comes from `Open Review Comments`, cross-reference its `C<number>` item.
-- If there are no findings, write `No findings` clearly. Do not invent fix
-  suggestions.
+    expected behavior, and targeted verification when relevant.
+- If there are no additional issues, write `No additional findings`. Do not
+  duplicate an open-comment assessment or invent a second fix for it.
 
 ## Open Questions
 - List correctness-affecting questions, or say clearly that there are no
@@ -415,9 +420,9 @@ reviewers should inspect.
   confirm that no push was performed.
 - Report the final live-state refresh: final `headRefOid`, PR `updatedAt`, and
   whether new reviews, threads, replies, or thread-state changes appeared after
-  the initial snapshot. Report the final open-comment inventory and state that
-  every new or changed item was individually assessed, or describe the
-  remaining limitation.
+  the initial snapshot. Report the final open-comment inventory, whether any
+  additional findings remain, and state that every new or changed item was
+  individually assessed, or describe the remaining limitation.
 - Confirm that no push was performed unless the user explicitly asked for one.
 - If merge conflicts could not be resolved safely, report that blocker here and
   do not claim that a full review was completed.
