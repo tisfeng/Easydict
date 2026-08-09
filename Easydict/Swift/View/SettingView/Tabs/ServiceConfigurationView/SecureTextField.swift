@@ -19,7 +19,8 @@ struct SecureTextField: View {
         text: Binding<String>,
         showText: Bool = false,
         recommendedText: String? = nil,
-        applyContainerPadding: Bool = true
+        applyContainerPadding: Bool = true,
+        accessibilityLabelKey: LocalizedStringKey? = nil
     ) {
         self.title = title
         self.placeholder = placeholder
@@ -27,6 +28,7 @@ struct SecureTextField: View {
         self._showText = State(initialValue: showText)
         self.recommendedText = recommendedText
         self.applyContainerPadding = applyContainerPadding
+        self.accessibilityLabelKey = accessibilityLabelKey
     }
 
     // MARK: Internal
@@ -39,6 +41,7 @@ struct SecureTextField: View {
     let placeholder: LocalizedStringKey
     let recommendedText: String?
     let applyContainerPadding: Bool
+    let accessibilityLabelKey: LocalizedStringKey?
 
     var body: some View {
         HStack {
@@ -49,12 +52,14 @@ struct SecureTextField: View {
                     .focused($focus, equals: .secure)
                     .opacity(showText || isPreviewingRecommendation ? 0 : 1)
                     .disabled(isPreviewingRecommendation)
+                    .accessibilityLabel(accessibilityLabel)
                 TextField(title, text: $text, prompt: Text(placeholder))
                     .lineLimit(lineLimit)
                     .multilineTextAlignment(.trailing)
                     .focused($focus, equals: .text)
                     .opacity((showText || text.isEmpty) && !isPreviewingRecommendation ? 1 : 0)
                     .disabled(isPreviewingRecommendation)
+                    .accessibilityLabel(accessibilityLabel)
 
                 if isPreviewingRecommendation, let recommendedText {
                     Text(recommendedText)
@@ -129,6 +134,14 @@ struct SecureTextField: View {
 
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.lineLimit) private var lineLimit
+
+    private var accessibilityLabel: Text {
+        if let accessibilityLabelKey {
+            return Text(accessibilityLabelKey)
+        }
+
+        return Text(title)
+    }
 }
 
 // MARK: - SecureInput_Previews

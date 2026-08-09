@@ -52,7 +52,8 @@ struct SecureInputCell: View {
                     text: $value,
                     showText: showText,
                     recommendedText: recommendedText,
-                    applyContainerPadding: false
+                    applyContainerPadding: false,
+                    accessibilityLabelKey: textFieldTitleKey
                 )
                 .frame(maxWidth: 420, alignment: .trailing)
             }
