@@ -331,7 +331,9 @@ final class GrammarAnalysisService: AIToolService {
                             continuation.finish()
                             return
                         }
-                        activeResult.translatedResults = [self.skipMessage(answerLanguage: answerLanguage)]
+                        activeResult.translatedResults = [
+                            self.ieltsLanguageSkipMessage(answerLanguage: answerLanguage)
+                        ]
                         self.completeFinalResultState(activeResult)
                         continuation.yield(activeResult)
                         continuation.finish()

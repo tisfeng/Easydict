@@ -4534,6 +4534,46 @@
           }
         }
       },
+    "grammar.analysis.ielts.english_only" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS analysis currently supports English source text only. Please switch to an English sentence and try again."
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "El análisis IELTS actualmente solo admite texto de origen en inglés. Cambia a una oración en inglés y vuelve a intentarlo."
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS 分析は現在、英語の原文のみ対応しています。英語の文に切り替えて再度お試しください。"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Analýza IELTS momentálne podporuje iba anglický zdrojový text. Prepnite na anglickú vetu a skúste to znova."
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS 分析当前仅支持英文原文，请切换为英文句子后再试。"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS 分析目前僅支援英文原文，請切換為英文句子後再試。"
+            }
+          }
+        }
+      },
     "grammar.analysis.skipped" : {
         "localizations": {
           "en": {

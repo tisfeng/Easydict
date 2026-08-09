@@ -164,6 +164,13 @@ extension GrammarAnalysisService {
         )
     }
 
+    func ieltsLanguageSkipMessage(answerLanguage: Language) -> String {
+        localizedAnswerString(
+            forKey: "grammar.analysis.ielts.english_only",
+            answerLanguage: answerLanguage
+        )
+    }
+
     func localizedAnswerString(forKey key: String, answerLanguage: Language) -> String {
         let availableLocalizations = Bundle.main.localizations.filter { $0 != "Base" }
         let preferredLocalizations = answerStringFallbackLocalizations(for: answerLanguage)
