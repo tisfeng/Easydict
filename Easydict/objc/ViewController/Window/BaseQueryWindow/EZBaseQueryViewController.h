@@ -50,6 +50,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)copyFirstTranslatedText;
 
+/// Returns the translated text of the first service result, if available.
+- (nullable NSString *)firstTranslatedText;
+
 - (void)toggleTranslationLanguages;
 
 - (void)focusInputTextView;
@@ -76,6 +79,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)receiveTitlebarAction:(EZTitlebarQuickAction)action;
 
 - (void)updateActionType:(EZActionType)actionType;
+
+/// Discard cached dictionary WebViews when the query window has been idle.
+- (void)discardDictionaryWebViews;
 
 /// show tips view
 - (void)showTipsView:(BOOL)isVisible;
