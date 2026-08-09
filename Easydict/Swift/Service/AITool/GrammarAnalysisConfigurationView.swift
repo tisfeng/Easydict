@@ -130,6 +130,9 @@ struct GrammarAnalysisConfigurationView: View {
             showUsageStatusPicker: true
         )
         .id(streamConfigurationIdentity)
+        .onChange(of: credentialSource) { _ in
+            GlobalContext.shared.reloadLLMServicesSubscribers()
+        }
     }
 
     // MARK: Private
