@@ -23,7 +23,10 @@ final class SelectionWorkflow {
     var onStartMonitoringKeyboard: (@MainActor () -> ())?
     var onBrowserURLUpdated: ((String?) -> ())?
 
-    func getSelectedTextSnapshot(completion: @escaping (SelectedTextSnapshot?) -> ()) {
+    func getSelectedTextSnapshot(
+        onStartMonitoringKeyboard: (@MainActor () -> ())? = nil,
+        completion: @escaping (SelectedTextSnapshot?) -> ()
+    ) {
         recordSelectTextInfo()
         let frontmostApp = contextProvider?.frontmostApplication
         logInfo("getSelectedText in App: \(String(describing: frontmostApp))")
@@ -50,7 +53,8 @@ final class SelectionWorkflow {
 
                 if !text.isEmpty {
                     if MyConfiguration.shared.autoSelectText {
-                        await onStartMonitoringKeyboard?()
+                        let startMonitoring = onStartMonitoringKeyboard ?? self.onStartMonitoringKeyboard
+                        await startMonitoring?()
                     }
                     if !isBrowser || !preferAppleScript {
                         completion(

@@ -120,14 +120,14 @@ final class GrammarAnalysisService: AIToolService {
         userCredentialStringDefaultsKey(.apiKey)
     }
 
-    override var apiKeyPlaceholder: LocalizedStringKey {
+    override var apiKeyPlaceholder: String {
         switch credentialSource {
         case .builtIn:
             super.apiKeyPlaceholder
         case .userKey:
-            "grammar.analysis.credential_source.openai_key.title"
+            String(localized: "grammar.analysis.credential_source.openai_key.title")
         case .deepSeekKey:
-            "grammar.analysis.credential_source.deepseek_key.title"
+            String(localized: "grammar.analysis.credential_source.deepseek_key.title")
         }
     }
 

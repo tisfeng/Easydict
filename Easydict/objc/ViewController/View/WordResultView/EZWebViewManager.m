@@ -8,25 +8,60 @@
 
 #import "EZWebViewManager.h"
 #import "EZConst.h"
+#import <Easydict-Swift.h>
 #import <math.h>
 
 static NSString *kObjcHandler = @"objcHandler";
 static NSString *kMethod = @"method";
 
-static void EZTeardownWKWebView(WKWebView *webView) {
-    [webView stopLoading];
-    webView.navigationDelegate = nil;
-    webView.UIDelegate = nil;
-    [webView.configuration.userContentController removeScriptMessageHandlerForName:kObjcHandler];
+BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
+    return [result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeAppleDictionary] ||
+           [result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeMDict];
 }
+
+BOOL EZResultShouldRenderDictionaryHTML(EZQueryResult *result) {
+    return result.isShowing &&
+           result.htmlString.length > 0 &&
+           EZResultNeedsDictionaryHTMLHeight(result);
+}
+
+@interface EZWeakScriptMessageHandler : NSObject <WKScriptMessageHandler>
+
+@property (nonatomic, weak) id<WKScriptMessageHandler> target;
+
+- (instancetype)initWithTarget:(id<WKScriptMessageHandler>)target;
+
+@end
+
+@implementation EZWeakScriptMessageHandler
+
+- (instancetype)initWithTarget:(id<WKScriptMessageHandler>)target {
+    if (self = [super init]) {
+        _target = target;
+    }
+    return self;
+}
+
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    [self.target userContentController:userContentController didReceiveScriptMessage:message];
+}
+
+@end
 
 @interface EZWebViewManager () <WKNavigationDelegate, WKScriptMessageHandler>
 
 @property (nonatomic, assign) BOOL isUpdatingIframe;
 @property (nonatomic, assign) BOOL forceNextScrollHeightCallback;
 @property (nonatomic, assign) CGFloat lastScrollHeight;
+@property (nonatomic, assign) NSUInteger renderGeneration;
+@property (nonatomic, strong, nullable) WKNavigation *renderNavigation;
+@property (nonatomic, assign) NSUInteger renderNavigationGeneration;
 
 - (void)teardownWebView;
+- (void)resetReusableWebView;
+- (void)resetRenderingState;
+- (BOOL)isCurrentRenderGeneration:(NSUInteger)renderGeneration;
+- (void)updateAllIframeForRenderGeneration:(NSUInteger)renderGeneration;
 
 @end
 
@@ -41,7 +76,8 @@ static void EZTeardownWKWebView(WKWebView *webView) {
 - (WKWebView *)webView {
     if (!_webView) {
         WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
-        [configuration.userContentController addScriptMessageHandler:self name:kObjcHandler];
+        EZWeakScriptMessageHandler *handler = [[EZWeakScriptMessageHandler alloc] initWithTarget:self];
+        [configuration.userContentController addScriptMessageHandler:handler name:kObjcHandler];
         _webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     }
     return _webView;
@@ -60,6 +96,11 @@ static void EZTeardownWKWebView(WKWebView *webView) {
         }
         
         if ([body[kMethod] isEqualToString:@"noteToUpdateScrollHeight"]) {
+            NSUInteger renderGeneration = [body[@"renderGeneration"] unsignedIntegerValue];
+            if (![self isCurrentRenderGeneration:renderGeneration]) {
+                return;
+            }
+
             CGFloat scrollHeight = [body[@"scrollHeight"] floatValue];
             BOOL heightChanged = self.lastScrollHeight <= 0 ||
                                  fabs(scrollHeight - self.lastScrollHeight) >=
@@ -80,6 +121,19 @@ static void EZTeardownWKWebView(WKWebView *webView) {
 #pragma mark - WebView evaluateJavaScript
 
 - (void)updateAllIframe {
+    [self updateAllIframeForRenderGeneration:self.renderGeneration];
+}
+
+- (void)updateAllIframeForRenderGeneration:(NSUInteger)renderGeneration {
+    if (![self isCurrentRenderGeneration:renderGeneration]) {
+        return;
+    }
+
+    WKWebView *webView = _webView;
+    if (!webView) {
+        return;
+    }
+
     if (self.isUpdatingIframe) {
         if (self.needUpdateIframeHeight) {
             self.forceNextScrollHeightCallback = YES;
@@ -94,6 +148,7 @@ static void EZTeardownWKWebView(WKWebView *webView) {
 
     CGFloat fontSize = MyConfiguration.shared.fontSizeRatio; // 1.4 --> 140%
     NSString *script = [NSString stringWithFormat:
+                        @"window.__easydictRenderGeneration = %lu; "
                         @"if (typeof changeWebViewBodyFontSize === 'function') { "
                         @"changeWebViewBodyFontSize(%.1f); "
                         @"} else { "
@@ -104,10 +159,15 @@ static void EZTeardownWKWebView(WKWebView *webView) {
                         @"} else { "
                         @"updateAllIframeStyle(); "
                         @"}",
+                        (unsigned long)renderGeneration,
                         fontSize,
                         fontSize];
-    [self.webView evaluateJavaScript:script
-                   completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+    [webView evaluateJavaScript:script
+              completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+        if (![self isCurrentRenderGeneration:renderGeneration]) {
+            return;
+        }
+
         if (error) {
             MMLogError(@"updateAllIframe failed: %@", error);
         }
@@ -118,42 +178,68 @@ static void EZTeardownWKWebView(WKWebView *webView) {
     }];
 }
 
-- (void)reset {
-    void (^resetBlock)(void) = ^{
-        self.wordResultViewHeight = 0;
-        self.isLoaded = NO;
-        self.needUpdateIframeHeight = NO;
-        self.loadedHTMLString = nil;
-        self.didFinishUpdatingIframeHeightBlock = nil;
-        self.isUpdatingIframe = NO;
-        self.forceNextScrollHeightCallback = NO;
-        self.lastScrollHeight = 0;
-        [self teardownWebView];
-    };
-
-    if ([NSThread isMainThread]) {
-        resetBlock();
-    } else {
-        dispatch_sync(dispatch_get_main_queue(), resetBlock);
-    }
+- (NSUInteger)beginRenderingHTML {
+    self.renderGeneration += 1;
+    self.renderNavigation = nil;
+    self.renderNavigationGeneration = self.renderGeneration;
+    self.isUpdatingIframe = NO;
+    self.forceNextScrollHeightCallback = NO;
+    self.lastScrollHeight = 0;
+    return self.renderGeneration;
 }
 
-- (void)dealloc {
-    WKWebView *webView = _webView;
-    _webView = nil;
-    if (!webView) {
+- (void)trackRenderingNavigation:(nullable WKNavigation *)navigation renderGeneration:(NSUInteger)renderGeneration {
+    if (![self isCurrentRenderGeneration:renderGeneration]) {
+        return;
+    }
+    if (!navigation) {
+        [self resetRenderingState];
         return;
     }
 
-    void (^teardownBlock)(void) = ^{
-        EZTeardownWKWebView(webView);
-    };
+    self.renderNavigation = navigation;
+    self.renderNavigationGeneration = renderGeneration;
+}
 
-    if ([NSThread isMainThread]) {
-        teardownBlock();
-    } else {
-        dispatch_sync(dispatch_get_main_queue(), teardownBlock);
+- (BOOL)shouldHandleNavigation:(nullable WKNavigation *)navigation {
+    return navigation &&
+           navigation == self.renderNavigation &&
+           [self isCurrentRenderGeneration:self.renderNavigationGeneration];
+}
+
+- (void)invalidateRenderingNavigation:(nullable WKNavigation *)navigation {
+    if (![self shouldHandleNavigation:navigation]) {
+        return;
     }
+    [self resetRenderingState];
+}
+
+- (void)reset {
+    [self resetRenderingState];
+    [self resetReusableWebView];
+}
+
+- (void)discardReusableWebView {
+    [self resetRenderingState];
+    [self teardownWebView];
+}
+
+- (void)resetRenderingState {
+    self.renderGeneration += 1;
+    self.renderNavigation = nil;
+    self.renderNavigationGeneration = 0;
+    self.wordResultViewHeight = 0;
+    self.isLoaded = NO;
+    self.needUpdateIframeHeight = NO;
+    self.loadedHTMLString = nil;
+    self.didFinishUpdatingIframeHeightBlock = nil;
+    self.isUpdatingIframe = NO;
+    self.forceNextScrollHeightCallback = NO;
+    self.lastScrollHeight = 0;
+}
+
+- (void)dealloc {
+    [self teardownWebView];
 }
 
 #pragma mark - MJExtension
@@ -164,26 +250,41 @@ static void EZTeardownWKWebView(WKWebView *webView) {
         @"loadedHTMLString",
         @"isUpdatingIframe",
         @"forceNextScrollHeightCallback",
-        @"lastScrollHeight"
+        @"lastScrollHeight",
+        @"renderGeneration",
+        @"renderNavigation",
+        @"renderNavigationGeneration"
     ];
 }
 
 - (void)teardownWebView {
     WKWebView *webView = _webView;
-    _webView = nil;
     if (!webView) {
         return;
     }
 
-    void (^teardownBlock)(void) = ^{
-        EZTeardownWKWebView(webView);
-    };
+    [webView stopLoading];
+    webView.navigationDelegate = nil;
+    webView.UIDelegate = nil;
+    [webView removeFromSuperview];
+    [webView.configuration.userContentController removeScriptMessageHandlerForName:kObjcHandler];
+    _webView = nil;
+}
 
-    if ([NSThread isMainThread]) {
-        teardownBlock();
-    } else {
-        dispatch_sync(dispatch_get_main_queue(), teardownBlock);
+- (void)resetReusableWebView {
+    WKWebView *webView = _webView;
+    if (!webView) {
+        return;
     }
+
+    [webView stopLoading];
+    webView.navigationDelegate = nil;
+    webView.UIDelegate = nil;
+    [webView loadHTMLString:@"" baseURL:nil];
+}
+
+- (BOOL)isCurrentRenderGeneration:(NSUInteger)renderGeneration {
+    return renderGeneration > 0 && renderGeneration == self.renderGeneration;
 }
 
 @end

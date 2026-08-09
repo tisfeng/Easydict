@@ -6,7 +6,49 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
+
+// MARK: - QueryServiceMetadata
+
+struct QueryServiceMetadata {
+    let serviceType: ServiceType
+    let uuid: String
+    let title: String
+    let apiKeyRequirement: ServiceAPIKeyRequirement
+    let isStream: Bool
+    let allowsMultipleInstances: Bool
+}
+
+// MARK: - ServiceRegistration
+
+private struct ServiceRegistration {
+    // MARK: Lifecycle
+
+    init(
+        _ serviceType: ServiceType,
+        _ serviceClass: QueryService.Type,
+        _ titleKey: String,
+        apiKeyRequirement: ServiceAPIKeyRequirement = .userProvided,
+        allowsMultipleInstances: Bool = false
+    ) {
+        self.serviceType = serviceType
+        self.serviceClass = serviceClass
+        self.titleKey = titleKey
+        self.apiKeyRequirement = apiKeyRequirement
+        self.allowsMultipleInstances = allowsMultipleInstances
+    }
+
+    // MARK: Internal
+
+    let serviceType: ServiceType
+    let serviceClass: QueryService.Type
+    let titleKey: String
+    let apiKeyRequirement: ServiceAPIKeyRequirement
+    let allowsMultipleInstances: Bool
+}
+
+// MARK: - QueryServiceFactory
 
 /// A registry that maps `ServiceType` identifiers to their corresponding `QueryService` subclasses.
 ///
@@ -18,85 +60,124 @@ final class QueryServiceFactory: NSObject {
     /// Shared singleton instance.
     static let shared = QueryServiceFactory()
 
-    /// Ordered list of all supported service types.
     var allServiceTypes: [ServiceType] {
-        guard let keys = serviceDictionary.sortedKeys() as? [String] else {
-            return []
-        }
-        return keys.compactMap(ServiceType.init(rawValue:))
+        serviceRegistrations.map(\.serviceType)
     }
 
-    /// Ordered list of all supported service type identifiers as raw strings.
     var allServiceTypeIDs: [String] {
         allServiceTypes.map(\.rawValue)
     }
 
-    /// Creates a `QueryService` instance for the given type identifier.
-    ///
-    /// - Parameter typeIdIfHave: A service type identifier, optionally containing a UUID suffix separated by `#`.
-    /// - Returns: A configured `QueryService` instance if the type is supported; otherwise, `nil`.
     func service(withTypeId typeIdIfHave: String) -> QueryService? {
-        let components = typeIdIfHave.split(separator: "#", maxSplits: 1, omittingEmptySubsequences: false)
-        let serviceTypeString = String(components.first ?? Substring(typeIdIfHave))
-        let uuid = components.count > 1 ? String(components[1]) : ""
+        let components = serviceIdentifierComponents(from: typeIdIfHave)
 
-        guard let serviceClass = serviceDictionary.object(forKey: serviceTypeString) as? QueryService.Type else {
+        guard let serviceClass = serviceClass(withTypeId: typeIdIfHave) else {
             return nil
         }
 
         let service = serviceClass.init()
-        service.uuid = uuid
+        service.uuid = components.uuid
         return service
     }
 
-    /// Creates `QueryService` instances from a list of service type identifiers.
-    ///
-    /// - Parameter types: An array of service type identifiers.
-    /// - Returns: A list of instantiated services. Unsupported types are ignored.
     func services(fromTypes types: [String]) -> [QueryService] {
         types.compactMap { service(withTypeId: $0) }
     }
 
+    func isStreamService(typeIdIfHave: String) -> Bool {
+        guard let serviceClass = serviceClass(withTypeId: typeIdIfHave) else {
+            return false
+        }
+        return serviceClass is StreamService.Type
+    }
+
+    func metadata(withTypeId typeIdIfHave: String) -> QueryServiceMetadata? {
+        let components = serviceIdentifierComponents(from: typeIdIfHave)
+        guard let registration = serviceRegistration(withTypeId: typeIdIfHave) else { return nil }
+
+        return QueryServiceMetadata(
+            serviceType: registration.serviceType,
+            uuid: components.uuid,
+            title: title(
+                for: registration.serviceType,
+                uuid: components.uuid,
+                fallbackKey: registration.titleKey
+            ),
+            apiKeyRequirement: registration.apiKeyRequirement,
+            isStream: registration.serviceClass is StreamService.Type,
+            allowsMultipleInstances: registration.allowsMultipleInstances
+        )
+    }
+
     // MARK: Private
 
-    private lazy var serviceDictionary: MMOrderedDictionary = {
-        let dictionary = MMOrderedDictionary()
-        serviceTypeMappings.forEach { mapping in
-            dictionary.setObject(mapping.serviceClass, forKey: mapping.serviceType.rawValue)
-        }
-        return dictionary
-    }()
-
-    private let serviceTypeMappings: [(serviceType: ServiceType, serviceClass: QueryService.Type)] = [
-        (.appleDictionary, AppleDictionary.self),
-        (.mDict, MDictService.self),
-        (.youdao, YoudaoService.self),
-        (.openAI, OpenAIService.self),
-        (.deepSeek, DeepSeekService.self),
-        (.groq, GroqService.self),
-        (.zhipu, ZhipuService.self),
-        (.miniMax, MiniMaxService.self),
-        (.gitHub, GitHubService.self),
-        (.builtInAI, BuiltInAIService.self),
-        (.claudeCode, ClaudeCodeService.self),
-        (.codexCLI, CodexCLIService.self),
-        (.gemini, GeminiService.self),
-        (.claude, ClaudeService.self),
-        (.ollama, OllamaService.self),
-        (.polishing, PolishingService.self),
-        (.summary, SummaryService.self),
-        (.customOpenAI, CustomOpenAIService.self),
-        (.deepL, DeepLService.self),
-        (.google, GoogleService.self),
-        (.apple, AppleService.self),
-        (.baidu, BaiduService.self),
-        (.bing, BingService.self),
-        (.volcano, VolcanoService.self),
-        (.niuTrans, NiuTransService.self),
-        (.caiyun, CaiyunService.self),
-        (.tencent, TencentService.self),
-        (.alibaba, AliService.self),
-        (.doubao, DoubaoService.self),
-        (.grammarAnalysis, GrammarAnalysisService.self),
+    private let serviceRegistrations: [ServiceRegistration] = [
+        .init(.appleDictionary, AppleDictionary.self, "apple_dictionary", apiKeyRequirement: .none),
+        .init(.mDict, MDictService.self, "service.mdict.name", apiKeyRequirement: .none),
+        .init(.youdao, YoudaoService.self, "youdao_dict", apiKeyRequirement: .none),
+        .init(.openAI, OpenAIService.self, "openai_translate"),
+        .init(.deepSeek, DeepSeekService.self, "deepseek_translate"),
+        .init(.groq, GroqService.self, "groq_translate"),
+        .init(.zhipu, ZhipuService.self, "zhipu_translate"),
+        .init(.miniMax, MiniMaxService.self, "minimax_translate"),
+        .init(.gitHub, GitHubService.self, "github_models"),
+        .init(.builtInAI, BuiltInAIService.self, "built_in_ai", apiKeyRequirement: .builtIn),
+        .init(.claudeCode, ClaudeCodeService.self, "service.claude_code.name", apiKeyRequirement: .agentCLI),
+        .init(.codexCLI, CodexCLIService.self, "service.codex_cli.name", apiKeyRequirement: .agentCLI),
+        .init(.gemini, GeminiService.self, "gemini_translate"),
+        .init(.claude, ClaudeService.self, "claude_translate"),
+        .init(.ollama, OllamaService.self, "ollama_translate", apiKeyRequirement: .none),
+        .init(.polishing, PolishingService.self, "polishing_service", apiKeyRequirement: .builtIn),
+        .init(.summary, SummaryService.self, "summary_service", apiKeyRequirement: .builtIn),
+        .init(.customOpenAI, CustomOpenAIService.self, "custom_openai", allowsMultipleInstances: true),
+        .init(.deepL, DeepLService.self, "deepL_translate", apiKeyRequirement: .none),
+        .init(.google, GoogleService.self, "google_translate", apiKeyRequirement: .none),
+        .init(.apple, AppleService.self, "apple_translate", apiKeyRequirement: .none),
+        .init(.baidu, BaiduService.self, "baidu_translate"),
+        .init(.bing, BingService.self, "bing_translate", apiKeyRequirement: .none),
+        .init(.volcano, VolcanoService.self, "volcano_translate"),
+        .init(.niuTrans, NiuTransService.self, "niuTrans_translate", apiKeyRequirement: .builtIn),
+        .init(.caiyun, CaiyunService.self, "caiyun_translate", apiKeyRequirement: .builtIn),
+        .init(.tencent, TencentService.self, "tencent_translate"),
+        .init(.alibaba, AliService.self, "ali_translate"),
+        .init(.doubao, DoubaoService.self, "doubao_translate"),
+        .init(.grammarAnalysis, GrammarAnalysisService.self, "grammar_analysis_service"),
     ]
+
+    private func serviceClass(withTypeId typeIdIfHave: String) -> QueryService.Type? {
+        serviceRegistration(withTypeId: typeIdIfHave)?.serviceClass
+    }
+
+    private func serviceRegistration(withTypeId typeIdIfHave: String) -> ServiceRegistration? {
+        let components = serviceIdentifierComponents(from: typeIdIfHave)
+        return serviceRegistrations.first { $0.serviceType.rawValue == components.rawType }
+    }
+
+    private func serviceIdentifierComponents(from typeIdIfHave: String)
+        -> (rawType: String, uuid: String) {
+        let components = typeIdIfHave.split(
+            separator: "#",
+            maxSplits: 1,
+            omittingEmptySubsequences: false
+        )
+        let rawType = String(components.first ?? Substring(typeIdIfHave))
+        let uuid = components.count > 1 ? String(components[1]) : ""
+        return (rawType, uuid)
+    }
+
+    private func title(for serviceType: ServiceType, uuid: String, fallbackKey: String) -> String {
+        if serviceType == .customOpenAI {
+            let nameKey = serivceConfigurationKey(
+                .name,
+                serviceType: serviceType,
+                id: uuid,
+                defaultValue: ""
+            )
+            let customName = Defaults[nameKey]
+            if !customName.isEmpty {
+                return customName
+            }
+        }
+        return NSLocalizedString(fallbackKey, comment: "")
+    }
 }

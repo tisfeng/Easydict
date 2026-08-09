@@ -319,11 +319,11 @@ public class StreamService: QueryService {
         stringDefaultsKey(.endpoint, defaultValue: defaultEndpoint)
     }
 
-    var endpointPlaceholder: LocalizedStringKey {
+    var endpointPlaceholder: String {
         defaultEndpoint
             .isEmpty
-            ? "service.configuration.openai.endpoint.placeholder"
-            : LocalizedStringKey(defaultEndpoint)
+            ? String(localized: "service.configuration.openai.endpoint.placeholder")
+            : defaultEndpoint
     }
 
     var recommendedEndpoint: String? {
@@ -375,7 +375,7 @@ public class StreamService: QueryService {
         ]
     }
 
-    var apiKeyPlaceholder: LocalizedStringKey {
+    var apiKeyPlaceholder: String {
         "\(serviceType().rawValue) API Key"
     }
 

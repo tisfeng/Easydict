@@ -15,7 +15,7 @@ struct SecureTextField: View {
 
     init(
         title: LocalizedStringKey,
-        placeholder: LocalizedStringKey,
+        placeholder: String,
         text: Binding<String>,
         showText: Bool = false,
         recommendedText: String? = nil,
@@ -38,7 +38,7 @@ struct SecureTextField: View {
     @State var isPreviewingRecommendation = false
 
     let title: LocalizedStringKey
-    let placeholder: LocalizedStringKey
+    let placeholder: String
     let recommendedText: String?
     let applyContainerPadding: Bool
     let accessibilityLabelKey: LocalizedStringKey?
@@ -53,7 +53,7 @@ struct SecureTextField: View {
                     .opacity(showText || isPreviewingRecommendation ? 0 : 1)
                     .disabled(isPreviewingRecommendation)
                     .accessibilityLabel(accessibilityLabel)
-                TextField(title, text: $text, prompt: Text(placeholder))
+                TextField(title, text: $text, prompt: Text(verbatim: placeholder))
                     .lineLimit(lineLimit)
                     .multilineTextAlignment(.trailing)
                     .focused($focus, equals: .text)
@@ -151,7 +151,7 @@ struct SecureInput_Previews: PreviewProvider {
         Group {
             SecureTextField(
                 title: "caiyun_translate",
-                placeholder: "service.configuration.input.placeholder",
+                placeholder: String(localized: "service.configuration.input.placeholder"),
                 text: .constant("1234567")
             )
             .padding()
@@ -159,7 +159,7 @@ struct SecureInput_Previews: PreviewProvider {
 
             SecureTextField(
                 title: "caiyun_translate",
-                placeholder: "service.configuration.input.placeholder",
+                placeholder: String(localized: "service.configuration.input.placeholder"),
                 text: .constant("")
             )
             .padding()

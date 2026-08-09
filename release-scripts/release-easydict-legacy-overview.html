@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>release-scripts 发布脚本说明</title>
+  <title>Legacy release-easydict 发布脚本说明</title>
   <style>
     :root {
       color-scheme: light;
@@ -164,11 +164,13 @@
 </head>
 <body>
   <main>
-    <h1>release-scripts 发布脚本说明</h1>
+    <h1>Legacy release-easydict 发布脚本说明</h1>
 
     <section class="summary" aria-label="目录职责">
       <p>
-        <code>release-scripts/release-easydict.sh</code> 是 Easydict 的本地发布打包入口。
+        <code>release-scripts/release-easydict-legacy.sh</code> 是 Easydict
+        暂时保留的旧版发布打包入口；新发布请使用
+        <code>release-scripts/release-easydict.sh</code>。
         它负责把 Release 构建产物转换为可分发的 <code>Easydict.app</code>、
         <code>Easydict.zip</code> 和 <code>Easydict.dmg</code>，并同步更新
         Sparkle 使用的 <code>appcast.xml</code>。
@@ -176,7 +178,7 @@
     </section>
 
     <figure>
-      <img src="./release-scripts-flow.svg" alt="release-easydict.sh 发布流程图">
+      <img src="./release-easydict-legacy-flow.svg" alt="旧版 release-easydict.sh 发布流程图">
       <figcaption>
         发布链路覆盖预检、构建、重签、公证、Sparkle 更新包、appcast 写入、
         DMG 打包和临时目录清理。

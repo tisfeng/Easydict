@@ -60,26 +60,30 @@ jobs:
           echo "commit_count=$commit_count" >> $GITHUB_OUTPUT
           echo "follower_count=$follower_count" >> $GITHUB_OUTPUT
 
-          # Define stricter notification thresholds.
-          MIN_STARS=300
-          MIN_FOLLOWERS=300
-          MIN_COMMITS=5000
-          SUPPORTING_STARS=50
-          SUPPORTING_FOLLOWERS=50
+          # Notify only when the user meets at least two quality criteria.
+          STAR_THRESHOLD=500
+          FOLLOWER_THRESHOLD=500
+          COMMIT_THRESHOLD=10000
 
-          # Check if user meets the shared notification criteria for fork/star events.
           user_conditions_met=false
           notification_reason=""
+          qualified_metrics=0
 
-          if [[ $earn_star_count -ge $MIN_STARS ]]; then
+          if (( earn_star_count >= STAR_THRESHOLD )); then
+            qualified_metrics=$((qualified_metrics + 1))
+          fi
+
+          if (( follower_count >= FOLLOWER_THRESHOLD )); then
+            qualified_metrics=$((qualified_metrics + 1))
+          fi
+
+          if (( commit_count >= COMMIT_THRESHOLD )); then
+            qualified_metrics=$((qualified_metrics + 1))
+          fi
+
+          if (( qualified_metrics >= 2 )); then
             user_conditions_met=true
-            notification_reason="High-impact user: Stars ($earn_star_count) >= $MIN_STARS"
-          elif [[ $follower_count -ge $MIN_FOLLOWERS ]]; then
-            user_conditions_met=true
-            notification_reason="High-impact user: Followers ($follower_count) >= $MIN_FOLLOWERS"
-          elif [[ $commit_count -ge $MIN_COMMITS && ( $earn_star_count -ge $SUPPORTING_STARS || $follower_count -ge $SUPPORTING_FOLLOWERS ) ]]; then
-            user_conditions_met=true
-            notification_reason="Active developer: Commits ($commit_count) >= $MIN_COMMITS with Stars ($earn_star_count) >= $SUPPORTING_STARS or Followers ($follower_count) >= $SUPPORTING_FOLLOWERS"
+            notification_reason="Meets $qualified_metrics of 3 quality criteria"
           fi
 
           # Output result

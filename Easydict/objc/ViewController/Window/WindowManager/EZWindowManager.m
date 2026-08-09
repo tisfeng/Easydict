@@ -11,6 +11,8 @@
 #import "EZFixedQueryWindow.h"
 #import "EZCoordinateUtils.h"
 
+static NSTimeInterval const EZFloatingWindowIdleWebViewDiscardDelay = 60.0;
+
 @interface EZWindowManager ()
 
 @property (nonatomic, strong) NSRunningApplication *lastFrontmostApplication;
@@ -28,6 +30,9 @@
 
 /// The window type that is currently showing.
 @property (nonatomic) EZWindowType windowType;
+
+- (void)scheduleDictionaryWebViewDiscardForWindow:(EZBaseQueryWindow *)window;
+- (void)discardDictionaryWebViewsIfIdleForWindow:(EZBaseQueryWindow *)window;
 
 @end
 
@@ -188,6 +193,7 @@ static EZWindowManager *_instance;
 
 - (void)popButtonWindowClicked {
     // Close pop button window first, and show floating window.
+    [self.eventMonitor consumePopButtonActivation];
     [self.popButtonWindow close];
     
     EZWindowType windowType = MyConfiguration.shared.mouseSelectTranslateWindowType;
@@ -1069,6 +1075,23 @@ static EZWindowManager *_instance;
     }
 
     [self updateFloatingWindowType:windowType isShowing:NO];
+    [self scheduleDictionaryWebViewDiscardForWindow:floatingWindow];
+}
+
+- (void)scheduleDictionaryWebViewDiscardForWindow:(EZBaseQueryWindow *)window {
+    SEL selector = @selector(discardDictionaryWebViewsIfIdleForWindow:);
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:selector object:window];
+    [self performSelector:selector
+               withObject:window
+               afterDelay:EZFloatingWindowIdleWebViewDiscardDelay];
+}
+
+- (void)discardDictionaryWebViewsIfIdleForWindow:(EZBaseQueryWindow *)window {
+    if (window.isVisible || window.isPin || MyConfiguration.shared.keepPrevResultWhenEmpty) {
+        return;
+    }
+
+    [window.queryViewController discardDictionaryWebViews];
 }
 
 #pragma mark -
