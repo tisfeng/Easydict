@@ -129,6 +129,7 @@ struct GrammarAnalysisConfigurationView: View {
             showDictionaryToggle: false,
             showUsageStatusPicker: true
         )
+        .id(streamConfigurationIdentity)
     }
 
     // MARK: Private
@@ -139,5 +140,9 @@ struct GrammarAnalysisConfigurationView: View {
 
     private var availableModes: [GrammarAnalysisMode] {
         service.canUseIELTSMode ? GrammarAnalysisMode.allCases : [.general]
+    }
+
+    private var streamConfigurationIdentity: String {
+        "\(credentialSource.rawValue)-\(service.provider.rawValue)"
     }
 }
