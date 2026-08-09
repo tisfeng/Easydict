@@ -406,17 +406,19 @@ final class GrammarAnalysisService: AIToolService {
     }
 
     override func validate() async -> QueryResult {
-        guard analysisMode == .ielts else {
-            return await super.validate()
-        }
-
         resetServiceResult()
 
-        let text = Self.ieltsValidationSampleText
+        let text = analysisMode == .ielts
+            ? Self.ieltsValidationSampleText
+            : Self.generalValidationSampleText
         var latestResult = result ?? QueryResult()
 
         do {
-            for try await result in translateStream(text, from: .english, to: .simplifiedChinese) {
+            for try await result in translateStream(
+                text,
+                from: .english,
+                to: .simplifiedChinese
+            ) {
                 latestResult = result
             }
         } catch {
@@ -438,6 +440,9 @@ final class GrammarAnalysisService: AIToolService {
     }
 
     // MARK: Private
+
+    private static let generalValidationSampleText =
+        "The report that I submitted yesterday still needs a few small revisions."
 
     private static let ieltsValidationSampleText =
         "Although the plan changed twice, we still finished the work on time."
