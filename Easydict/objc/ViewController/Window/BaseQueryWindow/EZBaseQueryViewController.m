@@ -688,6 +688,14 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 }
 
+- (nullable NSString *)firstTranslatedText {
+    if (self.firstService &&
+        [self.firstService.result.queryText isEqualToString:self.queryModel.queryText]) {
+        return self.firstService.result.translatedText;
+    }
+    return nil;
+}
+
 - (void)toggleTranslationLanguages {
     [self.selectLanguageCell toggleTranslationLanguages];
 }
@@ -887,6 +895,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
+    NSString *queryText = [queryModel.queryText copy];
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
         if (error) {
             MMLogError(@"service: %@, query error: %@", service.serviceType, error);
@@ -906,6 +915,16 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
         //        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
         [self updateCellWithResult:result reloadData:YES];
+
+        // Backfill history record with the first service's translated text.
+        if (service == self.firstService) {
+            BOOL shouldRecord = !service.isStream || result.isStreamFinished;
+            if (shouldRecord && result.translatedText.length > 0) {
+                [QueryRecordManager.shared updateTranslatedResult:result.translatedText
+                                                      forQueryText:queryText
+                                                              in:RecordTypeHistory];
+            }
+        }
 
         if (service.autoCopyTranslatedTextBlock) {
             BOOL shouldAutoCopy = !service.isStream || result.isStreamFinished;
