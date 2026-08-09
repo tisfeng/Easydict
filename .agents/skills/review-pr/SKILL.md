@@ -357,6 +357,16 @@ conversation.
 Keep section headings, `PR Context` subheadings, priority labels, and
 `Suggested Fix` labels exactly as written. Use this structure exactly:
 
+For `Open Review Comments`, prefer a compact summary line followed by one
+Markdown card per thread. Put the comment permalink in the card title instead
+of showing a long raw URL. Keep path, line, author, and status on one metadata
+line; translate raw GraphQL flags such as `isResolved=false` and
+`isOutdated=false` into short natural-language status labels in the preferred
+output language. Use separate paragraphs for the issue, evidence/impact,
+assessment, and fix. Include a `Thread Replies` block only when replies exist.
+Do not pack all metadata and prose into one list item, and do not use a table or
+large quote block for review content.
+
 ```markdown
 ## PR Context
 
@@ -378,30 +388,73 @@ reviewers should inspect.
 
 ## Open Review Comments
 
-- If there are open review threads, enumerate them one by one. Use a stable
-  item id such as `C1`, include the comment permalink, author, path and line,
-  `isResolved`/`isOutdated` state, a concise summary of the full thread, the
-  current-code evidence, and exactly one assessment: `reasonable`, `partially
-  reasonable`, `unreasonable`, `outdated/not applicable`, or `needs product
-  decision`.
-  - For `reasonable`, `partially reasonable`, or `needs product decision`, add
-    a visually separate `**Suggested Fix:**` with the smallest concrete
-    remediation, expected behavior, and targeted verification.
-  - For `unreasonable` or `outdated/not applicable`, explain why the comment
-    does not require a code change; do not invent a fix.
-- If there are no open review threads, write `No open review comments`.
+Open threads: <count> · Reasonable: <count> · Partially reasonable: <count> · Outdated: <count>
+
+### C1 — [Comment title](comment-permalink)
+
+`path:line` · `author`
+Status: unresolved · current
+
+**Issue**
+
+Summarize the comment's concern and the trigger condition.
+
+**Evidence / Impact**
+
+Explain the current-code evidence and the user or system impact.
+
+**Assessment**
+
+`reasonable`
+
+**Suggested Fix:**
+
+Describe the smallest concrete remediation, expected behavior, and targeted
+verification.
+
+**Thread Replies**
+
+- [Author](reply-permalink): Summarize this reply. Use one bullet per reply
+  and retain the reply permalink.
+
+### C2 — [Another comment title](comment-permalink)
+
+`path:line` · `author`
+Status: unresolved · current
+
+**Issue**
+
+...
+
+**Evidence / Impact**
+
+...
+
+**Assessment**
+
+`outdated/not applicable`
+
+- Explain why the current code no longer requires a change. Do not invent a
+  `Suggested Fix` for this assessment.
+
+If there are no open review threads, write `No open review comments`.
 
 ## Findings
 
-- List only additional issues that are not already represented in `Open Review
-  Comments`. Each item must have a distinct trigger, risk, and remediation.
-- [P1] path:line - **Title** Describe the issue, trigger condition, and risk.
-  - Evidence and impact: Ground the conclusion in the current diff and
-    surrounding code.
-  - **Suggested Fix:** Describe the smallest concrete change, affected logic,
-    expected behavior, and targeted verification when relevant.
-- If there are no additional issues, write `No additional findings`. Do not
-  duplicate an open-comment assessment or invent a second fix for it.
+### [P1] `path:line` — Finding title
+
+**Evidence / Impact**
+
+Describe the distinct trigger, risk, and impact. This must not repeat an issue
+already represented in `Open Review Comments`.
+
+**Suggested Fix:**
+
+Describe the smallest concrete change, expected behavior, and targeted
+verification.
+
+If there are no additional issues, write `No additional findings`. Do not
+duplicate an open-comment assessment or invent a second fix for it.
 
 ## Open Questions
 - List correctness-affecting questions, or say clearly that there are no
