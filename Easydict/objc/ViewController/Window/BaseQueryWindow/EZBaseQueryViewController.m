@@ -894,6 +894,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
+    NSString *queryText = [queryModel.queryText copy];
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
         if (error) {
             MMLogError(@"service: %@, query error: %@", service.serviceType, error);
@@ -919,7 +920,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             BOOL shouldRecord = !service.isStream || result.isStreamFinished;
             if (shouldRecord && result.translatedText.length > 0) {
                 [QueryRecordManager.shared updateTranslatedResult:result.translatedText
-                                                      forQueryText:queryModel.queryText
+                                                      forQueryText:queryText
                                                               in:RecordTypeHistory];
             }
         }
