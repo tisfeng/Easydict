@@ -541,9 +541,9 @@ final class GrammarAnalysisService: AIToolService {
         )] = migratedModel
 
         Defaults[providerKey] = targetProvider
-        if targetProvider == .deepSeek, Defaults[credentialSourceKey] == .userKey {
-            Defaults[credentialSourceKey] = .deepSeekKey
-        }
+        Defaults[credentialSourceKey] = targetProvider == .deepSeek
+            ? .deepSeekKey
+            : .userKey
 
         Defaults[legacyEndpointKey] = ""
         Defaults[legacyModelsKey] = ""
