@@ -24,9 +24,31 @@ extension GrammarAnalysisService {
         )
     }
 
+    func ieltsRiskLabels(answerLanguage: Language) -> (
+        high: String,
+        medium: String,
+        low: String
+    ) {
+        (
+            localizedAnswerString(
+                forKey: "grammar.analysis.ielts.risk.high",
+                answerLanguage: answerLanguage
+            ),
+            localizedAnswerString(
+                forKey: "grammar.analysis.ielts.risk.medium",
+                answerLanguage: answerLanguage
+            ),
+            localizedAnswerString(
+                forKey: "grammar.analysis.ielts.risk.low",
+                answerLanguage: answerLanguage
+            )
+        )
+    }
+
     func analysisSystemPrompt(answerLanguage: Language) -> String {
         let titles = analysisSectionTitles(answerLanguage: answerLanguage)
         let rewriteLabels = ieltsRewriteLabels(answerLanguage: answerLanguage)
+        let riskLabels = ieltsRiskLabels(answerLanguage: answerLanguage)
         return switch analysisMode {
         case .general:
             """
@@ -48,13 +70,15 @@ extension GrammarAnalysisService {
             clause control, and whether errors are frequent enough to reduce \
             clarity or band score.
             Prioritize only the issues that matter most for IELTS band \
-            performance. For each issue, make clear whether it is a high, \
-            medium, or low risk.
+            performance. For each issue, use the visible label \
+            "\(riskLabels.high)", "\(riskLabels.medium)", or \
+            "\(riskLabels.low)".
             Distinguish among: actual grammar errors, acceptable but unnatural \
             phrasing, and higher-band alternatives.
             Do not invent grammar faults just to fill the band-risk section. \
             If the sentence is already accurate and mature, say so clearly and \
-            keep the risk section empty or limited to low-risk refinements.
+            keep the risk section empty or limited to \
+            "\(riskLabels.low)" points.
             Do not label a natural fixed expression as a grammar problem \
             merely because it can be rephrased.
             Unless the evidence is unusually strong, do not guess a specific \
@@ -92,11 +116,14 @@ extension GrammarAnalysisService {
             error-prone rather than flexible.
 
             \(titles.focus)
-            - High: "I goes" should be "I went" because "yesterday" requires a \
+            - \(riskLabels.high): "I goes" should be "I went" because \
+            "yesterday" requires a \
             past-tense verb.
-            - High: "need finish" should be "needed to finish" or "need to \
+            - \(riskLabels.high): "need finish" should be "needed to finish" \
+            or "need to \
             finish".
-            - Medium: "to library" is unnatural here; "to the library" is \
+            - \(riskLabels.medium): "to library" is unnatural here; \
+            "to the library" is \
             more natural.
 
             \(titles.rewrite)
@@ -129,7 +156,8 @@ extension GrammarAnalysisService {
             subordination across the whole sentence.
 
             \(titles.focus)
-            - Low: The sentence is grammatically sound overall. The main \
+            - \(riskLabels.low): The sentence is grammatically sound overall. \
+            The main \
             improvement area is concision rather than correction.
 
             \(titles.rewrite)
@@ -208,18 +236,20 @@ extension GrammarAnalysisService {
         }
     }
 
-    func analysisModeSpecificRequirements(sourceLanguage: Language) -> String {
+    func analysisModeSpecificRequirements(answerLanguage: Language) -> String {
         switch analysisMode {
         case .general:
             return ""
         case .ielts:
+            let riskLabels = ieltsRiskLabels(answerLanguage: answerLanguage)
             return """
             7. In the first section, state briefly whether the sample is closer \
             to IELTS Writing or Speaking, and why.
             8. In the third section, list only the most important band risks. \
-            Mark each point as High, Medium, or Low risk. If there is no major \
-            band-limiting grammar problem, say that clearly and keep this \
-            section empty or low-risk only.
+            Mark each point with the label "\(riskLabels.high)", \
+            "\(riskLabels.medium)", or "\(riskLabels.low)". If there is no \
+            major band-limiting grammar problem, say that clearly and keep this \
+            section empty or "\(riskLabels.low)" only.
             9. Distinguish clearly between grammar errors, acceptable but \
             unnatural phrasing, and stronger higher-band alternatives.
             10. In the last section, prefer a two-step rewrite when useful: \
@@ -253,7 +283,7 @@ extension GrammarAnalysisService {
             answerLanguage: answerLanguage
         )
         let extraRequirements = analysisModeSpecificRequirements(
-            sourceLanguage: sourceLanguage
+            answerLanguage: answerLanguage
         )
 
         return """

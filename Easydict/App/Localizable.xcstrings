@@ -4574,6 +4574,126 @@
           }
         }
       },
+    "grammar.analysis.ielts.risk.high" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "High"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Alto"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "高"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vysoké"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "高"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "高"
+            }
+          }
+        }
+      },
+    "grammar.analysis.ielts.risk.medium" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Medium"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Medio"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "中"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Stredné"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "中"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "中"
+            }
+          }
+        }
+      },
+    "grammar.analysis.ielts.risk.low" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Low"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Bajo"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "低"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Nízke"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "低"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "低"
+            }
+          }
+        }
+      },
     "grammar.analysis.skipped" : {
         "localizations": {
           "en": {
