@@ -494,10 +494,17 @@ final class GrammarAnalysisService: AIToolService {
 
         let targetProvider = migratedProvider(for: legacyEndpoint)
 
-        let migratedValidModels = !legacyValidModels.isEmpty
-            ? legacyValidModels
-            : validModels(from: legacySupportedModels)
-        let migratedSupportedModels = !legacySupportedModels.isEmpty
+        let targetProviderDefaultModels = providerDefaultModels(for: targetProvider)
+        let parsedLegacySupportedModels = validModels(from: legacySupportedModels)
+        let migratedValidModels: [String]
+        if !legacyValidModels.isEmpty {
+            migratedValidModels = legacyValidModels
+        } else if !parsedLegacySupportedModels.isEmpty {
+            migratedValidModels = parsedLegacySupportedModels
+        } else {
+            migratedValidModels = targetProviderDefaultModels
+        }
+        let migratedSupportedModels = !parsedLegacySupportedModels.isEmpty
             ? legacySupportedModels
             : supportedModels(from: migratedValidModels)
         let migratedModel = !legacyModel.isEmpty
@@ -513,17 +520,17 @@ final class GrammarAnalysisService: AIToolService {
         Defaults[userCredentialStringDefaultsKey(
             .supportedModels,
             provider: targetProvider,
-            defaultValue: targetProvider == .openAI ? providerSupportedModels(from: .openAI) : ""
+            defaultValue: providerSupportedModels(from: targetProvider)
         )] = migratedSupportedModels
         Defaults[userCredentialDefaultsKey(
             .validModels,
             provider: targetProvider,
-            defaultValue: targetProvider == .openAI ? Self.openAIDefaultModels : [String]()
+            defaultValue: targetProviderDefaultModels
         )] = migratedValidModels
         Defaults[userCredentialStringDefaultsKey(
             .model,
             provider: targetProvider,
-            defaultValue: targetProvider == .openAI ? Self.openAIDefaultModels.first ?? "" : ""
+            defaultValue: targetProviderDefaultModels.first ?? ""
         )] = migratedModel
 
         Defaults[providerKey] = targetProvider
