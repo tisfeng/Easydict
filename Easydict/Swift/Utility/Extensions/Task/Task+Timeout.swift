@@ -60,7 +60,7 @@ extension Task where Success == Never, Failure == Never {
             // one watches the operation result, the other watches the timeout result.
             // Whichever side finishes first resumes the caller and cancels the loser.
             // Use detached tasks so timeout delivery does not inherit a blocked caller actor.
-            Task.detached {
+            _Concurrency.Task.detached {
                 do {
                     let value = try await operationTask.value
                     await continuationActor.resume(with: .success(value))
@@ -71,7 +71,7 @@ extension Task where Success == Never, Failure == Never {
                 }
             }
 
-            Task.detached {
+            _Concurrency.Task.detached {
                 do {
                     try await timeoutTask.value
                 } catch is CancellationError {
