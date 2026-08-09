@@ -229,12 +229,14 @@ Reusable Swift and Xcode rules for source organization, documentation, testing, 
 
 ### Xcode Project Metadata
 
-Unless the user explicitly says otherwise, when adding or moving files, also update the
-owning `.xcodeproj/project.pbxproj` file so the files appear in Xcode's navigator.
+Unless the user explicitly says otherwise, when adding or moving Xcode-managed source
+files or runtime resources, also update the owning `.xcodeproj/project.pbxproj` file so
+the files appear in Xcode's navigator.
 
-- By default, every newly added project file, including developer-facing documentation
-  such as Markdown, HTML or SVG files, must have a matching `PBXFileReference` under the
-  correct `PBXGroup`.
+- Repository governance files, including `AGENTS.md`, Markdown under `docs/`, plans,
+  histories, and skill documentation, do not need `PBXFileReference` entries.
+- Add developer-facing documentation to Xcode only when it is intentionally meant to
+  appear in the project navigator.
 - Do not add documentation files to build phases such as `Resources` unless the file is
   intentionally shipped at runtime.
 
@@ -302,7 +304,7 @@ habits.
 - Store local skill overlay files in `.agents/overrides/`; use them to extend shared
   skill or tool instructions without editing the shared source.
 - When using `fireworks-tech-graph`, read
-  `.agents/overrides/fireworks-tech-graph-quality-rules.md` after the skill and apply its
+  `.agents/overrides/fireworks-tech-graph-layout-rules.md` after the skill and apply its
   diagram quality, connector, label, export, and rendered-review rules.
 
 ### MCP Servers
