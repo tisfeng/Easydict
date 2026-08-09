@@ -83,11 +83,11 @@ Accepted PR references:
   code, and project patterns. Recommend the smallest concrete change that
   resolves the issue, including the affected logic, expected behavior, and
   targeted verification when relevant. This requirement applies even when the
-  comment came from a bot or is also reported as a finding.
+  comment came from a bot. Keep the complete assessment and fix in
+  `Open Review Comments`; do not repeat the same issue in `Findings`.
 - Give every independent finding the same concrete `Suggested Fix` treatment.
-  Cross-reference an open-comment item instead of duplicating its full
-  explanation, but do not use the cross-reference to hide the comment's own
-  assessment or fix.
+  Only an issue with a distinct trigger, risk, and remediation from all open
+  comments may appear in `Findings`.
 - Do not use vague advice such as "fix this issue." When multiple approaches are
   valid, recommend one and state the important tradeoff. If the fix depends on
   a product decision, give conditional options and surface that decision in
@@ -271,9 +271,12 @@ targeted verification. For `unreasonable` or `outdated/not applicable`
 comments, explain the code evidence that rejects or supersedes the concern.
 For a product-decision comment, recommend one option, include its
 `Suggested Fix`, and repeat the unresolved choice under `Open Questions`.
-Do not conclude `No findings` while an open comment has not received one of
-these explicit assessments. If the inventory is empty, report
-`No open review comments` separately from the `Findings` result.
+Assign every reviewed issue to exactly one output section. If an issue is
+raised by an open review comment, keep its assessment and fix only in `Open
+Review Comments`; do not repeat it in `Findings`. Reserve `Findings` for
+additional issues with a distinct trigger, risk, and remediation. If the
+inventory is empty, report `No open review comments` separately. If no
+additional issues remain after the assignment, report `No additional findings`.
 
 For old or stale PRs, check linked issue history, later replacement PRs, and the
 live base tree before deciding whether the branch should still exist. Use
@@ -321,8 +324,9 @@ inventory, comment replies, `isResolved`, and `isOutdated` state.
   earlier findings and new changes.
 - If a new review, thread, reply, or resolution/outdated-state change appeared,
   read its exact content, validate it against the current head and surrounding
-  code, add or update its individual entry in `Open Review Comments`, and
-  update `Findings`, `Open Questions`, and `Verification` before finalizing.
+  code, add or update its individual entry in `Open Review Comments`, and only
+  update `Findings` when the re-review identifies a distinct additional issue.
+  Update `Open Questions` and `Verification` before finalizing.
   Reassess any existing item whose reply or resolution/outdated state changed.
   Treat automated and human feedback the same way.
 - If analyzing new activity leaves enough time for another review to arrive,
@@ -353,6 +357,16 @@ conversation.
 Keep section headings, `PR Context` subheadings, priority labels, and
 `Suggested Fix` labels exactly as written. Use this structure exactly:
 
+For `Open Review Comments`, prefer a compact summary line followed by one
+Markdown card per thread. Put the comment permalink in the card title instead
+of showing a long raw URL. Keep path, line, author, and status on one metadata
+line; translate raw GraphQL flags such as `isResolved=false` and
+`isOutdated=false` into short natural-language status labels in the preferred
+output language. Use separate paragraphs for the issue, evidence/impact,
+assessment, and fix. Include a `Thread Replies` block only when replies exist.
+Do not pack all metadata and prose into one list item, and do not use a table or
+large quote block for review content.
+
 ```markdown
 ## PR Context
 
@@ -374,29 +388,73 @@ reviewers should inspect.
 
 ## Open Review Comments
 
-- If there are open review threads, enumerate them one by one. Use a stable
-  item id such as `C1`, include the comment permalink, author, path and line,
-  `isResolved`/`isOutdated` state, a concise summary of the full thread, the
-  current-code evidence, and exactly one assessment: `reasonable`, `partially
-  reasonable`, `unreasonable`, `outdated/not applicable`, or `needs product
-  decision`.
-  - For `reasonable`, `partially reasonable`, or `needs product decision`, add
-    a visually separate `**Suggested Fix:**` with the smallest concrete
-    remediation, expected behavior, and targeted verification.
-  - For `unreasonable` or `outdated/not applicable`, explain why the comment
-    does not require a code change; do not invent a fix.
-- If there are no open review threads, write `No open review comments`.
+Open threads: <count> · Reasonable: <count> · Partially reasonable: <count> · Outdated: <count>
+
+### C1 — [Comment title](comment-permalink)
+
+`path:line` · `author`
+Status: unresolved · current
+
+**Issue**
+
+Summarize the comment's concern and the trigger condition.
+
+**Evidence / Impact**
+
+Explain the current-code evidence and the user or system impact.
+
+**Assessment**
+
+`reasonable`
+
+**Suggested Fix:**
+
+Describe the smallest concrete remediation, expected behavior, and targeted
+verification.
+
+**Thread Replies**
+
+- [Author](reply-permalink): Summarize this reply. Use one bullet per reply
+  and retain the reply permalink.
+
+### C2 — [Another comment title](comment-permalink)
+
+`path:line` · `author`
+Status: unresolved · current
+
+**Issue**
+
+...
+
+**Evidence / Impact**
+
+...
+
+**Assessment**
+
+`outdated/not applicable`
+
+- Explain why the current code no longer requires a change. Do not invent a
+  `Suggested Fix` for this assessment.
+
+If there are no open review threads, write `No open review comments`.
 
 ## Findings
 
-- [P1] path:line - **Title** Describe the issue, trigger condition, and risk.
-  - Evidence and impact: Ground the conclusion in the current diff and
-    surrounding code.
-  - **Suggested Fix:** Describe the smallest concrete change, affected logic,
-    expected behavior, and targeted verification when relevant. If this finding
-    comes from `Open Review Comments`, cross-reference its `C<number>` item.
-- If there are no findings, write `No findings` clearly. Do not invent fix
-  suggestions.
+### [P1] `path:line` — Finding title
+
+**Evidence / Impact**
+
+Describe the distinct trigger, risk, and impact. This must not repeat an issue
+already represented in `Open Review Comments`.
+
+**Suggested Fix:**
+
+Describe the smallest concrete change, expected behavior, and targeted
+verification.
+
+If there are no additional issues, write `No additional findings`. Do not
+duplicate an open-comment assessment or invent a second fix for it.
 
 ## Open Questions
 - List correctness-affecting questions, or say clearly that there are no
@@ -415,9 +473,9 @@ reviewers should inspect.
   confirm that no push was performed.
 - Report the final live-state refresh: final `headRefOid`, PR `updatedAt`, and
   whether new reviews, threads, replies, or thread-state changes appeared after
-  the initial snapshot. Report the final open-comment inventory and state that
-  every new or changed item was individually assessed, or describe the
-  remaining limitation.
+  the initial snapshot. Report the final open-comment inventory, whether any
+  additional findings remain, and state that every new or changed item was
+  individually assessed, or describe the remaining limitation.
 - Confirm that no push was performed unless the user explicitly asked for one.
 - If merge conflicts could not be resolved safely, report that blocker here and
   do not claim that a full review was completed.
