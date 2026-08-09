@@ -689,7 +689,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (nullable NSString *)firstTranslatedText {
-    if (self.firstService) {
+    if (self.firstService &&
+        [self.firstService.result.queryText isEqualToString:self.queryModel.queryText]) {
         return self.firstService.result.translatedText;
     }
     return nil;
