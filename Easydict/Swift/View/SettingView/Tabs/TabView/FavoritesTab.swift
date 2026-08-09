@@ -103,10 +103,10 @@ struct FavoritesTab: View {
         return formatter
     }()
 
-    /// Formats export timestamps as `yyyy-MM-dd HH:mm:ss`.
-    private static let exportTimestampFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    /// Formats export timestamps in a stable format.
+    private static let exportTimestampFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
         return formatter
     }()
 
