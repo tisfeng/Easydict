@@ -8,8 +8,25 @@
 import Foundation
 
 extension GrammarAnalysisService {
+    func ieltsRewriteLabels(answerLanguage: Language) -> (
+        minimal: String,
+        higherBand: String
+    ) {
+        (
+            localizedAnswerString(
+                forKey: "grammar.analysis.ielts.rewrite.minimal",
+                answerLanguage: answerLanguage
+            ),
+            localizedAnswerString(
+                forKey: "grammar.analysis.ielts.rewrite.higher_band",
+                answerLanguage: answerLanguage
+            )
+        )
+    }
+
     func analysisSystemPrompt(answerLanguage: Language) -> String {
         let titles = analysisSectionTitles(answerLanguage: answerLanguage)
+        let rewriteLabels = ieltsRewriteLabels(answerLanguage: answerLanguage)
         return switch analysisMode {
         case .general:
             """
@@ -83,9 +100,9 @@ extension GrammarAnalysisService {
             more natural.
 
             \(titles.rewrite)
-            Minimal correction: I went to the library yesterday because I \
+            \(rewriteLabels.minimal): I went to the library yesterday because I \
             needed to finish my assignment.
-            Higher-band version: I went to the library yesterday to finish my \
+            \(rewriteLabels.higherBand): I went to the library yesterday to finish my \
             assignment.
 
             Example input:
@@ -116,8 +133,8 @@ extension GrammarAnalysisService {
             improvement area is concision rather than correction.
 
             \(titles.rewrite)
-            Minimal correction: No major grammar correction is needed.
-            Higher-band version: While the rapid advancement of artificial \
+            \(rewriteLabels.minimal): No major grammar correction is needed.
+            \(rewriteLabels.higherBand): While the rapid advancement of artificial \
             intelligence is widely acknowledged as transformative, many \
             experts argue that it could deepen social inequalities unless \
             governments establish comprehensive regulatory frameworks to \
@@ -171,11 +188,13 @@ extension GrammarAnalysisService {
             """
         case .ielts:
             if sourceLanguage == .english {
+                let rewriteLabels = ieltsRewriteLabels(answerLanguage: answerLanguage)
                 return """
                 In the last section, keep the explanation in \
-                \(answerLanguage.rawValue), but write both "Minimal correction" \
-                and "Higher-band version" as English sentences only. Do not \
-                translate those two rewrite lines into \
+                \(answerLanguage.rawValue). Use "\(rewriteLabels.minimal)" and \
+                "\(rewriteLabels.higherBand)" as the two rewrite labels, but \
+                keep the sentence content after those labels in English only. \
+                Do not translate the rewrite sentences into \
                 \(targetLanguage.queryLanguageName). Do not add any extra \
                 explanation line after the rewrites.
                 """
