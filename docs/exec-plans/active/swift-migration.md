@@ -1,5 +1,9 @@
 #  Swift 迁移进度追踪
 
+**状态:** active
+**最后复核:** 2026-08-09
+**类型:** 长期迁移路线图
+
 ## 📋 迁移政策
 
 ### 核心原则
@@ -344,8 +348,8 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 
 - [GitHub Repository](https://github.com/tisfeng/Easydict)
 - [Swift 编码规范](https://github.com/realm/SwiftLint)
-- [迁移文档](MIGRATION_GUIDE.md)
-- [任务规划](TASK_PLAN.md)
+- [架构总览](../../architecture/overview.md)
+- [执行计划规范](../README.md)
 
 ---
 

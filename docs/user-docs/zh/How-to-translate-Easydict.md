@@ -5,7 +5,7 @@ Easydict 的翻译是通过 Xcode 中的 String Catalog 管理的，下面是翻
 ### 克隆和构建项目
 1. 使用 git 将项目从 GitHub 克隆到本地，这里可以使用 [git 命令行工具](https://docs.github.com/en/get-started/getting-started-with-git) 或 [GitHub Desktop](https://desktop.github.com) 
 2. 切换到 [dev](https://github.com/tisfeng/Easydict/tree/dev) 分支
-3. 打开项目并构建，有关如何构建项目的详细说明在[这里](/README.md#developer-build)
+3. 打开项目并构建，有关如何构建项目的详细说明在[这里](../../../README_ZH.md#开发者构建)
 ### 添加语言到String Catalog
 现在可以添加新的语言了！
 1. 找到 `Easydict -> Easydict -> App -> Localizable.xcstrings`。同时展开 `Main.storyboard` 然后找到 `Main.xcstrings (Strings)`。这两个 `.xcstrings` 是翻译要用的
