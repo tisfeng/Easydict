@@ -137,11 +137,7 @@ extension GrammarAnalysisService {
     }
 
     func analysisAnswerLanguage(targetLanguage: Language) -> Language {
-        guard analysisMode == .ielts else {
-            return targetLanguage
-        }
-
-        return EZLanguageManager.shared().userTargetLanguage(withSourceLanguage: .english)
+        targetLanguage
     }
 
     func shouldSkipForModeEligibility(sourceLanguage: Language) -> Bool {
