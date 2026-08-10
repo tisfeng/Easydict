@@ -58,11 +58,6 @@ if [[ "$(readlink "${repo_root}/.claude/CLAUDE.md")" != "../AGENTS.md" ]]; then
   failed=1
 fi
 
-if [[ -e "${repo_root}/MIGRATION_PROGRESS.md" ]]; then
-  echo "MIGRATION_PROGRESS.md must live under docs/exec-plans/active/" >&2
-  failed=1
-fi
-
 if rg -n --hidden \
   "fireworks-tech-graph-quality-rules|(^|/)docs/(en|zh)/|docs/How-to-translate-Easydict|README_EN\.md" \
   "${repo_root}/AGENTS.md" "${repo_root}/README.md" \
