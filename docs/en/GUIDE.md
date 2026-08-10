@@ -98,22 +98,26 @@ The following steps are optional and intended for development collaborators only
 
 If you often need to debug permission-related features (such as word fetching or OCR), it is highly recommended to run the app with your own Apple account. Otherwise, macOS will prompt you for permissions on every single build.
 
-It is recommended to use the project's built-in `scripts/setup-team.sh` script, which only modifies Debug signing configurations and installs Git hooks to automatically re-apply your Team ID on branch switches and merges:
+It is recommended to use the project's built-in `scripts/setup-team.sh` script. It writes an ignored local Debug configuration, so your Team ID remains outside tracked project files and does not interfere with branch switches or merges:
 ```bash
 chmod +x scripts/setup-team.sh && ./scripts/setup-team.sh
 ```
+
+The script normally detects the Team ID from an installed Apple Development certificate. If automatic detection is unavailable, pass the 10-character Team ID explicitly, for example: `./scripts/setup-team.sh ABC123DE45`.
 
 If you do not have an Apple Developer account, you can configure it for local ad-hoc signing to build without certificates (Note: macOS will reset permission settings such as word-selection or OCR on every build in ad-hoc mode):
 ```bash
 ./scripts/setup-team.sh --adhoc
 ```
 
-To uninstall, run `./scripts/setup-team.sh --uninstall`.
+To uninstall, run `./scripts/setup-team.sh --uninstall`. This removes only the local signing configuration created by the script.
 
-If you prefer not to use the script, you can manually change `DEVELOPMENT_TEAM` in the `Easydict-debug.xcconfig` file to your own Apple Team ID and set `CODE_SIGN_IDENTITY` to `Apple Development`. In this case, be careful not to commit it; you can ignore local changes with:
+If you prefer not to use the script, create `Easydict-debug.local.xcconfig` with the following contents. This file is already ignored by Git:
 
-```bash
-git update-index --skip-worktree Easydict-debug.xcconfig
+```xcconfig
+DEVELOPMENT_TEAM = ABC123DE45
+CODE_SIGN_IDENTITY = Apple Development
+CODE_SIGN_STYLE = Automatic
 ```
 
 #### Build Environment
