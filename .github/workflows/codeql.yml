@@ -22,8 +22,8 @@ concurrency:
 jobs:
   analyze:
     name: Analyze (swift)
-    runs-on: macos-15
-    timeout-minutes: 60
+    runs-on: macos-latest
+    timeout-minutes: 120
     permissions:
       security-events: write
       packages: read
@@ -34,16 +34,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Select Xcode 16.4
-        run: sudo xcode-select -s "/Applications/Xcode_16.4.app"
+      - name: Show build environment
+        id: toolchain
+        run: |
+          xcodebuild -version
+          xcrun swiftc --version
+          xcode_version="$(xcodebuild -version | awk 'NR == 1 { print $2 }')"
+          echo "xcode_version=$xcode_version" >> "$GITHUB_OUTPUT"
 
       - name: Cache Swift package sources
         uses: actions/cache@v5
         with:
           path: ${{ runner.temp }}/swift-package-sources
-          key: swiftpm-${{ runner.os }}-${{ runner.arch }}-xcode-16.4-${{ hashFiles('Easydict.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          key: swiftpm-${{ runner.os }}-${{ runner.arch }}-xcode-${{ steps.toolchain.outputs.xcode_version }}-${{ hashFiles('Easydict.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
-            swiftpm-${{ runner.os }}-${{ runner.arch }}-xcode-16.4-
+            swiftpm-${{ runner.os }}-${{ runner.arch }}-xcode-${{ steps.toolchain.outputs.xcode_version }}-
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
