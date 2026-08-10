@@ -16,14 +16,17 @@ under `docs/user-docs/`.
 
 ## Route by task
 
-- Build or test: `docs/agents/build-and-test.md` and `testing.md`.
-- Swift, Objective-C, SwiftUI, or Xcode: `swift-xcode.md`.
-- User-facing text or String Catalog: `localization.md`.
-- Skill or agent integration: `skills.md`, the target `SKILL.md`, and its
-  repository overlay.
+- Build or test: `docs/agents/build-and-test.md` and
+  `docs/agents/testing.md`.
+- Swift, Objective-C, SwiftUI, or Xcode: `docs/agents/swift-xcode.md`.
+- User-facing text or String Catalog: `docs/agents/localization.md`.
+- Skill or agent integration: `docs/agents/skills.md`, the target
+  `.agents/skills/<skill>/SKILL.md`, and its
+  `.agents/overrides/<skill>/<overlay>.md`.
 - Multi-step, cross-module, or risky work: `docs/exec-plans/`.
 - Completed material changes: `docs/histories/`.
-- Public usage or contributor documentation: `docs/user-docs/en/` or `zh/`.
+- Public usage or contributor documentation: `docs/user-docs/en/` or
+  `docs/user-docs/zh/`.
 
 ## Non-negotiable boundaries
 

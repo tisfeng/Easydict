@@ -9,6 +9,16 @@ be versioned in files so that humans and agents can reproduce the reasoning.
 Match the user's language in replies. If the current request is in English,
 reply in English; otherwise follow the language already used in the request.
 
+## General principles
+
+- If work requires the OpenAI API, ChatGPT Apps SDK, Codex, or related OpenAI
+  developer tools, use the OpenAI developer documentation MCP server.
+- State assumptions and success criteria before non-trivial work.
+- Prefer the smallest solution that satisfies the request.
+- Keep changes surgical and validate them before delivery.
+- Turn recurring agent failures into documentation, tooling, or environment
+  improvements instead of repeatedly expanding prompts.
+
 ## Documentation boundaries
 
 - `AGENTS.md` routes to this directory and does not duplicate these rules.

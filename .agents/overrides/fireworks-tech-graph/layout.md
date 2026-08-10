@@ -1,6 +1,6 @@
-# Scoco Fireworks Tech Graph Layout Rules
+# Fireworks Tech Graph Layout Rules
 
-This file is a Scoco repo-local overlay for the `fireworks-tech-graph` skill. Read the skill first, then apply these rules when generating or editing SVG technical diagrams for this repository. If this file conflicts with the upstream skill, use the stricter rule.
+This file is an Easydict repo-local overlay for the `fireworks-tech-graph` skill. Read the skill first, then apply these rules when generating or editing SVG technical diagrams for this repository. If this file conflicts with the upstream skill, use the stricter rule.
 
 ## Layout Contract
 
