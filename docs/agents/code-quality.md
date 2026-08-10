@@ -1,39 +1,33 @@
-# Cross-Language Code Quality
+# 跨语言代码质量
 
-These rules apply to handwritten Swift, Objective-C, Python, Shell,
-JavaScript/TypeScript, and other source files.
+这些规则适用于手写的 Swift、Objective-C、Python、Shell、JavaScript/TypeScript 以及
+其他源码文件。
 
-## Source organization
+## 源码组织
 
-- Organize growing areas by feature or bounded responsibility.
-- Keep source files focused on one responsibility; extract a sibling helper or
-  module when parsing, UI, I/O, orchestration, and validation become mixed.
-- Handwritten files should generally stay below 500 lines and must not exceed
-  1000 lines without a concrete split plan.
-- Generated files, third-party code, pure data, templates, large fixtures, and
-  intentionally vendored runtime files are exempt from the line limit.
-- Use section markers to group lifecycle, state, command handling, I/O, parsing,
-  and recovery logic in longer files.
+- 按功能或明确的职责边界组织不断增长的区域。
+- 每个源码文件聚焦于一个职责；当解析、UI、I/O、编排和验证混杂时，提取同级辅助
+  文件或模块。
+- 手写文件通常应控制在 500 行以内；没有具体拆分计划时，不得超过 1000 行。
+- 生成文件、第三方代码、纯数据、模板、大型 fixture 和有意 vendor 的运行时文件
+  不受行数限制。
+- 在较长文件中使用 section marker 组织生命周期、状态、命令处理、I/O、解析和
+  恢复逻辑。
 
-## Naming and implementation
+## 命名与实现
 
-- Follow each language's normal naming convention.
-- Use kebab-case for non-imported documentation, exported artifacts,
-  app-managed runtime paths, and standalone scripts.
-- Prefer concise names and avoid single-letter variables except trivial loop
-  indices.
-- Avoid global mutable state and type-level helpers unless the domain requires
-  them.
-- Do not extract one-off literals without semantic meaning.
-- Prefer async/await where it is established in the language and codebase.
+- 遵循各语言的常规命名约定。
+- 对不参与导入的文档、导出产物、应用管理的运行时路径和独立脚本使用 kebab-case。
+- 优先使用简洁名称，除简单循环索引外避免单字母变量。
+- 除非领域确实需要，否则避免全局可变状态和类型级 helper。
+- 不要为没有语义价值的一次性字面量提取变量。
+- 在语言和代码库已经采用 async/await 的地方优先使用它。
 
-## Documentation comments
+## 文档注释
 
-- Add a file-level comment to non-trivial scripts or modules explaining their
-  entry point, responsibility, and important side effects.
-- Document complex functions, state machines, parsers, I/O boundaries, and
-  recovery logic. Do not comment obvious accessors or thin wrappers.
-- Keep comments concise, update them with behavior, and keep lines below 80
-  characters where practical.
-- Use the language's normal documentation style.
-- Source file headers must use the current Git username, never an agent name.
+- 为非简单脚本或模块添加文件级注释，说明入口、职责和重要副作用。
+- 为复杂函数、状态机、解析器、I/O 边界和恢复逻辑添加文档。不要为明显的 accessor
+  或薄 wrapper 添加注释。
+- 注释应简洁，并随行为更新；在可行时将每行控制在 80 个字符以内。
+- 使用对应语言的常规文档风格。
+- 源码文件头必须使用当前 Git 用户名，不能使用 Agent 名称。

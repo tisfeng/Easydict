@@ -1,48 +1,48 @@
-# <Plan title>
+# <计划标题>
 
 **Status:** active
 **Created:** YYYY-MM-DD
 **Updated:** YYYY-MM-DD
-**Owner:** <person or team>
-**Links:** <issue, PR, or related design document>
+**Owner:** <人员或团队>
+**Links:** <issue、PR 或相关设计文档>
 
 ## Goal
 
-Describe the final state this plan must achieve.
+描述本计划必须实现的最终状态。
 
 ## Scope
 
-- Includes:
-- Excludes:
+- 包含范围：
+- 不包含范围：
 
 ## Context
 
-- Current behavior:
-- Relevant files:
-- Constraints:
+- 当前行为：
+- 相关文件：
+- 约束：
 
 ## Risks and mitigations
 
-- Risk:
-  - Mitigation:
+- 风险：
+  - 缓解措施：
 
 ## Milestones
 
-- [ ] Confirm scope and constraints.
-- [ ] Implement the first slice.
-- [ ] Validate behavior and documentation.
-- [ ] Move this plan to `completed/`.
+- [ ] 确认范围和约束。
+- [ ] 实现第一阶段切片。
+- [ ] 验证行为和文档。
+- [ ] 将本计划移到 `completed/`。
 
 ## Validation
 
-- Commands:
-- Manual checks:
-- Observations:
+- 命令：
+- 手动检查：
+- 观察结果：
 
 ## Decision log
 
-- YYYY-MM-DD: Decision and rationale.
+- YYYY-MM-DD：决策及其理由。
 
 ## Progress log
 
-- YYYY-MM-DD: Completed work and next step.
+- YYYY-MM-DD：已完成的工作和下一步。

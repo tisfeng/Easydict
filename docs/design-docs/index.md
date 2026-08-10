@@ -1,5 +1,4 @@
-# Design Documents
+# 设计文档
 
-Use this directory for durable design decisions that explain why Easydict has
-an important architectural boundary or policy. Keep implementation facts in
-`docs/architecture/` and task progress in `docs/exec-plans/`.
+本目录用于记录能够长期维护的设计决策，说明 Easydict 为什么采用某个重要的架构
+边界或策略。实现事实放在 `docs/architecture/`，任务进度放在 `docs/exec-plans/`。

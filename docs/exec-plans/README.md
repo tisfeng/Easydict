@@ -1,15 +1,13 @@
-# Execution Plans
+# 执行计划
 
-Execution plans capture multi-step work that spans multiple commits, modules,
-or validation stages.
+执行计划记录跨越多个 commit、模块或验证阶段的多步骤工作。
 
-- Active plans live in `active/`.
-- Completed plans move to `completed/`.
-- Start from `templates/execution-plan.md`.
-- Keep progress, risks, decisions, and validation in the plan itself.
-- Do not leave completed or abandoned work in `active/`.
+- 进行中的计划放在 `active/`。
+- 已完成的计划移到 `completed/`。
+- 新计划从 `templates/execution-plan.md` 开始。
+- 在计划本身记录进度、风险、决策和验证结果。
+- 不要将已完成或已放弃的工作留在 `active/` 中。
 
-`active/swift-migration.md` is the long-term Objective-C-to-Swift roadmap. Keep
-its completed history and remaining work synchronized with the current source;
-create focused plans for individual migration slices when they need separate
-milestones or validation.
+`active/swift-migration.md` 是长期的 Objective-C-to-Swift 迁移路线图。保持其中
+的已完成历史和剩余工作与当前源码同步；如果某个迁移切片需要单独的里程碑或验证，
+则为它创建聚焦的计划。

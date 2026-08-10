@@ -1,36 +1,36 @@
-# Text Selection Flow
+# 文本选择流程
 
 ```mermaid
 flowchart TD
-    Start((Start)) --> CheckAX[Use Accessibility API]
+    Start((开始)) --> CheckAX[使用 Accessibility API]
     
-    CheckAX --> CheckFrame{Check Text Frame}
-    CheckFrame -- valid --> TextFound{Text Found?}
-    CheckFrame -- invalid --> EndFail((Return nil))
+    CheckAX --> CheckFrame{检查文本框架}
+    CheckFrame -- 有效 --> TextFound{找到文本?}
+    CheckFrame -- 无效 --> EndFail((返回 nil))
     
-    TextFound -- yes --> EndSuccess((Return Text))
-    TextFound -- no --> FirstTime{First Time Use?}
+    TextFound -- 是 --> EndSuccess((返回文本))
+    TextFound -- 否 --> FirstTime{首次使用?}
     
-    FirstTime -- yes --> RequestPerm[Request Permission]
-    FirstTime -- no --> CheckBrowser{Is Browser?}
+    FirstTime -- 是 --> RequestPerm[请求权限]
+    FirstTime -- 否 --> CheckBrowser{是否为浏览器?}
     
     RequestPerm --> EndFail
     
-    CheckBrowser -- yes --> UseAS[Use AppleScript]
-    CheckBrowser -- no --> ForceGet[Force Get Text]
+    CheckBrowser -- 是 --> UseAS[使用 AppleScript]
+    CheckBrowser -- 否 --> ForceGet[强制获取文本]
     
-    UseAS -- success --> EndSuccess
-    UseAS -- fail --> ForceGet
+    UseAS -- 成功 --> EndSuccess
+    UseAS -- 失败 --> ForceGet
     
-    ForceGet --> CheckForceType{Force Type?}
-    CheckForceType -- MenuBarActionCopy --> MenuCopy[Menu Bar Action Copy]
-    CheckForceType -- SimulatedKey --> SimKey[Simulated Key Copy]
+    ForceGet --> CheckForceType{强制类型?}
+    CheckForceType -- MenuBarActionCopy --> MenuCopy[菜单栏操作复制]
+    CheckForceType -- SimulatedKey --> SimKey[模拟按键复制]
     
-    MenuCopy -- success --> EndSuccess
-    MenuCopy -- fail --> EndFail
+    MenuCopy -- 成功 --> EndSuccess
+    MenuCopy -- 失败 --> EndFail
     
-    SimKey -- success --> EndSuccess
-    SimKey -- fail --> EndFail
+    SimKey -- 成功 --> EndSuccess
+    SimKey -- 失败 --> EndFail
 
     classDef default fill:#f5f5f5,stroke:#333,stroke-width:2;
     classDef success fill:#90EE90,stroke:#006400;

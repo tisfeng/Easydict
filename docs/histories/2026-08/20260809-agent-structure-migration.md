@@ -1,37 +1,33 @@
-## 2026-08-09 | Task: migrate agent documentation structure
+## 2026-08-09 | Task: 迁移 Agent 文档结构
 
 **Links:** `AGENTS.md`, `docs/exec-plans/completed/2026-08-09-agent-structure-migration.md`
 
 ### User request
 
-Separate Easydict's agent rules and documentation by responsibility, and place
-the existing English and Chinese public documents under a dedicated directory.
+按职责分离 Easydict 的 Agent 规则和文档，并将现有英文和中文公共文档放入专用目录。
 
 ### Changes
 
-- Moved `docs/en` and `docs/zh` to `docs/user-docs/en` and
-  `docs/user-docs/zh`.
-- Moved the selection-flow diagram to `docs/architecture/`.
-- Moved the long-term Swift migration roadmap from the repository root to
-  `docs/exec-plans/active/` and repaired its lifecycle links.
-- Replaced the long root `AGENTS.md` with a routing entry point and split the
-  rules into `docs/agents/`.
-- Added architecture, plan, history, design-document, and reference indexes.
-- Added generators and a structural documentation checker.
+- 将 `docs/en` 和 `docs/zh` 移到 `docs/user-docs/en` 和 `docs/user-docs/zh`。
+- 将文本选择流程图移到 `docs/architecture/`。
+- 将长期 Swift 迁移路线图从仓库根目录移到 `docs/exec-plans/active/`，并修复其
+  生命周期链接。
+- 将原本很长的根目录 `AGENTS.md` 替换为路由入口，并将规则拆分到 `docs/agents/`。
+- 添加架构、计划、历史记录、设计文档和参考资料索引。
+- 添加生成器和结构化文档检查器。
 
 ### Design intent
 
-Agent instructions, implementation facts, task records, and public documents
-have different readers and update lifecycles. Separating them keeps the root
-agent prompt short while preserving discoverable public links and a single
-source of truth for repository rules.
+Agent 指令、实现事实、任务记录和公共文档面向不同读者，更新生命周期也不同。将它们
+分开可以保持根目录 Agent 提示简洁，同时保留可发现的公共链接，并为仓库规则保留唯一
+事实来源。
 
 ### Validation
 
-- `git diff --check`: passed.
-- `bash -n scripts/*.sh`: passed.
-- `scripts/check-agent-docs.sh`: passed.
-- Local README and public-document links: checked after migration.
+- `git diff --check`：通过。
+- `bash -n scripts/*.sh`：通过。
+- `scripts/check-agent-docs.sh`：通过。
+- 本地 README 和公共文档链接：迁移后已检查。
 
 ### Affected files
 
@@ -47,5 +43,4 @@ source of truth for repository rules.
 
 ### Follow-ups
 
-- Keep future architecture and task history documents aligned with their
-  lifecycle indexes.
+- 保持后续架构和任务历史文档与对应的生命周期索引一致。

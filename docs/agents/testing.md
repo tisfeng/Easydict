@@ -1,13 +1,11 @@
-# Testing Rules
+# 测试规则
 
-- Do not use one agent session to both modify production code and add unit
-  tests. Assign those responsibilities to separate agents when delegation is
-  available.
-- Do not add tests for UI-only changes.
-- Add or update tests for meaningful behavior or correctness risk. Skip trivial
-  pass-through code, obvious accessors, and behavior already covered elsewhere.
-- Prefer concrete production behavior and high-signal assertions. Avoid
-  test-only protocols, mocks, overrides, or invasive production hooks for low
-  value tests.
-- When test sources change, follow `build-and-test.md` and run the relevant
-  `xcodebuild test` scope.
+- 不要使用同一个 Agent 会话同时修改生产代码和添加单元测试。如果可以委派，应将
+  两项职责分配给不同 Agent。
+- 不要为仅涉及 UI 的变更添加测试。
+- 对有实际行为或正确性风险的变更添加或更新测试。跳过简单透传代码、明显 accessor
+  以及其他地方已经覆盖的行为。
+- 优先验证具体生产行为并使用高信号断言。对于低价值测试，避免添加仅供测试使用的
+  protocol、mock、override 或侵入式生产 hook。
+- 测试源码发生变化时，遵循 `build-and-test.md` 并运行对应范围的
+  `xcodebuild test`。

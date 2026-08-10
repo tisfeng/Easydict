@@ -1,62 +1,55 @@
-# Repository Guide
+# 仓库指南
 
-## Purpose
+## 目的
 
-Easydict is a macOS dictionary and translation app that supports word lookup,
-text translation, and OCR screenshot translation. Repository knowledge should
-be versioned in files so that humans and agents can reproduce the reasoning.
+Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译和 OCR 截图翻译。
+仓库知识应通过文件版本化，确保人类和 Agent 能够复现相关推理过程。
 
-Match the user's language in replies. If the current request is in English,
-reply in English; otherwise follow the language already used in the request.
+回复时匹配用户使用的语言。如果当前请求使用英文，则用英文回复；否则遵循请求中
+已经使用的语言。
 
-## General principles
+## 通用原则
 
-- If work requires the OpenAI API, ChatGPT Apps SDK, Codex, or related OpenAI
-  developer tools, use the OpenAI developer documentation MCP server.
-- State assumptions and success criteria before non-trivial work.
-- Prefer the smallest solution that satisfies the request.
-- Keep changes surgical and validate them before delivery.
-- Turn recurring agent failures into documentation, tooling, or environment
-  improvements instead of repeatedly expanding prompts.
+- 如果工作需要使用 OpenAI API、ChatGPT Apps SDK、Codex 或相关 OpenAI 开发工具，
+  使用 OpenAI 开发者文档 MCP server。
+- 在进行非简单工作前，先说明假设和成功标准。
+- 优先采用能够满足需求的最小方案。
+- 保持修改精准，并在交付前完成验证。
+- 将反复出现的 Agent 失败转化为文档、工具或环境改进，而不是不断扩展提示词。
 
-## Documentation boundaries
+## 文档边界
 
-- `AGENTS.md` routes to this directory and does not duplicate these rules.
-- `docs/agents/` contains internal agent and contributor workflow knowledge.
-- `docs/architecture/` records current implementation boundaries and flows.
-- `docs/user-docs/` contains public English and Chinese documentation.
-- `docs/exec-plans/` contains multi-step work plans.
-- `docs/histories/` records completed material changes.
-- Use relative paths in repository documentation; do not commit machine-local
-  absolute paths.
-- Update code, tests, and affected documentation in the same task when behavior
-  changes.
+- `AGENTS.md` 路由到本目录，不重复这些规则。
+- `docs/agents/` 存放内部 Agent 和贡献者工作流知识。
+- `docs/architecture/` 记录当前实现边界和流程。
+- `docs/user-docs/` 存放公开的英文和中文文档。
+- `docs/exec-plans/` 存放多步骤工作计划。
+- `docs/histories/` 记录已经完成的实质性变更。
+- 仓库文档使用相对路径，不要提交机器本地绝对路径。
+- 行为发生变化时，在同一任务中同步更新代码、测试和受影响的文档。
 
-## Git safety
+## Git 安全
 
-- Preserve the user's existing staged and unstaged separation.
-- Do not stage, commit, or push unless the task or an explicitly invoked
-  workflow authorizes it.
-- Do not rewrite or discard unrelated worktree changes.
-- Before pushing, synchronize the target branch with the latest remote state.
-- Keep commits focused on one coherent behavior or documentation change.
+- 保留用户现有的已暂存和未暂存变更边界。
+- 除非任务或明确调用的工作流授权，否则不要暂存、提交或推送。
+- 不要重写或丢弃与当前任务无关的工作树变更。
+- 推送前，将目标分支同步到最新远程状态。
+- 每个提交聚焦于一个连贯的行为或文档变更。
 
-## Xcode project boundary
+## Xcode 工程边界
 
-Only Xcode-managed source files, runtime resources, and documentation that is
-intentionally shown in the Xcode navigator need project metadata. Agent rules,
-plans, histories, references, and public Markdown under `docs/` do not need
-`PBXFileReference` entries and must not be added to build phases unless they are
-intentionally shipped at runtime.
+只有由 Xcode 管理的源码、运行时资源，以及明确需要显示在 Xcode navigator 中的
+文档才需要工程元数据。Agent 规则、计划、历史、参考资料和 `docs/` 下的公共
+Markdown 不需要 `PBXFileReference` 条目，除非它们会作为运行时资源发布，否则也
+不要加入 build phase。
 
-## Task workflow
+## 任务工作流
 
-1. State assumptions and success criteria before making a non-trivial change.
-2. For architecture, protocol, migration, or multi-round work, create an
-   execution plan under `docs/exec-plans/active/`.
-3. Validate with the narrowest relevant checks and record important results.
-4. Move completed plans to `docs/exec-plans/completed/`.
-5. Record material completed changes in `docs/histories/`.
+1. 在进行非简单变更前，说明假设和成功标准。
+2. 对于架构、协议、迁移或多轮工作，在 `docs/exec-plans/active/` 下创建执行计划。
+3. 使用最贴近任务的检查进行验证，并记录重要结果。
+4. 将已完成的计划移动到 `docs/exec-plans/completed/`。
+5. 在 `docs/histories/` 中记录已完成的实质性变更。
 
-Use the repository's existing GitHub issues and pull requests for discussion;
-do not duplicate their entire conversation in a history file.
+使用仓库现有的 GitHub issue 和 pull request 进行讨论；不要在历史文件中重复完整
+对话内容。

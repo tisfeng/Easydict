@@ -1,18 +1,16 @@
-# Skills and Agent Integrations
+# Skill 与 Agent 集成
 
-## Local skills
+## 本地 skill
 
-- Store repository-specific executable workflows in `.agents/skills/`.
-- Store local additions or stricter rules for an upstream skill in
-  `.agents/overrides/` rather than editing a copied upstream skill.
-- Read the target skill's `SKILL.md` before executing it, then read any overlay
-  named by `AGENTS.md`.
-- When using `fireworks-tech-graph`, read
-  `.agents/overrides/fireworks-tech-graph/layout.md`.
+- 将仓库专用的可执行工作流存放在 `.agents/skills/`。
+- 对上游 skill 的本地补充或更严格规则存放在 `.agents/overrides/`，不要修改复制的
+  上游 skill。
+- 执行目标 skill 前先阅读其 `SKILL.md`，然后阅读 `AGENTS.md` 指定的 overlay。
+- 使用 `fireworks-tech-graph` 时，阅读
+  `.agents/overrides/fireworks-tech-graph/layout.md`。
 
-## Entry points
+## 入口
 
-- `.claude/CLAUDE.md` is a symlink to the canonical root `AGENTS.md`.
-- `.claude/skills` points to `.agents/skills`.
-- Platform-specific agent wrappers should route to a canonical local skill and
-  must not duplicate its workflow.
+- `.claude/CLAUDE.md` 是指向根目录规范 `AGENTS.md` 的符号链接。
+- `.claude/skills` 指向 `.agents/skills`。
+- 平台专用 Agent wrapper 应路由到规范的本地 skill，不要复制其工作流。

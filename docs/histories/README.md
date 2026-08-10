@@ -1,14 +1,14 @@
-# Change Histories
+# 变更历史
 
-`docs/histories/` records completed material changes. Analysis-only tasks do
-not need a history unless they result in a repository decision or file change.
+`docs/histories/` 记录已完成的实质性变更。仅分析任务如果没有产生仓库决策或文件
+变更，则不需要记录历史。
 
-## Rules
+## 规则
 
-- Use one history per Issue, PR, or independently meaningful task.
-- Continue the same history across multiple rounds of one task.
-- Keep the user request concise and remove secrets, local paths, and raw logs.
-- Record intent, affected files, validation, and known follow-ups.
-- Link the execution plan when one exists.
+- 每个 Issue、PR 或具有独立意义的任务使用一条历史记录。
+- 同一任务分多轮处理时，继续使用同一条历史记录。
+- 保持用户请求简洁，并移除机密信息、本地路径和原始日志。
+- 记录设计意图、受影响文件、验证结果和已知后续事项。
+- 存在执行计划时，链接对应的执行计划。
 
-Use `template.md` for new entries and group them under `YYYY-MM/`.
+新建记录时使用 `template.md`，并将其归档到 `YYYY-MM/` 下。

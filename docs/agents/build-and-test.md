@@ -1,24 +1,21 @@
-# Build and Test
+# 构建与测试
 
-## When to run Xcode validation
+## 运行 Xcode 验证的条件
 
-Run `xcodebuild` when any of the following applies:
+满足以下任一条件时运行 `xcodebuild`：
 
-- Swift, Objective-C, or other Xcode-compiled app source changes exceed 100
-  substantive lines. Documentation, scripts, comments, and project metadata do
-  not count toward this threshold.
-- A test source under `EasydictTests/**/*.swift` is added or changed.
-- The user explicitly requests a build or test.
+- Swift、Objective-C 或其他由 Xcode 编译的应用源码发生超过 100 行实质性变更。
+  文档、脚本、注释和工程元数据不计入此阈值。
+- 新增或修改了 `EasydictTests/**/*.swift` 下的测试源码。
+- 用户明确要求构建或测试。
 
-Evaluate the threshold after implementation. Count added and deleted
-substantive lines in the task-owned diff, excluding blank lines and unrelated
-pre-existing changes. Recalculate if the implementation changes again.
+在实现完成后再评估该阈值。统计任务变更 diff 中新增和删除的实质性行数，排除空行
+及无关的既有变更。如果实现再次变化，重新计算。
 
-Do not run concurrent `xcodebuild` commands against the same workspace and
-DerivedData location. If the default DerivedData location is unavailable, use
-an external temporary directory and remove it after validation.
+不要针对同一个 workspace 和 DerivedData 位置并发运行 `xcodebuild`。如果默认
+DerivedData 位置不可用，则使用外部临时目录，并在验证后删除。
 
-## Common commands
+## 常用命令
 
 ```bash
 # Build
@@ -49,14 +46,13 @@ xcodebuild test-without-building \
   -only-testing:EasydictTests/<TestSuiteOrClass>/<testMethod> | xcbeautify
 ```
 
-Use `-only-testing:` when the changed test mapping is known. If the mapping is
-unclear, run the relevant broader test target.
+如果已知变更对应的测试映射，使用 `-only-testing:`。如果映射不明确，则运行相关
+的更大范围测试目标。
 
-## Non-Xcode checks
+## 非 Xcode 检查
 
-- `git diff --check` for every change.
-- `jq -e .` for changed `.xcstrings` or JSON data where applicable.
-- `bash -n` for changed shell scripts.
-- `swiftformat --lint` or the repository's existing formatter when Swift source
-  changes.
-- `scripts/check-agent-docs.sh` for repository documentation changes.
+- 每次变更都运行 `git diff --check`。
+- 对变更的 `.xcstrings` 或 JSON 数据（如适用）运行 `jq -e .`。
+- 对变更的 Shell 脚本运行 `bash -n`。
+- Swift 源码发生变化时运行 `swiftformat --lint` 或仓库现有格式化工具。
+- 仓库文档发生变化时运行 `scripts/check-agent-docs.sh`。

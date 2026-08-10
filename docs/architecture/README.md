@@ -1,9 +1,7 @@
-# Architecture Documentation
+# 架构文档
 
-- `overview.md`: current source layout, runtime boundaries, and validation
-  entry points.
-- `select-text-flow.md`: text-selection fallback flow.
+- `overview.md`：当前源码布局、运行时边界和验证入口。
+- `select-text-flow.md`：文本选择的回退流程。
 
-Add a focused architecture document only when a boundary or flow has durable
-maintenance value. Keep this directory about implementation facts, not task
-logs or public usage instructions.
+只有在某个边界或流程具有长期维护价值时，才新增聚焦的架构文档。本目录只记录
+实现事实，不记录任务日志或公共使用说明。

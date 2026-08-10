@@ -1,24 +1,20 @@
-# Agent Documentation
+# Agent 文档
 
-This directory is the repository's durable knowledge for coding agents. The
-root `AGENTS.md` is only the entry point; read the smallest set of documents
-that matches the current task.
+本目录存放面向编码 Agent 的长期仓库知识。根目录的 `AGENTS.md` 只是入口文件；
+请根据当前任务阅读最小必要的文档集合。
 
-## Always read
+## 始终阅读
 
-- `repository-guide.md`: collaboration, Git safety, documentation boundaries,
-  and the default workflow.
+- `repository-guide.md`：协作方式、Git 安全、文档边界和默认工作流。
 
-## Read by task
+## 按任务阅读
 
-- `build-and-test.md`: Xcode build and test triggers, commands, and validation.
-- `code-quality.md`: language-agnostic source organization and documentation.
-- `swift-xcode.md`: Swift, SwiftUI, Xcode metadata, and library conventions.
-- `localization.md`: String Catalog and user-facing localization rules.
-- `testing.md`: test scope, ownership, and behavior-test expectations.
-- `skills.md`: local skills, overlays, and external-agent entry points.
-- `../architecture/overview.md`: current modules and runtime boundaries when
-  changing product code or cross-feature behavior.
+- `build-and-test.md`：Xcode 构建和测试触发条件、命令与验证方式。
+- `code-quality.md`：与语言无关的源码组织和文档规则。
+- `swift-xcode.md`：Swift、SwiftUI、Xcode 元数据和库使用约定。
+- `localization.md`：String Catalog 和用户可见文本的本地化规则。
+- `testing.md`：测试范围、职责划分和行为测试要求。
+- `skills.md`：本地 skill、overlay 和外部 Agent 入口。
+- `../architecture/overview.md`：修改产品代码或跨功能行为时参考当前模块和运行时边界。
 
-Public user and contributor documentation lives under `../user-docs/`. It is
-not a substitute for these internal agent rules.
+面向用户和贡献者的公共文档位于 `../user-docs/`，不能替代这些内部 Agent 规则。

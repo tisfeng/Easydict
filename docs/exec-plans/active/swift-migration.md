@@ -1,4 +1,4 @@
-#  Swift 迁移进度追踪
+# Swift 迁移进度追踪
 
 **状态:** active
 **最后复核:** 2026-08-09
@@ -27,7 +27,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 
 ### 2024-2025 年迁移记录
 
-#### 翻译服务层 (Translation Services)
+#### 翻译服务层
 
 | 服务名称 | 原文件名 | 新文件名 | 完成时间 | 提交记录 |
 |---------|----------|----------|----------|----------|
@@ -39,13 +39,13 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 | 苹果词典 | EZAppleDictionary | AppleDictionary | 2025-01 | refactor(objc-to-swift): migrate EZAppleDictionary to Swift |
 | 百度翻译 | EZBaiduTranslate | BaiduService | 2025-03 | refactor(objc-to-swift): migrate EZBaiduTranslate to Swift |
 
-#### 核心基类 (Service Base)
+#### 核心基类
 
 | 名称 | 原文件名 | 新文件名 | 完成时间 | 提交记录 |
 |------|----------|----------|----------|----------|
 | 查询服务基类 | EZQueryService | QueryService | 2025-03 | refactor(objc-to-swift): migrate EZQueryService to Swift |
 
-#### 字符串处理层 (String Processing)
+#### 字符串处理层
 
 | 组件名称 | 原文件名 | 新文件名 | 完成时间 | 备注 |
 |---------|----------|----------|----------|------|
@@ -53,7 +53,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 | 输入文本处理 | NSString+EZHandleInputText | String+HandleInputText | 2025-01-29 | 完整的输入文本处理功能 |
 | 字符串便利 | NSString+EZConvenience | String+Convenience | 2025-02-17 | URL 编码、剪贴板、XML 转义、MD5 等 |
 
-#### AI 服务层 (AI Services)
+#### AI 服务层
 
 | 服务名称 | 状态 | 备注 |
 |---------|------|------|
@@ -72,7 +72,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 | 阿里通义 | ✅ | 已完成 |
 | MiniMax | ✅ | 海螺 AI |
 
-#### 基础设施层 (Infrastructure)
+#### 基础设施层
 
 | 组件名称 | 原文件名 | 新文件名 | 状态 |
 |---------|----------|----------|------|
@@ -87,14 +87,14 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 | 应用模型 | EZAppModel | EZAppModel.swift | ✅ |
 | 服务类型 | EZServiceTypes | ServiceTypes.swift | ✅ |
 
-#### 工具扩展层 (Utilities)
+#### 工具扩展层
 
 | 扩展名称 | 原文件名 | 新文件名 | 状态 |
 |---------|----------|----------|------|
 | 字符串布局 | - | String+Layout | ✅ |
 | 颜色扩展 | NSColor+... | NSColor+... | ✅ |
-| Logging | EZLog | EZLog.swift | ✅ |
-| Device Info | EZDeviceSystemInfo | EZDeviceSystemInfo.swift | ✅ |
+| 日志 | EZLog | EZLog.swift | ✅ |
+| 设备信息 | EZDeviceSystemInfo | EZDeviceSystemInfo.swift | ✅ |
 
 ### 📊 迁移统计
 
@@ -117,7 +117,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
   - 更新了 bridging header 移除旧 import
   - 修复了 AppleDictionary.swift 中的调用
   - 修复了所有 SwiftLint 违规和编译错误
-  - 通过了所有 SwiftLint 检查 (0 violations)
+  - 通过了所有 SwiftLint 检查（0 个问题）
 
 ### 2025-01-30：DarkMode 模块重构
 
@@ -132,7 +132,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
   - 更新了 `AppDelegate.m` 和 `Configuration.swift` 的调用
   - 移除了 4 个 Objective-C 文件和整个 DarkMode 目录
   - 更新了 `PrefixHeader.pch` 移除旧导入
-  - 更新了 `MIGRATION_PROGRESS.md` 记录迁移进度
+  - 更新了 `docs/exec-plans/active/swift-migration.md` 记录迁移进度
 
 ### 2025-02-17：NSString+EZConvenience
 
@@ -189,40 +189,41 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
   - 删除 EZDeepLTranslationAPI 枚举
   - 清理冗余代码，简化架构
 
-### 2025-12-20: EZQueryResult Migration
+### 2025-12-20：EZQueryResult 迁移
 
-- **Goal**: Migrate EZQueryResult and related word result models to Swift.
-- **Status**: ✅ Completed
-- **Outcome**:
-  - Added Swift implementation in `Swift/Service/Model/EZQueryResult.swift`.
-  - Removed Objective-C `EZQueryResult.h/.m` and updated ObjC headers to forward declarations.
-  - Updated project references to use the Swift implementation.
+- **Goal**：将 EZQueryResult 及相关词条结果模型迁移到 Swift。
+- **Status**: ✅ 已完成
+- **Outcome**：
+  - 在 `Swift/Service/Model/EZQueryResult.swift` 中添加 Swift 实现。
+  - 移除 Objective-C `EZQueryResult.h/.m`，并将 ObjC 头文件更新为前置声明。
+  - 更新工程引用以使用 Swift 实现。
 
-### 2025-12-22: EZLog and EZDeviceSystemInfo Migration
+### 2025-12-22：EZLog 和 EZDeviceSystemInfo 迁移
 
-- **Goal**: Migrate EZLog and EZDeviceSystemInfo to Swift utilities.
-- **Status**: ✅ Completed
-- **Outcome**:
-  - Added `Swift/Utility/Logging/EZLog.swift` and `Swift/Utility/DeviceInfo/EZDeviceSystemInfo.swift`.
-  - Updated ObjC call sites to import `Easydict-Swift.h`.
-  - Removed legacy ObjC sources from the build phase.
+- **Goal**：将 EZLog 和 EZDeviceSystemInfo 迁移为 Swift 工具类。
+- **Status**: ✅ 已完成
+- **Outcome**：
+  - 添加 `Swift/Utility/Logging/EZLog.swift` 和
+    `Swift/Utility/DeviceInfo/EZDeviceSystemInfo.swift`。
+  - 更新 ObjC 调用方以导入 `Easydict-Swift.h`。
+  - 从 build phase 中移除遗留 ObjC 源文件。
 
-### 2026-01-06: EZDetectManager Migration
+### 2026-01-06：EZDetectManager 迁移
 
-- **Goal**: Migrate EZDetectManager to Swift for text detection and OCR functionality.
-- **Status**: ✅ Completed
-- **Outcome**:
-  - Added `Swift/Service/Model/DetectManager.swift` with complete implementation.
-  - Used `@objc(EZDetectManager)` and `@objcMembers` for Objective-C compatibility.
-  - Added async/await versions of methods for Swift code.
-  - Updated `EZBaseQueryViewController.m` to import `Easydict-Swift.h`.
-  - Updated `Easydict-Bridging-Header.h` to comment out old Objective-C import.
+- **Goal**：将 EZDetectManager 迁移到 Swift，用于文本检测和 OCR 功能。
+- **Status**: ✅ 已完成
+- **Outcome**：
+  - 添加包含完整实现的 `Swift/Service/Model/DetectManager.swift`。
+  - 使用 `@objc(EZDetectManager)` 和 `@objcMembers` 保持 Objective-C 兼容性。
+  - 添加方法的 async/await 版本，供 Swift 代码使用。
+  - 更新 `EZBaseQueryViewController.m` 以导入 `Easydict-Swift.h`。
+  - 更新 `Easydict-Bridging-Header.h`，注释掉旧的 Objective-C 导入。
 
 ## 📋 待迁移列表
 
 **⚠️ 重要提醒：以下所有 Objective-C 组件修改时必须先迁移到 Swift，禁止直接修改！**
 
-### 核心服务 (High Priority)
+### 核心服务（高优先级）
 
 1. **EZDetectManager** ✅ - 文本检测管理器
    - 位置: `Swift/Service/Model/DetectManager.swift`
@@ -238,7 +239,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
      - 更新了 `EZBaseQueryViewController.m` 导入 `Easydict-Swift.h`
      - 更新了 `Easydict-Bridging-Header.h` 注释掉旧的 Objective-C 导入
 
-### 应用架构 (Medium Priority)
+### 应用架构（中优先级）
 
 2. **AppDelegate** - 应用代理
    - 位置: `objc/AppDelegate.h/.m`
@@ -256,7 +257,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
    - 已于 2025-12-17 迁移到 Swift
    - 新位置: `objc/ViewController/Storage/EZLocalStorage.swift`
 
-### UI 和交互 (Medium Priority)
+### UI 和交互（中优先级）
 
 5. **EZBaseQueryViewController** - 基础查询控制器
    - 位置: `objc/ViewController/Window/BaseQueryWindow/EZBaseQueryViewController.m`
@@ -265,7 +266,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
    - 优先级: 中
    - **⚠️ 禁止修改，必须迁移到 Swift**
 
-### 工具类 (Low Priority)
+### 工具类（低优先级）
 
 8. **NSString+EZChineseText** - 中文文本处理
    - **⚠️ 禁止修改，必须迁移到 Swift**
