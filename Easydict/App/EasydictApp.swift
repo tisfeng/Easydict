@@ -37,7 +37,8 @@ enum EasydictCmpatibilityEntry {
         // disable the heuristics to keep that helper from spawning.
         if #available(macOS 26, *) {
             UserDefaults.standard.register(
-                defaults: ["NSAutoFillHeuristicsEnabled": false])
+                defaults: ["NSAutoFillHeuristicsEnabled": false]
+            )
         }
 
         // app launch
