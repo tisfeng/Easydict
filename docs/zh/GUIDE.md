@@ -96,12 +96,28 @@ brew install --cask easydict
 
 以下是可选步骤，仅面向开发协作者。
 
-如果经常需要调试一些权限相关的功能，例如取词或 OCR，可选择使用自己的苹果账号运行，请修改 `Easydict-debug.xcconfig` 文件中的 `DEVELOPMENT_TEAM` 为你自己的 Apple Team ID（你可以登录苹果开发者网站找到它），`CODE_SIGN_IDENTITY` 改为 Apple Development。
+如果经常需要调试权限相关的功能（如取词或 OCR），建议使用你自己的 Apple Developer 账号签名，否则每次编译都会触发系统的权限弹窗。
 
-注意不要提交 `Easydict-debug.xcconfig` 文件，你可以使用下面 git 命令忽略这个文件的本地修改
-
+推荐使用项目自带的 `scripts/setup-team.sh` 脚本。它会写入一份被 Git 忽略的本地 Debug 配置，让 Team ID 始终位于版本控制之外，不会干扰分支切换或合并：
 ```bash
-git update-index --skip-worktree Easydict-debug.xcconfig
+chmod +x scripts/setup-team.sh && ./scripts/setup-team.sh
+```
+
+脚本默认从已安装的 Apple Development 证书中检测 Team ID。如果无法自动检测，可以显式传入 10 位 Team ID，例如：`./scripts/setup-team.sh ABC123DE45`。
+
+如果你没有 Apple 开发者账号，也可以运行以配置本地 ad-hoc 签名进行免证书编译（注意：在此模式下，系统会在每次重新编译后重置取词或 OCR 等权限弹窗）：
+```bash
+./scripts/setup-team.sh --adhoc
+```
+
+卸载请运行 `./scripts/setup-team.sh --uninstall`。该命令只会删除脚本创建的本地签名配置。
+
+如果不想使用脚本，可以创建 `Easydict-debug.local.xcconfig` 并写入以下内容。该文件已经被 Git 忽略：
+
+```xcconfig
+DEVELOPMENT_TEAM = ABC123DE45
+CODE_SIGN_IDENTITY = Apple Development
+CODE_SIGN_STYLE = Automatic
 ```
 
 #### 构建环境

@@ -50,6 +50,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)copyFirstTranslatedText;
 
+/// Returns the translated text of the first service result, if available.
+- (nullable NSString *)firstTranslatedText;
+
 - (void)toggleTranslationLanguages;
 
 - (void)focusInputTextView;
