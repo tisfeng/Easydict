@@ -210,7 +210,7 @@ struct FavoritesTab: View {
 
     /// Converts records to a CSV string.
     private func makeCSV(for records: [QueryRecord]) -> String {
-        var rows = ["queryText,queryFromLanguage,queryToLanguage,timestamp"]
+        var rows = ["queryText,queryFromLanguage,queryToLanguage,translatedResult,timestamp"]
         rows.reserveCapacity(records.count + 1)
         for record in records {
             let timestamp = Self.exportTimestampFormatter.string(from: record.timestamp)
@@ -218,6 +218,7 @@ struct FavoritesTab: View {
                 record.queryText,
                 record.queryFromLanguage.localizedName,
                 record.queryToLanguage.localizedName,
+                record.translatedResult ?? "",
                 timestamp,
             ]
             rows.append(values.map(csvEscaped).joined(separator: ","))
@@ -228,7 +229,10 @@ struct FavoritesTab: View {
     /// Escapes a value for CSV output.
     private func csvEscaped(_ value: String) -> String {
         let escaped = value.replacingOccurrences(of: "\"", with: "\"\"")
-        if escaped.contains(",") || escaped.contains("\n") || escaped.contains("\r") {
+        if value.contains("\"")
+            || value.contains(",")
+            || value.contains("\n")
+            || value.contains("\r") {
             return "\"\(escaped)\""
         }
         return escaped
@@ -262,8 +266,15 @@ struct QueryRecordRow: View {
                 Text(record.queryText)
                     .font(.body)
                     .lineLimit(1)
+                if let translatedResult = record.translatedResult,
+                   !translatedResult.isEmpty {
+                    Text(translatedResult)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
                 Text(Self.timestampFormatter.string(from: record.timestamp))
-                    .font(.caption)
+                    .font(.caption2)
                     .foregroundColor(.secondary)
             }
             Spacer()
