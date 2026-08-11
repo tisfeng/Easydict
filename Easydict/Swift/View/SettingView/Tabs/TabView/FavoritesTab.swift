@@ -158,7 +158,7 @@ struct FavoritesTab: View {
             ? NSLocalizedString("favorites.clear_confirm", comment: "")
             : NSLocalizedString("history.clear_confirm", comment: "")
         alert.alertStyle = .warning
-        alert.addButton(withTitle: "ok")
+        alert.addButton(withTitle: NSLocalizedString("ok", comment: ""))
         alert.addButton(withTitle: NSLocalizedString("cancel", comment: ""))
 
         let response = alert.runModal()
