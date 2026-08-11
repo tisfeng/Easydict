@@ -24,7 +24,7 @@
 
 Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time.
 
-**Supported translation services:** [**🍎 Apple Dictionary**](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md), [🍎 **Apple Translate**](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md), [OpenAI](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepSeek](https://www.deepseek.com/), [Ollama](https://ollama.com/), [Groq](https://groq.com/), [Zhipu AI](https://open.bigmodel.cn/), [GitHub Models](https://github.com/marketplace/models), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com), [Youdao](https://www.youdao.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Caiyun](https://fanyi.caiyunapp.com/), [Alibaba](https://translate.alibaba.com/), [Volcano](https://translate.volcengine.com/translate) and [Doubao](https://www.volcengine.com/docs/82379/1820188).
+**Supported translation services:** [**🍎 Apple Dictionary**](./docs/user-docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md), [🍎 **Apple Translate**](./docs/user-docs/en/How-to-use-macOS-system-translation-in-Easydict.md), [OpenAI](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepSeek](https://www.deepseek.com/), [Ollama](https://ollama.com/), [Groq](https://groq.com/), [Zhipu AI](https://open.bigmodel.cn/), [GitHub Models](https://github.com/marketplace/models), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com), [Youdao](https://www.youdao.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Caiyun](https://fanyi.caiyunapp.com/), [Alibaba](https://translate.alibaba.com/), [Volcano](https://translate.volcengine.com/translate) and [Doubao](https://www.volcengine.com/docs/82379/1820188).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -41,7 +41,7 @@ Easydict is ready to use out of the box, can automatically recognize the languag
 - 🖱️ Auto select with mouse and shortcut key
 - 📸 OCR screenshot translation and slient screenshot OCR
 - 🔊 Multiple TTS voice services
-- 📚 Support 🍎 [Apple System Dictionary](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md) and [System Translation](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
+- 📚 Support 🍎 [Apple System Dictionary](./docs/user-docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md) and [System Translation](./docs/user-docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
 - 🌐 Support 20+ translation services (OpenAI, Gemini, DeepL, Google, Ollama, Groq, etc.)
 - 🗣️ Support for 48 languages
 
@@ -54,7 +54,7 @@ If you're interested in this project, we welcome your contributions. Our develop
 - **dev branch**: Latest development code, may contain features in progress
 - **main branch**: Stable release code, regularly merged from dev branch
 
-Please submit bug fixes and features to dev branch; for major new features or UI changes, please open an issue for discussion first. See [full contribution guide](./docs/en/GUIDE.md#contributor-guide).
+Please submit bug fixes and features to dev branch; for major new features or UI changes, please open an issue for discussion first. See [full contribution guide](./docs/user-docs/en/GUIDE.md#contributor-guide).
 
 ### AI Coding
 
@@ -106,11 +106,12 @@ brew install --cask easydict
 
 ## Documentation
 
-- 📖 [Complete Usage Guide](./docs/en/GUIDE.md) - Detailed features, configuration and tips
-- 🔧 [Developer Build Guide](./docs/en/GUIDE.md#developer-build) - Build and run from source code
-- 🍎 [How to use macOS System Dictionary](./docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md)
-- 🍎 [How to use macOS System Translation](./docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
-- 🌍 [How to translate Easydict](./docs/How-to-translate-Easydict-en.md)
+- 📚 [Public Documentation Index](./docs/user-docs/README.md) - English and Chinese guides
+- 📖 [Complete Usage Guide](./docs/user-docs/en/GUIDE.md) - Detailed features, configuration and tips
+- 🔧 [Developer Build Guide](./docs/user-docs/en/GUIDE.md#developer-build) - Build and run from source code
+- 🍎 [How to use macOS System Dictionary](./docs/user-docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md)
+- 🍎 [How to use macOS System Translation](./docs/user-docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
+- 🌍 [How to translate Easydict](./docs/user-docs/en/How-to-translate-Easydict.md)
 
 ---
 
@@ -136,7 +137,7 @@ Thanks to [@CanglongCl](https://github.com/CanglongCl) for providing the Apple D
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
 </div>
 
-Thanks to all sponsors for their generous support. For details, please see the [Sponsor List](./docs/en/SPONSOR_LIST.md).
+Thanks to all sponsors for their generous support. For details, please see the [Sponsor List](./docs/user-docs/en/SPONSOR_LIST.md).
 
 ---
 
