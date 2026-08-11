@@ -80,12 +80,35 @@ certificate_name_from_identity() {
   printf '%s\n' "$1" | awk -F '"' 'NF >= 3 { print $2; exit }'
 }
 
+certificate_hash_from_identity() {
+  printf '%s\n' "$1" | awk '{ print $2; exit }'
+}
+
 # Apple's code-signing certificates store the Team ID in the Subject OU.
 # The identifier in the certificate's display name is not necessarily a Team ID.
-team_id_from_certificate() {
-  certificate_name="$1"
+team_id_from_identity() {
+  identity="$1"
+  certificate_name=$(certificate_name_from_identity "$identity")
+  certificate_hash=$(certificate_hash_from_identity "$identity")
+  [ -n "$certificate_name" ] || die "unable to read certificate name"
+  printf '%s\n' "$certificate_hash" | grep -Eq '^[A-Fa-f0-9]{40}$' ||
+    die "unable to read certificate SHA-1: $certificate_name"
+
+  certificates=$(
+    security find-certificate -a -c "$certificate_name" -Z -p 2>/dev/null
+  ) || die "unable to read certificate: $certificate_name"
+  certificate=$(printf '%s\n' "$certificates" | awk \
+    -v wanted_hash="$certificate_hash" '
+      $0 == "SHA-1 hash: " wanted_hash { matched = 1; next }
+      matched && $0 == "-----BEGIN CERTIFICATE-----" { in_certificate = 1 }
+      in_certificate { print }
+      in_certificate && $0 == "-----END CERTIFICATE-----" { exit }
+    ')
+  [ -n "$certificate" ] ||
+    die "unable to find selected certificate by SHA-1: $certificate_hash"
+
   subject=$(
-    security find-certificate -c "$certificate_name" -p 2>/dev/null |
+    printf '%s\n' "$certificate" |
       openssl x509 -noout -subject -nameopt multiline 2>/dev/null
   ) || die "unable to read certificate: $certificate_name"
 
@@ -102,7 +125,7 @@ print_certificate_options() {
   option=1
   while IFS= read -r identity; do
     certificate_name=$(certificate_name_from_identity "$identity")
-    certificate_team=$(team_id_from_certificate "$certificate_name")
+    certificate_team=$(team_id_from_identity "$identity")
     printf '  %d) %s [Team ID: %s]\n' \
       "$option" "$certificate_name" "$certificate_team"
     option=$((option + 1))
@@ -160,9 +183,7 @@ if [ -z "$team" ]; then
     selected_identity=$(printf '%s\n' "$certs" | sed -n "${choice}p")
   fi
 
-  certificate_name=$(certificate_name_from_identity "$selected_identity")
-  [ -n "$certificate_name" ] || die "unable to read the selected certificate name"
-  team=$(team_id_from_certificate "$certificate_name")
+  team=$(team_id_from_identity "$selected_identity")
 fi
 
 validate_team "$team"
