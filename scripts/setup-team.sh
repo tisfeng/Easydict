@@ -76,6 +76,41 @@ validate_team() {
     die "Team ID must contain 10 uppercase letters or digits"
 }
 
+certificate_name_from_identity() {
+  printf '%s\n' "$1" | awk -F '"' 'NF >= 3 { print $2; exit }'
+}
+
+# Apple's code-signing certificates store the Team ID in the Subject OU.
+# The identifier in the certificate's display name is not necessarily a Team ID.
+team_id_from_certificate() {
+  certificate_name="$1"
+  subject=$(
+    security find-certificate -c "$certificate_name" -p 2>/dev/null |
+      openssl x509 -noout -subject -nameopt multiline 2>/dev/null
+  ) || die "unable to read certificate: $certificate_name"
+
+  parsed_team=$(printf '%s\n' "$subject" | sed -nE \
+    's/^[[:space:]]*organizationalUnitName[[:space:]]*=[[:space:]]*([A-Z0-9]{10})[[:space:]]*$/\1/p' |
+    head -n 1)
+  [ -n "$parsed_team" ] ||
+    die "certificate does not contain a valid Team ID: $certificate_name"
+
+  printf '%s\n' "$parsed_team"
+}
+
+print_certificate_options() {
+  option=1
+  while IFS= read -r identity; do
+    certificate_name=$(certificate_name_from_identity "$identity")
+    certificate_team=$(team_id_from_certificate "$certificate_name")
+    printf '  %d) %s [Team ID: %s]\n' \
+      "$option" "$certificate_name" "$certificate_team"
+    option=$((option + 1))
+  done <<EOF
+$certs
+EOF
+}
+
 [ "$#" -le 1 ] || die "expected at most one argument"
 
 case "${1:-}" in
@@ -103,18 +138,17 @@ fi
 team="${1:-}"
 if [ -z "$team" ]; then
   certs=$(security find-identity -v -p codesigning 2>/dev/null |
-    grep "Apple Development" || true)
+    awk '/"Apple Development:/ && $0 !~ /CSSMERR_/ { print }' || true)
   count=$(printf '%s\n' "$certs" |
-    grep -c "Apple Development" 2>/dev/null || true)
+    awk 'NF { count++ } END { print count + 0 }')
 
   if [ "$count" -eq 0 ]; then
     die "no Apple Development certificate found; pass a Team ID or use --adhoc"
   elif [ "$count" -eq 1 ]; then
-    team=$(printf '%s\n' "$certs" |
-      grep -oE '\([A-Z0-9]{10}\)' | head -n 1 | tr -d '()')
+    selected_identity="$certs"
   else
     echo "Multiple Apple Development certificates found:"
-    printf '%s\n' "$certs" | cat -n
+    print_certificate_options
     printf "Select [1-%d] (default 1): " "$count"
     read -r choice </dev/tty
     choice=${choice:-1}
@@ -123,9 +157,12 @@ if [ -z "$team" ]; then
     esac
     [ "$choice" -ge 1 ] && [ "$choice" -le "$count" ] ||
       die "selection is outside the available range"
-    team=$(printf '%s\n' "$certs" | sed -n "${choice}p" |
-      grep -oE '\([A-Z0-9]{10}\)' | tr -d '()')
+    selected_identity=$(printf '%s\n' "$certs" | sed -n "${choice}p")
   fi
+
+  certificate_name=$(certificate_name_from_identity "$selected_identity")
+  [ -n "$certificate_name" ] || die "unable to read the selected certificate name"
+  team=$(team_id_from_certificate "$certificate_name")
 fi
 
 validate_team "$team"
