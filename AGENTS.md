@@ -25,6 +25,8 @@ OCR 截图翻译。
 - 已完成的实质性变更：`docs/histories/`。
 - 公共使用或贡献者文档：`docs/user-docs/en/` 或
   `docs/user-docs/zh/`。
+- 创建 Git 任务分支：`.agents/skills/git-commit/SKILL.md` 中的
+  `Branch Name Guidance`。
 
 ## 必须遵守的约束
 
