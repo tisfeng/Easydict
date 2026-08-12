@@ -15,7 +15,7 @@
 </p>
 
 <div align="center">
-<a href="./README_ZH.md">中文</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./README.md">English</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./readme-es.md">Español</a>
+<a href="./README_ZH.md">中文</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./README.md">English</a>
 </div>
 
 ## Easydict
@@ -24,7 +24,7 @@
 
 Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译、划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果。
 
-**支持的翻译服务：** [**🍎 苹果系统词典**](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)、[🍎 **苹果系统翻译**](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)、[OpenAI](https://chat.openai.com/)、[Gemini](https://gemini.google.com/)、[DeepSeek](https://www.deepseek.com/)、[Ollama](https://ollama.com/)、[Groq](https://groq.com/)、[智谱AI](https://open.bigmodel.cn/)、[GitHub Models](https://github.com/marketplace/models)、[DeepL](https://www.deepl.com/translator)、[Google](https://translate.google.com)、[有道词典](https://www.youdao.com/)、[腾讯](https://fanyi.qq.com/)、[Bing](https://www.bing.com/translator)、[百度](https://fanyi.baidu.com/)、[小牛翻译](https://niutrans.com/)、[彩云小译](https://fanyi.caiyunapp.com/)、[阿里翻译](https://translate.alibaba.com/)、[火山翻译](https://translate.volcengine.com/translate) 和 [豆包翻译](https://www.volcengine.com/docs/82379/1820188)。
+**支持的翻译服务：** [**🍎 苹果系统词典**](./docs/user-docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)、[🍎 **苹果系统翻译**](./docs/user-docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)、[OpenAI](https://chat.openai.com/)、[Gemini](https://gemini.google.com/)、[DeepSeek](https://www.deepseek.com/)、[Ollama](https://ollama.com/)、[Groq](https://groq.com/)、[智谱AI](https://open.bigmodel.cn/)、[GitHub Models](https://github.com/marketplace/models)、[DeepL](https://www.deepl.com/translator)、[Google](https://translate.google.com)、[有道词典](https://www.youdao.com/)、[腾讯](https://fanyi.qq.com/)、[Bing](https://www.bing.com/translator)、[百度](https://fanyi.baidu.com/)、[小牛翻译](https://niutrans.com/)、[彩云小译](https://fanyi.caiyunapp.com/)、[阿里翻译](https://translate.alibaba.com/)、[火山翻译](https://translate.volcengine.com/translate) 和 [豆包翻译](https://www.volcengine.com/docs/82379/1820188)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -41,7 +41,7 @@ Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译�
 - 🖱️ 鼠标自动划词和快捷键划词
 - 📸 OCR 截图翻译，静默截图 OCR
 - 🔊 多种 TTS 语音服务
-- 📚 支持 🍎 [苹果系统词典](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md) 和 [系统翻译](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
+- 📚 支持 🍎 [苹果系统词典](./docs/user-docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md) 和 [系统翻译](./docs/user-docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
 - 🌐 支持 20+ 翻译服务（OpenAI、Gemini、DeepL、Google、Ollama、Groq 等）
 - 🗣️ 支持 48 种语言
 
@@ -54,7 +54,7 @@ Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译�
 - **dev 分支**：最新的开发代码，可能包含正在开发中的功能
 - **main 分支**：稳定版本代码，会定期合并 dev 分支
 
-Bug 修复和功能实现请提交到 dev 分支；新功能或大的 UI 变动建议先开 issue 讨论。详见[完整贡献指南](./docs/zh/GUIDE.md#贡献指南)。
+Bug 修复和功能实现请提交到 dev 分支；新功能或大的 UI 变动建议先开 issue 讨论。详见[完整贡献指南](./docs/user-docs/zh/GUIDE.md#贡献指南)。
 
 ### AI 辅助编程
 
@@ -106,11 +106,12 @@ brew install --cask easydict
 
 ## 文档
 
-- 📖 [完整使用指南](./docs/zh/GUIDE.md) - 详细功能说明和配置方法
-- 🔧 [开发者构建指南](./docs/zh/GUIDE.md#开发者构建) - 从源码编译运行
-- 🍎 [如何使用 macOS 系统词典](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)
-- 🍎 [如何使用 macOS 系统翻译](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
-- 🌍 [如何帮助翻译 Easydict](./docs/How-to-translate-Easydict-zh.md)
+- 📚 [公开文档索引](./docs/user-docs/README.md) - 中英文使用和贡献指南
+- 📖 [完整使用指南](./docs/user-docs/zh/GUIDE.md) - 详细功能说明和配置方法
+- 🔧 [开发者构建指南](./docs/user-docs/zh/GUIDE.md#开发者构建) - 从源码编译运行
+- 🍎 [如何使用 macOS 系统词典](./docs/user-docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)
+- 🍎 [如何使用 macOS 系统翻译](./docs/user-docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
+- 🌍 [如何帮助翻译 Easydict](./docs/user-docs/zh/How-to-translate-Easydict.md)
 
 ---
 
@@ -136,7 +137,7 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
 </div>
 
-感谢所有支持者的赞助，详情请查看 [赞助列表](./docs/zh/SPONSOR_LIST.md)。
+感谢所有支持者的赞助，详情请查看 [赞助列表](./docs/user-docs/zh/SPONSOR_LIST.md)。
 
 ---
 

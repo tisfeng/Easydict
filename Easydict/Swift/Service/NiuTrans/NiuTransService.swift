@@ -70,6 +70,7 @@ class NiuTransService: QueryService {
             Language.korean, "ko",
             Language.french, "fr",
             Language.spanish, "es",
+            Language.catalan, "ca",
             Language.portuguese, "pt",
             Language.brazilianPortuguese, "pt-BR",
             Language.italian, "it",

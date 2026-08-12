@@ -42,22 +42,6 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     var footer: some View {
         HStack {
-            if service.isDuplicatable() {
-                Button {
-                    service.duplicate()
-                } label: {
-                    Text("service.configuration.duplicate")
-                }
-
-                if service.isDeletable(service.windowType) {
-                    Button("service.configuration.delete", role: .destructive) {
-                        service.remove()
-                    }
-                }
-
-                Spacer()
-            }
-
             Spacer()
 
             Button {

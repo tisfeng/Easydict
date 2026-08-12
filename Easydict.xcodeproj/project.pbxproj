@@ -461,6 +461,7 @@
 		03FF0D5F2E1959EC00ABBF17 /* String+Removing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF0D5E2E1959EC00ABBF17 /* String+Removing.swift */; };
 		04D7C0A22F00000100D1C7A1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 04D7C0A12F00000100D1C7A1 /* libz.tbd */; };
 		0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A057D6C2B499A000025C51D /* ServiceTab.swift */; };
+		0A1189A22F700001005C51D /* ServiceTabListViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1189A12F700001005C51D /* ServiceTabListViews.swift */; };
 		0A2A05A62B59757100EEA142 /* Bundle+AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A05A52B59757100EEA142 /* Bundle+AppInfo.swift */; };
 		0A2BA9602B49A989002872A4 /* Binding+DidSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */; };
 		0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */; };
@@ -476,6 +477,7 @@
 		0D124C3E2E8AD3EA00D6B72C /* DoubaoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */; };
 		0D124C3F2E8AD3EA00D6B72C /* DoubaoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */; };
 		0D124C402E8AD3EA00D6B72C /* DoubaoTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */; };
+		0DEEFE010001000000000015 /* ReasoningEffort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEEFE010002000000000015 /* ReasoningEffort.swift */; };
 		1A2B3C4D5E6F7A8B9C0D1E2F /* ClaudeCodeLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3C4D5E6F7A8B9C0D1E2F3A /* ClaudeCodeLogger.swift */; };
 		1CC83D91B3954BE7894CC2C8 /* MDictReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76B47A0150434485FCBBAD /* MDictReaderTests.swift */; };
 		24832952EE17407C852B2258 /* String+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24832951EE17407C852B2258 /* String+Convenience.swift */; };
@@ -494,6 +496,10 @@
 		2A2FFF4289154137B673F7FA /* ClaudeCodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */; };
 		3C4D5E6F7A8B9C0D1E2F3A4B /* ClaudeCodeEventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5E6F7A8B9C0D1E2F3A4B5C /* ClaudeCodeEventParser.swift */; };
 		40F5D52C2D65B1B900EDB997 /* DeepSeekService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */; };
+		4D4D6D6F0000000000000002 /* MDictEntryScript.js in Resources */ = {isa = PBXBuildFile; fileRef = 4D4D6D6F0000000000000012 /* MDictEntryScript.js */; };
+		4D4D6D6F0000000000000003 /* MDictStyleScript.js in Resources */ = {isa = PBXBuildFile; fileRef = 4D4D6D6F0000000000000013 /* MDictStyleScript.js */; };
+		4D4D6D6F0000000000000004 /* darkreader.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 4D4D6D6F0000000000000014 /* darkreader.min.js */; };
+		4D4D6D6F0000000000000005 /* DarkReader-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4D4D6D6F0000000000000015 /* DarkReader-LICENSE.txt */; };
 		513C5A1DEDCB410184268D48 /* ClaudeCodeServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59C7EA362DF42E3A968F294 /* ClaudeCodeServiceTests.swift */; };
 		59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8033C170F2954D79899C1339 /* SystemUtilitiesTests.swift */; };
 		5A3A753C59BD5443FA91764C /* Pods_EasydictTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */; };
@@ -628,12 +634,25 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A5C000000000000000000001 /* workflow.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = workflow.json; sourceTree = "<group>"; };
+		A5C000000000000000000002 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		A5C000000000000000000003 /* export-options.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "export-options.plist"; sourceTree = "<group>"; };
+		A5C000000000000000000004 /* release-appcast.py */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.python; path = "release-appcast.py"; sourceTree = "<group>"; };
+		A5C000000000000000000005 /* release-appcast.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-appcast.sh"; sourceTree = "<group>"; };
+		A5C000000000000000000006 /* release-branch-sync.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-branch-sync.sh"; sourceTree = "<group>"; };
+		A5C000000000000000000007 /* release-build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-build.sh"; sourceTree = "<group>"; };
+		A5C000000000000000000008 /* release-common.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-common.sh"; sourceTree = "<group>"; };
+		A5C000000000000000000009 /* release-easydict-legacy-flow.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "release-easydict-legacy-flow.svg"; sourceTree = "<group>"; };
+		A5C00000000000000000000B /* release-easydict-legacy.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-easydict-legacy.sh"; sourceTree = "<group>"; };
+		A5C00000000000000000000C /* release-easydict.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-easydict.sh"; sourceTree = "<group>"; };
+		A5C00000000000000000000D /* release-github.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-github.sh"; sourceTree = "<group>"; };
+		A5C00000000000000000000E /* release-package.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-package.sh"; sourceTree = "<group>"; };
+		A5C00000000000000000000F /* release-preflight.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-preflight.sh"; sourceTree = "<group>"; };
+		A5C000000000000000000010 /* release-verify.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-verify.sh"; sourceTree = "<group>"; };
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000004 /* MarkdownToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownToggleButton.swift; sourceTree = "<group>"; };
-		02DEDC042026043000000005 /* markdown-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "markdown-overview.html"; sourceTree = "<group>"; };
-		02DEDC042026043000000006 /* markdown-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "markdown-architecture.svg"; sourceTree = "<group>"; };
 		02DEDC04202604300000000A /* MarkdownRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRendererTests.swift; sourceTree = "<group>"; };
 		03008B2529408BF50062B821 /* NSObject+EZDarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZDarkMode.h"; sourceTree = "<group>"; };
 		03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZDarkMode.m"; sourceTree = "<group>"; };
@@ -688,7 +707,6 @@
 		031C66E32EDB00100025D190 /* dictionary-rendering-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "dictionary-rendering-architecture.svg"; sourceTree = "<group>"; };
 		031C66E52EDB00200025D190 /* dictionary-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "dictionary-overview.md"; sourceTree = "<group>"; };
 		031C66E62EDB00200025D190 /* dictionary-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "dictionary-architecture.svg"; sourceTree = "<group>"; };
-		031C66EA2EDB01000025D190 /* mdict-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "mdict-overview.html"; sourceTree = "<group>"; };
 		031C66EB2EDB01000025D190 /* mdict-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "mdict-architecture.svg"; sourceTree = "<group>"; };
 		031C66ED2EDB02000025D190 /* mdict-reader-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "mdict-reader-overview.md"; sourceTree = "<group>"; };
 		031C66EE2EDB02000025D190 /* mdict-reader-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "mdict-reader-architecture.svg"; sourceTree = "<group>"; };
@@ -1187,8 +1205,7 @@
 		0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleServiceTests.swift; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
 		0A057D6C2B499A000025C51D /* ServiceTab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceTab.swift; sourceTree = "<group>"; };
-		0A057D6E2F7000000025C51D /* tab-view-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "tab-view-overview.md"; sourceTree = "<group>"; };
-		0A057D6F2F7000000025C51D /* tab-view-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "tab-view-architecture.svg"; sourceTree = "<group>"; };
+		0A1189A12F700001005C51D /* ServiceTabListViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTabListViews.swift; sourceTree = "<group>"; };
 		0A2A05A52B59757100EEA142 /* Bundle+AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+AppInfo.swift"; sourceTree = "<group>"; };
 		0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+DidSet.swift"; sourceTree = "<group>"; };
 		0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
@@ -1203,6 +1220,7 @@
 		0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoResponse.swift; sourceTree = "<group>"; };
 		0D124C3B2E8AD3EA00D6B72C /* DoubaoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoService.swift; sourceTree = "<group>"; };
 		0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoTranslateType.swift; sourceTree = "<group>"; };
+		0DEEFE010002000000000015 /* ReasoningEffort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReasoningEffort.swift; sourceTree = "<group>"; };
 		0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeService.swift; sourceTree = "<group>"; };
 		14921B68C1D645268F93668E /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeRunner.swift; sourceTree = "<group>"; };
@@ -1230,6 +1248,11 @@
 		40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekService.swift; sourceTree = "<group>"; };
 		416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSuites.swift; sourceTree = "<group>"; };
 		471884F63A2B43A3BF8F1C7D /* ClaudeCodeError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeError.swift; sourceTree = "<group>"; };
+		4D4D6D6F0000000000000012 /* MDictEntryScript.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = MDictEntryScript.js; sourceTree = "<group>"; };
+		4D4D6D6F0000000000000013 /* MDictStyleScript.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = MDictStyleScript.js; sourceTree = "<group>"; };
+		4D4D6D6F0000000000000014 /* darkreader.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = darkreader.min.js; sourceTree = "<group>"; };
+		4D4D6D6F0000000000000015 /* DarkReader-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "DarkReader-LICENSE.txt"; sourceTree = "<group>"; };
+		4D4D6D6F0000000000000016 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4D5E6F7A8B9C0D1E2F3A4B5C /* ClaudeCodeEventParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeEventParser.swift; sourceTree = "<group>"; };
 		5F42ADC9AAB3494D9E85B5D8 /* ClaudeCodeServiceConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeServiceConfigurationView.swift; sourceTree = "<group>"; };
 		5F8B9C002F1D4E5A9C730401 /* MDictSearchIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictSearchIndex.swift; sourceTree = "<group>"; };
@@ -1277,8 +1300,6 @@
 		A1D1807D2F8D100100B1C0D1 /* ThrottleGateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGateTests.swift; sourceTree = "<group>"; };
 		A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.debug.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OrderedDictionary+Variadic.m"; sourceTree = "<group>"; };
-		A7C0F3B12D4E56A7890BCDEF /* claude-code-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "claude-code-overview.html"; sourceTree = "<group>"; };
-		A7C0F3B22D4E56A7890BCDEF /* claude-code-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "claude-code-architecture.svg"; sourceTree = "<group>"; };
 		AA0000022E00000000000001 /* QueryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecord.swift; sourceTree = "<group>"; };
 		AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeCLIRunnerTests.swift; sourceTree = "<group>"; };
 		B1D2E3F40516273849A5B6C7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -1297,12 +1318,9 @@
 		C0DEC11E0002000000000005 /* CodexCLILogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLILogger.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIDebugWindow.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIServiceConfigurationView.swift; sourceTree = "<group>"; };
-		C0DEC11E0002000000000008 /* codex-cli-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "codex-cli-overview.html"; sourceTree = "<group>"; };
 		C0DEC11E0002000000000009 /* codex-cli-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "codex-cli-overview.md"; sourceTree = "<group>"; };
 		C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIServiceTests.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIRunnerTests.swift; sourceTree = "<group>"; };
-		C0DEC11E0002000000000012 /* codex-cli-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "codex-cli-architecture.svg"; sourceTree = "<group>"; };
-		C0DEC11E0002000000000013 /* codex-cli-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "codex-cli-architecture.svg"; sourceTree = "<group>"; };
 		C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexReasoningEffort.swift; sourceTree = "<group>"; };
 		C415C0AC2B450D4800A9D231 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
 		C43B566B2C693F6200EF26FD /* VolcanoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoService.swift; sourceTree = "<group>"; };
@@ -1391,14 +1409,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A5C000000000000000000011 /* .asc */ = {
+			isa = PBXGroup;
+			children = (
+				A5C000000000000000000001 /* workflow.json */,
+			);
+			path = .asc;
+			sourceTree = "<group>";
+		};
+		A5C000000000000000000012 /* release-scripts */ = {
+			isa = PBXGroup;
+			children = (
+				A5C000000000000000000002 /* README.md */,
+				A5C000000000000000000003 /* export-options.plist */,
+				A5C000000000000000000004 /* release-appcast.py */,
+				A5C000000000000000000005 /* release-appcast.sh */,
+				A5C000000000000000000006 /* release-branch-sync.sh */,
+				A5C000000000000000000007 /* release-build.sh */,
+				A5C000000000000000000008 /* release-common.sh */,
+				A5C000000000000000000009 /* release-easydict-legacy-flow.svg */,
+				A5C00000000000000000000B /* release-easydict-legacy.sh */,
+				A5C00000000000000000000C /* release-easydict.sh */,
+				A5C00000000000000000000D /* release-github.sh */,
+				A5C00000000000000000000E /* release-package.sh */,
+				A5C00000000000000000000F /* release-preflight.sh */,
+				A5C000000000000000000010 /* release-verify.sh */,
+			);
+			path = "release-scripts";
+			sourceTree = "<group>";
+		};
 		02DEDC042026043000000001 /* Markdown */ = {
 			isa = PBXGroup;
 			children = (
 				02DEDC042026043000000002 /* MarkdownRenderer.swift */,
 				02DEDC042026043000000003 /* MarkdownLabel.swift */,
 				02DEDC042026043000000004 /* MarkdownToggleButton.swift */,
-				02DEDC042026043000000005 /* markdown-overview.html */,
-				02DEDC042026043000000006 /* markdown-architecture.svg */,
 			);
 			path = Markdown;
 			sourceTree = "<group>";
@@ -1454,8 +1499,7 @@
 			children = (
 				278540332B3DE04F004E9488 /* GeneralTab.swift */,
 				0A057D6C2B499A000025C51D /* ServiceTab.swift */,
-				0A057D6E2F7000000025C51D /* tab-view-overview.md */,
-				0A057D6F2F7000000025C51D /* tab-view-architecture.svg */,
+				0A1189A12F700001005C51D /* ServiceTabListViews.swift */,
 				0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */,
 				0A8685C72B552A590022534F /* DisabledAppTab.swift */,
 				96099AE12B5D40330055C4DD /* ShortcutTab.swift */,
@@ -2065,6 +2109,7 @@
 			isa = PBXGroup;
 			children = (
 				03A5E0912D3C020200FF7D95 /* StreamService.swift */,
+				0DEEFE010002000000000015 /* ReasoningEffort.swift */,
 				0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */,
 				0365B0662D3BE26000865F46 /* StreamService+UpdateResult.swift */,
 				03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */,
@@ -3349,9 +3394,10 @@
 		3A6EB576721647E4A13E445C /* MDict */ = {
 			isa = PBXGroup;
 			children = (
-				031C66EA2EDB01000025D190 /* mdict-overview.html */,
 				031C66EB2EDB01000025D190 /* mdict-architecture.svg */,
 				983925DCBA81465EAE22415B /* MDictService.swift */,
+				4D4D6D6F0000000000000012 /* MDictEntryScript.js */,
+				4D4D6D6F0000000000000013 /* MDictStyleScript.js */,
 				30215FF66EE44A0F932E70CF /* MDictDictionary.swift */,
 				5F8B9C002F1D4E5A9C730401 /* MDictSearchIndex.swift */,
 				26FFFD863EBF442CB4FCE765 /* MDictManager.swift */,
@@ -3367,6 +3413,16 @@
 				40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */,
 			);
 			path = DeepSeek;
+			sourceTree = "<group>";
+		};
+		4D4D6D6F0000000000000024 /* DarkReader */ = {
+			isa = PBXGroup;
+			children = (
+				4D4D6D6F0000000000000014 /* darkreader.min.js */,
+				4D4D6D6F0000000000000015 /* DarkReader-LICENSE.txt */,
+				4D4D6D6F0000000000000016 /* README.md */,
+			);
+			path = DarkReader;
 			sourceTree = "<group>";
 		};
 		54A84CEDD3AD444B860067F8 /* Model */ = {
@@ -3541,8 +3597,6 @@
 				C0DEC11E0002000000000001 /* CodexCLIService.swift */,
 				C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */,
 				C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */,
-				C0DEC11E0002000000000008 /* codex-cli-overview.html */,
-				C0DEC11E0002000000000012 /* codex-cli-architecture.svg */,
 			);
 			path = CodexCLI;
 			sourceTree = "<group>";
@@ -3553,7 +3607,6 @@
 				C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */,
 				C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */,
 				C0DEC11E0002000000000009 /* codex-cli-overview.md */,
-				C0DEC11E0002000000000013 /* codex-cli-architecture.svg */,
 			);
 			path = CodexCLI;
 			sourceTree = "<group>";
@@ -3601,6 +3654,8 @@
 		C99EEB0F2385796700FEE666 = {
 			isa = PBXGroup;
 			children = (
+				A5C000000000000000000011 /* .asc */,
+				A5C000000000000000000012 /* release-scripts */,
 				27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */,
 				27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */,
 				03B0221829231FA6001C7E63 /* Easydict */,
@@ -3656,6 +3711,7 @@
 		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				4D4D6D6F0000000000000024 /* DarkReader */,
 				0377C0912F13EAFE00302A2C /* Environment */,
 				0377C08D2F13EAAC00302A2C /* Views */,
 				03F2D02F2F0FE6D600A99FC0 /* EventMonitor */,
@@ -3752,8 +3808,6 @@
 				223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */,
 				0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */,
 				CCD19E15F95144B0B2CAF66F /* ClaudeCodeDebugWindow.swift */,
-				A7C0F3B12D4E56A7890BCDEF /* claude-code-overview.html */,
-				A7C0F3B22D4E56A7890BCDEF /* claude-code-architecture.svg */,
 			);
 			path = ClaudeCode;
 			sourceTree = "<group>";
@@ -3850,7 +3904,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = EZ;
 				LastSwiftUpdateCheck = 1510;
-				LastUpgradeCheck = 2640;
+				LastUpgradeCheck = 2700;
 				ORGANIZATIONNAME = izual;
 				TargetAttributes = {
 					03022F2D2B370B7100B63209 = {
@@ -4010,6 +4064,10 @@
 				03BFBB772923A09B00C48725 /* white-blue-icon@2x.png in Resources */,
 				030D612E2CD9BBC3000DF298 /* Package.resolved in Resources */,
 				03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */,
+				4D4D6D6F0000000000000002 /* MDictEntryScript.js in Resources */,
+				4D4D6D6F0000000000000003 /* MDictStyleScript.js in Resources */,
+				4D4D6D6F0000000000000004 /* darkreader.min.js in Resources */,
+				4D4D6D6F0000000000000005 /* DarkReader-LICENSE.txt in Resources */,
 				03779F142BB256B5008D3C42 /* EncryptedSecretKeys.plist in Resources */,
 				E34250B62E681A3100CEC295 /* Easydict-26.icon in Resources */,
 				03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */,
@@ -4414,6 +4472,7 @@
 				03916D712E68154F007E50D7 /* Task+Sleep.swift in Sources */,
 				03A8846C2F12000100D5C0DE /* Task+Timeout.swift in Sources */,
 				0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */,
+				0A1189A22F700001005C51D /* ServiceTabListViews.swift in Sources */,
 				031760EB2E065EF500CE8FD7 /* AppleOCREngine.swift in Sources */,
 				03882F8D29D95044005B5A52 /* CTView.m in Sources */,
 				0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */,
@@ -4432,6 +4491,7 @@
 				8049F36B2F0376B000DD454F /* NSImage+Export.swift in Sources */,
 				8049F36C2F0376B000DD454F /* NSImage+RoundedCorner.swift in Sources */,
 				03A5E0922D3C020200FF7D95 /* StreamService.swift in Sources */,
+				0DEEFE010001000000000015 /* ReasoningEffort.swift in Sources */,
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
 				03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */,
 				035166F92E0C0FF9004C65BB /* Int+ToDouble.swift in Sources */,
@@ -4674,8 +4734,8 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
+				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -4762,7 +4822,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 45Z6V4YD5U;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -5019,7 +5079,7 @@
 			repositoryURL = "https://github.com/vapor/vapor.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.112.1;
+				minimumVersion = 4.122.0;
 			};
 		};
 		0354E91E2D3601500050E5BE /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {

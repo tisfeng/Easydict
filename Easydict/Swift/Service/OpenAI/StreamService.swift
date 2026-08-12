@@ -319,11 +319,11 @@ public class StreamService: QueryService {
         stringDefaultsKey(.endpoint, defaultValue: defaultEndpoint)
     }
 
-    var endpointPlaceholder: LocalizedStringKey {
+    var endpointPlaceholder: String {
         defaultEndpoint
             .isEmpty
-            ? "service.configuration.openai.endpoint.placeholder"
-            : LocalizedStringKey(defaultEndpoint)
+            ? String(localized: "service.configuration.openai.endpoint.placeholder")
+            : defaultEndpoint
     }
 
     var defaultEndpoint: String {
@@ -371,7 +371,7 @@ public class StreamService: QueryService {
         ]
     }
 
-    var apiKeyPlaceholder: LocalizedStringKey {
+    var apiKeyPlaceholder: String {
         "\(serviceType().rawValue) API Key"
     }
 
@@ -390,6 +390,25 @@ public class StreamService: QueryService {
     var enableStreaming: Bool {
         get { Defaults[enableStreamingKey] }
         set { Defaults[enableStreamingKey] = newValue }
+    }
+
+    /// Whether this service exposes the shared reasoning effort picker and
+    /// sends the reasoning effort parameters. Defaults to `false`; services
+    /// that support reasoning override it to `true` and read `reasoningEffort`
+    /// when building their request.
+    var supportsReasoningEffort: Bool {
+        false
+    }
+
+    /// Storage key for the shared `off/high/max` reasoning effort. Named
+    /// distinctly from CodexCLIService's CLI-specific `reasoningEffortKey`,
+    /// which uses a different effort type, so the two can coexist.
+    var reasoningEffortDefaultsKey: Defaults.Key<ReasoningEffort> {
+        serviceDefaultsKey(.reasoningEffort, defaultValue: .off)
+    }
+
+    var reasoningEffort: ReasoningEffort {
+        Defaults[reasoningEffortDefaultsKey]
     }
 
     func validModels(from supportedModels: String) -> [String] {

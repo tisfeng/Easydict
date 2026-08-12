@@ -55,6 +55,9 @@ extension Defaults.Keys {
     static let autoQueryPastedText = Key<Bool>(
         "EZConfiguration_kAutoQueryPastedTextKey", default: false
     )
+    static let autoQueryWhenTextChanged = Key<Bool>(
+        "EZConfiguration_kAutoQueryWhenTextChangedKey", default: false
+    )
     static let autoCopyOCRText = Key<Bool>("EZConfiguration_kAutoCopyOCRTextKey", default: false)
     static let autoCopySelectedText = Key<Bool>(
         "EZConfiguration_kAutoCopySelectedTextKey", default: false

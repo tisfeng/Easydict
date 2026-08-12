@@ -60,6 +60,9 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 
 - (void)scrollToEndOfTextView;
 
+/// Cancel the pending auto-query-while-typing debounce.
+- (void)cancelAutoQuery;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -49,21 +49,35 @@ class GlobalContext: NSObject {
 
     let updaterController: SPUStandardUpdaterController
 
-    // refresh subscribed services after duplicate service
+    /// Rebuilds configuration observers for stream services used by any window.
+    ///
+    /// Service membership is window-scoped, but stream configuration is shared
+    /// by service identifier. Observe the window union once per exact identifier
+    /// so Fixed- or Mini-only services stay synchronized without duplicate events.
     func reloadLLMServicesSubscribers() {
         logInfo("reloadLLMServicesSubscribers")
 
         for service in services {
-            if let llmService = service as? StreamService {
-                llmService.cancelSubscribers()
-            }
+            service.cancelSubscribers()
         }
-        let allServiceTypes = LocalStorage.shared().allServiceTypes(EZWindowType.main)
-        services = QueryServiceFactory.shared.services(fromTypes: allServiceTypes)
-        for service in services {
-            if let llmService = service as? StreamService {
-                llmService.setupSubscribers()
+        let storage = LocalStorage.shared()
+        let serviceEntries = [EZWindowType.main, .fixed, .mini]
+            .flatMap { windowType in
+                storage.allServiceTypes(windowType).map {
+                    (typeId: $0, windowType: windowType)
+                }
             }
+        var seenTypeIds = Set<String>()
+        services = serviceEntries.compactMap { entry in
+            guard seenTypeIds.insert(entry.typeId).inserted,
+                  QueryServiceFactory.shared.isStreamService(typeIdIfHave: entry.typeId)
+            else {
+                return nil
+            }
+            return storage.service(entry.typeId, windowType: entry.windowType) as? StreamService
+        }
+        for service in services {
+            service.setupSubscribers()
         }
     }
 
@@ -75,11 +89,13 @@ class GlobalContext: NSObject {
     // TODO: This code is not good, we should improve it later.
 
     /**
-     We need all services to observe llm serivce subscribers for query windows and settings, `services` should keep a strong reference and do not deallocate during the app lifecycle.
+     We need stream services to observe LLM service subscribers for query
+     windows and settings. `services` should keep a strong reference and not
+     deallocate during the app lifecycle.
 
-     When notify a service configuration changed, it will init a new service, this is bad.
-
-     For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
+     Configuration notifications currently create new service instances.
+     Cancel old subscribers before replacing services because old instances may
+     be retained elsewhere.
      */
-    private var services: [QueryService] = []
+    private var services: [StreamService] = []
 }
