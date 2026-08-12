@@ -226,7 +226,11 @@ final class EventMonitor: NSObject {
     private var escapeKeyMonitor: Any?
     private var isAutoSelectTextMonitoringEnabled = false
     private var autoSelectionGeneration: UInt = 0
+}
 
+// MARK: - Private Implementation
+
+extension EventMonitor {
     private func configureDependencies() {
         eventMonitorEngine.eventHandler = { [weak self] event in
             self?.handleMonitorEvent(event)
