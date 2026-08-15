@@ -26,6 +26,9 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     timeout-minutes: 20
     env:
       UPDATE_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'update' }}
@@ -72,4 +75,5 @@ jobs:
 
       - name: Deploy Pages
         if: env.UPDATE_MODE == 'update'
+        id: deployment
         uses: actions/deploy-pages@v4
