@@ -1,0 +1,75 @@
+name: Update Star History
+
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Verify access without writing, or rebuild and publish the chart"
+        required: true
+        default: update
+        type: choice
+        options:
+          - verify
+          - update
+
+concurrency:
+  group: star-history
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      UPDATE_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'update' }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Verify or update history
+        run: |
+          python3 scripts/star-history/update_history.py \
+            --repo "$GITHUB_REPOSITORY" \
+            --data-dir docs/assets/star-history \
+            --site-dir "$RUNNER_TEMP/star-history-site" \
+            --mode "$UPDATE_MODE"
+
+      - name: Commit generated assets
+        if: env.UPDATE_MODE == 'update'
+        run: |
+          if git diff --quiet -- docs/assets/star-history; then
+            echo "Star History is unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/assets/star-history
+          git commit -m "chore(readme): update star history data"
+          git push
+
+      - name: Configure GitHub Pages
+        if: env.UPDATE_MODE == 'update'
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        if: env.UPDATE_MODE == 'update'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ runner.temp }}/star-history-site
+
+      - name: Deploy Pages
+        if: env.UPDATE_MODE == 'update'
+        uses: actions/deploy-pages@v4
