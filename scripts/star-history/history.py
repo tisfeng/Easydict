@@ -42,30 +42,58 @@ def aggregate_stargazers(entries: Iterable[dict[str, Any]]) -> list[dict[str, An
 def build_history(
     repository: str,
     entries: Iterable[dict[str, Any]],
-    current_count: int,
     generated_at: str,
     avatar: dict[str, str] | None = None,
 ) -> dict[str, Any]:
-    """Build and validate the persisted history document."""
+    """Build the initial history document from stargazer timestamps."""
 
     points = aggregate_stargazers(entries)
     final_count = points[-1]["count"] if points else 0
-    if final_count != current_count:
-        raise ValueError(
-            "historical count does not match repository count: "
-            f"history={final_count}, repository={current_count}"
-        )
 
     history: dict[str, Any] = {
         "schemaVersion": 1,
         "repository": repository,
         "generatedAt": generated_at,
-        "starCount": current_count,
+        "starCount": final_count,
         "points": points,
     }
     if avatar is not None:
         history["avatar"] = avatar
     return history
+
+
+def append_star_count_snapshot(
+    history: dict[str, Any],
+    snapshot_date: str,
+    observed_count: int,
+    generated_at: str,
+    avatar: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    """Append a monotonic weekly star-count snapshot to existing history."""
+
+    validate_history(history)
+    if not isinstance(observed_count, int) or observed_count < 0:
+        raise ValueError("observed star count must be a non-negative integer")
+
+    points = [dict(point) for point in history["points"]]
+    previous_count = points[-1]["count"] if points else 0
+    snapshot_count = max(previous_count, observed_count)
+
+    if points and snapshot_date < points[-1]["date"]:
+        raise ValueError("snapshot date must not precede the latest history point")
+    if points and snapshot_date == points[-1]["date"]:
+        points[-1]["count"] = max(points[-1]["count"], snapshot_count)
+    else:
+        points.append({"date": snapshot_date, "count": snapshot_count})
+
+    updated = dict(history)
+    updated["generatedAt"] = generated_at
+    updated["starCount"] = points[-1]["count"] if points else 0
+    updated["points"] = points
+    if avatar is not None:
+        updated["avatar"] = avatar
+    validate_history(updated)
+    return updated
 
 
 def validate_history(history: dict[str, Any]) -> None:
@@ -98,8 +126,10 @@ def validate_history(history: dict[str, Any]) -> None:
         count = point.get("count")
         if not isinstance(date, str) or not isinstance(count, int):
             raise ValueError("history points must contain date and integer count")
-        if date <= previous_date or count <= previous_count:
-            raise ValueError("history points must be strictly increasing")
+        if date <= previous_date:
+            raise ValueError("history point dates must be strictly increasing")
+        if count < previous_count:
+            raise ValueError("history point counts must not decrease")
         previous_date = date
         previous_count = count
 

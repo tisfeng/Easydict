@@ -247,9 +247,8 @@ def render_viewer(history: dict[str, Any]) -> str:
       const plotHeight = height - top - bottom;
       const values = points.map((point) => point.count);
       const maxValue = Math.max(...values, 1);
-      const firstTime = points.length ? Date.parse(points[0].date) : 0;
-      const xValues = points.map((point) => mode === "Timeline"
-        ? (Date.parse(point.date) - firstTime) / 86400000
+      const xValues = points.map((point, index) => mode === "Timeline"
+        ? index
         : Date.parse(point.date));
       const minX = xValues.length ? xValues[0] : 0;
       const maxX = xValues.length ? xValues[xValues.length - 1] || 1 : 1;
@@ -259,7 +258,7 @@ def render_viewer(history: dict[str, Any]) -> str:
         const y = top + (1 - point.count / maxValue) * plotHeight;
         return `${{x.toFixed(2)}},${{y.toFixed(2)}}`;
       }}).join(" ");
-      const labels = mode === "Timeline" ? "Days since first star" : "Date";
+      const labels = mode === "Timeline" ? "Timeline" : "Date";
       const line = pointsMarkup
         ? `<polyline points="${{pointsMarkup}}" fill="none" stroke="var(--chart-line)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />`
         : "";

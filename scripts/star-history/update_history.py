@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch all stargazer timestamps and publish aggregate Star History data."""
+"""Update and publish repository-owned Star History data."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-from history import build_history, validate_history
+from history import append_star_count_snapshot, build_history, validate_history
 from render_chart import write_outputs
 
 
@@ -91,12 +91,12 @@ def fetch_avatar(url: str, token: str) -> dict[str, str] | None:
     }
 
 
-def fetch_history(
+def fetch_repository_info(
     repository: str,
     token: str,
     include_avatar: bool = False,
-) -> tuple[list[dict[str, object]], int, dict[str, str] | None]:
-    """Fetch every page and return entries plus the current aggregate count."""
+) -> tuple[int, dict[str, str] | None]:
+    """Fetch the repository's current star count and optional avatar."""
 
     repository_info = api_get(f"/repos/{repository}", token, accept=JSON_ACCEPT)
     if not isinstance(repository_info, dict) or not isinstance(
@@ -110,6 +110,15 @@ def fetch_history(
         avatar_url = owner.get("avatar_url")
         if isinstance(avatar_url, str):
             avatar = fetch_avatar(avatar_url, token)
+
+    return current_count, avatar
+
+
+def fetch_stargazers(
+    repository: str,
+    token: str,
+) -> list[dict[str, object]]:
+    """Fetch stargazer timestamps for the one-time initial backfill."""
 
     entries: list[dict[str, object]] = []
     page = 1
@@ -128,7 +137,7 @@ def fetch_history(
             break
         page += 1
 
-    return entries, current_count, avatar
+    return entries
 
 
 def load_existing(path: Path) -> dict[str, object] | None:
@@ -161,7 +170,9 @@ def main() -> int:
     if not token:
         raise RuntimeError("GH_TOKEN or GITHUB_TOKEN is required")
 
-    entries, current_count, avatar = fetch_history(
+    history_path = args.data_dir / "history.json"
+    existing = load_existing(history_path) if args.mode == "update" else None
+    current_count, avatar = fetch_repository_info(
         args.repo, token, include_avatar=args.mode == "update"
     )
     generated_at = (
@@ -170,22 +181,30 @@ def main() -> int:
         .isoformat()
         .replace("+00:00", "Z")
     )
-    history = build_history(
-        args.repo, entries, current_count, generated_at, avatar=avatar
-    )
-    print(f"Validated {len(entries)} stargazers; current count is {current_count}")
-
     if args.mode == "verify":
+        print(f"Verified repository access; current count is {current_count}")
         print("Verification complete; no files were written")
         return 0
 
-    history_path = args.data_dir / "history.json"
-    existing = load_existing(history_path)
-    if existing and existing.get("points") == history.get("points"):
-        history["generatedAt"] = existing.get("generatedAt", generated_at)
-        history["starCount"] = existing.get("starCount", current_count)
-        if history.get("avatar") is None and existing.get("avatar") is not None:
-            history["avatar"] = existing["avatar"]
+    if existing is None:
+        entries = fetch_stargazers(args.repo, token)
+        history = build_history(args.repo, entries, generated_at, avatar=avatar)
+        print(
+            f"Backfilled {len(entries)} stargazers; "
+            f"initial count is {history['starCount']}"
+        )
+    else:
+        history = append_star_count_snapshot(
+            existing,
+            snapshot_date=generated_at[:10],
+            observed_count=current_count,
+            generated_at=generated_at,
+            avatar=avatar,
+        )
+        print(
+            f"Appended weekly snapshot; observed count is {current_count}, "
+            f"chart count is {history['starCount']}"
+        )
 
     write_json_if_changed(history_path, history)
     write_outputs(history, args.data_dir, args.site_dir)
