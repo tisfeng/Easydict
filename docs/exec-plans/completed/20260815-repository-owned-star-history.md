@@ -2,7 +2,7 @@
 
 **状态：** 已完成
 **创建日期：** 2026-08-15
-**更新日期：** 2026-08-15
+**更新日期：** 2026-08-16
 **负责人：** tisfeng
 **链接：** `PR #1267`、`https://github.com/star-history/star-history/issues/542`
 
@@ -16,7 +16,7 @@ Star 曲线，同时保留 Date 图表、浅色和深色 SVG，以及交互式�
 
 - 获取 stargazer 历史时间戳，聚合每日累计数量，并在图表中内嵌仓库所有者头像。
 - 生成确定性的浅色/深色手绘风格 SVG，以及自包含的 Date/Timeline 查看器。
-- 使用仓库内置 token 执行定时和手动 GitHub Actions 更新。
+- 使用仓库内置 token 每周和手动执行 GitHub Actions 更新。
 - 更新中英文 README 引用，并完成针对性的验证。
 - 不修改 Easydict 产品代码，不依赖第三方图表服务，也不保存 stargazer 身份信息。
 
@@ -29,8 +29,8 @@ Star 曲线，同时保留 Date 图表、浅色和深色 SVG，以及交互式�
   支持 Date/Timeline 哈希参数和浅色/深色系统主题的静态查看器。SVG 渲染器沿用
   原 Star History 的手绘风格，使用坐标轴和曲线抖动滤镜及手写字体回退；标题前显示
   仓库头像，并移除右下角重复的仓库名。
-- `.github/workflows/update-star-history.yml` 支持每日或手动运行，提交变更后的
-  聚合资源，并通过 GitHub Pages 部署查看器。
+- `.github/workflows/update-star-history.yml` 每周或手动运行，将变更提交到专用更新
+  分支，创建或更新 PR，并在 CI 通过后自动合并；同时通过 GitHub Pages 部署查看器。
 - `docs/assets/star-history/` 保存初次回填的 14,220 个 star 数据。
 
 ## 验证
@@ -43,8 +43,9 @@ Star 曲线，同时保留 Date 图表、浅色和深色 SVG，以及交互式�
 - 本地没有安装 `actionlint`；工作流 YAML 解析通过。
 - 已将重新生成的浅色 SVG 栅格化并完成视觉检查，手绘图表、标题头像和已移除的右下角
   重复标签均符合预期。
+- 工作流改为每周日运行，并完成本地 YAML 解析和差异检查。
 
 ## 后续工作
 
-- 推送并合并分支后，将仓库 Pages 来源设置为 GitHub Actions；该步骤未在本地修改
-  远程仓库设置。
+- 仓库 Pages 来源已设置为 GitHub Actions；远程分支保护仍需允许自动更新 PR 在 CI
+  通过后合并。

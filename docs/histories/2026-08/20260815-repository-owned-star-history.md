@@ -18,6 +18,8 @@
   不依赖外部头像 URL。
 - 增加不依赖运行时 token 的静态 Date/Timeline viewer，并通过 GitHub Pages 部署。
 - 增加 API 有限重试、聚合/渲染测试和执行计划记录。
+- 将更新频率改为每周一次，并改用专用更新分支创建 PR；CI 通过后由 GitHub Actions
+  自动合并，不需要个人 PAT 或人工批准每日更新。
 
 ### Validation
 
@@ -25,8 +27,9 @@
   一致。
 - Python 单元测试、编译、JSON、SVG XML、`git diff --check` 和 Agent 文档结构
   检查通过；重新生成的 SVG 已完成本地视觉检查。
+- workflow YAML 解析通过。
 
 ### Follow-ups
 
-- 合并并推送后，将仓库 Pages 来源设置为 GitHub Actions；此步骤未在本地修改
-  远程仓库设置。
+- 需要在仓库分支保护中关闭 `Require approvals` 和 `Require review from Code Owners`，
+  保留 PR、CI、分支最新和对话解决要求；并在仓库设置中允许 auto-merge。
