@@ -245,11 +245,11 @@ extension DeepLService {
 
     // MARK: - Official API Response Parser
 
-    private func parseOfficialResponse(_ responseDict: [String: Any]) -> [String]? {
+    func parseOfficialResponse(_ responseDict: [String: Any]) -> [String]? {
         guard let responseData = try? JSONSerialization.data(withJSONObject: responseDict),
               let response = try? JSONDecoder().decode(DeepLOfficialResponse.self, from: responseData),
-              let translatedText = response.translations?.first?.text?.trim(),
-              !translatedText.isEmpty
+              let translatedText = response.translations?.first?.text,
+              !translatedText.trim().isEmpty
         else {
             return nil
         }
