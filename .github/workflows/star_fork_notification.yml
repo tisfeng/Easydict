@@ -26,11 +26,27 @@ jobs:
 
       - name: Get repository information
         id: repo_info
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          result=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}")
-          stars=$(echo $result | jq '.stargazers_count')
-          forks=$(echo $result | jq '.forks_count')
-          repo_name=$(echo $result | jq -r '.name')
+          github_api() {
+            curl \
+              --fail-with-body \
+              --silent \
+              --show-error \
+              --retry 3 \
+              --retry-delay 1 \
+              --connect-timeout 10 \
+              --max-time 30 \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              "$1"
+          }
+
+          result=$(github_api "https://api.github.com/repos/${GITHUB_REPOSITORY}")
+          stars=$(jq -er '.stargazers_count | numbers' <<< "$result")
+          forks=$(jq -er '.forks_count | numbers' <<< "$result")
+          repo_name=$(jq -er '.name | strings' <<< "$result")
           echo "Number of stars: $stars"
           echo "Number of forks: $forks"
 
@@ -40,18 +56,92 @@ jobs:
 
       - name: Get repo download count
         id: release_stats
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          download_count=$(curl -s -H  "Authorization: token ${{ secrets.GITHUB_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}/releases" | jq '.[].assets[].download_count' | awk '{sum += $1} END {print sum}')
+          github_api() {
+            curl \
+              --fail-with-body \
+              --silent \
+              --show-error \
+              --retry 3 \
+              --retry-delay 1 \
+              --connect-timeout 10 \
+              --max-time 30 \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              "$1"
+          }
+
+          releases=$(github_api "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases?per_page=100")
+          download_count=$(jq -er '
+            if type != "array" then
+              error("Expected releases API response to be an array")
+            else
+              ([.[] | .assets[]?.download_count] | add // 0)
+            end
+          ' <<< "$releases")
           echo "Number of downloads: $download_count"
           echo "download_count=$download_count" >> $GITHUB_OUTPUT
 
       - name: Get user information
         id: check_conditions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Fetch user's GitHub statistics
-          earn_star_count=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/users/${{ github.actor }}/repos?per_page=100&sort=pushed" | jq '[.[] | .stargazers_count] | add // 0')
-          commit_count=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/search/commits?per_page=100&q=author:${{ github.actor }}" | jq -r '.total_count // 0')
-          follower_count=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/users/${{ github.actor }}" | jq '.followers // 0')
+          github_api() {
+            curl \
+              --fail-with-body \
+              --silent \
+              --show-error \
+              --retry 3 \
+              --retry-delay 1 \
+              --connect-timeout 10 \
+              --max-time 30 \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              "$1"
+          }
+
+          # Fetch all public repositories owned by the user, one page at a time.
+          page=1
+          per_page=100
+          earn_star_count=0
+
+          while true; do
+            repositories=$(github_api \
+              "https://api.github.com/users/${GITHUB_ACTOR}/repos?type=owner&per_page=${per_page}&page=${page}&sort=pushed")
+            page_count=$(jq -er '
+              if type == "array" then
+                length
+              else
+                error("Expected repositories API response to be an array")
+              end
+            ' <<< "$repositories")
+            page_stars=$(jq -er '
+              if any(.[]; (.stargazers_count | type) != "number") then
+                error("Invalid stargazers_count in repositories API response")
+              else
+                (map(.stargazers_count) | add // 0)
+              end
+            ' <<< "$repositories")
+
+            earn_star_count=$((earn_star_count + page_stars))
+            echo "Fetched public repositories page $page: $page_count repositories"
+
+            if (( page_count < per_page )); then
+              break
+            fi
+
+            page=$((page + 1))
+          done
+
+          commit_response=$(github_api \
+            "https://api.github.com/search/commits?per_page=1&q=author:${GITHUB_ACTOR}")
+          commit_count=$(jq -er '.total_count | numbers' <<< "$commit_response")
+
+          user_response=$(github_api "https://api.github.com/users/${GITHUB_ACTOR}")
+          follower_count=$(jq -er '.followers | numbers' <<< "$user_response")
 
           echo "Star count: $earn_star_count"
           echo "Commit count: $commit_count"
