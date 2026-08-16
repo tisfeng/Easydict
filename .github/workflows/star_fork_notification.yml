@@ -151,9 +151,9 @@ jobs:
           echo "follower_count=$follower_count" >> $GITHUB_OUTPUT
 
           # Notify only when the user meets at least two quality criteria.
-          STAR_THRESHOLD=500
-          FOLLOWER_THRESHOLD=500
-          COMMIT_THRESHOLD=10000
+          STAR_THRESHOLD=300
+          FOLLOWER_THRESHOLD=300
+          COMMIT_THRESHOLD=5000
 
           user_conditions_met=false
           notification_reason=""
