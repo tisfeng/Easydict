@@ -8,74 +8,47 @@
 
 import Foundation
 
-// MARK: - DeepLTranslateResponse
+// MARK: - DeepLWebTranslateRequest
 
-/// DeepL Web Translate Response
-///
-/// Example response:
-/// ```json
-/// {
-///   "id": 138686000,
-///   "jsonrpc": "2.0",
-///   "result": {
-///     "detectedLanguages": {
-///       "EN": 0.048519,
-///       "ZH": 0.010874,
-///       ...
-///     },
-///     "lang": "EN",
-///     "lang_is_confident": false,
-///     "texts": [
-///       {
-///         "alternatives": [
-///           { "text": "不错" },
-///           { "text": "好" },
-///           { "text": "好的" }
-///         ],
-///         "text": "很好"
-///       }
-///     ]
-///   }
-/// }
-/// ```
-struct DeepLTranslateResponse: Codable {
-    let id: Int?
-    let jsonrpc: String?
-    let result: DeepLTranslateResult?
-}
-
-// MARK: - DeepLTranslateResult
-
-struct DeepLTranslateResult: Codable {
+/// Request body used by DeepL's anonymous oneshot translation endpoint.
+struct DeepLWebTranslateRequest: Encodable {
     enum CodingKeys: String, CodingKey {
-        case detectedLanguages
-        case lang
-        case langIsConfident = "lang_is_confident"
-        case texts
+        case text
+        case targetLang = "target_lang"
+        case sourceLang = "source_lang"
+        case usageType = "usage_type"
+        case appInformation = "app_information"
     }
 
-    let detectedLanguages: [String: Double]?
-    let lang: String?
-    let langIsConfident: Bool?
-    let texts: [DeepLTranslateText]?
+    let text: [String]
+    let targetLang: String
+    let sourceLang: String?
+    let usageType: String
+    let appInformation: DeepLAppInformation
 }
 
-// MARK: - DeepLTranslateText
+// MARK: - DeepLAppInformation
 
-struct DeepLTranslateText: Codable {
-    let alternatives: [DeepLTranslateAlternative]?
-    let text: String?
-}
+/// Client profile fields expected by the DeepL interactive-client endpoint.
+struct DeepLAppInformation: Encodable {
+    enum CodingKeys: String, CodingKey {
+        case os
+        case osVersion = "os_version"
+        case appVersion = "app_version"
+        case appBuild = "app_build"
+        case instanceID = "instance_id"
+    }
 
-// MARK: - DeepLTranslateAlternative
-
-struct DeepLTranslateAlternative: Codable {
-    let text: String?
+    let os: String
+    let osVersion: String
+    let appVersion: String
+    let appBuild: String
+    let instanceID: String
 }
 
 // MARK: - DeepLOfficialResponse
 
-/// DeepL Official API Response
+/// Shared response returned by DeepL's official and oneshot translation endpoints.
 ///
 /// Example response:
 /// ```json
