@@ -16,12 +16,18 @@ struct ServiceTab: View {
     // MARK: Internal
 
     var body: some View {
-        HSplitView {
-            VStack(spacing: 16) {
-                WindowTypePicker(windowType: $viewModel.windowType)
-                    .padding(.horizontal, 12)
-                    .padding(.top)
+        // Keep the 4-segment window-type picker above the split so Chinese
+        // labels (e.g. 侧悬浮窗口 / OCR 覆盖) are not clipped in the narrow
+        // service list column.
+        VStack(spacing: 0) {
+            WindowTypePicker(windowType: $viewModel.windowType)
+                .frame(maxWidth: 520, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 12)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
 
+            HSplitView {
                 VStack(alignment: .leading, spacing: 8) {
                     List(
                         selection: Binding(
@@ -46,11 +52,15 @@ struct ServiceTab: View {
                 }
                 .padding(.horizontal, 12)
                 .padding(.bottom, 12)
-            }
-            .frame(minWidth: 270, maxWidth: 320, maxHeight: .infinity)
+                .frame(
+                    minWidth: 350,
+                    maxWidth: 350,
+                    maxHeight: .infinity
+                )
 
-            ServiceDetailView()
-                .layoutPriority(1)
+                ServiceDetailView()
+                    .layoutPriority(1)
+            }
         }
         .environmentObject(viewModel)
         .onChange(of: viewModel.windowType) { _ in
