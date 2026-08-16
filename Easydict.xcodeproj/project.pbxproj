@@ -633,21 +633,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A5C000000000000000000001 /* workflow.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = workflow.json; sourceTree = "<group>"; };
-		A5C000000000000000000002 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		A5C000000000000000000003 /* export-options.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "export-options.plist"; sourceTree = "<group>"; };
-		A5C000000000000000000004 /* release-appcast.py */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.python; path = "release-appcast.py"; sourceTree = "<group>"; };
-		A5C000000000000000000005 /* release-appcast.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-appcast.sh"; sourceTree = "<group>"; };
-		A5C000000000000000000006 /* release-branch-sync.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-branch-sync.sh"; sourceTree = "<group>"; };
-		A5C000000000000000000007 /* release-build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-build.sh"; sourceTree = "<group>"; };
-		A5C000000000000000000008 /* release-common.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-common.sh"; sourceTree = "<group>"; };
-		A5C000000000000000000009 /* release-easydict-legacy-flow.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "release-easydict-legacy-flow.svg"; sourceTree = "<group>"; };
-		A5C00000000000000000000B /* release-easydict-legacy.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-easydict-legacy.sh"; sourceTree = "<group>"; };
-		A5C00000000000000000000C /* release-easydict.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-easydict.sh"; sourceTree = "<group>"; };
-		A5C00000000000000000000D /* release-github.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-github.sh"; sourceTree = "<group>"; };
-		A5C00000000000000000000E /* release-package.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-package.sh"; sourceTree = "<group>"; };
-		A5C00000000000000000000F /* release-preflight.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-preflight.sh"; sourceTree = "<group>"; };
-		A5C000000000000000000010 /* release-verify.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "release-verify.sh"; sourceTree = "<group>"; };
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
@@ -1407,35 +1392,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A5C000000000000000000011 /* .asc */ = {
-			isa = PBXGroup;
-			children = (
-				A5C000000000000000000001 /* workflow.json */,
-			);
-			path = .asc;
-			sourceTree = "<group>";
-		};
-		A5C000000000000000000012 /* release-scripts */ = {
-			isa = PBXGroup;
-			children = (
-				A5C000000000000000000002 /* README.md */,
-				A5C000000000000000000003 /* export-options.plist */,
-				A5C000000000000000000004 /* release-appcast.py */,
-				A5C000000000000000000005 /* release-appcast.sh */,
-				A5C000000000000000000006 /* release-branch-sync.sh */,
-				A5C000000000000000000007 /* release-build.sh */,
-				A5C000000000000000000008 /* release-common.sh */,
-				A5C000000000000000000009 /* release-easydict-legacy-flow.svg */,
-				A5C00000000000000000000B /* release-easydict-legacy.sh */,
-				A5C00000000000000000000C /* release-easydict.sh */,
-				A5C00000000000000000000D /* release-github.sh */,
-				A5C00000000000000000000E /* release-package.sh */,
-				A5C00000000000000000000F /* release-preflight.sh */,
-				A5C000000000000000000010 /* release-verify.sh */,
-			);
-			path = "release-scripts";
-			sourceTree = "<group>";
-		};
 		02DEDC042026043000000001 /* Markdown */ = {
 			isa = PBXGroup;
 			children = (
@@ -3652,8 +3608,6 @@
 		C99EEB0F2385796700FEE666 = {
 			isa = PBXGroup;
 			children = (
-				A5C000000000000000000011 /* .asc */,
-				A5C000000000000000000012 /* release-scripts */,
 				27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */,
 				27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */,
 				03B0221829231FA6001C7E63 /* Easydict */,

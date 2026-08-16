@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 # Public entry point for preparing, drafting, and publishing Easydict releases.
-# The actual stages are declared in .asc/workflow.json and can be resumed.
+# The actual stages are declared in scripts/release/asc-workflow.json and can be resumed.
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-WORKFLOW_PATH="$ROOT_DIR/.asc/workflow.json"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+WORKFLOW_PATH="$ROOT_DIR/scripts/release/asc-workflow.json"
 
 usage() {
     cat <<'EOF'
@@ -26,7 +26,7 @@ Options:
   -h, --help              Show this help
 
 The legacy release implementation remains available as:
-  release-scripts/release-easydict-legacy.sh
+  scripts/release/release-easydict-legacy.sh
 EOF
 }
 
