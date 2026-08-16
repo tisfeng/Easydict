@@ -89,6 +89,10 @@ Icon?
 
 .sentryclirc
 
+# Python
+__pycache__/
+*.py[cod]
+
 # SwiftFormat 
 # https://github.com/nicklockwood/SwiftFormat?tab=readme-ov-file#xcode-build-phase
 BuildTools/.build
