@@ -47,6 +47,18 @@ struct DeepLServiceTests {
         #expect(response.translations?.first?.text == "你好")
     }
 
+    /// Ensures official API response formatting is preserved after parsing.
+    @Test("Preserves official response whitespace")
+    func preservesOfficialResponseWhitespace() throws {
+        let response: [String: Any] = [
+            "translations": [["text": "\n  Hello\n"]],
+        ]
+
+        let translatedResults = try #require(DeepLService().parseOfficialResponse(response))
+
+        #expect(translatedResults == ["", "  Hello", ""])
+    }
+
     // MARK: Private
 
     /// Builds a deterministic request fixture matching the new DeepL protocol.
