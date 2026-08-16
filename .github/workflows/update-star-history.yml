@@ -1,0 +1,111 @@
+name: Update Star History
+
+on:
+  schedule:
+    - cron: "17 2 * * 0"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Verify access without writing, or rebuild and publish the chart"
+        required: true
+        default: update
+        type: choice
+        options:
+          - verify
+          - update
+
+concurrency:
+  group: star-history
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  pages: write
+  id-token: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    timeout-minutes: 20
+    env:
+      UPDATE_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'update' }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Verify or update history
+        run: |
+          python3 scripts/star-history/update_history.py \
+            --repo "$GITHUB_REPOSITORY" \
+            --data-dir docs/assets/star-history \
+            --site-dir "$RUNNER_TEMP/star-history-site" \
+            --mode "$UPDATE_MODE"
+
+      - name: Commit generated assets to update branch
+        id: commit
+        if: env.UPDATE_MODE == 'update'
+        env:
+          UPDATE_BRANCH: automation/star-history
+        run: |
+          if git diff --quiet -- docs/assets/star-history; then
+            echo "Star History is unchanged"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch --create "$UPDATE_BRANCH"
+          git add docs/assets/star-history
+          git commit -m "chore(readme): update star history data"
+          git fetch origin "$UPDATE_BRANCH" || true
+          git push --force-with-lease origin "$UPDATE_BRANCH"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update Star History pull request
+        if: env.UPDATE_MODE == 'update' && steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPDATE_BRANCH: automation/star-history
+        run: |
+          pr_number="$(gh pr list \
+            --base dev \
+            --head "$UPDATE_BRANCH" \
+            --state open \
+            --json number \
+            --jq '.[0].number')"
+
+          if [ -z "$pr_number" ]; then
+            pr_url="$(gh pr create \
+              --base dev \
+              --head "$UPDATE_BRANCH" \
+              --title "chore(star-history): update generated assets" \
+              --body "This pull request was created automatically by the Star History workflow.")"
+            pr_number="${pr_url##*/}"
+          fi
+
+          gh pr merge "$pr_number" --auto --squash --delete-branch
+
+      - name: Configure GitHub Pages
+        if: env.UPDATE_MODE == 'update'
+        uses: actions/configure-pages@v6
+
+      - name: Upload Pages artifact
+        if: env.UPDATE_MODE == 'update'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ${{ runner.temp }}/star-history-site
+
+      - name: Deploy Pages
+        if: env.UPDATE_MODE == 'update'
+        id: deployment
+        uses: actions/deploy-pages@v5

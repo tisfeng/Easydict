@@ -26,7 +26,7 @@ validate_release_tooling() {
     local tooling_status
 
     tooling_status="$(git -C "$RELEASE_SOURCE_ROOT" status --porcelain \
-        --untracked-files=all -- .asc release-scripts)"
+        --untracked-files=all -- scripts/release)"
     [[ -z "$tooling_status" ]] \
         || release_fail "release tooling has uncommitted changes"
 }
@@ -35,7 +35,7 @@ validate_release_tooling() {
 validate_synced_tooling() {
     local source_tree release_tree tooling_path
 
-    for tooling_path in .asc release-scripts; do
+    for tooling_path in scripts/release; do
         source_tree="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
             "HEAD:$tooling_path")"
         release_tree="$(git -C "$RELEASE_WORKTREE" rev-parse \

@@ -54,19 +54,19 @@ none are written to the repository or release metadata.
 Run from the repository root:
 
 ```bash
-./release-scripts/release-easydict.sh release 2.22.0
+./scripts/release/release-easydict.sh release 2.22.0
 ```
 
 The default channel is `beta`. For a stable update:
 
 ```bash
-./release-scripts/release-easydict.sh release 2.22.0 --channel stable
+./scripts/release/release-easydict.sh release 2.22.0 --channel stable
 ```
 
 Optional release notes and an explicit build number can be supplied:
 
 ```bash
-./release-scripts/release-easydict.sh release 2.22.0 \
+./scripts/release/release-easydict.sh release 2.22.0 \
     --notes /absolute/path/release-notes.md \
     --build-number 64
 ```
@@ -81,13 +81,13 @@ Use a smaller workflow when a release needs human inspection between stages:
 
 ```bash
 # Build, sign, notarize, package, generate appcast, and verify locally.
-./release-scripts/release-easydict.sh prepare 2.22.0
+./scripts/release/release-easydict.sh prepare 2.22.0
 
 # Prepare, synchronize the release refs, and create a verified GitHub draft.
-./release-scripts/release-easydict.sh draft 2.22.0
+./scripts/release/release-easydict.sh draft 2.22.0
 
 # Publish an existing verified draft, install the appcast, and verify remotely.
-./release-scripts/release-easydict.sh publish 2.22.0
+./scripts/release/release-easydict.sh publish 2.22.0
 ```
 
 Pass the same `--channel stable` option to a separate `publish` command when
@@ -96,16 +96,16 @@ the prepared release is stable.
 Preview the exact `asc` plan without executing release steps:
 
 ```bash
-./release-scripts/release-easydict.sh release 2.22.0 --dry-run
+./scripts/release/release-easydict.sh release 2.22.0 --dry-run
 ```
 
 ## Resume after failure
 
-`asc` records run state under `.asc/runs/`, which Git ignores. After fixing a
+`asc` records run state under `scripts/release/runs/`, which Git ignores. After fixing a
 transient problem, resume with the run ID printed by `asc`:
 
 ```bash
-./release-scripts/release-easydict.sh resume <run-id>
+./scripts/release/release-easydict.sh resume <run-id>
 ```
 
 Release state and artifacts are kept in `.tmp/release/<version>/` for audit and
@@ -137,7 +137,7 @@ GitHub draft and resumable local state rather than a half-published feed.
 
 ## Files
 
-- `.asc/workflow.json`: workflow graph and checkpoints.
+- `asc-workflow.json`: workflow graph and checkpoints.
 - `release-easydict.sh`: stable command-line entry point.
 - `release-common.sh`: paths, release configuration, and safety helpers.
 - `release-preflight.sh`: local environment and release-state checks.
@@ -156,7 +156,7 @@ and notes.
 
 ## Failure behavior
 
-- Dirty original checkout: allowed except for `.asc/` and `release-scripts/`;
+- Dirty original checkout: allowed except for `scripts/release/`;
   the workflow never builds from that checkout.
 - Dirty release worktree: stop, preserving state for inspection.
 - `dev`/`main` merge conflict: stop before versioning or pushing.
