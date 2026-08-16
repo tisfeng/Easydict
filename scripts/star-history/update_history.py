@@ -12,6 +12,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 from history import append_star_count_snapshot, build_history, validate_history
@@ -23,6 +24,7 @@ PAGE_SIZE = 100
 MAX_ATTEMPTS = 4
 JSON_ACCEPT = "application/vnd.github+json"
 STAR_ACCEPT = "application/vnd.github.star+json"
+AVATAR_SIZE = 64
 
 
 def api_get(path: str, token: str, accept: str = STAR_ACCEPT) -> object:
@@ -59,6 +61,19 @@ def api_get(path: str, token: str, accept: str = STAR_ACCEPT) -> object:
             flush=True,
         )
         time.sleep(delay)
+
+
+def _avatar_url_with_size(url: str, size: int = AVATAR_SIZE) -> str:
+    """Request a bounded GitHub avatar size while preserving other URL options."""
+
+    parsed = urlsplit(url)
+    query = [
+        (key, value)
+        for key, value in parse_qsl(parsed.query, keep_blank_values=True)
+        if key != "s"
+    ]
+    query.append(("s", str(size)))
+    return urlunsplit(parsed._replace(query=urlencode(query)))
 
 
 def fetch_avatar(url: str, token: str) -> dict[str, str] | None:
@@ -109,7 +124,7 @@ def fetch_repository_info(
     if include_avatar and isinstance(owner, dict):
         avatar_url = owner.get("avatar_url")
         if isinstance(avatar_url, str):
-            avatar = fetch_avatar(avatar_url, token)
+            avatar = fetch_avatar(_avatar_url_with_size(avatar_url), token)
 
     return current_count, avatar
 
