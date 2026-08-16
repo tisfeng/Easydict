@@ -31,6 +31,16 @@ enum EasydictCmpatibilityEntry {
             EZPatchWindowServerCornerMask()
         }
 
+        // Workaround for macOS 26 Tahoe: AppKit's AutoFill heuristics launch
+        // a per-app "AutoFill" helper process (SafariPlatformSupport.Helper)
+        // on text input. Easydict needs no system AutoFill suggestions, so
+        // disable the heuristics to keep that helper from spawning.
+        if #available(macOS 26, *) {
+            UserDefaults.standard.register(
+                defaults: ["NSAutoFillHeuristicsEnabled": false]
+            )
+        }
+
         // app launch
         EasydictApp.main()
     }
