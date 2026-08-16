@@ -28,6 +28,8 @@ extension DeepLService {
     /// The legacy JSON-RPC endpoint is no longer reliable. The oneshot request mirrors the
     /// request shape used by DeepL's interactive clients and returns the same `translations`
     /// payload as the official API.
+    /// Reference: https://github.com/OwO-Network/DLX/issues/216 and
+    /// https://github.com/OwO-Network/DLX/pull/217
     func deepLWebTranslate(
         _ text: String,
         from: Language,
