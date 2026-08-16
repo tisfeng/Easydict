@@ -10,7 +10,7 @@ SCHEME_NAME="Easydict"
 TARGET_NAME="Easydict"
 CONFIGURATION="Release"
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 WORKSPACE_PATH="$ROOT_DIR/Easydict.xcworkspace"
 PROJECT_PATH="$ROOT_DIR/Easydict.xcodeproj/project.pbxproj"
 DERIVED_DATA_DIR="$ROOT_DIR/.tmp/release-derived-data"

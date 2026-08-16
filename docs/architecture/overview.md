@@ -22,7 +22,7 @@ Easydict/
 EasydictTests/                   # 单元测试和行为测试
 Easydict.xcodeproj/              # Xcode 工程和共享 scheme
 Easydict.xcworkspace/            # workspace 和 SwiftPM 集成
-release-scripts/                 # 发布、签名、打包和 appcast 流程
+scripts/release/                # 发布、签名、打包和 appcast 流程
 ```
 
 ## 运行时边界
