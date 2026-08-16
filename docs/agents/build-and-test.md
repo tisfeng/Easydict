@@ -55,4 +55,3 @@ xcodebuild test-without-building \
 - 对变更的 `.xcstrings` 或 JSON 数据（如适用）运行 `jq -e .`。
 - 对变更的 Shell 脚本运行 `bash -n`。
 - Swift 源码发生变化时运行 `swiftformat --lint` 或仓库现有格式化工具。
-- 仓库文档发生变化时运行 `scripts/check-agent-docs.sh`。

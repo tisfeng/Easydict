@@ -143,10 +143,10 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 
 ## Star History
 
-<a href="https://star-history.dera.page/#tisfeng/easydict&Date">
+<a href="https://tisfeng.github.io/Easydict/star-history/#tisfeng/easydict&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=tisfeng/easydict&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=tisfeng/easydict&type=Date" />
-    <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=tisfeng/easydict&type=Date" />
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/assets/star-history/star-history-dark.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="./docs/assets/star-history/star-history-light.svg" />
+    <img alt="Star History Chart" src="./docs/assets/star-history/star-history-light.svg" />
   </picture>
 </a>
