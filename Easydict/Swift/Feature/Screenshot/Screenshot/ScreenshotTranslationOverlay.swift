@@ -44,13 +44,16 @@ private struct ScreenshotTranslationStatus {
 private final class ScreenshotTranslationSession {
     // MARK: Lifecycle
 
-    init(id: UUID) {
+    init(id: UUID, excludedRegions: [CGRect]) {
         self.id = id
+        self.excludedRegions = excludedRegions
     }
 
     // MARK: Internal
 
     let id: UUID
+    let excludedRegions: [CGRect]
+    var task: Task<(), Never>?
     var window: NSWindow?
     var statusWindow: NSWindow?
     var status: ScreenshotTranslationStatus?
@@ -69,12 +72,16 @@ final class ScreenshotTranslationOverlay {
 
     /// Keeps the selected region visible while OCR and translation are in progress.
     func begin(screen: NSScreen, rect: CGRect) -> UUID {
+        let excludedRegions = occupiedRegions(screen: screen, rect: rect)
         if !MyConfiguration.shared.allowMultipleScreenshotOverlays {
             closeAll()
         }
 
         let sessionID = UUID()
-        let session = ScreenshotTranslationSession(id: sessionID)
+        let session = ScreenshotTranslationSession(
+            id: sessionID,
+            excludedRegions: excludedRegions
+        )
         sessions[sessionID] = session
         sessionOrder.append(sessionID)
         let frame = screenRect(screen: screen, rect: rect)
@@ -101,32 +108,23 @@ final class ScreenshotTranslationOverlay {
         sessions[sessionID] != nil
     }
 
-    /// Returns normalized capture regions already occupied by earlier OCR result windows.
-    func excludedRegions(
-        screen: NSScreen,
-        rect: CGRect,
-        sessionID: UUID
-    )
-        -> [CGRect] {
-        guard MyConfiguration.shared.allowMultipleScreenshotOverlays else { return [] }
+    /// Returns normalized capture regions occupied when the screenshot was taken.
+    func excludedRegions(for sessionID: UUID) -> [CGRect] {
+        sessions[sessionID]?.excludedRegions ?? []
+    }
 
-        let captureFrame = screenRect(screen: screen, rect: rect)
-        guard captureFrame.width > 0, captureFrame.height > 0 else { return [] }
-
-        return sessionOrder.flatMap { id -> [CGRect] in
-            guard id != sessionID, let session = sessions[id] else { return [] }
-            return [session.window?.frame, session.statusWindow?.frame].compactMap { frame in
-                guard let frame else { return nil }
-                let overlap = captureFrame.intersection(frame)
-                guard !overlap.isNull, !overlap.isEmpty else { return nil }
-                return CGRect(
-                    x: (overlap.minX - captureFrame.minX) / captureFrame.width,
-                    y: (overlap.minY - captureFrame.minY) / captureFrame.height,
-                    width: overlap.width / captureFrame.width,
-                    height: overlap.height / captureFrame.height
-                )
-            }
+    /// Attaches the OCR and translation task so closing the session cancels its work.
+    func setTask(_ task: Task<(), Never>, for sessionID: UUID) {
+        guard let session = sessions[sessionID] else {
+            task.cancel()
+            return
         }
+        session.task = task
+    }
+
+    /// Releases a completed task while keeping its result window session alive.
+    func finishTask(_ sessionID: UUID) {
+        sessions[sessionID]?.task = nil
     }
 
     /// Shows the service currently attempting to translate the recognized text.
@@ -184,6 +182,8 @@ final class ScreenshotTranslationOverlay {
 
     func close(_ sessionID: UUID) {
         guard let session = sessions.removeValue(forKey: sessionID) else { return }
+        session.task?.cancel()
+        session.task = nil
         sessionOrder.removeAll { $0 == sessionID }
         removeStatusWindow(session)
         session.window?.orderOut(nil)
@@ -399,6 +399,8 @@ final class ScreenshotTranslationOverlay {
 
     private func closeAll() {
         for session in sessions.values {
+            session.task?.cancel()
+            session.task = nil
             removeStatusWindow(session)
             removeFrameObservers(session)
             session.window?.orderOut(nil)
@@ -418,16 +420,43 @@ final class ScreenshotTranslationOverlay {
         )
     }
 
+    /// Captures normalized regions occupied by result windows already visible in the screenshot.
+    private func occupiedRegions(screen: NSScreen, rect: CGRect) -> [CGRect] {
+        let captureFrame = screenRect(screen: screen, rect: rect)
+        guard captureFrame.width > 0, captureFrame.height > 0 else { return [] }
+
+        return sessions.values.flatMap { session -> [CGRect] in
+            [session.window?.frame, session.statusWindow?.frame].compactMap { frame in
+                guard let frame else { return nil }
+                let overlap = captureFrame.intersection(frame)
+                guard !overlap.isNull, !overlap.isEmpty else { return nil }
+                return CGRect(
+                    x: (overlap.minX - captureFrame.minX) / captureFrame.width,
+                    y: (overlap.minY - captureFrame.minY) / captureFrame.height,
+                    width: overlap.width / captureFrame.width,
+                    height: overlap.height / captureFrame.height
+                )
+            }
+        }
+    }
+
     private func resultFrame(
         sourceRect: CGRect,
         screen: NSScreen,
         mode: ScreenshotTranslateDisplayMode
     )
         -> CGRect {
-        guard mode == .imageSideBySide else { return sourceRect }
+        guard mode == .imageSideBySide,
+              sourceRect.width > 0,
+              sourceRect.height > 0 else {
+            return sourceRect
+        }
         let gap = 8.0
-        let resultWidth = min(sourceRect.width, max(180, screen.visibleFrame.width * 0.42))
-        let scale = resultWidth / sourceRect.width
+        let maxWidth = max(180, screen.visibleFrame.width * 0.42)
+        let widthScale = maxWidth / sourceRect.width
+        let heightScale = screen.visibleFrame.height / sourceRect.height
+        let scale = min(1, min(widthScale, heightScale))
+        let resultWidth = sourceRect.width * scale
         let resultHeight = sourceRect.height * scale
         let rightX = sourceRect.maxX + gap
         let leftX = sourceRect.minX - resultWidth - gap

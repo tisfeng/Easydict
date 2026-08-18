@@ -26,17 +26,21 @@ final class ScreenshotOverlayTranslator: NSObject {
         }
         let rect = Screenshot.shared.lastScreenshotRect
         let mode = MyConfiguration.shared.screenshotTranslateDisplayMode
+        let sourceLanguage = MyConfiguration.shared.fromLanguage
         let sessionID = ScreenshotTranslationOverlay.shared.begin(screen: screen, rect: rect)
 
-        Task {
+        let task = Task {
+            defer {
+                ScreenshotTranslationOverlay.shared.finishTask(sessionID)
+            }
             do {
-                let excludedRegions = ScreenshotTranslationOverlay.shared.excludedRegions(
-                    screen: screen,
-                    rect: rect,
-                    sessionID: sessionID
-                )
+                let excludedRegions = ScreenshotTranslationOverlay.shared.excludedRegions(for: sessionID)
                 let visibleImage = image.masking(excludedRegions)
-                let result = try await AppleOCREngine().recognizeText(image: visibleImage)
+                let result = try await AppleOCREngine().recognizeText(
+                    image: visibleImage,
+                    language: sourceLanguage
+                )
+                try Task.checkCancellation()
                 guard let observations = result.raw as? [EZRecognizedTextObservation],
                       !observations.isEmpty else {
                     throw QueryError.error(type: .noResult)
@@ -69,7 +73,7 @@ final class ScreenshotOverlayTranslator: NSObject {
 
                 ScreenshotTranslationOverlay.shared.show(
                     content: ScreenshotTranslationContent(
-                        image: image,
+                        image: visibleImage,
                         items: translation.items,
                         serviceName: translation.serviceName,
                         serviceIconName: translation.serviceIconName
@@ -86,6 +90,7 @@ final class ScreenshotOverlayTranslator: NSObject {
                 showError("screenshot.overlay.error.translation_failed")
             }
         }
+        ScreenshotTranslationOverlay.shared.setTask(task, for: sessionID)
     }
 
     // MARK: Private
@@ -122,6 +127,7 @@ final class ScreenshotOverlayTranslator: NSObject {
         var latestError: (any Error)?
 
         for service in services {
+            try Task.checkCancellation()
             onServiceStart(service)
             do {
                 guard let result = try await translate(
@@ -157,13 +163,14 @@ final class ScreenshotOverlayTranslator: NSObject {
         var items: [ScreenshotTranslationItem] = []
         var usedServiceID: String?
         for observation in observations where !observation.firstText.trim().isEmpty {
+            try Task.checkCancellation()
             let model = QueryModel()
             model.inputText = observation.firstText
             model.userSourceLanguage = from
             model.userTargetLanguage = to
             model.detectedLanguage = from
             model.needDetectLanguage = false
-            let result = try await service.startQuery(model)
+            let result = try await startQuery(model, with: service)
             if let error = result.error {
                 throw error
             }
@@ -183,6 +190,19 @@ final class ScreenshotOverlayTranslator: NSObject {
             serviceName: usedService.name(),
             serviceIconName: usedService.serviceType().rawValue
         )
+    }
+
+    /// Resets reused service state and records every attempted overlay request.
+    private func startQuery(
+        _ model: QueryModel,
+        with service: QueryService
+    ) async throws
+        -> QueryResult {
+        service.resetServiceResult()
+        defer {
+            LocalStorage.shared().increaseQueryService(service)
+        }
+        return try await service.startQuery(model)
     }
 
     private func showError(_ key: String) {
@@ -214,7 +234,7 @@ extension QueryService {
 }
 
 extension NSImage {
-    /// Clears normalized regions that belong to earlier OCR result windows.
+    /// Covers normalized regions that belong to earlier OCR result windows.
     fileprivate func masking(_ regions: [CGRect]) -> NSImage {
         guard !regions.isEmpty else { return self }
 
@@ -222,7 +242,8 @@ extension NSImage {
             self.draw(in: bounds)
             guard let context = NSGraphicsContext.current else { return true }
             context.saveGraphicsState()
-            context.compositingOperation = .clear
+            context.compositingOperation = .copy
+            NSColor.windowBackgroundColor.setFill()
             for region in regions {
                 NSBezierPath(
                     rect: CGRect(
