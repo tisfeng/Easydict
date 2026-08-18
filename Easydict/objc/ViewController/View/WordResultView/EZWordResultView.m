@@ -40,11 +40,6 @@ static const CGFloat kBlueTextButtonVerticalPadding_2 = 2;
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
-static BOOL EZResultNeedsDictionaryHTMLHeight(EZQueryResult *result) {
-    return [result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeAppleDictionary] ||
-           [result.serviceTypeWithUniqueIdentifier isEqualToString:EZServiceTypeMDict];
-}
-
 static BOOL EZStringHasText(NSString *text) {
     return [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet].length > 0;
 }
