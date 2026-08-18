@@ -47,6 +47,13 @@ struct WordbookHistoryView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(record.queryText)
                     .lineLimit(2)
+                if let translatedResult = record.translatedResult,
+                   !translatedResult.isEmpty {
+                    Text(translatedResult)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
                 Text(metadata(for: record))
                     .font(.caption2)
                     .foregroundStyle(.secondary)

@@ -19,7 +19,9 @@ Options:
   --merge-latest
       Create review/pr-<number>-merge-<head-sha> from the PR head and merge
       the latest base branch into it. Combine with --worktree to perform the
-      merge in an isolated worktree. The branch is local-only and never pushed.
+      merge in an isolated worktree. Use only after the user explicitly asks
+      for latest-base integration or conflict resolution. The branch is
+      local-only and never pushed.
 USAGE
 }
 
@@ -130,18 +132,66 @@ require_clean_worktree() {
   fi
 }
 
-reject_unsafe_normal_branch() {
+# Return a non-empty collision reason when the PR head branch cannot be
+# prepared under its exact local name, or nothing when the exact-name path is
+# safe. Reads only local refs, not network state.
+unsafe_branch_reason() {
   local branch=$1
+  local expected_upstream=$2
+  local base=$3
+  local actual_upstream
 
-  if [[ $branch == "$base_branch" ]]; then
-    fail "PR head branch '${branch}' matches the base branch '${base_branch}'. Use --merge-latest or prepare this PR in an isolated checkout."
+  if [[ $branch == "$base" ]]; then
+    printf "PR head branch '%s' matches the base branch '%s'" "$branch" "$base"
+    return 0
   fi
 
   case "$branch" in
     dev | main | master | develop | trunk)
-      fail "PR head branch '${branch}' is a protected local branch name. Use --merge-latest or prepare this PR in an isolated checkout."
+      printf "PR head branch '%s' is a protected local branch name" "$branch"
+      return 0
       ;;
   esac
+
+  if git show-ref --verify --quiet "refs/heads/${branch}"; then
+    actual_upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/${branch}")
+    if [[ $actual_upstream != "$expected_upstream" ]]; then
+      [[ -n $actual_upstream ]] || actual_upstream="no upstream"
+      printf "local branch '%s' has upstream '%s', not '%s'" \
+        "$branch" "$actual_upstream" "$expected_upstream"
+      return 0
+    fi
+  fi
+
+  return 1
+}
+
+# Create or reuse the collision-fallback review branch
+# review/pr-<number>-<head-short-sha> tracking the contributor remote branch.
+prepare_collision_review_branch() {
+  local reason=$1
+  local head_short=${head_oid:0:10}
+  local actual_head actual_upstream
+  review_branch="review/pr-${pr_number}-${head_short}"
+
+  if git show-ref --verify --quiet "refs/heads/${review_branch}"; then
+    actual_head=$(git rev-parse "refs/heads/${review_branch}")
+    actual_upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/${review_branch}")
+    if [[ $actual_head != "$head_oid" || $actual_upstream != "$upstream_ref" ]]; then
+      fail \
+        "Review branch '${review_branch}' already exists with HEAD '${actual_head}'" \
+        "or upstream '${actual_upstream:-none}', not PR head '${head_oid}'" \
+        "tracking '${upstream_ref}'. Inspect or remove it before preparing this PR again."
+    fi
+    printf 'Reusing review branch: %s\n' "$review_branch"
+    if [[ $(git branch --show-current) != "$review_branch" ]]; then
+      git switch "$review_branch"
+    fi
+  else
+    git switch --create "$review_branch" --track "$upstream_ref"
+  fi
+
+  printf 'Branch collision: %s. Falling back to a review branch.\n' "$reason"
 }
 
 require_expected_upstream() {
@@ -152,7 +202,11 @@ require_expected_upstream() {
   actual_upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/${branch}")
   if [[ $actual_upstream != "$expected_upstream" ]]; then
     [[ -n $actual_upstream ]] || actual_upstream="no upstream"
-    fail "Local branch '${branch}' already exists with upstream '${actual_upstream}', not '${expected_upstream}'. Use --merge-latest or prepare this PR in an isolated checkout."
+    fail \
+      "Local branch '${branch}' has upstream '${actual_upstream}'," \
+      "not '${expected_upstream}'." \
+      "Ask whether to use an isolated worktree or another checkout." \
+      "Use --merge-latest only for an explicitly requested latest-base review."
   fi
 }
 
@@ -276,7 +330,8 @@ print_source_checkout() {
 }
 
 prepare_pr_branch() {
-  local current_branch branch_exists=false
+  local current_branch branch_exists=false fetched_head local_head
+  local ahead_count behind_count actual_head collision_reason
   local remote_name=$head_owner
   local remote_ref="refs/remotes/${remote_name}/${head_branch}"
   local upstream_ref="${remote_name}/${head_branch}"
@@ -291,14 +346,45 @@ prepare_pr_branch() {
     fail "Worktree has uncommitted changes on branch '${current_branch:-detached HEAD}'. Commit, stash, or clean them before switching to PR branch '${head_branch}'."
   fi
 
-  reject_unsafe_normal_branch "$head_branch"
-  if git show-ref --verify --quiet "refs/heads/${head_branch}"; then
-    require_expected_upstream "$head_branch" "$upstream_ref"
-    branch_exists=true
-  fi
+  collision_reason=$(unsafe_branch_reason "$head_branch" "$upstream_ref" "$base_branch" || true)
 
   ensure_remote "$remote_name" "$head_owner" "$head_repo"
   git fetch "$remote_name" "+refs/heads/${head_branch}:${remote_ref}"
+  fetched_head=$(git rev-parse "$remote_ref")
+  [[ $fetched_head == "$head_oid" ]] || \
+    fail "PR head moved from '${head_oid}' to '${fetched_head}'. Rerun preparation."
+
+  if [[ -z $collision_reason ]] && git show-ref --verify --quiet "refs/heads/${head_branch}"; then
+    branch_exists=true
+    local_head=$(git rev-parse "refs/heads/${head_branch}")
+    if [[ $local_head != "$head_oid" ]] && \
+      ! git merge-base --is-ancestor "$local_head" "$remote_ref"; then
+      read -r ahead_count behind_count < <(
+        git rev-list --left-right --count \
+          "refs/heads/${head_branch}...${remote_ref}"
+      )
+      collision_reason="local branch '${head_branch}' does not safely fast-forward to PR head '${head_oid}' (ahead ${ahead_count}, behind ${behind_count})"
+    fi
+  fi
+
+  if [[ -n $collision_reason ]]; then
+    prepare_collision_review_branch "$collision_reason"
+
+    current_branch=$(git branch --show-current || true)
+    [[ $current_branch == "$review_branch" ]] || \
+      fail "Prepared checkout is not on review branch '${review_branch}'."
+    require_expected_upstream "$review_branch" "$upstream_ref"
+    actual_head=$(git rev-parse HEAD)
+    [[ $actual_head == "$head_oid" ]] || \
+      fail "Prepared review branch '${review_branch}' is at '${actual_head}', not PR head '${head_oid}'."
+
+    printf '\nPrepared PR #%s: %s\n' "$pr_number" "$pr_url"
+    printf 'Remote: %s (%s)\n' "$remote_name" "https://github.com/${head_owner}/${head_repo}.git"
+    printf 'Review branch: %s (collision fallback)\n' "$review_branch"
+    printf 'Upstream: %s\n' "$upstream_ref"
+    printf 'Head SHA: %s\n' "$head_oid"
+    return 0
+  fi
 
   if [[ $branch_exists == true ]]; then
     if [[ $current_branch == "$head_branch" ]]; then
@@ -311,10 +397,19 @@ prepare_pr_branch() {
     git switch --create "$head_branch" --track "$upstream_ref"
   fi
 
+  current_branch=$(git branch --show-current || true)
+  [[ $current_branch == "$head_branch" ]] || \
+    fail "Prepared checkout is not on PR branch '${head_branch}'."
+  require_expected_upstream "$head_branch" "$upstream_ref"
+  actual_head=$(git rev-parse HEAD)
+  [[ $actual_head == "$head_oid" ]] || \
+    fail "Prepared branch '${head_branch}' is at '${actual_head}', not PR head '${head_oid}'."
+
   printf '\nPrepared PR #%s: %s\n' "$pr_number" "$pr_url"
   printf 'Remote: %s (%s)\n' "$remote_name" "https://github.com/${head_owner}/${head_repo}.git"
   printf 'Branch: %s\n' "$head_branch"
   printf 'Upstream: %s\n' "$upstream_ref"
+  printf 'Head SHA: %s\n' "$head_oid"
 }
 
 # Fetch the exact PR head and latest base refs used by merged review modes.

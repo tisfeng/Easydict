@@ -136,6 +136,10 @@
     }
 }
 
+- (void)windowWillClose:(NSNotification *)notification {
+    [self.queryViewController cancelAutoQuery];
+}
+
 - (void)windowDidResignKey:(NSNotification *)notification {
     //    MMLogInfo(@"windowDidResignKey: %@", self);
     

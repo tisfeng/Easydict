@@ -49,7 +49,7 @@ struct WordbookCSVExporter {
         return encode(rows)
     }
 
-    /// Encodes records using the exact four-column query-history schema.
+    /// Encodes records using the exact five-column query-history schema.
     func makeHistoryCSV(
         records: [QueryRecord],
         languageName: (Language) -> String
@@ -57,7 +57,8 @@ struct WordbookCSVExporter {
         -> String {
         var rows = [
             [
-                "queryText", "queryFromLanguage", "queryToLanguage", "timestamp",
+                "queryText", "queryFromLanguage", "queryToLanguage",
+                "translatedResult", "timestamp",
             ],
         ]
         rows.reserveCapacity(records.count + 1)
@@ -66,6 +67,7 @@ struct WordbookCSVExporter {
                 record.queryText,
                 languageName(record.queryFromLanguage),
                 languageName(record.queryToLanguage),
+                record.translatedResult ?? "",
                 iso8601(record.timestamp),
             ])
         }

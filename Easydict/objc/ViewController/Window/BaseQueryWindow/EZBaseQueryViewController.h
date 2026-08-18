@@ -58,6 +58,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)focusInputTextView;
 
+/// Cancel the pending auto-query-while-typing debounce.
+- (void)cancelAutoQuery;
+
 - (void)stopPlayingQueryText;
 - (void)togglePlayQueryText;
 - (void)togglePlayQueryText:(BOOL)playFlag;
@@ -77,6 +80,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)receiveTitlebarAction:(EZTitlebarQuickAction)action;
 
 - (void)updateActionType:(EZActionType)actionType;
+
+/// Discard cached dictionary WebViews when the query window has been idle.
+- (void)discardDictionaryWebViews;
 
 /// show tips view
 - (void)showTipsView:(BOOL)isVisible;

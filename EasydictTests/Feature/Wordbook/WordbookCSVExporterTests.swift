@@ -93,12 +93,13 @@ struct WordbookCSVExporterTests {
         #expect(csv.contains(#""a""b""#))
     }
 
-    @Test("History keeps its exact ordered four-column schema")
+    @Test("History keeps its exact ordered five-column schema")
     func historySchema() {
-        let first = WordbookFixture.favorite(
+        var first = WordbookFixture.favorite(
             text: "first",
             timestamp: Date(timeIntervalSince1970: 0)
         )
+        first.translatedResult = #"translation "one""#
         let second = WordbookFixture.favorite(
             text: "second",
             fromLanguage: .simplifiedChinese,
@@ -110,16 +111,17 @@ struct WordbookCSVExporterTests {
             records: [first, second],
             languageName: { "localized:\($0.rawValue)" }
         )
-        let expected = "queryText,queryFromLanguage,queryToLanguage,timestamp\r\n"
+        let expected = "queryText,queryFromLanguage,queryToLanguage,translatedResult,timestamp\r\n"
             + "first,localized:English,localized:Simplified-Chinese,"
+            + #""translation ""one""","#
             + "1970-01-01T00:00:00Z\r\n"
-            + "second,localized:Simplified-Chinese,localized:English,"
+            + "second,localized:Simplified-Chinese,localized:English,,"
             + "1970-01-01T00:01:00Z\r\n"
         let rows = csv.components(separatedBy: "\r\n")
 
         #expect(csv == expected)
         #expect(rows.dropLast().allSatisfy {
-            $0.split(separator: ",", omittingEmptySubsequences: false).count == 4
+            $0.split(separator: ",", omittingEmptySubsequences: false).count == 5
         })
     }
 

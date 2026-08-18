@@ -14,7 +14,7 @@ struct SecureTextField: View {
     // MARK: Internal
 
     let title: LocalizedStringKey
-    let placeholder: LocalizedStringKey
+    let placeholder: String
 
     @Binding var text: String
     @State var showText: Bool = false
@@ -26,7 +26,7 @@ struct SecureTextField: View {
                     .lineLimit(lineLimit)
                     .focused($focus, equals: .secure)
                     .opacity(showText ? 0 : 1)
-                TextField(title, text: $text, prompt: Text(placeholder))
+                TextField(title, text: $text, prompt: Text(verbatim: placeholder))
                     .lineLimit(lineLimit)
                     .focused($focus, equals: .text)
                     .opacity(showText || (text.isEmpty) ? 1 : 0)
@@ -79,7 +79,7 @@ struct SecureInput_Previews: PreviewProvider {
         Group {
             SecureTextField(
                 title: "caiyun_translate",
-                placeholder: "service.configuration.input.placeholder",
+                placeholder: String(localized: "service.configuration.input.placeholder"),
                 text: .constant("1234567")
             )
             .padding()
@@ -87,7 +87,7 @@ struct SecureInput_Previews: PreviewProvider {
 
             SecureTextField(
                 title: "caiyun_translate",
-                placeholder: "service.configuration.input.placeholder",
+                placeholder: String(localized: "service.configuration.input.placeholder"),
                 text: .constant("")
             )
             .padding()

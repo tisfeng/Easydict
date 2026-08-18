@@ -99,6 +99,22 @@ class QueryRecordManager: NSObject {
         }
     }
 
+    /// Updates the translated result of an existing history record by query text.
+    @objc
+    func updateTranslatedResult(
+        _ translatedResult: String,
+        forQueryText queryText: String,
+        in type: RecordType
+    ) {
+        updateRecords(for: type) { records in
+            guard let index = records.firstIndex(where: { $0.queryText == queryText }) else {
+                return false
+            }
+            records[index].translatedResult = translatedResult
+            return true
+        }
+    }
+
     /// Removes a history record; legacy Favorites writes are ignored.
     func removeRecord(id: UUID, from type: RecordType) {
         updateRecords(for: type) { records in

@@ -11,7 +11,7 @@ import Foundation
 
 // MARK: - ServiceAPIKeyRequirement
 
-public enum ServiceAPIKeyRequirement {
+public enum ServiceAPIKeyRequirement: Equatable {
     /// No API key is needed; all requests can be made without authentication.
     case none
     /// API key is required, but the service provider offers a built-in key for users to use out of the box.
@@ -349,6 +349,11 @@ open class QueryService: NSObject {
 
     open func serviceType() -> ServiceType {
         fatalError("You must override \(#function) in a subclass.")
+    }
+
+    /// Returns the bundled asset name used to represent this service.
+    open func iconName() -> String {
+        serviceType().rawValue
     }
 
     open func serviceTypeWithUniqueIdentifier() -> String {

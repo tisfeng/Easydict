@@ -103,6 +103,17 @@ final class EventMonitor: NSObject {
         await selectionWorkflow.getSelectedText()
     }
 
+    /// Clears transient pop-button monitors after the button opens a query window.
+    func consumePopButtonActivation() {
+        autoSelectionGeneration &+= 1
+        cancelDismissPopButton()
+        cancelDelayGetSelectedText()
+        popButtonController.isPopButtonVisible = false
+        mouseMovedThrottleGate.reset()
+        stopHighFrequencyEventMonitor()
+        eventTapMonitor.stop()
+    }
+
     func addLocalMonitorWithEvent(_ mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent) -> ()) {
         eventMonitorEngine.monitor(type: .local, mask: mask, handler: handler)
     }
@@ -214,7 +225,12 @@ final class EventMonitor: NSObject {
     private var mouseMovedThrottleGate: ThrottleGate
     private var escapeKeyMonitor: Any?
     private var isAutoSelectTextMonitoringEnabled = false
+    private var autoSelectionGeneration: UInt = 0
+}
 
+// MARK: - Private Implementation
+
+extension EventMonitor {
     private func configureDependencies() {
         eventMonitorEngine.eventHandler = { [weak self] event in
             self?.handleMonitorEvent(event)
@@ -477,10 +493,21 @@ final class EventMonitor: NSObject {
 
         popButtonController.resetScrollState()
         actionType = .autoSelectQuery
+        autoSelectionGeneration &+= 1
+        let selectionGeneration = autoSelectionGeneration
 
-        selectionWorkflow.getSelectedTextSnapshot { [weak self] snapshot in
+        selectionWorkflow.getSelectedTextSnapshot(onStartMonitoringKeyboard: { [weak self] in
+            guard let self,
+                  autoSelectionGeneration == selectionGeneration,
+                  MyConfiguration.shared.autoSelectText
+            else {
+                return
+            }
+            eventTapMonitor.start()
+        }) { [weak self] snapshot in
             guard let self else { return }
             DispatchQueue.main.async {
+                guard self.autoSelectionGeneration == selectionGeneration else { return }
                 if let snapshot {
                     self.selectTextType = snapshot.selectTextType
                     self.isSelectedTextEditable = snapshot.isEditable
@@ -551,6 +578,7 @@ final class EventMonitor: NSObject {
         if shouldBypassDismissIgnore == false, popButtonController.shouldIgnoreDismiss() {
             return
         }
+        autoSelectionGeneration &+= 1
         dismissPopButtonBlock?()
         popButtonController.isPopButtonVisible = false
         mouseMovedThrottleGate.reset()

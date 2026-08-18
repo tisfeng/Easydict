@@ -18,7 +18,7 @@ struct SecureInputCell: View {
     init(
         textFieldTitleKey: LocalizedStringKey,
         key: Defaults.Key<String>,
-        placeholder: LocalizedStringKey = "service.configuration.input.placeholder",
+        placeholder: String = String(localized: "service.configuration.input.placeholder"),
         showText: Bool = false
     ) {
         self.textFieldTitleKey = textFieldTitleKey
@@ -33,7 +33,7 @@ struct SecureInputCell: View {
 
     @Default var value: String
     let textFieldTitleKey: LocalizedStringKey
-    let placeholder: LocalizedStringKey
+    let placeholder: String
 
     var body: some View {
         SecureTextField(title: textFieldTitleKey, placeholder: placeholder, text: $value, showText: showText)

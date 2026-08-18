@@ -11,6 +11,8 @@
 #import "EZFixedQueryWindow.h"
 #import "EZCoordinateUtils.h"
 
+static NSTimeInterval const EZFloatingWindowIdleWebViewDiscardDelay = 60.0;
+
 @interface EZWindowManager ()
 
 @property (nonatomic, strong) NSRunningApplication *lastFrontmostApplication;
@@ -38,6 +40,9 @@
                     toLanguage:(nullable EZLanguage)toLanguage
              preserveQueryText:(BOOL)preserveQueryText
              completionHandler:(nullable void (^)(void))completionHandler;
+
+- (void)scheduleDictionaryWebViewDiscardForWindow:(EZBaseQueryWindow *)window;
+- (void)discardDictionaryWebViewsIfIdleForWindow:(EZBaseQueryWindow *)window;
 
 @end
 
@@ -198,6 +203,7 @@ static EZWindowManager *_instance;
 
 - (void)popButtonWindowClicked {
     // Close pop button window first, and show floating window.
+    [self.eventMonitor consumePopButtonActivation];
     [self.popButtonWindow close];
     
     EZWindowType windowType = MyConfiguration.shared.mouseSelectTranslateWindowType;
@@ -573,6 +579,7 @@ static EZWindowManager *_instance;
     // But `orderBack:` will cause the query window to fail to display in stage manager mode (#385)
 
     if ([EZMainQueryWindow isAlive]) {
+        [_mainWindow.queryViewController cancelAutoQuery];
         [_mainWindow orderOut:nil];
     }
 
@@ -1134,6 +1141,23 @@ static EZWindowManager *_instance;
     }
 
     [self updateFloatingWindowType:windowType isShowing:NO];
+    [self scheduleDictionaryWebViewDiscardForWindow:floatingWindow];
+}
+
+- (void)scheduleDictionaryWebViewDiscardForWindow:(EZBaseQueryWindow *)window {
+    SEL selector = @selector(discardDictionaryWebViewsIfIdleForWindow:);
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:selector object:window];
+    [self performSelector:selector
+               withObject:window
+               afterDelay:EZFloatingWindowIdleWebViewDiscardDelay];
+}
+
+- (void)discardDictionaryWebViewsIfIdleForWindow:(EZBaseQueryWindow *)window {
+    if (window.isVisible || window.isPin || MyConfiguration.shared.keepPrevResultWhenEmpty) {
+        return;
+    }
+
+    [window.queryViewController discardDictionaryWebViews];
 }
 
 #pragma mark -

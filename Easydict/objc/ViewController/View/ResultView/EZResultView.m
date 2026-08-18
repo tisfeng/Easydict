@@ -270,8 +270,8 @@
     _result = result;
     
     EZQueryService *service = self.service;
-    EZServiceType serviceType = service.serviceType ?: result.serviceTypeWithUniqueIdentifier;
-    self.serviceIcon.image = [NSImage imageNamed:serviceType];
+    NSString *iconName = service.iconName ?: result.serviceTypeWithUniqueIdentifier;
+    self.serviceIcon.image = [NSImage imageNamed:iconName];
     
     NSString *serviceName = service.name ?: result.serviceTypeWithUniqueIdentifier;
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:serviceName font:[NSFont systemFontOfSize:13]];
