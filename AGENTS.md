@@ -28,6 +28,14 @@ OCR 截图翻译。
 - 创建 Git 任务分支：`.agents/skills/git-commit/SKILL.md` 中的
   `Branch Name Guidance`。
 
+## Code Review Rules
+
+### PR review
+
+- 以 `.agents/skills/review-pr/SKILL.md` 为本仓库 PR review 完整流程的规范来源；Review 必须核对 GitHub PR 的准确 `headRefOid`，以真实 base diff 为准，并检查关联 issue、实际代码、相关上下文和 CI 状态，不能只依据 PR 描述或绿色检查。
+- 将所有 `isResolved == false` 的 inline review thread 逐条评估，包括 outdated thread、bot comment 和 replies。每个 open comment 的问题、证据、判断和 `Suggested Fix` 只放在 `Open Review Comments`；`Findings` 只记录具有独立触发条件、风险和修复方案的额外问题，禁止重复。
+- 在最终输出前刷新 PR head、状态、checks 和完整分页的 review threads；若 head、评论、reply 或 thread 状态变化，先重新检查受影响代码。Review 默认不运行 `xcodebuild`，除非用户明确要求；保留现有工作树和分支，不 push 或修改 PR，除非用户明确授权。
+
 ## 必须遵守的约束
 
 - 语言规则：回复以及新建或修改的仓库文档默认使用用户当前请求的语言；如果当前
