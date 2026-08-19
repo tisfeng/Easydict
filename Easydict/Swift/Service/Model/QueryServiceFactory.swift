@@ -141,6 +141,7 @@ final class QueryServiceFactory: NSObject {
         .init(.tencent, TencentService.self, "tencent_translate"),
         .init(.alibaba, AliService.self, "ali_translate"),
         .init(.doubao, DoubaoService.self, "doubao_translate"),
+        .init(.grammarAnalysis, GrammarAnalysisService.self, "grammar_analysis_service"),
     ]
 
     private func serviceClass(withTypeId typeIdIfHave: String) -> QueryService.Type? {

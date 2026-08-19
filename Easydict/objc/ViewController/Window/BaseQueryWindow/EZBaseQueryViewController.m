@@ -1835,11 +1835,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     scrollViewHeight = MIN(scrollViewHeight, maxWindowSize.height - titleBarHeight);
     //    MMLogInfo(@"scrollViewHeight: %@", @(scrollViewHeight));
 
-    // Diable change window height manually.
-    [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.equalTo(@(scrollViewHeight)).priority(MASLayoutPriorityDefaultHigh);
-    }];
-
     CGFloat showingWindowHeight = scrollViewHeight + titleBarHeight;
     showingWindowHeight = MIN(showingWindowHeight, maxWindowSize.height);
 

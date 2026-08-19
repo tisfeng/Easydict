@@ -19,12 +19,16 @@ struct SecureInputCell: View {
         textFieldTitleKey: LocalizedStringKey,
         key: Defaults.Key<String>,
         placeholder: String = String(localized: "service.configuration.input.placeholder"),
-        showText: Bool = false
+        showText: Bool = false,
+        recommendedText: String? = nil,
+        usesSeparateLabelLayout: Bool = false
     ) {
         self.textFieldTitleKey = textFieldTitleKey
         self.placeholder = placeholder
         _value = .init(key)
         self.showText = showText
+        self.recommendedText = recommendedText
+        self.usesSeparateLabelLayout = usesSeparateLabelLayout
     }
 
     // MARK: Internal
@@ -34,9 +38,35 @@ struct SecureInputCell: View {
     @Default var value: String
     let textFieldTitleKey: LocalizedStringKey
     let placeholder: String
+    let recommendedText: String?
+    let usesSeparateLabelLayout: Bool
 
     var body: some View {
-        SecureTextField(title: textFieldTitleKey, placeholder: placeholder, text: $value, showText: showText)
+        if usesSeparateLabelLayout {
+            HStack(spacing: 12) {
+                Text(textFieldTitleKey)
+                Spacer(minLength: 12)
+                SecureTextField(
+                    title: "",
+                    placeholder: placeholder,
+                    text: $value,
+                    showText: showText,
+                    recommendedText: recommendedText,
+                    applyContainerPadding: false,
+                    accessibilityLabelKey: textFieldTitleKey
+                )
+                .frame(maxWidth: 420, alignment: .trailing)
+            }
+            .padding(10.0)
+        } else {
+            SecureTextField(
+                title: textFieldTitleKey,
+                placeholder: placeholder,
+                text: $value,
+                showText: showText,
+                recommendedText: recommendedText
+            )
+        }
     }
 }
 

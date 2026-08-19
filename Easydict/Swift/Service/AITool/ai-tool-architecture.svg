@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="560" viewBox="0 0 980 560">
+  <style>
+    .title { font: 700 28px -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; fill: #111827; }
+    .subtitle { font: 500 15px -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; fill: #4b5563; }
+    .node-title { font: 700 18px -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; fill: #111827; }
+    .node-text { font: 500 14px -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; fill: #374151; }
+    .small { font: 500 13px -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; fill: #4b5563; }
+    .line { stroke: #6b7280; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    .card { fill: #ffffff; stroke: #d1d5db; stroke-width: 2; rx: 18; ry: 18; }
+    .accent { fill: #eef2ff; stroke: #818cf8; }
+    .warn { fill: #fff7ed; stroke: #fb923c; }
+    .ok { fill: #ecfeff; stroke: #06b6d4; }
+  </style>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#6b7280" />
+    </marker>
+  </defs>
+
+  <rect width="980" height="560" fill="#f8fafc" />
+  <text x="40" y="52" class="title">AI Tool 目录架构</text>
+  <text x="40" y="82" class="subtitle">复用现有 QueryService 卡片链路，为总结、润色、语法分析提供补充型 AI 能力，并支持模式与 OpenAI-compatible 凭证切换</text>
+
+  <rect x="40" y="130" width="220" height="120" class="card accent" />
+  <text x="60" y="165" class="node-title">Base Query Flow</text>
+  <text x="60" y="195" class="node-text">QueryController</text>
+  <text x="60" y="219" class="node-text">-> QueryService</text>
+  <text x="60" y="243" class="node-text">-> QueryResult Card</text>
+
+  <rect x="320" y="110" width="260" height="170" class="card" />
+  <text x="340" y="145" class="node-title">AIToolService</text>
+  <text x="340" y="175" class="node-text">统一配置页裁剪</text>
+  <text x="340" y="199" class="node-text">复用流式配置表单与卡片协议</text>
+  <text x="340" y="223" class="node-text">支持内置 / 自定义 OpenAI-compatible Key 配置</text>
+  <text x="340" y="247" class="small">输出 translatedResults，不改主结果卡片协议</text>
+
+  <rect x="660" y="60" width="260" height="120" class="card ok" />
+  <text x="680" y="95" class="node-title">SummaryService</text>
+  <text x="680" y="125" class="node-text">摘要 prompt</text>
+  <text x="680" y="149" class="node-text">直接输出总结文本</text>
+
+  <rect x="660" y="210" width="260" height="120" class="card ok" />
+  <text x="680" y="245" class="node-title">PolishingService</text>
+  <text x="680" y="275" class="node-text">润色 prompt</text>
+  <text x="680" y="299" class="node-text">直接输出修正文案</text>
+
+  <rect x="320" y="340" width="600" height="170" class="card warn" />
+  <text x="340" y="375" class="node-title">GrammarAnalysisService</text>
+  <text x="340" y="405" class="node-text">1. 本地快速过滤：单词、截图标题、文件名、URL 等直接跳过</text>
+  <text x="340" y="433" class="node-text">2. 低价模型 gate：判断是否值得做语法分析</text>
+  <text x="340" y="461" class="node-text">3. 常规 / 雅思 prompt：按模式输出 Markdown 语法分析</text>
+  <text x="340" y="489" class="small">自定义 Key 默认空白并使用独立 endpoint / model 配置；跳过时不触发正式分析模型</text>
+
+  <path d="M260 190 L320 190" class="line" />
+  <path d="M580 145 L660 120" class="line" />
+  <path d="M580 195 L660 270" class="line" />
+  <path d="M450 280 L450 340" class="line" />
+</svg>

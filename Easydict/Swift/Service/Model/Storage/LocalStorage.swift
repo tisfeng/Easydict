@@ -227,7 +227,7 @@ final class LocalStorage: NSObject {
                 uuid: components.uuid,
                 type: baseType,
                 enabled: enabled,
-                enabledQuery: queryCount == 0,
+              enabledQuery: baseType == .grammarAnalysis ? true : queryCount == 0,
                 windowType: windowType
             )
         info.enabled = enabled
@@ -407,6 +407,7 @@ final class LocalStorage: NSObject {
         ServiceType.youdao.rawValue,
         ServiceType.deepL.rawValue,
         ServiceType.builtInAI.rawValue,
+        ServiceType.grammarAnalysis.rawValue,
     ]
 
     /// Raw dictionary backing service query statistics.
@@ -437,7 +438,7 @@ final class LocalStorage: NSObject {
                         uuid: uuid,
                         type: baseType,
                         enabled: true,
-                        enabledQuery: queryCount == 0,
+                        enabledQuery: baseType == .grammarAnalysis ? true : queryCount == 0,
                         windowType: windowType
                     )
 

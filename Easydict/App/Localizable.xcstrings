@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "%@ API Key" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3447,6 +3450,1290 @@
         }
       }
     },
+    "grammar_analysis_service" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Grammar Analysis"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Análisis gramatical"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "文法解析"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Gramatická analýza"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "语法分析"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "語法分析"
+            }
+          }
+        }
+      },
+    "grammar.analysis.credential_source.built_in.title" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Built-in Key"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Clave integrada"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "内蔵キー"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vstavaný kľúč"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "内置 Key"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "內建 Key"
+            }
+          }
+        }
+      },
+    "grammar.analysis.credential_source.openai_key.footnote" : {
+        "extractionState": "stale",
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Fill in your own OpenAI API key. The endpoint supports the recommended official address and can still be edited manually."
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Solo tienes que rellenar tu propia clave de OpenAI. El endpoint admite la dirección oficial recomendada y aún puedes editarlo manualmente."
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "独自の OpenAI API キーを入力してください。エンドポイントには推奨の公式アドレスを使えますが、手動で編集することもできます。"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vyplňte vlastný OpenAI API kľúč. Endpoint podporuje odporúčanú oficiálnu adresu a stále ho môžete ručne upraviť."
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "填写你自己的 OpenAI Key 即可。Endpoint 支持使用推荐的官方地址，你也仍然可以手动修改。"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "填寫你自己的 OpenAI Key 即可。Endpoint 支援使用推薦的官方位址，你也仍可手動修改。"
+            }
+          }
+        }
+      },
+    "grammar.analysis.credential_source.openai_key.title" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI Key"
+            }
+          }
+        }
+      },
+    "grammar.analysis.credential_source.deepseek_key.title" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek Key"
+            }
+          }
+        }
+      },
+    "grammar.analysis.credential_source.title" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key Source"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Origen de credenciales"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "認証情報のソース"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Zdroj poverení"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key 来源"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Key 來源"
+            }
+          }
+        }
+      },
+    "grammar.analysis.missing_model" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Please fetch or fill in Supported Models first, then choose one model."
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Primero obtén o rellena Modelos compatibles y luego elige un modelo."
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "先に対応モデルを取得または入力してから、使用モデルを選択してください。"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Najprv načítajte alebo zadajte podporované modely a potom vyberte jeden model."
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "请先拉取或填写 Supported Models，再选择一个使用模型。"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "請先擷取或填寫 Supported Models，再選擇一個使用模型。"
+            }
+          }
+        }
+      },
+    "grammar.analysis.mode.general.title" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "General"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "General"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "通常"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Bežná"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "常规"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "常規"
+            }
+          }
+        }
+      },
+    "grammar.analysis.mode.ielts.title" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS"
+            }
+          }
+        }
+      },
+    "grammar.analysis.mode.title" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Mode"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Modo"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "モード"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Režim"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "模式"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "模式"
+            }
+          }
+        }
+      },
+    "grammar.analysis.provider.custom_compatible.footnote" : {
+        "extractionState": "stale",
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Use any OpenAI-compatible chat/completions endpoint. Fill in the endpoint and models yourself, or fetch models if the provider supports it."
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Usa cualquier endpoint `chat/completions` compatible con OpenAI. Rellena el endpoint y los modelos manualmente, o recupéralos si el proveedor lo permite."
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "任意の OpenAI 互換 chat/completions エンドポイントを使用します。エンドポイントとモデルは自分で入力するか、対応していればモデル取得を使ってください。"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Použite ľubovoľný OpenAI-kompatibilný endpoint chat/completions. Endpoint a modely zadajte ručne alebo ich načítajte, ak to poskytovateľ podporuje."
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "使用任意 OpenAI 兼容的 `chat/completions` 地址。Endpoint 和模型需要你自己填写，或在对方支持时通过 Fetch Models 拉取。"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "使用任意 OpenAI 相容的 `chat/completions` 位址。Endpoint 與模型需要你自行填寫，或在對方支援時透過 Fetch Models 擷取。"
+            }
+          }
+        }
+      },
+    "grammar.analysis.provider.custom_compatible.title" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Custom OpenAI-Compatible"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Compatible con OpenAI personalizado"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "カスタム OpenAI 互換"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vlastný OpenAI-kompatibilný"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "自定义 OpenAI 兼容"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "自訂 OpenAI 相容"
+            }
+          }
+        }
+      },
+    "grammar.analysis.provider.deepseek.title" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "DeepSeek"
+            }
+          }
+        }
+      },
+    "grammar.analysis.provider.openai.footnote" : {
+        "extractionState": "stale",
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Pre-fills OpenAI's official chat/completions endpoint and the recommended default model. You can still edit the endpoint if needed."
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Rellena automáticamente el endpoint oficial `chat/completions` de OpenAI y el modelo predeterminado recomendado. Aun así puedes editar el endpoint si lo necesitas."
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI 公式の chat/completions エンドポイントと推奨デフォルトモデルを自動入力します。必要に応じてエンドポイントは編集できます。"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Predvyplní oficiálny OpenAI endpoint chat/completions a odporúčaný predvolený model. Endpoint môžete podľa potreby upraviť."
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "会自动填入 OpenAI 官方 `chat/completions` 地址和推荐默认模型，你仍然可以按需修改 Endpoint。"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "會自動填入 OpenAI 官方 `chat/completions` 位址與建議預設模型，你仍可依需求修改 Endpoint。"
+            }
+          }
+        }
+      },
+    "grammar.analysis.provider.openai.title" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "OpenAI"
+            }
+          }
+        }
+      },
+    "grammar.analysis.provider.title" : {
+        "extractionState": "stale",
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Provider"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Proveedor"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "プロバイダ"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Poskytovateľ"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "提供方"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "提供方"
+            }
+          }
+        }
+      },
+    "grammar.analysis.endpoint.invalid %@" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ endpoint is invalid"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "El endpoint de %@ no es válido"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ のエンドポイントが無効です"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Endpoint služby %@ je neplatný"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ 的 Endpoint 无效"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "%@ 的 Endpoint 無效"
+            }
+          }
+        }
+      },
+    "grammar.analysis.general.section.judgment" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Structure"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Estructura"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 構造判断"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Štruktúra"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 结构判断"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 结构判断"
+            }
+          }
+        }
+      },
+    "grammar.analysis.general.section.breakdown" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Breakdown"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Desglose"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 成分分解"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Rozbor"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 成分拆解"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 成分拆解"
+            }
+          }
+        }
+      },
+    "grammar.analysis.general.section.focus" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Key Grammar Points"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Puntos gramaticales clave"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 重要な文法ポイント"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Kľúčové gramatické body"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 关键语法点"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 关键语法点"
+            }
+          }
+        }
+      },
+    "grammar.analysis.general.section.rewrite" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Natural Translation"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Traducción natural"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 自然な訳し方"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Prirodzený preklad"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 自然译法"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 自然译法"
+            }
+          }
+        }
+      },
+    "grammar.analysis.ielts.section.judgment" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## IELTS View"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Enfoque IELTS"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## IELTS視点"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Pohľad IELTS"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 雅思视角"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 雅思视角"
+            }
+          }
+        }
+      },
+    "grammar.analysis.ielts.section.breakdown" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Structure Breakdown"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Análisis de la estructura"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 構造分析"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Analýza štruktúry"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 结构拆解"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 结构拆解"
+            }
+          }
+        }
+      },
+    "grammar.analysis.ielts.section.focus" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Band Risks"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Riesgos de pérdida de puntos"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 減点リスク"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Riziká straty bodov"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 扣分风险"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 扣分风险"
+            }
+          }
+        }
+      },
+    "grammar.analysis.ielts.section.rewrite" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Higher-Band Rewrite"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Versión de mayor puntuación"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## より高得点の表現"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## Verzia na vyššej úrovni"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 更高分表达"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "## 更高分表达"
+            }
+          }
+        }
+      },
+    "grammar.analysis.ielts.rewrite.higher_band" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Higher-band version"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Versión de banda más alta"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "より高いバンドの表現"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Verzia na vyššej úrovni"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "更高分版本"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "更高分版本"
+            }
+          }
+        }
+      },
+    "grammar.analysis.ielts.rewrite.minimal" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Minimal correction"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Corrección mínima"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "最小限の修正"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Minimálna oprava"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "最小修正"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "最小修正"
+            }
+          }
+        }
+      },
+    "grammar.analysis.ielts.english_only" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS analysis currently supports English source text only. Please switch to an English sentence and try again."
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "El análisis IELTS actualmente solo admite texto de origen en inglés. Cambia a una oración en inglés y vuelve a intentarlo."
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS 分析は現在、英語の原文のみ対応しています。英語の文に切り替えて再度お試しください。"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Analýza IELTS momentálne podporuje iba anglický zdrojový text. Prepnite na anglickú vetu a skúste to znova."
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS 分析当前仅支持英文原文，请切换为英文句子后再试。"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "IELTS 分析目前僅支援英文原文，請切換為英文句子後再試。"
+            }
+          }
+        }
+      },
+    "grammar.analysis.ielts.risk.high" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "High"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Alto"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "高"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Vysoké"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "高"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "高"
+            }
+          }
+        }
+      },
+    "grammar.analysis.ielts.risk.medium" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Medium"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Medio"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "中"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Stredné"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "中"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "中"
+            }
+          }
+        }
+      },
+    "grammar.analysis.ielts.risk.low" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Low"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Bajo"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "低"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Nízke"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "低"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "低"
+            }
+          }
+        }
+      },
+    "grammar.analysis.skipped" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "The current text is too short or does not look like analyzable natural language, so grammar analysis was skipped."
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "El texto actual es demasiado corto o no parece lenguaje natural apto para análisis gramatical, por lo que se omitió el análisis."
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "現在のテキストは短すぎるか、文法解析に適した自然言語に見えないため、文法解析をスキップしました。"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Aktuálny text je príliš krátky alebo nevyzerá ako prirodzený jazyk vhodný na gramatickú analýzu, preto bola analýza preskočená."
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "当前文本过短，或不像适合做语法分析的自然语言内容，因此已跳过语法分析。"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "目前文本過短，或不像適合做語法分析的自然語言內容，因此已略過語法分析。"
+            }
+          }
+        }
+      },
     "groq_translate" : {
       "localizations" : {
         "en" : {
@@ -10061,6 +11348,46 @@
         }
       }
     },
+    "service.configuration.openai.endpoint.recommend" : {
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Recommended"
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Recomendado"
+            }
+          },
+          "ja": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "おすすめ"
+            }
+          },
+          "sk": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Odporúčané"
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "推荐"
+            }
+          },
+          "zh-Hant": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "推薦"
+            }
+          }
+        }
+      },
     "service.configuration.openai.endpoint.title" : {
       "localizations" : {
         "en" : {

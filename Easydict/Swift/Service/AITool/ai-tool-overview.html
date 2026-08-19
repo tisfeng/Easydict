@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Tool 目录概览</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      line-height: 1.6;
+      margin: 32px;
+      color: #1f2937;
+    }
+    h1, h2 { color: #111827; }
+    code {
+      background: #f3f4f6;
+      border-radius: 4px;
+      padding: 0 4px;
+    }
+    ul { padding-left: 20px; }
+  </style>
+</head>
+<body>
+  <h1>AI Tool 目录概览</h1>
+  <p>
+    本目录承载查词页中的轻量 AI 工具型服务，目标是在不新增独立网络框架和
+    结果视图协议的前提下，复用现有 <code>QueryService</code>、
+    <code>QueryResult</code> 与结果卡片展示链路，向查词页追加补充性分析能力。
+  </p>
+
+  <h2>职责分层</h2>
+  <ul>
+    <li><code>AIToolService</code>：统一 AI Tool 类服务的配置页策略，隐藏与普通翻译服务不相关的开关，仅保留模型与启用状态等必要配置。</li>
+    <li><code>SummaryService</code>：提供总结能力，复用内置 AI 端点并通过定制 prompt 输出摘要。</li>
+    <li><code>PolishingService</code>：提供润色能力，聚焦语法与表达修正。</li>
+    <li><code>GrammarAnalysisService</code>：提供语法分析能力，并在正式分析前先执行本地快速过滤与低价模型 worthiness gate，避免对单词、截图文件名等低价值输入浪费成本；同时支持“常规 / 雅思”模式与“内置 Key / 自定义 OpenAI-compatible Key”两类配置。</li>
+    <li><code>GrammarAnalysisConfigurationView</code>：复用通用流式服务配置表单，只额外补充语法分析模式与凭证来源选择，保持实现范围收敛。</li>
+  </ul>
+
+  <h2>核心流程</h2>
+  <ol>
+    <li>查询控制器按普通服务卡片方式触发 AI Tool 服务。</li>
+    <li>服务内部按当前模式构造 prompt，并通过 OpenAI-compatible 接口发起请求。</li>
+    <li>语法分析服务额外执行两阶段判定：本地显然无价值过滤、低价模型判定。</li>
+    <li>当用户选择自定义 Key 时，语法分析改用单独持久化的 OpenAI-compatible API Key、Endpoint、模型列表，默认保持空白，避免误导为任意厂商原生协议都可直连。</li>
+    <li>结果统一写回 <code>QueryResult.translatedResults</code>，再由现有结果卡片渲染为文本或 Markdown。</li>
+  </ol>
+
+  <h2>边界与失败处理</h2>
+  <ul>
+    <li>本目录不负责主查询控制器调度、窗口高度管理或结果卡片布局。</li>
+    <li>网络失败、接口异常和无结果场景统一转为 <code>QueryError</code>，交由现有错误展示链路处理。</li>
+    <li>语法分析的“跳过”场景不会触发正式分析模型，而是返回一段简短的用户提示，保证交互可解释。</li>
+  </ul>
+
+  <h2>调试入口</h2>
+  <ul>
+    <li>查词页中直接触发对应服务卡片，观察结果文本、错误态和折叠展开行为。</li>
+    <li>设置页 Service 配置中切换“常规 / 雅思”与“内置 / 自定义 Key”，验证模式和凭证来源切换是否即时生效。</li>
+    <li>对短词、截图标题、自然句子分别做回归，验证 gate 的跳过与放行路径。</li>
+    <li>在自定义 Key 模式下测试 API Key、Endpoint、模型列表持久化，以及切回内置 Key 后默认模型是否恢复。</li>
+  </ul>
+</body>
+</html>

@@ -578,6 +578,12 @@
 		C43B56722C693FFB00EF26FD /* VolcanoSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43B56712C693FFB00EF26FD /* VolcanoSigning.swift */; };
 		C477BF912C0E2C61006A3F27 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C477BF902C0E2C61006A3F27 /* InfoPlist.xcstrings */; };
 		C490BF722BE910B70021E40A /* AdvancedTabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C490BF712BE910B70021E40A /* AdvancedTabItemView.swift */; };
+		A171000100A1B2C300000001 /* GrammarAnalysisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A171000100A1B2C300000002 /* GrammarAnalysisService.swift */; };
+		A171000100A1B2C300000009 /* GrammarAnalysisService+Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = A171000100A1B2C30000000A /* GrammarAnalysisService+Support.swift */; };
+		A171000100A1B2C30000000B /* GrammarAnalysisService+Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = A171000100A1B2C30000000C /* GrammarAnalysisService+Networking.swift */; };
+		A171000100A1B2C30000000D /* GrammarAnalysisService+Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A171000100A1B2C30000000E /* GrammarAnalysisService+Prompt.swift */; };
+		A171000100A1B2C30000000F /* GrammarAnalysisService+SectionTitles.swift in Sources */ = {isa = PBXBuildFile; fileRef = A171000100A1B2C300000010 /* GrammarAnalysisService+SectionTitles.swift */; };
+		A171000100A1B2C300000005 /* GrammarAnalysisConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A171000100A1B2C300000006 /* GrammarAnalysisConfigurationView.swift */; };
 		C4A512BE2C414A2400F00F33 /* AIToolService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A512BD2C414A2400F00F33 /* AIToolService.swift */; };
 		C4BE8E1C2C72E61B00F53204 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = C4BE8E1B2C72E61B00F53204 /* LaunchAtLogin */; };
 		C4CCDAA32C407A0D00AC88BA /* SummaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CCDAA22C407A0D00AC88BA /* SummaryService.swift */; };
@@ -1314,6 +1320,14 @@
 		C43B56712C693FFB00EF26FD /* VolcanoSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoSigning.swift; sourceTree = "<group>"; };
 		C477BF902C0E2C61006A3F27 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		C490BF712BE910B70021E40A /* AdvancedTabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AdvancedTabItemView.swift; path = Easydict/Swift/View/AdvancedTabItemView.swift; sourceTree = SOURCE_ROOT; };
+		A171000100A1B2C300000002 /* GrammarAnalysisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarAnalysisService.swift; sourceTree = "<group>"; };
+		A171000100A1B2C30000000A /* GrammarAnalysisService+Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GrammarAnalysisService+Support.swift"; sourceTree = "<group>"; };
+		A171000100A1B2C30000000C /* GrammarAnalysisService+Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GrammarAnalysisService+Networking.swift"; sourceTree = "<group>"; };
+		A171000100A1B2C30000000E /* GrammarAnalysisService+Prompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GrammarAnalysisService+Prompt.swift"; sourceTree = "<group>"; };
+		A171000100A1B2C300000010 /* GrammarAnalysisService+SectionTitles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GrammarAnalysisService+SectionTitles.swift"; sourceTree = "<group>"; };
+		A171000100A1B2C300000006 /* GrammarAnalysisConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarAnalysisConfigurationView.swift; sourceTree = "<group>"; };
+		A171000100A1B2C300000003 /* ai-tool-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "ai-tool-overview.html"; sourceTree = "<group>"; };
+		A171000100A1B2C300000004 /* ai-tool-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = "ai-tool-architecture.svg"; sourceTree = "<group>"; };
 		C4A512BD2C414A2400F00F33 /* AIToolService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIToolService.swift; sourceTree = "<group>"; };
 		C4CCDAA22C407A0D00AC88BA /* SummaryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryService.swift; sourceTree = "<group>"; };
 		C4CCDAA42C407A4100AC88BA /* PolishingService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolishingService.swift; sourceTree = "<group>"; };
@@ -3590,7 +3604,15 @@
 		C4D1ADE12C3F340500A19D02 /* AITool */ = {
 			isa = PBXGroup;
 			children = (
+				A171000100A1B2C300000003 /* ai-tool-overview.html */,
+				A171000100A1B2C300000004 /* ai-tool-architecture.svg */,
 				C4A512BD2C414A2400F00F33 /* AIToolService.swift */,
+				A171000100A1B2C300000002 /* GrammarAnalysisService.swift */,
+				A171000100A1B2C30000000A /* GrammarAnalysisService+Support.swift */,
+				A171000100A1B2C30000000C /* GrammarAnalysisService+Networking.swift */,
+				A171000100A1B2C30000000E /* GrammarAnalysisService+Prompt.swift */,
+				A171000100A1B2C300000010 /* GrammarAnalysisService+SectionTitles.swift */,
+				A171000100A1B2C300000006 /* GrammarAnalysisConfigurationView.swift */,
 				C4CCDAA42C407A4100AC88BA /* PolishingService.swift */,
 				C4CCDAA22C407A0D00AC88BA /* SummaryService.swift */,
 			);
@@ -4311,6 +4333,12 @@
 				03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */,
 				24832952EE17407C852B2258 /* String+Convenience.swift in Sources */,
 				C4A512BE2C414A2400F00F33 /* AIToolService.swift in Sources */,
+				A171000100A1B2C300000001 /* GrammarAnalysisService.swift in Sources */,
+				A171000100A1B2C300000009 /* GrammarAnalysisService+Support.swift in Sources */,
+				A171000100A1B2C30000000B /* GrammarAnalysisService+Networking.swift in Sources */,
+				A171000100A1B2C30000000D /* GrammarAnalysisService+Prompt.swift in Sources */,
+				A171000100A1B2C30000000F /* GrammarAnalysisService+SectionTitles.swift in Sources */,
+				A171000100A1B2C300000005 /* GrammarAnalysisConfigurationView.swift in Sources */,
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				C43B56722C693FFB00EF26FD /* VolcanoSigning.swift in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,

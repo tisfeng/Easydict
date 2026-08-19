@@ -11,25 +11,85 @@ import SwiftUI
 // MARK: - SecureTextField
 
 struct SecureTextField: View {
-    // MARK: Internal
+    // MARK: Lifecycle
 
-    let title: LocalizedStringKey
-    let placeholder: String
+    init(
+        title: LocalizedStringKey,
+        placeholder: String,
+        text: Binding<String>,
+        showText: Bool = false,
+        recommendedText: String? = nil,
+        applyContainerPadding: Bool = true,
+        accessibilityLabelKey: LocalizedStringKey? = nil
+    ) {
+        self.title = title
+        self.placeholder = placeholder
+        self._text = text
+        self._showText = State(initialValue: showText)
+        self.recommendedText = recommendedText
+        self.applyContainerPadding = applyContainerPadding
+        self.accessibilityLabelKey = accessibilityLabelKey
+    }
+
+    // MARK: Internal
 
     @Binding var text: String
     @State var showText: Bool = false
+    @State var isPreviewingRecommendation = false
+
+    let title: LocalizedStringKey
+    let placeholder: String
+    let recommendedText: String?
+    let applyContainerPadding: Bool
+    let accessibilityLabelKey: LocalizedStringKey?
 
     var body: some View {
         HStack {
-            ZStack {
+            ZStack(alignment: .trailing) {
                 SecureField(title, text: $text)
                     .lineLimit(lineLimit)
+                    .multilineTextAlignment(.trailing)
                     .focused($focus, equals: .secure)
-                    .opacity(showText ? 0 : 1)
+                    .opacity(showText || isPreviewingRecommendation ? 0 : 1)
+                    .disabled(isPreviewingRecommendation)
+                    .accessibilityLabel(accessibilityLabel)
                 TextField(title, text: $text, prompt: Text(verbatim: placeholder))
                     .lineLimit(lineLimit)
+                    .multilineTextAlignment(.trailing)
                     .focused($focus, equals: .text)
-                    .opacity(showText || (text.isEmpty) ? 1 : 0)
+                    .opacity((showText || text.isEmpty) && !isPreviewingRecommendation ? 1 : 0)
+                    .disabled(isPreviewingRecommendation)
+                    .accessibilityLabel(accessibilityLabel)
+
+                if isPreviewingRecommendation, let recommendedText {
+                    Text(recommendedText)
+                        .lineLimit(lineLimit)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .foregroundStyle(.secondary)
+                        .allowsHitTesting(false)
+                }
+            }
+
+            if showText, let recommendedText, !recommendedText.isEmpty {
+                Button("service.configuration.openai.endpoint.recommend") {
+                    text = recommendedText
+                    isPreviewingRecommendation = false
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
+                .transition(
+                    .asymmetric(
+                        insertion: .opacity.combined(with: .move(edge: .trailing)),
+                        removal: .opacity
+                    )
+                )
+                .onHover { isHovering in
+                    guard text != recommendedText else {
+                        isPreviewingRecommendation = false
+                        return
+                    }
+                    isPreviewingRecommendation = isHovering
+                }
             }
 
             Button(action: {
@@ -38,7 +98,8 @@ struct SecureTextField: View {
                 Image(systemName: showText ? "eye.slash.fill" : "eye.fill")
             }
         }
-        .padding(10)
+        .padding(applyContainerPadding ? 10 : 0)
+        .animation(.easeInOut(duration: 0.18), value: showText)
         .onChange(of: focus) { newValue in
             // if the PasswordField is focused externally, then make sure the correct field is actually focused
             if newValue != nil {
@@ -51,6 +112,9 @@ struct SecureTextField: View {
             }
         }
         .onChange(of: showText) { newValue in
+            if !newValue {
+                isPreviewingRecommendation = false
+            }
             if focus !=
                 nil { // Prevents stealing focus to this field if another field is focused, or nothing is focused
                 DispatchQueue.main.async { // Needed for general iOS 16 bug with focus
@@ -70,6 +134,14 @@ struct SecureTextField: View {
 
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.lineLimit) private var lineLimit
+
+    private var accessibilityLabel: Text {
+        if let accessibilityLabelKey {
+            return Text(accessibilityLabelKey)
+        }
+
+        return Text(title)
+    }
 }
 
 // MARK: - SecureInput_Previews

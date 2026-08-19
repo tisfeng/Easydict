@@ -55,4 +55,7 @@ enum ServiceConfigurationKey: String {
     case temperature
     case enableStreaming
     case reasoningEffort = "ReasoningEffort"
+    case grammarAnalysisMode
+    case grammarAnalysisCredentialSource
+    case grammarAnalysisProvider
 }
