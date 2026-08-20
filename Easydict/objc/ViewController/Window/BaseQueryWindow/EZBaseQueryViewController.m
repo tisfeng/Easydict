@@ -697,6 +697,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)toggleTranslationLanguages {
+    NSString *translatedText = self.firstService.result.isLoading ? nil : [self firstTranslatedText];
+    if (translatedText.length > 0) {
+        self.inputText = translatedText;
+    }
+
     [self.selectLanguageCell toggleTranslationLanguages];
 }
 
