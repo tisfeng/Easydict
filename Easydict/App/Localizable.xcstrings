@@ -14947,46 +14947,6 @@
         }
       }
     },
-    "setting.service.failed_to_enable_service %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Failed to enable [%@] service"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Error al habilitar el servicio [%@]"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[%@] サービスの有効化に失敗しました"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nepodarilo sa povoliť službu [%@]"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启用【%@】服务失败"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無法啟用【%@】服務"
-          }
-        }
-      }
-    },
     "setting.service.remove" : {
       "localizations" : {
         "en" : {
