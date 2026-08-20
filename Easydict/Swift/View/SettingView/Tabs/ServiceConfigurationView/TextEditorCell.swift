@@ -53,7 +53,6 @@ struct TextEditorCell: View {
             }
             footnoteView
         }
-        .padding(10)
     }
 
     // MARK: Private

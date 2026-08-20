@@ -65,6 +65,5 @@ struct SliderCell: View {
             Text(value.string1f)
                 .frame(width: 40, alignment: .trailing)
         }
-        .padding(10)
     }
 }
