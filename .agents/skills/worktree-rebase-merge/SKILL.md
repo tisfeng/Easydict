@@ -103,9 +103,8 @@ commit, rebase, and merge workflow after attachment.
 - Do not create a temporary source branch, run `git rebase`, run `git merge`,
   locate a target worktree, create a temporary target worktree, fetch, pull, or
   push.
-- After the commit step, report the commit hash, the actual committed message,
-  the final `git status --short`, and that no rebase, merge, or push was
-  performed.
+- After the commit step, use the `git-commit` **Post-Commit Report** and state
+  that no rebase, merge, or push was performed.
 
 ## Commit Source
 
@@ -114,6 +113,10 @@ commit, rebase, and merge workflow after attachment.
   drafting, commit execution, permission retry, and cleanup. In normal
   rebase/merge mode, this workflow overrides `git-commit` default-mode
   reporting order; in direct commit mode, follow `git-commit` reporting.
+- Record the source `HEAD` before the commit step. Classify the source result as
+  `created-this-run` only when the commit step changes `HEAD`; otherwise, when
+  the source is already committed and clean, classify it as
+  `preexisting-source-commit`.
 - Before creating `commit_message.txt` or running `git commit -F
   commit_message.txt`, send a normal assistant message with the fixed heading
   `提交信息预览` and a fenced `text` code block containing the full actual
@@ -126,8 +129,8 @@ commit, rebase, and merge workflow after attachment.
   explicitly requested confirmation, preview-only, draft-only, no-commit, or
   message changes.
 - If `git-commit` reports there is no commit to make, continue only when the
-  source worktree has no uncommitted changes. Otherwise stop and report the
-  uncommitted state.
+  source worktree has no uncommitted changes. Mark the result as
+  `preexisting-source-commit`; otherwise stop and report the uncommitted state.
 - Rerun `git status --short` after the commit step. Rebase only from a clean
   source worktree unless the user explicitly decides otherwise.
 
@@ -188,12 +191,18 @@ commit, rebase, and merge workflow after attachment.
   for follow-up resolution instead of deleting it.
 - After a successful merge in a temporary target worktree, remove it with
   `git worktree remove <temporary-path>`.
-- Report the source branch, target branch, target checkout path, commit hash,
-  target merge mode (`existing-target-worktree` or
+- Report the source branch, target branch, target checkout path, source commit
+  count, target merge mode (`existing-target-worktree` or
   `temporary-target-worktree`), temporary target worktree path when one was
   created, merge result, and final clean status. For an attached checkout, also
   report the original detached commit and whether the source branch was created
   or reused. State that no push was performed unless the user asked for one.
-- Include a final-response `提交信息预览` fenced `text` code block with the
-  actual committed message, so the preview remains visible even if intermediate
-  assistant updates are collapsed.
+- If the integration contains exactly one source commit, finish with the
+  `git-commit` **Post-Commit Report** for that commit. Use `已创建提交` for
+  `created-this-run`; for `preexisting-source-commit`, use
+  `本次未创建新提交；合并的是源分支已有提交`.
+- If the integration contains multiple source commits, list each full hash and
+  subject, then use the statistics script with `--range
+  <target-commit>...<source-commit>` to report aggregate total, code, and
+  documentation text changes. Do not present one commit message as the message
+  for the whole range.

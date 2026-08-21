@@ -36,6 +36,8 @@ Create accurate Angular-style Git commits from staged changes only.
    - Write the full actual commit message to `commit_message.txt`
    - Run `git commit -F commit_message.txt`
    - Remove `commit_message.txt` after a successful commit
+9. After a successful commit, follow **Post-Commit Report**. A successful Git
+   command is not a complete delivery until that user-visible report is shown.
 
 ## Automatic Implementation Delivery
 
@@ -67,8 +69,8 @@ When automatic delivery is eligible:
    `git add .` in this mode.
 3. Re-read the staged raw patch and confirm it contains only the task scope.
 4. Use this skill's commit-message contract and run one local `git commit`.
-5. Report the commit hash and actual message. Do not push, pull, rebase, merge,
-   or create a branch.
+5. Follow **Post-Commit Report**. Do not push, pull, rebase, merge, or create a
+   branch.
 
 If path ownership cannot be separated safely, leave the changes available for
 manual delivery and report the protected condition. A failed commit keeps the
@@ -126,6 +128,81 @@ Optional footer for breaking changes or special notes when applicable.
 - Use `!` and/or a `BREAKING CHANGE:` footer only for incompatible changes.
   The footer never replaces the required three body paragraphs.
 
+## Change Statistics
+
+After a successful commit, run:
+
+```bash
+python3 .agents/skills/git-commit/scripts/commit-change-stats.py <full-commit-hash>
+```
+
+The script reports only text files and partitions them into two mutually
+exclusive categories:
+
+- `docs`: files under a `docs` or `Documentation` directory; files named
+  `AGENTS.md` or `SKILL.md`; names beginning with `README` or `CHANGELOG`; and
+  `.md`, `.mdx`, `.rst`, or `.adoc` files.
+- `code`: every other text file, including product and test source, build and
+  runtime configuration, resources, localization catalogs, and skill scripts.
+
+Binary numstat entries are intentionally skipped. Do not count them and do not
+mention binary files in the user-facing report.
+
+Before reporting, require each total to equal the sum of `code` and `docs` for
+file count, insertions, deletions, and net change. Treat a script failure or an
+inconsistent result as a reporting failure and do not invent statistics.
+
+For a multi-commit integration range, a calling workflow may instead run:
+
+```bash
+python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
+  --range <target-commit>...<source-commit>
+```
+
+## Post-Commit Report
+
+After every successful commit, collect the authoritative result with:
+
+- `git rev-parse HEAD` for the full hash;
+- `git show -s --format=%B HEAD` for the complete actual message;
+- `git branch --show-current` for the branch;
+- `git status --short` for the final worktree state; and
+- **Change Statistics** for the committed text changes.
+
+For a Chinese-language task, use this structure. Translate the labels for an
+English-language task, but preserve the same fields and ordering.
+
+````markdown
+提交结果
+
+- 动作：已创建提交
+- Commit：`<full-hash>`
+- 分支：`<branch>`
+- 工作树：`干净` or `保留未提交变更`
+- Push：未执行
+
+变动统计
+
+- 总变动：<files> 个文件，新增 <insertions> 行，删除 <deletions> 行，净增加/减少 <net> 行
+- 代码变动：<files> 个文件，新增 <insertions> 行，删除 <deletions> 行，净增加/减少 <net> 行
+- 文档变动：<files> 个文件，新增 <insertions> 行，删除 <deletions> 行，净增加/减少 <net> 行
+
+实际提交信息
+
+```text
+<exact output of git show -s --format=%B HEAD>
+```
+````
+
+Use `无变化` when a net value is zero. Never replace the complete report with
+a short hash and subject. The message in the fenced block must match Git
+exactly, except for the code fence.
+
+A calling workflow that reuses an existing commit may change only the action
+line to state that it did not create a commit in the current run. It must keep
+the full hash, statistics, actual message, final status, and push state. Use the
+reused hash instead of `HEAD` in the collection commands.
+
 ## Execution Rules
 
 - Do not run `git push`.
@@ -146,9 +223,8 @@ Optional footer for breaking changes or special notes when applicable.
   needed escalation for `git commit` directly at the commit step.
 - If commit fails, keep `commit_message.txt` unless cleanup is clearly safe and
   intentional.
-- In default mode, commit first, then report the commit hash and the actual
-  message text. In confirmation mode, show only the actual message text and
-  wait for approval.
+- In default mode, commit first, then follow **Post-Commit Report**. In
+  confirmation mode, show only the actual message text and wait for approval.
 
 ## Type Guidance
 
