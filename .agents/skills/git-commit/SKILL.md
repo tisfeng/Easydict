@@ -42,7 +42,8 @@ Create accurate Angular-style Git commits from staged changes only.
 This mode is invoked only after the repository rules classify the task as
 `implementation` and the automatic local-commit conditions are satisfied. It
 is a finalization step, not a per-edit action. Planning, discussion, analysis,
-and documentation-only tasks do not enter this mode.
+and changes limited to plans or histories do not enter this mode. Agent
+documentation implementation tasks may enter when repository rules allow it.
 
 Before the first write, capture:
 
@@ -59,8 +60,9 @@ of these cases.
 
 When automatic delivery is eligible:
 
-1. Confirm that the task changed product code, tests, build configuration, or
-   runtime resources and that no automatic commit has already occurred.
+1. Confirm that the task changed product code, tests, build configuration,
+   runtime resources, or Agent documentation and that no automatic commit has
+   already occurred.
 2. Stage only the exact Agent-owned paths with `git add -- <paths>`; never use
    `git add .` in this mode.
 3. Re-read the staged raw patch and confirm it contains only the task scope.
