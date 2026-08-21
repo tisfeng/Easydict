@@ -2,8 +2,9 @@
 name: git-commit
 description: >
   Create staged-only Angular-style commits and derive Conventional task branch
-  names for calling workflows. Runs `git commit` by default, supports preview
-  modes, and writes bilingual messages for non-English users.
+  names for calling workflows. Supports explicit delivery and protected
+  automatic implementation delivery, writes bilingual messages for non-English
+  users, and never pushes.
 ---
 
 # Git Commit Workflow
@@ -18,8 +19,9 @@ Create accurate Angular-style Git commits from staged changes only.
      `GIT_PAGER=cat git --no-pager diff --staged --no-ext-diff --no-textconv --unified=5`
    - `git branch --show-current`
    - `git log --oneline -10`
-2. If the initial staged diff is empty, run `git add .` once, then re-run
-   `git status` and the staged raw patch command before continuing.
+2. In explicit `/git commit` delivery mode, if the initial staged diff is empty,
+   run `git add .` once, then re-run `git status` and the staged raw patch command
+   before continuing.
 3. If staged changes already existed, do not run `git add`; keep the commit
    limited to the current staged scope.
 4. Stop if the staged diff is still empty after the single allowed `git add .`.
@@ -34,6 +36,41 @@ Create accurate Angular-style Git commits from staged changes only.
    - Write the full actual commit message to `commit_message.txt`
    - Run `git commit -F commit_message.txt`
    - Remove `commit_message.txt` after a successful commit
+
+## Automatic Implementation Delivery
+
+This mode is invoked only after the repository rules classify the task as
+`implementation` and the automatic local-commit conditions are satisfied. It
+is a finalization step, not a per-edit action. Planning, discussion, analysis,
+and documentation-only tasks do not enter this mode.
+
+Before the first write, capture:
+
+- `initial_staged_paths`
+- `initial_unstaged_paths`
+- `initial_untracked_paths`
+- `task_allowed_paths`
+
+Skip automatic delivery when `initial_staged_paths` is non-empty, when the
+current index is no longer empty before Agent staging, when an Agent path
+overlaps an existing user change, when the index has a conflict, or when
+required validation fails. Keep the user's staged boundary unchanged in all
+of these cases.
+
+When automatic delivery is eligible:
+
+1. Confirm that the task changed product code, tests, build configuration, or
+   runtime resources and that no automatic commit has already occurred.
+2. Stage only the exact Agent-owned paths with `git add -- <paths>`; never use
+   `git add .` in this mode.
+3. Re-read the staged raw patch and confirm it contains only the task scope.
+4. Use this skill's commit-message contract and run one local `git commit`.
+5. Report the commit hash and actual message. Do not push, pull, rebase, merge,
+   or create a branch.
+
+If path ownership cannot be separated safely, leave the changes available for
+manual delivery and report the protected condition. A failed commit keeps the
+staged changes and follows the existing commit-failure rules.
 
 ## Commit Message Contract
 

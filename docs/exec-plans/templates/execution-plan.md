@@ -6,6 +6,30 @@
 **Owner:** <人员或团队>
 **Links:** <issue、PR 或相关设计文档>
 
+## 任务契约
+
+以下字段由 Agent 根据用户请求和仓库规则自动填写，不要求用户额外提供任务契约。
+
+- 任务模式：`planning` / `implementation` / `delivery`
+- 用户目标：
+- 允许动作：
+- 允许修改路径：
+- 预期交付物：
+- 验收标准：
+
+## 自动提交状态
+
+- 自动提交资格：`eligible` / `disabled`
+- 初始暂存区：`empty` / `protected`
+- 自动提交结果：`not attempted` / `committed` / `skipped` / `failed`
+
+## 输入来源
+
+- 用户明确请求：
+- 仓库规则：
+- 附件或引用材料：
+- 仅作为证据的内容：
+
 ## Goal
 
 描述本计划必须实现的最终状态。
