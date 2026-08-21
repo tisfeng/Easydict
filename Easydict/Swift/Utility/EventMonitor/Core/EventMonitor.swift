@@ -538,11 +538,11 @@ final class EventMonitor: NSObject {
             return false
         }
 
-        let excludedLanguage = config.autoShowQueryIconExcludedLanguage
+        let excludedLanguages = config.autoShowQueryIconExcludedLanguages
         let detectedLanguage = languageDetector.detectLanguage(text: text)
-        let shouldShowAutoQueryIcon = detectedLanguage != excludedLanguage
+        let shouldShowAutoQueryIcon = !excludedLanguages.contains(detectedLanguage)
         logInfo(
-            "detected language: \(detectedLanguage), excluded language: \(excludedLanguage), shouldShowAutoQueryIcon: \(shouldShowAutoQueryIcon)"
+            "detected language: \(detectedLanguage), excluded languages: \(excludedLanguages.formattedDescription), shouldShowAutoQueryIcon: \(shouldShowAutoQueryIcon)"
         )
 
         return shouldShowAutoQueryIcon

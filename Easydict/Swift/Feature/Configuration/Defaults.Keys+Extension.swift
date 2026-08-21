@@ -37,6 +37,12 @@ extension Defaults.Keys {
         "EZConfiguration_kAutoShowQueryIconExcludedLanguageKey",
         default: Defaults[.firstLanguage]
     )
+    static let autoShowQueryIconExcludedLanguages = Key<Set<Language>>(
+        "EZConfiguration_kAutoShowQueryIconExcludedLanguagesKey", default: []
+    )
+    static let hasMigratedAutoShowQueryIconExcludedLanguages = Key<Bool>(
+        "EZConfiguration_kHasMigratedAutoShowQueryIconExcludedLanguagesKey", default: false
+    )
     static let autoShowQueryIconMinTextLength = Key<Int>(
         "EZConfiguration_kAutoShowQueryIconMinTextLengthKey",
         default: 0

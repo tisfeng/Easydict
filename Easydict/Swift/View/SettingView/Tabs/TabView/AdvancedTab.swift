@@ -121,13 +121,24 @@ struct AdvancedTab: View {
 
                 Group {
                     LabeledContent {
-                        Picker("", selection: $autoShowQueryIconExcludedLanguage) {
+                        Menu {
                             ForEach(Language.allAvailableOptions, id: \.rawValue) { option in
-                                Text(verbatim: "\(option.flagEmoji) \(option.localizedName)")
-                                    .tag(option)
+                                Toggle("\(option.flagEmoji) \(option.localizedName)", isOn: Binding(
+                                    get: { autoShowQueryIconExcludedLanguages.contains(option) },
+                                    set: { isExcluded in
+                                        if isExcluded {
+                                            autoShowQueryIconExcludedLanguages.insert(option)
+                                        } else {
+                                            autoShowQueryIconExcludedLanguages.remove(option)
+                                        }
+                                    }
+                                ))
                             }
+                        } label: {
+                            Text(excludedLanguagesSummary)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
                         }
-                        .labelsHidden()
                     } label: {
                         Text("setting.advance.auto_show_query_icon.condition.language")
                     }
@@ -455,9 +466,19 @@ struct AdvancedTab: View {
 
     // Mouse select query
     @Default(.autoShowQueryIcon) private var autoShowQueryIcon
-    @Default(.autoShowQueryIconExcludedLanguage) private var autoShowQueryIconExcludedLanguage
+    @Default(.autoShowQueryIconExcludedLanguages) private var autoShowQueryIconExcludedLanguages
     @Default(.autoShowQueryIconMinTextLength) private var autoShowQueryIconMinTextLength
     @Default(.clickQuery) private var clickQuery
+
+    private var excludedLanguagesSummary: String {
+        guard !autoShowQueryIconExcludedLanguages.isEmpty else {
+            return String(localized: "setting.advance.auto_show_query_icon.condition.language.none")
+        }
+        return autoShowQueryIconExcludedLanguages
+            .sorted { $0.rawValue < $1.rawValue }
+            .map { "\($0.flagEmoji) \($0.localizedName)" }
+            .joined(separator: ", ")
+    }
 
     // Windows management
     @Default(.fixedWindowPosition) private var fixedWindowPosition

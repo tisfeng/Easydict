@@ -40,6 +40,7 @@ class MyConfiguration: NSObject {
         super.init()
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
+            migrateAutoShowQueryIconExcludedLanguage()
             observeKeys()
         }
     }
@@ -55,7 +56,7 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.languageDetectOptimize) var languageDetectOptimize: LanguageDetectOptimize
 
     @DefaultsWrapper(.autoShowQueryIcon) var autoSelectText: Bool
-    @DefaultsWrapper(.autoShowQueryIconExcludedLanguage) var autoShowQueryIconExcludedLanguage: Language
+    @DefaultsWrapper(.autoShowQueryIconExcludedLanguages) var autoShowQueryIconExcludedLanguages: Set<Language>
     @DefaultsWrapper(.autoShowQueryIconMinTextLength) var autoShowQueryIconMinTextLength: Int
     @DefaultsWrapper(.enableForceGetSelectedText) var enableForceGetSelectedText: Bool
     @DefaultsWrapper(.clickQuery) var clickQuery: Bool
@@ -189,10 +190,10 @@ class MyConfiguration: NSObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.autoShowQueryIconExcludedLanguage, options: [])
+        Defaults.publisher(.autoShowQueryIconExcludedLanguages, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
-                self?.didSetAutoShowQueryIconExcludedLanguage()
+                self?.didSetAutoShowQueryIconExcludedLanguages()
             }
             .store(in: &cancellables)
 
@@ -429,8 +430,14 @@ extension MyConfiguration {
         logSettings(["auto_select_sext": autoSelectText])
     }
 
-    fileprivate func didSetAutoShowQueryIconExcludedLanguage() {
-        logSettings(["auto_show_query_icon_excluded_language": autoShowQueryIconExcludedLanguage])
+    fileprivate func didSetAutoShowQueryIconExcludedLanguages() {
+        logSettings(["auto_show_query_icon_excluded_languages": autoShowQueryIconExcludedLanguages.formattedDescription])
+    }
+
+    private func migrateAutoShowQueryIconExcludedLanguage() {
+        guard !Defaults[.hasMigratedAutoShowQueryIconExcludedLanguages] else { return }
+        Defaults[.autoShowQueryIconExcludedLanguages] = [Defaults[.autoShowQueryIconExcludedLanguage]]
+        Defaults[.hasMigratedAutoShowQueryIconExcludedLanguages] = true
     }
 
     fileprivate func didSetAutoShowQueryIconMinTextLength() {

@@ -7974,6 +7974,14 @@
         }
       }
     },
+    "setting.advance.auto_show_query_icon.condition.language.none" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "All languages" } },
+        "sk" : { "stringUnit" : { "state" : "translated", "value" : "All languages" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "全部语言" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "全部語言" } }
+      }
+    },
     "setting.advance.auto_show_query_icon.condition.min_length" : {
       "localizations" : {
         "en" : {
