@@ -47,6 +47,22 @@ public class AppleOCREngine: NSObject {
         requiresAccurateRecognition: Bool = false
     ) async throws
         -> EZOCRResult {
+        try await recognizeText(
+            image: image,
+            language: language,
+            requiresAccurateRecognition: requiresAccurateRecognition,
+            detectsQRCodes: true
+        )
+    }
+
+    /// Runs OCR while allowing internal retries to skip duplicate QR code detection.
+    private func recognizeText(
+        image: NSImage,
+        language: Language,
+        requiresAccurateRecognition: Bool,
+        detectsQRCodes: Bool
+    ) async throws
+        -> EZOCRResult {
         logInfo("Recognizing text in image with language: \(language), image size: \(image.size)")
 
         guard image.isValid else {
@@ -63,9 +79,20 @@ public class AppleOCREngine: NSObject {
         }
 
         let startTime = CFAbsoluteTimeGetCurrent()
+        let qrCodePayloads = detectsQRCodes ? await detectQRCodePayloads(on: cgImage) : []
 
         // Perform Vision OCR using unified API
-        let observations = try await performVisionOCR(on: cgImage, language: language)
+        let observations: [EZRecognizedTextObservation]
+        do {
+            observations = try await performVisionOCR(on: cgImage, language: language)
+        } catch {
+            guard !qrCodePayloads.isEmpty else { throw error }
+
+            logError(
+                "Text recognition failed; using QR code payloads: \(error.localizedDescription)"
+            )
+            return makeQRCodeOnlyResult(payloads: qrCodePayloads, language: language)
+        }
 
         logInfo("Recognize observations count: \(observations.count) (\(language))")
         logInfo("Cost time: \(startTime.elapsedTimeString) seconds")
@@ -113,6 +140,7 @@ public class AppleOCREngine: NSObject {
         // 3. Only perform second pass when requiresAccurateRecognition is true AND smartMerging is false
 
         if !requiresAccurateRecognition || smartMerging {
+            appendQRCodePayloads(qrCodePayloads, to: ocrResult)
             logInfo("OCR completion (\(language)) cost time: \(startTime.elapsedTimeString) seconds")
             return ocrResult
         }
@@ -125,6 +153,7 @@ public class AppleOCREngine: NSObject {
             from: image,
             candidates: rawProbabilities
         )
+        appendQRCodePayloads(qrCodePayloads, to: mostConfidentResult)
 
         logInfo("Get most confident OCR cost time: \(startSelectTime.elapsedTimeString) seconds")
         logInfo("Total OCR cost time: \(startTime.elapsedTimeString) seconds")
@@ -189,6 +218,72 @@ public class AppleOCREngine: NSObject {
 
     /// Language detector used for tie-breaking when confidences are equal.
     private let languageDetector = AppleLanguageDetector()
+
+    /// Detects QR code payloads without affecting the primary text-recognition path.
+    private func detectQRCodePayloads(on cgImage: CGImage) async -> [String] {
+        await withCheckedContinuation { continuation in
+            let continuationGate = ContinuationGate(continuation: continuation)
+            let request = VNDetectBarcodesRequest { request, error in
+                if let error {
+                    logError("QR code detection failed: \(error.localizedDescription)")
+                    continuationGate.resume(returning: [])
+                    return
+                }
+
+                let observations = (request.results as? [VNBarcodeObservation]) ?? []
+                var seenPayloads = Set<String>()
+                let payloads = observations.compactMap(\.payloadStringValue).filter { payload in
+                    let normalizedPayload = self.normalizedQRCodePayload(payload)
+                    return !normalizedPayload.isEmpty
+                        && seenPayloads.insert(normalizedPayload).inserted
+                }
+                continuationGate.resume(returning: payloads)
+            }
+            request.symbologies = [.qr]
+
+            let requestHandler = VNImageRequestHandler(cgImage: cgImage)
+            DispatchQueue.global().async {
+                do {
+                    try requestHandler.perform([request])
+                } catch {
+                    logError("QR code detection failed: \(error.localizedDescription)")
+                    continuationGate.resume(returning: [])
+                }
+            }
+        }
+    }
+
+    /// Creates an OCR result when the image contains QR codes but no recognized text.
+    private func makeQRCodeOnlyResult(payloads: [String], language: Language) -> EZOCRResult {
+        textProcessor.reset()
+
+        let result = EZOCRResult()
+        result.from = language
+        result.texts = payloads
+        result.mergedText = payloads.joined(separator: "\n")
+        result.raw = payloads
+        return result
+    }
+
+    /// Appends unique QR code payloads after the recognized document text.
+    private func appendQRCodePayloads(_ payloads: [String], to result: EZOCRResult) {
+        var existingTexts = Set(result.texts.map(normalizedQRCodePayload))
+        let newPayloads = payloads.filter { payload in
+            let normalizedPayload = normalizedQRCodePayload(payload)
+            return !normalizedPayload.isEmpty && existingTexts.insert(normalizedPayload).inserted
+        }
+        guard !newPayloads.isEmpty else { return }
+
+        result.texts = result.texts + newPayloads
+        result.mergedText = result.texts.joined(separator: "\n")
+    }
+
+    /// Normalizes payloads for comparison without altering the returned QR code content.
+    private func normalizedQRCodePayload(_ payload: String) -> String {
+        payload
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 
     /// The core async method that executes a `VNRecognizeTextRequest` on a given `CGImage`.
     ///
@@ -337,7 +432,12 @@ public class AppleOCREngine: NSObject {
                 guard language != .auto else { continue }
 
                 group.addTask { [weak self] in
-                    try? await self?.recognizeText(image: image, language: language)
+                    try? await self?.recognizeText(
+                        image: image,
+                        language: language,
+                        requiresAccurateRecognition: false,
+                        detectsQRCodes: false
+                    )
                 }
             }
 
