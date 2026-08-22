@@ -4,7 +4,7 @@
 
 - 进行中的计划放在 `active/`。
 - 已完成的计划移到 `completed/`。
-- 新计划从 `templates/execution-plan.md` 开始。
+- 新计划从 `templates.md` 开始。
 - 在计划本身记录进度、风险、决策和验证结果。
 - 不要将已完成或已放弃的工作留在 `active/` 中。
 
