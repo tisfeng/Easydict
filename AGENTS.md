@@ -4,7 +4,7 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 OCR 截图翻译。
 
 `AGENTS.md` 是 Agent 的入口文件，而不是完整的仓库规则手册。长期维护的规则位于
-`docs/agents/`；公开的英文和中文文档位于 `docs/user-docs/`。
+`docs/agents/`。
 
 ## 开始阅读
 

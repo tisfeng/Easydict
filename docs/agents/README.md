@@ -17,8 +17,6 @@
 - `skills.md`：本地 skill、overlay 和外部 Agent 入口。
 - `../architecture/overview.md`：修改产品代码或跨功能行为时参考当前模块和运行时边界。
 
-面向用户和贡献者的公共文档位于 `../user-docs/`，不能替代这些内部 Agent 规则。
-
 ## Git 交付路由
 
 - `planning`：默认只读，不暂存、不提交、不推送。
