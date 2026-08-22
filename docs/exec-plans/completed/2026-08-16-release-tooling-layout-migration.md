@@ -4,7 +4,7 @@
 **Created:** 2026-08-16
 **Updated:** 2026-08-16
 **Owner:** Easydict maintainers
-**Links:** `docs/histories/20260816-release-tooling-layout-migration.md`
+**Links:** `docs/histories/2026-08/2026-08-16-release-tooling-layout-migration.md`
 
 ## Goal
 

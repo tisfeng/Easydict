@@ -1,5 +1,7 @@
 ## YYYY-MM-DD | Task: <简短动作>
 
+<!-- 文件名：YYYY-MM-DD-<slug>.md；<slug> 使用小写 kebab-case。 -->
+
 **Links:** <issue、PR、计划或 commit>
 
 ### User request

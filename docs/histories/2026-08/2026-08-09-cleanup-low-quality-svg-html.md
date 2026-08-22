@@ -32,7 +32,7 @@
 
 - `Easydict.xcodeproj/project.pbxproj`
 - `Easydict/`、`EasydictTests/` 和 `release-scripts/` 下选定的 SVG 和 HTML 文档文件
-- `docs/histories/2026-08/20260809-cleanup-low-quality-svg-html.md`
+- `docs/histories/2026-08/2026-08-09-cleanup-low-quality-svg-html.md`
 
 ### Follow-ups
 

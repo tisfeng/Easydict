@@ -1,6 +1,6 @@
 ## 2026-08-16 | Task: 迁移并重命名发布工具
 
-**Links:** [`docs/exec-plans/completed/20260816-release-tooling-layout-migration.md`](../../exec-plans/completed/20260816-release-tooling-layout-migration.md)
+**Links:** [`docs/exec-plans/completed/2026-08-16-release-tooling-layout-migration.md`](../../exec-plans/completed/2026-08-16-release-tooling-layout-migration.md)
 
 ### User request
 

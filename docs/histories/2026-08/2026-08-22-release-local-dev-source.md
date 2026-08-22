@@ -31,7 +31,7 @@
 - `scripts/release/release-easydict.sh`
 - `scripts/release/asc-workflow.json`
 - `scripts/release/README.md`
-- `docs/exec-plans/completed/20260822-release-local-dev-source.md`
+- `docs/exec-plans/completed/2026-08-22-release-local-dev-source.md`
 
 ### Follow-ups
 

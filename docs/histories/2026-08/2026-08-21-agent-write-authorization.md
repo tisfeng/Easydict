@@ -29,7 +29,7 @@
 
 - `docs/agents/repository-guide.md`
 - `.agents/skills/git-commit/SKILL.md`
-- `docs/histories/2026-08/20260821-agent-write-authorization.md`
+- `docs/histories/2026-08/2026-08-21-agent-write-authorization.md`
 
 ### Follow-ups
 

@@ -1,6 +1,6 @@
 ## 2026-08-23 | Task: 新增 Easydict 智能发布 Skill
 
-**Links:** `../../exec-plans/completed/20260823-release-easydict-skill.md`
+**Links:** `../../exec-plans/completed/2026-08-23-release-easydict-skill.md`
 
 ### User request
 
@@ -39,8 +39,8 @@
 
 - `.agents/skills/release-easydict/`
 - `docs/agents/skills.md`
-- `docs/exec-plans/completed/20260823-release-easydict-skill.md`
-- `docs/histories/2026-08/20260823-release-easydict-skill.md`
+- `docs/exec-plans/completed/2026-08-23-release-easydict-skill.md`
+- `docs/histories/2026-08/2026-08-23-release-easydict-skill.md`
 
 ### Follow-ups
 

@@ -32,7 +32,7 @@
 - `Easydict/Swift/View/SettingView/Tabs/ServiceConfigurationView/StreamConfigurationView.swift`
 - `Easydict/Swift/View/SettingView/Tabs/ServiceConfigurationView/TextEditorCell.swift`
 - `Easydict/App/Localizable.xcstrings`
-- `docs/histories/2026-08/20260820-service-config-spacing-identifier.md`
+- `docs/histories/2026-08/2026-08-20-service-config-spacing-identifier.md`
 
 ### Follow-ups
 

@@ -2,7 +2,7 @@
 
 - 日期：2026-08-21
 - 状态：completed
-- 关联变更：`20260821-agent-request-boundary.md`
+- 关联变更：`2026-08-21-agent-request-boundary.md`
 
 ## 原因
 

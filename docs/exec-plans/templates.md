@@ -1,5 +1,7 @@
 # <计划标题>
 
+<!-- 文件名：YYYY-MM-DD-<slug>.md；<slug> 使用小写 kebab-case。 -->
+
 **Status:** active
 **Created:** YYYY-MM-DD
 **Updated:** YYYY-MM-DD
