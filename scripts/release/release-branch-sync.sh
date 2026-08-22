@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Synchronizes origin/dev into local dev, builds an isolated release worktree,
-# then updates both branches and the release tag through atomic remote pushes.
+# Synchronizes origin/dev into an isolated local-dev source worktree, builds an
+# isolated release worktree, then updates both branches and the release tag
+# through atomic remote pushes.
 
 set -euo pipefail
 
@@ -21,17 +22,19 @@ local_dev_ref() {
     printf 'refs/heads/%s' "$RELEASE_DEV_BRANCH"
 }
 
-require_local_dev_checkout() {
-    local current_branch
+log_current_checkout() {
+    local current_branch current_changes
 
     current_branch="$(git -C "$RELEASE_SOURCE_ROOT" symbolic-ref \
-        --quiet --short HEAD)" \
-        || release_fail "release source must be a local branch, not detached HEAD"
-    [[ "$current_branch" == "$RELEASE_DEV_BRANCH" ]] \
-        || release_fail "release source must be local $RELEASE_DEV_BRANCH, currently on $current_branch"
-    [[ -z "$(git -C "$RELEASE_SOURCE_ROOT" status --porcelain \
-        --untracked-files=all)" ]] \
-        || release_fail "local $RELEASE_DEV_BRANCH has pending changes; commit or stash them before release"
+        --quiet --short HEAD || printf 'detached HEAD')"
+    current_changes="$(git -C "$RELEASE_SOURCE_ROOT" status --porcelain \
+        --untracked-files=all)"
+
+    if [[ -n "$current_changes" ]]; then
+        release_log "current checkout: $current_branch (pending changes preserved; not used as release source)"
+    else
+        release_log "current checkout: $current_branch (unchanged; release source comes from local $RELEASE_DEV_BRANCH)"
+    fi
 }
 
 fetch_release_refs() {
@@ -69,10 +72,10 @@ report_branch_commits() {
 }
 
 sync_local_dev() {
-    local local_commit remote_commit
+    local local_commit remote_commit source_commit sync_worktree
 
-    require_local_dev_checkout
     ensure_release_layout
+    log_current_checkout
     fetch_release_refs
     report_branch_commits
 
@@ -85,27 +88,41 @@ sync_local_dev() {
     remote_commit="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
         "$(remote_dev_ref)")"
 
-    if git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
-        "$remote_commit" "$local_commit"; then
-        release_log "local $RELEASE_DEV_BRANCH already contains $RELEASE_REMOTE/$RELEASE_DEV_BRANCH"
-    elif git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
-        "$local_commit" "$remote_commit"; then
-        release_log "fast-forwarding local $RELEASE_DEV_BRANCH to $RELEASE_REMOTE/$RELEASE_DEV_BRANCH"
-        git -C "$RELEASE_SOURCE_ROOT" merge --ff-only "$remote_commit"
-    else
-        release_log "merging $RELEASE_REMOTE/$RELEASE_DEV_BRANCH into local $RELEASE_DEV_BRANCH"
-        if ! git -C "$RELEASE_SOURCE_ROOT" merge --no-edit "$remote_commit"; then
-            release_fail "origin/dev could not be merged into local dev; resolve conflicts and rerun draft"
-        fi
+    sync_worktree="$(mktemp -d "$RELEASE_DIR/.dev-sync.XXXXXX")"
+    rmdir "$sync_worktree"
+    if ! git -C "$RELEASE_SOURCE_ROOT" worktree add --detach \
+        "$sync_worktree" "$local_commit" >/dev/null 2>&1; then
+        rmdir "$sync_worktree" 2>/dev/null || true
+        release_fail "could not create isolated worktree from local $RELEASE_DEV_BRANCH"
     fi
 
-    local_commit="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
-        "$(local_dev_ref)")"
+    release_log "created isolated source worktree from local $RELEASE_DEV_BRANCH @ $local_commit"
+    if git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+        "$remote_commit" "$local_commit"; then
+        release_log "isolated source already contains $RELEASE_REMOTE/$RELEASE_DEV_BRANCH"
+    elif git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+        "$local_commit" "$remote_commit"; then
+        release_log "fast-forwarding isolated source to $RELEASE_REMOTE/$RELEASE_DEV_BRANCH"
+        git -C "$sync_worktree" merge --ff-only "$remote_commit" >/dev/null 2>&1
+        release_log "isolated source fast-forward completed"
+    else
+        release_log "merging $RELEASE_REMOTE/$RELEASE_DEV_BRANCH into isolated local $RELEASE_DEV_BRANCH source"
+        if ! git -C "$sync_worktree" merge --no-edit "$remote_commit" >/dev/null 2>&1; then
+            release_error "origin/dev could not be merged into isolated local dev source"
+            release_error "resolve the conflict in this worktree, then rerun draft: $sync_worktree"
+            release_error "current checkout was not modified"
+            return 1
+        fi
+        release_log "isolated source merge completed"
+    fi
+
+    source_commit="$(git -C "$sync_worktree" rev-parse HEAD)"
+    git -C "$RELEASE_SOURCE_ROOT" worktree remove "$sync_worktree"
     write_release_source_metadata \
-        "$local_commit" \
+        "$source_commit" \
         "$remote_commit" \
         "$(git -C "$RELEASE_SOURCE_ROOT" rev-parse "$(remote_main_ref)")"
-    release_log "release source: local $RELEASE_DEV_BRANCH @ $local_commit"
+    release_log "release source: synchronized local $RELEASE_DEV_BRANCH @ $source_commit"
 }
 
 verify_remote_ancestry() {
@@ -224,10 +241,14 @@ create_release_worktree() {
     git -C "$RELEASE_SOURCE_ROOT" worktree add \
         -b "$RELEASE_BRANCH" \
         "$RELEASE_WORKTREE" \
-        "$RELEASE_SOURCE_COMMIT"
+        "$RELEASE_SOURCE_COMMIT" >/dev/null 2>&1 \
+        || release_fail "could not create release worktree: $RELEASE_WORKTREE"
+    release_log "created release worktree: $RELEASE_WORKTREE"
     release_log "merging saved remote main into the local dev release source"
     git -C "$RELEASE_WORKTREE" merge --no-edit \
-        "$RELEASE_SYNCED_REMOTE_MAIN_COMMIT"
+        "$RELEASE_SYNCED_REMOTE_MAIN_COMMIT" >/dev/null 2>&1 \
+        || release_fail "saved remote main could not be merged into release worktree"
+    release_log "release worktree merge completed"
 }
 
 # Builds a clean release source from the synchronized local dev and main.
@@ -265,7 +286,8 @@ prepare_worktree() {
             "refs/heads/$RELEASE_BRANCH"; then
             if release_branch_matches_source; then
                 git -C "$RELEASE_SOURCE_ROOT" worktree add \
-                    "$RELEASE_WORKTREE" "$RELEASE_BRANCH"
+                    "$RELEASE_WORKTREE" "$RELEASE_BRANCH" >/dev/null 2>&1 \
+                    || release_fail "could not attach the matching release worktree"
             else
                 archive_stale_branch
                 created_worktree=1

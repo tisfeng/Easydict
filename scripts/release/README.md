@@ -7,19 +7,20 @@ Easydict 的发布流程由 `asc workflow` 编排。该工作流将构建、公�
 
 ## 发布模型
 
-`dev` 仍然是日常开发分支。发布流程会先将远程 `dev` 同步合并到本地 `dev`，再以同步后的本地 `dev` 和远程 `main` 的合并结果开始：
+`dev` 仍然是日常开发分支。发布流程会以本地 `dev` 的已提交内容为基线，在独立的临时 worktree 中合并远程 `dev`，再以同步结果和远程 `main` 的合并结果开始：
 
-1. 确认当前 checkout 是干净的本地 `dev`。
+1. 记录当前 checkout；当前分支可以是任意分支，当前 worktree、暂存区和未提交修改保持不变。
 2. 获取 `origin/dev`、`origin/main` 和各个 Tag。
-3. 将 `origin/dev` fast-forward 或合并到本地 `dev`；冲突时暂停并等待手动解决。
-4. 记录同步后的本地 `dev` 提交，并从该提交创建隔离的 `release/sync-<version>` worktree。
+3. 从本地 `dev` 提交创建 detached 临时 worktree，并在其中将 `origin/dev` fast-forward 或合并到本地 `dev` 源；冲突时暂停并保留该临时 worktree。
+4. 记录同步后的源提交，并从该提交创建隔离的 `release/sync-<version>` worktree。
 5. 将同步时的 `origin/main` 提交合并到该 worktree。
 6. 基于合并后的结果构建并验证。
 7. 将两个远程分支原子更新到同一个发布提交。
 
 这样可以保留本地 `dev` 上尚未推送的提交，同时吸收远程 `dev` 的更新；也可以找回误合并到 `main`、
-但尚未进入 `dev` 的更改。同步只允许在干净的本地 `dev` 上执行，并不会修改暂存区。原子推送还能避免
-`dev` 和 `main` 被分别更新。发布自动化自身的代码必须已经提交并存在于合并后的历史中。
+但尚未进入 `dev` 的更改。发布流程不会切换或合并当前 checkout；当前分支上的未提交修改不会进入发布，
+发布只使用已提交的本地 `dev`。原子推送还能避免 `dev` 和 `main` 被分别更新。发布自动化自身的代码必须
+已经提交并存在于合并后的历史中。
 
 如果同一版本之前的发布尝试留下了干净但过期的临时 worktree，新的 `prepare`、`draft` 或 `release`
 运行会在没有远程版本 Tag 的情况下自动归档旧 worktree、状态和产物，然后从最新的本地 `dev` 重建。
@@ -161,7 +162,8 @@ run ID：
 
 ## 失败行为
 
-- 当前 checkout 不是本地 `dev` 或有脏文件：暂停，避免同步或发布错误的代码。
+- 当前 checkout 中的发布脚本有未提交修改：暂停，避免使用不可复现的发布工具。
+- detached dev 同步 worktree 发生合并冲突：暂停并保留临时 worktree，当前 checkout 不受影响。
 - release worktree 有脏文件：暂停，并保留现场供检查。
 - `dev`/`main` 合并冲突：在版本更新或推送前暂停。
 - 已有 Tag 指向其他提交：暂停。
