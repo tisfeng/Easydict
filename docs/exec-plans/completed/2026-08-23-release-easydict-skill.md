@@ -23,12 +23,12 @@
 - 初始未跟踪路径：`empty`
 - 自动提交结果：本计划与实现由同一个收尾本地提交交付，不执行 push
 
-## Scope
+## 范围
 
 - 包含：skill 编排规则、Release Notes 解析/渲染、弱引用收集、语义决策契约、发布后幂等通知、离线 fixture 和文档。
 - 不包含：修改 PR 模板、执行真实发布、编辑当前 Draft、评论或关闭真实 issue、改变现有 shell 发布入口语义。
 
-## Risks and mitigations
+## 风险与缓解
 
 - 风险：裸 `#123` 实际指向 PR 或仅为背景引用。
   - 缓解措施：通过 GitHub issue API 解析实体，并要求关联性与完整解决两道决策门都通过。
@@ -39,7 +39,7 @@
 - 风险：测试误操作线上数据。
   - 缓解措施：单元测试只使用 fixture；远程修改命令必须显式传入 `--execute`。
 
-## Milestones
+## 里程碑
 
 - [x] 创建 skill 入口和详细 issue 判断策略。
 - [x] 实现发布说明捕获、校验、渲染和 Draft 更新 helper。
@@ -48,7 +48,7 @@
 - [x] 完成 skill、Python、Markdown 和 Git diff 校验。
 - [x] 将计划移到 `completed/`，记录历史并自动本地提交。
 
-## Validation
+## 验证
 
 - `python3 .../skill-creator/scripts/quick_validate.py .agents/skills/release-easydict`：通过。
 - `python3 -m unittest discover -s .agents/skills/release-easydict/tests -p 'test_*.py'`：
@@ -58,13 +58,13 @@
 - `git diff --check`：通过。
 - 未执行真实 Draft、publish、issue comment 或 issue close；测试全部使用离线 fixture。
 
-## Decision log
+## 决策记录
 
 - 2026-08-23：本阶段不新增 PR 模板，兼容现有 closing reference、issue URL、`owner/repo#123` 和裸 `#123`。
 - 2026-08-23：`closingIssuesReferences` 仅作为候选来源；自动通知必须同时满足目标关联和完整解决。
 - 2026-08-23：现有发布脚本保持执行引擎角色，skill 在 Draft 与 publish 之间编排内容，在 publish 成功后编排 issue 跟进。
 
-## Progress log
+## 进度记录
 
 - 2026-08-23：确认初始工作树干净、暂存区为空；当前 `dev` 比 `origin/dev` 领先一个既有发布修复提交。
 - 2026-08-23：完成英文 Release Notes/标题 helper、弱关联 issue 两道决策门、发布后降级保护、
