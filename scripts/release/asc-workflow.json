@@ -59,6 +59,10 @@
           "run": "./scripts/release/release-preflight.sh environment"
         },
         {
+          "name": "sync_local_dev",
+          "run": "./scripts/release/release-branch-sync.sh sync-dev"
+        },
+        {
           "name": "prepare_release_worktree",
           "run": "./scripts/release/release-branch-sync.sh prepare"
         },

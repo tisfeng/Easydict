@@ -7,18 +7,23 @@ Easydict 的发布流程由 `asc workflow` 编排。该工作流将构建、公�
 
 ## 发布模型
 
-`dev` 仍然是日常开发分支。发布流程从远程 `dev` 和 `main` 的当前历史合并结果开始：
+`dev` 仍然是日常开发分支。发布流程会先将远程 `dev` 同步合并到本地 `dev`，再以同步后的本地 `dev` 和远程 `main` 的合并结果开始：
 
-1. 获取 `origin/dev`、`origin/main` 和各个 Tag。
-2. 从 `origin/dev` 创建隔离的 `release/sync-<version>` worktree。
-3. 将 `origin/main` 合并到该分支。
-4. 如果两个分支无法干净合并，则暂停并等待手动解决冲突。
-5. 基于合并后的结果构建并验证。
-6. 将两个远程分支原子更新到同一个发布提交。
+1. 确认当前 checkout 是干净的本地 `dev`。
+2. 获取 `origin/dev`、`origin/main` 和各个 Tag。
+3. 将 `origin/dev` fast-forward 或合并到本地 `dev`；冲突时暂停并等待手动解决。
+4. 记录同步后的本地 `dev` 提交，并从该提交创建隔离的 `release/sync-<version>` worktree。
+5. 将同步时的 `origin/main` 提交合并到该 worktree。
+6. 基于合并后的结果构建并验证。
+7. 将两个远程分支原子更新到同一个发布提交。
 
-这样可以找回误合并到 `main`、但尚未进入 `dev` 的更改，同时不会切换开发者当前的 checkout，
-也不会修改当前 checkout 的暂存区。原子推送还能避免 `dev` 和 `main` 被分别更新。发布自动化自身的代码
-必须已经提交并存在于合并后的历史中；开发者当前 checkout 中无关的脏文件会保持不变。
+这样可以保留本地 `dev` 上尚未推送的提交，同时吸收远程 `dev` 的更新；也可以找回误合并到 `main`、
+但尚未进入 `dev` 的更改。同步只允许在干净的本地 `dev` 上执行，并不会修改暂存区。原子推送还能避免
+`dev` 和 `main` 被分别更新。发布自动化自身的代码必须已经提交并存在于合并后的历史中。
+
+如果同一版本之前的发布尝试留下了干净但过期的临时 worktree，新的 `prepare`、`draft` 或 `release`
+运行会在没有远程版本 Tag 的情况下自动归档旧 worktree、状态和产物，然后从最新的本地 `dev` 重建。
+有未提交修改、已推送版本 Tag 或已进入远程发布阶段时，流程会停止并保留现场。
 
 ## 首次设置
 
@@ -123,7 +128,7 @@ run ID：
 `release` 工作流按以下顺序执行检查点：
 
 1. 验证工具、凭据、证书、Sparkle 密钥、发布说明和配置。
-2. 在隔离的 worktree 中将远程 `main` 合并到远程 `dev`。
+2. 将同步后的本地 `dev` 和远程 `main` 合并到隔离的 worktree。
 3. 更新并提交 Xcode 的 marketing version 和 build version。
 4. 使用 `asc xcode archive` 归档，并使用 `xcodebuild` 导出。
 5. 提交 App 进行公证、写入公证票据，并验证 Gatekeeper。
@@ -156,7 +161,7 @@ run ID：
 
 ## 失败行为
 
-- 当前 checkout 有脏文件：允许，但 `scripts/release/` 除外；工作流不会从当前 checkout 构建。
+- 当前 checkout 不是本地 `dev` 或有脏文件：暂停，避免同步或发布错误的代码。
 - release worktree 有脏文件：暂停，并保留现场供检查。
 - `dev`/`main` 合并冲突：在版本更新或推送前暂停。
 - 已有 Tag 指向其他提交：暂停。

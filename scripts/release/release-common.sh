@@ -17,6 +17,7 @@ DEFAULT_RELEASE_IDENTITY="Developer ID Application: Canglong Dai (45Z6V4YD5U)"
 RELEASE_SIGN_IDENTITY="${RELEASE_SIGN_IDENTITY:-$DEFAULT_RELEASE_IDENTITY}"
 RELEASE_SPARKLE_ACCOUNT="${RELEASE_SPARKLE_ACCOUNT:-ed25519}"
 RELEASE_STEP="${RELEASE_STEP:-release}"
+RELEASE_RUN_MODE="${RELEASE_RUN_MODE:-new}"
 
 RELEASE_VERSION="${VERSION:-}"
 RELEASE_CHANNEL="${CHANNEL:-beta}"
@@ -35,6 +36,7 @@ if [[ -n "$RELEASE_VERSION" ]]; then
     RELEASE_WORKTREE="$RELEASE_DIR/worktree"
     RELEASE_BRANCH="release/sync-$RELEASE_VERSION"
     RELEASE_STATE_DIR="$RELEASE_DIR/state"
+    RELEASE_SOURCE_METADATA_PATH="$RELEASE_STATE_DIR/source.env"
     RELEASE_METADATA_PATH="$RELEASE_STATE_DIR/release.env"
     RELEASE_ARCHIVE_PATH="$RELEASE_DIR/Easydict.xcarchive"
     RELEASE_DERIVED_DATA="$RELEASE_DIR/derived-data"
@@ -231,6 +233,39 @@ write_release_metadata() {
         printf 'RELEASE_SAVED_CHANNEL=%q\n' "$RELEASE_CHANNEL"
         printf 'RELEASE_VERSION_COMMIT=%q\n' "$version_commit"
     } >"$RELEASE_METADATA_PATH"
+}
+
+# Persists the local dev snapshot and the remote refs used to create the
+# release worktree. These values make a resumed run independent of later
+# changes to the caller's checkout or remote branches.
+write_release_source_metadata() {
+    local source_commit="$1"
+    local remote_dev_commit="$2"
+    local remote_main_commit="$3"
+
+    mkdir -p "$RELEASE_STATE_DIR"
+    {
+        printf 'RELEASE_SOURCE_BRANCH=%q\n' "$RELEASE_DEV_BRANCH"
+        printf 'RELEASE_SOURCE_COMMIT=%q\n' "$source_commit"
+        printf 'RELEASE_SYNCED_REMOTE_DEV_COMMIT=%q\n' "$remote_dev_commit"
+        printf 'RELEASE_SYNCED_REMOTE_MAIN_COMMIT=%q\n' "$remote_main_commit"
+    } >"$RELEASE_SOURCE_METADATA_PATH"
+}
+
+# Loads the immutable source snapshot selected before the build begins.
+load_release_source_metadata() {
+    require_release_file "$RELEASE_SOURCE_METADATA_PATH"
+    # shellcheck disable=SC1090
+    source "$RELEASE_SOURCE_METADATA_PATH"
+
+    [[ "$RELEASE_SOURCE_BRANCH" == "$RELEASE_DEV_BRANCH" ]] \
+        || release_fail "release source branch differs from configured dev branch"
+    [[ "$RELEASE_SOURCE_COMMIT" =~ ^[0-9a-f]{40}$ ]] \
+        || release_fail "release source commit is invalid"
+    [[ "$RELEASE_SYNCED_REMOTE_DEV_COMMIT" =~ ^[0-9a-f]{40}$ ]] \
+        || release_fail "synced remote dev commit is invalid"
+    [[ "$RELEASE_SYNCED_REMOTE_MAIN_COMMIT" =~ ^[0-9a-f]{40}$ ]] \
+        || release_fail "synced remote main commit is invalid"
 }
 
 # Loads the immutable version/build/channel chosen by the version stage.

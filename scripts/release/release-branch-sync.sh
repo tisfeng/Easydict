@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Reconciles origin/dev and origin/main in an isolated release worktree, then
-# updates both branches and the release tag through atomic remote pushes.
+# Synchronizes origin/dev into local dev, builds an isolated release worktree,
+# then updates both branches and the release tag through atomic remote pushes.
 
 set -euo pipefail
 
@@ -15,6 +15,23 @@ remote_dev_ref() {
 
 remote_main_ref() {
     printf 'refs/remotes/%s/%s' "$RELEASE_REMOTE" "$RELEASE_MAIN_BRANCH"
+}
+
+local_dev_ref() {
+    printf 'refs/heads/%s' "$RELEASE_DEV_BRANCH"
+}
+
+require_local_dev_checkout() {
+    local current_branch
+
+    current_branch="$(git -C "$RELEASE_SOURCE_ROOT" symbolic-ref \
+        --quiet --short HEAD)" \
+        || release_fail "release source must be a local branch, not detached HEAD"
+    [[ "$current_branch" == "$RELEASE_DEV_BRANCH" ]] \
+        || release_fail "release source must be local $RELEASE_DEV_BRANCH, currently on $current_branch"
+    [[ -z "$(git -C "$RELEASE_SOURCE_ROOT" status --porcelain \
+        --untracked-files=all)" ]] \
+        || release_fail "local $RELEASE_DEV_BRANCH has pending changes; commit or stash them before release"
 }
 
 fetch_release_refs() {
@@ -42,14 +59,53 @@ worktree_is_registered() {
 }
 
 report_branch_commits() {
-    release_log "commits found only on main:"
-    git -C "$RELEASE_SOURCE_ROOT" log --oneline --no-decorate \
-        "$(remote_dev_ref)..$(remote_main_ref)" \
-        || true
-    release_log "commits found only on dev:"
-    git -C "$RELEASE_SOURCE_ROOT" log --oneline --no-decorate \
-        "$(remote_main_ref)..$(remote_dev_ref)" \
-        || true
+    local main_only dev_only
+
+    main_only="$(git -C "$RELEASE_SOURCE_ROOT" rev-list --count \
+        "$(remote_dev_ref)..$(remote_main_ref)")"
+    dev_only="$(git -C "$RELEASE_SOURCE_ROOT" rev-list --count \
+        "$(remote_main_ref)..$(remote_dev_ref)")"
+    release_log "remote branch delta: main-only=$main_only, dev-only=$dev_only"
+}
+
+sync_local_dev() {
+    local local_commit remote_commit
+
+    require_local_dev_checkout
+    ensure_release_layout
+    fetch_release_refs
+    report_branch_commits
+
+    git -C "$RELEASE_SOURCE_ROOT" show-ref --verify --quiet \
+        "$(local_dev_ref)" \
+        || release_fail "local dev branch was not found"
+
+    local_commit="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
+        "$(local_dev_ref)")"
+    remote_commit="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
+        "$(remote_dev_ref)")"
+
+    if git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+        "$remote_commit" "$local_commit"; then
+        release_log "local $RELEASE_DEV_BRANCH already contains $RELEASE_REMOTE/$RELEASE_DEV_BRANCH"
+    elif git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+        "$local_commit" "$remote_commit"; then
+        release_log "fast-forwarding local $RELEASE_DEV_BRANCH to $RELEASE_REMOTE/$RELEASE_DEV_BRANCH"
+        git -C "$RELEASE_SOURCE_ROOT" merge --ff-only "$remote_commit"
+    else
+        release_log "merging $RELEASE_REMOTE/$RELEASE_DEV_BRANCH into local $RELEASE_DEV_BRANCH"
+        if ! git -C "$RELEASE_SOURCE_ROOT" merge --no-edit "$remote_commit"; then
+            release_fail "origin/dev could not be merged into local dev; resolve conflicts and rerun draft"
+        fi
+    fi
+
+    local_commit="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
+        "$(local_dev_ref)")"
+    write_release_source_metadata \
+        "$local_commit" \
+        "$remote_commit" \
+        "$(git -C "$RELEASE_SOURCE_ROOT" rev-parse "$(remote_main_ref)")"
+    release_log "release source: local $RELEASE_DEV_BRANCH @ $local_commit"
 }
 
 verify_remote_ancestry() {
@@ -61,44 +117,177 @@ verify_remote_ancestry() {
         || release_fail "release branch no longer contains current remote main"
 }
 
-# Builds a clean union of remote dev and main without changing the caller.
+verify_release_source_ancestry() {
+    git -C "$RELEASE_WORKTREE" merge-base --is-ancestor \
+        "$RELEASE_SOURCE_COMMIT" HEAD \
+        || release_fail "release worktree does not contain the saved local dev source"
+    git -C "$RELEASE_WORKTREE" merge-base --is-ancestor \
+        "$RELEASE_SYNCED_REMOTE_MAIN_COMMIT" HEAD \
+        || release_fail "release worktree does not contain the saved remote main source"
+}
+
+release_worktree_matches_source() {
+    git -C "$RELEASE_WORKTREE" merge-base --is-ancestor \
+        "$RELEASE_SOURCE_COMMIT" HEAD \
+        && git -C "$RELEASE_WORKTREE" merge-base --is-ancestor \
+            "$RELEASE_SYNCED_REMOTE_MAIN_COMMIT" HEAD \
+        || return 1
+
+    if [[ "$RELEASE_RUN_MODE" == new && -f "$RELEASE_METADATA_PATH" ]]; then
+        # A new run may reuse matching artifacts, but never mix channels from
+        # an earlier attempt for the same version.
+        # shellcheck disable=SC1090
+        source "$RELEASE_METADATA_PATH"
+        [[ "${RELEASE_SAVED_VERSION:-}" == "$RELEASE_VERSION" ]] \
+            || return 1
+        [[ "${RELEASE_SAVED_CHANNEL:-}" == "$RELEASE_CHANNEL" ]] \
+            || return 1
+    fi
+    return 0
+}
+
+release_branch_matches_source() {
+    git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+        "$RELEASE_SOURCE_COMMIT" "refs/heads/$RELEASE_BRANCH" \
+        && git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+            "$RELEASE_SYNCED_REMOTE_MAIN_COMMIT" "refs/heads/$RELEASE_BRANCH"
+}
+
+require_no_remote_version_tag() {
+    local status
+
+    if git -C "$RELEASE_SOURCE_ROOT" ls-remote --exit-code "$RELEASE_REMOTE" \
+        "refs/tags/$RELEASE_VERSION" >/dev/null 2>&1; then
+        release_fail "remote tag $RELEASE_VERSION already exists; refusing to rebuild release state"
+    else
+        status=$?
+    fi
+
+    case "$status" in
+        2)
+            ;;
+        *)
+            release_fail "unable to verify whether remote tag $RELEASE_VERSION exists"
+            ;;
+    esac
+}
+
+archive_stale_branch() {
+    local archived_branch
+
+    [[ "$RELEASE_RUN_MODE" != resume ]] \
+        || release_fail "resumed release branch is stale; refusing to replace its saved release source"
+    require_no_remote_version_tag
+    archived_branch="release/stale-$RELEASE_VERSION-$(date '+%Y%m%dT%H%M%S')-$$"
+    git -C "$RELEASE_SOURCE_ROOT" branch -m \
+        "$RELEASE_BRANCH" "$archived_branch"
+    release_log "archived stale release branch as $archived_branch"
+}
+
+archive_stale_worktree() {
+    local archived_branch archive_dir generated_path
+    local actual_branch
+
+    [[ "$RELEASE_RUN_MODE" != resume ]] \
+        || release_fail "resumed release worktree is stale; refusing to replace its saved release source"
+    require_release_worktree
+    [[ -z "$(git -C "$RELEASE_WORKTREE" status --porcelain \
+        --untracked-files=all)" ]] \
+        || release_fail "existing release worktree has pending changes; use asc resume"
+    actual_branch="$(git -C "$RELEASE_WORKTREE" branch --show-current)"
+    [[ "$actual_branch" == "$RELEASE_BRANCH" ]] \
+        || release_fail "release worktree is attached to unexpected branch: $actual_branch"
+    require_no_remote_version_tag
+
+    mkdir -p "$RELEASE_DIR/stale"
+    archive_dir="$(mktemp -d "$RELEASE_DIR/stale/attempt.XXXXXX")"
+    archived_branch="release/stale-$RELEASE_VERSION-$(date '+%Y%m%dT%H%M%S')-$$"
+    git -C "$RELEASE_WORKTREE" switch --detach >/dev/null
+    git -C "$RELEASE_SOURCE_ROOT" branch -m \
+        "$RELEASE_BRANCH" "$archived_branch"
+    git -C "$RELEASE_SOURCE_ROOT" worktree move \
+        "$RELEASE_WORKTREE" "$archive_dir/worktree"
+
+    for generated_path in \
+        state Easydict.xcarchive derived-data export artifacts appcast \
+        Easydict-notarization.zip verify; do
+        if [[ -e "$RELEASE_DIR/$generated_path" ]]; then
+            mv "$RELEASE_DIR/$generated_path" "$archive_dir/$generated_path"
+        fi
+    done
+
+    release_log "archived stale release worktree: $archive_dir/worktree"
+    release_log "archived stale release branch: $archived_branch"
+}
+
+create_release_worktree() {
+    git -C "$RELEASE_SOURCE_ROOT" worktree add \
+        -b "$RELEASE_BRANCH" \
+        "$RELEASE_WORKTREE" \
+        "$RELEASE_SOURCE_COMMIT"
+    release_log "merging saved remote main into the local dev release source"
+    git -C "$RELEASE_WORKTREE" merge --no-edit \
+        "$RELEASE_SYNCED_REMOTE_MAIN_COMMIT"
+}
+
+# Builds a clean release source from the synchronized local dev and main.
 prepare_worktree() {
     local created_worktree=0
 
     ensure_release_layout
-    fetch_release_refs
+    if [[ -f "$RELEASE_SOURCE_METADATA_PATH" ]]; then
+        load_release_source_metadata
+    else
+        sync_local_dev
+        load_release_source_metadata
+    fi
+    git -C "$RELEASE_SOURCE_ROOT" cat-file -e \
+        "$RELEASE_SOURCE_COMMIT^{commit}" \
+        || release_fail "saved local dev source commit is unavailable"
+    git -C "$RELEASE_SOURCE_ROOT" cat-file -e \
+        "$RELEASE_SYNCED_REMOTE_MAIN_COMMIT^{commit}" \
+        || release_fail "saved remote main source commit is unavailable"
     report_branch_commits
 
     if worktree_is_registered; then
         require_release_worktree
         release_log "reusing release worktree: $RELEASE_WORKTREE"
+        if ! release_worktree_matches_source; then
+            release_log "stale release worktree detected; rebuilding from local dev source"
+            archive_stale_worktree
+            created_worktree=1
+        fi
     else
         [[ ! -e "$RELEASE_WORKTREE" ]] \
             || release_fail "unregistered path blocks release worktree: $RELEASE_WORKTREE"
 
         if git -C "$RELEASE_SOURCE_ROOT" show-ref --verify --quiet \
             "refs/heads/$RELEASE_BRANCH"; then
-            git -C "$RELEASE_SOURCE_ROOT" worktree add \
-                "$RELEASE_WORKTREE" "$RELEASE_BRANCH"
+            if release_branch_matches_source; then
+                git -C "$RELEASE_SOURCE_ROOT" worktree add \
+                    "$RELEASE_WORKTREE" "$RELEASE_BRANCH"
+            else
+                archive_stale_branch
+                created_worktree=1
+            fi
         else
-            git -C "$RELEASE_SOURCE_ROOT" worktree add \
-                -b "$RELEASE_BRANCH" \
-                "$RELEASE_WORKTREE" \
-                "$(remote_dev_ref)"
             created_worktree=1
         fi
     fi
 
     if ((created_worktree == 1)); then
-        release_log "merging remote main into the dev-based release branch"
-        git -C "$RELEASE_WORKTREE" merge --no-edit "$(remote_main_ref)"
+        create_release_worktree
     else
         [[ -z "$(git -C "$RELEASE_WORKTREE" status --porcelain)" ]] \
             || release_fail "existing release worktree has pending changes; use asc resume"
     fi
 
-    verify_remote_ancestry
-    release_log "release worktree contains both remote branch histories"
+    write_release_source_metadata \
+        "$RELEASE_SOURCE_COMMIT" \
+        "$RELEASE_SYNCED_REMOTE_DEV_COMMIT" \
+        "$RELEASE_SYNCED_REMOTE_MAIN_COMMIT"
+    verify_release_source_ancestry
+    release_log "release worktree contains local dev and remote main source histories"
 }
 
 ensure_tag() {
@@ -175,6 +364,10 @@ main() {
 
     require_release_version
     case "$action" in
+        sync-dev)
+            release_set_step "sync_local_dev"
+            sync_local_dev
+            ;;
         prepare)
             release_set_step "prepare_release_worktree"
             prepare_worktree
@@ -192,7 +385,7 @@ main() {
             cleanup_worktree
             ;;
         *)
-            release_fail "usage: release-branch-sync.sh prepare|push-version|push-appcast|cleanup"
+            release_fail "usage: release-branch-sync.sh sync-dev|prepare|push-version|push-appcast|cleanup"
             ;;
     esac
 }

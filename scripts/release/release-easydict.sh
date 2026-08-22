@@ -203,6 +203,7 @@ main() {
 
             cd "$ROOT_DIR"
             asc workflow validate --file "$WORKFLOW_PATH" >/dev/null
+            export RELEASE_RUN_MODE=resume
             run_workflow "$resume_version" asc workflow run \
                 --pretty \
                 --file "$WORKFLOW_PATH" \
@@ -292,6 +293,7 @@ main() {
         "NOTES_FILE:$notes_file"
     )
 
+    export RELEASE_RUN_MODE=new
     run_workflow "$version" "${command[@]}"
 }
 
