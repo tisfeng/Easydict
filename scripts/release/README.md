@@ -1,69 +1,61 @@
-# Easydict release workflow
+# Easydict 发布流程
 
-Easydict releases are orchestrated by `asc workflow`. The workflow keeps the
-individual build, notarization, packaging, GitHub, and Sparkle stages small and
-resumable while exposing one command for the normal release path.
+Easydict 的发布流程由 `asc workflow` 编排。该工作流将构建、公证、打包、GitHub
+和 Sparkle 等阶段拆分为多个小步骤，支持断点恢复，同时提供一条命令执行完整的发布流程。
 
-The former monolithic script is preserved as
-`release-easydict-legacy.sh`. It is available as a temporary fallback and is
-not called by the new workflow.
+旧版单体脚本保留为 `release-easydict-legacy.sh`，可作为临时备用方案使用，但新版工作流不会调用它。
 
-## Release model
+## 发布模型
 
-`dev` remains the everyday development branch. A release starts from the union
-of the current remote `dev` and `main` histories:
+`dev` 仍然是日常开发分支。发布流程从远程 `dev` 和 `main` 的当前历史合并结果开始：
 
-1. Fetch `origin/dev`, `origin/main`, and tags.
-2. Create an isolated `release/sync-<version>` worktree from `origin/dev`.
-3. Merge `origin/main` into that branch.
-4. Stop for manual conflict resolution if the branches cannot merge cleanly.
-5. Build and verify from the merged result.
-6. Atomically update both remote branches to the same release commit.
+1. 获取 `origin/dev`、`origin/main` 和各个 Tag。
+2. 从 `origin/dev` 创建隔离的 `release/sync-<version>` worktree。
+3. 将 `origin/main` 合并到该分支。
+4. 如果两个分支无法干净合并，则暂停并等待手动解决冲突。
+5. 基于合并后的结果构建并验证。
+6. 将两个远程分支原子更新到同一个发布提交。
 
-This recovers changes that were accidentally merged only to `main` without
-making the developer's current checkout switch branches or modify its index.
-The atomic push also prevents `dev` and `main` from being updated separately.
-The release automation itself must be committed and present in that merged
-history; unrelated dirty files in the original checkout remain untouched.
+这样可以找回误合并到 `main`、但尚未进入 `dev` 的更改，同时不会切换开发者当前的 checkout，
+也不会修改当前 checkout 的暂存区。原子推送还能避免 `dev` 和 `main` 被分别更新。发布自动化自身的代码
+必须已经提交并存在于合并后的历史中；开发者当前 checkout 中无关的脏文件会保持不变。
 
-## First-time setup
+## 首次设置
 
-Install and authenticate these tools:
+安装并认证以下工具：
 
-- Xcode command-line tools and a Developer ID Application certificate.
-- [`asc`](https://github.com/rorkai/App-Store-Connect-CLI).
-- [`create-dmg`](https://github.com/sindresorhus/create-dmg).
-- GitHub CLI (`gh`).
-- Sparkle's `generate_appcast` tool and the `ed25519` key in Keychain.
+- Xcode 命令行工具和 Developer ID Application 证书。
+- [`asc`](https://github.com/rorkai/App-Store-Connect-CLI)。
+- [`create-dmg`](https://github.com/sindresorhus/create-dmg)。
+- GitHub CLI（`gh`）。
+- Sparkle 的 `generate_appcast` 工具，以及保存在 Keychain 中的 `ed25519` 密钥。
 
-The workflow expects App Store Connect API authentication to be configured for
-`asc`, and verifies it with:
+工作流要求为 `asc` 配置 App Store Connect API 认证，并通过以下命令验证：
 
 ```bash
 asc auth status --validate
 gh auth status
 ```
 
-By default, `generate_appcast` is discovered in `PATH`, then in Sparkle's
-Xcode package artifacts. Set `GENERATE_APPCAST` to an executable path when it
-lives elsewhere. Secrets stay in Keychain or the tools' own credential stores;
-none are written to the repository or release metadata.
+默认情况下，工作流会先从 `PATH` 中查找 `generate_appcast`，然后查找 Sparkle 的 Xcode 包产物。
+如果该工具位于其他位置，可以设置 `GENERATE_APPCAST` 指向可执行文件。密钥等机密信息应保存在
+Keychain 或工具自身的凭据存储中，不会写入仓库或发布元数据。
 
-## One-command release
+## 一条命令发布
 
-Run from the repository root:
+在仓库根目录执行：
 
 ```bash
 ./scripts/release/release-easydict.sh release 2.22.0
 ```
 
-The default channel is `beta`. For a stable update:
+默认发布频道为 `beta`。如果要发布稳定版本：
 
 ```bash
 ./scripts/release/release-easydict.sh release 2.22.0 --channel stable
 ```
 
-Optional release notes and an explicit build number can be supplied:
+可以指定发布说明文件和构建号：
 
 ```bash
 ./scripts/release/release-easydict.sh release 2.22.0 \
@@ -71,98 +63,87 @@ Optional release notes and an explicit build number can be supplied:
     --build-number 64
 ```
 
-Without `--build-number`, the workflow increments the Xcode build number. The
-version must be greater than the newest Sparkle feed version, and the build
-must be greater than the newest feed build.
+如果不指定 `--build-number`，工作流会自动递增 Xcode 构建号。版本号必须高于 Sparkle feed 中的最新版本，
+构建号也必须高于 feed 中的最新构建号。
 
-## Safer staged commands
+## 更安全的分阶段命令
 
-Use a smaller workflow when a release needs human inspection between stages:
+如果希望在各阶段之间进行人工检查，可以使用较小的工作流：
 
 ```bash
-# Build, sign, notarize, package, generate appcast, and verify locally.
+# 构建、签名、公证、打包、生成 appcast，并在本地完成验证。
 ./scripts/release/release-easydict.sh prepare 2.22.0
 
-# Prepare, synchronize the release refs, and create a verified GitHub draft.
+# 准备发布、同步发布引用，并创建经过验证的 GitHub Draft Release。
 ./scripts/release/release-easydict.sh draft 2.22.0
 
-# Publish an existing verified draft, install the appcast, and verify remotely.
+# 发布已有的、经过验证的 Draft Release，安装 appcast，并执行远程验证。
 ./scripts/release/release-easydict.sh publish 2.22.0
 ```
 
-Pass the same `--channel stable` option to a separate `publish` command when
-the prepared release is stable.
+如果准备发布的是稳定版本，需要在单独执行 `publish` 命令时传入相同的 `--channel stable` 参数。
 
-Preview the exact `asc` plan without executing release steps:
+只预览确切的 `asc` 执行计划而不执行发布步骤：
 
 ```bash
 ./scripts/release/release-easydict.sh release 2.22.0 --dry-run
 ```
 
-## Resume after failure
+## 失败后恢复
 
-`asc` records run state under `scripts/release/runs/`, which Git ignores. After fixing a
-transient problem, resume with the run ID printed by `asc`:
+`asc` 会将运行状态记录在 Git 忽略的 `scripts/release/runs/` 目录下。修复临时问题后，使用 `asc` 输出的运行 ID
+继续执行：
 
 ```bash
 ./scripts/release/release-easydict.sh resume <run-id>
 ```
 
-Release state and artifacts are kept in `.tmp/release/<version>/` for audit and
-recovery. A successful publish removes only the isolated Git worktree. Each
-stage is written to be safe to retry or to fail before replacing an existing
-remote asset or feed entry.
+发布状态和产物会保存在 `.tmp/release/<version>/` 中，用于审计和恢复。成功发布后只会移除隔离的 Git worktree。
+每个阶段都设计为可以安全重试，或者在替换已有远程资产或 feed 条目之前安全失败。
 
-## What the full workflow does
+## 完整工作流的执行内容
 
-The `release` workflow performs these checkpoints in order:
+`release` 工作流按以下顺序执行检查点：
 
-1. Validate tools, credentials, certificate, Sparkle key, notes, and config.
-2. Merge remote `main` into remote `dev` in an isolated worktree.
-3. Update and commit Xcode marketing/build versions.
-4. Archive with `asc xcode archive` and export with `xcodebuild`.
-5. Submit the app for notarization, staple it, and verify Gatekeeper.
-6. Produce Sparkle ZIP and DMG artifacts; notarize and staple the DMG.
-7. Generate and strictly validate a candidate `appcast.xml`.
-8. Atomically push `dev`, `main`, and the annotated version tag.
-9. Create and verify a GitHub draft with ZIP, DMG, and checksums.
-10. Publish the GitHub release, install the appcast, and atomically update both
-    branches again.
-11. Verify remote refs, release assets, and the public Sparkle feed before
-    removing the isolated worktree.
+1. 验证工具、凭据、证书、Sparkle 密钥、发布说明和配置。
+2. 在隔离的 worktree 中将远程 `main` 合并到远程 `dev`。
+3. 更新并提交 Xcode 的 marketing version 和 build version。
+4. 使用 `asc xcode archive` 归档，并使用 `xcodebuild` 导出。
+5. 提交 App 进行公证、写入公证票据，并验证 Gatekeeper。
+6. 生成 Sparkle ZIP 和 DMG 产物；对 DMG 进行公证并写入公证票据。
+7. 生成并严格验证候选 `appcast.xml`。
+8. 原子推送 `dev`、`main` 和带注释的版本 Tag。
+9. 创建并验证包含 ZIP、DMG 和校验和的 GitHub Draft Release。
+10. 发布 GitHub Release，安装 appcast，并再次原子更新两个分支。
+11. 在移除隔离 worktree 前，验证远程引用、发布资产和公开 Sparkle feed。
 
-The public feed is updated only after the GitHub release is published, so it
-never advertises an unavailable archive. A failure before that point leaves a
-GitHub draft and resumable local state rather than a half-published feed.
+公开 feed 只有在 GitHub Release 发布后才会更新，因此不会提前宣传不可下载的归档文件。在此之前发生失败时，
+流程会留下 GitHub Draft Release 和可恢复的本地状态，而不会留下一个发布了一半的 feed。
 
-## Files
+## 文件说明
 
-- `asc-workflow.json`: workflow graph and checkpoints.
-- `release-easydict.sh`: stable command-line entry point.
-- `release-common.sh`: paths, release configuration, and safety helpers.
-- `release-preflight.sh`: local environment and release-state checks.
-- `release-branch-sync.sh`: isolated worktree and branch/tag synchronization.
-- `release-build.sh`: version, archive, and export stages.
-- `release-package.sh`: notarization, ZIP, DMG, and checksums.
-- `release-appcast.sh` / `release-appcast.py`: Sparkle generation and strict
-  feed validation.
-- `release-github.sh`: idempotent draft/publish and asset verification.
-- `release-verify.sh`: local artifact and final remote verification.
-- `export-options.plist`: Developer ID export settings.
+- `asc-workflow.json`：工作流图和各个检查点。
+- `release-easydict.sh`：稳定的命令行入口。
+- `release-common.sh`：路径、发布配置和安全辅助函数。
+- `release-preflight.sh`：本地环境和发布状态检查。
+- `release-branch-sync.sh`：隔离 worktree 以及分支、Tag 同步。
+- `release-build.sh`：版本更新、归档和导出阶段。
+- `release-package.sh`：公证、ZIP、DMG 和校验和阶段。
+- `release-appcast.sh` / `release-appcast.py`：Sparkle 生成和严格的 feed 验证。
+- `release-github.sh`：幂等的 Draft Release/正式发布和资产验证。
+- `release-verify.sh`：本地产物和最终远程状态验证。
+- `export-options.plist`：Developer ID 导出配置。
 
-Repository/team defaults are environment-overridable in `release-common.sh`,
-but the normal Easydict release should not need flags beyond version, channel,
-and notes.
+仓库和团队默认值可以通过 `release-common.sh` 中的环境变量覆盖，但正常的 Easydict 发布除了版本号、频道和发布说明外，
+通常不需要其他参数。
 
-## Failure behavior
+## 失败行为
 
-- Dirty original checkout: allowed except for `scripts/release/`;
-  the workflow never builds from that checkout.
-- Dirty release worktree: stop, preserving state for inspection.
-- `dev`/`main` merge conflict: stop before versioning or pushing.
-- Existing tag on another commit: stop.
-- Existing release asset with a different size: stop instead of overwriting.
-- Notarization or signature failure: stop before GitHub publication.
-- Unexpected changes to older appcast entries: stop before feed installation.
-- Remote verification failure: preserve the release directory for diagnosis and
-  resume.
+- 当前 checkout 有脏文件：允许，但 `scripts/release/` 除外；工作流不会从当前 checkout 构建。
+- release worktree 有脏文件：暂停，并保留现场供检查。
+- `dev`/`main` 合并冲突：在版本更新或推送前暂停。
+- 已有 Tag 指向其他提交：暂停。
+- 已有远程资产但大小不同：暂停，不覆盖原文件。
+- 公证或签名失败：在 GitHub 发布前暂停。
+- 旧的 appcast 条目出现非预期更改：在安装 feed 前暂停。
+- 远程验证失败：保留发布目录，等待诊断和恢复。
