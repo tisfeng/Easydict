@@ -101,6 +101,23 @@ Keychain 或工具自身的凭据存储中，不会写入仓库或发布元数�
 发布状态和产物会保存在 `.tmp/release/<version>/` 中，用于审计和恢复。成功发布后只会移除隔离的 Git worktree。
 每个阶段都设计为可以安全重试，或者在替换已有远程资产或 feed 条目之前安全失败。
 
+## 日志和结果
+
+发布命令会把终端输出分成两类：
+
+- 人类可读的进度和错误信息输出到终端，并带有时间、级别和步骤名称。
+- `asc` 的机器可读结果 JSON 不再直接铺满终端，而是保存到
+  `.tmp/release/<version>/logs/workflow-<run-id>.json`。
+
+详细日志保存在同一目录的 `workflow-<run-id>.log`，以及各个高噪声命令对应的步骤日志中。
+签名、公证票据、Gatekeeper、DMG 校验和 `xcodebuild export` 等命令成功时只显示摘要；失败时会显示
+日志路径和最后 40 行，便于快速定位。`scripts/release/runs/` 仍然保存 `asc` 的原始运行状态，继续恢复时使用其中的
+run ID：
+
+```bash
+./scripts/release/release-easydict.sh resume <run-id>
+```
+
 ## 完整工作流的执行内容
 
 `release` 工作流按以下顺序执行检查点：

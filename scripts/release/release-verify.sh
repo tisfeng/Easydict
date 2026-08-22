@@ -11,14 +11,17 @@ source "$SCRIPT_DIR/release-common.sh"
 
 verify_signature() {
     local file_path="$1"
+    local label="${2:-verify-signature}"
 
-    codesign --verify --deep --strict --verbose=2 "$file_path"
+    release_capture "$label" \
+        codesign --verify --deep --strict --verbose=2 "$file_path"
 }
 
 verify_staple() {
     local file_path="$1"
+    local label="${2:-verify-staple}"
 
-    xcrun stapler validate "$file_path"
+    release_capture "$label" xcrun stapler validate "$file_path"
 }
 
 verify_checksums() {
@@ -46,8 +49,9 @@ verify_zip_contents() {
     safe_reset_release_dir "$RELEASE_VERIFY_DIR"
     ditto -x -k "$RELEASE_ZIP_PATH" "$RELEASE_VERIFY_DIR"
     require_release_dir "$extracted_app"
-    verify_signature "$extracted_app"
-    spctl --assess --type execute --verbose=2 "$extracted_app"
+    verify_signature "$extracted_app" "verify-zip-signature"
+    release_capture "assess-zip-app" \
+        spctl --assess --type execute --verbose=2 "$extracted_app"
 }
 
 # Reopens every generated artifact before any remote refs are changed.
@@ -61,12 +65,13 @@ verify_local() {
     require_release_file "$RELEASE_CHECKSUM_PATH"
     require_release_file "$RELEASE_APPCAST_PATH"
 
-    verify_signature "$RELEASE_APP_PATH"
-    verify_staple "$RELEASE_APP_PATH"
-    spctl --assess --type execute --verbose=2 "$RELEASE_APP_PATH"
-    verify_signature "$RELEASE_DMG_PATH"
-    verify_staple "$RELEASE_DMG_PATH"
-    hdiutil verify "$RELEASE_DMG_PATH"
+    verify_signature "$RELEASE_APP_PATH" "verify-app-signature"
+    verify_staple "$RELEASE_APP_PATH" "verify-app-staple"
+    release_capture "assess-app" \
+        spctl --assess --type execute --verbose=2 "$RELEASE_APP_PATH"
+    verify_signature "$RELEASE_DMG_PATH" "verify-dmg-signature"
+    verify_staple "$RELEASE_DMG_PATH" "verify-dmg-staple"
+    release_capture "verify-dmg-container" hdiutil verify "$RELEASE_DMG_PATH"
     verify_checksums
     verify_zip_contents
     verify_local_appcast
@@ -177,9 +182,11 @@ usage() {
 
 case "${1:-}" in
     local)
+        release_set_step "verify_local_release"
         verify_local
         ;;
     remote)
+        release_set_step "verify_remote_release"
         verify_remote
         ;;
     *)

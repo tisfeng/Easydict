@@ -5,9 +5,9 @@
     "BUILD_NUMBER": "",
     "NOTES_FILE": ""
   },
-  "before_all": "echo \"Starting Easydict $VERSION ($CHANNEL) workflow\"",
-  "after_all": "echo \"Easydict $VERSION workflow completed\"",
-  "error": "echo \"Release failed. Resume with the run ID printed by asc.\"",
+  "before_all": "printf '[%s] [INFO] [workflow] Starting Easydict %s (%s) workflow\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" \"$VERSION\" \"$CHANNEL\" >&2",
+  "after_all": "printf '[%s] [INFO] [workflow] Easydict %s workflow completed\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" \"$VERSION\" >&2",
+  "error": "printf '[%s] [ERROR] [workflow] Release failed. Resume with the run ID printed by asc.\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" >&2",
   "workflows": {
     "prepare": {
       "description": "Prepare and verify local release artifacts",

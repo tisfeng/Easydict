@@ -16,6 +16,7 @@ RELEASE_TEAM_ID="${RELEASE_TEAM_ID:-45Z6V4YD5U}"
 DEFAULT_RELEASE_IDENTITY="Developer ID Application: Canglong Dai (45Z6V4YD5U)"
 RELEASE_SIGN_IDENTITY="${RELEASE_SIGN_IDENTITY:-$DEFAULT_RELEASE_IDENTITY}"
 RELEASE_SPARKLE_ACCOUNT="${RELEASE_SPARKLE_ACCOUNT:-ed25519}"
+RELEASE_STEP="${RELEASE_STEP:-release}"
 
 RELEASE_VERSION="${VERSION:-}"
 RELEASE_CHANNEL="${CHANNEL:-beta}"
@@ -49,13 +50,73 @@ if [[ -n "$RELEASE_VERSION" ]]; then
     RELEASE_VERIFY_DIR="$RELEASE_DIR/verify"
 fi
 
+release_timestamp() {
+    date '+%Y-%m-%d %H:%M:%S'
+}
+
+release_set_step() {
+    RELEASE_STEP="$1"
+    export RELEASE_STEP
+}
+
 release_log() {
-    printf '[release] %s\n' "$*"
+    printf '[%s] [INFO] [%s] %s\n' \
+        "$(release_timestamp)" "$RELEASE_STEP" "$*" >&2
+}
+
+release_error() {
+    printf '[%s] [ERROR] [%s] %s\n' \
+        "$(release_timestamp)" "$RELEASE_STEP" "$*" >&2
 }
 
 release_fail() {
-    printf '[release] error: %s\n' "$*" >&2
+    release_error "$*"
     exit 1
+}
+
+release_log_dir() {
+    if [[ -n "${RELEASE_DIR:-}" ]]; then
+        printf '%s/logs\n' "$RELEASE_DIR"
+    else
+        printf '%s/.tmp/release/logs\n' "$RELEASE_SOURCE_ROOT"
+    fi
+}
+
+release_safe_label() {
+    local label="$1"
+
+    label="${label//[^[:alnum:]_.-]/-}"
+    printf '%s\n' "$label"
+}
+
+release_command_log() {
+    local label="$1"
+
+    printf '%s/%s.%s.log\n' \
+        "$(release_log_dir)" "$RELEASE_STEP" "$(release_safe_label "$label")"
+}
+
+# Runs a noisy command into a durable per-step log. Only the command summary is
+# shown on success; a bounded tail is shown on failure for immediate diagnosis.
+release_capture() {
+    local label="$1"
+    shift
+    local log_path status
+
+    mkdir -p "$(release_log_dir)"
+    log_path="$(release_command_log "$label")"
+    if "$@" >"$log_path" 2>&1; then
+        release_log "$label completed (details: $log_path)"
+        return 0
+    else
+        status=$?
+    fi
+
+    release_error "$label failed with exit status $status (details: $log_path)"
+    printf '[%s] [ERROR] [%s] last 40 lines from %s:\n' \
+        "$(release_timestamp)" "$RELEASE_STEP" "$log_path" >&2
+    tail -n 40 "$log_path" >&2 || true
+    return "$status"
 }
 
 require_release_command() {
@@ -144,7 +205,11 @@ safe_reset_release_dir() {
 
 ensure_release_layout() {
     require_release_version
-    mkdir -p "$RELEASE_DIR" "$RELEASE_STATE_DIR" "$RELEASE_ARTIFACT_DIR"
+    mkdir -p \
+        "$RELEASE_DIR" \
+        "$RELEASE_STATE_DIR" \
+        "$RELEASE_ARTIFACT_DIR" \
+        "$(release_log_dir)"
 }
 
 require_release_worktree() {

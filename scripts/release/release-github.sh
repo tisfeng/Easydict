@@ -154,21 +154,26 @@ main() {
     require_release_version
     case "$action" in
         draft)
+            release_set_step "create_github_draft"
             create_draft
             ;;
         verify-draft)
+            release_set_step "verify_github_draft"
             load_release_metadata
             verify_release_state true
             ;;
         verify-ready)
+            release_set_step "verify_github_release_ready"
             load_release_metadata
             verify_ready
             ;;
         publish)
+            release_set_step "publish_github_release"
             load_release_metadata
             publish_release
             ;;
         verify-published)
+            release_set_step "verify_github_release"
             load_release_metadata
             verify_release_state false
             ;;

@@ -93,9 +93,11 @@ main() {
     require_release_version
     case "$action" in
         generate)
+            release_set_step "generate_appcast_candidate"
             generate_candidate
             ;;
         install)
+            release_set_step "install_appcast"
             install_candidate
             ;;
         *)

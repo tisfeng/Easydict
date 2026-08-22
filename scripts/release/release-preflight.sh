@@ -187,12 +187,15 @@ main() {
 
     case "$action" in
         environment)
+            release_set_step "preflight_environment"
             validate_environment
             ;;
         release)
+            release_set_step "preflight_release"
             validate_release
             ;;
         publish)
+            release_set_step "preflight_publish"
             validate_publish
             ;;
         *)

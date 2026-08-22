@@ -126,7 +126,7 @@ export_application() {
     safe_reset_release_dir "$RELEASE_EXPORT_DIR"
 
     release_log "exporting Developer ID application"
-    xcodebuild -exportArchive \
+    release_capture "export-archive" xcodebuild -exportArchive \
         -archivePath "$RELEASE_ARCHIVE_PATH" \
         -exportPath "$RELEASE_EXPORT_DIR" \
         -exportOptionsPlist "$RELEASE_EXPORT_OPTIONS"
@@ -151,12 +151,15 @@ main() {
     ensure_release_layout
     case "$action" in
         version)
+            release_set_step "update_version"
             update_version
             ;;
         archive)
+            release_set_step "archive_application"
             archive_application
             ;;
         export)
+            release_set_step "export_application"
             export_application
             ;;
         *)

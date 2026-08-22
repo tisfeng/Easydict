@@ -176,15 +176,19 @@ main() {
     require_release_version
     case "$action" in
         prepare)
+            release_set_step "prepare_release_worktree"
             prepare_worktree
             ;;
         push-version)
+            release_set_step "push_version_refs"
             push_version_refs
             ;;
         push-appcast)
+            release_set_step "push_appcast_refs"
             push_appcast_refs
             ;;
         cleanup)
+            release_set_step "cleanup_release_worktree"
             cleanup_worktree
             ;;
         *)
