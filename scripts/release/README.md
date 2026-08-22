@@ -89,6 +89,18 @@ Keychain 或工具自身的凭据存储中，不会写入仓库或发布元数�
 
 如果准备发布的是稳定版本，需要在单独执行 `publish` 命令时传入相同的 `--channel stable` 参数。
 
+### beta 轮换
+
+发布新的 beta 时，`publish` 会自动将 feed 中排在当前版本之后的第一条 beta 提升为 stable。
+例如发布 2.22.0 beta 时：
+
+- 2.22.0 的 Sparkle 条目保留 `sparkle:channel=beta`，GitHub Release 保持 prerelease。
+- 2.21.0 的 Sparkle 条目移除 `sparkle:channel`，对应 GitHub Release 移除 prerelease。
+
+上一 beta 版本会在修改任何公开状态前写入 `.tmp/release/<version>/state/channel-transition.env`。
+因此失败后的 `resume` 会继续使用同一个上一版本，不会根据后来变化的 feed 重新选择。没有上一 beta
+时该步骤安全跳过；`--channel stable` 保持原有行为，不执行 beta 轮换。
+
 只预览确切的 `asc` 执行计划而不执行发布步骤：
 
 ```bash
@@ -137,8 +149,9 @@ run ID：
 7. 生成并严格验证候选 `appcast.xml`。
 8. 原子推送 `dev`、`main` 和带注释的版本 Tag。
 9. 创建并验证包含 ZIP、DMG 和校验和的 GitHub Draft Release。
-10. 发布 GitHub Release，安装 appcast，并再次原子更新两个分支。
-11. 在移除隔离 worktree 前，验证远程引用、发布资产和公开 Sparkle feed。
+10. 发布新的 GitHub Release，安装 appcast，并再次原子更新两个分支。
+11. 对 beta 发布，将上一 GitHub prerelease 提升为 stable。
+12. 在移除隔离 worktree 前，验证两代 Release、远程引用、发布资产和公开 Sparkle feed。
 
 公开 feed 只有在 GitHub Release 发布后才会更新，因此不会提前宣传不可下载的归档文件。在此之前发生失败时，
 流程会留下 GitHub Draft Release 和可恢复的本地状态，而不会留下一个发布了一半的 feed。
@@ -153,6 +166,7 @@ run ID：
 - `release-build.sh`：版本更新、归档和导出阶段。
 - `release-package.sh`：公证、ZIP、DMG 和校验和阶段。
 - `release-appcast.sh` / `release-appcast.py`：Sparkle 生成和严格的 feed 验证。
+- `tests/test_release_appcast.py`：beta 轮换和旧条目保护的行为测试。
 - `release-github.sh`：幂等的 Draft Release/正式发布和资产验证。
 - `release-verify.sh`：本地产物和最终远程状态验证。
 - `export-options.plist`：Developer ID 导出配置。
@@ -169,5 +183,6 @@ run ID：
 - 已有 Tag 指向其他提交：暂停。
 - 已有远程资产但大小不同：暂停，不覆盖原文件。
 - 公证或签名失败：在 GitHub 发布前暂停。
-- 旧的 appcast 条目出现非预期更改：在安装 feed 前暂停。
+- 旧的 appcast 条目出现非预期更改：在安装 feed 前暂停；只允许上一 beta 删除 channel。
+- 上一 beta 的 GitHub Release 缺失、仍为 Draft 或 promotion 失败：保留发布状态并暂停，允许恢复。
 - 远程验证失败：保留发布目录，等待诊断和恢复。

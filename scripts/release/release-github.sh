@@ -9,18 +9,29 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=release-common.sh
 source "$SCRIPT_DIR/release-common.sh"
 
-release_exists() {
-    gh release view "$RELEASE_VERSION" \
+release_exists_for_version() {
+    local version="$1"
+
+    gh release view "$version" \
         --repo "$RELEASE_REPOSITORY" >/dev/null 2>&1
 }
 
-release_field() {
-    local field="$1"
+release_exists() {
+    release_exists_for_version "$RELEASE_VERSION"
+}
 
-    gh release view "$RELEASE_VERSION" \
+release_field_for_version() {
+    local version="$1"
+    local field="$2"
+
+    gh release view "$version" \
         --repo "$RELEASE_REPOSITORY" \
         --json "$field" \
         --jq ".$field"
+}
+
+release_field() {
+    release_field_for_version "$RELEASE_VERSION" "$1"
 }
 
 remote_asset_size() {
@@ -79,6 +90,56 @@ verify_release_state() {
     [[ "$(release_field isPrerelease)" == "$expected_prerelease" ]] \
         || release_fail "GitHub prerelease state does not match the channel"
     verify_assets
+}
+
+verify_previous_release_ready() {
+    load_release_channel_transition
+    if [[ -z "$RELEASE_PREVIOUS_BETA_VERSION" ]]; then
+        return
+    fi
+
+    release_exists_for_version "$RELEASE_PREVIOUS_BETA_VERSION" \
+        || release_fail \
+            "previous beta release not found: $RELEASE_PREVIOUS_BETA_VERSION"
+    [[ "$(release_field_for_version \
+        "$RELEASE_PREVIOUS_BETA_VERSION" tagName)" \
+        == "$RELEASE_PREVIOUS_BETA_VERSION" ]] \
+        || release_fail "previous beta release tag is unexpected"
+    [[ "$(release_field_for_version \
+        "$RELEASE_PREVIOUS_BETA_VERSION" isDraft)" == false ]] \
+        || release_fail "previous beta release is still a draft"
+}
+
+verify_previous_release_promoted() {
+    verify_previous_release_ready
+    if [[ -z "$RELEASE_PREVIOUS_BETA_VERSION" ]]; then
+        return
+    fi
+
+    [[ "$(release_field_for_version \
+        "$RELEASE_PREVIOUS_BETA_VERSION" isPrerelease)" == false ]] \
+        || release_fail "previous beta release is still marked as a prerelease"
+}
+
+promote_previous_release() {
+    verify_previous_release_ready
+    if [[ -z "$RELEASE_PREVIOUS_BETA_VERSION" ]]; then
+        release_log "no previous GitHub prerelease requires promotion"
+        return
+    fi
+
+    if [[ "$(release_field_for_version \
+        "$RELEASE_PREVIOUS_BETA_VERSION" isPrerelease)" == true ]]; then
+        release_log \
+            "promoting GitHub release $RELEASE_PREVIOUS_BETA_VERSION to stable"
+        gh release edit "$RELEASE_PREVIOUS_BETA_VERSION" \
+            --repo "$RELEASE_REPOSITORY" \
+            --prerelease=false
+    else
+        release_log \
+            "GitHub release $RELEASE_PREVIOUS_BETA_VERSION is already stable"
+    fi
+    verify_previous_release_promoted
 }
 
 # Creates the immutable draft or fills only assets that are still absent.
@@ -167,6 +228,11 @@ main() {
             load_release_metadata
             verify_ready
             ;;
+        verify-previous-ready)
+            release_set_step "verify_previous_github_release_ready"
+            load_release_metadata
+            verify_previous_release_ready
+            ;;
         publish)
             release_set_step "publish_github_release"
             load_release_metadata
@@ -177,9 +243,19 @@ main() {
             load_release_metadata
             verify_release_state false
             ;;
+        promote-previous)
+            release_set_step "promote_previous_github_release"
+            load_release_metadata
+            promote_previous_release
+            ;;
+        verify-previous)
+            release_set_step "verify_previous_github_release"
+            load_release_metadata
+            verify_previous_release_promoted
+            ;;
         *)
             release_fail \
-                "usage: release-github.sh draft|verify-draft|verify-ready|publish|verify-published"
+                "usage: release-github.sh draft|verify-draft|verify-ready|verify-previous-ready|publish|verify-published|promote-previous|verify-previous"
             ;;
     esac
 }

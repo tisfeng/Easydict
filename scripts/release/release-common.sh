@@ -38,6 +38,7 @@ if [[ -n "$RELEASE_VERSION" ]]; then
     RELEASE_STATE_DIR="$RELEASE_DIR/state"
     RELEASE_SOURCE_METADATA_PATH="$RELEASE_STATE_DIR/source.env"
     RELEASE_METADATA_PATH="$RELEASE_STATE_DIR/release.env"
+    RELEASE_CHANNEL_TRANSITION_PATH="$RELEASE_STATE_DIR/channel-transition.env"
     RELEASE_ARCHIVE_PATH="$RELEASE_DIR/Easydict.xcarchive"
     RELEASE_DERIVED_DATA="$RELEASE_DIR/derived-data"
     RELEASE_EXPORT_DIR="$RELEASE_DIR/export"
@@ -233,6 +234,42 @@ write_release_metadata() {
         printf 'RELEASE_SAVED_CHANNEL=%q\n' "$RELEASE_CHANNEL"
         printf 'RELEASE_VERSION_COMMIT=%q\n' "$version_commit"
     } >"$RELEASE_METADATA_PATH"
+    rm -f "$RELEASE_CHANNEL_TRANSITION_PATH"
+}
+
+# Persists the beta release being promoted so interrupted publish runs can
+# resume without rediscovering a different predecessor.
+write_release_channel_transition() {
+    local previous_beta_version="$1"
+    local temporary_path
+
+    mkdir -p "$RELEASE_STATE_DIR"
+    temporary_path="$(mktemp "$RELEASE_STATE_DIR/channel-transition.XXXXXX")"
+    {
+        printf 'RELEASE_TRANSITION_VERSION=%q\n' "$RELEASE_VERSION"
+        printf 'RELEASE_TRANSITION_CHANNEL=%q\n' "$RELEASE_CHANNEL"
+        printf 'RELEASE_PREVIOUS_BETA_VERSION=%q\n' "$previous_beta_version"
+    } >"$temporary_path"
+    mv "$temporary_path" "$RELEASE_CHANNEL_TRANSITION_PATH"
+}
+
+load_release_channel_transition() {
+    require_release_file "$RELEASE_CHANNEL_TRANSITION_PATH"
+    # shellcheck disable=SC1090
+    source "$RELEASE_CHANNEL_TRANSITION_PATH"
+
+    [[ "$RELEASE_TRANSITION_VERSION" == "$RELEASE_VERSION" ]] \
+        || release_fail "channel transition belongs to another version"
+    [[ "$RELEASE_TRANSITION_CHANNEL" == "$RELEASE_CHANNEL" ]] \
+        || release_fail "channel transition belongs to another channel"
+    if [[ -n "$RELEASE_PREVIOUS_BETA_VERSION" ]]; then
+        [[ "$RELEASE_PREVIOUS_BETA_VERSION" \
+            =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] \
+            || release_fail "previous beta version is invalid"
+        version_is_greater \
+            "$RELEASE_VERSION" "$RELEASE_PREVIOUS_BETA_VERSION" \
+            || release_fail "previous beta is not older than the release"
+    fi
 }
 
 # Persists the local dev snapshot and the remote refs used to create the

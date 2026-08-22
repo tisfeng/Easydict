@@ -127,6 +127,10 @@
       "description": "Publish the GitHub release and update both feeds",
       "steps": [
         {
+          "name": "prepare_channel_transition",
+          "run": "./scripts/release/release-appcast.sh prepare-publish"
+        },
+        {
           "name": "preflight_publish",
           "run": "./scripts/release/release-preflight.sh publish"
         },
@@ -145,6 +149,10 @@
         {
           "name": "push_appcast_refs",
           "run": "./scripts/release/release-branch-sync.sh push-appcast"
+        },
+        {
+          "name": "promote_previous_github_release",
+          "run": "./scripts/release/release-github.sh promote-previous"
         },
         {
           "name": "verify_remote_release",

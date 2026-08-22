@@ -73,6 +73,25 @@ def find_target(
     return items[key]
 
 
+def write_appcast(tree: ET.ElementTree, path: Path) -> None:
+    """Write an appcast with the declaration expected by Sparkle tooling."""
+    ET.indent(tree, space="    ")
+    tree.write(
+        path,
+        encoding="UTF-8",
+        xml_declaration=True,
+        short_empty_elements=True,
+    )
+    contents = path.read_text(encoding="UTF-8")
+    _, separator, body = contents.partition("\n")
+    if not separator:
+        body = contents
+    declaration = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+    )
+    path.write_text(declaration + body, encoding="UTF-8")
+
+
 def set_release_notes_link(args: argparse.Namespace) -> None:
     """Set the release-notes link on the generated target item."""
     tree = parse_appcast(args.appcast)
@@ -90,21 +109,55 @@ def set_release_notes_link(args: argparse.Namespace) -> None:
         item.insert(insert_index, element)
     element.text = args.url
 
-    ET.indent(tree, space="    ")
-    tree.write(
-        args.appcast,
-        encoding="UTF-8",
-        xml_declaration=True,
-        short_empty_elements=True,
+    write_appcast(tree, args.appcast)
+
+
+def find_previous_beta(args: argparse.Namespace) -> None:
+    """Print the newest beta item older than the current release."""
+    if args.channel != "beta":
+        print("")
+        return
+
+    tree = parse_appcast(args.appcast)
+    current_item = find_target(tree, args.version, args.build)
+    require_equal(item_value(current_item, "channel"), "beta", "Sparkle channel")
+
+    items = tree.getroot().findall("./channel/item")
+    current_index = items.index(current_item)
+    for item in items[current_index + 1 :]:
+        version = item_value(item, "shortVersionString")
+        if version != args.version and item_value(item, "channel") == "beta":
+            print(version)
+            return
+    print("")
+
+
+def promote_previous_beta(args: argparse.Namespace) -> None:
+    """Remove the beta channel from one persisted predecessor."""
+    if not args.previous_version:
+        return
+
+    tree = parse_appcast(args.appcast)
+    current_item = find_target(tree, args.version, args.build)
+    require_equal(item_value(current_item, "channel"), "beta", "Sparkle channel")
+
+    matching_items = [
+        item
+        for item in tree.getroot().findall("./channel/item")
+        if item_value(item, "shortVersionString") == args.previous_version
+    ]
+    require_equal(
+        len(matching_items),
+        1,
+        f"previous beta item count for {args.previous_version}",
     )
-    contents = args.appcast.read_text(encoding="UTF-8")
-    _, separator, body = contents.partition("\n")
-    if not separator:
-        body = contents
-    declaration = (
-        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
-    )
-    args.appcast.write_text(declaration + body, encoding="UTF-8")
+    previous_item = matching_items[0]
+    channel = previous_item.find(sparkle_tag("channel"))
+    if channel is None:
+        return
+    require_equal(channel.text, "beta", "previous Sparkle channel")
+    previous_item.remove(channel)
+    write_appcast(tree, args.appcast)
 
 
 def canonical_item(item: ET.Element) -> bytes:
@@ -120,6 +173,37 @@ def canonical_item(item: ET.Element) -> bytes:
 def require_equal(actual: object, expected: object, label: str) -> None:
     if actual != expected:
         raise ValueError(f"{label}: expected {expected!r}, got {actual!r}")
+
+
+def validate_promoted_item(
+    original_item: ET.Element,
+    candidate_item: ET.Element,
+    key: tuple[str, str],
+) -> None:
+    """Allow only removal of the beta channel from the predecessor."""
+    if candidate_item.find(sparkle_tag("channel")) is not None:
+        raise ValueError(f"promoted appcast item still has a channel: {key}")
+
+    expected_item = copy.deepcopy(original_item)
+    channel = expected_item.find(sparkle_tag("channel"))
+    if channel is None:
+        require_equal(
+            canonical_item(candidate_item),
+            canonical_item(expected_item),
+            f"unexpected change to promoted appcast item {key}",
+        )
+        return
+    require_equal(
+        channel.text,
+        "beta",
+        f"original channel for promoted appcast item {key}",
+    )
+    expected_item.remove(channel)
+    require_equal(
+        canonical_item(candidate_item),
+        canonical_item(expected_item),
+        f"unexpected change to promoted appcast item {key}",
+    )
 
 
 def validate_appcast(args: argparse.Namespace) -> None:
@@ -139,14 +223,26 @@ def validate_appcast(args: argparse.Namespace) -> None:
     expected_order.extend(key for key in original_order if key != target_key)
     require_equal(candidate_order, expected_order, "appcast item order")
 
+    promoted_keys: list[tuple[str, str]] = []
     for key, original_item in original_items.items():
         if key == target_key:
             continue
         candidate_item = candidate_items[key]
+        if key[0] == args.previous_beta_version:
+            validate_promoted_item(original_item, candidate_item, key)
+            promoted_keys.append(key)
+            continue
         require_equal(
             canonical_item(candidate_item),
             canonical_item(original_item),
             f"unexpected change to old appcast item {key}",
+        )
+
+    if args.previous_beta_version:
+        require_equal(
+            len(promoted_keys),
+            1,
+            f"promoted appcast item count for {args.previous_beta_version}",
         )
 
     item = candidate_items[target_key]
@@ -198,6 +294,22 @@ def build_parser() -> argparse.ArgumentParser:
     set_link.add_argument("--url", required=True)
     set_link.set_defaults(handler=set_release_notes_link)
 
+    find_previous = subparsers.add_parser("find-previous-beta")
+    find_previous.add_argument("--appcast", type=Path, required=True)
+    find_previous.add_argument("--version", required=True)
+    find_previous.add_argument("--build", required=True)
+    find_previous.add_argument(
+        "--channel", choices=("beta", "stable"), required=True
+    )
+    find_previous.set_defaults(handler=find_previous_beta)
+
+    promote_previous = subparsers.add_parser("promote-previous-beta")
+    promote_previous.add_argument("--appcast", type=Path, required=True)
+    promote_previous.add_argument("--version", required=True)
+    promote_previous.add_argument("--build", required=True)
+    promote_previous.add_argument("--previous-version", required=True)
+    promote_previous.set_defaults(handler=promote_previous_beta)
+
     validate = subparsers.add_parser("validate")
     validate.add_argument("--original", type=Path, required=True)
     validate.add_argument("--appcast", type=Path, required=True)
@@ -207,6 +319,7 @@ def build_parser() -> argparse.ArgumentParser:
     validate.add_argument("--channel", choices=("beta", "stable"), required=True)
     validate.add_argument("--release-notes-url", required=True)
     validate.add_argument("--download-url", required=True)
+    validate.add_argument("--previous-beta-version", default="")
     validate.set_defaults(handler=validate_appcast)
     return parser
 

@@ -179,7 +179,9 @@ validate_publish() {
     require_release_file "$RELEASE_DMG_PATH"
     require_release_file "$RELEASE_CHECKSUM_PATH"
     require_release_file "$RELEASE_APPCAST_PATH"
+    require_release_file "$RELEASE_CHANNEL_TRANSITION_PATH"
     "$SCRIPT_DIR/release-github.sh" verify-ready
+    "$SCRIPT_DIR/release-github.sh" verify-previous-ready
 }
 
 main() {

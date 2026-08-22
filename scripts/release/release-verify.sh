@@ -32,6 +32,17 @@ verify_checksums() {
 }
 
 verify_local_appcast() {
+    local -a transition_args=()
+
+    if [[ -f "$RELEASE_CHANNEL_TRANSITION_PATH" ]]; then
+        load_release_channel_transition
+        if [[ -n "$RELEASE_PREVIOUS_BETA_VERSION" ]]; then
+            transition_args+=(
+                --previous-beta-version "$RELEASE_PREVIOUS_BETA_VERSION"
+            )
+        fi
+    fi
+
     python3 "$SCRIPT_DIR/release-appcast.py" validate \
         --original "$RELEASE_WORKTREE/appcast.xml" \
         --appcast "$RELEASE_APPCAST_PATH" \
@@ -40,7 +51,8 @@ verify_local_appcast() {
         --build "$RELEASE_SAVED_BUILD" \
         --channel "$RELEASE_SAVED_CHANNEL" \
         --release-notes-url "$(release_notes_url)" \
-        --download-url "$(release_download_prefix)Easydict.zip"
+        --download-url "$(release_download_prefix)Easydict.zip" \
+        "${transition_args[@]}"
 }
 
 verify_zip_contents() {
@@ -108,7 +120,7 @@ verify_published_refs() {
 
 validate_remote_appcast() {
     python3 "$SCRIPT_DIR/release-appcast.py" validate \
-        --original "$RELEASE_WORKTREE/appcast.xml" \
+        --original "$RELEASE_APPCAST_PATH" \
         --appcast "$RELEASE_VERIFY_DIR/remote-appcast.xml" \
         --archive "$RELEASE_ZIP_PATH" \
         --version "$RELEASE_SAVED_VERSION" \
@@ -169,6 +181,7 @@ verify_remote() {
     load_release_metadata
     require_release_worktree
     "$SCRIPT_DIR/release-github.sh" verify-published
+    "$SCRIPT_DIR/release-github.sh" verify-previous
     verify_published_refs
     verify_remote_appcast
     verify_remote_checksum
