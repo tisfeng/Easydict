@@ -18,8 +18,8 @@
 ./scripts/release/release-easydict.sh resume <run-id>
 ```
 
-新 Draft 验证成功后，再执行下方内容捕获、英文整理和 issue 决策命令；不得复用旧
-Draft 的 `release-content-*` 或 `issue-*` 文件。
+新 Draft 验证成功后，再执行下方内容捕获和英文整理命令；不得复用旧 Draft 的
+`release-content-*` 或 `issue-followup/` 状态。
 
 ## Draft 内容
 
@@ -66,66 +66,20 @@ Draft 的 `release-content-*` 或 `issue-*` 文件。
 先检查不带 `--execute` 的 JSON 计划，再使用相同命令追加 `--execute`。只有目标
 Release 仍为相同 Draft 且正文没有在 capture 后变化，helper 才允许写入。
 
-## 发布前冻结 issue 决策
+## 发布后 Issue 跟进
 
-```bash
-.agents/skills/release-easydict/scripts/release_issues.py collect \
-  --repo tisfeng/Easydict \
-  --version <version> \
-  --content .tmp/release/<version>/state/release-content-source.json \
-  --output .tmp/release/<version>/state/issue-candidates.json
+GitHub Release 发布和远程验证成功后，委托独立 skill：
 
-.agents/skills/release-easydict/scripts/release_issues.py validate \
-  --candidates .tmp/release/<version>/state/issue-candidates.json \
-  --decisions .tmp/release/<version>/state/issue-decisions.json
+```text
+$release-easydict-issue-followup apply <version>
 ```
 
-`issue-decisions.json` 由 Agent 根据 `issue-decision-policy.md` 和候选快照生成。决策
-必须覆盖全部候选，且 `source_sha256` 必须与候选文件完全一致。文件外层格式为：
+不要求用户先运行 `plan`。该 skill 会重新捕获当前 Release 和 issue 状态、生成最新计划，
+再执行评论与关闭动作。失败后使用：
 
-```json
-{
-  "schema_version": 1,
-  "source_sha256": "copy from issue-candidates.json",
-  "decisions": [
-    {
-      "issue_number": 1254,
-      "source_prs": [1255],
-      "relationship": "target",
-      "completion": "resolved",
-      "decision": "notify_on_release",
-      "language": "zh-Hans",
-      "positive_evidence": ["The released change covers the report."],
-      "counter_evidence": [],
-      "reason": "The two release gates pass."
-    }
-  ]
-}
+```text
+$release-easydict-issue-followup resume <version>
 ```
 
-## 发布后刷新与执行
-
-```bash
-.agents/skills/release-easydict/scripts/release_issues.py refresh \
-  --repo tisfeng/Easydict \
-  --version <version> \
-  --candidates .tmp/release/<version>/state/issue-candidates.json \
-  --output .tmp/release/<version>/state/issue-candidates-refreshed.json
-
-.agents/skills/release-easydict/scripts/release_issues.py validate \
-  --candidates .tmp/release/<version>/state/issue-candidates-refreshed.json \
-  --decisions .tmp/release/<version>/state/issue-decisions-refreshed.json \
-  --previous-decisions .tmp/release/<version>/state/issue-decisions.json
-
-.agents/skills/release-easydict/scripts/release_issues.py apply \
-  --repo tisfeng/Easydict \
-  --version <version> \
-  --channel beta \
-  --candidates .tmp/release/<version>/state/issue-candidates-refreshed.json \
-  --decisions .tmp/release/<version>/state/issue-decisions-refreshed.json \
-  --previous-decisions .tmp/release/<version>/state/issue-decisions.json \
-  --state .tmp/release/<version>/state/issue-actions.json
-```
-
-稳定版本将 `--channel beta` 改为 `--channel stable`。先检查不带 `--execute` 的计划，
-确认 Release 已发布且频道匹配后，再使用相同命令追加 `--execute`。
+具体 helper 参数和 schema-v2 状态文件由
+`.agents/skills/release-easydict-issue-followup/references/commands.md` 维护。

@@ -3,8 +3,10 @@
 ## 本地 skill
 
 - 将仓库专用的可执行工作流存放在 `.agents/skills/`。
-- `release-easydict` 复用 `scripts/release/` 完成 macOS 发布，并在 GitHub
-  Draft 与正式发布之间编排英文发布说明、重点标题和弱关联 issue 的发布后跟进。
+- `release-easydict` 复用 `scripts/release/` 完成 macOS 发布和 GitHub Draft
+  内容编排；正式发布验证成功后委托 `release-easydict-issue-followup`。
+- `release-easydict-issue-followup` 独立规划、执行和恢复 Release PR 的弱关联
+  issue 通知与关闭，使用固定三类 Markdown 汇总和独立 schema-v2 状态。
 - 对上游 skill 的本地补充或更严格规则存放在 `.agents/overrides/`，不要修改复制的
   上游 skill。
 - 执行目标 skill 前先阅读其 `SKILL.md`，然后阅读 `AGENTS.md` 指定的 overlay。

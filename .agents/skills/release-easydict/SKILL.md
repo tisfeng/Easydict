@@ -3,16 +3,16 @@ name: release-easydict
 description: >
   Orchestrate Easydict macOS draft, publish, release, and resume workflows by
   reusing scripts/release/release-easydict.sh, curating English GitHub release
-  notes and a highlight title, and notifying or closing only verified resolved
-  issues after a successful publish. Use for an Easydict version release or
+  notes and a highlight title, then delegating published issue follow-up to
+  release-easydict-issue-followup. Use for an Easydict version release or
   release recovery, not for release planning alone.
 ---
 
 # Release Easydict
 
 Use the existing release scripts as the build, notarization, packaging, Git,
-GitHub Release, appcast, and verification engine. This skill adds content and
-issue orchestration around those scripts.
+GitHub Release, appcast, and verification engine. This skill curates Release
+content and delegates the independent post-publish issue stage.
 
 ## Authorization boundary
 
@@ -20,23 +20,23 @@ issue orchestration around those scripts.
 - Run remote mutations only when the current user request explicitly asks to
   `draft`, `publish`, `release`, or `resume` a concrete version.
 - Once the user has explicitly requested that action, do not ask them to choose
-  translations, a highlight, or issue actions. Make the decisions below and
-  stop safely on validation failure.
+  translations, a highlight, or issue actions. Make the content decisions below
+  and let the issue follow-up skill apply its own deterministic policy.
 - Never use the existing one-shot `release` action directly. For this skill,
-  `release` means `draft`, content curation, issue decision freeze, then
-  `publish`, so the public Release cannot precede curation.
+  `release` means `draft`, content curation, then `publish`, so the public
+  Release cannot precede curation.
 - Do not switch or modify the user's current checkout. The repository scripts
   already release from committed local `dev` through isolated worktrees.
 
 ## Supported actions
 
 - `draft <version>`: create or recover the verified Draft, curate its English
-  body/title, freeze issue decisions, then stop.
+  body/title, then stop.
 - `draft <version> --replace-draft`: discard the latest matching unpublished
   Draft and its Tag only after rebuilding the same version from synchronized
   local `dev`; curate and freeze only the newly created Draft.
-- `publish <version>`: curate and freeze an existing verified Draft, publish it,
-  refresh the frozen issue evidence, and apply verified issue notifications.
+- `publish <version>`: curate an existing verified Draft, publish and verify it,
+  then delegate a fresh issue follow-up `apply` batch.
 - `release <version>`: run the `draft` behavior followed by the `publish`
   behavior.
 - `resume <version-or-run-id>`: inspect skill state and the asc run state,
@@ -79,34 +79,22 @@ Default to the repository's `beta` channel unless the user explicitly requests
    apply the validated title and notes to the Draft with
    `.agents/skills/release-easydict/scripts/release_content.py apply --execute`.
    Fetch the Draft again and require an exact title/body match.
-5. Run `.agents/skills/release-easydict/scripts/release_issues.py collect` to
-   discover same-repository issue candidates from every PR in the Release
-   Notes. Read
-   [references/issue-decision-policy.md](references/issue-decision-policy.md),
-   inspect the issue and PR evidence, and write one decision for every
-   candidate. Validate it with
-   `.agents/skills/release-easydict/scripts/release_issues.py validate` and
-   freeze both files under `.tmp/release/<version>/state/`.
-6. For `draft`, report the curated Draft and frozen issue decision summary, then
-   stop without publishing or touching issues.
-7. For `publish` or `release`, run:
+5. For `draft`, report the curated Draft and stop without publishing or touching
+   issues.
+6. For `publish` or `release`, run:
 
    ```bash
    ./scripts/release/release-easydict.sh publish <version> [--channel <channel>]
    ```
 
    Do not continue until this command and its remote verification succeed.
-8. Refresh the live state and comments of only the frozen issue candidates.
-   Re-evaluate negative evidence and allow decisions only to remain unchanged
-   or be demoted to `skip`; never add a new issue after publish.
-9. Validate the refreshed decisions with the frozen pre-publish decisions as
-   `--previous-decisions`. Preview
-   `.agents/skills/release-easydict/scripts/release_issues.py apply`, inspect the
-   machine-readable plan, then run it with `--execute`. Pass the frozen
-   decisions as `--previous-decisions` again. It comments once and closes only
-   open issues whose validated decision is `notify_on_release`.
-10. Report the Release URL, title, channel, notes path, issue actions, skipped
-    candidates with reasons, underlying run IDs, and any resumable state path.
+7. After the publish command and all remote verification succeed, invoke
+   `$release-easydict-issue-followup apply <version>`. This delegated action
+   performs its own fresh read-only plan immediately before issue mutation; do
+   not require or reuse a prior standalone plan.
+8. Report the Release URL, title, channel, notes path, the delegated fixed
+   three-category issue summary, underlying run IDs, and any resumable state
+   path.
 
 ## State files
 
@@ -116,23 +104,17 @@ Keep deterministic orchestration state in `.tmp/release/<version>/state/`:
 - `release-content-curated.json`: English titles, highlight PR, and Release
   title selected from the captured source.
 - `release-notes-en.md`: validated rendered notes applied to the Draft.
-- `issue-candidates.json`: frozen pre-publish weak-reference candidates.
-- `issue-decisions.json`: frozen pre-publish two-gate decisions.
-- `issue-candidates-refreshed.json` and `issue-decisions-refreshed.json`: the
-  post-publish snapshots; the decision file may only demote prior actions.
-- `issue-actions.json`: per-issue comment and close progress for safe resume.
 
-Never overwrite the frozen candidate or decision files during refresh. Reuse
-existing matching state on `resume`; reject mismatched repository, version,
-source hash, PR set, or issue set instead of regenerating past a completed
-stage.
+The delegated issue skill owns `.tmp/release/<version>/state/issue-followup/`.
+Legacy schema-v1 issue files directly under `state/` remain audit data and are
+never reused by the new stage.
 
 For `--replace-draft`, old content and issue files are rollback data only. The
 repository workflow temporarily moves the complete old state aside, chooses
 `max(old Draft build, current project build, public appcast build) + 1`, and
-rebuilds from synchronized committed local `dev`. Capture, curate, and freeze
-content only after the new Draft is verified. Never copy old curated notes or
-issue decisions into the new state. A new replacement request must stop when
+rebuilds from synchronized committed local `dev`. Capture and curate content
+only after the new Draft is verified. Never copy old curated notes or issue
+follow-up state into the new state. A new replacement request must stop when
 an unfinished replacement exists; use the asc run ID with `resume` instead.
 
 ## Content decisions
@@ -149,14 +131,15 @@ an unfinished replacement exists; use the asc run ID with `resume` instead.
 
 ## Failure and resume
 
-- A content or decision validation failure leaves the GitHub Release as a Draft.
+- A content validation failure leaves the GitHub Release as a Draft.
 - A `--replace-draft` build or notarization failure leaves the old remote Draft
   and Tag untouched. A later transition failure preserves the temporary local
   rollback backup and resumes only incomplete markers. After the new Draft is
   verified, the workflow deletes that temporary backup automatically.
 - A publish failure leaves issue actions untouched and uses the asc run ID for
   recovery.
-- An issue follow-up failure does not roll back an already published Release.
-  Preserve the action state and retry only the incomplete issue operation.
-- An existing release comment marker prevents duplicate comments. If an issue
-  was reopened after a completed notification, never close it again.
+- A delegated issue follow-up failure does not roll back an already published
+  Release. Report “发布成功，但 issue 后续处理未完成” and continue with
+  `$release-easydict-issue-followup resume <version>`.
+- The issue follow-up skill owns comment idempotency, current-open-state closing,
+  and its fixed Markdown report contract. Do not reproduce those rules here.
