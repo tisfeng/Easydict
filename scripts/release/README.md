@@ -89,6 +89,26 @@ Keychain 或工具自身的凭据存储中，不会写入仓库或发布元数�
 
 如果准备发布的是稳定版本，需要在单独执行 `publish` 命令时传入相同的 `--channel stable` 参数。
 
+### 重新创建同版本 Draft
+
+如果最新的 GitHub Release 条目仍是当前版本的 Draft，且该版本尚未进入公开
+`appcast.xml`，可以显式废弃旧 Draft 并从最新本地 `dev` 重建：
+
+```bash
+./scripts/release/release-easydict.sh draft 2.22.0 --replace-draft
+```
+
+该参数只适用于 `draft`，不能与 `--build-number` 同时使用。工作流会冻结旧 Draft
+数据库 ID 和 Tag OID，将旧本地状态移入临时恢复目录，并将构建号设置为以下三者
+最大值加一：旧 Draft 构建号、当前项目构建号、公开 appcast 最新构建号。旧 Draft
+的完整 GitHub JSON 也会随临时恢复状态保留，供失败诊断或人工回滚使用。
+
+新产物完成签名、公证和本地验证前，远端 Draft 和 Tag 保持不变。随后工作流会再次
+核对旧 Draft 仍是页面最新条目、内容未被修改且 Tag OID 未变化，再使用 lease 原子
+替换 `dev`、`main` 和版本 Tag，删除精确匹配的旧 Draft，并创建、验证新 Draft。
+成功后旧工作树、旧产物、旧 skill 状态和临时恢复分支会自动删除；失败时保留临时
+恢复目录，并要求使用输出的运行 ID 执行 `resume`，不会再次递增构建号。
+
 ### beta 轮换
 
 发布新的 beta 时，`publish` 会自动将 feed 中排在当前版本之后的第一条 beta 提升为 stable。
@@ -116,7 +136,8 @@ Keychain 或工具自身的凭据存储中，不会写入仓库或发布元数�
 ./scripts/release/release-easydict.sh resume <run-id>
 ```
 
-发布状态和产物会保存在 `.tmp/release/<version>/` 中，用于审计和恢复。成功发布后只会移除隔离的 Git worktree。
+发布状态和产物会保存在 `.tmp/release/<version>/` 中，用于审计和恢复。成功发布后只会移除隔离的 Git worktree；
+成功完成 `--replace-draft` 后还会移除被替换 Draft 的临时本地备份。
 每个阶段都设计为可以安全重试，或者在替换已有远程资产或 feed 条目之前安全失败。
 
 ## 日志和结果

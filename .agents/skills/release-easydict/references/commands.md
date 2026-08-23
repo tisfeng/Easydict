@@ -3,6 +3,24 @@
 以下命令从仓库根目录执行。将 `<version>` 替换为目标版本；默认仓库固定为
 `tisfeng/Easydict`。
 
+## 重新创建同版本 Draft
+
+只有用户明确要求废弃并重建当前最新 Draft 时，才使用：
+
+```bash
+./scripts/release/release-easydict.sh draft <version> --replace-draft
+```
+
+该命令自动递增并冻结构建号，不接受 `--build-number`。失败后不要再次运行新的
+`--replace-draft`，应使用结果中的运行 ID：
+
+```bash
+./scripts/release/release-easydict.sh resume <run-id>
+```
+
+新 Draft 验证成功后，再执行下方内容捕获、英文整理和 issue 决策命令；不得复用旧
+Draft 的 `release-content-*` 或 `issue-*` 文件。
+
 ## Draft 内容
 
 ```bash

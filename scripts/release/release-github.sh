@@ -142,12 +142,39 @@ promote_previous_release() {
     verify_previous_release_promoted
 }
 
+record_replacement_draft() {
+    local draft_id temporary_path
+
+    if ! release_is_replacement; then
+        return
+    fi
+    load_replacement_metadata
+    draft_id="$(release_field databaseId)"
+    [[ "$draft_id" =~ ^[0-9]+$ ]] \
+        || release_fail "new GitHub Draft database ID is invalid"
+    [[ "$draft_id" != "$REPLACEMENT_DRAFT_ID" ]] \
+        || release_fail "GitHub returned the old Draft during replacement"
+
+    temporary_path="$(mktemp "$RELEASE_REPLACEMENT_DIR/new-draft.XXXXXX")"
+    {
+        printf 'REPLACEMENT_NEW_DRAFT_VERSION=%q\n' "$RELEASE_VERSION"
+        printf 'REPLACEMENT_NEW_DRAFT_ID=%q\n' "$draft_id"
+    } >"$temporary_path"
+    mv "$temporary_path" "$RELEASE_REPLACEMENT_NEW_DRAFT_PATH"
+    mark_replacement_complete new-draft-created
+}
+
 # Creates the immutable draft or fills only assets that are still absent.
 create_draft() {
     local asset_path
     local -a command
 
     load_release_metadata
+    if release_is_replacement; then
+        load_replacement_metadata
+        replacement_is_complete draft-deleted \
+            || release_fail "old GitHub Draft must be deleted before creating its replacement"
+    fi
     require_release_file "$RELEASE_ZIP_PATH"
     require_release_file "$RELEASE_DMG_PATH"
     require_release_file "$RELEASE_CHECKSUM_PATH"
@@ -155,12 +182,18 @@ create_draft() {
     if release_exists; then
         [[ "$(release_field isDraft)" == true ]] \
             || release_fail "$RELEASE_VERSION is already published"
+        if release_is_replacement; then
+            [[ "$(release_field databaseId)" \
+                != "$REPLACEMENT_DRAFT_ID" ]] \
+                || release_fail "old GitHub Draft still occupies $RELEASE_VERSION"
+        fi
         for asset_path in \
             "$RELEASE_ZIP_PATH" \
             "$RELEASE_DMG_PATH" \
             "$RELEASE_CHECKSUM_PATH"; do
             ensure_release_asset "$asset_path"
         done
+        record_replacement_draft
         return
     fi
 
@@ -185,6 +218,7 @@ create_draft() {
 
     release_log "creating GitHub draft release"
     "${command[@]}"
+    record_replacement_draft
 }
 
 # Publishing is idempotent so an interrupted asc step can safely resume.

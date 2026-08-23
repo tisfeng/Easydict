@@ -38,12 +38,20 @@ log_current_checkout() {
 }
 
 fetch_release_refs() {
+    local include_tags="${1:-yes}"
+    local -a command
+
     release_log "fetching $RELEASE_REMOTE/$RELEASE_DEV_BRANCH and"
     release_log "$RELEASE_REMOTE/$RELEASE_MAIN_BRANCH"
-    git -C "$RELEASE_SOURCE_ROOT" fetch --prune "$RELEASE_REMOTE" \
+    command=(git -C "$RELEASE_SOURCE_ROOT" fetch --prune "$RELEASE_REMOTE")
+    command+=(
         "+refs/heads/$RELEASE_DEV_BRANCH:$(remote_dev_ref)" \
-        "+refs/heads/$RELEASE_MAIN_BRANCH:$(remote_main_ref)" \
-        --tags
+        "+refs/heads/$RELEASE_MAIN_BRANCH:$(remote_main_ref)"
+    )
+    if [[ "$include_tags" == yes ]]; then
+        command+=(--tags)
+    fi
+    "${command[@]}"
 
     git -C "$RELEASE_SOURCE_ROOT" show-ref --verify --quiet \
         "$(remote_dev_ref)" \
@@ -54,8 +62,14 @@ fetch_release_refs() {
 }
 
 worktree_is_registered() {
+    worktree_path_is_registered "$RELEASE_WORKTREE"
+}
+
+worktree_path_is_registered() {
+    local worktree_path="$1"
+
     git -C "$RELEASE_SOURCE_ROOT" worktree list --porcelain \
-        | awk -v expected="$RELEASE_WORKTREE" '
+        | awk -v expected="$worktree_path" '
             $1 == "worktree" && $2 == expected { found = 1 }
             END { exit(found ? 0 : 1) }
         '
@@ -332,6 +346,10 @@ ensure_tag() {
 push_version_refs() {
     require_release_worktree
     load_release_metadata
+    if release_is_replacement; then
+        "$SCRIPT_DIR/release-redraft-git.sh" push-refs
+        return
+    fi
     fetch_release_refs
     verify_remote_ancestry
 

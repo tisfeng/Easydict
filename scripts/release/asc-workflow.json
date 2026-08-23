@@ -3,7 +3,8 @@
     "VERSION": "",
     "CHANNEL": "beta",
     "BUILD_NUMBER": "",
-    "NOTES_FILE": ""
+    "NOTES_FILE": "",
+    "DRAFT_MODE": "normal"
   },
   "before_all": "printf '[%s] [INFO] [workflow] Starting Easydict %s (%s) workflow\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" \"$VERSION\" \"$CHANNEL\" >&2",
   "after_all": "printf '[%s] [INFO] [workflow] Easydict %s workflow completed\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" \"$VERSION\" >&2",
@@ -59,6 +60,14 @@
           "run": "./scripts/release/release-preflight.sh environment"
         },
         {
+          "name": "snapshot_draft_replacement",
+          "run": "./scripts/release/release-redraft.sh snapshot"
+        },
+        {
+          "name": "archive_replaced_local_state",
+          "run": "if [ \"$DRAFT_MODE\" = replace ]; then ./scripts/release/release-redraft-git.sh archive; else printf '[%s] [INFO] [archive_replaced_local_state] ordinary Draft; no local replacement archive required\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" >&2; fi"
+        },
+        {
           "name": "sync_local_dev",
           "run": "./scripts/release/release-branch-sync.sh sync-dev"
         },
@@ -109,8 +118,16 @@
       "description": "Synchronize version refs and create a GitHub draft",
       "steps": [
         {
+          "name": "revalidate_draft_replacement",
+          "run": "./scripts/release/release-redraft.sh revalidate"
+        },
+        {
           "name": "push_version_refs",
           "run": "./scripts/release/release-branch-sync.sh push-version"
+        },
+        {
+          "name": "delete_replaced_github_draft",
+          "run": "./scripts/release/release-redraft.sh delete-draft"
         },
         {
           "name": "create_github_draft",
@@ -119,6 +136,10 @@
         {
           "name": "verify_github_draft",
           "run": "./scripts/release/release-github.sh verify-draft"
+        },
+        {
+          "name": "cleanup_draft_replacement",
+          "run": "if [ \"$DRAFT_MODE\" = replace ]; then ./scripts/release/release-redraft-git.sh cleanup; else printf '[%s] [INFO] [cleanup_draft_replacement] ordinary Draft; no replacement backup to clean\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" >&2; fi"
         }
       ]
     },

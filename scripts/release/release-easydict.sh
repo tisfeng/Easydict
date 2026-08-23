@@ -22,6 +22,7 @@ Options:
   --channel beta|stable   Sparkle channel (default: beta)
   --build-number <value> Override the next build number
   --notes <file>          Use a release notes file instead of generated notes
+  --replace-draft        Rebuild and safely replace the latest matching Draft
   --dry-run               Preview the asc workflow without running it
   -h, --help              Show this help
 
@@ -228,6 +229,7 @@ main() {
     local channel="beta"
     local build_number=""
     local notes_file=""
+    local draft_mode="normal"
     local dry_run=0
 
     while (($# > 0)); do
@@ -247,6 +249,10 @@ main() {
                 notes_file="$2"
                 shift 2
                 ;;
+            --replace-draft)
+                draft_mode="replace"
+                shift
+                ;;
             --dry-run)
                 dry_run=1
                 shift
@@ -263,6 +269,12 @@ main() {
 
     [[ "$channel" == beta || "$channel" == stable ]] \
         || fail "channel must be beta or stable"
+    if [[ "$draft_mode" == replace ]]; then
+        [[ "$action" == draft ]] \
+            || fail "--replace-draft is supported only with draft"
+        [[ -z "$build_number" ]] \
+            || fail "--replace-draft chooses the next build number automatically"
+    fi
     if [[ -n "$build_number" ]]; then
         [[ "$build_number" =~ ^[0-9]+$ ]] \
             || fail "build number must be a positive integer"
@@ -291,6 +303,7 @@ main() {
         "CHANNEL:$channel"
         "BUILD_NUMBER:$build_number"
         "NOTES_FILE:$notes_file"
+        "DRAFT_MODE:$draft_mode"
     )
 
     export RELEASE_RUN_MODE=new

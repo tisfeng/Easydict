@@ -32,6 +32,9 @@ issue orchestration around those scripts.
 
 - `draft <version>`: create or recover the verified Draft, curate its English
   body/title, freeze issue decisions, then stop.
+- `draft <version> --replace-draft`: discard the latest matching unpublished
+  Draft and its Tag only after rebuilding the same version from synchronized
+  local `dev`; curate and freeze only the newly created Draft.
 - `publish <version>`: curate and freeze an existing verified Draft, publish it,
   refresh the frozen issue evidence, and apply verified issue notifications.
 - `release <version>`: run the `draft` behavior followed by the `publish`
@@ -55,6 +58,18 @@ Default to the repository's `beta` channel unless the user explicitly requests
    ```
 
    If the Draft already exists, verify it instead of deleting or recreating it.
+   When the user explicitly requests `--replace-draft`, run:
+
+   ```bash
+   ./scripts/release/release-easydict.sh draft <version> \
+     --replace-draft [--channel <channel>]
+   ```
+
+   Do not add this flag implicitly. It is valid only when the existing Release
+   is the newest GitHub Release entry, remains a Draft on the same channel, has
+   matching local and remote Tag identity, has matching local release state,
+   and is absent from the public appcast. Never combine it with
+   `--build-number`.
 3. Capture the GitHub-generated body with
    `.agents/skills/release-easydict/scripts/release_content.py capture`.
    Create a curated JSON file that translates every change title into concise
@@ -112,6 +127,14 @@ existing matching state on `resume`; reject mismatched repository, version,
 source hash, PR set, or issue set instead of regenerating past a completed
 stage.
 
+For `--replace-draft`, old content and issue files are rollback data only. The
+repository workflow temporarily moves the complete old state aside, chooses
+`max(old Draft build, current project build, public appcast build) + 1`, and
+rebuilds from synchronized committed local `dev`. Capture, curate, and freeze
+content only after the new Draft is verified. Never copy old curated notes or
+issue decisions into the new state. A new replacement request must stop when
+an unfinished replacement exists; use the asc run ID with `resume` instead.
+
 ## Content decisions
 
 - Translate only the human PR title portion of each generated change entry.
@@ -127,6 +150,10 @@ stage.
 ## Failure and resume
 
 - A content or decision validation failure leaves the GitHub Release as a Draft.
+- A `--replace-draft` build or notarization failure leaves the old remote Draft
+  and Tag untouched. A later transition failure preserves the temporary local
+  rollback backup and resumes only incomplete markers. After the new Draft is
+  verified, the workflow deletes that temporary backup automatically.
 - A publish failure leaves issue actions untouched and uses the asc run ID for
   recovery.
 - An issue follow-up failure does not roll back an already published Release.
