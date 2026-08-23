@@ -22,6 +22,7 @@ class TemporaryRepository:
         self.git("init", "--quiet")
         self.git("config", "user.name", "Easydict Tests")
         self.git("config", "user.email", "tests@example.com")
+        self.git("config", "commit.gpgsign", "false")
 
     def git(self, *arguments: str) -> str:
         """Run Git in the temporary repository and return stdout."""

@@ -30,10 +30,14 @@ description: >
    默认模式。
 8. 在默认模式下，或在确认模式获得批准后，严格执行：
    - 将完整的实际提交信息写入 `commit_message.txt`。
-   - 运行 `git commit -F commit_message.txt`。
-   - 提交成功后删除 `commit_message.txt`。
+   - 根据 **提交信息契约** 解析出的语言模式运行提交前校验：英语用户使用
+     `english`，非英语用户使用 `bilingual`。
+   - 只有提交前校验成功后，才运行 `git commit -F commit_message.txt`。
+   - 提交成功后，读取实际 commit 并同时校验结构及其与
+     `commit_message.txt` 的一致性。
+   - 只有提交后校验成功后，才删除 `commit_message.txt`。
 9. 提交成功后遵循 **Post-Commit Report**。在向用户展示该报告之前，即使 Git 命令
-   成功也不算完成交付。
+   成功但提交后校验失败，也不算完成交付。
 
 ## Implementation 自动交付
 
@@ -59,7 +63,7 @@ description: >
 2. 只使用 `git add -- <paths>` 暂存 Agent 明确拥有的路径；此模式下绝不使用
    `git add .`。
 3. 重新读取暂存区原始 patch，确认它只包含任务范围。
-4. 使用本 skill 的提交信息契约，并执行一次本地 `git commit`。
+4. 使用本 skill 的提交信息契约及提交前后校验流程，并执行一次本地 `git commit`。
 5. 遵循 **Post-Commit Report**。不要 push、pull、rebase、merge 或创建分支。
 
 如果无法安全分离路径归属，则保留变更供手动交付，并报告 protected 状态。提交失败时
@@ -74,7 +78,8 @@ description: >
    `LC_MESSAGES`、`LANG`、`locale` 或 Windows PowerShell culture 输出。
 3. 用户当前对话已经使用的语言。
 
-将英语变体都视为英语。英语用户只获得一个英文提交信息区块。非英语用户依次获得本地
+将英语变体都视为英语，并据此设置 `{COMMIT_MESSAGE_MODE}`：英语为 `english`，其他
+语言为 `bilingual`。英语用户只获得一个英文提交信息区块。非英语用户依次获得本地
 语言区块、以下严格 70 个字符的分隔线和英文区块：
 
 ```text
@@ -95,7 +100,7 @@ Second body paragraph explaining the main change.
 
 Third body paragraph explaining the result or impact.
 
-Optional footer for breaking changes or special notes when applicable.
+Optional BREAKING CHANGE: footer when applicable.
 ```
 
 - 使用范围最窄且准确的 `type(scope): subject`。
@@ -108,8 +113,36 @@ Optional footer for breaking changes or special notes when applicable.
 - 不使用 `Problem:`、`Change:` 或 `Summary:` 等标签。
 - 聚焦行为和意图，不沉迷于底层实现细节。
 - 非英文与英文区块的含义、段落数量和段落顺序必须一致。
-- 仅在不兼容变更时使用 `!` 和/或 `BREAKING CHANGE:` footer。footer 不能替代
-  必需的三个正文段落。
+- 仅在不兼容变更时使用 `!` 和/或最终的 `BREAKING CHANGE:` footer。校验器不接受
+  其他 footer；footer 不能替代必需的三个正文段落。
+
+## 提交信息校验
+
+写入 `commit_message.txt` 后、运行 `git commit` 前，必须执行：
+
+```bash
+python3 .agents/skills/git-commit/scripts/validate-commit-message.py \
+  --file commit_message.txt \
+  --mode "${COMMIT_MESSAGE_MODE}"
+```
+
+提交前校验失败时停止，不运行 `git commit`，并保留 `commit_message.txt` 供修复。校验器
+只检查可确定的结构：Angular 标题、80 字符限制、恰好三个正文段落、双语分隔线、两个
+语言区块一致的 type/scope/breaking 标记，以及可选的最终 `BREAKING CHANGE:` footer。
+它不判断翻译质量或三个正文段落的语义是否准确，Agent 仍须按真实 staged diff 审核内容。
+
+`git commit` 成功后、删除消息文件前，必须使用刚创建的完整 commit hash 执行：
+
+```bash
+python3 .agents/skills/git-commit/scripts/validate-commit-message.py \
+  --commit "${COMMIT_HASH}" \
+  --expected-file commit_message.txt \
+  --mode "${COMMIT_MESSAGE_MODE}"
+```
+
+提交后校验会读取 Git 中的实际消息并与预期文件比较。失败时进入 protected 状态：不要
+自动 amend，不要删除 `commit_message.txt`，不要声称交付完成；报告 commit hash 和具体
+错误，等待用户或调用方决定后续动作。
 
 ## 变动统计
 
@@ -188,12 +221,15 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 - 在确认模式下，获得明确批准前不要创建 `commit_message.txt` 或运行 `git commit`。
 - 写入 `commit_message.txt` 的提交信息必须完全相同，且不包含 Markdown 代码围栏。
 - 不要在单个 shell 命令中将 `git commit` 与提交信息文件的创建或清理串联起来。
+- 不要在单个 shell 命令中将提交前校验、`git commit`、提交后校验或消息文件清理
+  串联起来；每一步成功后再进入下一步。
 - 将 `git commit` 视为唯一需要仓库写入权限的步骤。
 - 如果 `git commit` 在创建 `.git/index.lock` 时因 `Operation not permitted` 等
   sandbox 权限错误失败，立即使用所需提权重新运行
   `git commit -F commit_message.txt`。
 - 已知环境会阻止写入 `.git` 时，在提交步骤直接为 `git commit` 请求所需提权。
-- 提交失败时保留 `commit_message.txt`，除非清理操作明确安全且有意执行。
+- 提交前校验、提交或提交后校验任一步失败时都保留 `commit_message.txt`，除非清理
+  操作明确安全且有意执行。
 - 默认模式先提交，再遵循 **Post-Commit Report**。确认模式只展示实际提交信息并
   等待批准。
 
