@@ -68,18 +68,24 @@ Release 仍为相同 Draft 且正文没有在 capture 后变化，helper 才允�
 
 ## 发布后 Issue 跟进
 
-GitHub Release 发布和远程验证成功后，委托独立 skill：
+GitHub Release 发布和远程验证成功后，在同一个 skill 内继续执行：
 
 ```text
-$release-easydict-issue-followup apply <version>
+$release-easydict issue-followup apply <version>
 ```
 
-不要求用户先运行 `plan`。该 skill 会重新捕获当前 Release 和 issue 状态、生成最新计划，
-再执行评论与关闭动作。失败后使用：
+不要求用户先运行 `plan`。`apply` 会重新捕获当前 Release 和 Issue 状态、生成并冻结
+最新计划，再执行评论与关闭动作。失败后使用：
 
 ```text
-$release-easydict-issue-followup resume <version>
+$release-easydict issue-followup resume <version>
 ```
 
-具体 helper 参数和 schema-v2 状态文件由
-`.agents/skills/release-easydict-issue-followup/references/commands.md` 维护。
+如果只需要预览关联和分类，不执行远程写入：
+
+```text
+$release-easydict issue-followup plan <version>
+```
+
+具体 helper 参数、schema-v2 状态和固定报告规则由
+[issue-followup.md](issue-followup.md) 维护。

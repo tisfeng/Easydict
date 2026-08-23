@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect, plan, and apply Easydict release issue follow-up actions."""
+"""Collect, plan, and apply Easydict release issue follow-up operations."""
 
 from __future__ import annotations
 

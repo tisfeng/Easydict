@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT_PATH = SKILL_ROOT / "scripts" / "release_issues.py"
-SPEC = importlib.util.spec_from_file_location("release_issue_followup", SCRIPT_PATH)
+SPEC = importlib.util.spec_from_file_location("release_issues", SCRIPT_PATH)
 assert SPEC is not None and SPEC.loader is not None
 release_issues = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(release_issues)

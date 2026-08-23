@@ -1,4 +1,4 @@
-# Issue 关联与解决策略
+# 发布后 Issue 关联与解决策略
 
 本策略兼容现有 PR 中的 closing reference、issue URL、`owner/repo#123` 和裸
 `#123`，不依赖 PR 模板中的关闭关键字。
