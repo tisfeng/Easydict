@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Synchronizes origin/dev into an isolated local-dev source worktree, builds an
-# isolated release worktree, then updates both branches and the release tag
-# through atomic remote pushes.
+# isolated release worktree, then publishes only the temporary release branch
+# and version Tag during the Draft phase.
 
 set -euo pipefail
 
@@ -67,10 +67,15 @@ worktree_is_registered() {
 
 worktree_path_is_registered() {
     local worktree_path="$1"
+    local expected_path="$worktree_path"
+
+    if [[ -d "$worktree_path" ]]; then
+        expected_path="$(cd "$worktree_path" && pwd -P)"
+    fi
 
     git -C "$RELEASE_SOURCE_ROOT" worktree list --porcelain \
-        | awk -v expected="$worktree_path" '
-            $1 == "worktree" && $2 == expected { found = 1 }
+        | awk -v expected="$expected_path" '
+            $1 == "worktree" && substr($0, 10) == expected { found = 1 }
             END { exit(found ? 0 : 1) }
         '
 }
@@ -342,46 +347,56 @@ ensure_tag() {
     fi
 }
 
-# Tags the version commit and moves both branches in one remote transaction.
-push_version_refs() {
+remote_ref_oid() {
+    local ref_name="$1"
+
+    git -C "$RELEASE_SOURCE_ROOT" ls-remote "$RELEASE_REMOTE" "$ref_name" \
+        | awk -v expected="$ref_name" '$2 == expected { print $1; exit }'
+}
+
+# Tags the version commit and publishes only the temporary release branch.
+# dev and main remain untouched until the verified Publish transaction.
+push_draft_refs() {
+    local current_head local_tag_oid remote_branch_oid remote_tag_oid
+
     require_release_worktree
     load_release_metadata
     if release_is_replacement; then
         "$SCRIPT_DIR/release-redraft-git.sh" push-refs
         return
     fi
-    fetch_release_refs
-    verify_remote_ancestry
 
-    [[ "$(git -C "$RELEASE_WORKTREE" rev-parse HEAD)" \
-        == "$RELEASE_VERSION_COMMIT" ]] \
+    current_head="$(git -C "$RELEASE_WORKTREE" rev-parse HEAD)"
+    [[ "$current_head" == "$RELEASE_VERSION_COMMIT" ]] \
         || release_fail "release HEAD differs from the saved version commit"
 
     ensure_tag
-    release_log "atomically updating dev, main, and $RELEASE_VERSION"
-    git -C "$RELEASE_WORKTREE" push --atomic "$RELEASE_REMOTE" \
-        "HEAD:refs/heads/$RELEASE_DEV_BRANCH" \
-        "HEAD:refs/heads/$RELEASE_MAIN_BRANCH" \
-        "refs/tags/$RELEASE_VERSION"
-    fetch_release_refs
-}
+    local_tag_oid="$(git -C "$RELEASE_WORKTREE" rev-parse \
+        "refs/tags/$RELEASE_VERSION")"
+    remote_branch_oid="$(remote_ref_oid "refs/heads/$RELEASE_BRANCH")"
+    remote_tag_oid="$(remote_ref_oid "refs/tags/$RELEASE_VERSION")"
 
-# Advances dev and main together so the public feed is never branch-specific.
-push_appcast_refs() {
-    require_release_worktree
-    load_release_metadata
-    fetch_release_refs
-    verify_remote_ancestry
+    [[ -z "$remote_branch_oid" || "$remote_branch_oid" == "$current_head" ]] \
+        || release_fail "remote $RELEASE_BRANCH points to another commit"
+    [[ -z "$remote_tag_oid" || "$remote_tag_oid" == "$local_tag_oid" ]] \
+        || release_fail "remote Tag $RELEASE_VERSION has another identity"
 
-    [[ "$(git -C "$RELEASE_WORKTREE" log -1 --format=%s)" \
-        == "build(release): add $RELEASE_VERSION appcast entry" ]] \
-        || release_fail "release HEAD is not the expected appcast commit"
+    if [[ "$remote_branch_oid" != "$current_head" \
+        || "$remote_tag_oid" != "$local_tag_oid" ]]; then
+        release_log \
+            "atomically publishing $RELEASE_BRANCH and Tag $RELEASE_VERSION"
+        git -C "$RELEASE_WORKTREE" push --atomic "$RELEASE_REMOTE" \
+            "HEAD:refs/heads/$RELEASE_BRANCH" \
+            "refs/tags/$RELEASE_VERSION:refs/tags/$RELEASE_VERSION"
+    else
+        release_log "Draft branch and Tag are already published"
+    fi
 
-    release_log "atomically updating dev and main with the appcast commit"
-    git -C "$RELEASE_WORKTREE" push --atomic "$RELEASE_REMOTE" \
-        "HEAD:refs/heads/$RELEASE_DEV_BRANCH" \
-        "HEAD:refs/heads/$RELEASE_MAIN_BRANCH"
-    fetch_release_refs
+    [[ "$(remote_ref_oid "refs/heads/$RELEASE_BRANCH")" == "$current_head" ]] \
+        || release_fail "remote release branch did not reach the version commit"
+    [[ "$(remote_ref_oid "refs/tags/$RELEASE_VERSION")" == "$local_tag_oid" ]] \
+        || release_fail "remote Tag did not reach the expected object"
+    write_draft_refs_metadata "$current_head" "$local_tag_oid"
 }
 
 # Removes only a clean registered worktree after remote verification succeeds.
@@ -394,7 +409,11 @@ cleanup_worktree() {
     [[ -z "$(git -C "$RELEASE_WORKTREE" status --porcelain)" ]] \
         || release_fail "refusing to remove a dirty release worktree"
     git -C "$RELEASE_SOURCE_ROOT" worktree remove "$RELEASE_WORKTREE"
-    if ! git -C "$RELEASE_SOURCE_ROOT" branch -d "$RELEASE_BRANCH"; then
+    if git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+        "refs/heads/$RELEASE_BRANCH" "$(local_dev_ref)"; then
+        git -C "$RELEASE_SOURCE_ROOT" branch -D "$RELEASE_BRANCH" >/dev/null
+        release_log "removed local temporary release branch: $RELEASE_BRANCH"
+    else
         release_log "temporary branch retained: $RELEASE_BRANCH"
     fi
 }
@@ -413,19 +432,15 @@ main() {
             prepare_worktree
             ;;
         push-version)
-            release_set_step "push_version_refs"
-            push_version_refs
-            ;;
-        push-appcast)
-            release_set_step "push_appcast_refs"
-            push_appcast_refs
+            release_set_step "push_draft_refs"
+            push_draft_refs
             ;;
         cleanup)
             release_set_step "cleanup_release_worktree"
             cleanup_worktree
             ;;
         *)
-            release_fail "usage: release-branch-sync.sh sync-dev|prepare|push-version|push-appcast|cleanup"
+            release_fail "usage: release-branch-sync.sh sync-dev|prepare|push-version|cleanup"
             ;;
     esac
 }

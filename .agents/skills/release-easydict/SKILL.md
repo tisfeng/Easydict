@@ -50,8 +50,11 @@ Release 生命周期动作：
   请求确认。
 - 绝不直接使用仓库脚本的一次性 `release` 动作。对本 skill 而言，`release` 表示由
   skill 管理的 Draft 创建、内容整理、发布、远程验证和 Issue 跟进。
-- 不切换或修改用户当前 checkout。仓库脚本通过隔离 worktree 发布已提交的本地
-  `dev`。
+- Draft 通过隔离 worktree 发布已提交的本地 `dev`，只推送临时
+  `release/sync-<version>` 和版本 Tag，不修改本地或远程 `dev`、`main`。
+- Publish 使用隔离 worktree 先完成 merge 预检。当前 checkout 位于其他分支时保持
+  不变；当前 checkout 就是干净的 `dev` 时，发布提交验证后允许 fast-forward 更新。
+  不覆盖未提交修改，也不 rebase 已发布提交。
 
 ## Release 工作流
 
@@ -89,7 +92,11 @@ Release 生命周期动作：
    ./scripts/release/release-easydict.sh publish <version> [--channel <channel>]
    ```
 
-   在发布、appcast 安装和远程验证全部成功前不要继续。
+   仓库脚本会在 GitHub Release 公开前，将最新本地 `dev`、`origin/dev` 和版本提交
+   进行 merge 预检。随后安装 appcast，将 appcast 提交 merge 到集成结果，先安全更新
+   本地 `dev`，再使用 lease 原子更新 `origin/dev`、`origin/main` 和临时发布分支。
+   远程验证成功后自动删除临时发布分支。在发布、appcast 安装和远程验证全部成功前
+   不要继续。
 7. 在本 skill 内继续执行 [references/issue-followup.md](references/issue-followup.md)
    定义的 `issue-followup apply <version>` 行为。它在修改前立即创建新计划，绝不依赖
    此前独立运行的 `plan`。
@@ -130,6 +137,10 @@ notes 或 Issue 状态复制到新 generation。未完成的替换使用 asc run
 - `--replace-draft` 构建或公证失败时，不修改旧的远程 Draft 和 Tag。后续切换失败时
   保留本地回滚数据；验证成功后删除该临时备份。
 - 发布失败时不执行 Issue 动作，并使用 asc run ID 恢复。
+- Draft 成功只表示临时发布分支、Tag 和 GitHub Draft 已就绪；不得将其报告为
+  `dev`/`main` 已更新。
+- Publish merge 冲突、本地 `dev` checkout 不干净或 lease 竞态失败时，保留集成
+  worktree 和 `state/publish-git.env`，先解决根因，再使用 asc run ID 恢复。
 - Issue 跟进失败时，绝不回滚已经发布的 Release、评论或 Issue 关闭操作。报告
   “发布成功，但 issue 后续处理未完成”，并使用：
 

@@ -119,6 +119,10 @@ print(json.dumps({
             step["name"]
             for step in workflow["workflows"]["draft_steps"]["steps"]
         ]
+        publish = [
+            step["name"]
+            for step in workflow["workflows"]["publish_steps"]["steps"]
+        ]
 
         self.assertLess(
             prepare.index("snapshot_draft_replacement"),
@@ -133,13 +137,26 @@ print(json.dumps({
             draft,
             [
                 "revalidate_draft_replacement",
-                "push_version_refs",
+                "push_draft_refs",
                 "delete_replaced_github_draft",
                 "create_github_draft",
                 "verify_github_draft",
                 "cleanup_draft_replacement",
             ],
         )
+        self.assertLess(
+            publish.index("prepare_publish_git"),
+            publish.index("publish_github_release"),
+        )
+        self.assertLess(
+            publish.index("install_appcast"),
+            publish.index("push_published_refs"),
+        )
+        self.assertLess(
+            publish.index("verify_remote_release"),
+            publish.index("cleanup_remote_release_branch"),
+        )
+        self.assertNotIn("push_appcast_refs", publish)
 
     def test_snapshot_requires_latest_unpublished_version(self):
         version = "4.5.6"
@@ -255,6 +272,7 @@ else:
             metadata = (replacement / "metadata.env").read_text(encoding="utf-8")
             self.assertIn("REPLACEMENT_DRAFT_ID=321", metadata)
             self.assertIn("REPLACEMENT_OLD_BUILD=12", metadata)
+            self.assertIn("REPLACEMENT_OLD_RELEASE_BRANCH_OID=missing", metadata)
             snapshot = json.loads(
                 (replacement / "github-draft.json").read_text(encoding="utf-8")
             )
@@ -364,7 +382,17 @@ else:
 
             for ref in ("refs/heads/dev", "refs/heads/main"):
                 value = run(["git", "--git-dir", str(remote), "rev-parse", ref])
-                self.assertEqual(value.stdout.strip(), new_commit)
+                self.assertEqual(value.stdout.strip(), old_commit)
+            release_ref = run(
+                [
+                    "git",
+                    "--git-dir",
+                    str(remote),
+                    "rev-parse",
+                    f"refs/heads/release/sync-{version}",
+                ]
+            )
+            self.assertEqual(release_ref.stdout.strip(), new_commit)
             peeled = run(
                 [
                     "git",

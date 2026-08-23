@@ -10,37 +10,19 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=release-common.sh
 source "$SCRIPT_DIR/release-common.sh"
 
-remote_dev_ref() {
-    printf 'refs/remotes/%s/%s' "$RELEASE_REMOTE" "$RELEASE_DEV_BRANCH"
-}
-
-remote_main_ref() {
-    printf 'refs/remotes/%s/%s' "$RELEASE_REMOTE" "$RELEASE_MAIN_BRANCH"
-}
-
 worktree_path_is_registered() {
     local worktree_path="$1"
+    local expected_path="$worktree_path"
+
+    if [[ -d "$worktree_path" ]]; then
+        expected_path="$(cd "$worktree_path" && pwd -P)"
+    fi
 
     git -C "$RELEASE_SOURCE_ROOT" worktree list --porcelain \
-        | awk -v expected="$worktree_path" '
-            $1 == "worktree" && $2 == expected { found = 1 }
+        | awk -v expected="$expected_path" '
+            $1 == "worktree" && substr($0, 10) == expected { found = 1 }
             END { exit(found ? 0 : 1) }
         '
-}
-
-fetch_release_branches() {
-    git -C "$RELEASE_SOURCE_ROOT" fetch --prune "$RELEASE_REMOTE" \
-        "+refs/heads/$RELEASE_DEV_BRANCH:$(remote_dev_ref)" \
-        "+refs/heads/$RELEASE_MAIN_BRANCH:$(remote_main_ref)"
-}
-
-verify_remote_ancestry() {
-    git -C "$RELEASE_WORKTREE" merge-base --is-ancestor \
-        "$(remote_dev_ref)" HEAD \
-        || release_fail "release branch no longer contains current remote dev"
-    git -C "$RELEASE_WORKTREE" merge-base --is-ancestor \
-        "$(remote_main_ref)" HEAD \
-        || release_fail "release branch no longer contains current remote main"
 }
 
 load_replacement_archive() {
@@ -136,6 +118,16 @@ remote_version_tag_oid() {
             '$2 == ref { print $1; exit }'
 }
 
+remote_release_branch_oid() {
+    local oid
+
+    oid="$(git -C "$RELEASE_SOURCE_ROOT" ls-remote "$RELEASE_REMOTE" \
+        "refs/heads/$RELEASE_BRANCH" \
+        | awk -v ref="refs/heads/$RELEASE_BRANCH" \
+            '$2 == ref { print $1; exit }')"
+    printf '%s\n' "${oid:-missing}"
+}
+
 ensure_replacement_tag() {
     local current_head local_tag_oid local_tag_commit
 
@@ -158,13 +150,12 @@ ensure_replacement_tag() {
 }
 
 push_replacement_refs() {
-    local current_head local_tag_oid remote_tag_oid remote_dev remote_main
+    local current_head local_tag_oid remote_tag_oid remote_release_oid
+    local branch_lease
 
     require_release_worktree
     load_release_metadata
     load_replacement_metadata
-    fetch_release_branches
-    verify_remote_ancestry
     current_head="$(git -C "$RELEASE_WORKTREE" rev-parse HEAD)"
     [[ "$current_head" == "$RELEASE_VERSION_COMMIT" ]] \
         || release_fail "release HEAD differs from the saved version commit"
@@ -173,39 +164,40 @@ push_replacement_refs() {
     local_tag_oid="$(git -C "$RELEASE_WORKTREE" rev-parse \
         "refs/tags/$RELEASE_VERSION")"
     remote_tag_oid="$(remote_version_tag_oid)"
-    if [[ "$remote_tag_oid" == "$local_tag_oid" ]]; then
-        remote_dev="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
-            "$(remote_dev_ref)")"
-        remote_main="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
-            "$(remote_main_ref)")"
-        [[ "$remote_dev" == "$current_head" \
-            && "$remote_main" == "$current_head" ]] \
-            || release_fail "replacement Tag moved but remote branches are incomplete"
+    remote_release_oid="$(remote_release_branch_oid)"
+    if [[ "$remote_tag_oid" == "$local_tag_oid" \
+        && "$remote_release_oid" == "$current_head" ]]; then
+        write_draft_refs_metadata "$current_head" "$local_tag_oid"
         mark_replacement_complete refs-replaced
         release_log "replacement refs were already updated"
         return
     fi
     [[ "$remote_tag_oid" == "$REPLACEMENT_OLD_TAG_OID" ]] \
         || release_fail "remote Tag no longer matches the frozen replacement identity"
+    [[ "$remote_release_oid" == "$REPLACEMENT_OLD_RELEASE_BRANCH_OID" ]] \
+        || release_fail "remote release branch no longer matches the frozen replacement identity"
+
+    if [[ "$REPLACEMENT_OLD_RELEASE_BRANCH_OID" == missing ]]; then
+        branch_lease="--force-with-lease=refs/heads/$RELEASE_BRANCH:"
+    else
+        branch_lease="--force-with-lease=refs/heads/$RELEASE_BRANCH:"
+        branch_lease+="$REPLACEMENT_OLD_RELEASE_BRANCH_OID"
+    fi
 
     release_log \
-        "atomically replacing dev, main, and $RELEASE_VERSION with Tag lease protection"
+        "atomically replacing $RELEASE_BRANCH and $RELEASE_VERSION with lease protection"
     git -C "$RELEASE_WORKTREE" push --atomic \
+        "$branch_lease" \
         "--force-with-lease=refs/tags/$RELEASE_VERSION:$REPLACEMENT_OLD_TAG_OID" \
         "$RELEASE_REMOTE" \
-        "HEAD:refs/heads/$RELEASE_DEV_BRANCH" \
-        "HEAD:refs/heads/$RELEASE_MAIN_BRANCH" \
+        "+HEAD:refs/heads/$RELEASE_BRANCH" \
         "+refs/tags/$RELEASE_VERSION:refs/tags/$RELEASE_VERSION"
 
     [[ "$(remote_version_tag_oid)" == "$local_tag_oid" ]] \
         || release_fail "remote replacement Tag did not reach the expected object"
-    fetch_release_branches
-    [[ "$(git -C "$RELEASE_SOURCE_ROOT" rev-parse "$(remote_dev_ref)")" \
-        == "$current_head" ]] \
-        || release_fail "remote dev did not reach the replacement commit"
-    [[ "$(git -C "$RELEASE_SOURCE_ROOT" rev-parse "$(remote_main_ref)")" \
-        == "$current_head" ]] \
-        || release_fail "remote main did not reach the replacement commit"
+    [[ "$(remote_release_branch_oid)" == "$current_head" ]] \
+        || release_fail "remote release branch did not reach the replacement commit"
+    write_draft_refs_metadata "$current_head" "$local_tag_oid"
     mark_replacement_complete refs-replaced
 }
 
@@ -262,7 +254,7 @@ main() {
             archive_replacement_state
             ;;
         push-refs)
-            release_set_step "push_version_refs"
+            release_set_step "push_draft_refs"
             push_replacement_refs
             ;;
         cleanup)

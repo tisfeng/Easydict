@@ -115,14 +115,14 @@
     },
     "draft_steps": {
       "private": true,
-      "description": "Synchronize version refs and create a GitHub draft",
+      "description": "Publish the temporary release branch and create a GitHub draft",
       "steps": [
         {
           "name": "revalidate_draft_replacement",
           "run": "./scripts/release/release-redraft.sh revalidate"
         },
         {
-          "name": "push_version_refs",
+          "name": "push_draft_refs",
           "run": "./scripts/release/release-branch-sync.sh push-version"
         },
         {
@@ -145,7 +145,7 @@
     },
     "publish_steps": {
       "private": true,
-      "description": "Publish the GitHub release and update both feeds",
+      "description": "Publish the GitHub release and merge it into dev",
       "steps": [
         {
           "name": "prepare_channel_transition",
@@ -154,6 +154,10 @@
         {
           "name": "preflight_publish",
           "run": "./scripts/release/release-preflight.sh publish"
+        },
+        {
+          "name": "prepare_publish_git",
+          "run": "./scripts/release/release-publish-git.sh prepare"
         },
         {
           "name": "publish_github_release",
@@ -168,8 +172,8 @@
           "run": "./scripts/release/release-appcast.sh install"
         },
         {
-          "name": "push_appcast_refs",
-          "run": "./scripts/release/release-branch-sync.sh push-appcast"
+          "name": "push_published_refs",
+          "run": "./scripts/release/release-publish-git.sh push"
         },
         {
           "name": "promote_previous_github_release",
@@ -178,6 +182,10 @@
         {
           "name": "verify_remote_release",
           "run": "./scripts/release/release-verify.sh remote"
+        },
+        {
+          "name": "cleanup_remote_release_branch",
+          "run": "./scripts/release/release-publish-git.sh cleanup"
         },
         {
           "name": "cleanup_release_worktree",

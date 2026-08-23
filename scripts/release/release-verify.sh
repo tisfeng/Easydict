@@ -95,27 +95,41 @@ fetch_published_refs() {
     git -C "$RELEASE_SOURCE_ROOT" fetch "$RELEASE_REMOTE" \
         "+refs/heads/$RELEASE_DEV_BRANCH:refs/remotes/$RELEASE_REMOTE/$RELEASE_DEV_BRANCH" \
         "+refs/heads/$RELEASE_MAIN_BRANCH:refs/remotes/$RELEASE_REMOTE/$RELEASE_MAIN_BRANCH" \
+        "+refs/heads/$RELEASE_BRANCH:refs/remotes/$RELEASE_REMOTE/$RELEASE_BRANCH" \
         "+refs/tags/$RELEASE_VERSION:refs/tags/$RELEASE_VERSION"
 }
 
 verify_published_refs() {
-    local release_head dev_head main_head tag_head
+    local release_head dev_head local_dev_head main_head temporary_head tag_head
 
+    load_publish_git_metadata
     fetch_published_refs
     release_head="$(git -C "$RELEASE_WORKTREE" rev-parse HEAD)"
+    local_dev_head="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
+        "refs/heads/$RELEASE_DEV_BRANCH")"
     dev_head="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
         "refs/remotes/$RELEASE_REMOTE/$RELEASE_DEV_BRANCH")"
     main_head="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
         "refs/remotes/$RELEASE_REMOTE/$RELEASE_MAIN_BRANCH")"
+    temporary_head="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
+        "refs/remotes/$RELEASE_REMOTE/$RELEASE_BRANCH")"
     tag_head="$(git -C "$RELEASE_SOURCE_ROOT" rev-list -n 1 \
         "refs/tags/$RELEASE_VERSION")"
 
-    [[ "$dev_head" == "$release_head" ]] \
-        || release_fail "$RELEASE_DEV_BRANCH does not match release HEAD"
-    [[ "$main_head" == "$release_head" ]] \
-        || release_fail "$RELEASE_MAIN_BRANCH does not match release HEAD"
+    [[ "$release_head" == "$PUBLISH_APPCAST_COMMIT" ]] \
+        || release_fail "release worktree does not match the saved appcast commit"
+    [[ "$local_dev_head" == "$PUBLISH_INTEGRATION_HEAD" \
+        && "$dev_head" == "$PUBLISH_INTEGRATION_HEAD" ]] \
+        || release_fail "local and remote dev do not match publish integration"
+    [[ "$main_head" == "$PUBLISH_APPCAST_COMMIT" ]] \
+        || release_fail "$RELEASE_MAIN_BRANCH does not match the appcast commit"
+    [[ "$temporary_head" == "$PUBLISH_APPCAST_COMMIT" ]] \
+        || release_fail "$RELEASE_BRANCH does not match the appcast commit"
     [[ "$tag_head" == "$RELEASE_VERSION_COMMIT" ]] \
         || release_fail "release tag does not point to the version commit"
+    git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+        "$PUBLISH_APPCAST_COMMIT" "$PUBLISH_INTEGRATION_HEAD" \
+        || release_fail "publish integration does not contain the appcast commit"
 }
 
 validate_remote_appcast() {

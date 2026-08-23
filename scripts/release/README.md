@@ -15,12 +15,19 @@ Easydict 的发布流程由 `asc workflow` 编排。该工作流将构建、公�
 4. 记录同步后的源提交，并从该提交创建隔离的 `release/sync-<version>` worktree。
 5. 将同步时的 `origin/main` 提交合并到该 worktree。
 6. 基于合并后的结果构建并验证。
-7. 将两个远程分支原子更新到同一个发布提交。
+7. Draft 阶段只将 `release/sync-<version>` 和带注释的版本 Tag 原子推送到远程，
+   不修改 `origin/dev` 或 `origin/main`。
+8. Publish 前在第二个隔离 worktree 中，将最新本地 `dev`、`origin/dev` 和版本提交
+   合并起来；如果冲突，在 GitHub Release 公开前停止。
+9. GitHub Release 公开并安装 appcast 后，将 appcast 提交合并到上述集成结果，安全更新
+   本地 `dev`，再使用 lease 原子更新 `origin/dev`、`origin/main` 和临时发布分支。
+10. 远程验证全部通过后，删除远程 `release/sync-<version>`。
 
 这样可以保留本地 `dev` 上尚未推送的提交，同时吸收远程 `dev` 的更新；也可以找回误合并到 `main`、
-但尚未进入 `dev` 的更改。发布流程不会切换或合并当前 checkout；当前分支上的未提交修改不会进入发布，
-发布只使用已提交的本地 `dev`。原子推送还能避免 `dev` 和 `main` 被分别更新。发布自动化自身的代码必须
-已经提交并存在于合并后的历史中。
+但尚未进入 `dev` 的更改。Draft 不会污染远程主分支。Publish 使用 merge 保留版本提交、appcast 提交和
+后续开发提交的历史关系，不会 rebase 已发布的提交。当前 checkout 位于其他分支时保持不变；本地 `dev`
+未被 checkout 时通过引用校验更新，被 checkout 时则必须保持干净并使用 fast-forward 更新。发布只使用
+已提交的本地 `dev`，发布自动化自身的代码也必须已经提交并存在于合并后的历史中。
 
 如果同一版本之前的发布尝试留下了干净但过期的临时 worktree，新的 `prepare`、`draft` 或 `release`
 运行会在没有远程版本 Tag 的情况下自动归档旧 worktree、状态和产物，然后从最新的本地 `dev` 重建。
@@ -103,9 +110,10 @@ Keychain 或工具自身的凭据存储中，不会写入仓库或发布元数�
 最大值加一：旧 Draft 构建号、当前项目构建号、公开 appcast 最新构建号。旧 Draft
 的完整 GitHub JSON 也会随临时恢复状态保留，供失败诊断或人工回滚使用。
 
-新产物完成签名、公证和本地验证前，远端 Draft 和 Tag 保持不变。随后工作流会再次
-核对旧 Draft 仍是页面最新条目、内容未被修改且 Tag OID 未变化，再使用 lease 原子
-替换 `dev`、`main` 和版本 Tag，删除精确匹配的旧 Draft，并创建、验证新 Draft。
+新产物完成签名、公证和本地验证前，远端 Draft、临时发布分支和 Tag 保持不变。随后工作流会再次
+核对旧 Draft 仍是页面最新条目、内容未被修改，且临时发布分支与 Tag OID 未变化，再使用 lease 原子
+替换 `release/sync-<version>` 和版本 Tag，删除精确匹配的旧 Draft，并创建、验证新 Draft。
+`origin/dev` 和 `origin/main` 仍要等到 Publish 成功时才更新。
 成功后旧工作树、旧产物、旧 skill 状态和临时恢复分支会自动删除；失败时保留临时
 恢复目录，并要求使用输出的运行 ID 执行 `resume`，不会再次递增构建号。
 
@@ -137,7 +145,8 @@ Keychain 或工具自身的凭据存储中，不会写入仓库或发布元数�
 ```
 
 发布状态和产物会保存在 `.tmp/release/<version>/` 中，用于审计和恢复。成功发布后只会移除隔离的 Git worktree；
-成功完成 `--replace-draft` 后还会移除被替换 Draft 的临时本地备份。
+成功完成 `--replace-draft` 后还会移除被替换 Draft 的临时本地备份。Publish 的 Git 集成状态保存在
+`state/publish-git.env`；远程临时发布分支只会在完整远程验证后删除。
 每个阶段都设计为可以安全重试，或者在替换已有远程资产或 feed 条目之前安全失败。
 
 ## 日志和结果
@@ -168,11 +177,13 @@ run ID：
 5. 提交 App 进行公证、写入公证票据，并验证 Gatekeeper。
 6. 生成 Sparkle ZIP 和 DMG 产物；对 DMG 进行公证并写入公证票据。
 7. 生成并严格验证候选 `appcast.xml`。
-8. 原子推送 `dev`、`main` 和带注释的版本 Tag。
+8. 原子推送临时发布分支和带注释的版本 Tag，不修改 `dev` 或 `main`。
 9. 创建并验证包含 ZIP、DMG 和校验和的 GitHub Draft Release。
-10. 发布新的 GitHub Release，安装 appcast，并再次原子更新两个分支。
-11. 对 beta 发布，将上一 GitHub prerelease 提升为 stable。
-12. 在移除隔离 worktree 前，验证两代 Release、远程引用、发布资产和公开 Sparkle feed。
+10. 发布前将最新本地/远程 `dev` 与版本提交进行 merge 预检。
+11. 发布新的 GitHub Release 并安装 appcast，将 appcast 提交 merge 到集成结果。
+12. 安全更新本地 `dev`，并使用 lease 原子更新远程 `dev`、`main` 和临时发布分支。
+13. 对 beta 发布，将上一 GitHub prerelease 提升为 stable。
+14. 验证两代 Release、远程引用、发布资产和公开 Sparkle feed，再删除远程临时分支和本地 worktree。
 
 公开 feed 只有在 GitHub Release 发布后才会更新，因此不会提前宣传不可下载的归档文件。在此之前发生失败时，
 流程会留下 GitHub Draft Release 和可恢复的本地状态，而不会留下一个发布了一半的 feed。
@@ -183,7 +194,8 @@ run ID：
 - `release-easydict.sh`：稳定的命令行入口。
 - `release-common.sh`：路径、发布配置和安全辅助函数。
 - `release-preflight.sh`：本地环境和发布状态检查。
-- `release-branch-sync.sh`：隔离 worktree 以及分支、Tag 同步。
+- `release-branch-sync.sh`：发布源 worktree、Draft 临时分支和 Tag 同步。
+- `release-publish-git.sh`：Publish merge 预检、本地 `dev` 更新、lease 原子推送和临时分支清理。
 - `release-build.sh`：版本更新、归档和导出阶段。
 - `release-package.sh`：公证、ZIP、DMG 和校验和阶段。
 - `release-appcast.sh` / `release-appcast.py`：Sparkle 生成和严格的 feed 验证。
@@ -200,7 +212,10 @@ run ID：
 - 当前 checkout 中的发布脚本有未提交修改：暂停，避免使用不可复现的发布工具。
 - detached dev 同步 worktree 发生合并冲突：暂停并保留临时 worktree，当前 checkout 不受影响。
 - release worktree 有脏文件：暂停，并保留现场供检查。
-- `dev`/`main` 合并冲突：在版本更新或推送前暂停。
+- 发布源中的 `dev`/`main` 合并冲突：在版本更新或 Draft 推送前暂停。
+- Publish 集成 worktree 中的 merge 冲突：在 GitHub Release 公开前暂停并保留现场。
+- 本地 `dev` 被 checkout 且存在未提交修改：Publish 前暂停，不修改该 worktree。
+- Publish 期间远程 `dev`、`main` 或临时发布分支发生竞态更新：lease 阻止推送并保留可恢复状态。
 - 已有 Tag 指向其他提交：暂停。
 - 已有远程资产但大小不同：暂停，不覆盖原文件。
 - 公证或签名失败：在 GitHub 发布前暂停。

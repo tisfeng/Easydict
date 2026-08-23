@@ -68,12 +68,15 @@ PY
 format_result() {
     local result_file="$1"
     local log_file="$2"
+    local version="$3"
 
-    python3 - "$result_file" "$log_file" <<'PY'
+    python3 - "$result_file" "$log_file" "$ROOT_DIR" "$version" <<'PY'
 import json
+from pathlib import Path
+import shlex
 import sys
 
-result_path, log_path = sys.argv[1:]
+result_path, log_path, root_path, requested_version = sys.argv[1:]
 try:
     with open(result_path, encoding="utf-8") as handle:
         result = json.load(handle)
@@ -109,6 +112,43 @@ if steps:
         step_status = step.get("status", "unknown")
         marker = "✓" if step_status in {"ok", "success", "completed", "resumed", "dry-run"} else "✗"
         print(f"  {marker} {name} ({step_status})")
+
+
+def read_env(path):
+    values = {}
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return values
+    for line in lines:
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, raw = line.split("=", 1)
+        try:
+            parsed = shlex.split(raw)
+        except ValueError:
+            continue
+        values[key] = parsed[0] if parsed else ""
+    return values
+
+
+version = result.get("params", {}).get("VERSION", "") or requested_version
+if version:
+    state = Path(root_path) / ".tmp" / "release" / version / "state"
+    draft_refs = read_env(state / "draft-refs.env")
+    publish_git = read_env(state / "publish-git.env")
+    if draft_refs:
+        print("- Draft Git 引用：")
+        print(f"  - 临时分支：{draft_refs.get('DRAFT_RELEASE_BRANCH', 'unknown')}")
+        print(f"  - 版本提交：{draft_refs.get('DRAFT_RELEASE_COMMIT', 'unknown')}")
+        print("  - dev/main：Draft 阶段未修改")
+    if publish_git.get("PUBLISH_INTEGRATION_HEAD"):
+        print("- Publish Git 集成：")
+        print(f"  - 本地与远程 dev：{publish_git['PUBLISH_INTEGRATION_HEAD']}")
+        print(f"  - 远程 main：{publish_git.get('PUBLISH_APPCAST_COMMIT', 'unknown')}")
+        print(f"  - 版本 Tag：{publish_git.get('PUBLISH_VERSION_COMMIT', 'unknown')}")
+        cleaned = state.joinpath("remote-release-branch-cleaned.complete").exists()
+        print(f"  - 临时远程分支：{'已清理' if cleaned else '保留，等待验证或恢复'}")
 PY
 }
 
@@ -172,7 +212,7 @@ PY
     rm -f "$live_pipe"
     rmdir "$work_dir"
 
-    format_result "$result_file" "$log_file"
+    format_result "$result_file" "$log_file" "$version"
     return "$exit_code"
 }
 

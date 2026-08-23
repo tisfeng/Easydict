@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Freezes and later removes the exact GitHub Draft being replaced. The old
-# remote Draft and Tag remain untouched until replacement artifacts pass local
-# verification and the workflow reaches the remote transition steps.
+# remote Draft, temporary release branch, and Tag remain untouched until
+# replacement artifacts pass local verification.
 
 set -euo pipefail
 
@@ -36,6 +36,16 @@ remote_tag_oids() {
     git -C "$RELEASE_SOURCE_ROOT" ls-remote "$RELEASE_REMOTE" \
         "refs/tags/$RELEASE_VERSION" \
         "refs/tags/$RELEASE_VERSION^{}"
+}
+
+remote_release_branch_oid() {
+    local oid
+
+    oid="$(git -C "$RELEASE_SOURCE_ROOT" ls-remote "$RELEASE_REMOTE" \
+        "refs/heads/$RELEASE_BRANCH" \
+        | awk -v ref="refs/heads/$RELEASE_BRANCH" \
+            '$2 == ref { print $1; exit }')"
+    printf '%s\n' "${oid:-missing}"
 }
 
 read_remote_tag_oid() {
@@ -118,6 +128,7 @@ snapshot_replacement() {
     local draft_id draft_node_id draft_tag draft_state draft_prerelease
     local draft_created_at draft_updated_at
     local local_tag_oid local_tag_commit remote_tag_oid remote_tag_commit
+    local remote_release_oid
     local temporary_path
 
     if ! release_is_replacement; then
@@ -196,6 +207,7 @@ PY
         || release_fail "local and remote $RELEASE_VERSION tags do not match"
     [[ "$RELEASE_VERSION_COMMIT" == "$remote_tag_commit" ]] \
         || release_fail "saved release commit does not match the existing Tag"
+    remote_release_oid="$(remote_release_branch_oid)"
 
     temporary_path="$(mktemp "$RELEASE_REPLACEMENT_DIR/metadata.XXXXXX")"
     {
@@ -210,6 +222,8 @@ PY
             "$RELEASE_VERSION_COMMIT"
         printf 'REPLACEMENT_OLD_TAG_OID=%q\n' "$remote_tag_oid"
         printf 'REPLACEMENT_OLD_TAG_COMMIT=%q\n' "$remote_tag_commit"
+        printf 'REPLACEMENT_OLD_RELEASE_BRANCH_OID=%q\n' \
+            "$remote_release_oid"
     } >"$temporary_path"
     mv "$temporary_path" "$RELEASE_REPLACEMENT_METADATA_PATH"
     trap - EXIT
@@ -219,7 +233,7 @@ PY
 }
 
 revalidate_replacement() {
-    local current_path top_path refs remote_tag_oid
+    local current_path top_path refs remote_tag_oid remote_release_oid
 
     if ! release_is_replacement; then
         release_log "ordinary Draft; no replacement revalidation required"
@@ -244,8 +258,11 @@ revalidate_replacement() {
     remote_tag_oid="$(read_remote_tag_oid "$refs")"
     [[ "$remote_tag_oid" == "$REPLACEMENT_OLD_TAG_OID" ]] \
         || release_fail "remote Tag changed after replacement started"
+    remote_release_oid="$(remote_release_branch_oid)"
+    [[ "$remote_release_oid" == "$REPLACEMENT_OLD_RELEASE_BRANCH_OID" ]] \
+        || release_fail "remote release branch changed after replacement started"
     rm -f "$current_path" "$top_path"
-    release_log "Draft and Tag replacement identity is still unchanged"
+    release_log "Draft, release branch, and Tag replacement identity is still unchanged"
 }
 
 delete_replaced_draft() {

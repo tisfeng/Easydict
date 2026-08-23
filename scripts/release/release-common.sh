@@ -40,6 +40,10 @@ if [[ -n "$RELEASE_VERSION" ]]; then
     RELEASE_SOURCE_METADATA_PATH="$RELEASE_STATE_DIR/source.env"
     RELEASE_METADATA_PATH="$RELEASE_STATE_DIR/release.env"
     RELEASE_CHANNEL_TRANSITION_PATH="$RELEASE_STATE_DIR/channel-transition.env"
+    RELEASE_DRAFT_REFS_PATH="$RELEASE_STATE_DIR/draft-refs.env"
+    RELEASE_PUBLISH_GIT_PATH="$RELEASE_STATE_DIR/publish-git.env"
+    RELEASE_PUBLISH_INTEGRATION_WORKTREE="$RELEASE_DIR/publish-integration"
+    RELEASE_REMOTE_BRANCH_CLEANUP_MARKER="$RELEASE_STATE_DIR/remote-release-branch-cleaned.complete"
     RELEASE_ARCHIVE_PATH="$RELEASE_DIR/Easydict.xcarchive"
     RELEASE_DERIVED_DATA="$RELEASE_DIR/derived-data"
     RELEASE_EXPORT_DIR="$RELEASE_DIR/export"
@@ -220,6 +224,10 @@ load_replacement_metadata() {
         || release_fail "replacement Tag object ID is invalid"
     [[ "$REPLACEMENT_OLD_TAG_COMMIT" =~ ^[0-9a-f]{40}$ ]] \
         || release_fail "replacement Tag commit is invalid"
+    REPLACEMENT_OLD_RELEASE_BRANCH_OID="${REPLACEMENT_OLD_RELEASE_BRANCH_OID:-missing}"
+    [[ "$REPLACEMENT_OLD_RELEASE_BRANCH_OID" == missing \
+        || "$REPLACEMENT_OLD_RELEASE_BRANCH_OID" =~ ^[0-9a-f]{40}$ ]] \
+        || release_fail "replacement release branch object ID is invalid"
 }
 
 load_replacement_build() {
@@ -419,6 +427,50 @@ load_release_metadata() {
         || release_fail "release metadata belongs to another version"
     [[ "$RELEASE_SAVED_CHANNEL" == "$RELEASE_CHANNEL" ]] \
         || release_fail "release channel differs from saved metadata"
+}
+
+write_draft_refs_metadata() {
+    local release_commit="$1"
+    local tag_oid="$2"
+    local temporary_path
+
+    mkdir -p "$RELEASE_STATE_DIR"
+    temporary_path="$(mktemp "$RELEASE_STATE_DIR/draft-refs.XXXXXX")"
+    {
+        printf 'DRAFT_REFS_VERSION=%q\n' "$RELEASE_VERSION"
+        printf 'DRAFT_RELEASE_BRANCH=%q\n' "$RELEASE_BRANCH"
+        printf 'DRAFT_RELEASE_COMMIT=%q\n' "$release_commit"
+        printf 'DRAFT_TAG_OID=%q\n' "$tag_oid"
+    } >"$temporary_path"
+    mv "$temporary_path" "$RELEASE_DRAFT_REFS_PATH"
+}
+
+# Loads the frozen Git refs and integration result used by publish/resume.
+load_publish_git_metadata() {
+    require_release_file "$RELEASE_PUBLISH_GIT_PATH"
+    # shellcheck disable=SC1090
+    source "$RELEASE_PUBLISH_GIT_PATH"
+
+    [[ "$PUBLISH_GIT_VERSION" == "$RELEASE_VERSION" ]] \
+        || release_fail "publish Git metadata belongs to another version"
+    for commit_name in \
+        PUBLISH_VERSION_COMMIT \
+        PUBLISH_PREPARED_HEAD \
+        PUBLISH_LOCAL_DEV_BASE \
+        PUBLISH_REMOTE_DEV_BASE \
+        PUBLISH_REMOTE_MAIN_BASE \
+        PUBLISH_REMOTE_RELEASE_BASE; do
+        [[ "${!commit_name}" =~ ^[0-9a-f]{40}$ ]] \
+            || release_fail "publish Git metadata has invalid $commit_name"
+    done
+    if [[ -n "${PUBLISH_APPCAST_COMMIT:-}" ]]; then
+        [[ "$PUBLISH_APPCAST_COMMIT" =~ ^[0-9a-f]{40}$ ]] \
+            || release_fail "publish appcast commit is invalid"
+    fi
+    if [[ -n "${PUBLISH_INTEGRATION_HEAD:-}" ]]; then
+        [[ "$PUBLISH_INTEGRATION_HEAD" =~ ^[0-9a-f]{40}$ ]] \
+            || release_fail "publish integration commit is invalid"
+    fi
 }
 
 # Locates Sparkle's generator after Xcode has resolved package artifacts.

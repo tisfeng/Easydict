@@ -3,6 +3,16 @@
 以下命令从仓库根目录执行。将 `<version>` 替换为目标版本；默认仓库固定为
 `tisfeng/Easydict`。
 
+## Git 引用边界
+
+- `draft` 只推送 `release/sync-<version>` 和版本 Tag；不得把 Draft 提交直接推送到
+  `origin/dev` 或 `origin/main`。
+- `publish` 在 GitHub Release 公开前完成 merge 预检；安装 appcast 后安全更新本地
+  `dev`，再原子更新远程 `dev`、`main` 和临时发布分支。
+- 远程验证通过后删除临时发布分支。版本 Tag 始终停留在版本元数据提交，`main`
+  停留在 appcast 提交，`dev` 停留在包含最新开发提交和 appcast 提交的集成结果。
+- Publish 失败时使用 asc run ID 恢复，不手工 rebase 或强推这些引用。
+
 ## 重新创建同版本 Draft
 
 只有用户明确要求废弃并重建当前最新 Draft 时，才使用：
