@@ -3,7 +3,8 @@
     "VERSION": "",
     "CHANNEL": "beta",
     "BUILD_NUMBER": "",
-    "NOTES_FILE": ""
+    "NOTES_FILE": "",
+    "DRAFT_MODE": "normal"
   },
   "before_all": "printf '[%s] [INFO] [workflow] Starting Easydict %s (%s) workflow\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" \"$VERSION\" \"$CHANNEL\" >&2",
   "after_all": "printf '[%s] [INFO] [workflow] Easydict %s workflow completed\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" \"$VERSION\" >&2",
@@ -59,6 +60,14 @@
           "run": "./scripts/release/release-preflight.sh environment"
         },
         {
+          "name": "snapshot_draft_replacement",
+          "run": "./scripts/release/release-redraft.sh snapshot"
+        },
+        {
+          "name": "archive_replaced_local_state",
+          "run": "if [ \"$DRAFT_MODE\" = replace ]; then ./scripts/release/release-redraft-git.sh archive; else printf '[%s] [INFO] [archive_replaced_local_state] ordinary Draft; no local replacement archive required\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" >&2; fi"
+        },
+        {
           "name": "sync_local_dev",
           "run": "./scripts/release/release-branch-sync.sh sync-dev"
         },
@@ -106,11 +115,19 @@
     },
     "draft_steps": {
       "private": true,
-      "description": "Synchronize version refs and create a GitHub draft",
+      "description": "Publish the temporary release branch and create a GitHub draft",
       "steps": [
         {
-          "name": "push_version_refs",
+          "name": "revalidate_draft_replacement",
+          "run": "./scripts/release/release-redraft.sh revalidate"
+        },
+        {
+          "name": "push_draft_refs",
           "run": "./scripts/release/release-branch-sync.sh push-version"
+        },
+        {
+          "name": "delete_replaced_github_draft",
+          "run": "./scripts/release/release-redraft.sh delete-draft"
         },
         {
           "name": "create_github_draft",
@@ -119,16 +136,28 @@
         {
           "name": "verify_github_draft",
           "run": "./scripts/release/release-github.sh verify-draft"
+        },
+        {
+          "name": "cleanup_draft_replacement",
+          "run": "if [ \"$DRAFT_MODE\" = replace ]; then ./scripts/release/release-redraft-git.sh cleanup; else printf '[%s] [INFO] [cleanup_draft_replacement] ordinary Draft; no replacement backup to clean\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" >&2; fi"
         }
       ]
     },
     "publish_steps": {
       "private": true,
-      "description": "Publish the GitHub release and update both feeds",
+      "description": "Publish the GitHub release and merge it into dev",
       "steps": [
+        {
+          "name": "prepare_channel_transition",
+          "run": "./scripts/release/release-appcast.sh prepare-publish"
+        },
         {
           "name": "preflight_publish",
           "run": "./scripts/release/release-preflight.sh publish"
+        },
+        {
+          "name": "prepare_publish_git",
+          "run": "./scripts/release/release-publish-git.sh prepare"
         },
         {
           "name": "publish_github_release",
@@ -143,12 +172,20 @@
           "run": "./scripts/release/release-appcast.sh install"
         },
         {
-          "name": "push_appcast_refs",
-          "run": "./scripts/release/release-branch-sync.sh push-appcast"
+          "name": "push_published_refs",
+          "run": "./scripts/release/release-publish-git.sh push"
+        },
+        {
+          "name": "promote_previous_github_release",
+          "run": "./scripts/release/release-github.sh promote-previous"
         },
         {
           "name": "verify_remote_release",
           "run": "./scripts/release/release-verify.sh remote"
+        },
+        {
+          "name": "cleanup_remote_release_branch",
+          "run": "./scripts/release/release-publish-git.sh cleanup"
         },
         {
           "name": "cleanup_release_worktree",

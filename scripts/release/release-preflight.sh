@@ -35,9 +35,10 @@ validate_release_tooling() {
 validate_synced_tooling() {
     local source_tree release_tree tooling_path
 
+    load_release_source_metadata
     for tooling_path in scripts/release; do
         source_tree="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
-            "HEAD:$tooling_path")"
+            "$RELEASE_SOURCE_COMMIT:$tooling_path")"
         release_tree="$(git -C "$RELEASE_WORKTREE" rev-parse \
             "HEAD:$tooling_path")"
         [[ "$source_tree" == "$release_tree" ]] \
@@ -154,6 +155,9 @@ validate_release() {
     if [[ -n "$RELEASE_BUILD_OVERRIDE" ]]; then
         integer_is_greater "$RELEASE_BUILD_OVERRIDE" "$latest_build" \
             || release_fail "build number must be greater than $latest_build"
+    elif release_is_replacement; then
+        # The version stage freezes max(old Draft, current project, appcast)+1.
+        :
     elif [[ "$current_version" == "$RELEASE_VERSION" ]]; then
         integer_is_greater "$current_build" "$latest_build" \
             || release_fail "prepared build number must be greater than $latest_build"
@@ -165,8 +169,15 @@ validate_release() {
         --jq '.isDraft' 2>/dev/null)"; then
         [[ "$existing_draft" == true ]] \
             || release_fail "$RELEASE_VERSION is already published"
-        require_release_file "$RELEASE_METADATA_PATH"
-        release_log "reusing the existing GitHub draft for $RELEASE_VERSION"
+        if release_is_replacement; then
+            load_replacement_metadata
+            release_log "rebuilding the frozen GitHub Draft for $RELEASE_VERSION"
+        else
+            require_release_file "$RELEASE_METADATA_PATH"
+            release_log "reusing the existing GitHub draft for $RELEASE_VERSION"
+        fi
+    elif release_is_replacement; then
+        release_fail "the frozen GitHub Draft disappeared before local preparation completed"
     fi
 
     release_log "release version $RELEASE_VERSION passed preflight"
@@ -179,7 +190,9 @@ validate_publish() {
     require_release_file "$RELEASE_DMG_PATH"
     require_release_file "$RELEASE_CHECKSUM_PATH"
     require_release_file "$RELEASE_APPCAST_PATH"
+    require_release_file "$RELEASE_CHANNEL_TRANSITION_PATH"
     "$SCRIPT_DIR/release-github.sh" verify-ready
+    "$SCRIPT_DIR/release-github.sh" verify-previous-ready
 }
 
 main() {

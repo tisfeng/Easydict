@@ -24,8 +24,25 @@ read_project_value() {
 resolve_build_number() {
     local current_version="$1"
     local current_build="$2"
+    local latest_appcast_build target_build
 
-    if [[ -f "$RELEASE_METADATA_PATH" ]]; then
+    if release_is_replacement; then
+        if [[ -f "$RELEASE_REPLACEMENT_BUILD_PATH" ]]; then
+            load_replacement_build
+            printf '%s\n' "$REPLACEMENT_BUILD_NUMBER"
+            return
+        fi
+        load_replacement_metadata
+        latest_appcast_build="$(xmllint --xpath \
+            'string((//*[local-name()="version"])[1])' \
+            "$RELEASE_WORKTREE/appcast.xml")"
+        target_build="$(next_replacement_build \
+            "$REPLACEMENT_OLD_BUILD" \
+            "$current_build" \
+            "$latest_appcast_build")"
+        write_replacement_build "$target_build"
+        printf '%s\n' "$target_build"
+    elif [[ -f "$RELEASE_METADATA_PATH" ]]; then
         load_release_metadata
         printf '%s\n' "$RELEASE_SAVED_BUILD"
     elif [[ -n "$RELEASE_BUILD_OVERRIDE" ]]; then

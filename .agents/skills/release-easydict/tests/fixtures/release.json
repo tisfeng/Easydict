@@ -1,0 +1,8 @@
+{
+  "body": "## What's Changed\n* feat(shortcut): 增加全局划词翻译开关快捷键设置 by @bsythegreat in https://github.com/tisfeng/Easydict/pull/1203\n* fix(window): restore input focus after query window layout adjustments by @MoonMao42 in https://github.com/tisfeng/Easydict/pull/1212\n\n## New Contributors\n* @bsythegreat made their first contribution in https://github.com/tisfeng/Easydict/pull/1203\n\n**Full Changelog**: https://github.com/tisfeng/Easydict/compare/2.21.0...2.22.0\n",
+  "isDraft": true,
+  "isPrerelease": true,
+  "name": "Easydict 2.22.0",
+  "tagName": "2.22.0",
+  "url": "https://github.com/tisfeng/Easydict/releases/tag/untagged-example"
+}

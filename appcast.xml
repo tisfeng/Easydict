@@ -3,14 +3,23 @@
     <channel>
         <title>Easydict</title>
         <item>
-            <title>2.21.0</title>
+            <title>2.22.0</title>
+            <pubDate>Sun, 23 Aug 2026 11:39:50 +0800</pubDate>
             <sparkle:channel>beta</sparkle:channel>
+            <sparkle:version>65</sparkle:version>
+            <sparkle:shortVersionString>2.22.0</sparkle:shortVersionString>
+            <sparkle:releaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.22.0</sparkle:releaseNotesLink>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.22.0/Easydict.zip" length="32390052" type="application/octet-stream" sparkle:edSignature="NYS+EVIOcpcN1rUFoCIi7yu+tbzv1cxXy6raQeY9GzEWTz9uW0tuvURtaxMiFBrxhDS0KYa5Wgt82XEqK81XAQ==" />
+        </item>
+        <item>
+            <title>2.21.0</title>
             <pubDate>Sun, 07 Jun 2026 11:36:19 +0800</pubDate>
             <sparkle:version>63</sparkle:version>
             <sparkle:shortVersionString>2.21.0</sparkle:shortVersionString>
             <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.21.0</sparkle:releaseNotesLink>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.21.0/Easydict.zip" length="29008031" type="application/octet-stream" sparkle:edSignature="U1chStNwuDdee+Em7Gmnd85cWVxjtP2VUveqR+ITps69maCdbPnxMHdAubiWHFStK5zjc0Jp8u2+/CuCXVnMCQ=="/>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.21.0/Easydict.zip" length="29008031" type="application/octet-stream" sparkle:edSignature="U1chStNwuDdee+Em7Gmnd85cWVxjtP2VUveqR+ITps69maCdbPnxMHdAubiWHFStK5zjc0Jp8u2+/CuCXVnMCQ==" />
         </item>
         <item>
             <title>2.20.0</title>
@@ -19,7 +28,7 @@
             <sparkle:shortVersionString>2.20.0</sparkle:shortVersionString>
             <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.20.0</sparkle:releaseNotesLink>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.20.0/Easydict.zip" length="28771622" type="application/octet-stream" sparkle:edSignature="DIlswEZKlw/u7fuMQdcjpbdKFk+bo73vcbPBIeRR8nsldCyH+5jBIMO9v+cvt3Dizp45cKG44JPYwHsDakWDAw=="/>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.20.0/Easydict.zip" length="28771622" type="application/octet-stream" sparkle:edSignature="DIlswEZKlw/u7fuMQdcjpbdKFk+bo73vcbPBIeRR8nsldCyH+5jBIMO9v+cvt3Dizp45cKG44JPYwHsDakWDAw==" />
         </item>
         <item>
             <title>2.19.0</title>
@@ -28,7 +37,7 @@
             <sparkle:shortVersionString>2.19.0</sparkle:shortVersionString>
             <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.19.0</sparkle:releaseNotesLink>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.19.0/Easydict.zip" length="28390708" type="application/octet-stream" sparkle:edSignature="iu5GsDu3s93BqJkK0YYpp+ErHpqaDWCLD6VZyGVxEm9OB2IzD0NACKz5wgTWComduMUyQ88nm34xxH/YWK0/BQ=="/>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.19.0/Easydict.zip" length="28390708" type="application/octet-stream" sparkle:edSignature="iu5GsDu3s93BqJkK0YYpp+ErHpqaDWCLD6VZyGVxEm9OB2IzD0NACKz5wgTWComduMUyQ88nm34xxH/YWK0/BQ==" />
         </item>
         <item>
             <title>2.18.1</title>
@@ -37,7 +46,7 @@
             <sparkle:shortVersionString>2.18.1</sparkle:shortVersionString>
             <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.18.1</sparkle:releaseNotesLink>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.18.1/Easydict.zip" length="28209209" type="application/octet-stream" sparkle:edSignature="GWi+Ses0XaO3nzZMz/5Tf9UdXtvInw4Q1+ezI7BhWFwV59PVHkRiYrhDspAw+PeWPk4XCxbyaf8Ujasd/JTKBA=="/>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.18.1/Easydict.zip" length="28209209" type="application/octet-stream" sparkle:edSignature="GWi+Ses0XaO3nzZMz/5Tf9UdXtvInw4Q1+ezI7BhWFwV59PVHkRiYrhDspAw+PeWPk4XCxbyaf8Ujasd/JTKBA==" />
         </item>
         <item>
             <title>2.18.0</title>
@@ -46,7 +55,7 @@
             <sparkle:shortVersionString>2.18.0</sparkle:shortVersionString>
             <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.18.0</sparkle:releaseNotesLink>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.18.0/Easydict.zip" length="26807222" type="application/octet-stream" sparkle:edSignature="URxH3sLNF1/uM++GMDjhNDg//QtPlXEPmwEUChhc9RNTOw/uSHyEi6/jRX2EE7kKJjld9++GISIMwgeTwvWLDg=="/>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.18.0/Easydict.zip" length="26807222" type="application/octet-stream" sparkle:edSignature="URxH3sLNF1/uM++GMDjhNDg//QtPlXEPmwEUChhc9RNTOw/uSHyEi6/jRX2EE7kKJjld9++GISIMwgeTwvWLDg==" />
         </item>
         <item>
             <title>2.17.3</title>
@@ -55,7 +64,7 @@
             <sparkle:shortVersionString>2.17.3</sparkle:shortVersionString>
             <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.17.3</sparkle:releaseNotesLink>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.17.3/Easydict.zip" length="26991692" type="application/octet-stream" sparkle:edSignature="y8KD/YVLZx9A3YH0hQUD8jttxE30xGEOpFZVJc31G3QSe7sojHvFbcqNzzgvj9zsyfbXLzn/f4rZA4qesYNUBA=="/>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.17.3/Easydict.zip" length="26991692" type="application/octet-stream" sparkle:edSignature="y8KD/YVLZx9A3YH0hQUD8jttxE30xGEOpFZVJc31G3QSe7sojHvFbcqNzzgvj9zsyfbXLzn/f4rZA4qesYNUBA==" />
         </item>
     </channel>
 </rss>

@@ -1,107 +1,84 @@
 ---
 name: review-pr
 description: >
-  Prepare a GitHub pull request on a local branch by default or in an isolated
-  worktree when explicitly requested, optionally merge the latest base branch,
-  and produce a rigorous review from PR context and actual code changes. Use
-  for local PR checkout, worktree review, parallel review, or concurrent review.
+  默认在本地分支准备 GitHub pull request；明确要求时使用隔离 worktree，并可选择
+  合并最新 base 分支。根据 PR 上下文和实际代码变更生成严格审查。适用于本地 PR
+  checkout、worktree review、并行 review 或并发 review。
 ---
 
-# Review PR Workflow
+# PR Review 工作流
 
-Use the local checkout by default. Use an isolated Git worktree only when the
-user explicitly asks for a worktree, parallel review, or concurrent review. If
-the PR reference is missing or ambiguous, ask for it before changing Git state.
+默认使用本地 checkout。只有用户明确要求 worktree、并行 review 或并发 review 时，
+才使用隔离 Git worktree。如果缺少 PR 引用或引用存在歧义，在改变 Git 状态前先询问。
 
-Accepted PR references:
+接受的 PR 引用：
 
-- GitHub URL: `https://github.com/<base-owner>/<base-repo>/pull/<number>`
-- Shorthand: `<base-owner>/<base-repo>#<number>`
-- PR number only, when the current checkout belongs to the target repository
+- GitHub URL：`https://github.com/<base-owner>/<base-repo>/pull/<number>`
+- 简写：`<base-owner>/<base-repo>#<number>`
+- 仅 PR 编号：当前 checkout 属于目标仓库时可用
 
-## Guardrails
+## 安全约束
 
-- Start with `git status --short --branch`. In default local mode, stop before
-  switching branches when the checkout has uncommitted changes. Explicit
-  worktree mode may proceed from a dirty checkout because it must not switch or
-  modify that checkout.
-- Do not overwrite, delete, rename, rebase, reset, force-update, stash, or
-  discard local branches, worktrees, or changes.
-- Do not push while preparing, merging, resolving conflicts, or reviewing
-  unless the user explicitly asks for a push.
-- Name the contributor remote exactly as the PR head repository owner login.
-  If that remote name already points elsewhere, stop and ask.
-- Keep the normal local branch name exactly the same as the PR head branch
-  name. The only automatic exception is the collision fallback branch
-  `review/pr-<number>-<head-short-sha>` created when the exact name is
-  unusable.
-- Treat the PR metadata `headRefOid` as the only valid normal-review HEAD. A
-  same-named local branch may fast-forward to that SHA, but it must not contain
-  additional local commits or diverge from it.
-- On a branch-name collision, automatically fall back to the local review
-  branch `review/pr-<number>-<head-short-sha>` and continue. Never bypass by
-  checking out a remote-tracking ref, entering detached HEAD, or reviewing the
-  fetched ref in place. Keep the colliding branch untouched.
-- Stop instead of falling back only when the worktree is dirty, the
-  contributor remote points elsewhere, the fetched head differs from
-  `headRefOid`, or an existing review branch is incompatible.
-- Do not create any other differently named local branch unless the user
-  explicitly requests an isolated worktree or latest-base integration review.
-- If normal preparation refuses an existing branch for any other reason, do not
-  bypass it; preserve the branch and ask how to proceed.
-- In explicit worktree mode, use `review/pr-<number>-<head-short-sha>` for a
-  normal review and `review/pr-<number>-merge-<head-short-sha>` for a
-  latest-base review. Keep the worktree under
-  `../.review-pr-worktrees/<repo>/pr-<number>[-merge]-<head-short-sha>`.
-- Keep the prepared branch or worktree after review so the user can run and
-  debug it. Never remove a review worktree automatically.
-- For an explicitly requested latest-base conflict or update review, use the
-  local-only branch `review/pr-<number>-merge-<head-short-sha>` and merge the
-  latest base into it. Do not use rebase for remote collaboration PRs.
-- Do not treat `mergeable: CONFLICTING`, `mergeStateStatus: DIRTY`, or a base
-  branch that is ahead of the PR as permission to merge. These states are
-  review context unless the user explicitly requests a latest-base integration
-  review or conflict resolution.
-- Resolve merge conflicts semantically after reading the conflicting code and
-  surrounding context. Do not mechanically choose ours/theirs.
-- Do not review from the PR description alone. Inspect linked issues, changed
-  files, actual diff, relevant surrounding code, and CI state.
-- For exact inline review context, unresolved comments, or a `discussion_r...`
-  id, use `gh api` / GraphQL so `isResolved`, `isOutdated`, path, and line stay
-  visible. Do not rely only on `gh pr view --json`.
-- Treat every review thread with `isResolved == false` as an open review
-  comment that must be enumerated and individually assessed, including comments
-  from bots, comments with replies, and comments marked `isOutdated == true`.
-  Never omit an open thread because it looks plausible, is automated, or is not
-  independently identified as a new finding.
-- Treat PR feedback as live state. Opening a PR, marking a draft ready, bot
-  workflows, and manual review requests can add reviews or threads while the
-  local review is in progress. Never assume the initial comment snapshot is
-  still current when writing the final response.
-- For every open comment assessed as `reasonable` or `partially reasonable`,
-  provide a separate `Suggested Fix` grounded in the actual diff, surrounding
-  code, and project patterns. Recommend the smallest concrete change that
-  resolves the issue, including the affected logic, expected behavior, and
-  targeted verification when relevant. This requirement applies even when the
-  comment came from a bot. Keep the complete assessment and fix in
-  `Open Review Comments`; do not repeat the same issue in `Findings`.
-- Give every independent finding the same concrete `Suggested Fix` treatment.
-  Only an issue with a distinct trigger, risk, and remediation from all open
-  comments may appear in `Findings`.
-- Do not use vague advice such as "fix this issue." When multiple approaches are
-  valid, recommend one and state the important tradeoff. If the fix depends on
-  a product decision, give conditional options and surface that decision in
-  `Open Questions`.
-- Treat fix suggestions as review guidance. Do not modify the PR unless the
-  user explicitly asks; include a short code example only when it makes the
-  proposed change materially clearer.
+- 从 `git status --short --branch` 开始。默认本地模式下，如果 checkout 存在未提交
+  变更，在切换分支前停止。显式 worktree 模式可以从脏 checkout 继续，因为它不得
+  切换或修改该 checkout。
+- 不覆盖、删除、重命名、rebase、reset、强制更新、stash 或丢弃本地分支、worktree
+  或变更。
+- 除非用户明确要求 push，否则准备、合并、解决冲突或 review 期间不 push。
+- contributor remote 名称必须与 PR head 仓库 owner login 完全一致。如果该 remote
+  名称已经指向其他位置，则停止并询问。
+- 普通本地分支名必须与 PR head 分支名完全相同。唯一自动例外是准确名称不可用时创建
+  的冲突回退分支 `review/pr-<number>-<head-short-sha>`。
+- 将 PR 元数据 `headRefOid` 视为普通 review 唯一有效的 HEAD。同名本地分支可以
+  fast-forward 到该 SHA，但不得包含额外本地提交，也不得与其分叉。
+- 出现分支名冲突时，自动回退到本地 review 分支
+  `review/pr-<number>-<head-short-sha>` 并继续。绝不通过 checkout remote-tracking
+  ref、进入 detached HEAD 或直接 review 已 fetch ref 来绕过。保持冲突分支不变。
+- 只有当 worktree 有变更、contributor remote 指向其他位置、fetch 到的 head 与
+  `headRefOid` 不同，或现有 review 分支不兼容时，才停止而不回退。
+- 除非用户明确要求隔离 worktree 或 latest-base 集成 review，否则不要创建其他不同
+  名称的本地分支。
+- 如果普通准备流程因其他原因拒绝现有分支，不要绕过；保留该分支并询问如何继续。
+- 显式 worktree 模式下，普通 review 使用 `review/pr-<number>-<head-short-sha>`，
+  latest-base review 使用 `review/pr-<number>-merge-<head-short-sha>`。worktree 放在
+  `../.review-pr-worktrees/<repo>/pr-<number>[-merge]-<head-short-sha>` 下。
+- review 后保留准备好的分支或 worktree，供用户运行和调试。绝不自动删除 review
+  worktree。
+- 对明确请求的 latest-base 冲突或更新 review，使用仅本地分支
+  `review/pr-<number>-merge-<head-short-sha>`，并将最新 base 合并进去。远程协作 PR
+  不使用 rebase。
+- 不要将 `mergeable: CONFLICTING`、`mergeStateStatus: DIRTY` 或 base 分支领先 PR
+  视为合并授权。除非用户明确要求 latest-base 集成 review 或解决冲突，否则这些状态
+  只是 review 上下文。
+- 阅读冲突代码及周围上下文后按语义解决 merge 冲突。不要机械选择 ours/theirs。
+- 不要只根据 PR 描述进行 review。检查关联 issue、变更文件、实际 diff、相关周围代码
+  和 CI 状态。
+- 对准确的 inline review 上下文、未解决评论或 `discussion_r...` id，使用 `gh api` /
+  GraphQL，使 `isResolved`、`isOutdated`、path 和 line 保持可见。不要只依赖
+  `gh pr view --json`。
+- 将每个 `isResolved == false` 的 review thread 视为必须列举并逐条评估的开放 review
+  评论，包括 bot 评论、含回复评论和标记为 `isOutdated == true` 的评论。不得因为
+  thread 看似合理、由自动化生成或未被独立识别为新 finding 而省略。
+- 将 PR 反馈视为实时状态。打开 PR、将 draft 标记为 ready、bot workflow 和手动
+  review 请求都可能在本地 review 期间新增 review 或 thread。编写最终回复时，绝不
+  假设初始评论快照仍是最新状态。
+- 对每条评估为 `reasonable` 或 `partially reasonable` 的开放评论，提供单独的
+  `Suggested Fix`，并以实际 diff、周围代码和项目模式为依据。建议解决问题的最小
+  具体变更，相关时包含受影响逻辑、预期行为和针对性验证。即使评论来自 bot 也适用。
+  将完整评估和修复放在 `Open Review Comments` 中；不要在 `Findings` 重复同一问题。
+- 每个独立 finding 也提供同样具体的 `Suggested Fix`。只有触发条件、风险和修复方式
+  均与所有开放评论不同的问题才能出现在 `Findings`。
+- 不使用“修复此问题”等含糊建议。存在多种有效方案时，推荐一种并说明重要取舍。
+  如果修复取决于产品决策，给出条件选项，并在 `Open Questions` 中提出该决策。
+- 将修复建议视为 review 指导。除非用户明确要求，否则不要修改 PR；只有短代码示例
+  能明显提高建议清晰度时才加入。
 
-## Workflow
+## 工作流
 
-### 1. Collect PR Metadata
+### 1. 收集 PR 元数据
 
-Normalize GitHub URLs and `<owner>/<repo>#<number>` shorthands to
-`<number> --repo <owner>/<repo>` when running manual `gh` commands.
+手动运行 `gh` 命令时，将 GitHub URL 和 `<owner>/<repo>#<number>` 简写规范化为
+`<number> --repo <owner>/<repo>`。
 
 ```bash
 git status --short --branch
@@ -109,88 +86,74 @@ gh pr view <number> [--repo <base-owner>/<base-repo>] \
   --json number,title,url,body,baseRefName,headRefName,headRefOid,headRepository,headRepositoryOwner,closingIssuesReferences
 ```
 
-Record the head owner, fork repository, head branch, head SHA, base branch, PR
-URL, and linked issues. Let the helper script add remotes, fetch branches, and
-set upstream tracking in the normal path.
+记录 head owner、fork 仓库、head 分支、head SHA、base 分支、PR URL 和关联 issue。
+普通路径下由 helper 脚本添加 remote、fetch 分支并设置 upstream tracking。
 
-### 2. Choose Branch Preparation Path
+### 2. 选择分支准备路径
 
-Inspect mergeability before branch preparation:
+准备分支前检查 mergeability：
 
 ```bash
 gh pr view <number> [--repo <base-owner>/<base-repo>] \
   --json mergeable,mergeStateStatus,isDraft,state,updatedAt,headRefOid,baseRefOid
 ```
 
-Use local branch preparation unless the user explicitly requests a worktree or
-parallel review. Do not infer worktree mode only because the current checkout
-is dirty. For a normal PR, run one of:
+除非用户明确要求 worktree 或并行 review，否则使用本地分支准备。不要仅因为当前
+checkout 有变更就推断为 worktree 模式。普通 PR 运行以下命令之一：
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh <pr-ref>
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --worktree <pr-ref>
 ```
 
-Use normal preparation for a review even when GitHub reports
-`mergeable: CONFLICTING` or `mergeStateStatus: DIRTY`. Check out the PR head on
-the same-named local branch, inspect the PR as submitted, and report the merge
-state without changing its history.
+即使 GitHub 报告 `mergeable: CONFLICTING` 或 `mergeStateStatus: DIRTY`，review
+仍使用普通准备流程。将 PR head checkout 到同名本地分支，按提交时状态检查 PR，并在
+不改变其历史的情况下报告 merge 状态。
 
-Use the latest-base merge path only when the user explicitly asks to update to
-the latest base, resolve conflicts, or review the integrated result. Before
-running it, state that it will create the local-only branch
-`review/pr-<number>-merge-<head-short-sha>` and a local merge commit. If the
-request did not already explicitly include one of those actions, stop and ask
-before creating the branch.
+只有用户明确要求更新到最新 base、解决冲突或 review 集成结果时，才使用 latest-base
+merge 路径。运行前说明它将创建仅本地分支
+`review/pr-<number>-merge-<head-short-sha>` 和本地 merge commit。如果请求尚未明确
+包含这些动作之一，在创建分支前停止并询问。
 
-If the PR head branch name collides with the base branch, a protected local
-branch name, or an existing same-named branch with a different upstream, the
-helper automatically creates the local review branch
-`review/pr-<number>-<head-short-sha>` and continues. The colliding branch is
-never rebound, renamed, or deleted. The helper reuses an existing
-`review/pr-<number>-<head-short-sha>` only when it is clean, at `headRefOid`,
-and tracking `<owner>/<branch>`; otherwise it stops and asks you to inspect or
-remove it. Do not select latest-base mode solely to avoid the branch-name
-collision.
+如果 PR head 分支名与 base 分支、受保护本地分支名或 upstream 不同的同名现有分支
+冲突，helper 自动创建本地 review 分支 `review/pr-<number>-<head-short-sha>` 并继续。
+绝不重新绑定、重命名或删除冲突分支。只有现有
+`review/pr-<number>-<head-short-sha>` 干净、位于 `headRefOid` 且 tracking
+`<owner>/<branch>` 时，helper 才复用；否则停止并要求检查或删除它。不要只为绕过
+分支名冲突而选择 latest-base 模式。
 
-After normal checkout, fetch the latest base and check whether the PR already
-contains it:
+普通 checkout 后 fetch 最新 base，并检查 PR 是否已经包含它：
 
 ```bash
 git merge-base --is-ancestor <base-remote>/<base-branch> HEAD
 ```
 
-If that check fails, report that the PR is behind the latest base instead of
-merging automatically. When GitHub reports conflicts, use `git merge-tree` as
-a read-only conflict signal when useful:
+如果检查失败，报告 PR 落后于最新 base，不要自动合并。GitHub 报告冲突时，可在有用的
+情况下将 `git merge-tree` 作为只读冲突信号：
 
 ```bash
 merge_base=$(git merge-base <base-remote>/<base-branch> HEAD)
 git merge-tree "$merge_base" <base-remote>/<base-branch> HEAD
 ```
 
-Treat `baseRefName` as the target branch; do not hard-code `dev`. Only after an
-explicit latest-base request, run:
+将 `baseRefName` 视为目标分支；不要硬编码 `dev`。只有明确请求 latest-base 后才运行：
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --merge-latest <pr-ref>
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --worktree --merge-latest <pr-ref>
 ```
 
-The merge helper creates `review/pr-<number>-merge-<head-short-sha>` from the PR
-head, fetches the PR base, runs `git merge --no-edit <base-remote>/<base-branch>`,
-and never pushes.
+merge helper 从 PR head 创建 `review/pr-<number>-merge-<head-short-sha>`，fetch PR
+base，运行 `git merge --no-edit <base-remote>/<base-branch>`，并且绝不 push。
 
-Normal preparation updates only an exact match or a branch that can fast-forward
-to `headRefOid`. When an existing local PR branch is ahead of or diverged from
-the fetched head, the helper automatically falls back to
-`review/pr-<number>-<head-short-sha>`; it never mutates the diverged branch or
-improvises a detached checkout.
+普通准备流程只更新完全匹配或能够 fast-forward 到 `headRefOid` 的分支。如果现有本地
+PR 分支领先 fetch 到的 head 或与其分叉，helper 自动回退到
+`review/pr-<number>-<head-short-sha>`；绝不修改分叉分支，也不临时使用 detached
+checkout。
 
-### 3. Handle Merge Conflicts
+### 3. 处理 Merge 冲突
 
-If the merge helper stops with conflicts, inspect the actual conflict before
-editing:
+如果 merge helper 因冲突停止，编辑前检查实际冲突：
 
 ```bash
 git status --short
@@ -198,25 +161,22 @@ git diff --name-only --diff-filter=U
 git diff --cc
 ```
 
-After semantic conflict resolution, stage only resolved conflict files and
-finish the merge:
+按语义解决冲突后，只暂存已解决的冲突文件并完成 merge：
 
 ```bash
 git add <resolved-files>
 git commit --no-edit
 ```
 
-For worktree mode, run every conflict command in the reported worktree path,
-for example `git -C <worktree-path> status --short`. Do not resolve the merge
-from the original checkout.
+worktree 模式下，在报告的 worktree 路径运行所有冲突命令，例如
+`git -C <worktree-path> status --short`。不要从原始 checkout 解决 merge。
 
-Stop and report a blocker if a conflict requires a product decision or cannot
-be resolved safely from local code and PR context. Do not present a complete
-review from a partially merged tree.
+如果冲突需要产品决策，或无法根据本地代码和 PR 上下文安全解决，则停止并报告 blocker。
+不要基于部分合并的 tree 提交完整 review。
 
-### 4. Verify Checkout And Review Context
+### 4. 验证 Checkout 和 Review 上下文
 
-After preparation, verify the local state:
+准备后验证本地状态：
 
 ```bash
 git branch --show-current
@@ -225,22 +185,19 @@ git status --short
 git branch -vv
 ```
 
-For normal preparation, require a clean branch named exactly like the PR head
-branch with upstream set to `<owner>/<branch>`, and require `HEAD` to equal the
-recorded `headRefOid`. A matching upstream alone is insufficient because the
-local branch may contain commits that are not in the PR. When a collision
-fallback occurred, require the clean local review branch
-`review/pr-<number>-<head-short-sha>` at `headRefOid` with upstream
-`<owner>/<branch>` instead. For latest-base merge preparation, require a clean
-local review branch named `review/pr-<number>-merge-<head-short-sha>`.
+普通准备流程要求分支干净、名称与 PR head 分支完全一致、upstream 设置为
+`<owner>/<branch>`，并且 `HEAD` 等于记录的 `headRefOid`。仅 upstream 匹配并不足够，
+因为本地分支可能包含 PR 中不存在的提交。发生冲突回退时，改为要求干净的本地 review
+分支 `review/pr-<number>-<head-short-sha>` 位于 `headRefOid`，upstream 为
+`<owner>/<branch>`。latest-base merge 准备要求干净的本地 review 分支名为
+`review/pr-<number>-merge-<head-short-sha>`。
 
-For worktree preparation, require the reported worktree to be clean and on its
-SHA-specific review branch. Require a normal worktree branch to track
-`<owner>/<head-branch>`; keep a merged worktree branch local-only. Confirm the
-source checkout branch, HEAD, and file status were unchanged, then run every
-remaining review command with that worktree as its working directory.
+worktree 准备要求报告的 worktree 干净并位于对应 SHA 的 review 分支。普通 worktree
+分支必须 tracking `<owner>/<head-branch>`；已合并 worktree 分支保持仅本地。确认源
+checkout 的分支、HEAD 和文件状态未改变，然后以该 worktree 作为工作目录运行其余
+review 命令。
 
-Snapshot PR and issue context before reviewing code:
+review 代码前记录 PR 和 issue 上下文快照：
 
 ```bash
 gh pr view <number> [--repo <base-owner>/<base-repo>] \
@@ -249,42 +206,34 @@ gh pr view <number> [--repo <base-owner>/<base-repo>] \
 gh issue view <issue-url-or-number> --comments
 ```
 
-Record `headRefOid`, `updatedAt`, the latest review `submittedAt`, and the full
-inline review-thread set. The `comments` and `reviews` fields do not contain
-complete inline thread content, so always use GraphQL `reviewThreads` as well.
-For every thread, retain its id, `isResolved`, `isOutdated`, path, line, and all
-comments with database id, URL, body, author, timestamps, and commit OID.
-Paginate until `pageInfo.hasNextPage` is false instead of assuming the first
-page contains every thread.
+记录 `headRefOid`、`updatedAt`、最新 review 的 `submittedAt` 和完整 inline
+review-thread 集合。`comments` 和 `reviews` 字段不包含完整 inline thread 内容，
+因此始终同时使用 GraphQL `reviewThreads`。对每个 thread 保留 id、`isResolved`、
+`isOutdated`、path、line，以及所有评论的 database id、URL、body、author、timestamp
+和 commit OID。持续分页直到 `pageInfo.hasNextPage` 为 false，不要假设第一页包含
+所有 thread。
 
-Before reviewing the diff as a whole, build an inventory of every open review
-thread (`isResolved == false`). Include unresolved outdated threads and all
-replies in the inventory; label `isOutdated` explicitly rather than silently
-discarding the thread. Review each inventory item against the current PR head,
-the changed diff, the relevant call chain, and surrounding code. The reviewer
-must decide whether the comment is `reasonable`, `partially reasonable`,
-`unreasonable`, `outdated/not applicable`, or requires a product decision.
+整体 review diff 前，为每个开放 review thread（`isResolved == false`）建立清单。
+清单必须包含未解决的 outdated thread 和所有回复；明确标记 `isOutdated`，不要静默
+丢弃 thread。结合当前 PR head、变更 diff、相关调用链和周围代码 review 每个清单项。
+reviewer 必须判断评论属于 `reasonable`、`partially reasonable`、`unreasonable`、
+`outdated/not applicable`，还是需要产品决策。
 
-For `reasonable` and `partially reasonable` comments, identify the exact
-behavioral risk and provide a concrete `Suggested Fix`, expected behavior, and
-targeted verification. For `unreasonable` or `outdated/not applicable`
-comments, explain the code evidence that rejects or supersedes the concern.
-For a product-decision comment, recommend one option, include its
-`Suggested Fix`, and repeat the unresolved choice under `Open Questions`.
-Assign every reviewed issue to exactly one output section. If an issue is
-raised by an open review comment, keep its assessment and fix only in `Open
-Review Comments`; do not repeat it in `Findings`. Reserve `Findings` for
-additional issues with a distinct trigger, risk, and remediation. If the
-inventory is empty, report `No open review comments` separately. If no
-additional issues remain after the assignment, report `No additional findings`.
+对 `reasonable` 和 `partially reasonable` 评论，识别准确的行为风险，并提供具体的
+`Suggested Fix`、预期行为和针对性验证。对 `unreasonable` 或
+`outdated/not applicable` 评论，说明用于否定或取代该担忧的代码证据。对需要产品决策
+的评论，推荐一个选项，提供其 `Suggested Fix`，并在 `Open Questions` 中重复尚未解决
+的选择。每个已 review 问题只能分配到一个输出栏目。如果问题由开放 review 评论提出，
+其评估和修复只能放在 `Open Review Comments`，不要在 `Findings` 重复。`Findings`
+仅用于触发条件、风险和修复方式均不同的额外问题。清单为空时单独报告
+`No open review comments`。分配后没有其他问题时报告 `No additional findings`。
 
-For old or stale PRs, check linked issue history, later replacement PRs, and the
-live base tree before deciding whether the branch should still exist. Use
-`git merge-tree <merge-base> <base-remote>/<base-branch> HEAD` as a read-only
-obsolescence or conflict signal when mergeability is central to the review.
+对于旧 PR 或 stale PR，在决定分支是否仍应保留前，检查关联 issue 历史、后续替代 PR
+和实时 base tree。当 mergeability 是 review 核心时，使用
+`git merge-tree <merge-base> <base-remote>/<base-branch> HEAD` 作为只读的过时或
+冲突信号。
 
-Confirm the base repository remote before using `origin`. Fetch the true base
-branch, then inspect the diff and surrounding code:
+使用 `origin` 前确认 base 仓库 remote。fetch 真实 base 分支，再检查 diff 和周围代码：
 
 ```bash
 git fetch <base-remote> <base-branch>
@@ -293,21 +242,18 @@ git diff --name-status <base-remote>/<base-branch>...HEAD
 git diff <base-remote>/<base-branch>...HEAD
 ```
 
-Use `rg` for surrounding source, tests, configuration, generated files, and
-documentation. Do not run `xcodebuild` during PR review unless the user
-explicitly asks for a local build. Inspect PR checks when validation status
-matters:
+使用 `rg` 搜索周围源码、测试、配置、生成文件和文档。除非用户明确要求本地构建，PR
+review 期间不要运行 `xcodebuild`。验证状态重要时检查 PR checks：
 
 ```bash
 gh pr checks <number> [--repo <base-owner>/<base-repo>]
 ```
 
-Run lightweight local checks such as `git diff --check` when relevant.
+相关时运行 `git diff --check` 等轻量本地检查。
 
-### 5. Refresh Live PR State Before Finalizing
+### 5. 最终输出前刷新实时 PR 状态
 
-Immediately before writing the final response, refresh all mutable review
-state even when the initial checks were green:
+编写最终回复前立即刷新所有可变 review 状态，即使初始检查全部通过：
 
 ```bash
 gh pr view <number> [--repo <base-owner>/<base-repo>] \
@@ -315,57 +261,43 @@ gh pr view <number> [--repo <base-owner>/<base-repo>] \
 gh pr checks <number> [--repo <base-owner>/<base-repo>]
 ```
 
-Repeat the same fully paginated GraphQL `reviewThreads` query used for the
-initial snapshot, then compare the two snapshots, including the open-thread
-inventory, comment replies, `isResolved`, and `isOutdated` state.
+重复初始快照使用的同一套完整分页 GraphQL `reviewThreads` 查询，然后比较两个快照，
+包括开放 thread 清单、评论回复、`isResolved` 和 `isOutdated` 状态。
 
-- If `headRefOid` changed, stop finalization, update the prepared checkout to
-  the new head, inspect the new diff against the true base, and revalidate both
-  earlier findings and new changes.
-- If a new review, thread, reply, or resolution/outdated-state change appeared,
-  read its exact content, validate it against the current head and surrounding
-  code, add or update its individual entry in `Open Review Comments`, and only
-  update `Findings` when the re-review identifies a distinct additional issue.
-  Update `Open Questions` and `Verification` before finalizing.
-  Reassess any existing item whose reply or resolution/outdated state changed.
-  Treat automated and human feedback the same way.
-- If analyzing new activity leaves enough time for another review to arrive,
-  refresh again. Finish only when the latest snapshot contains no uninspected
-  feedback.
-- If the final refresh is unavailable, report that limitation and do not claim
-  that every current comment or thread was inspected. A final response is
-  complete only when the latest open-comment inventory has no uninspected item.
+- 如果 `headRefOid` 发生变化，停止最终输出，将准备好的 checkout 更新到新 head，
+  对照真实 base 检查新 diff，并重新验证此前 finding 和新变更。
+- 如果出现新的 review、thread、reply 或 resolution/outdated 状态变化，读取其准确
+  内容，结合当前 head 和周围代码验证，在 `Open Review Comments` 中新增或更新其独立
+  条目；只有再次 review 识别出不同的额外问题时才更新 `Findings`。最终输出前更新
+  `Open Questions` 和 `Verification`。对 reply 或 resolution/outdated 状态变化的
+  现有条目重新评估。自动化反馈和人工反馈使用相同处理方式。
+- 如果分析新活动后仍有足够时间出现另一条 review，再刷新一次。只有最新快照中没有
+  未检查反馈时才完成。
+- 如果最终刷新不可用，报告该限制，不要声称已检查所有当前评论或 thread。只有最新
+  开放评论清单中没有未检查项时，最终回复才算完整。
 
-## Review Focus
+## Review 重点
 
-Check whether the implementation actually solves the PR description and linked
-issues. Prioritize bugs, regressions, edge cases, concurrency issues,
-persistence mistakes, localization gaps, platform-version problems, API
-contract drift, missing verification, and unrelated churn.
+检查实现是否真正解决 PR 描述和关联 issue。优先关注 bug、回归、边界情况、并发问题、
+持久化错误、本地化缺口、平台版本问题、API 契约漂移、缺少验证和无关改动。
 
-When the user asks whether an old PR is still worth keeping, answer the
-keep/modify/close decision first. Then explain the code findings that support
-that decision.
+用户询问旧 PR 是否仍值得保留时，先给出保留、修改或关闭的决定，再说明支持该决定的
+代码 finding。
 
-## Output Format
+## 输出格式
 
-Write the final review in the user's preferred system language unless the user
-asks otherwise. Preferred system language means the first language in macOS
-`AppleLanguages`; if it cannot be read, use the language from the current
-conversation.
+除非用户另有要求，使用用户系统首选语言编写最终 review。系统首选语言是 macOS
+`AppleLanguages` 中的第一种语言；无法读取时使用当前对话语言。
 
-Keep section headings, `PR Context` subheadings, priority labels, and
-`Suggested Fix` labels exactly as written. Use this structure exactly:
+栏目标题、`PR Context` 子标题、优先级标签和 `Suggested Fix` 标签必须保持原样。严格
+使用以下结构：
 
-For `Open Review Comments`, prefer a compact summary line followed by one
-Markdown card per thread. Put the comment permalink in the card title instead
-of showing a long raw URL. Keep path, line, author, and status on one metadata
-line; translate raw GraphQL flags such as `isResolved=false` and
-`isOutdated=false` into short natural-language status labels in the preferred
-output language. Use separate paragraphs for the issue, evidence/impact,
-assessment, and fix. Include a `Thread Replies` block only when replies exist.
-Do not pack all metadata and prose into one list item, and do not use a table or
-large quote block for review content.
+对于 `Open Review Comments`，优先使用紧凑摘要行，随后每个 thread 使用一张 Markdown
+卡片。将评论 permalink 放在卡片标题中，不显示很长的原始 URL。path、line、author
+和 status 放在同一元数据行；将 `isResolved=false`、`isOutdated=false` 等原始
+GraphQL flag 翻译为输出首选语言中的简短自然语言状态标签。问题、证据/影响、评估和
+修复分别使用独立段落。只有存在回复时才包含 `Thread Replies` 区块。不要把所有元数据
+和正文塞进一个列表项，也不要使用表格或大段引用块承载 review 内容。
 
 ```markdown
 ## PR Context
@@ -485,13 +417,12 @@ Short neutral summary of the overall review result without repeating the PR
 context.
 ```
 
-Build `PR Context` from the inspected PR title and body, linked issues, actual
-diff, and relevant surrounding code. Do not merely restate the PR description.
-Write one natural paragraph of 2-4 sentences under each subheading.
+根据检查过的 PR 标题和正文、关联 issue、实际 diff 及相关周围代码构建
+`PR Context`。不要只是复述 PR 描述。每个子标题下写一个包含 2–4 句的自然段落。
 
-Priority values:
+优先级含义：
 
-- `P0`: data loss, crashes, security flaws, or broken core workflows.
-- `P1`: likely user-visible regression or incorrect behavior.
-- `P2`: edge-case bug, missing compatibility, or incomplete issue coverage.
-- `P3`: maintainability, clarity, or test/documentation gap worth fixing.
+- `P0`：数据丢失、崩溃、安全缺陷或核心工作流损坏。
+- `P1`：很可能造成用户可见回归或错误行为。
+- `P2`：边界情况 bug、兼容性缺失或 issue 覆盖不完整。
+- `P3`：值得修复的可维护性、清晰度或测试/文档缺口。

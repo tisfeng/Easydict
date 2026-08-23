@@ -1,13 +1,13 @@
-## 2026-08-15 | Task: 将 Star History 改为仓库自有产物
+## 2026-08-15 | 任务：将 Star History 改为仓库自有产物
 
-**Links:** `docs/exec-plans/completed/20260815-repository-owned-star-history.md`
+**Links:** `docs/exec-plans/completed/2026-08-15-repository-owned-star-history.md`
 
-### User request
+### 用户请求
 
 保留历史 `stargazers_count` 曲线和 Date/Timeline 使用方式，同时移除对新且
 不稳定的第三方 Star History 域名依赖，并避免管理个人 GitHub PAT。
 
-### Changes
+### 变更
 
 - 初次生成时用 GitHub Actions 内置 `GITHUB_TOKEN` 读取带 `starred_at` 的 stargazers
   历史；后续每周只读取仓库 API 返回的 `stargazers_count`。
@@ -25,7 +25,7 @@
 - Date 模式按真实日期间隔绘制，Timeline 模式按数据点顺序等距绘制；允许连续周没有
   新增 star，历史点数量持平但不会下降。
 
-### Validation
+### 验证
 
 - 初次回填完整读取 143 页、14,220 条 stargazers；后续更新路径不再分页读取完整列表，
   而是使用当前 `stargazers_count` 追加每周快照。
@@ -33,7 +33,7 @@
   检查通过；重新生成的 SVG 已完成本地视觉检查。
 - workflow YAML 解析通过。
 
-### Follow-ups
+### 后续事项
 
 - 需要在仓库分支保护中关闭 `Require approvals` 和 `Require review from Code Owners`，
   保留 PR、CI、分支最新和对话解决要求；并在仓库设置中允许 auto-merge。
