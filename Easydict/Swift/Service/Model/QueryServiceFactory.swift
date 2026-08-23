@@ -118,6 +118,7 @@ final class QueryServiceFactory: NSObject {
         .init(.openAI, OpenAIService.self, "openai_translate"),
         .init(.deepSeek, DeepSeekService.self, "deepseek_translate"),
         .init(.groq, GroqService.self, "groq_translate"),
+        .init(.orcaRouter, OrcaRouterService.self, "orcarouter_translate"),
         .init(.zhipu, ZhipuService.self, "zhipu_translate"),
         .init(.miniMax, MiniMaxService.self, "minimax_translate"),
         .init(.gitHub, GitHubService.self, "github_models"),

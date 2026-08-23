@@ -60,7 +60,7 @@
 - [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
 - [x] 支持 [🍎 苹果系统词典](./How-to-use-macOS-system-dictionary-in-Easydict.md)，支持第三方词典，可手动导入 mdict 词典。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./How-to-use-macOS-system-translation-in-Easydict.md)
-- [x] 支持有道词典，OpenAI，Gemini，DeepSeek，DeepL，Google，Bing，腾讯，百度，小牛，彩云，阿里，火山和豆包翻译。
+- [x] 支持有道词典，OpenAI，Gemini，DeepSeek，DeepL，Google，Bing，腾讯，百度，小牛，彩云，阿里，火山，OrcaRouter 和豆包翻译。
 - [x] 支持 48 种语言。
 
 ## 安装指南
