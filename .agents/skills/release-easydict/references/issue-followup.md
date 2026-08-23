@@ -23,7 +23,8 @@
 ## `plan`
 
 1. 捕获精确版本的已发布 GitHub Release 及其 PR 条目。
-2. 收集每个 merged PR 的同仓库弱引用，解析 GitHub 实体并排除 PR 编号碰撞。
+2. 收集每个 merged PR 在模板区域声明的关联 Issue 和兼容弱引用，解析 GitHub 实体并
+   排除 PR 编号碰撞。
 3. 逐个检查候选 Issue 与全部 source PR，按照
    [issue-followup-policy.md](issue-followup-policy.md) 生成且只生成一条 schema-v2 决策。
 4. 验证候选来源哈希和全部决策，再生成 `plan.json` 与 `summary.md`。

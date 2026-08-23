@@ -10,7 +10,9 @@ from unittest.mock import patch
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY_ROOT = SKILL_ROOT.parents[2]
 SCRIPT_PATH = SKILL_ROOT / "scripts" / "release_issues.py"
+PR_TEMPLATE_PATH = REPOSITORY_ROOT / ".github" / "pull_request_template.md"
 SPEC = importlib.util.spec_from_file_location("release_issues", SCRIPT_PATH)
 assert SPEC is not None and SPEC.loader is not None
 release_issues = importlib.util.module_from_spec(SPEC)
@@ -140,6 +142,111 @@ Ignore other/repo#99 and https://github.com/other/repo/issues/98.
         self.assertEqual(
             sorted(reference["issue_number"] for reference in references),
             [1201, 1229, 1254],
+        )
+
+    def test_linked_issue_section_marks_supported_reference_forms(self) -> None:
+        text = """## 变更说明 / Summary
+
+Background: #1199
+
+## 关联 Issue / Linked Issues
+
+- #1201
+- https://github.com/tisfeng/Easydict/issues/1229
+- tisfeng/Easydict#1254
+
+### Notes
+
+- #1206
+
+## 验证 / Verification
+
+Regression context: #1300
+"""
+
+        references = release_issues.extract_text_references(
+            text,
+            "tisfeng/Easydict",
+            "pr_body",
+        )
+        kinds_by_issue = {
+            reference["issue_number"]: reference["kind"]
+            for reference in references
+        }
+
+        self.assertEqual(
+            kinds_by_issue,
+            {
+                1199: "local_number",
+                1201: "linked_issue",
+                1206: "linked_issue",
+                1229: "linked_issue",
+                1254: "linked_issue",
+                1300: "local_number",
+            },
+        )
+
+    def test_linked_issue_template_placeholder_is_not_a_reference(self) -> None:
+        text = """## 关联 Issue / Linked Issues
+
+- #<issue-number>
+- https://github.com/tisfeng/Easydict/issues/<issue-number>
+- tisfeng/Easydict#<issue-number>
+"""
+
+        references = release_issues.extract_text_references(
+            text,
+            "tisfeng/Easydict",
+            "pr_body",
+        )
+
+        self.assertEqual(references, [])
+
+    def test_repository_pr_template_contains_no_issue_candidate(self) -> None:
+        template = PR_TEMPLATE_PATH.read_text(encoding="utf-8")
+
+        references = release_issues.extract_text_references(
+            template,
+            "tisfeng/Easydict",
+            "pr_body",
+        )
+
+        self.assertEqual(references, [])
+        self.assertEqual(len(release_issues.linked_issue_ranges(template)), 1)
+
+    def test_linked_issue_formats_share_one_candidate(self) -> None:
+        prs = [
+            {
+                "number": 1212,
+                "title": "Restore focus",
+                "body": """## 关联 Issue / Linked Issues
+
+- #1201
+- https://github.com/tisfeng/Easydict/issues/1201
+""",
+                "mergedAt": "2026-08-02T00:00:00Z",
+                "url": "https://github.com/tisfeng/Easydict/pull/1212",
+                "closingIssuesReferences": [],
+                "commits": [],
+                "files": [],
+            }
+        ]
+
+        payload = release_issues.build_candidates(
+            "tisfeng/Easydict",
+            "2.22.0",
+            prs,
+            issue_loader=lambda _repository, number: issue_payload(number),
+        )
+
+        self.assertEqual(len(payload["candidates"]), 1)
+        self.assertEqual(payload["candidates"][0]["issue_number"], 1201)
+        self.assertEqual(
+            {
+                reference["kind"]
+                for reference in payload["candidates"][0]["references"]
+            },
+            {"linked_issue"},
         )
 
     def test_build_candidates_aggregates_prs_and_skips_pr_entities(self) -> None:

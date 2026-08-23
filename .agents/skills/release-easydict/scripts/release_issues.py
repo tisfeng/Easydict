@@ -45,6 +45,17 @@ REPO_REFERENCE_PATTERN = re.compile(
     r"(?P<repo>[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)#(?P<number>\d+)\b"
 )
 LOCAL_REFERENCE_PATTERN = re.compile(r"(?<![A-Za-z0-9_./-])#(?P<number>\d+)\b")
+LINKED_ISSUES_HEADING_PATTERN = re.compile(
+    r"^##(?!#)[ \t]+"
+    r"(?:关联[ \t]*Issues?|Linked[ \t]+Issues?)"
+    r"(?:[ \t]*/[ \t]*(?:关联[ \t]*Issues?|Linked[ \t]+Issues?))?"
+    r"[ \t]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+SECOND_LEVEL_HEADING_PATTERN = re.compile(
+    r"^##(?!#)[ \t]+.*$",
+    re.MULTILINE,
+)
 
 
 class ReleaseIssueError(RuntimeError):
@@ -161,6 +172,19 @@ def line_context(text: str, offset: int) -> str:
     return text[line_start:line_end].strip()[:500]
 
 
+def linked_issue_ranges(text: str) -> list[tuple[int, int]]:
+    ranges: list[tuple[int, int]] = []
+    for heading in LINKED_ISSUES_HEADING_PATTERN.finditer(text):
+        next_heading = SECOND_LEVEL_HEADING_PATTERN.search(text, heading.end())
+        ranges.append(
+            (
+                heading.end(),
+                next_heading.start() if next_heading is not None else len(text),
+            )
+        )
+    return ranges
+
+
 def extract_text_references(
     text: str,
     repository: str,
@@ -168,6 +192,7 @@ def extract_text_references(
 ) -> list[dict[str, Any]]:
     references: list[dict[str, Any]] = []
     occupied: list[tuple[int, int]] = []
+    explicit_ranges = linked_issue_ranges(text) if source == "pr_body" else []
 
     def append_reference(
         repo: str,
@@ -178,6 +203,8 @@ def extract_text_references(
         occupied.append(match.span())
         if not repository_matches(repo, repository):
             return
+        if any(start <= match.start() < end for start, end in explicit_ranges):
+            kind = "linked_issue"
         references.append(
             {
                 "issue_number": number,
