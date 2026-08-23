@@ -1,166 +1,142 @@
 ---
 name: release-easydict
 description: >
-  Orchestrate Easydict macOS draft, publish, release, and resume workflows,
-  curate English GitHub Release content, and plan, apply, or resume
-  post-publish issue follow-up from released PR associations. Use for concrete
-  Easydict release operations and issue-followup actions, not general release
-  design discussions.
+  编排 Easydict macOS 的 draft、publish、release 和 resume 工作流，整理英文
+  GitHub Release 内容，并根据已发布 PR 的关联关系规划、执行或恢复发布后的 Issue
+  跟进。适用于具体的 Easydict 发布操作和 issue-followup 动作，不适用于一般性的
+  发布流程设计讨论。
 ---
 
-# Release Easydict
+# 发布 Easydict
 
-Use the repository release scripts as the build, notarization, packaging, Git,
-GitHub Release, appcast, and verification engine. This skill adds deterministic
-Release content and post-publish Issue orchestration around those scripts.
+使用仓库发布脚本作为构建、公证、打包、Git、GitHub Release、appcast 和验证引擎。
+本 skill 在这些脚本外增加确定性的 Release 内容编排和发布后 Issue 跟进。
 
-## Action routing
+## 动作路由
 
-Release lifecycle actions:
+Release 生命周期动作：
 
-- `draft <version>`: create or recover a verified Draft, curate its English
-  body and highlight title, then stop.
-- `draft <version> --replace-draft`: safely rebuild the newest matching
-  unpublished Draft from synchronized committed local `dev`.
-- `publish <version>`: curate an existing verified Draft, publish and verify it,
-  then run the internal Issue follow-up `apply` behavior.
-- `release <version>`: perform the skill's `draft` behavior followed by its
-  `publish` behavior.
-- `resume <version-or-run-id>`: continue only the incomplete release lifecycle
-  stage using existing skill and asc state.
+- `draft <version>`：创建或恢复经过验证的 Draft，整理英文正文和重点标题，然后停止。
+- `draft <version> --replace-draft`：从已同步并提交的本地 `dev` 安全重建最新且匹配的
+  未发布 Draft。
+- `publish <version>`：整理已有且经过验证的 Draft，发布并验证，然后运行内部 Issue
+  跟进的 `apply` 行为。
+- `release <version>`：依次执行本 skill 的 `draft` 和 `publish` 行为。
+- `resume <version-or-run-id>`：使用现有 skill 和 asc 状态，只继续未完成的 Release
+  生命周期阶段。
 
-Read `scripts/release/README.md` and
-[references/commands.md](references/commands.md) for these actions.
+执行这些动作时阅读 `scripts/release/README.md` 和
+[references/commands.md](references/commands.md)。
 
-Post-publish Issue actions use an explicit namespace:
+发布后的 Issue 动作使用明确的 namespace：
 
 - `issue-followup plan <version>`
 - `issue-followup apply <version>`
 - `issue-followup resume <version>`
 
-Read [references/issue-followup.md](references/issue-followup.md) and
-[references/issue-followup-policy.md](references/issue-followup-policy.md) for
-these actions. The namespace keeps Issue recovery distinct from asc workflow
-`resume`.
+执行这些动作时阅读 [references/issue-followup.md](references/issue-followup.md)
+和 [references/issue-followup-policy.md](references/issue-followup-policy.md)。
+该 namespace 将 Issue 恢复与 asc 工作流 `resume` 明确区分。
 
-## Authorization boundary
+## 授权边界
 
-- A planning, explanation, inspection, or proposal request stays read-only.
-- `issue-followup plan` may query GitHub and write ignored local state, but it
-  never comments on or closes an Issue.
-- Run remote mutations only when the user explicitly requests `draft`,
-  `publish`, `release`, release `resume`, `issue-followup apply`, or
-  `issue-followup resume` for a concrete version or run.
-- An explicitly requested `publish` or `release` also authorizes its internal
-  `issue-followup apply` stage after that same version passes remote release
-  verification. Do not request another confirmation for translations,
-  highlights, comments, or closing resolved Issues.
-- Never use the repository script's one-shot `release` action directly. For
-  this skill, `release` means skill-managed Draft creation, content curation,
-  publish, remote verification, then Issue follow-up.
-- Do not switch or modify the user's current checkout. Repository scripts
-  release committed local `dev` through isolated worktrees.
+- 规划、解释、检查或方案请求保持只读。
+- `issue-followup plan` 可以查询 GitHub 并写入被忽略的本地状态，但绝不评论或关闭
+  Issue。
+- 只有当用户针对具体版本或运行明确请求 `draft`、`publish`、`release`、Release
+  `resume`、`issue-followup apply` 或 `issue-followup resume` 时，才执行远程修改。
+- 用户明确请求 `publish` 或 `release` 后，同一版本通过远程发布验证时，也同时授权其
+  内部 `issue-followup apply` 阶段。翻译、重点内容、评论或关闭已解决 Issue 不再另行
+  请求确认。
+- 绝不直接使用仓库脚本的一次性 `release` 动作。对本 skill 而言，`release` 表示由
+  skill 管理的 Draft 创建、内容整理、发布、远程验证和 Issue 跟进。
+- 不切换或修改用户当前 checkout。仓库脚本通过隔离 worktree 发布已提交的本地
+  `dev`。
 
-## Release workflow
+## Release 工作流
 
-Default to the repository's `beta` channel unless the user explicitly requests
-`stable`. Carry the same channel through every underlying release command.
+除非用户明确要求 `stable`，否则默认使用仓库的 `beta` channel。所有底层发布命令都
+沿用同一 channel。
 
-1. Verify the requested version, channel, current GitHub Release state,
-   `.tmp/release/<version>/` state, and relevant asc run ID.
-2. For a new Draft, run:
+1. 验证请求的版本、channel、当前 GitHub Release 状态、
+   `.tmp/release/<version>/` 状态和相关 asc run ID。
+2. 创建新 Draft 时运行：
 
    ```bash
    ./scripts/release/release-easydict.sh draft <version> [--channel <channel>]
    ```
 
-   If the Draft already exists, verify it instead of deleting or recreating it.
-   Use the following only when the user explicitly requests replacement:
+   如果 Draft 已存在，验证它，不要删除或重建。仅当用户明确要求替换时使用：
 
    ```bash
    ./scripts/release/release-easydict.sh draft <version> \
      --replace-draft [--channel <channel>]
    ```
 
-   The existing Release must be the newest GitHub entry, remain a Draft on the
-   same channel, match local and remote Tag identity and local release state,
-   and be absent from the public appcast. Never combine `--replace-draft` with
-   `--build-number`.
-3. Capture GitHub-generated notes with
-   `.agents/skills/release-easydict/scripts/release_content.py capture`. Create
-   a curated JSON document that
-   translates every human change title into concise English and selects one
-   real PR as the highlight. Preserve PR numbers, links, authors, contributors,
-   and the changelog range.
-4. Run the same helper's `render` action, preview its `apply` action, then run
-   that apply command with `--execute`. Fetch the Draft again and require an
-   exact title and body match.
-5. For `draft`, report the curated Draft and stop without publishing or touching
-   Issues.
-6. For `publish` or `release`, run:
+   现有 Release 必须是 GitHub 最新条目、保持同一 channel 的 Draft、匹配本地和远程
+   Tag identity 以及本地发布状态，并且不在公开 appcast 中。绝不同时使用
+   `--replace-draft` 和 `--build-number`。
+3. 使用 `.agents/skills/release-easydict/scripts/release_content.py capture`
+   捕获 GitHub 生成的 notes。创建整理后的 JSON 文档，将每个人类可读的变更标题翻译
+   为简洁英文，并选择一个真实 PR 作为重点。保留 PR 编号、链接、作者、贡献者和
+   changelog 范围。
+4. 运行同一 helper 的 `render` 动作，预览其 `apply` 动作，再使用 `--execute` 运行
+   apply 命令。重新获取 Draft，并要求标题和正文完全匹配。
+5. 对于 `draft`，报告整理后的 Draft 后停止，不发布也不处理 Issue。
+6. 对于 `publish` 或 `release`，运行：
 
    ```bash
    ./scripts/release/release-easydict.sh publish <version> [--channel <channel>]
    ```
 
-   Do not continue until publishing, appcast installation, and remote
-   verification all succeed.
-7. Continue inside this skill with the `issue-followup apply <version>` behavior
-   from [references/issue-followup.md](references/issue-followup.md). It creates
-   a fresh plan immediately before mutation and never relies on a prior
-   standalone `plan`.
-8. Report the Release URL, title, channel, notes path, fixed three-category Issue
-   summary, underlying run IDs, and resumable state paths.
+   在发布、appcast 安装和远程验证全部成功前不要继续。
+7. 在本 skill 内继续执行 [references/issue-followup.md](references/issue-followup.md)
+   定义的 `issue-followup apply <version>` 行为。它在修改前立即创建新计划，绝不依赖
+   此前独立运行的 `plan`。
+8. 报告 Release URL、标题、channel、notes 路径、固定三类 Issue 摘要、底层 run ID
+   和可恢复状态路径。
 
-## State
+## 状态
 
-Release content state remains under `.tmp/release/<version>/state/`:
+Release 内容状态保存在 `.tmp/release/<version>/state/`：
 
 - `release-content-source.json`
 - `release-content-curated.json`
 - `release-notes-en.md`
 
-Issue state remains isolated under
-`.tmp/release/<version>/state/issue-followup/` and retains schema v2. Files
-stored directly under `state/` by the older schema-v1 implementation remain
-audit data and are never reused, migrated, or deleted automatically.
+Issue 状态隔离保存在 `.tmp/release/<version>/state/issue-followup/`，并继续使用
+schema v2。旧 schema-v1 实现直接存放在 `state/` 下的文件保留为审计数据，绝不自动
+复用、迁移或删除。
 
-For `--replace-draft`, old content and Issue files are rollback data only. The
-repository workflow temporarily moves the complete old state aside, chooses
-`max(old Draft build, current project build, public appcast build) + 1`, and
-rebuilds from synchronized committed local `dev`. Capture and curate only after
-the new Draft is verified. Never copy old curated notes or Issue state into the
-new generation. Resume an unfinished replacement by asc run ID instead of
-starting another replacement.
+对于 `--replace-draft`，旧内容和 Issue 文件只作为回滚数据。仓库工作流临时移走完整
+旧状态，选择
+`max(old Draft build, current project build, public appcast build) + 1`，再从已同步并
+提交的本地 `dev` 重建。只有新 Draft 验证通过后才捕获和整理内容。绝不将旧的已整理
+notes 或 Issue 状态复制到新 generation。未完成的替换使用 asc run ID 恢复，不要开始
+另一次替换。
 
-## Content decisions
+## 内容决策
 
-- Translate only the human PR title portion of each generated change entry;
-  preserve concise English titles.
-- Choose the highlight in this order: security/data-loss/crash fix, major
-  user-facing feature, major user-facing fix, smaller product improvement, then
-  maintenance only when no product change exists.
-- Use `<version> <emoji> <type>: <concise English summary>`, normally `✨ feat`,
-  `🐞 fix`, `🔒 security`, `🚀 perf`, or `🔧 chore`.
-- Do not select docs, generated assets, dependency bumps, or internal refactors
-  while a user-facing feature or fix exists.
+- 只翻译每个生成变更条目中由人编写的 PR 标题部分，并保持英文标题简洁。
+- 按以下顺序选择重点：安全/数据丢失/崩溃修复、重要的用户可见功能、重要的用户可见
+  修复、较小的产品改进；只有不存在产品变更时才选择维护项。
+- 使用 `<version> <emoji> <type>: <concise English summary>`，通常为 `✨ feat`、
+  `🐞 fix`、`🔒 security`、`🚀 perf` 或 `🔧 chore`。
+- 存在用户可见功能或修复时，不选择文档、生成资源、依赖升级或内部重构。
 
-## Failure and resume
+## 失败与恢复
 
-- A content validation failure leaves the GitHub Release as a Draft.
-- A `--replace-draft` build or notarization failure leaves the old remote Draft
-  and Tag untouched. Later transition failures preserve local rollback data;
-  successful verification removes that temporary backup.
-- A publish failure leaves Issue actions untouched and uses the asc run ID for
-  recovery.
-- An Issue follow-up failure never rolls back an already published Release,
-  comment, or Issue close. Report “发布成功，但 issue 后续处理未完成” and use:
+- 内容验证失败时，GitHub Release 保持 Draft 状态。
+- `--replace-draft` 构建或公证失败时，不修改旧的远程 Draft 和 Tag。后续切换失败时
+  保留本地回滚数据；验证成功后删除该临时备份。
+- 发布失败时不执行 Issue 动作，并使用 asc run ID 恢复。
+- Issue 跟进失败时，绝不回滚已经发布的 Release、评论或 Issue 关闭操作。报告
+  “发布成功，但 issue 后续处理未完成”，并使用：
 
   ```text
   $release-easydict issue-followup resume <version>
   ```
 
-- Comment idempotency, current-open-state closing, fixed reporting, and Issue
-  decision validation are defined by the Issue follow-up references and
-  enforced by
-  `.agents/skills/release-easydict/scripts/release_issues.py`.
+- 评论幂等性、仅关闭当前开放 Issue、固定报告格式和 Issue 决策验证由 Issue 跟进
+  reference 定义，并由
+  `.agents/skills/release-easydict/scripts/release_issues.py` 强制执行。

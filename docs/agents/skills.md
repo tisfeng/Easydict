@@ -3,6 +3,8 @@
 ## 本地 skill
 
 - 将仓库专用的可执行工作流存放在 `.agents/skills/`。
+- 仓库维护的 skill、reference 和 overlay 说明默认使用中文；命令、路径、代码标识、
+  API 字段和固定输出契约保留原文。直接镜像的上游 skill 保留上游文档语言。
 - `release-easydict` 复用 `scripts/release/` 完成 macOS 发布、GitHub Draft 内容编排和
   发布后的 Issue 跟进；`issue-followup plan|apply|resume` 子命令负责 Release PR 的
   弱关联 Issue 通知与关闭，并保留独立 helper、固定三类 Markdown 汇总和 schema-v2

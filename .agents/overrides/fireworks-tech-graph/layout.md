@@ -1,51 +1,37 @@
-# Fireworks Tech Graph Layout Rules
+# Fireworks Tech Graph 布局规则
 
-This file is an Easydict repo-local overlay for the `fireworks-tech-graph` skill. Read the skill first, then apply these rules when generating or editing SVG technical diagrams for this repository. If this file conflicts with the upstream skill, use the stricter rule.
+本文件是 Easydict 仓库针对 `fireworks-tech-graph` skill 的本地 overlay。先阅读该 skill，再在为本仓库生成或编辑 SVG 技术图时应用这些规则。如果本文件与上游 skill 冲突，采用更严格的规则。
 
-## Layout Contract
+## 布局约束
 
-- Treat every bordered element as a layout contract, not only primary nodes. Notes,
-  failure branches, side callouts, section boxes, and any other boxed explanatory text
-  must keep their full content inside the border.
-- Size each bordered element from the rendered text outward. The longest title or body
-  line must still leave clear horizontal padding on both sides.
-- If text does not fit, widen the box first, then reflow the text, and increase height
-  when wrapped lines need more vertical room.
-- Every bordered text box must keep at least 20 px of horizontal padding and 14 px of
-  vertical padding in the rendered result.
-- Note boxes, failure branches, and callouts that include code tokens must widen before
-  they wrap. Do not hide overflow by compressing text, shrinking spacing, or relying on
-  near-border placement.
+- 将每个带边框元素都视为布局约束，而不只是主要节点。注释、失败分支、侧边标注、
+  分区框以及其他带框说明文字，都必须让全部内容保持在边框内。
+- 根据渲染后的文字由内向外确定每个带边框元素的尺寸。最长的标题或正文行两侧仍须
+  保留清晰的水平内边距。
+- 文字放不下时，先加宽方框，再重新排列文字；换行需要更多垂直空间时增加高度。
+- 每个带边框文本框在渲染结果中必须至少保留 20 px 水平内边距和 14 px 垂直内边距。
+- 包含代码 token 的注释框、失败分支和标注应先加宽再换行。不要通过压缩文字、缩小
+  间距或让文字贴近边框来掩盖溢出。
 
-## Connector Geometry
+## 连接线几何约束
 
-- Labeled horizontal or vertical connectors between bordered elements must keep at least
-  48 px of clear channel width between the two borders.
-- Unlabeled side callouts or failure branches must still keep at least 32 px of clear
-  channel width between the source and target borders.
-- Connector geometry must start and end on the source and target borders. Arrowheads may
-  touch the target border edge, but they must not extend into any bordered element's
-  interior.
-- Arrow labels must keep obvious whitespace from both adjacent borders, not merely avoid
-  touching them.
-- If an arrow label cannot keep at least 12 px of visible whitespace on both sides, widen
-  the gap or reroute the connector. Do not solve tight layouts by nudging the label into
-  the remaining gap.
-- If a label feels squeezed, widen the gap between elements or reroute the connector
-  before trying small label nudges.
+- 带标签的水平或垂直连接线位于两个带边框元素之间时，两侧边框之间必须至少保留
+  48 px 的清晰通道宽度。
+- 不带标签的侧边标注或失败分支，其源边框与目标边框之间也必须至少保留 32 px 的
+  清晰通道宽度。
+- 连接线必须从源边框开始并在目标边框结束。箭头可以接触目标边框边缘，但不得伸入
+  任何带边框元素的内部。
+- 箭头标签与两侧相邻边框之间必须保留明显留白，不能只是勉强不接触边框。
+- 如果箭头标签两侧无法分别保留至少 12 px 的可见留白，应扩大间距或重新布置连接线。
+  不要把标签挪进剩余缝隙来解决拥挤布局。
+- 如果标签显得拥挤，先扩大元素间距或重新布置连接线，再考虑小幅移动标签。
 
-## Rendered Verification
+## 渲染验证
 
-- After creating or editing any SVG technical diagram, render it to PNG and visually
-  inspect the result. Source inspection or heuristic width scans are only auxiliary
-  checks and never replace rendered verification.
-- Rendered PNG files are temporary verification artifacts by default. Delete them after
-  visual inspection unless the task explicitly asks to keep PNG output.
-- A modified SVG is not done until the rendered review confirms every title and body line
-  is fully enclosed by its border.
-- A modified SVG is not done until every arrow label has visible clearance from
-  surrounding borders.
-- A modified SVG is not done until every arrowhead stops at the target border edge instead
-  of entering the box interior.
-- A modified SVG is not done until every bordered text box still preserves its intended
-  padding in the rendered PNG.
+- 创建或编辑 SVG 技术图后，将其渲染为 PNG 并目视检查结果。源码检查或启发式宽度
+  扫描只能作为辅助检查，不能取代渲染验证。
+- 渲染出的 PNG 默认是临时验证产物。目视检查后删除，除非任务明确要求保留 PNG 输出。
+- 只有渲染检查确认每个标题和正文行都完全位于边框内，SVG 修改才算完成。
+- 只有每个箭头标签与周围边框之间都有可见间距，SVG 修改才算完成。
+- 只有每个箭头都停在目标边框边缘而未进入方框内部，SVG 修改才算完成。
+- 只有每个带边框文本框在渲染后的 PNG 中仍保留预期内边距，SVG 修改才算完成。
