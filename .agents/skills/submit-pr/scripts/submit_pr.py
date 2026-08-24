@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render and safely submit an Easydict GitHub pull request."""
+"""Plan and safely create a GitHub pull request from any Git checkout."""
 
 from __future__ import annotations
 
@@ -15,14 +15,19 @@ import tempfile
 from typing import Any, Sequence
 
 
-DEFAULT_REPOSITORY = "tisfeng/Easydict"
-DEFAULT_REMOTE = "origin"
-DEFAULT_BASE = "dev"
-REQUIRED_HEADINGS = (
+CANONICAL_HEADINGS = (
     "## 变更说明 / Summary",
     "## 关联 Issue / Linked Issues",
     "## 验证 / Verification",
     "## 截图 / Screenshots",
+)
+# Public alias retained for callers of the first implementation.
+REQUIRED_HEADINGS = CANONICAL_HEADINGS
+SECTION_ALIASES = (
+    {"变更说明 / summary", "summary", "description", "changes"},
+    {"关联 issue / linked issues", "linked issues", "related issues", "issues"},
+    {"验证 / verification", "verification", "testing", "tests"},
+    {"截图 / screenshots", "screenshots", "screenshot"},
 )
 UI_SCREENSHOT_NOTICE = (
     "请在 GitHub PR 页面补充截图。 / "
@@ -51,6 +56,16 @@ TITLE_PATTERN = re.compile(
 BRANCH_PATTERN = re.compile(
     rf"^(?:{CONVENTIONAL_TYPES})/[a-z0-9]+(?:-[a-z0-9]+)*$"
 )
+TEMPLATE_CANDIDATES = (
+    ".github/pull_request_template.md",
+    ".github/PULL_REQUEST_TEMPLATE.md",
+    "docs/pull_request_template.md",
+)
+TEMPLATE_DIRECTORIES = (
+    ".github/PULL_REQUEST_TEMPLATE",
+    "docs/PULL_REQUEST_TEMPLATE",
+    "PULL_REQUEST_TEMPLATE",
+)
 
 
 class SubmitPRError(RuntimeError):
@@ -65,6 +80,34 @@ class PRContent:
     issues: tuple[str, ...]
     ui_change: bool
     draft: bool
+    issue_policy: str = "neutral"
+    extra_body: str = ""
+
+
+@dataclass(frozen=True)
+class RepositoryInfo:
+    name_with_owner: str
+    default_branch: str
+    is_fork: bool
+    parent: str | None
+
+    @property
+    def root(self) -> str:
+        return self.parent or self.name_with_owner
+
+
+@dataclass(frozen=True)
+class RepositoryContext:
+    base_repository: str
+    base_remote: str
+    base_branch: str
+    head_repository: str
+    head_remote: str
+    default_branch: str
+
+    @property
+    def cross_repository(self) -> bool:
+        return self.base_repository.casefold() != self.head_repository.casefold()
 
 
 def run_command(
@@ -114,32 +157,6 @@ def git_status_output(repo_root: Path) -> str:
     ).stdout.rstrip("\n")
 
 
-def atomic_write_text(path: Path, contents: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    descriptor, temporary_name = tempfile.mkstemp(
-        prefix=f".{path.name}.",
-        dir=path.parent,
-        text=True,
-    )
-    try:
-        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-            handle.write(contents)
-        os.replace(temporary_name, path)
-    except Exception:
-        try:
-            os.unlink(temporary_name)
-        except FileNotFoundError:
-            pass
-        raise
-
-
-def atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
-    atomic_write_text(
-        path,
-        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-    )
-
-
 def normalize_repository_from_remote(remote_url: str) -> str | None:
     patterns = (
         re.compile(r"^git@github\.com:(?P<repo>.+?)(?:\.git)?$"),
@@ -153,18 +170,170 @@ def normalize_repository_from_remote(remote_url: str) -> str | None:
     return None
 
 
-def verify_remote_repository(
-    repo_root: Path,
-    remote: str,
-    repository: str,
-) -> str:
-    remote_url = git_output(repo_root, "remote", "get-url", remote)
-    remote_repository = normalize_repository_from_remote(remote_url)
-    if remote_repository is None or remote_repository.casefold() != repository.casefold():
+def remote_repositories(repo_root: Path, *, push: bool = False) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for remote in git_output(repo_root, "remote").splitlines():
+        arguments = ["remote", "get-url"]
+        if push:
+            arguments.append("--push")
+        url = git_output(repo_root, *arguments, remote)
+        repository = normalize_repository_from_remote(url)
+        if repository is not None:
+            result[remote] = repository
+    if not result:
+        raise SubmitPRError("no GitHub remote is configured for this checkout")
+    return result
+
+
+def github_repository_info(repo_root: Path, repository: str) -> RepositoryInfo:
+    payload = run_json(
+        [
+            "gh",
+            "repo",
+            "view",
+            repository,
+            "--json",
+            "nameWithOwner,defaultBranchRef,isFork,parent",
+        ],
+        cwd=repo_root,
+    )
+    if not isinstance(payload, dict):
+        raise SubmitPRError(f"gh repo view returned invalid data for {repository}")
+    canonical = payload.get("nameWithOwner")
+    default_ref = payload.get("defaultBranchRef")
+    default_branch = default_ref.get("name") if isinstance(default_ref, dict) else None
+    parent_payload = payload.get("parent")
+    parent = (
+        parent_payload.get("nameWithOwner")
+        if isinstance(parent_payload, dict)
+        else None
+    )
+    if not isinstance(canonical, str) or not isinstance(default_branch, str):
+        raise SubmitPRError(f"cannot resolve GitHub repository metadata: {repository}")
+    return RepositoryInfo(
+        canonical,
+        default_branch,
+        bool(payload.get("isFork")),
+        parent if isinstance(parent, str) else None,
+    )
+
+
+def config_value(repo_root: Path, key: str) -> str | None:
+    result = git_result(repo_root, "config", "--get", key)
+    return result.stdout.strip() if result.returncode == 0 and result.stdout.strip() else None
+
+
+def select_unique(candidates: Sequence[str], description: str) -> str:
+    unique = list(dict.fromkeys(candidates))
+    if len(unique) != 1:
+        detail = ", ".join(unique) if unique else "none"
         raise SubmitPRError(
-            f"remote {remote!r} points to {remote_url!r}, not {repository!r}"
+            f"cannot determine {description}; candidates: {detail}. "
+            "Provide the corresponding explicit option."
         )
-    return remote_url
+    return unique[0]
+
+
+def current_branch(repo_root: Path) -> str:
+    branch = git_output(repo_root, "branch", "--show-current")
+    if not branch:
+        raise SubmitPRError("detached HEAD is not supported")
+    return branch
+
+
+def resolve_repository_context(
+    args: argparse.Namespace,
+    repo_root: Path,
+) -> RepositoryContext:
+    remotes = remote_repositories(repo_root)
+    push_remotes = remote_repositories(repo_root, push=True)
+    infos = {
+        repository: github_repository_info(repo_root, repository)
+        for repository in dict.fromkeys([*remotes.values(), *push_remotes.values()])
+    }
+    requested_repo = args.repo or os.environ.get("GH_REPO")
+    if requested_repo:
+        base_info = github_repository_info(repo_root, requested_repo)
+    else:
+        roots = [info.root for info in infos.values()]
+        base_repository = select_unique(roots, "base repository (--repo)")
+        base_info = next(
+            (
+                info
+                for info in infos.values()
+                if info.name_with_owner.casefold() == base_repository.casefold()
+            ),
+            None,
+        )
+        if base_info is None:
+            base_info = github_repository_info(repo_root, base_repository)
+    base_repository = base_info.name_with_owner
+
+    if args.base_remote:
+        if remotes.get(args.base_remote, "").casefold() != base_repository.casefold():
+            raise SubmitPRError(
+                f"--base-remote {args.base_remote!r} does not point to {base_repository}"
+            )
+        base_remote = args.base_remote
+    else:
+        base_remote = select_unique(
+            [
+                remote
+                for remote, repository in remotes.items()
+                if repository.casefold() == base_repository.casefold()
+            ],
+            "base remote (--base-remote)",
+        )
+
+    current = current_branch(repo_root)
+    upstream = config_value(repo_root, f"branch.{current}.remote")
+    push_remote = config_value(repo_root, f"branch.{current}.pushRemote")
+    remote_default = config_value(repo_root, "remote.pushDefault")
+    if args.head_remote:
+        head_candidates = [args.head_remote]
+    else:
+        preferred = [push_remote, remote_default]
+        head_candidates = [
+            remote
+            for remote in preferred
+            if remote in push_remotes
+            and infos[push_remotes[remote]].root.casefold()
+            == base_repository.casefold()
+        ]
+        if not head_candidates:
+            fork_remotes = [
+                remote
+                for remote, repository in push_remotes.items()
+                if infos[repository].root.casefold() == base_repository.casefold()
+                and repository.casefold() != base_repository.casefold()
+            ]
+            head_candidates = fork_remotes
+        if not head_candidates and upstream in push_remotes:
+            upstream_info = infos[push_remotes[upstream]]
+            if upstream_info.root.casefold() == base_repository.casefold():
+                head_candidates = [upstream]
+        if not head_candidates:
+            head_candidates = [base_remote]
+    head_remote = select_unique(head_candidates, "head remote (--head-remote)")
+    if head_remote not in push_remotes:
+        raise SubmitPRError(f"head remote is not a GitHub remote: {head_remote}")
+    head_repository = infos[push_remotes[head_remote]]
+    if head_repository.root.casefold() != base_repository.casefold():
+        raise SubmitPRError(
+            f"head repository {head_repository.name_with_owner} is not in the "
+            f"{base_repository} fork network"
+        )
+
+    base_branch = args.base or config_value(repo_root, f"branch.{current}.gh-merge-base")
+    base_branch = base_branch or base_info.default_branch
+    return RepositoryContext(
+        base_repository,
+        base_remote,
+        base_branch,
+        head_repository.name_with_owner,
+        head_remote,
+        base_info.default_branch,
+    )
 
 
 def validate_content(content: PRContent) -> None:
@@ -186,35 +355,140 @@ def validate_content(content: PRContent) -> None:
             raise SubmitPRError(f"unsupported linked Issue reference: {issue!r}")
 
 
+def section_index(heading: str) -> int | None:
+    normalized = heading.strip().removeprefix("##").strip().casefold()
+    for index, aliases in enumerate(SECTION_ALIASES):
+        if normalized in aliases:
+            return index
+    return None
+
+
+def clean_template_body(text: str) -> str:
+    text = re.sub(r"<!--[\s\S]*?-->", "", text)
+    lines = [line.rstrip() for line in text.strip().splitlines()]
+    while lines and not lines[0].strip():
+        lines.pop(0)
+    while lines and not lines[-1].strip():
+        lines.pop()
+    if lines == ["-"]:
+        return ""
+    return "\n".join(lines).strip()
+
+
+def parse_template(template_text: str) -> tuple[list[str], list[tuple[str, str]]]:
+    sections: list[tuple[str, str]] = []
+    preamble: list[str] = []
+    current_heading: str | None = None
+    current_lines: list[str] = []
+    for line in template_text.splitlines():
+        if line.startswith("## "):
+            if current_heading is None:
+                preamble = current_lines
+            else:
+                sections.append((current_heading, "\n".join(current_lines)))
+            current_heading = line
+            current_lines = []
+        else:
+            current_lines.append(line)
+    if current_heading is None:
+        preamble = current_lines
+    else:
+        sections.append((current_heading, "\n".join(current_lines)))
+    return preamble, sections
+
+
 def render_pr_body(template_text: str, content: PRContent) -> str:
     validate_content(content)
-    lines = template_text.splitlines()
-    heading_positions: list[int] = []
-    for heading in REQUIRED_HEADINGS:
-        positions = [index for index, line in enumerate(lines) if line == heading]
-        if len(positions) != 1:
-            raise SubmitPRError(
-                f"PR template must contain exactly one heading: {heading}"
-            )
-        heading_positions.append(positions[0])
-    if heading_positions != sorted(heading_positions):
-        raise SubmitPRError("PR template headings are out of order")
+    preamble, template_sections = parse_template(template_text)
+    preserved = ["" for _ in CANONICAL_HEADINGS]
+    extras: list[str] = []
+    seen: set[int] = set()
+    for heading, body in template_sections:
+        index = section_index(heading)
+        cleaned = clean_template_body(body)
+        if index is None:
+            extras.append(f"{heading}\n\n{cleaned}".rstrip())
+            continue
+        if index in seen:
+            raise SubmitPRError(f"PR template repeats semantic section: {heading}")
+        seen.add(index)
+        preserved[index] = cleaned
 
     issue_lines = "\n".join(f"- {issue.strip()}" for issue in content.issues)
-    screenshots = UI_SCREENSHOT_NOTICE if content.ui_change else "N/A"
-    sections = (
+    generated = [
         content.summary.strip(),
         issue_lines,
         content.verification.strip(),
-        screenshots,
-    )
-    rendered_parts: list[str] = []
-    for heading, section in zip(REQUIRED_HEADINGS, sections, strict=True):
-        rendered_parts.append(f"{heading}\n\n{section}" if section else heading)
-    body = "\n\n".join(rendered_parts) + "\n"
-    if AUTO_CLOSE_PATTERN.search(body):
+        UI_SCREENSHOT_NOTICE if content.ui_change else "N/A",
+    ]
+    rendered: list[str] = []
+    preamble_text = clean_template_body("\n".join(preamble))
+    if preamble_text:
+        rendered.append(preamble_text)
+    for heading, value, template_body in zip(
+        CANONICAL_HEADINGS,
+        generated,
+        preserved,
+        strict=True,
+    ):
+        body_parts = [part for part in (value, template_body) if part]
+        rendered.append(f"{heading}\n\n" + "\n\n".join(body_parts))
+    rendered.extend(extras)
+    if content.extra_body.strip():
+        for line in content.extra_body.splitlines():
+            if line.startswith("## ") and section_index(line) is not None:
+                raise SubmitPRError("extra PR body repeats a canonical section")
+        rendered.append(content.extra_body.strip())
+    body = "\n\n".join(part.rstrip() for part in rendered if part.strip()) + "\n"
+    if content.issue_policy == "forbid" and AUTO_CLOSE_PATTERN.search(body):
         raise SubmitPRError("PR body contains a GitHub auto-closing Issue reference")
     return body
+
+
+def discover_template(repo_root: Path, requested: str | None) -> tuple[str, str | None]:
+    if requested:
+        path = Path(requested)
+        path = path if path.is_absolute() else repo_root / path
+        try:
+            return path.read_text(encoding="utf-8"), str(path)
+        except OSError as error:
+            raise SubmitPRError(f"cannot read PR template: {path}") from error
+    candidates = [repo_root / relative for relative in TEMPLATE_CANDIDATES]
+    for directory in TEMPLATE_DIRECTORIES:
+        path = repo_root / directory
+        if path.is_dir():
+            candidates.extend(sorted(path.glob("*.md")))
+    existing: list[Path] = []
+    seen_files: set[tuple[int, int]] = set()
+    for path in candidates:
+        if not path.is_file():
+            continue
+        stat = path.stat()
+        identity = (stat.st_dev, stat.st_ino)
+        if identity not in seen_files:
+            existing.append(path)
+            seen_files.add(identity)
+    if len(existing) > 1:
+        raise SubmitPRError(
+            "multiple PR templates found; select one with --template: "
+            + ", ".join(str(path.relative_to(repo_root)) for path in existing)
+        )
+    if existing:
+        return existing[0].read_text(encoding="utf-8"), str(existing[0])
+    return "\n\n".join(CANONICAL_HEADINGS) + "\n", None
+
+
+def read_extra_body(repo_root: Path, requested: str | None) -> str:
+    if not requested:
+        return ""
+    if requested == "-":
+        return sys.stdin.read()
+    path = Path(requested)
+    path = path if path.is_absolute() else repo_root / path
+    try:
+        return path.read_text(encoding="utf-8")
+    except OSError as error:
+        raise SubmitPRError(f"cannot read extra PR body: {path}") from error
 
 
 def parse_status(status_text: str) -> dict[str, list[str]]:
@@ -237,13 +511,6 @@ def parse_status(status_text: str) -> dict[str, list[str]]:
     return state
 
 
-def current_branch(repo_root: Path) -> str:
-    branch = git_output(repo_root, "branch", "--show-current")
-    if not branch:
-        raise SubmitPRError("detached HEAD is not supported")
-    return branch
-
-
 def validate_branch_name(repo_root: Path, branch: str) -> None:
     result = git_result(repo_root, "check-ref-format", "--branch", branch)
     if result.returncode != 0:
@@ -252,8 +519,6 @@ def validate_branch_name(repo_root: Path, branch: str) -> None:
         raise SubmitPRError(
             "head branch must use Conventional <type>/<kebab-case-summary> format"
         )
-    if branch in {"main", "dev"} or branch.startswith(("release/", "review/")):
-        raise SubmitPRError(f"protected or workflow branch cannot be PR head: {branch}")
 
 
 def local_branch_sha(repo_root: Path, branch: str) -> str | None:
@@ -273,8 +538,9 @@ def local_branch_sha(repo_root: Path, branch: str) -> str | None:
 
 
 def remote_branch_sha(repo_root: Path, remote: str, branch: str) -> str | None:
+    push_url = git_output(repo_root, "remote", "get-url", "--push", remote)
     result = run_command(
-        ["git", "ls-remote", "--heads", remote, f"refs/heads/{branch}"],
+        ["git", "ls-remote", "--heads", push_url, f"refs/heads/{branch}"],
         cwd=repo_root,
     )
     output = result.stdout.strip()
@@ -299,17 +565,16 @@ def choose_branch_name(
             if include_remote
             else None
         )
-        local_available = local_sha is None or local_sha == head_sha
-        remote_available = remote_sha is None or remote_sha == head_sha
-        if local_available and remote_available:
+        if (local_sha is None or local_sha == head_sha) and (
+            remote_sha is None or remote_sha == head_sha
+        ):
             return candidate
     raise SubmitPRError("cannot find an available task branch name")
 
 
 def cached_base_ref(repo_root: Path, remote: str, base: str) -> str:
     ref = f"refs/remotes/{remote}/{base}"
-    result = git_result(repo_root, "show-ref", "--verify", ref)
-    if result.returncode != 0:
+    if git_result(repo_root, "show-ref", "--verify", ref).returncode != 0:
         raise SubmitPRError(
             f"cached base {remote}/{base} is missing; run apply or fetch it explicitly"
         )
@@ -318,44 +583,36 @@ def cached_base_ref(repo_root: Path, remote: str, base: str) -> str:
 
 def ensure_commit_range(
     repo_root: Path,
-    remote: str,
-    base: str,
+    context: RepositoryContext,
+    issue_policy: str,
 ) -> tuple[str, list[dict[str, str]], list[str]]:
-    base_ref = cached_base_ref(repo_root, remote, base)
+    base_ref = cached_base_ref(repo_root, context.base_remote, context.base_branch)
     ancestry = git_result(repo_root, "merge-base", "--is-ancestor", base_ref, "HEAD")
     if ancestry.returncode != 0:
         raise SubmitPRError(
-            f"HEAD does not contain {remote}/{base}; automatic merge or rebase is disabled"
+            f"HEAD does not contain {context.base_remote}/{context.base_branch}; "
+            "automatic merge or rebase is disabled"
         )
     head_sha = git_output(repo_root, "rev-parse", "HEAD")
-    hashes_output = git_output(
-        repo_root,
-        "rev-list",
-        "--reverse",
-        f"{base_ref}..HEAD",
-    )
+    hashes_output = git_output(repo_root, "rev-list", "--reverse", f"{base_ref}..HEAD")
     if not hashes_output:
-        raise SubmitPRError(f"HEAD contains no commits beyond {remote}/{base}")
-    commits = []
+        raise SubmitPRError(
+            f"HEAD contains no commits beyond {context.base_remote}/{context.base_branch}"
+        )
+    commits: list[dict[str, str]] = []
     for commit_hash in hashes_output.splitlines():
         subject = git_output(repo_root, "show", "-s", "--format=%s", commit_hash)
         message = git_output(repo_root, "show", "-s", "--format=%B", commit_hash)
-        if AUTO_CLOSE_PATTERN.search(message):
+        if issue_policy == "forbid" and AUTO_CLOSE_PATTERN.search(message):
             raise SubmitPRError(
                 f"commit {commit_hash} contains a GitHub auto-closing Issue reference"
             )
         commits.append({"hash": commit_hash, "subject": subject})
-    files_output = git_output(
-        repo_root,
-        "diff",
-        "--name-only",
-        f"{base_ref}...HEAD",
-    )
-    files = files_output.splitlines() if files_output else []
-    return head_sha, commits, files
+    files_output = git_output(repo_root, "diff", "--name-only", f"{base_ref}...HEAD")
+    return head_sha, commits, files_output.splitlines() if files_output else []
 
 
-def prepare_content(args: argparse.Namespace) -> PRContent:
+def prepare_content(args: argparse.Namespace, repo_root: Path) -> PRContent:
     return PRContent(
         title=args.title,
         summary=args.summary,
@@ -363,85 +620,106 @@ def prepare_content(args: argparse.Namespace) -> PRContent:
         issues=tuple(issue.strip() for issue in args.issue),
         ui_change=args.ui_change,
         draft=args.draft,
+        issue_policy=args.issue_policy,
+        extra_body=read_extra_body(repo_root, args.extra_body_file),
     )
+
+
+def protected_branches(
+    context: RepositoryContext,
+    configured: Sequence[str],
+) -> set[str]:
+    return {
+        context.base_branch,
+        context.default_branch,
+        *(branch for branch in configured if branch),
+    }
 
 
 def resolve_head_branch(
     repo_root: Path,
     current: str,
-    base: str,
+    protected: set[str],
     requested: str | None,
     head_sha: str,
     remote: str,
     *,
     include_remote: bool,
 ) -> tuple[str, str]:
-    if current == base:
-        if not requested:
+    current_is_task = current not in protected and BRANCH_PATTERN.fullmatch(current)
+    if current_is_task:
+        if requested and requested != current:
             raise SubmitPRError(
-                "--head-branch is required when the current branch is the base branch"
+                f"--head-branch {requested!r} does not match current branch {current!r}"
             )
-        selected = choose_branch_name(
-            repo_root,
-            remote,
-            requested,
-            head_sha,
-            include_remote=include_remote,
-        )
-        return selected, "created" if local_branch_sha(repo_root, selected) is None else "reused"
-    validate_branch_name(repo_root, current)
-    if requested and requested != current:
+        validate_branch_name(repo_root, current)
+        return current, "current"
+    if not requested:
         raise SubmitPRError(
-            f"--head-branch {requested!r} does not match current branch {current!r}"
+            "--head-branch is required on a protected or non-Conventional branch"
         )
-    return current, "current"
+    selected = choose_branch_name(
+        repo_root,
+        remote,
+        requested,
+        head_sha,
+        include_remote=include_remote,
+    )
+    action = "created" if local_branch_sha(repo_root, selected) is None else "reused"
+    return selected, action
 
 
 def build_plan(
     args: argparse.Namespace,
     repo_root: Path,
+    context: RepositoryContext,
     *,
     include_remote_branch_check: bool,
 ) -> tuple[dict[str, Any], str]:
-    verify_remote_repository(repo_root, args.remote, args.repo)
-    content = prepare_content(args)
-    template_path = Path(args.template) if args.template else (
-        repo_root / ".github" / "pull_request_template.md"
-    )
-    if not template_path.is_absolute():
-        template_path = repo_root / template_path
-    try:
-        template_text = template_path.read_text(encoding="utf-8")
-    except OSError as error:
-        raise SubmitPRError(f"cannot read PR template: {template_path}") from error
+    content = prepare_content(args, repo_root)
+    template_text, template_path = discover_template(repo_root, args.template)
     body = render_pr_body(template_text, content)
     branch = current_branch(repo_root)
     status = parse_status(git_status_output(repo_root))
     head_sha, commits, files = ensure_commit_range(
         repo_root,
-        args.remote,
-        args.base,
+        context,
+        content.issue_policy,
     )
+    protected = protected_branches(context, args.protected_branch)
     head_branch, branch_action = resolve_head_branch(
         repo_root,
         branch,
-        args.base,
+        protected,
         args.head_branch,
         head_sha,
-        args.remote,
+        context.head_remote,
         include_remote=include_remote_branch_check,
     )
+    head_owner = context.head_repository.split("/", 1)[0]
+    head_query = (
+        f"{head_owner}:{head_branch}"
+        if context.cross_repository
+        else head_branch
+    )
     plan = {
-        "repository": args.repo,
-        "remote": args.remote,
-        "base": args.base,
-        "current_branch": branch,
+        "repository": context.base_repository,
+        "base_remote": context.base_remote,
+        "base": context.base_branch,
+        "head_repository": context.head_repository,
+        "head_remote": context.head_remote,
         "head_branch": head_branch,
+        "head_query": head_query,
+        "is_cross_repository": context.cross_repository,
+        "current_branch": branch,
         "head_sha": head_sha,
         "branch_action": branch_action,
+        "protected_branches": sorted(protected),
         "draft": content.draft,
+        "issue_policy": content.issue_policy,
         "title": content.title.strip(),
         "body": body,
+        "template": template_path,
         "commits": commits,
         "files": files,
         "working_tree": status,
@@ -451,8 +729,7 @@ def build_plan(
 
 
 def require_clean_worktree(repo_root: Path) -> None:
-    status_text = git_status_output(repo_root)
-    if status_text:
+    if git_status_output(repo_root):
         raise SubmitPRError(
             "apply requires a clean working tree; commit staged content and preserve "
             "unstaged or untracked files before submitting the PR"
@@ -502,7 +779,7 @@ def list_open_prs(
     repo_root: Path,
     repository: str,
     base: str,
-    head: str,
+    head_query: str,
 ) -> list[dict[str, Any]]:
     payload = run_json(
         [
@@ -516,7 +793,7 @@ def list_open_prs(
             "--base",
             base,
             "--head",
-            head,
+            head_query,
             "--json",
             "number,title,url,body,baseRefName,headRefName,headRefOid,isDraft,state",
         ],
@@ -530,13 +807,10 @@ def list_open_prs(
 
 
 def fetch_commit_object(repo_root: Path, remote: str, commit_sha: str) -> None:
-    present = git_result(repo_root, "cat-file", "-e", f"{commit_sha}^{{commit}}")
-    if present.returncode == 0:
+    if git_result(repo_root, "cat-file", "-e", f"{commit_sha}^{{commit}}").returncode == 0:
         return
-    run_command(
-        ["git", "fetch", "--no-tags", remote, commit_sha],
-        cwd=repo_root,
-    )
+    push_url = git_output(repo_root, "remote", "get-url", "--push", remote)
+    run_command(["git", "fetch", "--no-tags", push_url, commit_sha], cwd=repo_root)
 
 
 def push_head_branch(
@@ -566,12 +840,7 @@ def push_head_branch(
     else:
         action = "created"
     run_command(
-        [
-            "git",
-            "push",
-            remote,
-            f"{head_sha}:refs/heads/{remote_branch}",
-        ],
+        ["git", "push", remote, f"{head_sha}:refs/heads/{remote_branch}"],
         cwd=repo_root,
     )
     pushed_sha = remote_branch_sha(repo_root, remote, remote_branch)
@@ -582,29 +851,34 @@ def push_head_branch(
     return action
 
 
-def create_pr(
-    repo_root: Path,
-    plan: dict[str, Any],
-    body_path: Path,
-) -> str:
-    command = [
-        "gh",
-        "pr",
-        "create",
-        "--repo",
-        plan["repository"],
-        "--base",
-        plan["base"],
-        "--head",
-        plan["head_branch"],
-        "--title",
-        plan["title"],
-        "--body-file",
-        str(body_path),
-    ]
-    if plan["draft"]:
-        command.append("--draft")
-    result = run_command(command, cwd=repo_root)
+def create_pr(repo_root: Path, plan: dict[str, Any]) -> str:
+    descriptor, body_name = tempfile.mkstemp(prefix="submit-pr-", suffix=".md")
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            handle.write(plan["body"])
+        command = [
+            "gh",
+            "pr",
+            "create",
+            "--repo",
+            plan["repository"],
+            "--base",
+            plan["base"],
+            "--head",
+            plan["head_query"],
+            "--title",
+            plan["title"],
+            "--body-file",
+            body_name,
+        ]
+        if plan["draft"]:
+            command.append("--draft")
+        result = run_command(command, cwd=repo_root)
+    finally:
+        try:
+            os.unlink(body_name)
+        except FileNotFoundError:
+            pass
     url = result.stdout.strip().splitlines()[-1] if result.stdout.strip() else ""
     if not url.startswith("https://github.com/"):
         raise SubmitPRError("gh pr create did not return a GitHub PR URL")
@@ -640,8 +914,9 @@ def verify_pr(pr: dict[str, Any], plan: dict[str, Any]) -> None:
         "headRefOid": plan["head_sha"],
         "title": plan["title"],
         "isDraft": plan["draft"],
+        "isCrossRepository": plan["is_cross_repository"],
     }
-    mismatches = []
+    mismatches: list[str] = []
     for field, expected_value in expected.items():
         if pr.get(field) != expected_value:
             mismatches.append(
@@ -650,10 +925,9 @@ def verify_pr(pr: dict[str, Any], plan: dict[str, Any]) -> None:
     actual_body = pr.get("body")
     if not isinstance(actual_body, str) or actual_body.rstrip() != plan["body"].rstrip():
         mismatches.append("body differs from the generated PR body")
-    closing_issues = pr.get("closingIssuesReferences")
-    if closing_issues != []:
+    if plan["issue_policy"] == "forbid" and pr.get("closingIssuesReferences") != []:
         mismatches.append("closingIssuesReferences is missing or not empty")
-    expected_owner, expected_name = plan["repository"].split("/", 1)
+    expected_owner, expected_name = plan["head_repository"].split("/", 1)
     head_owner = pr.get("headRepositoryOwner")
     actual_owner = head_owner.get("login") if isinstance(head_owner, dict) else None
     if actual_owner != expected_owner:
@@ -666,28 +940,28 @@ def verify_pr(pr: dict[str, Any], plan: dict[str, Any]) -> None:
         mismatches.append(
             f"head repository name: expected {expected_name!r}, got {actual_name!r}"
         )
-    if pr.get("isCrossRepository") is not False:
-        mismatches.append("isCrossRepository is missing or not false")
     if mismatches:
-        raise SubmitPRError("existing or created PR failed verification:\n- " + "\n- ".join(mismatches))
-
-
-def write_apply_state(repo_root: Path, plan: dict[str, Any]) -> tuple[Path, Path]:
-    safe_branch = re.sub(r"[^A-Za-z0-9_.-]+", "-", plan["head_branch"]).strip("-")
-    state_dir = repo_root / ".tmp" / "submit-pr" / safe_branch
-    body_path = state_dir / "body.md"
-    plan_path = state_dir / "plan.json"
-    atomic_write_text(body_path, plan["body"])
-    atomic_write_json(plan_path, plan)
-    return body_path, plan_path
+        raise SubmitPRError(
+            "existing or created PR failed verification:\n- " + "\n- ".join(mismatches)
+        )
 
 
 def plan_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
-    plan, _ = build_plan(
-        args,
-        repo_root,
-        include_remote_branch_check=False,
-    )
+    previous_locks = os.environ.get("GIT_OPTIONAL_LOCKS")
+    os.environ["GIT_OPTIONAL_LOCKS"] = "0"
+    try:
+        context = resolve_repository_context(args, repo_root)
+        plan, _ = build_plan(
+            args,
+            repo_root,
+            context,
+            include_remote_branch_check=False,
+        )
+    finally:
+        if previous_locks is None:
+            os.environ.pop("GIT_OPTIONAL_LOCKS", None)
+        else:
+            os.environ["GIT_OPTIONAL_LOCKS"] = previous_locks
     branch_action = plan.pop("branch_action")
     plan["planned_branch_action"] = {
         "created": "would-create",
@@ -700,99 +974,97 @@ def plan_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
 
 def apply_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
     require_clean_worktree(repo_root)
-    verify_remote_repository(repo_root, args.remote, args.repo)
     check_github_auth(repo_root)
-    fetch_base(repo_root, args.remote, args.base)
+    context = resolve_repository_context(args, repo_root)
+    fetch_base(repo_root, context.base_remote, context.base_branch)
     plan, _ = build_plan(
         args,
         repo_root,
+        context,
         include_remote_branch_check=True,
     )
-    current = plan["current_branch"]
-    branch_action = ensure_local_branch(
-        repo_root,
-        current,
-        plan["head_branch"],
-        plan["head_sha"],
-    )
-    plan["branch_action"] = branch_action
-    body_path, plan_path = write_apply_state(repo_root, plan)
-
     open_prs = list_open_prs(
         repo_root,
         plan["repository"],
         plan["base"],
-        plan["head_branch"],
+        plan["head_query"],
     )
     if len(open_prs) > 1:
         raise SubmitPRError("multiple open PRs exist for the same head/base")
     if open_prs:
-        pr = view_pr(
-            repo_root,
-            plan["repository"],
-            str(open_prs[0]["number"]),
-        )
+        pr = view_pr(repo_root, plan["repository"], str(open_prs[0]["number"]))
         verify_pr(pr, plan)
         push_action = "reused"
         pr_action = "reused"
     else:
         push_action = push_head_branch(
             repo_root,
-            plan["remote"],
+            plan["head_remote"],
             plan["head_branch"],
             plan["head_sha"],
         )
-        pr_url = create_pr(repo_root, plan, body_path)
+        pr_url = create_pr(repo_root, plan)
         pr = view_pr(repo_root, plan["repository"], pr_url)
         verify_pr(pr, plan)
         pr_action = "created"
-
-    result = {
+    branch_action = ensure_local_branch(
+        repo_root,
+        plan["current_branch"],
+        plan["head_branch"],
+        plan["head_sha"],
+    )
+    return {
         "mode": "apply",
         "repository": plan["repository"],
+        "base_remote": plan["base_remote"],
         "base": plan["base"],
+        "head_repository": plan["head_repository"],
+        "head_remote": plan["head_remote"],
         "head": plan["head_branch"],
         "head_sha": plan["head_sha"],
+        "is_cross_repository": plan["is_cross_repository"],
         "draft": plan["draft"],
+        "issue_policy": plan["issue_policy"],
         "branch_action": branch_action,
         "push_action": push_action,
         "pr_action": pr_action,
         "pr_number": pr.get("number"),
         "pr_url": pr.get("url"),
         "needs_screenshots": plan["needs_screenshots"],
-        "body_path": str(body_path),
-        "plan_path": str(plan_path),
     }
-    atomic_write_json(plan_path, {**plan, "result": result})
-    return result
 
 
 def resolve_repo_root(path: str | None) -> Path:
     cwd = Path(path).resolve() if path else Path.cwd()
-    result = run_command(
-        ["git", "rev-parse", "--show-toplevel"],
-        cwd=cwd,
-    )
+    result = run_command(["git", "rev-parse", "--show-toplevel"], cwd=cwd)
     return Path(result.stdout.strip()).resolve()
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Plan or submit an Easydict GitHub pull request.",
+        description="Plan or submit a GitHub pull request from the current checkout.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
     for command in ("plan", "apply"):
         subparser = subparsers.add_parser(command)
-        subparser.add_argument("--repo", default=DEFAULT_REPOSITORY)
-        subparser.add_argument("--remote", default=DEFAULT_REMOTE)
-        subparser.add_argument("--base", default=DEFAULT_BASE)
+        subparser.add_argument("--repo")
         subparser.add_argument("--repo-root")
-        subparser.add_argument("--template")
+        subparser.add_argument("--base")
+        subparser.add_argument("--base-remote")
+        subparser.add_argument("--head-remote")
         subparser.add_argument("--head-branch")
+        subparser.add_argument("--protected-branch", action="append", default=[])
+        subparser.add_argument("--template")
+        subparser.add_argument("--extra-body-file")
         subparser.add_argument("--title", required=True)
         subparser.add_argument("--summary", required=True)
         subparser.add_argument("--verification", required=True)
         subparser.add_argument("--issue", action="append", default=[])
+        subparser.add_argument(
+            "--issue-policy",
+            choices=("neutral", "allow", "forbid"),
+            default="neutral",
+        )
         subparser.add_argument("--ui-change", action="store_true")
         subparser.add_argument("--draft", action="store_true")
     return parser
@@ -802,10 +1074,11 @@ def main() -> int:
     args = build_parser().parse_args()
     try:
         repo_root = resolve_repo_root(args.repo_root)
-        if args.command == "plan":
-            result = plan_command(args, repo_root)
-        else:
-            result = apply_command(args, repo_root)
+        result = (
+            plan_command(args, repo_root)
+            if args.command == "plan"
+            else apply_command(args, repo_root)
+        )
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
     except SubmitPRError as error:
