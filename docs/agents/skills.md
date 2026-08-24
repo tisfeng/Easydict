@@ -6,9 +6,12 @@
 - 仓库维护的 skill、reference 和 overlay 说明默认使用中文；命令、路径、代码标识、
   API 字段和固定输出契约保留原文。直接镜像的上游 skill 保留上游文档语言。
 - `release-easydict` 复用 `scripts/release/` 完成 macOS 发布、GitHub Draft 内容编排和
-  发布后的 Issue 跟进；`issue-followup plan|apply|resume` 子命令负责 Release PR 的
-  弱关联 Issue 通知与关闭，并保留独立 helper、固定三类 Markdown 汇总和 schema-v2
-  状态目录。
+  发布后的 Issue 跟进；`issue-followup plan|apply|resume` 子命令负责 Release PR 在
+  模板中声明的关联 Issue 与兼容弱引用的通知和关闭，并保留独立 helper、固定三类
+  Markdown 汇总和 schema-v2 状态目录。
+- `submit-pr` 从当前已提交工作生成并创建指向 `dev` 的 GitHub PR；它复用仓库 PR
+  模板，当前 checkout 位于 `dev` 时只推送独立任务分支，并对相同 head/base PR 做
+  幂等验证。该 skill 不负责 review、merge、Issue 关闭或截图生成。
 - 对上游 skill 的本地补充或更严格规则存放在 `.agents/overrides/`，不要修改复制的
   上游 skill。
 - 执行目标 skill 前先阅读其 `SKILL.md`，然后阅读 `AGENTS.md` 指定的 overlay。

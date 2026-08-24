@@ -1,18 +1,22 @@
 # 发布后 Issue 关联与解决策略
 
-本策略兼容现有 PR 中的 closing reference、issue URL、`owner/repo#123` 和裸
-`#123`，不依赖 PR 模板中的关闭关键字。
+本策略优先识别 PR 模板 `## 关联 Issue / Linked Issues` 区域中的明确关联，同时兼容
+现有 PR 中的 closing reference、issue URL、`owner/repo#123` 和裸 `#123`。不要依赖
+会在 PR 合并时提前关闭 Issue 的 GitHub closing keyword 或 Development 侧栏关联。
 
 ## 候选发现
 
 只从当前 Release Notes 列出的 merged PR 收集同仓库候选：
 
+- PR 正文 `## 关联 Issue / Linked Issues` 区域中的裸 `#123`、完整 issue URL 或
+  `owner/repo#123`；这些引用统一标记为 `linked_issue`。
 - GitHub `closingIssuesReferences`。
 - PR 正文中的完整 issue URL。
 - PR 正文或 commit message 中的 `owner/repo#123` 和裸 `#123`。
 
 候选编号必须通过 GitHub issue API 解析。包含 `pull_request` 字段的实体是 PR，直接
-排除。候选发现本身不代表关联成立。
+排除。同一个 Issue 使用多种格式时只生成一个候选。模板区域外的兼容引用仍需检查
+是否只是编号碰撞；候选发现本身不代表关联成立。
 
 ## 逐 PR 关联
 
@@ -25,7 +29,12 @@
 - `rejected`：编号碰撞、引用的是其他对象，或 PR 与 issue 没有真实关系。
 
 每条关联都必须包含至少一个 GitHub URL 和简短证据说明。不能只根据标题相似度建立
-关联。
+关联。`linked_issue` 表示贡献者已经明确声明 Issue 与 PR 相关，不要求贡献者进一步
+区分 `fixes` 或 `related`：
+
+- PR 的目标或实际改动覆盖 Issue 核心请求，且没有明确相反证据时，使用 `fixes`。
+- PR 明确只把 Issue 作为背景、相似问题或未实现需求时，使用 `related`。
+- 只有编号碰撞或实际不存在关联时才使用 `rejected`。
 
 ## 默认解决规则
 

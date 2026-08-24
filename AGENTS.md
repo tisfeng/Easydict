@@ -27,6 +27,7 @@ OCR 截图翻译。
   `docs/user-docs/zh/`。
 - 创建 Git 任务分支：`.agents/skills/git-commit/SKILL.md` 中的
   `Branch Name Guidance`。
+- 创建或提交 GitHub PR：`.agents/skills/submit-pr/SKILL.md`。
 
 ## Code Review Rules
 
