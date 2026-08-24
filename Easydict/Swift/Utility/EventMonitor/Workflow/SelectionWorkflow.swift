@@ -345,6 +345,9 @@ final class SelectionWorkflow {
                 "com.foxit-software.Foxit.PDF.Reader",
                 "com.foxit-software.Foxit.PDF.Editor",
                 AppBundleIDs.books,
+                // 终端的 AXTextArea 读取成功但永远返回空文本，需走强制取词
+                "com.googlecode.iterm2",
+                "com.apple.Terminal",
             ],
             .attributeUnsupported: [
                 "com.sublimetext.4",
