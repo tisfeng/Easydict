@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import html
 from pathlib import Path
 import subprocess
 import tempfile
@@ -233,8 +234,9 @@ class ReleaseAppcastTests(unittest.TestCase):
         target = tree.getroot().find("./channel/item")
         desc = target.find("description")
         self.assertIsNotNone(desc)
-        self.assertIn("<h2>What's Changed</h2>", desc.text)
-        self.assertIn("<li>feat: test feature", desc.text)
+        unescaped_text = html.unescape(desc.text or "")
+        self.assertIn("<h2>What's Changed</h2>", unescaped_text)
+        self.assertIn("<li>feat: test feature", unescaped_text)
 
 
 if __name__ == "__main__":

@@ -104,11 +104,18 @@ generate_candidate() {
     "${command[@]}"
     require_release_file "$RELEASE_APPCAST_PATH"
 
-    python3 "$SCRIPT_DIR/release-appcast.py" set-link \
-        --appcast "$RELEASE_APPCAST_PATH" \
-        --version "$RELEASE_VERSION" \
-        --build "$RELEASE_SAVED_BUILD" \
+    local -a set_link_args=(
+        --appcast "$RELEASE_APPCAST_PATH"
+        --version "$RELEASE_VERSION"
+        --build "$RELEASE_SAVED_BUILD"
         --url "$(release_notes_url)"
+        --repo "$RELEASE_REPOSITORY"
+    )
+    if [[ -n "$RELEASE_NOTES_FILE" ]]; then
+        set_link_args+=(--notes-file "$RELEASE_NOTES_FILE")
+    fi
+
+    python3 "$SCRIPT_DIR/release-appcast.py" set-link "${set_link_args[@]}"
     xmllint --noout "$RELEASE_APPCAST_PATH"
     validate_candidate "$RELEASE_WORKTREE/appcast.xml"
 }

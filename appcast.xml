@@ -3,7 +3,7 @@
     <channel>
         <title>Easydict</title>
         <item>
-            <title>2.24.0</title>
+            <title>2.22.0</title>
             <pubDate>Sun, 23 Aug 2026 11:39:50 +0800</pubDate>
             <description>&lt;h2&gt;What's Changed&lt;/h2&gt;
 &lt;ul&gt;
@@ -51,8 +51,8 @@
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/tisfeng/Easydict/compare/2.21.0...2.22.0"&gt;https://github.com/tisfeng/Easydict/compare/2.21.0...2.22.0&lt;/a&gt;&lt;/p&gt;</description>
             <sparkle:channel>beta</sparkle:channel>
-            <sparkle:version>66</sparkle:version>
-            <sparkle:shortVersionString>2.24.0</sparkle:shortVersionString>
+            <sparkle:version>65</sparkle:version>
+            <sparkle:shortVersionString>2.22.0</sparkle:shortVersionString>
             <sparkle:fullReleaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.22.0</sparkle:fullReleaseNotesLink>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.22.0/Easydict.zip" length="32390052" type="application/octet-stream" sparkle:edSignature="NYS+EVIOcpcN1rUFoCIi7yu+tbzv1cxXy6raQeY9GzEWTz9uW0tuvURtaxMiFBrxhDS0KYa5Wgt82XEqK81XAQ==" />
