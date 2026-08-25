@@ -10,6 +10,16 @@ import Foundation
 import OpenAI
 
 extension StreamService {
+    /// Streams replacement content with an internal action-specific prompt context.
+    func contentStreamTranslate(
+        request: TranslationRequest,
+        promptContext: TextReplacementPromptContext
+    ) async throws
+        -> AsyncThrowingStream<String, Error> {
+        textReplacementPromptContext = promptContext
+        return try await contentStreamTranslate(request: request)
+    }
+
     /// Stream translation content only
     func contentStreamTranslate(request: TranslationRequest) async throws
         -> AsyncThrowingStream<String, Error> {
@@ -50,7 +60,7 @@ extension StreamService {
 
         let (prehandled, result) = try await prehandleQueryText(text, from: from, to: to)
         if prehandled {
-            logInfo("prehandled query text: \(text.prefix200)")
+            logInfo("Prehandled stream query text (characters: \(text.count))")
             if let error = result.error {
                 throw error
             }
