@@ -450,6 +450,10 @@ If you think there is room for improvement in the project, or if you have new id
   `feat/` for new features and `fix/` for bug fixes. Keep the description in
   kebab-case, for example `feat/openai-translation` and `fix/ocr-window-focus`
 - **Do not commit on `dev` or `main` directly**: Please create a new branch from the corresponding base branch, then submit a PR
+- **Linked issues**: List related issues in the PR template's “Linked Issues”
+  section. You may use `#123`, a full issue URL, or `owner/repo#123`. Do not use
+  GitHub auto-closing keywords or an auto-closing Development sidebar link;
+  issues will be checked, notified, and closed after a release containing the PR
 
 ### Participate in Swift Migration
 

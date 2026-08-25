@@ -4,7 +4,9 @@
 
 - 进行中的计划放在 `active/`。
 - 已完成的计划移到 `completed/`。
-- 新计划从 `templates/execution-plan.md` 开始。
+- 新计划从 `templates.md` 开始。
+- 带日期的计划文件统一命名为 `YYYY-MM-DD-<slug>.md`，其中 `<slug>` 使用小写
+  kebab-case；长期路线图 `active/swift-migration.md` 不适用此命名规则。
 - 在计划本身记录进度、风险、决策和验证结果。
 - 不要将已完成或已放弃的工作留在 `active/` 中。
 

@@ -452,6 +452,9 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
   `feat/`，Bug 修复使用 `fix/`，描述部分统一使用 kebab-case，例如
   `feat/openai-translation`、`fix/ocr-window-focus`
 - **提交方式**：请不要直接在 `dev` 或 `main` 分支上提交，请从对应分支切出新分支后再提交 PR
+- **关联 Issue**：请在 PR 模板的“关联 Issue”区域填写相关 Issue。可以使用 `#123`、
+  完整 Issue URL 或 `owner/repo#123`；请勿使用 GitHub 自动关闭关键字或 Development
+  侧栏的自动关闭关联，Issue 会在包含该 PR 的版本发布后统一检查、通知和关闭
 
 ### 参与 Swift 重构
 

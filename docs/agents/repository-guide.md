@@ -2,11 +2,11 @@
 
 ## 目的
 
-Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译和 OCR 截图翻译。
-仓库知识应通过文件版本化，确保人类和 Agent 能够复现相关推理过程。
+Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、划词翻译和 OCR 截图
+翻译。仓库知识应通过文件版本化，确保人类和 Agent 能够复现相关推理过程。
 
-回复时匹配用户使用的语言。如果当前请求使用英文，则用英文回复；否则遵循请求中
-已经使用的语言。
+本文件是仓库协作规则的方向页，不重复请求解析、工作树安全、Git 交付、文档治理或
+回复表达的详细条款。每项规则由一个职责文档维护，避免同一规则在多个入口漂移。
 
 ## 通用原则
 
@@ -17,42 +17,52 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译和 
 - 保持修改精准，并在交付前完成验证。
 - 将反复出现的 Agent 失败转化为文档、工具或环境改进，而不是不断扩展提示词。
 
-## 文档边界
+## 规则入口
 
-- `AGENTS.md` 路由到本目录，不重复这些规则。
-- `docs/agents/` 存放内部 Agent 和贡献者工作流知识。
-- `docs/architecture/` 记录当前实现边界和流程。
-- `docs/user-docs/` 存放公开的英文和中文文档。
-- `docs/exec-plans/` 存放多步骤工作计划。
-- `docs/histories/` 记录已经完成的实质性变更。
-- 仓库文档使用相对路径，不要提交机器本地绝对路径。
-- 行为发生变化时，在同一任务中同步更新代码、测试和受影响的文档。
+### 任务语义和执行安全
 
-## Git 安全
+- [`request-boundary.md`](request-boundary.md)：用户消息、附件和引用的边界，请求
+  语义优先级，以及 `planning`、`implementation`、`delivery`、`protected` 模式。
+- [`execution-safety.md`](execution-safety.md)：任务契约、Mutation Gate、保护状态和
+  最小修改顺序。
 
-- 保留用户现有的已暂存和未暂存变更边界。
-- 除非任务或明确调用的工作流授权，否则不要暂存、提交或推送。
-- 不要重写或丢弃与当前任务无关的工作树变更。
-- 明确要求创建任务分支时，按照 `.agents/skills/git-commit/SKILL.md` 中的
-  `Branch Name Guidance` 推导 `<type>/<kebab-case-summary>`。除非用户明确指定，
-  不要添加 Agent、工具或个人命名空间前缀。
-- 推送前，将目标分支同步到最新远程状态。
-- 每个提交聚焦于一个连贯的行为或文档变更。
+### Git 和交付
 
-## Xcode 工程边界
+- [`git-workflow.md`](git-workflow.md)：保留用户现场、自动本地提交、分支、推送和
+  Easydict PR 参数。
+- [`../../.agents/skills/git-commit/SKILL.md`](../../.agents/skills/git-commit/SKILL.md)：Angular-style 提交、暂存范围、提交信息校验
+  和提交后统计。
+- [`../../.agents/skills/submit-pr/SKILL.md`](../../.agents/skills/submit-pr/SKILL.md)：创建或恢复 GitHub PR。
+- [`../../.agents/skills/review-pr/SKILL.md`](../../.agents/skills/review-pr/SKILL.md)：PR review 的完整流程。
 
-只有由 Xcode 管理的源码、运行时资源，以及明确需要显示在 Xcode navigator 中的
-文档才需要工程元数据。Agent 规则、计划、历史、参考资料和 `docs/` 下的公共
-Markdown 不需要 `PBXFileReference` 条目，除非它们会作为运行时资源发布，否则也
-不要加入 build phase。
+### 文档和回复
 
-## 任务工作流
+- [`documentation-governance.md`](documentation-governance.md)：内部规则、计划、历史
+  和公开文档的职责与生命周期。
+- [`response-conventions.md`](response-conventions.md)：回复语言、结果顺序和已验证
+  状态的表达。
+- [`../exec-plans/`](../exec-plans/)：多步骤、跨模块或高风险工作的计划。
+- [`../histories/`](../histories/)：已完成实质性变更的简洁记录。
 
-1. 在进行非简单变更前，说明假设和成功标准。
-2. 对于架构、协议、迁移或多轮工作，在 `docs/exec-plans/active/` 下创建执行计划。
-3. 使用最贴近任务的检查进行验证，并记录重要结果。
-4. 将已完成的计划移动到 `docs/exec-plans/completed/`。
-5. 在 `docs/histories/` 中记录已完成的实质性变更。
+## 按任务路由
 
-使用仓库现有的 GitHub issue 和 pull request 进行讨论；不要在历史文件中重复完整
-对话内容。
+- 构建或测试：[`build-and-test.md`](build-and-test.md) 和 [`testing.md`](testing.md)。
+- 代码组织：[`code-quality.md`](code-quality.md)。
+- Swift、Objective-C、SwiftUI 或 Xcode：[`swift-xcode.md`](swift-xcode.md)。
+- 用户可见文本或 String Catalog：[`localization.md`](localization.md)。
+- Skill 或 Agent 集成：[`skills.md`](skills.md)、目标
+  `../../.agents/skills/<skill>/SKILL.md` 以及对应的 `../../.agents/overrides/<skill>/<overlay>.md`。
+- 修改产品代码或模块边界：[`../architecture/overview.md`](../architecture/overview.md)。
+- 公共使用或贡献者文档：[`../user-docs/en/`](../user-docs/en/) 或
+  [`../user-docs/zh/`](../user-docs/zh/)。
+- 创建 Git 任务分支：git-commit skill 中的 `Branch Name Guidance`。
+
+## 工作流提醒
+
+1. 阅读本文件和 `README.md`，再按任务路由读取最小必要规则。
+2. 根据最新用户请求判定任务模式；写入前完成任务契约和 Mutation Gate。
+3. 只修改获准路径，并运行与风险相称的验证。
+4. 依据 Git、文档生命周期和回复表达规则交付真实结果。
+
+如果规则之间出现冲突，遵循系统和开发者规则、用户最新明确请求、仓库入口和当前
+选定 skill 的优先级，并在计划或最终报告中说明影响。
