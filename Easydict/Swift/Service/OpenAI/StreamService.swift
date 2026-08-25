@@ -204,6 +204,12 @@ public class StreamService: QueryService {
 
     var hideThinkTagContent: Bool = true
 
+    /// Overrides generic service prompts for one selected-text replacement request.
+    ///
+    /// ActionManager creates a fresh service instance per action, so this context never
+    /// mutates or persists the service page's global custom prompt configuration.
+    var textReplacementPromptContext: TextReplacementPromptContext?
+
     /// Whether requests currently use streaming transport over the network.
     ///
     /// This is intentionally narrower than `isStream()`: a service may remain stream-capable
@@ -466,6 +472,13 @@ public class StreamService: QueryService {
     /// Base on chat query, convert prompt dict to LLM service prompt model.
     /// If enableCustomPrompt is true, we will use custom prompt, otherwise use system prompt.
     func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
+        if let textReplacementPromptContext {
+            return textReplacementMessages(
+                chatQuery,
+                context: textReplacementPromptContext
+            )
+        }
+
         if enableCustomPrompt {
             var chatMessages: [ChatMessage] = []
             let systemPrompt = replaceCustomPromptWithVariable(systemPrompt)

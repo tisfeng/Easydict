@@ -225,6 +225,8 @@ struct AdvancedTab: View {
                 Text("setting.advance.header.text_selection_and_replacement")
             }
 
+            TextReplacementSettingsSection()
+
             // Query text processing
             Section {
                 Toggle(isOn: $replaceNewlineWithSpace) {
