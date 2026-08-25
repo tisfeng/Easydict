@@ -1,6 +1,7 @@
 # <计划标题>
 
-<!-- 文件名：YYYY-MM-DD-<slug>.md；<slug> 使用小写 kebab-case。 -->
+<!-- 文件名：YYYY-MM-DD-<slug>.md；<slug> 使用小写 kebab-case。此模板只用于已获
+implementation 授权的执行计划；planning 默认只在回复中提供方案，不创建 active 文件。 -->
 
 **Status:** active
 **Created:** YYYY-MM-DD
@@ -63,6 +64,13 @@
 
 - 命令：
 - 手动检查：
+- 请求语义：覆盖未来计划、明确执行、否定、条件、跨轮指代、附件采纳，以及分析、
+  检查、调查、看看等只读表达；至少确认“我计划改进规则，帮我重构拆分”“分析调用
+  链并报告结论”“检查这次改动有没有问题”和“我计划改进规则，请按方案执行”。
+- 文档生命周期：确认 planning 不创建或更新 active 计划文件，也不写入其他 artifact；
+  获准 implementation 且通过 Mutation Gate 后才创建 active 计划，完成后移到
+  `completed/` 并添加 history。
+- Git：覆盖初始 staged、路径重叠、冲突、HEAD 变化、验证失败和精确 staged 路径。
 - 观察结果：
 
 ## 决策记录
