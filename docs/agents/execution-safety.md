@@ -1,86 +1,51 @@
-# 执行安全与 Mutation Gate
+# 执行安全与变更门禁
 
-本文定义 Agent 何时可以写入工作树，以及如何把用户请求收敛为可审计的任务契约。
-请求语义见 [`request-boundary.md`](request-boundary.md)，Git 交付见
-[`git-workflow.md`](git-workflow.md)。
+本文规定 Agent 何时可以改变工作树或其他获准 artifact，以及何时必须停止；请求模式见
+[`request-boundary.md`](request-boundary.md)，Git 状态和交付见
+[`git-workflow.md`](git-workflow.md)，计划与 history 生命周期见 [`README.md`](README.md)。
 
-## 基本原则
+## 核心规则
 
-- 先确定任务模式，再确定允许动作和允许路径；工具能力不等于用户授权。
-- 任何写入都必须能对应到用户目标、任务契约或完成检查。
-- 只读请求默认不写入、不暂存、不提交、不推送。
-- 维护已有工作树边界，不重写、丢弃或覆盖与当前任务无关的变更。
-- 优先采用满足目标的最小方案，避免推测性功能和单次使用的抽象。
-- 低风险、可逆、在目标仓库范围内的实现步骤可以直接执行；外部服务、推送、删除
-  和其他扩大范围的动作需要明确授权。
-- 交付前完成与风险相称的验证；遇到阻塞时明确报告证据和未验证边界。
+- `planning` 只允许读取、搜索、检查、诊断、起草和报告，不写入工作树或 artifact。
+- `implementation` 必须有明确的实施授权，并且只修改任务允许的路径。
+- 保留用户已有的 staged、unstaged 和 untracked 变更，不覆盖无关内容。
+- 变更前后都使用满足风险的验证；没有实际验证的结果必须明确标注为未验证。
+- 预期产生仓库文件差异的 implementation 必须创建或更新同任务 history；没有文件差异时不创建空 history。
 
-## 任务契约
+## 写入前检查
 
-在调用会修改工作树、外部服务或交付物的工具前，内部确定以下字段：
+第一次写入前，用以下五个问题确认范围：
 
-- `Goal`：用户真正想得到的结果。
-- `Requested operations`：用户明确允许的操作。
-- `Mutation authorization`：分别记录 worktree、artifact 和 external service 是否获准
-  写入。
-- `Delivery authorization`：分别记录 `none`、`auto-local-commit`、`commit`、
-  `integration` 或 `push`。
-- `Allowed paths`：允许修改的精确文件或目录。
-- `Forbidden actions`：明确不执行的动作，例如产品代码、Xcode 工程、推送或删除。
-- `Evidence inputs`：引用提交、附件、当前 checkout 和仓库文档等证据来源。
-- `Adopted constraints`：采用的仓库规则、用户限定和兼容性要求。
-- `Ambiguities`：可能改变范围或结果的未决问题。
-- `Deliverables`：用户要求看到的代码、文档、报告或提交。
-- `Checks`：完成前必须执行的验证。
+1. 用户是否明确授权本次类型的写入？
+2. 目标结果和允许修改的路径是否明确？
+3. 初始 Git 状态是否允许安全区分 Agent 变更与用户变更？
+4. 是否已确定必要的 history，以及多步骤或高风险工作所需的 active plan？
+5. 完成后要运行哪些检查，哪些检查无法运行？
 
-## Mutation Gate
+五项都满足时，写入前检查通过（`Mutation Gate`）；否则保持只读并报告原因。
 
-任何变更工具调用前生成一次以下门禁结果：
+## 执行流程
 
-```text
-Mutation Gate: PASS | BLOCKED
-```
+1. 根据完整请求确定任务模式、交付授权和安全状态。
+2. 在第一次写入前记录 Git 快照、任务范围和 Agent-owned paths，并完成写入前检查。
+3. 只实施获准路径，按风险完成验证；文件有差异时同步更新 history。
+4. 验证通过后交给 Git 工作流处理交付；不把执行授权扩大为 push、pull、rebase 或 merge。
 
-只有以下条件全部满足时才允许 `PASS`：
+## 必须暂停的情况
 
-- 完整请求语义明确授权 Agent 造成当前类型的状态变化。
-- 目标、条件、指代和允许路径已经确定，且没有未决歧义。
-- 没有否定约束、来源冲突或未满足的条件。
-- 已记录初始 `HEAD`、staged、unstaged、untracked 和 conflicts 状态。
-- Agent-owned 路径与用户已有变更不重叠。
-- 当前工具调用属于任务契约中的 Mutation authorization 和 Allowed actions。
+出现以下任一情况，进入 `protected`，保留现场，不继续写入、暂存或提交：
 
-`planning`、授权不明确或门禁条件不完整时必须保持 `BLOCKED`。`planning` 可以阅读、
-搜索、检查、诊断、比较、起草方案和报告结论，但不写入工作树、计划或其他 artifact；
-保存计划文件也属于 artifact mutation，不能作为 planning 的隐含例外。只有用户明确
-授权 `implementation` 后，才允许在范围内创建 active 计划并写入实现文件。Mutation
-Gate 是仓库流程门禁，不等同于宿主运行时权限；需要技术保护时，还应使用通过门禁后
-限定路径的 scoped-write capability，并限制暂存、提交和单次交付计数。
+- 初始索引非空、存在冲突，或 Agent 路径与用户变更重叠；
+- 用户授权、目标、路径或必要条件仍不明确；
+- 写入前检查未通过；
+- 必要验证失败，或无法区分已验证与未验证的结论；
+- history 不在允许范围内，或交付前缺少同任务 history。
 
-## 保护状态
+`protected` 只是暂停保护现场，不代表用户已经授权额外操作，也不能把 planning 变成
+implementation。
 
-以下任一情况都进入 `protected`：
+## 规则归属
 
-- 初始暂存区已有文件；
-- 用户已有变更与 Agent 允许路径重叠，无法清晰分离；
-- 工作树存在冲突；
-- Mutation Gate 失败；
-- 必要验证失败或无法区分失败是否由本次变更引起；
-- 用户要求的外部授权尚未获得。
-
-进入保护状态后，保留当前现场，报告证据、影响和需要用户决定的下一步；不得用
-`git reset --hard`、`git checkout --` 或其他破坏性操作“清理”现场。
-
-## 执行顺序
-
-1. 读取入口、任务相关规则和必要的架构文档。
-2. 对多步骤、跨模块或高风险工作，先在当前回复中形成执行计划；planning 阶段不将
-   计划写入仓库文件。
-3. 形成任务契约和成功标准，检查工作树并执行 Mutation Gate。
-4. 只有在获准的 implementation 中，才按
-   [`documentation-governance.md`](documentation-governance.md) 创建 active 计划。
-5. 以最小切片修改允许路径，避免顺手重构或扩大范围。
-6. 运行与变更风险相称的格式、静态、构建或行为验证。
-7. 复核 diff、路径、未验证边界和交付授权。
-8. 按 [`documentation-governance.md`](documentation-governance.md) 完成计划和历史，
-   按 [`git-workflow.md`](git-workflow.md) 完成本地交付。
+- 请求来源、否定条件和任务模式由 [`request-boundary.md`](request-boundary.md) 负责。
+- Git 快照、精确暂存、自动本地提交和禁止的远程操作由 [`git-workflow.md`](git-workflow.md) 负责。
+- active plan、completed plan 和 history 的生命周期由 [`README.md`](README.md) 负责。
