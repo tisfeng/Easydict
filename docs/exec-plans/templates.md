@@ -1,74 +1,76 @@
-# <计划标题>
+# <任务标题>
 
 <!-- 文件名：YYYY-MM-DD-<slug>.md；<slug> 使用小写 kebab-case。 -->
+<!-- 本模板用于获准的 implementation；planning 阶段只在回复中输出方案，不创建计划文件。 -->
 
-**Status:** active
-**Created:** YYYY-MM-DD
-**Updated:** YYYY-MM-DD
-**Owner:** <人员或团队>
-**Links:** <issue、PR 或相关设计文档>
-
-## 任务契约
-
-以下字段由 Agent 根据用户请求和仓库规则自动填写，不要求用户额外提供任务契约。
-
-- 任务模式：`planning` / `implementation` / `delivery`
-- 用户目标：
-- 允许动作：
-- 允许修改路径：
-- 预期交付物：
-- 验收标准：
-
-## 自动提交状态
-
-- 自动提交资格：`eligible` / `disabled`
-- 初始暂存区：`empty` / `protected`
-- 自动提交结果：`not attempted` / `committed` / `skipped` / `failed`
-
-## 输入来源
-
-- 用户明确请求：
-- 仓库规则：
-- 附件或引用材料：
-- 仅作为证据的内容：
-
-## 目标
-
-描述本计划必须实现的最终状态。
-
-## 范围
-
-- 包含范围：
-- 不包含范围：
+- 状态：active
+- 创建日期：YYYY-MM-DD
+- 负责人：<name>
+- 关联 Issue/PR：<link or none>
 
 ## 背景
 
-- 当前行为：
-- 相关文件：
-- 约束：
+说明问题、当前状态以及为什么需要这项工作。
 
-## 风险与缓解
+## 任务摘要
 
-- 风险：
-  - 缓解措施：
+- 意图模式：planning / implementation
+- 交付授权：none / auto-local-commit / commit / integration / push
+- 安全状态：normal / protected
+- 目标结果：
+- 允许修改路径：
+- 同任务 history：`docs/histories/YYYY-MM/YYYY-MM-DD-<slug>.md`
+- 禁止动作：
+- 预期交付物：
+- 验收标准：
 
-## 里程碑
+## 语义与范围
 
-- [ ] 确认范围和约束。
-- [ ] 实现第一阶段切片。
-- [ ] 验证行为和文档。
-- [ ] 将本计划移到 `completed/`。
+- 用户要求 Agent 做什么：观察 / 解释 / 设计 / 修改 / 提交 / 集成
+- 授权的工作树、artifact 和 external service 操作：
+- 否定、条件和范围限制：
+- 附件或引用中被明确采纳的约束：
+- 歧义：
+
+## 写入前状态
+
+- 写入前检查：pass / blocked
+- 自动提交资格：eligible / disabled / protected
+- 初始 HEAD：
+- 初始 staged 路径：
+- 初始 unstaged 路径：
+- 初始 untracked 路径：
+- 初始冲突：
+- Agent-owned paths：
+
+## 目标与非目标
+
+### 目标
+
+- 列出可验证的目标。
+
+### 非目标
+
+- 明确本次工作不会处理的内容。
+
+## 工作计划
+
+1. 列出按顺序执行的工作。
+
+## 风险与决策
+
+- 记录兼容性、数据、运行时或发布风险。
+- 记录重要选择及原因。
+
+## 进度
+
+- [ ] 待完成工作。
 
 ## 验证
 
-- 命令：
-- 手动检查：
-- 观察结果：
+- 记录执行过的检查、结果和未运行的检查。
+- 覆盖请求模式、禁止条件、路径冲突、验证失败和 history 要求。
 
-## 决策记录
+## 完成条件
 
-- YYYY-MM-DD：决策及其理由。
-
-## 进度记录
-
-- YYYY-MM-DD：已完成的工作和下一步。
+- 列出归档到 `completed/` 前必须满足的条件。
