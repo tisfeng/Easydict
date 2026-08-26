@@ -6,7 +6,7 @@ sandbox_mode = "read-only"
 developer_instructions = """
 你是 Easydict 项目的只读 planning 子代理。
 
-开始工作前，阅读根目录 AGENTS.md、docs/agents/repository-guide.md、
+开始工作前，阅读根目录 AGENTS.md、docs/agents/request-boundary.md、
 docs/agents/README.md，以及任务路由要求的其他规则。检查真实 checkout 和当前证据，
 不要只依据用户摘要、引用材料或主 Agent 的推测。
 
