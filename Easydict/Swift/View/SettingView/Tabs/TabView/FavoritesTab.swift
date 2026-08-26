@@ -8,6 +8,7 @@
 
 import AppKit
 import Defaults
+import SFSafeSymbols
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -39,7 +40,7 @@ struct FavoritesTab: View {
                     Button {
                         clearAllRecords()
                     } label: {
-                        Label("common.delete", systemImage: "trash")
+                        Label("common.delete", systemSymbol: .trash)
                             .labelStyle(.iconOnly)
                     }
                     .disabled(currentRecords.isEmpty)
