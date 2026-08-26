@@ -1,0 +1,4 @@
+interface:
+  display_name: "Submit GitHub PR"
+  short_description: "安全规划、推送并创建通用 GitHub Pull Request"
+  default_prompt: "使用 $submit-pr 根据当前 Git 提交准备并创建 GitHub Pull Request。"

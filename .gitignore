@@ -89,13 +89,17 @@ Icon?
 
 .sentryclirc
 
+# Python
+__pycache__/
+*.py[cod]
+
 # SwiftFormat 
 # https://github.com/nicklockwood/SwiftFormat?tab=readme-ov-file#xcode-build-phase
 BuildTools/.build
 BuildTools/.swiftpm
 
 .tmp/
-.asc/runs/
+scripts/release/runs/
 
 # Ignore xcodeproj Package.resolved file, use xcworkspace Package.resolved instead (For CocoaPods
 *.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved

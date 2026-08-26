@@ -202,9 +202,13 @@ struct GeneralTab: View {
                     selection: $selectedMenuBarIcon
                 ) {
                     ForEach(MenuBarIconType.allCases) { option in
-                        Image(option.rawValue)
-                            .renderingMode(.template)
-                            .foregroundStyle(.primary)
+                        Label {
+                            EmptyView()
+                        } icon: {
+                            Image(option.rawValue)
+                                .renderingMode(.template)
+                        }
+                        .labelStyle(.iconOnly)
                     }
                 }
 

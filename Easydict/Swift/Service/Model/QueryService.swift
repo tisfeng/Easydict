@@ -351,6 +351,11 @@ open class QueryService: NSObject {
         fatalError("You must override \(#function) in a subclass.")
     }
 
+    /// Returns the bundled asset name used to represent this service.
+    open func iconName() -> String {
+        serviceType().rawValue
+    }
+
     open func serviceTypeWithUniqueIdentifier() -> String {
         serviceType().rawValue
     }
