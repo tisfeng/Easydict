@@ -9,6 +9,14 @@
 import AXSwift
 import Foundation
 
+// MARK: - AppSpecificSelectedTextSelector
+
+enum AppSpecificSelectedTextSelector {
+    case zen
+}
+
+// MARK: - FocusedElementInfo
+
 /// Result type for focused UI element information
 struct FocusedElementInfo: CustomStringConvertible {
     /// Default empty info used when no element data can be retrieved
@@ -37,6 +45,16 @@ struct FocusedElementInfo: CustomStringConvertible {
         kAXGroupRole, // PDF, fix https://github.com/tisfeng/Easydict/issues/1091
         Role.webArea.rawValue,
     ])
+
+    /// Roles that require an app-specific selected text selector.
+    static let appSpecificSelectedTextRoles: Set<String> = [
+        kAXWindowRole,
+    ]
+
+    /// Maps an app bundle identifier to its selected text selector.
+    static let appSpecificSelectedTextSelectorBindings: [String: AppSpecificSelectedTextSelector] = [
+        "app.zen-browser.zen": .zen,
+    ]
 
     /// Full text in the focused text field, if available
     let fullText: String?
