@@ -249,8 +249,8 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 - `chore`：进行不属于其他类型的日常维护。
 - `revert`：回滚此前变更。
 
-尽量根据涉及的模块、功能、服务或组件选择 `scope`。优先使用 `openai`、`screenshot`
-或 `settings` 等具体 scope，而不是 `app` 或 `misc` 等宽泛标签。
+尽量根据涉及的模块、功能、服务或组件选择 `scope`。优先使用 `parser`、`api` 或
+`settings` 等具体 scope，而不是 `app` 或 `misc` 等宽泛标签。
 
 ## Branch Name Guidance
 
@@ -269,26 +269,26 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 仅英文提交信息：
 
 ```text
-fix(screenshot): defer overlay capture until view appears
+fix(ui): defer rendering until view appears
 
-Overlay capture started before the view hierarchy was stable, creating a startup race in screenshot translation. When layout was still settling, that early capture could trigger conflicts or crashes.
+UI rendering started before its container was ready, creating a startup race. When layout was still settling, early rendering could trigger conflicts or produce blank content.
 
-Move screenshot capture out of the overlay initializer. Start it after the view appears and layout is ready so the capture path observes stable UI state.
+Move rendering out of the initializer. Start it after the view appears and layout is ready so the UI observes stable state.
 
-This restores stable screenshot translation startup. It also reduces layout timing risk without changing the user-facing capture flow.
+This restores stable UI startup and reduces layout timing risk without changing the user-facing flow.
 ```
 
 非英文双语提交信息。按以下顺序将这些区块和分隔线写入 `commit_message.txt`，不要包含
 Markdown 代码围栏：
 
 ```text
-fix(screenshot): 推迟悬浮层截图直到视图出现后再执行
+fix(ui): 推迟渲染直到视图出现后再执行
 
-悬浮层在视图层级尚未稳定时就启动截图，导致截图翻译启动阶段出现竞态。布局仍在变化时，过早截图可能触发布局冲突或崩溃。
+界面容器尚未准备就绪时就开始渲染，导致启动阶段出现竞态。布局仍在变化时，过早渲染可能触发冲突或出现空白内容。
 
-将截图操作从悬浮层初始化方法中移出。改为在视图出现且布局就绪后再开始截图，让截图流程读取稳定的 UI 状态。
+将渲染操作从初始化流程中移出，改为在视图出现且布局就绪后再开始，让界面读取稳定状态。
 
-此修改恢复了截图翻译启动流程的稳定性。同时降低布局时序风险，并且不改变用户可见的截图流程。
+此修改恢复了稳定的界面启动流程，降低布局时序风险，并且不改变用户可见流程。
 ```
 
 ```text
@@ -296,11 +296,11 @@ fix(screenshot): 推迟悬浮层截图直到视图出现后再执行
 ```
 
 ```text
-fix(screenshot): defer overlay capture until view appears
+fix(ui): defer rendering until view appears
 
-Overlay capture started before the view hierarchy was stable, creating a startup race in screenshot translation. When layout was still settling, that early capture could trigger conflicts or crashes.
+UI rendering started before its container was ready, creating a startup race. When layout was still settling, early rendering could trigger conflicts or produce blank content.
 
-Move screenshot capture out of the overlay initializer. Start it after the view appears and layout is ready so the capture path observes stable UI state.
+Move rendering out of the initializer. Start it after the view appears and layout is ready so the UI observes stable state.
 
-This restores stable screenshot translation startup. It also reduces layout timing risk without changing the user-facing capture flow.
+This restores stable UI startup and reduces layout timing risk without changing the user-facing flow.
 ```

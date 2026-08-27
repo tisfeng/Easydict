@@ -20,7 +20,7 @@ class TemporaryRepository:
     def __init__(self, root: Path) -> None:
         self.root = root
         self.git("init", "--quiet")
-        self.git("config", "user.name", "Easydict Tests")
+        self.git("config", "user.name", "Git Commit Tests")
         self.git("config", "user.email", "tests@example.com")
         self.git("config", "commit.gpgsign", "false")
 
