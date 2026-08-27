@@ -237,7 +237,7 @@ class CommitMessageValidatorTests(unittest.TestCase):
 
     def test_commit_validation_matches_expected_file(self) -> None:
         self.git("init", "--quiet")
-        self.git("config", "user.name", "Easydict Tests")
+        self.git("config", "user.name", "Git Commit Tests")
         self.git("config", "user.email", "tests@example.com")
         self.git("config", "commit.gpgsign", "false")
         message_path = self.root / "expected.txt"
@@ -288,7 +288,7 @@ class CommitMessageValidatorTests(unittest.TestCase):
 
     def test_file_failure_does_not_change_git_state(self) -> None:
         self.git("init", "--quiet")
-        self.git("config", "user.name", "Easydict Tests")
+        self.git("config", "user.name", "Git Commit Tests")
         self.git("config", "user.email", "tests@example.com")
         self.git("config", "commit.gpgsign", "false")
         self.git("commit", "--quiet", "--allow-empty", "-m", "base")
