@@ -2809,6 +2809,46 @@
         }
       }
     },
+    "favorites.clear_confirm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to clear all favorites? This action cannot be undone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Estás seguro de que quieres borrar todos los favoritos? Esta acción no se puede deshacer."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのお気に入りを削除してもよろしいですか？この操作は元に戻せません。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naozaj chcete vymazať všetky obľúbené položky? Túto akciu nemožno vrátiť späť."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确定要清空所有收藏吗？此操作无法撤销。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定要清空所有收藏嗎？此操作無法復原。"
+          }
+        }
+      }
+    },
     "favorites.empty" : {
       "localizations" : {
         "en" : {
@@ -3678,6 +3718,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在翻譯視窗中可使用 ⌘ +/- 快速鍵變更字體大小。"
+          }
+        }
+      }
+    },
+    "history.clear_confirm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to clear all history? This action cannot be undone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Estás seguro de que quieres borrar todo el historial? Esta acción no se puede deshacer."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべての履歴を削除してもよろしいですか？この操作は元に戻せません。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naozaj chcete vymazať celú históriu? Túto akciu nemožno vrátiť späť."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确定要清空所有历史记录吗？此操作无法撤销。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定要清空所有歷史記錄嗎？此操作無法復原。"
           }
         }
       }
