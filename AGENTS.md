@@ -9,6 +9,7 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 ## 始终阅读
 
 - 每个任务先阅读 `docs/agents/request-boundary.md`，确定请求语义和任务模式。
+- `request-boundary.md` 同时定义 Planning 委派流程，是每个任务的启动契约。
 - 再根据当前任务读取下方最小必要的规则，不通过其他索引进行二次路由。
 
 ## 按任务路由
@@ -23,9 +24,18 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 - Swift、Objective-C、SwiftUI 或 Xcode：`docs/agents/swift-xcode.md`。
 - 用户可见文本或 String Catalog：`docs/agents/localization.md`。
 - 修改产品代码、跨功能行为或模块边界：`docs/architecture/overview.md`。
-- Skill、Planning 子代理或应用内置 Agent 集成：`docs/agents/skills.md`、目标
-  `.agents/skills/<skill>/SKILL.md` 以及对应的
-  `.agents/overrides/<skill>/<overlay>.md`。
+- Planning 子代理：遵循 `docs/agents/request-boundary.md` 中的启动契约，并使用
+  `.codex/agents/planner.toml`。
+- 具体 Skill：目标 `.agents/skills/<skill>/SKILL.md` 以及对应的
+  `.agents/overrides/<skill>/<overlay>.md`；使用 `fireworks-tech-graph` 时还要读取
+  `.agents/overrides/fireworks-tech-graph/layout.md`。
+- 发布与 PR：分别遵循 `.agents/skills/release-easydict/SKILL.md` 和
+  `.agents/skills/submit-pr/SKILL.md`；Easydict PR 交付还要遵循
+  `docs/agents/git-workflow.md` 中的本地参数约束。
+- 如果工作需要 OpenAI API、ChatGPT Apps SDK、Codex 或相关 OpenAI 开发工具，使用
+  OpenAI 开发者文档 MCP server。
+- 应用内置 Agent 文档、运行时资源或后端契约：遵循 `docs/agents/README.md` 中的边界和
+  各自权威来源。
 - 公共使用或贡献者文档：`docs/user-docs/en/` 或
   `docs/user-docs/zh/`。
 - 创建 Git 任务分支：`.agents/skills/git-commit/SKILL.md` 中的
