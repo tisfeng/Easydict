@@ -21,7 +21,7 @@ Scoco 本次提交恢复了显式 `/git commit` 在空暂存区时的一次性 `
 
 ## 计划
 
-本任务执行计划：[`2026-08-27-scoco-agent-docs-port.md`](../../exec-plans/active/2026-08-27-scoco-agent-docs-port.md)。
+本任务执行计划：[`2026-08-27-scoco-agent-docs-port.md`](../../exec-plans/completed/2026-08-27-scoco-agent-docs-port.md)。
 
 ## 验证
 

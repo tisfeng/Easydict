@@ -20,7 +20,7 @@
 
 ## 计划
 
-本任务执行计划：[`2026-08-27-scoco-agent-docs-port.md`](../../exec-plans/active/2026-08-27-scoco-agent-docs-port.md)。
+本任务执行计划：[`2026-08-27-scoco-agent-docs-port.md`](../../exec-plans/completed/2026-08-27-scoco-agent-docs-port.md)。
 
 ## 验证
 
