@@ -33,7 +33,7 @@ extension SystemUtility {
             _ = try axManager.findMenuItem(.paste, requireEnabled: true)
             return true
         } catch {
-            logInfo("Paste menu item is not available or not enabled: \(error)")
+            logInfo("Paste menu item unavailable category=accessibility")
             return false
         }
     }
@@ -45,7 +45,7 @@ extension SystemUtility {
     func isFocusedSelectableTextElement() -> Bool {
         do {
             guard let focusedUIElement = try frontmostAppElement?.focusedUIElement() else {
-                logInfo("No focused UI element found: \(String(describing: frontmostAppElement)), treat as selectable")
+                logInfo("No focused UI element found; treating context as selectable")
                 return true
             }
 
@@ -70,24 +70,41 @@ extension SystemUtility {
             logInfo("Focused UI element not selectable text role: \(roleValue ?? "nil")")
             return false
         } catch {
-            logError("Error accessing focused UI element: \(error)")
+            logError("Access focused UI element failed category=accessibility")
             return false
         }
     }
 
-    /// Replace text in current focused text field with optional range support
+    /// Replace text in a captured text field and report whether readback verified the mutation.
     /// - Parameters:
-    ///   - text: The replacement text
-    func insertTextByAX(_ text: String) {
-        do {
-            guard let element = try focusedTextFieldElement() else {
-                return
-            }
+    ///   - text: The replacement text.
+    ///   - element: The Accessibility element captured before the provider request began.
+    /// - Returns: The strongest confirmation available from the target process.
+    func insertTextByAX(_ text: String, element: UIElement) throws
+        -> TextInsertionConfidence {
+        let previousText: String? = try? element.value()
+        let selectedRange = try? element.selectedTextRange()
 
-            try element.setAttribute(.selectedText, value: text)
-        } catch {
-            logError("Failed to insert text by AX: \(error.localizedDescription)")
+        try element.setAttribute(.selectedText, value: text)
+
+        guard let previousText,
+              let selectedRange,
+              selectedRange.location >= 0,
+              selectedRange.length >= 0,
+              selectedRange.location + selectedRange.length <= (previousText as NSString).length
+        else {
+            return .acceptedByTargetAPI
         }
+
+        let expectedText = NSMutableString(string: previousText)
+        expectedText.replaceCharacters(
+            in: NSRange(location: selectedRange.location, length: selectedRange.length),
+            with: text
+        )
+        let updatedText: String? = try? element.value()
+        return updatedText == expectedText as String
+            ? .verifiedMutation
+            : .acceptedByTargetAPI
     }
 
     /// Select all text in current focused text field by Accessibility API
@@ -103,7 +120,7 @@ extension SystemUtility {
             let selectedTextRange = CFRange(location: 0, length: fullText.count)
             try element.setAttribute(.selectedTextRange, value: selectedTextRange)
         } catch {
-            logError("Failed to select all by AX: \(error.localizedDescription)")
+            logError("Select all failed strategy=accessibility category=api_rejected")
         }
     }
 
@@ -124,7 +141,7 @@ extension SystemUtility {
     func focusedTextFieldElement() throws -> UIElement? {
         do {
             guard let focusedUIElement = try frontmostAppElement?.focusedUIElement() else {
-                logInfo("No focused UI element found: \(String(describing: frontmostAppElement))")
+                logInfo("No focused UI element found")
                 return nil
             }
 
@@ -139,7 +156,7 @@ extension SystemUtility {
             logInfo("Focused UI element not a text field role: \(roleValue)")
             return nil
         } catch {
-            logError("Error accessing focused UI element: \(error)")
+            logError("Access focused text element failed category=accessibility")
             return nil
         }
     }
@@ -192,7 +209,7 @@ extension SystemUtility {
         )
 
         guard error == .success, let focusedElement = focusedElementRef as! AXUIElement? else {
-            logError("Failed to get focused element, error: \(error)")
+            logError("Get focused element failed category=accessibility code=\(error.rawValue)")
             return nil
         }
 
@@ -203,7 +220,7 @@ extension SystemUtility {
             &roleValueRef
         )
         guard roleError == .success, let roleValue = roleValueRef as? String else {
-            logError("Failed to get role attribute, error: \(roleError)")
+            logError("Get focused role failed category=accessibility code=\(roleError.rawValue)")
             return nil
         }
 

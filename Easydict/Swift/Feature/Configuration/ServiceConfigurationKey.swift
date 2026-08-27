@@ -37,7 +37,7 @@ extension String {
 
 // MARK: - ServiceConfigurationKey
 
-enum ServiceConfigurationKey: String {
+enum ServiceConfigurationKey: String, CaseIterable {
     case serviceUsageStatus
     case translation
     case dictionary

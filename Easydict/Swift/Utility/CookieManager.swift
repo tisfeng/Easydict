@@ -35,7 +35,7 @@ final class CookieManager: NSObject {
     /// - Throws: Network, validation, or parameter errors
     @objc
     func requestCookie(ofURL url: String, name: String) async throws -> String? {
-        logInfo("Requesting cookie \(name) from \(url)")
+        logInfo("Requesting browser cookie (URL characters: \(url.count))")
 
         let cookies = try await requestCookies(ofURL: url)
 
@@ -61,7 +61,7 @@ final class CookieManager: NSObject {
     /// - Throws: Network or validation errors
     private func requestCookies(ofURL url: String) async throws -> [HTTPCookie]? {
         guard let url = URL(string: url) else {
-            logError("Invalid URL: \(url)")
+            logError("Invalid cookie request URL")
             throw QueryError(type: .parameter, message: "Invalid URL")
         }
 

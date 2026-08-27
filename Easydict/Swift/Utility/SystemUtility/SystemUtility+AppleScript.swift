@@ -27,12 +27,25 @@ extension SystemUtility {
         }
     }
 
-    /// Insert text using AppleScript in browser
-    func insertTextByAppleScript(_ text: String) async throws {
-        let success = try await AppleScriptTask.insertTextInBrowser(text, bundleID: frontmostAppBundleID)
-        if !success {
-            let errorMessage = "Failed to insert text using AppleScript in app: \(frontmostAppBundleID)"
-            logError(errorMessage)
+    /// Insert text using AppleScript in the browser captured when the action began.
+    func insertTextByAppleScript(
+        _ text: String,
+        bundleID: String,
+        expectedTabURL: String
+    ) async throws {
+        let result = try await AppleScriptTask.insertTextInBrowser(
+            text,
+            bundleID: bundleID,
+            expectedTabURL: expectedTabURL
+        )
+        switch result {
+        case .inserted:
+            return
+        case .contextChanged:
+            throw TextInsertionError.targetChanged
+        case .rejected:
+            let errorMessage = "Failed to insert text using AppleScript in app: \(bundleID)"
+            logError("Text insertion failed strategy=apple_script category=api_rejected")
             throw QueryError(type: .appleScript, message: errorMessage)
         }
     }

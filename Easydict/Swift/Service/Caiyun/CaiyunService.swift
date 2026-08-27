@@ -119,7 +119,6 @@ public final class CaiyunService: QueryService {
 
     private var apiEndPoint = "https://api.interpreter.caiyunai.com/v1/translator"
 
-    // easydict://writeKeyValue?EZCaiyunToken=
     private var token: String {
         let token = Defaults[.caiyunToken]
         if !token.isEmpty {

@@ -45,13 +45,13 @@ void parseArmguments(void) {
     } else {
         NSString *query_text = [[arguments firstObjectForSignature:queryTextSig] description];
         if (query_text) {
-            MMLogInfo(@"queryText: %@", query_text);
+            MMLogInfo(@"queryText characters: %lu", (unsigned long)query_text.length);
             queryText(query_text);
         }
         
         NSString *detect_text = [[arguments firstObjectForSignature:detectTextSig] description];
         if (detect_text) {
-            MMLogInfo(@"detectText: %@", detect_text);
+            MMLogInfo(@"detectText characters: %lu", (unsigned long)detect_text.length);
         }
         
         if (detect_text) {

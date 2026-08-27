@@ -112,7 +112,9 @@ struct StreamConfigurationView: View {
                     textFieldTitleKey: "service.configuration.openai.endpoint.title",
                     key: service.endpointKey,
                     placeholder: service.endpointPlaceholder,
-                    showText: true
+                    showText: true,
+                    validation: ServiceEndpointSecurityPolicy.allows,
+                    validationMessageKey: "network.endpoint.insecure_remote"
                 )
             }
 
@@ -331,7 +333,7 @@ struct StreamConfigurationView: View {
     }
 
     private func isValidEndpoint(_ endpoint: String) -> Bool {
-        URL(string: endpoint.trim())?.isValid == true
+        ServiceEndpointSecurityPolicy.allows(endpoint)
     }
 }
 

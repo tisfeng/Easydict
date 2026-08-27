@@ -77,15 +77,20 @@ class OllamaService: BaseOpenAIService {
     /// Get Ollama modles https://github.com/ollama/ollama/blob/main/docs/api.md#list-local-models
     private func localModels() async throws -> OllamaModels {
         // endpoint is http://localhost:11434/v1/chat/completions, we need url http://localhost:11434/api/tags
-        let endpointURL = URL(string: endpoint)
-        guard let endpointURL, let trueBaseURL = endpointURL.rootURL else {
+        guard let endpointURL = try? ServiceEndpointSecurityPolicy.validatedURL(endpoint),
+              let trueBaseURL = endpointURL.rootURL,
+              trueBaseURL.isAllowedServiceEndpoint
+        else {
             throw QueryError(
-                type: .parameter, message: "`\(serviceType().rawValue)` endpoint is invalid"
+                type: .parameter,
+                message: String(localized: "network.endpoint.insecure_remote")
             )
         }
 
         let modelsURL = trueBaseURL.appendingPathComponent("api/tags")
-        let dataTask = AF.request(modelsURL).serializingDecodable(OllamaModels.self)
+        let dataTask = AF.request(modelsURL)
+            .redirect(using: ServiceEndpointRequestSecurity.alamofireRedirector(for: modelsURL))
+            .serializingDecodable(OllamaModels.self)
         return try await dataTask.value
     }
 }

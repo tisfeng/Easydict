@@ -241,6 +241,257 @@ struct TextReplacementStreamTests {
         #expect(metrics == .init(chunkCount: 1, characterCount: 7))
     }
 
+    @MainActor
+    @Test("Receipt metrics preserve the weakest insertion confidence")
+    func receiptMetricsPreserveWeakestConfidence() async {
+        var insertedChunks: [String] = []
+        let receipts: [TextInsertionReceipt] = [
+            .init(strategy: .accessibility, confidence: .verifiedMutation, characterCount: 3),
+            .init(strategy: .menuAction, confidence: .dispatchedUnverified, characterCount: 2),
+            .init(strategy: .appleScript, confidence: .acceptedByTargetAPI, characterCount: 1),
+        ]
+
+        let outcome = await TextReplacementStreamConsumer().consume(
+            stream(yielding: ["one", "二三", "!"])
+        ) { chunk in
+            insertedChunks.append(chunk)
+            return receipts[insertedChunks.count - 1]
+        }
+
+        #expect(insertedChunks == ["one", "二三", "!"])
+        guard case let .completed(metrics) = outcome else {
+            Issue.record("Expected receipt-aware streaming to complete.")
+            return
+        }
+        #expect(
+            metrics == .init(
+                chunkCount: 3,
+                characterCount: 6,
+                confidence: .dispatchedUnverified
+            )
+        )
+    }
+
+    @MainActor
+    @Test("Insertion failure before the first receipt never requests provider fallback")
+    func insertionFailureBeforeFirstReceiptDoesNotFallback() async {
+        var requestedIdentifiers: [String] = []
+        var fallbackCount = 0
+
+        let execution = await TextReplacementStreamCoordinator().execute(
+            initialIdentifier: "selected",
+            fallbackIdentifier: "built-in",
+            makeSource: { identifier in
+                requestedIdentifiers.append(identifier)
+                return .init(
+                    serviceType: identifier,
+                    model: "test-model",
+                    stream: stream(yielding: ["replacement"])
+                )
+            },
+            willUseFallback: {
+                fallbackCount += 1
+            },
+            insert: { _ -> TextInsertionReceipt in
+                throw TextInsertionError.targetChanged
+            }
+        )
+
+        #expect(requestedIdentifiers == ["selected"])
+        #expect(fallbackCount == 0)
+        #expect(!execution.didFallback)
+        guard case let .insertionFailed(metrics, error) = execution.finalOutcome else {
+            Issue.record("Expected a target-change insertion failure.")
+            return
+        }
+        #expect(metrics == .zero)
+        #expect(error == .targetChanged)
+    }
+
+    @MainActor
+    @Test("Insertion failure after a receipt preserves partial metrics without fallback")
+    func insertionFailureAfterReceiptPreservesPartialMetrics() async {
+        var insertedChunks: [String] = []
+
+        let execution = await TextReplacementStreamCoordinator().execute(
+            initialIdentifier: "selected",
+            fallbackIdentifier: "built-in",
+            makeSource: { identifier in
+                .init(
+                    serviceType: identifier,
+                    model: "test-model",
+                    stream: stream(yielding: ["kept", "failed"])
+                )
+            },
+            insert: { chunk -> TextInsertionReceipt in
+                insertedChunks.append(chunk)
+                if chunk == "failed" {
+                    throw TextInsertionError.apiRejected(.accessibility)
+                }
+                return .init(
+                    strategy: .accessibility,
+                    confidence: .verifiedMutation,
+                    characterCount: chunk.count
+                )
+            }
+        )
+
+        #expect(insertedChunks == ["kept", "failed"])
+        #expect(!execution.didFallback)
+        guard case let .insertionFailed(metrics, error) = execution.finalOutcome else {
+            Issue.record("Expected a partial insertion failure.")
+            return
+        }
+        #expect(
+            metrics == .init(
+                chunkCount: 1,
+                characterCount: 4,
+                confidence: .verifiedMutation
+            )
+        )
+        #expect(error == .apiRejected(.accessibility))
+    }
+
+    @MainActor
+    @Test("Receipt-aware provider failure falls back only before insertion")
+    func receiptAwareProviderFailureFallsBackBeforeInsertion() async {
+        var requestedIdentifiers: [String] = []
+
+        let execution = await TextReplacementStreamCoordinator().execute(
+            initialIdentifier: "selected",
+            fallbackIdentifier: "built-in",
+            makeSource: { identifier in
+                requestedIdentifiers.append(identifier)
+                return .init(
+                    serviceType: identifier,
+                    model: "test-model",
+                    stream: identifier == "selected"
+                        ? stream(yielding: [], thenThrowing: TestStreamError.providerFailure)
+                        : stream(yielding: ["fallback"])
+                )
+            },
+            insert: { chunk -> TextInsertionReceipt in
+                .init(
+                    strategy: .appleScript,
+                    confidence: .acceptedByTargetAPI,
+                    characterCount: chunk.count
+                )
+            }
+        )
+
+        #expect(requestedIdentifiers == ["selected", "built-in"])
+        #expect(execution.didFallback)
+        guard case let .completed(metrics) = execution.finalOutcome else {
+            Issue.record("Expected the receipt-aware fallback attempt to complete.")
+            return
+        }
+        #expect(
+            metrics == .init(
+                chunkCount: 1,
+                characterCount: 8,
+                confidence: .acceptedByTargetAPI
+            )
+        )
+    }
+
+    @MainActor
+    @Test("Receipt-aware partial provider output never falls back")
+    func receiptAwarePartialProviderOutputDoesNotFallback() async {
+        var requestedIdentifiers: [String] = []
+
+        let execution = await TextReplacementStreamCoordinator().execute(
+            initialIdentifier: "selected",
+            fallbackIdentifier: "built-in",
+            makeSource: { identifier in
+                requestedIdentifiers.append(identifier)
+                return .init(
+                    serviceType: identifier,
+                    model: "test-model",
+                    stream: stream(
+                        yielding: ["partial"],
+                        thenThrowing: TestStreamError.providerFailure
+                    )
+                )
+            },
+            insert: { chunk -> TextInsertionReceipt in
+                .init(
+                    strategy: .menuAction,
+                    confidence: .dispatchedUnverified,
+                    characterCount: chunk.count
+                )
+            }
+        )
+
+        #expect(requestedIdentifiers == ["selected"])
+        #expect(!execution.didFallback)
+        guard case let .interrupted(metrics, error) = execution.finalOutcome else {
+            Issue.record("Expected a receipt-aware partial provider interruption.")
+            return
+        }
+        #expect(error is TestStreamError)
+        #expect(
+            metrics == .init(
+                chunkCount: 1,
+                characterCount: 7,
+                confidence: .dispatchedUnverified
+            )
+        )
+    }
+
+    @MainActor
+    @Test("Unknown insertion errors are reduced to a safe dispatch category")
+    func unknownInsertionErrorsUseSafeCategory() async {
+        let outcome = await TextReplacementStreamConsumer().consume(
+            stream(yielding: ["replacement"])
+        ) { _ -> TextInsertionReceipt in
+            throw TestStreamError.providerFailure
+        }
+
+        guard case let .insertionFailed(metrics, error) = outcome else {
+            Issue.record("Expected an insertion failure for an unknown local error.")
+            return
+        }
+        #expect(metrics == .zero)
+        #expect(error == .dispatchFailed(.auto))
+    }
+
+    @Test("Insertion target rejects missing and changed processes")
+    func insertionTargetValidatesProcessIdentity() throws {
+        let target = TextInsertionTarget(
+            processIdentifier: 42,
+            bundleIdentifier: "com.example.editor"
+        )
+
+        try target.validate(processIdentifier: 42)
+        #expect(throws: TextInsertionError.targetUnavailable) {
+            try target.validate(processIdentifier: nil)
+        }
+        #expect(throws: TextInsertionError.targetChanged) {
+            try target.validate(processIdentifier: 43)
+        }
+    }
+
+    @Test("Insertion logs contain confidence and category without generated text")
+    func insertionLogsContainSafeReceiptMetadata() {
+        let generatedText = "PRIVATE_GENERATED_TEXT_MUST_NOT_APPEAR"
+        let metrics = TextReplacementStreamMetrics(
+            chunkCount: 1,
+            characterCount: generatedText.count,
+            confidence: .dispatchedUnverified
+        )
+        let message = TextReplacementLogFormatter.message(
+            action: .polish,
+            serviceType: ServiceType.customOpenAI.rawValue,
+            model: "test-model",
+            outcome: .insertionFailed(metrics, .targetChanged)
+        )
+
+        #expect(message.contains("insertion_failed"))
+        #expect(message.contains("confidence=dispatched_unverified"))
+        #expect(message.contains("category=target_changed"))
+        #expect(!message.contains(generatedText))
+    }
+
     @Test("Safe logs categorize errors without echoing provider payloads")
     func safeLogsDoNotEchoProviderPayloads() {
         let sensitivePayload = "Authorization: Bearer secret-key; source=private selected text"

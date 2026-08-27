@@ -508,6 +508,31 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }];
 }
 
+- (void)prepareReplayQueryText:(NSString *)text
+                sourceLanguage:(EZLanguage)sourceLanguage
+                targetLanguage:(EZLanguage)targetLanguage
+                    actionType:(EZActionType)actionType {
+    [self updateQueryTextAndParagraphStyle:text actionType:actionType];
+    self.inputText = text;
+
+    // Input updates mark detection as pending. Override only this query model after that update so
+    // Defaults and later query windows retain the user's preferences.
+    self.queryModel.userSourceLanguage = sourceLanguage;
+    self.queryModel.userTargetLanguage = targetLanguage;
+
+    // A prior manual override for identical text must not suppress `.auto` replay detection or
+    // replace the explicit language stored in this record.
+    [self.queryModel.specifiedTextLanguageDict removeObjectForKey:self.queryModel.queryText ?: @""];
+
+    BOOL needsDetection = [sourceLanguage isEqualToString:EZLanguageAuto];
+    self.queryModel.detectedLanguage = needsDetection ? EZLanguageAuto : sourceLanguage;
+    self.queryModel.needDetectLanguage = needsDetection;
+    self.queryModel.showAutoLanguage = text.length > 0;
+
+    [self cancelDelayDetectQueryText];
+    [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
+}
+
 /// Handle Easydict scheme.
 - (BOOL)handleEasydictScheme:(NSString *)text {
     BOOL isEasydictScheme = [self.schemeParser isEasydictScheme:text];
@@ -524,6 +549,13 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         [EZToast showToast:message];
 
         if (!isSuccess) {
+            return;
+        }
+
+        // Confirmation-only configuration actions must not mutate the active query window.
+        // The settings flow owns their eventual side effects after explicit user approval.
+        if ([actionKey isEqualToString:EZResetUserDefaultsDataKey] ||
+            [actionKey isEqualToString:EZSaveUserDefaultsDataToDownloadFolderKey]) {
             return;
         }
 
@@ -559,7 +591,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         mm_strongify(self);
         // !!!: inputText should be used here, not queryText, queryText may be modified, such as easydict://query?text=xxx
         NSString *inputText = queryModel.inputText;
-        MMLogInfo(@"ocr result: %@", inputText);
+        MMLogInfo(@"ocr result characters: %lu", (unsigned long)inputText.length);
 
         NSDictionary *dict = @{
             @"detectedLanguage" : queryModel.detectedLanguage,
@@ -849,7 +881,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
-    MMLogInfo(@"query text: %@", self.queryText.truncated);
+    MMLogInfo(@"query text characters: %lu", (unsigned long)self.queryText.length);
 
     // !!!: Reset all result before new query.
     [self resetAllResults];
@@ -898,7 +930,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     NSString *queryText = [queryModel.queryText copy];
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
         if (error) {
-            MMLogError(@"service: %@, query error: %@", service.serviceType, error);
+            MMLogError(@"service: %@, query error code: %ld", service.serviceType, (long)error.code);
         }
         result.error = [EZQueryError queryErrorFrom:error];
 
@@ -1961,7 +1993,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
-    MMLogInfo(@"Auto play English word audio: %@", self.queryText);
+    MMLogInfo(@"Auto play English word audio, queryCharacters: %lu", (unsigned long)self.queryText.length);
     [self togglePlayQueryText:YES];
 }
 

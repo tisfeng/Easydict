@@ -92,7 +92,7 @@ BOOL EZResultShouldRenderDictionaryHTML(EZQueryResult *result) {
     if ([message.name isEqualToString:kObjcHandler]) {
         if ([body[kMethod] isEqualToString:@"consoleLog"]) {
             NSString *message = body[@"message"];
-            MMLogInfo(@"<javascript log>: %@", message);
+            MMLogInfo(@"<javascript log> characters: %lu", (unsigned long)message.length);
         }
         
         if ([body[kMethod] isEqualToString:@"noteToUpdateScrollHeight"]) {
@@ -169,7 +169,7 @@ BOOL EZResultShouldRenderDictionaryHTML(EZQueryResult *result) {
         }
 
         if (error) {
-            MMLogError(@"updateAllIframe failed: %@", error);
+            MMLogError(@"Update web view frames failed category=javascript code=%ld", (long)error.code);
         }
         self.isUpdatingIframe = NO;
         if (self.needUpdateIframeHeight) {

@@ -53,12 +53,9 @@
 
     // good / girl
     [routes addRoute:@"*" handler:^BOOL(NSDictionary *parameters) {
-        MMLogInfo(@"parameters: %@", parameters);
-
         NSURL *URL = parameters[JLRouteURLKey];
-        MMLogInfo(@"URL: %@", URL);
-
         NSString *queryText = [self extractQueryTextFromURL:URL];
+        MMLogInfo(@"Handle wildcard URL route, queryCharacters: %lu", (unsigned long)queryText.length);
         [self showFloatingWindowAndAutoQueryText:queryText];
 
         return YES;
@@ -85,6 +82,30 @@
 
 - (void)handleURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
     NSString *urlString = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
+    EZSchemeParser *schemeParser = [EZSchemeParser new];
+    NSURLComponents *rawComponents = [NSURLComponents componentsWithString:urlString];
+    NSSet<NSString *> *configurationActions = [NSSet setWithArray:@[
+        EZWriteKeyValueKey,
+        EZReadValueOfKeyKey,
+        EZResetUserDefaultsDataKey,
+        EZSaveUserDefaultsDataToDownloadFolderKey,
+    ]];
+
+    // Preserve the complete encoded configuration query and enforce the central allowlist.
+    // JLRoutes otherwise turns only the action name into ordinary lookup text.
+    if ([schemeParser isEasydictScheme:urlString] &&
+        [configurationActions containsObject:rawComponents.host]) {
+        [schemeParser openURLScheme:urlString completion:^(BOOL isSuccess, NSString *_Nullable returnValue, NSString *_Nullable actionKey) {
+            NSString *message = returnValue.length > 0 ? returnValue : (isSuccess ? @"Success" : @"Failed");
+            [EZToast showToast:message];
+
+            if (isSuccess && [schemeParser isWriteActionKey:actionKey]) {
+                [NSNotificationCenter.defaultCenter postServiceUpdateNotification];
+            }
+        }];
+        return;
+    }
+
     /**
      We need to encode the URL to avoid JLRoutes routing failures. PopClip
 
@@ -108,7 +129,7 @@
 
     // easydict://query?text=good, easydict://query?text=你好
     if ([URL.scheme containsString:EZAppScheme]) {
-        MMLogInfo(@"handle URL: %@", URL);
+        MMLogInfo(@"Handle Easydict URL action: %@", URL.host ?: @"<none>");
     }
 
     [JLRoutes routeURL:URL];

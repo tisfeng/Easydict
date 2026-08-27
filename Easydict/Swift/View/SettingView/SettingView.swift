@@ -69,6 +69,26 @@ struct SettingView: View {
         .onChange(of: selection) { _ in
             resizeWindowFrame()
         }
+        .onReceive(schemeActionCoordinator.$pendingAction) { action in
+            switch action {
+            case .encryptedExport:
+                selection = .privacy
+            case .reset:
+                isResetConfirmationPresented = true
+            case .none:
+                break
+            }
+        }
+        .alert("configuration.reset.confirmation.title", isPresented: $isResetConfirmationPresented) {
+            Button("cancel", role: .cancel) {
+                schemeActionCoordinator.consume(.reset)
+            }
+            Button("configuration.reset.confirmation.action", role: .destructive) {
+                resetConfiguration()
+            }
+        } message: {
+            Text("configuration.reset.confirmation.message")
+        }
     }
 
     func resizeWindowFrame() {
@@ -83,7 +103,7 @@ struct SettingView: View {
         case .disabled:
             500
         case .privacy:
-            340
+            560
         case .about:
             300
         case .favorites:
@@ -113,6 +133,16 @@ struct SettingView: View {
 
     @State private var selection = SettingTab.general
     @State private var window: NSWindow?
+    @State private var isResetConfirmationPresented = false
+    @ObservedObject private var schemeActionCoordinator = ConfigurationSchemeActionCoordinator.shared
+
+    private func resetConfiguration() {
+        MyConfiguration.shared.resetUserDefaultsData()
+        LocalStorage.destroySharedInstance()
+        MyConfiguration.destroySharedInstance()
+        NotificationCenter.default.postServiceUpdateNotification()
+        schemeActionCoordinator.consume(.reset)
+    }
 }
 
 #Preview {

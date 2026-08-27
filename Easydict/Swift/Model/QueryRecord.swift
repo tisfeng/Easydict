@@ -48,3 +48,22 @@ struct QueryRecord: Codable, Identifiable, Hashable, Defaults.Serializable {
         hasher.combine(id)
     }
 }
+
+// MARK: - QueryReplayRequest
+
+/// Carries the complete per-query state needed to replay a saved record without changing defaults.
+struct QueryReplayRequest {
+    // MARK: Lifecycle
+
+    init(record: QueryRecord) {
+        self.text = record.queryText
+        self.sourceLanguage = record.queryFromLanguage
+        self.targetLanguage = record.queryToLanguage
+    }
+
+    // MARK: Internal
+
+    let text: String
+    let sourceLanguage: Language
+    let targetLanguage: Language
+}

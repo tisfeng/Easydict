@@ -148,12 +148,10 @@ public final class TencentService: QueryService {
 
     // MARK: Private
 
-    // easydict://writeKeyValue?EZTencentSecretId=xxx
     private var secretId: String {
         Defaults[.tencentSecretId]
     }
 
-    // easydict://writeKeyValue?EZTencentSecretKey=xxx
     private var secretKey: String {
         Defaults[.tencentSecretKey]
     }

@@ -19,12 +19,16 @@ struct SecureInputCell: View {
         textFieldTitleKey: LocalizedStringKey,
         key: Defaults.Key<String>,
         placeholder: String = String(localized: "service.configuration.input.placeholder"),
-        showText: Bool = false
+        showText: Bool = false,
+        validation: ((String) -> Bool)? = nil,
+        validationMessageKey: LocalizedStringKey? = nil
     ) {
         self.textFieldTitleKey = textFieldTitleKey
         self.placeholder = placeholder
         _value = .init(key)
         self.showText = showText
+        self.validation = validation
+        self.validationMessageKey = validationMessageKey
     }
 
     // MARK: Internal
@@ -34,9 +38,18 @@ struct SecureInputCell: View {
     @Default var value: String
     let textFieldTitleKey: LocalizedStringKey
     let placeholder: String
+    let validation: ((String) -> Bool)?
+    let validationMessageKey: LocalizedStringKey?
 
     var body: some View {
-        SecureTextField(title: textFieldTitleKey, placeholder: placeholder, text: $value, showText: showText)
+        VStack(alignment: .leading, spacing: 4) {
+            SecureTextField(title: textFieldTitleKey, placeholder: placeholder, text: $value, showText: showText)
+            if let validation, !validation(value), let validationMessageKey {
+                Text(validationMessageKey)
+                    .font(.footnote)
+                    .foregroundStyle(.red)
+            }
+        }
     }
 }
 
@@ -49,12 +62,16 @@ struct InputCell: View {
         textFieldTitleKey: LocalizedStringKey,
         key: Defaults.Key<String>,
         placeholder: LocalizedStringKey,
-        limitLength: Int = Int.max
+        limitLength: Int = Int.max,
+        validation: ((String) -> Bool)? = nil,
+        validationMessageKey: LocalizedStringKey? = nil
     ) {
         self.textFieldTitleKey = textFieldTitleKey
         self.placeholder = placeholder
         _value = .init(key)
         self.limitLength = limitLength
+        self.validation = validation
+        self.validationMessageKey = validationMessageKey
     }
 
     // MARK: Internal
@@ -62,14 +79,23 @@ struct InputCell: View {
     @Default var value: String
     let textFieldTitleKey: LocalizedStringKey
     let placeholder: LocalizedStringKey
+    let validation: ((String) -> Bool)?
+    let validationMessageKey: LocalizedStringKey?
 
     var limitLength: Int
 
     var body: some View {
-        TextField(textFieldTitleKey, text: $value, prompt: Text(placeholder))
-            .onReceive(Just(value)) { _ in
-                limit(limitLength)
+        VStack(alignment: .leading, spacing: 4) {
+            TextField(textFieldTitleKey, text: $value, prompt: Text(placeholder))
+                .onReceive(Just(value)) { _ in
+                    limit(limitLength)
+                }
+            if let validation, !value.isEmpty, !validation(value), let validationMessageKey {
+                Text(validationMessageKey)
+                    .font(.footnote)
+                    .foregroundStyle(.red)
             }
+        }
     }
 
     // MARK: Private

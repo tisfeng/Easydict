@@ -30,7 +30,9 @@ class DeepLService: QueryService {
             InputCell(
                 textFieldTitleKey: "service.configuration.deepl.endpoint.title",
                 key: .deepLTranslateEndPointKey,
-                placeholder: "service.configuration.deepl.endpoint.placeholder"
+                placeholder: "service.configuration.deepl.endpoint.placeholder",
+                validation: ServiceEndpointSecurityPolicy.allows,
+                validationMessageKey: "network.endpoint.insecure_remote"
             )
 
             StaticPickerCell(
@@ -168,17 +170,14 @@ class DeepLService: QueryService {
     // MARK: - Private Properties
 
     private var authKey: String {
-        // easydict://writeKeyValue?EZDeepLAuthKey=xxx
         Defaults[.deepLAuth]
     }
 
     private var apiType: DeepLAPIUsagePriority {
-        // easydict://writeKeyValue?EZDeepLTranslationAPIKey=xxx
         Defaults[.deepLTranslation]
     }
 
     private var deepLTranslateEndPoint: String {
-        // easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
         Defaults[.deepLTranslateEndPointKey]
     }
 }

@@ -39,6 +39,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)resetQueryModelForBackgroundOCR;
 
 - (void)startQueryText:(nullable NSString *)text actionType:(EZActionType)actionType;
+
+/// Prepare a saved query's text and language pair without updating global defaults.
+- (void)prepareReplayQueryText:(NSString *)text
+                sourceLanguage:(EZLanguage)sourceLanguage
+                targetLanguage:(EZLanguage)targetLanguage
+                    actionType:(EZActionType)actionType;
+
 - (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType autoQuery:(BOOL)autoQuery;
 
 - (void)retryQueryWithLanguage:(EZLanguage)language;

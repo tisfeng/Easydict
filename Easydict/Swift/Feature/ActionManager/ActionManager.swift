@@ -13,12 +13,33 @@ import SelectedTextKit
 
 // MARK: - TextReplacementStreamMetrics
 
-/// Counts only non-empty response chunks that were handed to the existing insertion strategy.
+/// Counts only chunks acknowledged by insertion and preserves the weakest confirmation received.
 struct TextReplacementStreamMetrics: Equatable {
+    // MARK: Lifecycle
+
+    init(
+        chunkCount: Int,
+        characterCount: Int,
+        confidence: TextInsertionConfidence? = nil
+    ) {
+        self.chunkCount = chunkCount
+        self.characterCount = characterCount
+        self.confidence = confidence
+    }
+
+    // MARK: Internal
+
     static let zero = TextReplacementStreamMetrics(chunkCount: 0, characterCount: 0)
 
     var chunkCount: Int
     var characterCount: Int
+    var confidence: TextInsertionConfidence?
+
+    mutating func record(_ receipt: TextInsertionReceipt) {
+        chunkCount += 1
+        characterCount += receipt.characterCount
+        confidence = confidence.map { min($0, receipt.confidence) } ?? receipt.confidence
+    }
 }
 
 // MARK: - TextReplacementStreamOutcome
@@ -29,6 +50,7 @@ enum TextReplacementStreamOutcome {
     case empty
     case failedBeforeFirstChunk(Error)
     case interrupted(TextReplacementStreamMetrics, Error)
+    case insertionFailed(TextReplacementStreamMetrics, TextInsertionError)
     case cancelled(TextReplacementStreamMetrics)
 
     // MARK: Internal
@@ -37,6 +59,7 @@ enum TextReplacementStreamOutcome {
         switch self {
         case let .cancelled(metrics),
              let .completed(metrics),
+             let .insertionFailed(metrics, _),
              let .interrupted(metrics, _):
             metrics
         case .empty, .failedBeforeFirstChunk:
@@ -160,31 +183,35 @@ enum TextReplacementLogFormatter {
     )
         -> String {
         let status: String
-        let category: TextReplacementErrorCategory
+        let category: String
 
         switch outcome {
         case .completed:
             status = "completed"
-            category = .none
+            category = TextReplacementErrorCategory.none.rawValue
         case .empty:
             status = "failed"
-            category = .emptyResponse
+            category = TextReplacementErrorCategory.emptyResponse.rawValue
         case let .failedBeforeFirstChunk(error):
             status = "failed"
-            category = .init(error: error)
+            category = TextReplacementErrorCategory(error: error).rawValue
         case let .interrupted(_, error):
             status = "interrupted"
-            category = .init(error: error)
+            category = TextReplacementErrorCategory(error: error).rawValue
+        case let .insertionFailed(_, error):
+            status = "insertion_failed"
+            category = error.logCategory
         case .cancelled:
             status = "cancelled"
-            category = .cancelled
+            category = TextReplacementErrorCategory.cancelled.rawValue
         }
 
         let metrics = outcome.metrics
+        let confidence = metrics.confidence?.logValue ?? "none"
         return "Text replacement \(status) action=\(action.rawValue) " +
             "service=\(serviceType) model=\(sanitizedModel(model)) " +
             "chunks=\(metrics.chunkCount) characters=\(metrics.characterCount) " +
-            "category=\(category.rawValue)"
+            "confidence=\(confidence) category=\(category)"
     }
 
     // MARK: Private
@@ -202,6 +229,45 @@ enum TextReplacementLogFormatter {
 
 /// Consumes one provider stream and inserts each non-empty chunk immediately on the main actor.
 struct TextReplacementStreamConsumer {
+    /// Consume a provider stream using an insertion boundary that can fail independently.
+    @MainActor
+    func consume(
+        _ contentStream: AsyncThrowingStream<String, Error>,
+        insert: (String) async throws -> TextInsertionReceipt
+    ) async
+        -> TextReplacementStreamOutcome {
+        var metrics = TextReplacementStreamMetrics.zero
+
+        do {
+            try Task.checkCancellation()
+            for try await content in contentStream {
+                try Task.checkCancellation()
+                guard !content.isEmpty else { continue }
+
+                do {
+                    let receipt = try await insert(content)
+                    metrics.record(receipt)
+                } catch is CancellationError {
+                    throw CancellationError()
+                } catch let error as TextInsertionError {
+                    return .insertionFailed(metrics, error)
+                } catch {
+                    return .insertionFailed(metrics, .dispatchFailed(.auto))
+                }
+            }
+            try Task.checkCancellation()
+            return metrics.chunkCount == 0 ? .empty : .completed(metrics)
+        } catch is CancellationError {
+            return .cancelled(metrics)
+        } catch {
+            if metrics.chunkCount == 0 {
+                return .failedBeforeFirstChunk(error)
+            }
+            return .interrupted(metrics, error)
+        }
+    }
+
+    /// Compatibility overload for callers that intentionally cannot report insertion outcomes.
     @MainActor
     func consume(
         _ contentStream: AsyncThrowingStream<String, Error>,
@@ -245,10 +311,10 @@ struct TextReplacementStreamCoordinator {
         fallbackIdentifier: String,
         makeSource: (String) async -> TextReplacementStreamSource,
         willUseFallback: () -> () = {},
-        insert: (String) async -> ()
+        insert: (String) async throws -> TextInsertionReceipt
     ) async
         -> TextReplacementStreamExecution {
-        let firstAttempt = await makeAttempt(
+        let firstAttempt = await makeReceiptAttempt(
             identifier: initialIdentifier,
             makeSource: makeSource,
             insert: insert
@@ -263,7 +329,41 @@ struct TextReplacementStreamCoordinator {
         }
 
         willUseFallback()
-        let fallbackAttempt = await makeAttempt(
+        let fallbackAttempt = await makeReceiptAttempt(
+            identifier: fallbackIdentifier,
+            makeSource: makeSource,
+            insert: insert
+        )
+        attempts.append(fallbackAttempt)
+        return TextReplacementStreamExecution(attempts: attempts)
+    }
+
+    /// Compatibility overload for callers that do not yet expose insertion receipts.
+    @MainActor
+    func execute(
+        initialIdentifier: String,
+        fallbackIdentifier: String,
+        makeSource: (String) async -> TextReplacementStreamSource,
+        willUseFallback: () -> () = {},
+        insert: (String) async -> ()
+    ) async
+        -> TextReplacementStreamExecution {
+        let firstAttempt = await makeLegacyAttempt(
+            identifier: initialIdentifier,
+            makeSource: makeSource,
+            insert: insert
+        )
+        var attempts = [firstAttempt]
+
+        guard initialIdentifier != fallbackIdentifier,
+              !Task.isCancelled,
+              shouldFallback(after: firstAttempt.outcome)
+        else {
+            return TextReplacementStreamExecution(attempts: attempts)
+        }
+
+        willUseFallback()
+        let fallbackAttempt = await makeLegacyAttempt(
             identifier: fallbackIdentifier,
             makeSource: makeSource,
             insert: insert
@@ -275,10 +375,10 @@ struct TextReplacementStreamCoordinator {
     // MARK: Private
 
     @MainActor
-    private func makeAttempt(
+    private func makeReceiptAttempt(
         identifier: String,
         makeSource: (String) async -> TextReplacementStreamSource,
-        insert: (String) async -> ()
+        insert: (String) async throws -> TextInsertionReceipt
     ) async
         -> TextReplacementStreamExecution.Attempt {
         let source = await makeSource(identifier)
@@ -298,9 +398,29 @@ struct TextReplacementStreamCoordinator {
         switch outcome {
         case .empty, .failedBeforeFirstChunk:
             true
-        case .cancelled, .completed, .interrupted:
+        case .cancelled, .completed, .insertionFailed, .interrupted:
             false
         }
+    }
+
+    @MainActor
+    private func makeLegacyAttempt(
+        identifier: String,
+        makeSource: (String) async -> TextReplacementStreamSource,
+        insert: (String) async -> ()
+    ) async
+        -> TextReplacementStreamExecution.Attempt {
+        let source = await makeSource(identifier)
+        let outcome = await TextReplacementStreamConsumer().consume(
+            source.stream,
+            insert: insert
+        )
+        return .init(
+            identifier: identifier,
+            serviceType: source.serviceType,
+            model: source.model,
+            outcome: outcome
+        )
     }
 }
 
@@ -309,6 +429,58 @@ struct TextReplacementStreamCoordinator {
 /// Represents local action setup failures without carrying selected text or provider payloads.
 enum TextReplacementActionError: Error {
     case serviceUnavailable
+}
+
+// MARK: - TextReplacementNotice
+
+/// Maps replacement states to static String Catalog keys.
+enum TextReplacementNotice {
+    case accessibilityPermissionRequired
+    case insertionFailed
+    case languageDetectionFailed
+    case noInsertionStrategy
+    case noText
+    case partialInsertionFailed
+    case requestFailed
+    case responseInterrupted
+    case targetChanged
+    case unverifiedInsertion
+
+    // MARK: Internal
+
+    var text: String {
+        switch self {
+        case .accessibilityPermissionRequired:
+            NSLocalizedString(
+                "text_replacement.notice.accessibility_permission_required",
+                comment: ""
+            )
+        case .insertionFailed:
+            NSLocalizedString("text_replacement.notice.insertion_failed", comment: "")
+        case .languageDetectionFailed:
+            NSLocalizedString(
+                "text_replacement.notice.language_detection_failed",
+                comment: ""
+            )
+        case .noInsertionStrategy:
+            NSLocalizedString("text_replacement.notice.no_insertion_strategy", comment: "")
+        case .noText:
+            NSLocalizedString("text_replacement.notice.no_text", comment: "")
+        case .partialInsertionFailed:
+            NSLocalizedString(
+                "text_replacement.notice.partial_insertion_failed",
+                comment: ""
+            )
+        case .requestFailed:
+            NSLocalizedString("text_replacement.notice.request_failed", comment: "")
+        case .responseInterrupted:
+            NSLocalizedString("text_replacement.notice.response_interrupted", comment: "")
+        case .targetChanged:
+            NSLocalizedString("text_replacement.notice.target_changed", comment: "")
+        case .unverifiedInsertion:
+            NSLocalizedString("text_replacement.notice.unverified_insertion", comment: "")
+        }
+    }
 }
 
 // MARK: - ActionManager
@@ -329,13 +501,13 @@ class ActionManager: NSObject {
     /// Translate selected text and replace it with the translation result
     func translateAndReplace() async {
         logInfo("Translate and Replace")
-        await executeTextReplacementAction(.translate)
+        await runSingleTextReplacementAction(.translate)
     }
 
     /// Polish selected text and replace it with the polished result
     func polishAndReplace() async {
         logInfo("Polish and Replace")
-        await executeTextReplacementAction(.polish)
+        await runSingleTextReplacementAction(.polish)
     }
 
     // MARK: Private
@@ -344,21 +516,86 @@ class ActionManager: NSObject {
     private let streamCoordinator = TextReplacementStreamCoordinator()
     private let systemUtility = SystemUtility.shared
 
+    @MainActor private var activeTextReplacementGeneration = UUID()
+    @MainActor private var activeTextReplacementTask: Task<(), Never>?
+
     // MARK: - Core Action Methods
 
-    /// Common method to execute text replacement actions
+    /// Cancels and drains the prior replacement task before binding a new target.
+    @MainActor
+    private func runSingleTextReplacementAction(_ action: TextReplacementAction) async {
+        let generation = UUID()
+        activeTextReplacementGeneration = generation
+
+        let previousTask = activeTextReplacementTask
+        previousTask?.cancel()
+        await previousTask?.value
+
+        guard activeTextReplacementGeneration == generation else {
+            return
+        }
+
+        let task = Task<(), Never> { [weak self] in
+            guard let self else { return }
+            await executeTextReplacementAction(action)
+        }
+        activeTextReplacementTask = task
+        await task.value
+
+        if activeTextReplacementGeneration == generation {
+            activeTextReplacementTask = nil
+        }
+    }
+
+    /// Common method to execute text replacement actions.
+    @MainActor
     private func executeTextReplacementAction(_ action: TextReplacementAction) async {
+        guard !Task.isCancelled else { return }
+
+        let insertionTarget: TextInsertionTarget
+        do {
+            insertionTarget = try systemUtility.captureTextInsertionTarget()
+        } catch let error as TextInsertionError {
+            logError("Text replacement setup failed category=\(error.logCategory)")
+            showSetupFailureNotice(error)
+            return
+        } catch {
+            logError("Text replacement setup failed category=unknown")
+            showNotice(.noInsertionStrategy)
+            return
+        }
+
         let enableSelectAll = Defaults[.autoSelectAllTextFieldText]
         let elementInfo = await systemUtility.focusedElementInfo(enableSelectAll: enableSelectAll)
+        guard !Task.isCancelled else { return }
 
-        // Prepare translation request
         var queryText = elementInfo.focusedText
         if queryText?.isEmpty ?? true {
             queryText = await systemUtility.getSelectedText()
         }
+        guard !Task.isCancelled else { return }
 
         guard let queryText, !queryText.isEmpty else {
             logInfo("No text selected or focused for \(action.rawValue), skipping action")
+            showNotice(.noText)
+            return
+        }
+
+        let insertionSession: any TextInsertionSession
+        do {
+            insertionSession = try await systemUtility.makeTextInsertionSession(
+                for: elementInfo,
+                target: insertionTarget
+            )
+        } catch is CancellationError {
+            return
+        } catch let error as TextInsertionError {
+            logError("Text replacement setup failed category=\(error.logCategory)")
+            showSetupFailureNotice(error)
+            return
+        } catch {
+            logError("Text replacement setup failed category=unknown")
+            showNotice(.noInsertionStrategy)
             return
         }
 
@@ -370,6 +607,7 @@ class ActionManager: NSObject {
         ) else {
             return
         }
+        guard !Task.isCancelled else { return }
 
         let promptContext = TextReplacementPromptContext(
             action: action,
@@ -380,7 +618,7 @@ class ActionManager: NSObject {
             action: action,
             promptContext: promptContext,
             selectedIdentifier: selectedIdentifier,
-            elementInfo: elementInfo
+            insertionSession: insertionSession
         )
     }
 
@@ -392,6 +630,7 @@ class ActionManager: NSObject {
     ///   - serviceIdentifier: Full configured service identifier.
     ///   - action: Translation or polishing behavior.
     /// - Returns: A configured TranslationRequest or nil if preparation fails
+    @MainActor
     private func prepareTranslationRequest(
         queryText: String,
         serviceIdentifier: String,
@@ -400,10 +639,12 @@ class ActionManager: NSObject {
         -> TranslationRequest? {
         // Detect language and target
         let queryModel = try? await DetectManager().detectText(queryText)
+        guard !Task.isCancelled else { return nil }
         guard let detectedLanguage = queryModel?.detectedLanguage,
               let targetLanguage = queryModel?.queryTargetLanguage
         else {
             logError("Failed to detect target language for \(action.rawValue) replacement")
+            showNotice(.languageDetectionFailed)
             return nil
         }
 
@@ -425,7 +666,7 @@ class ActionManager: NSObject {
         action: TextReplacementAction,
         promptContext: TextReplacementPromptContext,
         selectedIdentifier: String,
-        elementInfo: FocusedElementInfo
+        insertionSession: any TextInsertionSession
     ) async {
         let fallbackIdentifier = action.defaultServiceIdentifier
         let selection = serviceFactory.textReplacementServiceSelection(
@@ -439,18 +680,6 @@ class ActionManager: NSObject {
             showFallbackNotice()
         }
 
-        // Avoid polluting the user's pasteboard when the existing compatibility
-        // insertion strategy has to use copy and paste.
-        let pasteboard = NSPasteboard.general
-        let isSupportedAX = elementInfo.isSupportedAXElement
-        let snapshotItems = isSupportedAX ? nil : pasteboard.backupItems()
-        defer {
-            if let snapshotItems, !isSupportedAX {
-                pasteboard.restoreItems(snapshotItems)
-            }
-        }
-
-        let textStrategy = systemUtility.textStrategies(for: elementInfo)
         let execution = await streamCoordinator.execute(
             initialIdentifier: initialIdentifier,
             fallbackIdentifier: fallbackIdentifier,
@@ -466,7 +695,7 @@ class ActionManager: NSObject {
                 self.showFallbackNotice()
             },
             insert: { content in
-                await self.systemUtility.insertText(content, using: textStrategy)
+                try await insertionSession.insert(content)
             }
         )
 
@@ -541,14 +770,16 @@ class ActionManager: NSObject {
     @MainActor
     private func handleFinalOutcome(_ outcome: TextReplacementStreamOutcome) {
         switch outcome {
-        case .completed:
-            break
+        case let .completed(metrics):
+            if metrics.confidence == .dispatchedUnverified {
+                showNotice(.unverifiedInsertion)
+            }
         case .empty, .failedBeforeFirstChunk:
-            EZToast.showText(
-                NSLocalizedString("text_replacement.notice.request_failed", comment: "")
-            )
+            showNotice(.requestFailed)
         case .interrupted:
             showPartialResultNotice()
+        case let .insertionFailed(metrics, error):
+            showInsertionFailureNotice(error, hasPartialResult: metrics.chunkCount > 0)
         case let .cancelled(metrics):
             if metrics.chunkCount > 0 {
                 showPartialResultNotice()
@@ -570,7 +801,7 @@ class ActionManager: NSObject {
             switch attempt.outcome {
             case .cancelled, .completed:
                 logInfo(message)
-            case .empty, .failedBeforeFirstChunk, .interrupted:
+            case .empty, .failedBeforeFirstChunk, .insertionFailed, .interrupted:
                 logError(message)
             }
         }
@@ -585,9 +816,52 @@ class ActionManager: NSObject {
 
     @MainActor
     private func showPartialResultNotice() {
-        EZToast.showText(
-            NSLocalizedString("text_replacement.notice.response_interrupted", comment: "")
-        )
+        showNotice(.partialInsertionFailed)
+    }
+
+    @MainActor
+    private func showSetupFailureNotice(_ error: TextInsertionError) {
+        switch error {
+        case .permissionDenied:
+            showNotice(.accessibilityPermissionRequired)
+        case .targetChanged:
+            showNotice(.targetChanged)
+        case .apiRejected,
+             .dispatchFailed,
+             .noAvailableStrategy,
+             .targetUnavailable,
+             .verificationFailed:
+            showNotice(.noInsertionStrategy)
+        }
+    }
+
+    @MainActor
+    private func showInsertionFailureNotice(
+        _ error: TextInsertionError,
+        hasPartialResult: Bool
+    ) {
+        if hasPartialResult {
+            showNotice(.partialInsertionFailed)
+            return
+        }
+
+        switch error {
+        case .permissionDenied:
+            showNotice(.accessibilityPermissionRequired)
+        case .targetChanged:
+            showNotice(.targetChanged)
+        case .apiRejected,
+             .dispatchFailed,
+             .noAvailableStrategy,
+             .targetUnavailable,
+             .verificationFailed:
+            showNotice(.insertionFailed)
+        }
+    }
+
+    @MainActor
+    private func showNotice(_ notice: TextReplacementNotice) {
+        EZToast.showText(notice.text)
     }
 
     // MARK: - Action Configuration

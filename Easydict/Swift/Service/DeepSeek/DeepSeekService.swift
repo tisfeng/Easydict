@@ -74,11 +74,11 @@ class DeepSeekService: OpenAIService {
     )
         -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
-            guard let url = URL(string: endpoint), url.isValid else {
+            guard let url = try? ServiceEndpointSecurityPolicy.validatedURL(endpoint) else {
                 continuation.finish(
                     throwing: QueryError(
                         type: .parameter,
-                        message: "`\(serviceType().rawValue)` endpoint is invalid"
+                        message: String(localized: "network.endpoint.insecure_remote")
                     )
                 )
                 return
@@ -110,7 +110,10 @@ class DeepSeekService: OpenAIService {
                         messages: chatMessageDicts(chatQueryParam)
                     )
 
-                    let (asyncBytes, response) = try await URLSession.shared.bytes(for: request)
+                    let (asyncBytes, response) = try await ServiceEndpointRequestSecurity.bytes(
+                        for: request,
+                        originalURL: url
+                    )
                     try validateHTTPResponse(response)
                     try await processStreamBytes(asyncBytes, continuation: continuation)
                     continuation.finish()

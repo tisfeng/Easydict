@@ -32,14 +32,22 @@ struct AppleScriptExecutorTests {
     @Test("Maps NSAppleScript failures to QueryError", .tags(.utilities, .unit))
     func mapsNSAppleScriptFailuresToQueryError() async {
         let executor = AppleScriptExecutor()
-        let script = "this is not valid AppleScript"
+        let canary = "PRIVATE_SCRIPT_CANARY_MUST_NOT_APPEAR"
+        let script = """
+        set privateCanary to "\(canary)"
+        this is not valid AppleScript
+        """
 
         do {
             _ = try await executor.run(script)
             Issue.record("Expected NSAppleScript execution to fail")
         } catch let error as QueryError {
             #expect(error.type == .appleScript)
-            #expect(error.errorDataMessage == script)
+            #expect(error.errorDataMessage == nil)
+            #expect(error.message?.contains(canary) != true)
+            #expect(!error.description.contains(canary))
+            #expect(!error.localizedDescription.contains(canary))
+            #expect(!error.description.contains(script))
         } catch {
             Issue.record("Unexpected error type: \(error)")
         }
@@ -51,9 +59,10 @@ struct AppleScriptExecutorTests {
         let executor = AppleScriptExecutor()
         let clock = ContinuousClock()
         let start = clock.now
+        let canary = "PRIVATE_TIMEOUT_SCRIPT_CANARY_MUST_NOT_APPEAR"
         let script = """
         delay 0.3
-        return "late"
+        return "\(canary)"
         """
 
         do {
@@ -62,7 +71,11 @@ struct AppleScriptExecutorTests {
         } catch let error as QueryError {
             #expect(error.type == .appleScript)
             #expect(error.message?.contains("timed out") == true)
-            #expect(error.errorDataMessage == script)
+            #expect(error.errorDataMessage == nil)
+            #expect(error.message?.contains(canary) != true)
+            #expect(!error.description.contains(canary))
+            #expect(!error.localizedDescription.contains(canary))
+            #expect(!error.description.contains(script))
         } catch {
             Issue.record("Unexpected error type: \(error)")
         }

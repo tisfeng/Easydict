@@ -24,8 +24,7 @@ public class AppleSpeechService: NSObject {
     )
         -> NSSpeechSynthesizer? {
         let voiceIdentifier = voiceIdentifier(for: language) ?? "com.apple.voice.compact.en-US.Samantha"
-        print("Language: \(language), Voice Identifier: \(voiceIdentifier)")
-        print("System speak: \(text)")
+        logInfo("System speech requested (characters: \(text.count), language: \(language))")
 
         let synthesizer = NSSpeechSynthesizer(voice: .init(rawValue: voiceIdentifier))
 
