@@ -51,42 +51,25 @@ private struct ServiceItemView: View {
 
             ServiceRequirementBadge(requirement: item.requirement)
 
-            ZStack {
-                if isValidating {
-                    ProgressView()
-                        .controlSize(.small)
-                } else {
-                    // Magnet can trigger a SwiftUI List(selection:) edge case where the
-                    // first click on an unselected row selects the row before Toggle sees it.
-                    // The Button handles clicks while Toggle only renders the switch.
-                    Button {
-                        toggleEnabled()
-                    } label: {
-                        Toggle(item.name, isOn: .constant(item.enabled))
-                            .labelsHidden()
-                            .toggleStyle(.switch)
-                            .controlSize(.mini)
-                            .allowsHitTesting(false)
-                    }
-                    .buttonStyle(.borderless)
-                }
+            // Magnet can trigger a SwiftUI List(selection:) edge case where the
+            // first click on an unselected row selects the row before Toggle sees it.
+            // The Button handles clicks while Toggle only renders the switch.
+            Button {
+                toggleEnabled()
+            } label: {
+                Toggle(item.name, isOn: .constant(item.enabled))
+                    .labelsHidden()
+                    .toggleStyle(.switch)
+                    .controlSize(.mini)
+                    .allowsHitTesting(false)
             }
+            .buttonStyle(.borderless)
             .frame(width: 40, alignment: .center)
         }
         .listRowSeparator(.hidden)
         .listRowInsets(.init())
         .padding(.vertical, 8)
         .contentShape(Rectangle())
-        .alert(
-            "setting.service.failed_to_enable_service \(item.name)",
-            isPresented: $showErrorAlert
-        ) {
-            Button("ok") {
-                showErrorAlert = false
-            }
-        } message: {
-            Text(error?.localizedDescription ?? "unknown_error")
-        }
         .alert(
             "service.claude_code.enable_risk_alert.title",
             isPresented: $showClaudeCodeRiskAlert
@@ -96,7 +79,7 @@ private struct ServiceItemView: View {
             }
             Button("ok") {
                 showClaudeCodeRiskAlert = false
-                enableService()
+                viewModel.setServiceEnabled(true, for: item)
             }
         } message: {
             Text("service.claude_code.enable_risk_alert.message")
@@ -110,7 +93,7 @@ private struct ServiceItemView: View {
             }
             Button("ok") {
                 showCodexCLIRiskAlert = false
-                enableService()
+                viewModel.setServiceEnabled(true, for: item)
             }
         } message: {
             Text("service.codex_cli.enable_risk_alert.message")
@@ -119,11 +102,8 @@ private struct ServiceItemView: View {
 
     // MARK: Private
 
-    @State private var isValidating = false
-    @State private var showErrorAlert = false
     @State private var showClaudeCodeRiskAlert = false
     @State private var showCodexCLIRiskAlert = false
-    @State private var error: (any Error)?
 
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
@@ -140,26 +120,7 @@ private struct ServiceItemView: View {
         } else if item.type == .codexCLI {
             showCodexCLIRiskAlert = true
         } else {
-            enableService()
-        }
-    }
-
-    private func enableService() {
-        guard item.isStream else {
             viewModel.setServiceEnabled(true, for: item)
-            return
-        }
-
-        isValidating = true
-        Task { @MainActor in
-            defer { isValidating = false }
-            do {
-                try await viewModel.validateAndEnable(item)
-            } catch {
-                logError("\(item.type.rawValue) validate error: \(error)")
-                self.error = error
-                showErrorAlert = true
-            }
         }
     }
 }

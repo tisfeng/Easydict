@@ -27,8 +27,13 @@ class SystemUtility: NSObject {
     var bundleIDAllowListForPasteMenuCheck: Set<String> = [AppBundleIDs.weChat]
 
     /// Bundle identifiers of apps allowed to bypass focused element checks for selectable text.
-    /// Useful when focused UI element cannot be reliably determined via Accessibility APIs.
-    var bundleIDAllowListForSelectableTextCheck: Set<String> = [AppBundleIDs.weChat]
+    /// Useful when focused UI element cannot be reliably determined via Accessibility APIs,
+    /// e.g. Sublime Text's focused element role is AXWindow, but its selection can still be
+    /// obtained by force-get (simulated copy).
+    var bundleIDAllowListForSelectableTextCheck: Set<String> = [
+        AppBundleIDs.weChat,
+        "com.sublimetext.4",
+    ]
 
     /// Get selected text from current focused application.
     ///
