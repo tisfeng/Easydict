@@ -11,6 +11,8 @@ import Foundation
 
 // MARK: - AppSpecificSelectedTextSelector
 
+/// Identifies the application-specific strategy used to retrieve selected text.
+/// Each case selects an implementation for an app whose Accessibility behavior differs from the default flow.
 enum AppSpecificSelectedTextSelector {
     case zen
 }
