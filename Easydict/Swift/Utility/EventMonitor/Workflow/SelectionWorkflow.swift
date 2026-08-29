@@ -354,6 +354,8 @@ final class SelectionWorkflow {
                 "com.foxit-software.Foxit.PDF.Reader",
                 "com.foxit-software.Foxit.PDF.Editor",
                 AppBundleIDs.books,
+                // iTerm2 的 AXTextArea 读取偶发返回空文本（macOS 26.x 实测），需走强制取词
+                "com.googlecode.iterm2",
             ],
             .attributeUnsupported: [
                 "com.sublimetext.4",
