@@ -234,6 +234,18 @@ struct StreamConfigurationView: View {
                     footnote: "service.configuration.custom_openai.enable_streaming.footnote"
                 )
             }
+
+            if !service.uuid.isEmpty {
+                LabeledContent {
+                    Text(verbatim: service.serviceTypeWithUniqueIdentifier())
+                        .font(.system(.body, design: .monospaced))
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                        .lineLimit(1)
+                } label: {
+                    Text("service.configuration.service_identifier.title")
+                }
+            }
         }
         .sheet(isPresented: $isFetchModelsPresented) {
             if service.canFetchRemoteModels {

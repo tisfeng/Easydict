@@ -212,39 +212,6 @@ class ServiceTabViewModel: ObservableObject {
         updateServices()
     }
 
-    func validateAndEnable(_ item: ServiceListItem) async throws {
-        guard item.isStream else {
-            setServiceEnabled(true, for: item)
-            return
-        }
-
-        let validationWindowType = windowType
-        guard let service = LocalStorage.shared().service(
-            item.id,
-            windowType: validationWindowType
-        ) else {
-            return
-        }
-        let result = await service.validate()
-        guard LocalStorage.shared()
-            .allServiceTypes(validationWindowType)
-            .contains(item.id) else {
-            return
-        }
-        if let error = result.error {
-            throw error
-        }
-        service.enabled = true
-        LocalStorage.shared().setService(service, windowType: validationWindowType)
-        NotificationCenter.default.postServiceUpdateNotification(
-            windowType: validationWindowType
-        )
-        GlobalContext.shared.reloadLLMServicesSubscribers()
-        guard windowType == validationWindowType else { return }
-        selectedService = selectedItem == .service(item.id) ? service : selectedService
-        updateServices()
-    }
-
     func postUpdateServiceNotification() {
         NotificationCenter.default.postServiceUpdateNotification(windowType: windowType)
     }

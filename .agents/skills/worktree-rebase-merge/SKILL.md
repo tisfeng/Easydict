@@ -1,199 +1,165 @@
 ---
 name: worktree-rebase-merge
 description: >
-  Use when the user asks to finish worktree changes by attaching a detached
-  checkout to an automatically named Conventional branch when needed,
-  committing, rebasing onto the specified target, resolving conflicts, and
-  merging from that target branch worktree. Also use it to commit changes
-  already on the target branch. Default to the repository remote default
-  branch.
+  用于完成 worktree 变更：必要时将 detached checkout 挂接到自动命名的
+  Conventional 分支，提交变更、rebase 到指定目标、解决冲突，并从目标分支
+  worktree 完成合并；也用于直接提交已经位于目标分支上的变更。默认目标为仓库远程
+  默认分支。
 ---
 
-# Worktree Rebase/Merge Workflow
+# Worktree Rebase/Merge 工作流
 
-Use this skill to finish a worktree branch by committing the source branch,
-rebasing it onto a target branch, then merging it from a worktree checked out to
-that target branch. When the current branch is already the resolved target
-branch, skip the rebase/merge path and commit directly via the `git-commit`
-skill. Delegate all source-branch and direct-commit mechanics to `git-commit`.
+使用本 skill 完成 worktree 分支：提交源分支，将其 rebase 到目标分支，再从 checkout
+到该目标分支的 worktree 合并。当当前分支已经是解析出的目标分支时，跳过
+rebase/merge 路径，直接通过 `git-commit` skill 提交。所有源分支和直接提交机制均
+委托给 `git-commit`。
 
-## Defaults
+## 默认规则
 
-- Use the user-named target branch when provided. Otherwise resolve the
-  repository remote default branch.
-- Resolve the remote default by preferring `origin`; if no `origin` exists and
-  exactly one remote exists, use that remote. Query the live remote HEAD with
-  `git ls-remote --symref <remote> HEAD`, read the
-  `ref: refs/heads/<branch> HEAD` line, then strip the `refs/heads/` prefix.
-  This read-only query is not a fetch or pull.
-- If the live remote HEAD query fails or has no branch ref, do not silently
-  trust the cached `refs/remotes/<remote>/HEAD`. You may read that symbolic ref
-  only to report a fallback candidate, then stop and ask the user to name or
-  confirm the target branch.
-- Treat the current checkout as the source branch. If it is detached, create a
-  source branch before continuing.
-- Do not fetch, pull, or push unless the user explicitly asks.
-- Stage only user-selected files, already staged commit files, the single
-  `git-commit` empty-index `git add .` pass, or conflict resolutions.
+- 用户提供目标分支时使用该分支，否则解析仓库远程默认分支。
+- 解析远程默认分支时优先选择 `origin`；如果不存在 `origin` 且恰好只有一个 remote，
+  则使用该 remote。通过 `git ls-remote --symref <remote> HEAD` 查询实时远程 HEAD，
+  读取 `ref: refs/heads/<branch> HEAD` 行，再移除 `refs/heads/` 前缀。该只读查询不是
+  fetch 或 pull。
+- 如果实时远程 HEAD 查询失败或没有 branch ref，不要静默信任缓存的
+  `refs/remotes/<remote>/HEAD`。只能读取该 symbolic ref 以报告候选回退值，然后停止
+  并要求用户指定或确认目标分支。
+- 将当前 checkout 视为源分支。如果处于 detached 状态，继续前先创建源分支。
+- 除非用户明确要求，否则不要 fetch、pull 或 push。
+- 只暂存用户选定的文件、已经暂存的提交文件、`git-commit` 在空索引时唯一一次
+  `git add .`，或冲突解决文件。
 
-## Preflight
+## 预检
 
-- Resolve the target branch before branch checks. If remote selection is
-  ambiguous, the live remote HEAD is unavailable or unparseable, or the
-  resolved local target branch does not exist, stop and ask the user to name
-  or confirm a target branch.
-- Run `git branch --show-current`, `git branch --list <target-branch>`,
-  and `git status --short`.
-- For detached HEAD, follow **Attach Detached HEAD** before selecting direct or
-  normal rebase/merge mode.
-- If source and target resolve to the same branch, enter direct commit mode.
-- For normal rebase/merge mode, run `git worktree list`.
-- Locate any existing target worktree from `git worktree list` whose branch is
-  exactly `<target-branch>`. Use that path for the final merge when present.
-- Do not require the user's main checkout to currently be on `<target-branch>`.
-  If no worktree is already checked out to the target branch, plan to create a
-  temporary target worktree for the merge step instead of switching another
-  checkout's branch.
-- If multiple worktrees are checked out to `<target-branch>`, use the first
-  clean one. If all target worktrees are dirty, record each dirty target path
-  and its `git status --short` output. Do not touch the target worktrees or stop
-  yet; finish the source branch creation and source commit first, then use the
-  dirty-target pause flow below.
+- 在分支检查前解析目标分支。如果 remote 选择存在歧义、实时远程 HEAD 不可用或无法
+  解析，或者解析出的本地目标分支不存在，则停止并要求用户指定或确认目标分支。
+- 运行 `git branch --show-current`、`git branch --list <target-branch>` 和
+  `git status --short`。
+- 对 detached HEAD，在选择直接提交或普通 rebase/merge 模式前先遵循
+  **挂接 Detached HEAD**。
+- 如果源分支和目标分支解析为同一分支，进入直接提交模式。
+- 普通 rebase/merge 模式运行 `git worktree list`。
+- 从 `git worktree list` 中查找 branch 恰好为 `<target-branch>` 的现有目标
+  worktree。存在时使用该路径完成最终合并。
+- 不要求用户主 checkout 当前位于 `<target-branch>`。如果尚无 worktree checkout
+  到目标分支，计划为合并步骤创建临时目标 worktree，不要切换其他 checkout 的分支。
+- 如果多个 worktree checkout 到 `<target-branch>`，使用第一个干净 worktree。如果
+  所有目标 worktree 都有变更，记录每个脏目标路径及其 `git status --short` 输出。
+  暂时不要接触目标 worktree 或停止；先完成源分支创建和源提交，再使用下面的脏目标
+  暂停流程。
 
-## Attach Detached HEAD
+## 挂接 Detached HEAD
 
-When `git branch --show-current` is empty, create a source branch automatically
-without staging files or changing the current commit:
+当 `git branch --show-current` 为空时，自动创建源分支，不暂存文件，也不改变当前提交：
 
-1. Record `git rev-parse HEAD` and the exact `git status --short` output.
-2. Infer the work's primary intent from the first useful source below. Inspect
-   later sources only when an earlier source is empty or ambiguous:
-   - staged diff;
-   - unstaged diff and the contents of relevant untracked files;
-   - commits in `git log <target-branch>..HEAD`.
-3. If all three sources are empty, report that there is nothing to commit or
-   merge and stop without creating a branch.
-4. Apply the `git-commit` skill's **Branch Name Guidance** to derive the
-   candidate from the evidence above. Derive the name only; do not enter that
-   skill's staging or commit workflow yet.
-5. Validate the candidate with
-   `git check-ref-format --branch <branch-name>`.
-6. Resolve local name collisions without overwriting branches:
-   - If the candidate does not exist, run `git switch -c <branch-name>`.
-   - If it points to the recorded detached commit and is not checked out in
-     another worktree, run `git switch <branch-name>` and reuse it.
-   - Otherwise, append `-2`, `-3`, and so on until an unused valid name is
-     found, then run `git switch -c <numbered-branch-name>`.
-   Use `git show-ref --verify` and `git worktree list --porcelain` to distinguish
-   these cases. Never reset or move an existing branch.
-7. Verify the selected source branch, confirm `git rev-parse HEAD` still matches
-   the recorded commit, and require `git status --short` to preserve the exact
-   staged, unstaged, and untracked state. Stop if attachment changes content.
+1. 记录 `git rev-parse HEAD` 和完整的 `git status --short` 输出。
+2. 从以下第一个有用来源推断工作的主要意图。只有前一来源为空或存在歧义时才检查后续
+   来源：
+   - staged diff；
+   - unstaged diff 和相关未跟踪文件的内容；
+   - `git log <target-branch>..HEAD` 中的提交。
+3. 如果三个来源都为空，报告没有可提交或合并的内容，并停止且不创建分支。
+4. 使用 `git-commit` skill 的 **Branch Name Guidance** 根据上述证据推导候选名称。
+   这里只推导名称；暂时不要进入该 skill 的暂存或提交流程。
+5. 使用 `git check-ref-format --branch <branch-name>` 验证候选名称。
+6. 在不覆盖分支的前提下解决本地名称冲突：
+   - 如果候选分支不存在，运行 `git switch -c <branch-name>`。
+   - 如果它指向已记录的 detached commit，且未在其他 worktree 中 checkout，则运行
+     `git switch <branch-name>` 并复用。
+   - 否则依次追加 `-2`、`-3`，直到找到未使用的有效名称，再运行
+     `git switch -c <numbered-branch-name>`。
+   使用 `git show-ref --verify` 和 `git worktree list --porcelain` 区分这些情况。
+   绝不 reset 或移动现有分支。
+7. 验证选定的源分支，确认 `git rev-parse HEAD` 仍与记录的提交匹配，并要求
+   `git status --short` 保持完全相同的 staged、unstaged 和 untracked 状态。如果挂接
+   改变了内容，则停止。
 
-Do not stage files solely to generate the branch name. Continue with the normal
-commit, rebase, and merge workflow after attachment.
+不要仅为生成分支名而暂存文件。挂接后继续普通的提交、rebase 和 merge 工作流。
 
-## Direct Target-Branch Commit
+## 目标分支直接提交
 
-- Use direct commit mode only when the current source branch and the resolved
-  target branch are the same branch.
-- In direct commit mode, delegate completely to the `git-commit` skill:
-  staging scope, the single empty-index `git add .` pass, message drafting,
-  commit execution, permission retry, and cleanup all follow `git-commit`.
-- Do not create a temporary source branch, run `git rebase`, run `git merge`,
-  locate a target worktree, create a temporary target worktree, fetch, pull, or
-  push.
-- After the commit step, report the commit hash, the actual committed message,
-  the final `git status --short`, and that no rebase, merge, or push was
-  performed.
+- 仅当当前源分支与解析出的目标分支是同一分支时，使用直接提交模式。
+- 在直接提交模式下完全委托给 `git-commit` skill：暂存范围、空索引时唯一一次
+  `git add .`、提交信息起草、提交执行、权限重试和清理都遵循 `git-commit`。
+- 不创建临时源分支，不运行 `git rebase` 或 `git merge`，不查找目标 worktree，
+  不创建临时目标 worktree，也不 fetch、pull 或 push。
+- 提交步骤后使用 `git-commit` 的 **Post-Commit Report**，并说明没有执行 rebase、
+  merge 或 push。
 
-## Commit Source
+## 提交源分支
 
-- Use `git-commit` mechanics for staged source changes. Let that skill own
-  staged-only scope, the one allowed empty-index `git add .` pass, message
-  drafting, commit execution, permission retry, and cleanup. In normal
-  rebase/merge mode, this workflow overrides `git-commit` default-mode
-  reporting order; in direct commit mode, follow `git-commit` reporting.
-- Before creating `commit_message.txt` or running `git commit -F
-  commit_message.txt`, send a normal assistant message with the fixed heading
-  `提交信息预览` and a fenced `text` code block containing the full actual
-  drafted commit message.
-- The preview text must exactly match the later `commit_message.txt` content,
-  except for Markdown code fences. It must not appear only in tool output,
-  terminal output, hidden reasoning, log files, `commit_message.txt`, or final
-  Git command output.
-- After the body preview is visible, continue automatically unless the user
-  explicitly requested confirmation, preview-only, draft-only, no-commit, or
-  message changes.
-- If `git-commit` reports there is no commit to make, continue only when the
-  source worktree has no uncommitted changes. Otherwise stop and report the
-  uncommitted state.
-- Rerun `git status --short` after the commit step. Rebase only from a clean
-  source worktree unless the user explicitly decides otherwise.
+- 对已暂存的源变更使用 `git-commit` 机制。暂存区限定、空索引时唯一允许的一次
+  `git add .`、提交信息起草、提交执行、权限重试和清理均由该 skill 负责。在普通
+  rebase/merge 模式下，本工作流覆盖 `git-commit` 默认模式的报告顺序；在直接提交
+  模式下遵循 `git-commit` 报告。
+- 提交步骤前记录源 `HEAD`。只有提交步骤改变 `HEAD` 时，才将源结果分类为
+  `created-this-run`；否则，如果源已经提交且干净，则分类为
+  `preexisting-source-commit`。
+- 创建 `commit_message.txt` 或运行 `git commit -F commit_message.txt` 前，发送一条
+  普通 assistant 消息，使用固定标题 `提交信息预览`，并在 `text` 代码围栏中包含
+  完整的实际拟定提交信息。
+- 除 Markdown 代码围栏外，预览文字必须与之后的 `commit_message.txt` 内容完全一致。
+  它不能只出现在工具输出、终端输出、隐藏推理、日志文件、`commit_message.txt` 或
+  最终 Git 命令输出中。
+- 正文预览可见后自动继续，除非用户明确要求确认、仅预览、仅草稿、不提交或修改
+  提交信息。
+- 如果 `git-commit` 报告没有可提交内容，只有源 worktree 不含未提交变更时才继续，
+  并将结果标记为 `preexisting-source-commit`；否则停止并报告未提交状态。
+- 提交步骤后重新运行 `git status --short`。除非用户明确另行决定，只从干净的源
+  worktree 执行 rebase。
 
-## Dirty Target Pause
+## 脏目标暂停
 
-- If preflight found only dirty worktrees for `<target-branch>`, finish the
-  source commit through `git-commit` and require a clean source worktree, then
-  stop before scope inspection, rebase, merge, or push.
-- Never stage, commit, stash, restore, clean, or otherwise modify a dirty target
-  worktree as part of this recovery path.
-- Report the source branch and commit hash, every dirty target path and dirty
-  file, and that the source changes are committed while the target worktrees
-  remain untouched. Explicitly state that rebase, merge, and push have not run.
-- Ask the user to clean the target worktree and reply `继续`. On continuation,
-  rerun target resolution, `git worktree list`, and target cleanliness checks.
-  Reuse the existing clean source commit unless the source gained new changes;
-  if it did, commit those changes through `git-commit` before rebasing.
-- If every target worktree is still dirty on continuation, report the remaining
-  dirty state and pause again without creating another source commit.
+- 如果预检发现 `<target-branch>` 只有脏 worktree，则通过 `git-commit` 完成源提交并
+  要求源 worktree 干净，然后在范围检查、rebase、merge 或 push 前停止。
+- 在该恢复路径中，绝不对脏目标 worktree 执行暂存、提交、stash、restore、clean 或
+  其他修改。
+- 报告源分支和提交哈希、每个脏目标路径及脏文件，并说明源变更已经提交，而目标
+  worktree 保持不变。明确说明尚未运行 rebase、merge 和 push。
+- 要求用户清理目标 worktree 并回复 `继续`。继续时重新执行目标解析、
+  `git worktree list` 和目标干净状态检查。除非源分支出现新变更，否则复用现有干净
+  源提交；如有新变更，在 rebase 前通过 `git-commit` 提交。
+- 如果继续时所有目标 worktree 仍然有变更，则报告剩余脏状态并再次暂停，不创建新的
+  源提交。
 
 ## Rebase
 
-- Before rebasing, inspect the complete integration scope with
-  `git log --oneline <target-branch>..<source-branch>` and
-  `git diff --stat <target-branch>...<source-branch>`.
-- Compare that range with the current request and the source commits handled by
-  this workflow. When the target was inferred and the range contains unrelated
-  or unexpectedly broad pre-existing history, stop and ask the user to confirm
-  the target branch. A successful or no-op rebase is not scope validation.
-- From the source worktree, run `git rebase <target-branch>`.
-- On conflicts, inspect `git status --short`, resolve semantically, stage only
-  resolved files, and run `git rebase --continue`. Stop for product decisions
-  or unsafe conflicts.
-- After rebase, require a clean source worktree, run
-  `git diff --check <target-branch>...HEAD`, and run broader validation only
-  when repository rules or touched code require it.
+- rebase 前使用 `git log --oneline <target-branch>..<source-branch>` 和
+  `git diff --stat <target-branch>...<source-branch>` 检查完整集成范围。
+- 将该范围与当前请求及本工作流处理的源提交比较。如果目标是推断得出且范围包含无关
+  或异常宽泛的既有历史，则停止并要求用户确认目标分支。rebase 成功或无操作不代表
+  范围验证通过。
+- 从源 worktree 运行 `git rebase <target-branch>`。
+- 出现冲突时检查 `git status --short`，按语义解决，只暂存已解决文件，并运行
+  `git rebase --continue`。遇到产品决策或不安全冲突时停止。
+- rebase 后要求源 worktree 干净，运行 `git diff --check <target-branch>...HEAD`；只有
+  仓库规则或涉及代码要求时才运行更广泛的验证。
 
-## Merge And Final Response
+## 合并与最终报告
 
-- Confirm the rebased source worktree is clean.
-- If an existing target worktree was found during preflight, confirm it is clean
-  and run the merge from that path.
-- If no existing target worktree was found, create a temporary target worktree
-  outside the repository, such as
-  `/tmp/worktree-rebase-merge-<repo>-<target>-<pid>`, with
-  `git worktree add <temporary-path> <target-branch>`. Confirm the temporary
-  worktree is on `<target-branch>` and clean before merging.
-- Do not switch the user's main checkout merely to reach `<target-branch>`.
-- Do not update the target branch with low-level ref commands such as
-  `git update-ref`, `git branch -f`, or other worktree-bypassing operations.
-  Use a real target worktree so Git keeps the branch, index, and files in an
-  understandable state.
-- Run `git merge <source-branch>` with default Git behavior. Do not force
-  `--no-ff`, squash, rebase again, or push unless the user explicitly asks.
-- On merge conflicts, use the same semantic resolution rule as rebase, then
-  stage resolved files only and run `git merge --continue`. If the conflict
-  happens in a temporary target worktree, keep that worktree and report its path
-  for follow-up resolution instead of deleting it.
-- After a successful merge in a temporary target worktree, remove it with
-  `git worktree remove <temporary-path>`.
-- Report the source branch, target branch, target checkout path, commit hash,
-  target merge mode (`existing-target-worktree` or
-  `temporary-target-worktree`), temporary target worktree path when one was
-  created, merge result, and final clean status. For an attached checkout, also
-  report the original detached commit and whether the source branch was created
-  or reused. State that no push was performed unless the user asked for one.
-- Include a final-response `提交信息预览` fenced `text` code block with the
-  actual committed message, so the preview remains visible even if intermediate
-  assistant updates are collapsed.
+- 确认 rebase 后的源 worktree 干净。
+- 如果预检时找到现有目标 worktree，确认它干净，并从该路径执行合并。
+- 如果没有现有目标 worktree，则在仓库外创建临时目标 worktree，例如
+  `/tmp/worktree-rebase-merge-<repo>-<target>-<pid>`，并运行
+  `git worktree add <temporary-path> <target-branch>`。合并前确认临时 worktree 位于
+  `<target-branch>` 且保持干净。
+- 不要仅为进入 `<target-branch>` 而切换用户主 checkout。
+- 不要使用 `git update-ref`、`git branch -f` 或其他绕过 worktree 的底层 ref 命令
+  更新目标分支。使用真实目标 worktree，让 Git 将分支、索引和文件保持在可理解状态。
+- 使用默认 Git 行为运行 `git merge <source-branch>`。除非用户明确要求，否则不要强制
+  `--no-ff`、squash、再次 rebase 或 push。
+- 出现 merge 冲突时，使用与 rebase 相同的语义解决规则，然后只暂存已解决文件并运行
+  `git merge --continue`。如果冲突发生在临时目标 worktree 中，保留该 worktree 并
+  报告其路径供后续解决，不要删除。
+- 在临时目标 worktree 中成功合并后，使用
+  `git worktree remove <temporary-path>` 将其删除。
+- 报告源分支、目标分支、目标 checkout 路径、源提交数量、目标合并模式
+  （`existing-target-worktree` 或 `temporary-target-worktree`）、创建临时目标
+  worktree 时的路径、合并结果和最终干净状态。对于已挂接的 checkout，还要报告原始
+  detached commit，以及源分支是创建还是复用。除非用户要求 push，否则说明未执行。
+- 如果集成恰好包含一个源提交，以该提交的 `git-commit` **Post-Commit Report** 收尾。
+  对 `created-this-run` 使用 `已创建提交`；对 `preexisting-source-commit` 使用
+  `本次未创建新提交；合并的是源分支已有提交`。
+- 如果集成包含多个源提交，列出每个完整哈希和 subject，再使用统计脚本的
+  `--range <target-commit>...<source-commit>` 报告总计、代码和文档文本变动。不要将
+  某一条提交信息当作整个范围的提交信息。
