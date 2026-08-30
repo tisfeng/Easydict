@@ -107,12 +107,19 @@ private struct ModelInputRow: View {
                         .multilineTextAlignment(.leading)
                         .frame(width: 340, alignment: .leading)
                         .padding()
+                        // Popover content is hosted in a separate window and does not
+                        // inherit the app-language locale injected at the root view
+                        // (EasydictApp), so re-apply the surrounding locale here to keep
+                        // the help text in the in-app language instead of the system one.
+                        .environment(\.locale, locale)
                 }
             }
         }
     }
 
     // MARK: Private
+
+    @Environment(\.locale) private var locale
 
     @State private var isShowingHelp = false
 

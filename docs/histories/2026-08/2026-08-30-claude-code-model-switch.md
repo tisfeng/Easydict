@@ -26,6 +26,9 @@
   新增 `info.circle` 信息按钮，点击弹出 popover 说明规范写法（别名 sonnet/opus/haiku
   或完整模型 ID，不支持 opus4.7 之类简写）；新增
   `service.configuration.claude_code.model.help` 本地化 key，覆盖六个语言。
+- 第四轮修复：popover 内容位于独立宿主窗口，不继承根视图注入的应用语言 locale，
+  帮助文案会回落到系统语言；在 popover 内容上重新注入外层 `\.locale`，使其跟随
+  应用内语言设置。
 - `ClaudeCodeCLIRunnerTests` 新增自定义模型透传和空白模型省略 `--model` 的测试。
 
 ### 设计意图
