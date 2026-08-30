@@ -60,6 +60,8 @@
   （2026-08-31 由用户本机执行，34 条测试全部通过，TEST SUCCEEDED）；此前各轮提交
   时该测试尚未运行，pbxproj 仅通过 `plutil -lint` 语法检查，用户运行应用亦确认
   构建正常。
+- code review 修复后复跑 `ClaudeCodeCLIRunnerTests` + `ClaudeCodeServiceTests`
+  两个套件：41 条测试全部通过（含新增迁移测试），TEST SUCCEEDED。
 - 手动验证：本机 `claude` CLI（v2.1.251）实测别名解析——`sonnet` → `claude-sonnet-5`、
   `opus` → `claude-opus-5`、`haiku` → `claude-haiku-4-5-20251001`；完整 ID
   `claude-opus-4-7` 可用，`opus4.7` 等简写返回模型不存在错误并走 `parseError` 路径。
