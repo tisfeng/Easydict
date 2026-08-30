@@ -2,7 +2,7 @@
 
 **Status:** completed
 **Created:** 2026-08-30
-**Updated:** 2026-08-30
+**Updated:** 2026-08-31
 **Owner:** Eric Pan
 **Links:** 当前用户请求
 
@@ -765,6 +765,11 @@ xcodebuild build \
   构建与 matching、cache、resolver、request usage/coalescing、session generation/lifecycle、
   render/view model 和快捷键；适配分支不宣称尚未合入的配置备份回归。
 - `xcodebuild build` Release：原实现分支验证通过；适配最新上游后的结果见本节后续记录。
+- 2026-08-31 基于 `origin/dev` `7ef6434311e01bfe6c29c66d800862daf4ade882` 的独立适配验证：
+  Debug `build-for-testing` 通过；15 个原位截图翻译 focused suites 共 94 项测试通过，0 失败、
+  0 跳过；Release build 通过并生成 `Easydict.app`。
+- 同一适配分支上 SwiftFormat 为 `0/410 files require formatting`，SwiftLint 扫描 412 个文件，
+  5 个 warning、0 serious；warning 均为已记录的 session/coordinator 产品或测试长度限制。
 - SwiftFormat lint：`0/426 files require formatting`，10 files skipped；缓存目录不可写 warning
   不影响结果。SwiftLint 扫描 428 个文件，6 个 warning、0 serious；其中本批 5 个 warning
   是 session/coordinator 测试文件的 file/type length，另 1 个是既有
@@ -886,3 +891,5 @@ xcodebuild build \
   local commit，未 push。
 - 2026-08-30：基于最新 `origin/dev` 准备独立上游 PR；为避免重复 #1286/#1287，仅移植原位
   截图翻译提交，并暂缓依赖尚未合入配置备份 registry 的 descriptor 与对应回归测试。
+- 2026-08-31：独立适配分支通过 Debug build-for-testing、94 项 focused tests、Release build、
+  SwiftFormat、String Catalog、plist/PBX 和 diff 校验；准备最终敏感信息扫描与 PR 交付。

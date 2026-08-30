@@ -56,9 +56,11 @@ OCR 和翻译。本次同时完成产品交互、界面、架构、隐私、本�
   request accounting/coalescing、session stale generation/lifecycle、view model、render snapshot
   和快捷键；独立适配分支不宣称尚未合入的配置备份回归。
 - Release build：原实现分支通过；最新上游适配分支重新执行并在 PR 中报告结果。
-- SwiftFormat lint：`0/426 files require formatting`，10 files skipped；`git diff --check` 通过。
-- SwiftLint：428 个文件，6 个 warning、0 serious。其中 5 个新增 warning 是 session/coordinator
-  测试文件的 file/type length，另 1 个为既有 `PolishingService.swift` disable warning。
+- 最新上游适配分支的 Debug `build-for-testing` 通过；15 个 focused suites 共 94 项测试通过，
+  0 失败、0 跳过；Release build 通过并生成 `Easydict.app`。
+- 最新上游适配分支的 SwiftFormat lint 为 `0/410 files require formatting`，10 files skipped；
+  `git diff --check` 通过。SwiftLint 扫描 412 个文件，5 个 warning、0 serious；warning 均为
+  session/coordinator 产品或测试的 file/type length。
 - String Catalog JSON 有效，47 个 feature key 的六语言覆盖完整；两个 Info plist 和 PBX 的
   `plutil -lint` 均通过。
 - 静态隐私检查：新功能目录没有文件、历史、收藏或 UserDefaults 内容写入；只有显式“复制”
