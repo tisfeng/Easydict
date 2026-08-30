@@ -103,7 +103,8 @@ final class ClaudeCodeService: StreamService {
         runner = currentRunner
         let baseStream = currentRunner.run(
             prompt: conversationPrompt,
-            systemPrompt: systemPrompt.isEmpty ? nil : systemPrompt
+            systemPrompt: systemPrompt.isEmpty ? nil : systemPrompt,
+            model: Defaults[modelKey]
         )
 
         // Wrap the stream to capture token usage after the run completes.
@@ -152,6 +153,26 @@ final class ClaudeCodeService: StreamService {
                 currentRunner.cancel()
             }
         }
+    }
+
+    // MARK: Internal
+
+    /// Default for the inherited `modelKey`, which stores the user's model override
+    /// edited in the configuration view. `sonnet` preserves the historical behaviour
+    /// of forcing a fast, capable model; clearing the field falls back to the CLI default.
+    override var defaultModels: [String] {
+        [ClaudeCodeRunner.defaultModel]
+    }
+
+    /// Free-form model override without the base class's valid-model coercion.
+    ///
+    /// The configuration view accepts any alias or full model name, so the base
+    /// getter — which resets values missing from `validModels` back to the default —
+    /// would silently discard a custom model the first time anything reads `model`
+    /// (e.g. the local HTTP server's fallback-model label).
+    override var model: String {
+        get { Defaults[modelKey] }
+        set { Defaults[modelKey] = newValue }
     }
 
     // MARK: Private

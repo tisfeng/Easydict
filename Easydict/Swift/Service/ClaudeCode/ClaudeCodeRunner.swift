@@ -24,6 +24,11 @@ final class ClaudeCodeRunner: @unchecked Sendable {
 
     // MARK: Internal
 
+    /// Model passed via `--model` when the caller does not override it.
+    /// `sonnet` keeps translation on a fast, capable model instead of whatever
+    /// the CLI default happens to be.
+    static let defaultModel = "sonnet"
+
     /// Token usage populated when the subprocess terminates normally.
     /// `nil` if the process has not yet finished or the `result` event was absent.
     private(set) var tokenUsage: CLITokenUsage?
@@ -67,13 +72,13 @@ final class ClaudeCodeRunner: @unchecked Sendable {
     /// Builds the argument list for a `claude -p --print` invocation.
     ///
     /// The current Claude Code CLI requires `--verbose` when `--print` is combined
-    /// with `--output-format stream-json`. `model` defaults to `sonnet` so translation
-    /// uses a fast, capable model instead of whatever the CLI default happens to be;
-    /// pass an empty string to fall back to the CLI default.
+    /// with `--output-format stream-json`. `model` defaults to `defaultModel` so
+    /// translation uses a fast, capable model instead of whatever the CLI default
+    /// happens to be; pass an empty string to fall back to the CLI default.
     static func buildArguments(
         prompt: String,
         systemPrompt: String?,
-        model: String = "sonnet"
+        model: String = ClaudeCodeRunner.defaultModel
     )
         -> [String] {
         var arguments = [
@@ -162,8 +167,15 @@ final class ClaudeCodeRunner: @unchecked Sendable {
     ///   - prompt: The conversation prompt (user / assistant messages only, without system message).
     ///   - systemPrompt: Passed via `--system-prompt` to replace Claude Code's default system
     ///     prompt. `nil` omits the flag and leaves Claude Code's default in place.
+    ///   - model: Passed via `--model`. Accepts an alias (`sonnet`, `opus`, `haiku`) or a full
+    ///     model name; an empty string omits the flag and falls back to the CLI default.
     /// - Returns: A stream that yields text delta strings as they arrive from the CLI.
-    func run(prompt: String, systemPrompt: String? = nil) -> AsyncThrowingStream<String, Error> {
+    func run(
+        prompt: String,
+        systemPrompt: String? = nil,
+        model: String = ClaudeCodeRunner.defaultModel
+    )
+        -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { [weak self] continuation in
             guard let self else {
                 continuation.finish()
@@ -195,7 +207,11 @@ final class ClaudeCodeRunner: @unchecked Sendable {
                     let stderrPipe = Pipe()
 
                     process.executableURL = URL(fileURLWithPath: binaryPath)
-                    process.arguments = Self.buildArguments(prompt: prompt, systemPrompt: systemPrompt)
+                    process.arguments = Self.buildArguments(
+                        prompt: prompt,
+                        systemPrompt: systemPrompt,
+                        model: model
+                    )
                     process.standardOutput = stdoutPipe
                     process.standardError = stderrPipe
                     // Use a neutral working directory so claude does not scan user folders.

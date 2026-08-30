@@ -48,6 +48,32 @@ struct ClaudeCodeCLIRunnerTests {
         #expect(!arguments.contains("--model"))
     }
 
+    @Test("buildArguments passes a custom model through --model")
+    func buildArgumentsPassesCustomModel() {
+        let arguments = ClaudeCodeRunner.buildArguments(
+            prompt: "Translate this",
+            systemPrompt: nil,
+            model: "opus"
+        )
+
+        let modelIndex = arguments.firstIndex(of: "--model")
+        #expect(modelIndex != nil)
+        if let modelIndex {
+            #expect(arguments[modelIndex + 1] == "opus")
+        }
+    }
+
+    @Test("buildArguments trims whitespace-only model and omits --model")
+    func buildArgumentsOmitsModelForWhitespaceOnlyValue() {
+        let arguments = ClaudeCodeRunner.buildArguments(
+            prompt: "Translate this",
+            systemPrompt: nil,
+            model: "  \n"
+        )
+
+        #expect(!arguments.contains("--model"))
+    }
+
     // MARK: - parseError (stderr-only) tests
 
     @Test("parseError returns notLoggedIn when stderr contains 'not logged in'")

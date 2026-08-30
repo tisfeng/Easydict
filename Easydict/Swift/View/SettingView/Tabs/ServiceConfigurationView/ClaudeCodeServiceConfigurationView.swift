@@ -18,7 +18,7 @@ import SwiftUI
 struct ClaudeCodeServiceConfigurationView: View {
     // MARK: Lifecycle
 
-    init(service: StreamService) {
+    init(service: ClaudeCodeService) {
         self.service = service
     }
 
@@ -30,6 +30,16 @@ struct ClaudeCodeServiceConfigurationView: View {
         // so no nested Form is needed here.
         Section {
             CLIStatusRow()
+        }
+
+        // Model override. Accepts an alias (sonnet, opus, haiku) or a full model
+        // name; clearing the field falls back to the CLI's own default model.
+        Section {
+            InputCell(
+                textFieldTitleKey: "service.configuration.claude_code.model.title",
+                key: service.modelKey,
+                placeholder: "service.configuration.claude_code.model.placeholder"
+            )
         }
         #if AGENT_CLI_DEBUG
         Section {
@@ -52,7 +62,7 @@ struct ClaudeCodeServiceConfigurationView: View {
 
     // MARK: Private
 
-    private let service: StreamService
+    private let service: ClaudeCodeService
 }
 
 // MARK: - CLIStatusRow
