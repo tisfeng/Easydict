@@ -27,8 +27,8 @@ description: >
 - 除非用户明确要求 push，否则准备、合并、解决冲突或 review 期间不 push。
 - contributor remote 名称必须与 PR head 仓库 owner login 完全一致。如果该 remote
   名称已经指向其他位置，则停止并询问。
-- 普通本地分支名必须与 PR head 分支名完全相同。唯一自动例外是准确名称不可用时创建
-  的冲突回退分支 `review/pr-<number>-<head-short-sha>`。
+- 本地 checkout 模式下，分支选择优先使用 PR head 分支名。只有准确名称不可安全使用
+  时，才创建冲突回退分支 `review/pr-<number>-<head-short-sha>`。
 - 将 PR 元数据 `headRefOid` 视为普通 review 唯一有效的 HEAD。同名本地分支可以
   fast-forward 到该 SHA，但不得包含额外本地提交，也不得与其分叉。
 - 出现分支名冲突时，自动回退到本地 review 分支
@@ -44,9 +44,10 @@ description: >
   `../.review-pr-worktrees/<repo>/pr-<number>[-merge]-<head-short-sha>` 下。
 - review 后保留准备好的分支或 worktree，供用户运行和调试。绝不自动删除 review
   worktree。
-- 对明确请求的 latest-base 冲突或更新 review，使用仅本地分支
-  `review/pr-<number>-merge-<head-short-sha>`，并将最新 base 合并进去。远程协作 PR
-  不使用 rebase。
+- 将“选择分支”和“合并 latest base”视为两个独立决策：本地模式先选择 head 同名分支
+  或冲突回退分支，再按用户请求决定是否合并 latest base。远程协作 PR 不使用 rebase。
+- 本地 latest-base 合并保留已选择的分支名；只有显式 `--worktree --merge-latest` 才使用
+  `review/pr-<number>-merge-<head-short-sha>` 这种隔离命名。
 - 不要将 `mergeable: CONFLICTING`、`mergeStateStatus: DIRTY` 或 base 分支领先 PR
   视为合并授权。除非用户明确要求 latest-base 集成 review 或解决冲突，否则这些状态
   只是 review 上下文。
@@ -99,21 +100,30 @@ gh pr view <number> [--repo <base-owner>/<base-repo>] \
 ```
 
 除非用户明确要求 worktree 或并行 review，否则使用本地分支准备。不要仅因为当前
-checkout 有变更就推断为 worktree 模式。普通 PR 运行以下命令之一：
+checkout 有变更就推断为 worktree 模式。普通本地 PR 运行以下命令之一；两种本地模式都
+先按同一规则选择分支：
 
 ```bash
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh <pr-ref>
-bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --worktree <pr-ref>
+bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --merge-latest <pr-ref>
 ```
 
-即使 GitHub 报告 `mergeable: CONFLICTING` 或 `mergeStateStatus: DIRTY`，review
-仍使用普通准备流程。将 PR head checkout 到同名本地分支，按提交时状态检查 PR，并在
-不改变其历史的情况下报告 merge 状态。
+需要隔离 source checkout 时，显式使用：
+
+```bash
+bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --worktree <pr-ref>
+bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --worktree --merge-latest <pr-ref>
+```
+
+如果用户没有请求 latest-base，即使 GitHub 报告 `mergeable: CONFLICTING` 或
+`mergeStateStatus: DIRTY`，review 仍使用普通准备流程。将 PR head checkout 到同名本地
+分支，按提交时状态检查 PR，并在不改变其历史的情况下报告 merge 状态。
 
 只有用户明确要求更新到最新 base、解决冲突或 review 集成结果时，才使用 latest-base
-merge 路径。运行前说明它将创建仅本地分支
-`review/pr-<number>-merge-<head-short-sha>` 和本地 merge commit。如果请求尚未明确
-包含这些动作之一，在创建分支前停止并询问。
+merge 动作。对于本地模式，先准备 PR head 同名分支或 collision fallback，再在该分支
+上合并最新 base；不要因为需要 merge 就自动改用 `review/pr-<number>-merge-<head-short-sha>`。
+对于显式 worktree 模式，才使用该隔离 merge 分支。运行前说明会创建本地 merge commit；
+如果请求尚未明确包含这些动作之一，在创建分支前停止并询问。
 
 如果 PR head 分支名与 base 分支、受保护本地分支名或 upstream 不同的同名现有分支
 冲突，helper 自动创建本地 review 分支 `review/pr-<number>-<head-short-sha>` 并继续。
@@ -143,13 +153,14 @@ bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --merge-latest <pr-re
 bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --worktree --merge-latest <pr-ref>
 ```
 
-merge helper 从 PR head 创建 `review/pr-<number>-merge-<head-short-sha>`，fetch PR
-base，运行 `git merge --no-edit <base-remote>/<base-branch>`，并且绝不 push。
+本地 latest-base helper 在已选择的本地分支上 fetch PR base，运行
+`git merge --no-edit <base-remote>/<base-branch>`，并且绝不 push。显式 worktree
+latest-base 才从 PR head 创建 `review/pr-<number>-merge-<head-short-sha>`。
 
 普通准备流程只更新完全匹配或能够 fast-forward 到 `headRefOid` 的分支。如果现有本地
-PR 分支领先 fetch 到的 head 或与其分叉，helper 自动回退到
-`review/pr-<number>-<head-short-sha>`；绝不修改分叉分支，也不临时使用 detached
-checkout。
+PR 分支领先 fetch 到的 head、与其分叉、被其他 worktree 使用，或 upstream 不匹配，
+helper 自动回退到 `review/pr-<number>-<head-short-sha>`；绝不修改冲突分支，也不临时
+使用 detached checkout。
 
 ### 3. 处理 Merge 冲突
 
@@ -185,12 +196,12 @@ git status --short
 git branch -vv
 ```
 
-普通准备流程要求分支干净、名称与 PR head 分支完全一致、upstream 设置为
-`<owner>/<branch>`，并且 `HEAD` 等于记录的 `headRefOid`。仅 upstream 匹配并不足够，
-因为本地分支可能包含 PR 中不存在的提交。发生冲突回退时，改为要求干净的本地 review
-分支 `review/pr-<number>-<head-short-sha>` 位于 `headRefOid`，upstream 为
-`<owner>/<branch>`。latest-base merge 准备要求干净的本地 review 分支名为
-`review/pr-<number>-merge-<head-short-sha>`。
+普通本地准备要求分支干净、分支名为 PR head 分支或 collision fallback、upstream 设置为
+`<owner>/<branch>`，并且 merge 前 `HEAD` 等于记录的 `headRefOid`。仅 upstream 匹配并
+不足够，因为本地分支可能包含 PR 中不存在的提交。若启用本地 latest-base，merge 后改为
+要求 PR head 与 latest base 都是 `HEAD` 的 ancestor；如果产生 merge commit，还要确认
+其两个 parent 分别是 PR head 和 latest base。显式 worktree latest-base 仍要求干净的
+`review/pr-<number>-merge-<head-short-sha>` 分支。
 
 worktree 准备要求报告的 worktree 干净并位于对应 SHA 的 review 分支。普通 worktree
 分支必须 tracking `<owner>/<head-branch>`；已合并 worktree 分支保持仅本地。确认源
@@ -400,9 +411,11 @@ duplicate an open-comment assessment or invent a second fix for it.
   status, and confirm the source checkout remained unchanged.
 - When a collision fallback was used, name the
   `review/pr-<number>-<head-short-sha>` branch and the collision reason.
-- State whether the latest-base merge path was triggered. If it was, list the
-  local review branch name, conflict files, conflict resolution status, and
-  confirm that no push was performed.
+- State whether the latest-base merge action was triggered. If local mode was
+  used, name the selected head or collision-fallback branch and distinguish
+  the pre-merge `headRefOid` check from the post-merge head/base ancestry check.
+  If worktree mode was used, list the isolated merge branch, conflict files,
+  conflict resolution status, and confirm that no push was performed.
 - Report the final live-state refresh: final `headRefOid`, PR `updatedAt`, and
   whether new reviews, threads, replies, or thread-state changes appeared after
   the initial snapshot. Report the final open-comment inventory, whether any
