@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import Defaults
 import SFSafeSymbols
 import SwiftUI
 
@@ -37,11 +38,7 @@ struct ClaudeCodeServiceConfigurationView: View {
         // The placeholder interpolates the app default so users can see what to
         // type to restore it after clearing the field.
         Section {
-            InputCell(
-                textFieldTitleKey: "service.configuration.claude_code.model.title",
-                key: service.modelKey,
-                placeholder: "service.configuration.claude_code.model.placeholder \(ClaudeCodeRunner.defaultModel)"
-            )
+            ModelInputRow(key: service.modelKey)
         }
         #if AGENT_CLI_DEBUG
         Section {
@@ -65,6 +62,61 @@ struct ClaudeCodeServiceConfigurationView: View {
     // MARK: Private
 
     private let service: ClaudeCodeService
+}
+
+// MARK: - ModelInputRow
+
+/// The model text field with an info button that explains the accepted formats.
+///
+/// The Claude CLI only accepts short aliases (`sonnet`, `opus`, `haiku`) or full
+/// model IDs (`claude-opus-4-7`); shorthand like `opus4.7` fails at query time,
+/// so the popover documents the valid formats up front.
+private struct ModelInputRow: View {
+    // MARK: Lifecycle
+
+    init(key: Defaults.Key<String>) {
+        _model = .init(key)
+    }
+
+    // MARK: Internal
+
+    var body: some View {
+        LabeledContent {
+            TextField(
+                text: $model,
+                prompt: Text(
+                    "service.configuration.claude_code.model.placeholder \(ClaudeCodeRunner.defaultModel)"
+                )
+            ) {
+                EmptyView()
+            }
+            .multilineTextAlignment(.trailing)
+        } label: {
+            HStack(spacing: 4) {
+                Text("service.configuration.claude_code.model.title")
+                Button {
+                    isShowingHelp.toggle()
+                } label: {
+                    Image(systemSymbol: .infoCircle)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .popover(isPresented: $isShowingHelp, arrowEdge: .bottom) {
+                    Text("service.configuration.claude_code.model.help")
+                        .font(.callout)
+                        .multilineTextAlignment(.leading)
+                        .frame(width: 340, alignment: .leading)
+                        .padding()
+                }
+            }
+        }
+    }
+
+    // MARK: Private
+
+    @State private var isShowingHelp = false
+
+    @Default private var model: String
 }
 
 // MARK: - CLIStatusRow

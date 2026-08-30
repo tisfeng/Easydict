@@ -8858,6 +8858,46 @@
         }
       }
     },
+    "service.configuration.claude_code.model.help" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Two formats are accepted:\n• Alias: sonnet, opus, or haiku — always resolves to the latest model of that family\n• Full model ID: e.g. claude-opus-4-7\nShorthand like opus4.7 is not recognized; an invalid model makes translation fail."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se aceptan dos formatos:\n• Alias: sonnet, opus o haiku — siempre apunta al modelo más reciente de esa familia\n• ID de modelo completo: p. ej. claude-opus-4-7\nAbreviaturas como opus4.7 no se reconocen; un modelo no válido hace fallar la traducción."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 つの形式に対応しています：\n• エイリアス：sonnet、opus、haiku — 常にそのシリーズの最新モデルを指します\n• 完全なモデル ID：例 claude-opus-4-7\nopus4.7 のような省略形は認識されず、無効なモデルでは翻訳がエラーになります。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podporované sú dva formáty:\n• Alias: sonnet, opus alebo haiku — vždy ukazuje na najnovší model danej rodiny\n• Úplné ID modelu: napr. claude-opus-4-7\nSkratky ako opus4.7 sa nerozpoznajú; neplatný model spôsobí zlyhanie prekladu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持两种写法：\n• 别名：sonnet、opus、haiku，自动指向该系列最新模型\n• 完整模型 ID：例如 claude-opus-4-7\n不支持 opus4.7 这类简写，模型无效时翻译会报错。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支援兩種寫法：\n• 別名：sonnet、opus、haiku，自動指向該系列最新模型\n• 完整模型 ID：例如 claude-opus-4-7\n不支援 opus4.7 這類簡寫，模型無效時翻譯會報錯。"
+          }
+        }
+      }
+    },
     "service.configuration.claude_code.model.placeholder %@" : {
       "localizations" : {
         "en" : {

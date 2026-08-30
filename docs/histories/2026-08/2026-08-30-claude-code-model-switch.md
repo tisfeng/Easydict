@@ -22,6 +22,10 @@
   `service.configuration.claude_code.model.placeholder %@`，配置视图用
   `LocalizedStringKey` 插值传入 `ClaudeCodeRunner.defaultModel`，占位文案显示当前
   应用默认模型（默认 sonnet，留空则使用 CLI 默认模型）。
+- 第三轮：模型行改为自定义 `ModelInputRow`（`LabeledContent` + `TextField`），标题旁
+  新增 `info.circle` 信息按钮，点击弹出 popover 说明规范写法（别名 sonnet/opus/haiku
+  或完整模型 ID，不支持 opus4.7 之类简写）；新增
+  `service.configuration.claude_code.model.help` 本地化 key，覆盖六个语言。
 - `ClaudeCodeCLIRunnerTests` 新增自定义模型透传和空白模型省略 `--model` 的测试。
 
 ### 设计意图
