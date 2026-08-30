@@ -1,10 +1,11 @@
-## 2026-08-30 | 任务：为 Claude Code CLI 服务增加模型切换
+## 2026-08-30 | 任务：为 Claude Code CLI 服务增加模型与思考程度切换
 
-**Links:** 分支 `feat/claude_code_model_switch`
+**Links:** 分支 `feat/claude-code-model-effort-switch`
 
 ### 用户请求
 
-为 CLI 版 Claude Code 翻译服务增加模型切换能力，并确认当前使用的默认模型。
+为 CLI 版 Claude Code 翻译服务增加模型切换与思考程度切换能力，并确认当前使用的
+默认模型。
 
 ### 变更
 
@@ -65,7 +66,7 @@
 - `Easydict/App/Localizable.xcstrings`
 - `Easydict.xcodeproj/project.pbxproj`
 - `EasydictTests/Service/ClaudeCode/ClaudeCodeCLIRunnerTests.swift`
-- `docs/histories/2026-08/2026-08-30-claude-code-model-switch.md`
+- `docs/histories/2026-08/2026-08-30-claude-code-model-effort-switch.md`
 
 ### 后续事项
 
