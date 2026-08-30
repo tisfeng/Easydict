@@ -29,6 +29,13 @@
 - 第四轮修复：popover 内容位于独立宿主窗口，不继承根视图注入的应用语言 locale，
   帮助文案会回落到系统语言；在 popover 内容上重新注入外层 `\.locale`，使其跟随
   应用内语言设置。
+- 第五轮：新增思考程度切换。新建 `ClaudeCodeEffort` 枚举
+  （default/low/medium/high/xhigh/max，`default` 不传 `--effort` 沿用 CLI 默认），
+  runner `buildArguments`/`run` 增加 `effort` 参数透传 `--effort`，service 新增
+  `effortKey`（`serviceDefaultsKey(.reasoningEffort)`），配置页在模型输入框下方
+  加 `StaticPickerCell`，新文件注册进 `project.pbxproj`；新增
+  `service.claude_code.effort.*` 与 `service.configuration.claude_code.effort.title`
+  本地化 key（六个语言），并补充 effort 透传与省略的单元测试。
 - `ClaudeCodeCLIRunnerTests` 新增自定义模型透传和空白模型省略 `--model` 的测试。
 
 ### 设计意图
@@ -43,16 +50,20 @@
 - `swiftformat --lint`：未运行（本机未安装 swiftformat）。
 - `xcodebuild test -only-testing:EasydictTests/ClaudeCodeCLIRunnerTests`：未运行
   （用户拒绝执行 xcodebuild），构建与测试结果未验证；用户明确要求在此状态下提交。
+  第五轮（effort + 新文件注册 pbxproj）同样未经 xcodebuild 验证，pbxproj 仅通过
+  `plutil -lint` 语法检查。
 - 手动验证：本机 `claude` CLI（v2.1.251）实测别名解析——`sonnet` → `claude-sonnet-5`、
   `opus` → `claude-opus-5`、`haiku` → `claude-haiku-4-5-20251001`；完整 ID
   `claude-opus-4-7` 可用，`opus4.7` 等简写返回模型不存在错误并走 `parseError` 路径。
 
 ### 受影响文件
 
+- `Easydict/Swift/Service/ClaudeCode/ClaudeCodeEffort.swift`
 - `Easydict/Swift/Service/ClaudeCode/ClaudeCodeRunner.swift`
 - `Easydict/Swift/Service/ClaudeCode/ClaudeCodeService.swift`
 - `Easydict/Swift/View/SettingView/Tabs/ServiceConfigurationView/ClaudeCodeServiceConfigurationView.swift`
 - `Easydict/App/Localizable.xcstrings`
+- `Easydict.xcodeproj/project.pbxproj`
 - `EasydictTests/Service/ClaudeCode/ClaudeCodeCLIRunnerTests.swift`
 - `docs/histories/2026-08/2026-08-30-claude-code-model-switch.md`
 

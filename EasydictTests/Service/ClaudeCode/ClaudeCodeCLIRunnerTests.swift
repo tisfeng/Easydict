@@ -74,6 +74,35 @@ struct ClaudeCodeCLIRunnerTests {
         #expect(!arguments.contains("--model"))
     }
 
+    @Test("buildArguments omits --effort by default")
+    func buildArgumentsOmitsEffortByDefault() {
+        let arguments = ClaudeCodeRunner.buildArguments(prompt: "Translate this", systemPrompt: nil)
+
+        #expect(!arguments.contains("--effort"))
+    }
+
+    @Test("buildArguments passes a custom effort through --effort")
+    func buildArgumentsPassesCustomEffort() {
+        let arguments = ClaudeCodeRunner.buildArguments(
+            prompt: "Translate this",
+            systemPrompt: nil,
+            effort: "low"
+        )
+
+        let effortIndex = arguments.firstIndex(of: "--effort")
+        #expect(effortIndex != nil)
+        if let effortIndex {
+            #expect(arguments[effortIndex + 1] == "low")
+        }
+    }
+
+    @Test("ClaudeCodeEffort default maps to nil CLI value, others to raw values")
+    func claudeCodeEffortCLIValues() {
+        #expect(ClaudeCodeEffort.default.cliValue == nil)
+        #expect(ClaudeCodeEffort.low.cliValue == "low")
+        #expect(ClaudeCodeEffort.max.cliValue == "max")
+    }
+
     // MARK: - parseError (stderr-only) tests
 
     @Test("parseError returns notLoggedIn when stderr contains 'not logged in'")

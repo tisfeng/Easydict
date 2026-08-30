@@ -33,12 +33,18 @@ struct ClaudeCodeServiceConfigurationView: View {
             CLIStatusRow()
         }
 
-        // Model override. Accepts an alias (sonnet, opus, haiku) or a full model
-        // name; clearing the field falls back to the CLI's own default model.
-        // The placeholder interpolates the app default so users can see what to
-        // type to restore it after clearing the field.
+        // Model + effort overrides. The model field accepts an alias (sonnet, opus,
+        // haiku) or a full model name; clearing it falls back to the CLI's own
+        // default model, and the placeholder interpolates the app default so users
+        // can see what to type to restore it. The `.default` effort omits `--effort`
+        // and keeps the CLI default.
         Section {
             ModelInputRow(key: service.modelKey)
+            StaticPickerCell(
+                titleKey: "service.configuration.claude_code.effort.title",
+                key: service.effortKey,
+                values: ClaudeCodeEffort.allCases
+            )
         }
         #if AGENT_CLI_DEBUG
         Section {

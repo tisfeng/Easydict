@@ -104,7 +104,8 @@ final class ClaudeCodeService: StreamService {
         let baseStream = currentRunner.run(
             prompt: conversationPrompt,
             systemPrompt: systemPrompt.isEmpty ? nil : systemPrompt,
-            model: Defaults[modelKey]
+            model: Defaults[modelKey],
+            effort: Defaults[effortKey].cliValue
         )
 
         // Wrap the stream to capture token usage after the run completes.
@@ -173,6 +174,12 @@ final class ClaudeCodeService: StreamService {
     override var model: String {
         get { Defaults[modelKey] }
         set { Defaults[modelKey] = newValue }
+    }
+
+    /// Stored effort override. `.default` means "do not pass `--effort`"; other
+    /// cases map to the CLI's accepted levels (`low`…`max`).
+    var effortKey: Defaults.Key<ClaudeCodeEffort> {
+        serviceDefaultsKey(.reasoningEffort, defaultValue: .default)
     }
 
     // MARK: Private

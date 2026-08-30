@@ -75,10 +75,12 @@ final class ClaudeCodeRunner: @unchecked Sendable {
     /// with `--output-format stream-json`. `model` defaults to `defaultModel` so
     /// translation uses a fast, capable model instead of whatever the CLI default
     /// happens to be; pass an empty string to fall back to the CLI default.
+    /// `effort` maps to `--effort`; `nil` or empty keeps the CLI default.
     static func buildArguments(
         prompt: String,
         systemPrompt: String?,
-        model: String = ClaudeCodeRunner.defaultModel
+        model: String = ClaudeCodeRunner.defaultModel,
+        effort: String? = nil
     )
         -> [String] {
         var arguments = [
@@ -95,6 +97,9 @@ final class ClaudeCodeRunner: @unchecked Sendable {
         let trimmedModel = model.trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmedModel.isEmpty {
             arguments += ["--model", trimmedModel]
+        }
+        if let effort, !effort.isEmpty {
+            arguments += ["--effort", effort]
         }
         if let systemPrompt, !systemPrompt.isEmpty {
             arguments += ["--system-prompt", systemPrompt]
@@ -169,11 +174,14 @@ final class ClaudeCodeRunner: @unchecked Sendable {
     ///     prompt. `nil` omits the flag and leaves Claude Code's default in place.
     ///   - model: Passed via `--model`. Accepts an alias (`sonnet`, `opus`, `haiku`) or a full
     ///     model name; an empty string omits the flag and falls back to the CLI default.
+    ///   - effort: Passed via `--effort` (`low`…`max`); `nil` omits the flag and keeps
+    ///     the CLI default.
     /// - Returns: A stream that yields text delta strings as they arrive from the CLI.
     func run(
         prompt: String,
         systemPrompt: String? = nil,
-        model: String = ClaudeCodeRunner.defaultModel
+        model: String = ClaudeCodeRunner.defaultModel,
+        effort: String? = nil
     )
         -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { [weak self] continuation in
@@ -210,7 +218,8 @@ final class ClaudeCodeRunner: @unchecked Sendable {
                     process.arguments = Self.buildArguments(
                         prompt: prompt,
                         systemPrompt: systemPrompt,
-                        model: model
+                        model: model,
+                        effort: effort
                     )
                     process.standardOutput = stdoutPipe
                     process.standardError = stderrPipe
