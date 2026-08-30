@@ -185,8 +185,12 @@ final class ClaudeCodeService: StreamService {
 
     /// Stored effort override. `.default` means "do not pass `--effort`"; other
     /// cases map to the CLI's accepted levels (`low`…`max`).
+    ///
+    /// Uses the `cliEffort` slot rather than `reasoningEffort`, which the base
+    /// class already claims with the incompatible `ReasoningEffort` enum — sharing
+    /// that key would misdecode stored values if the base picker were ever enabled.
     var effortKey: Defaults.Key<ClaudeCodeEffort> {
-        serviceDefaultsKey(.reasoningEffort, defaultValue: .default)
+        serviceDefaultsKey(.cliEffort, defaultValue: .default)
     }
 
     /// Tracks whether `migrateLegacyEmptyModelIfNeeded` has run for this service's

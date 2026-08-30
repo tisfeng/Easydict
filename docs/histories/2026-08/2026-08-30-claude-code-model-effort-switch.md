@@ -41,6 +41,9 @@
   字符串持久化进 `modelKey`，升级后会遮蔽新的 `sonnet` 默认值、静默省略 `--model`；
   在 service `init` 中加入带持久化标记的一次性迁移（`modelMigratedKey`），存量空值
   改回 `sonnet`，迁移后的主动清空仍表示"沿用 CLI 默认"并补充测试。
+- 第六轮（code review 修复二）：`effortKey` 改用新增的
+  `ServiceConfigurationKey.cliEffort` 槽位，避免与基类
+  `reasoningEffortDefaultsKey`（不兼容的 `ReasoningEffort` 枚举）共用同名存储。
 - `ClaudeCodeCLIRunnerTests` 新增自定义模型透传和空白模型省略 `--model` 的测试。
 
 ### 设计意图
@@ -70,6 +73,7 @@
 - `Easydict/Swift/Service/ClaudeCode/ClaudeCodeRunner.swift`
 - `Easydict/Swift/Service/ClaudeCode/ClaudeCodeService.swift`
 - `Easydict/Swift/View/SettingView/Tabs/ServiceConfigurationView/ClaudeCodeServiceConfigurationView.swift`
+- `Easydict/Swift/Feature/Configuration/ServiceConfigurationKey.swift`
 - `Easydict/App/Localizable.xcstrings`
 - `Easydict.xcodeproj/project.pbxproj`
 - `EasydictTests/Service/ClaudeCode/ClaudeCodeCLIRunnerTests.swift`
