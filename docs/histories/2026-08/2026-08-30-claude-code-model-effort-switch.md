@@ -49,13 +49,16 @@
 - `jq -e . Easydict/App/Localizable.xcstrings`：通过。
 - `git diff --check`：通过。
 - `swiftformat --lint`：未运行（本机未安装 swiftformat）。
-- `xcodebuild test -only-testing:EasydictTests/ClaudeCodeCLIRunnerTests`：未运行
-  （用户拒绝执行 xcodebuild），构建与测试结果未验证；用户明确要求在此状态下提交。
-  第五轮（effort + 新文件注册 pbxproj）同样未经 xcodebuild 验证，pbxproj 仅通过
-  `plutil -lint` 语法检查。
+- `xcodebuild test -only-testing:EasydictTests/ClaudeCodeCLIRunnerTests`：通过
+  （2026-08-31 由用户本机执行，34 条测试全部通过，TEST SUCCEEDED）；此前各轮提交
+  时该测试尚未运行，pbxproj 仅通过 `plutil -lint` 语法检查，用户运行应用亦确认
+  构建正常。
 - 手动验证：本机 `claude` CLI（v2.1.251）实测别名解析——`sonnet` → `claude-sonnet-5`、
   `opus` → `claude-opus-5`、`haiku` → `claude-haiku-4-5-20251001`；完整 ID
   `claude-opus-4-7` 可用，`opus4.7` 等简写返回模型不存在错误并走 `parseError` 路径。
+- 手动验证：用与 runner 相同的参数组合实测 `--effort` 生效——`low` 档
+  `thinking_tokens = 0`，`max` 档产生思考 token，档位切换真实改变模型行为，且与
+  现有 CLI 参数组合兼容无报错。
 
 ### 受影响文件
 
@@ -70,5 +73,4 @@
 
 ### 后续事项
 
-- `xcodebuild test -only-testing:EasydictTests/ClaudeCodeCLIRunnerTests` 尚未运行，
-  建议在 PR 前补跑确认编译与测试通过。
+- None
