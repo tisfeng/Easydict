@@ -34,11 +34,13 @@ struct ClaudeCodeServiceConfigurationView: View {
 
         // Model override. Accepts an alias (sonnet, opus, haiku) or a full model
         // name; clearing the field falls back to the CLI's own default model.
+        // The placeholder interpolates the app default so users can see what to
+        // type to restore it after clearing the field.
         Section {
             InputCell(
                 textFieldTitleKey: "service.configuration.claude_code.model.title",
                 key: service.modelKey,
-                placeholder: "service.configuration.claude_code.model.placeholder"
+                placeholder: "service.configuration.claude_code.model.placeholder \(ClaudeCodeRunner.defaultModel)"
             )
         }
         #if AGENT_CLI_DEBUG

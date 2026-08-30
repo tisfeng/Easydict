@@ -18,6 +18,10 @@
   `service.modelKey`），与 Codex CLI 配置页保持一致。
 - `Localizable.xcstrings` 新增 `service.configuration.claude_code.model.title` 和
   `.placeholder`，覆盖 en、es、ja、sk、zh-Hans、zh-Hant。
+- 第二轮：placeholder key 改为带参数的
+  `service.configuration.claude_code.model.placeholder %@`，配置视图用
+  `LocalizedStringKey` 插值传入 `ClaudeCodeRunner.defaultModel`，占位文案显示当前
+  应用默认模型（默认 sonnet，留空则使用 CLI 默认模型）。
 - `ClaudeCodeCLIRunnerTests` 新增自定义模型透传和空白模型省略 `--model` 的测试。
 
 ### 设计意图

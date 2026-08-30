@@ -8858,42 +8858,42 @@
         }
       }
     },
-    "service.configuration.claude_code.model.placeholder" : {
+    "service.configuration.claude_code.model.placeholder %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leave empty to use CLI default"
+            "value" : "Default: %@ — leave empty to use CLI default"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déjalo vacío para usar el valor predeterminado del CLI"
+            "value" : "Predeterminado: %@ — déjalo vacío para usar el valor predeterminado del CLI"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "空欄の場合は CLI のデフォルトを使用"
+            "value" : "デフォルト: %@ — 空欄の場合は CLI のデフォルトを使用"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prázdne = predvolený z CLI"
+            "value" : "Predvolené: %@ — prázdne = predvolený z CLI"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "留空则使用 CLI 默认模型"
+            "value" : "默认 %@，留空则使用 CLI 默认模型"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "留空則使用 CLI 預設模型"
+            "value" : "預設 %@，留空則使用 CLI 預設模型"
           }
         }
       }
