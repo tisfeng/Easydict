@@ -336,7 +336,9 @@ public final class DoubaoService: StreamService {
         }
 
         guard let streamEvent = try? JSONDecoder().decode(DoubaoStreamEvent.self, from: data) else {
-            logError("Failed to decode Doubao SSE data: \(jsonDataString ?? "")")
+            // SSE payloads may contain translated user text. Keep diagnostics
+            // structural so transient in-place translations never enter logs.
+            logError("Failed to decode Doubao SSE data (bytes: \(data.count))")
             return nil
         }
 

@@ -163,7 +163,12 @@ final class ClaudeCodeRunner: @unchecked Sendable {
     ///   - systemPrompt: Passed via `--system-prompt` to replace Claude Code's default system
     ///     prompt. `nil` omits the flag and leaves Claude Code's default in place.
     /// - Returns: A stream that yields text delta strings as they arrive from the CLI.
-    func run(prompt: String, systemPrompt: String? = nil) -> AsyncThrowingStream<String, Error> {
+    func run(
+        prompt: String,
+        systemPrompt: String? = nil,
+        allowsPlaintextRequestLogging: Bool = true
+    )
+        -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { [weak self] continuation in
             guard let self else {
                 continuation.finish()
@@ -187,7 +192,12 @@ final class ClaudeCodeRunner: @unchecked Sendable {
                 do {
                     let binaryPath = try Self.detectClaudeBinary()
                     #if AGENT_CLI_DEBUG
-                    self?.logger = ClaudeCodeLogger(command: "\(binaryPath) -p <prompt>", prompt: prompt)
+                    if allowsPlaintextRequestLogging {
+                        self?.logger = ClaudeCodeLogger(
+                            command: "\(binaryPath) -p <prompt>",
+                            prompt: prompt
+                        )
+                    }
                     #endif
 
                     let process = Process()

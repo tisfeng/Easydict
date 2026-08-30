@@ -29,6 +29,7 @@ struct MenuItemView: View {
 
             inputItem.keyboardShortcut(.inputTranslate)
             screenshotItem.keyboardShortcut(.snipTranslate)
+            inPlaceScreenshotTranslationItem.keyboardShortcut(.inPlaceScreenshotTranslation)
             selectWordItem.keyboardShortcut(.selectTranslate)
             pasteboardTranslateItem.keyboardShortcut(.pasteboardTranslate)
             polishAndReplaceItem.keyboardShortcut(.polishAndReplace)
@@ -91,6 +92,10 @@ struct MenuItemView: View {
 
     @ViewBuilder private var screenshotItem: some View {
         menuItem(for: .snipTranslate)
+    }
+
+    @ViewBuilder private var inPlaceScreenshotTranslationItem: some View {
+        menuItem(for: .inPlaceScreenshotTranslation)
     }
 
     @ViewBuilder private var selectWordItem: some View {

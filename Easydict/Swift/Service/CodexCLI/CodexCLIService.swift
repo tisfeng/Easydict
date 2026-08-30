@@ -87,7 +87,8 @@ final class CodexCLIService: StreamService {
         let baseStream = currentRunner.run(
             prompt: combinedPrompt,
             model: Defaults[modelKey],
-            reasoningEffort: Defaults[reasoningEffortKey].cliValue
+            reasoningEffort: Defaults[reasoningEffortKey].cliValue,
+            allowsPlaintextRequestLogging: allowsPlaintextRequestLogging
         )
 
         return AsyncThrowingStream { [weak self] continuation in

@@ -301,6 +301,8 @@ struct AdvancedTab: View {
                 Text("setting.advance.header.ocr_settings")
             }
 
+            InPlaceTranslationSettingsSection()
+
             // Windows management
             Section {
                 Picker(

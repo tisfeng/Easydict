@@ -103,7 +103,8 @@ final class ClaudeCodeService: StreamService {
         runner = currentRunner
         let baseStream = currentRunner.run(
             prompt: conversationPrompt,
-            systemPrompt: systemPrompt.isEmpty ? nil : systemPrompt
+            systemPrompt: systemPrompt.isEmpty ? nil : systemPrompt,
+            allowsPlaintextRequestLogging: allowsPlaintextRequestLogging
         )
 
         // Wrap the stream to capture token usage after the run completes.

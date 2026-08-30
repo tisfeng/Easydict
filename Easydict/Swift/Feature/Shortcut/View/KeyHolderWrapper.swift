@@ -129,6 +129,9 @@ extension KeyHolderWrapper {
             [
                 .inputTranslate: DefaultsKeyWrapper(.inputShortcut),
                 .snipTranslate: DefaultsKeyWrapper(.snipShortcut),
+                .inPlaceScreenshotTranslation: DefaultsKeyWrapper(
+                    .inPlaceScreenshotTranslationShortcut
+                ),
                 .selectTranslate: DefaultsKeyWrapper(.selectionShortcut),
                 .toggleAutoSelectText: DefaultsKeyWrapper(.toggleAutoSelectTextShortcut),
                 .silentScreenshotOCR: DefaultsKeyWrapper(.silentScreenshotOCRShortcut),
