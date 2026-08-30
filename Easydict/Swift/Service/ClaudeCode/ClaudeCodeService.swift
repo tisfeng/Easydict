@@ -19,6 +19,13 @@ import Foundation
 /// and result management are handled by the base class.
 @objc(EZClaudeCodeService)
 final class ClaudeCodeService: StreamService {
+    // MARK: Lifecycle
+
+    required init() {
+        super.init()
+        migrateLegacyEmptyModelIfNeeded()
+    }
+
     // MARK: Public
 
     /// Claude Code has no API key, endpoint, or model fields to observe.
@@ -182,7 +189,29 @@ final class ClaudeCodeService: StreamService {
         serviceDefaultsKey(.reasoningEffort, defaultValue: .default)
     }
 
+    /// Tracks whether `migrateLegacyEmptyModelIfNeeded` has run for this service's
+    /// model key, so a deliberate post-migration clear is left untouched.
+    var modelMigratedKey: Defaults.Key<Bool> {
+        .init("\(modelKey.name)LegacyEmptyMigrated", default: false)
+    }
+
     // MARK: Private
 
     private var runner: ClaudeCodeRunner?
+
+    /// One-time migration for users whose stored model was persisted as an empty
+    /// string before model switching shipped: the base `model` getter, with the old
+    /// `defaultModels` of `[""]`, wrote `""` into `modelKey` as a read side effect
+    /// (e.g. via ActionManager logging or the local HTTP server). Left in place,
+    /// that stored value would shadow the registered `sonnet` default, omit
+    /// `--model`, and silently move translation to the CLI's own default model.
+    /// After this migration runs once, an empty value means a deliberate clear
+    /// ("use the CLI default") and is preserved.
+    private func migrateLegacyEmptyModelIfNeeded() {
+        guard !Defaults[modelMigratedKey] else { return }
+        Defaults[modelMigratedKey] = true
+        if Defaults[modelKey].isEmpty {
+            Defaults[modelKey] = ClaudeCodeRunner.defaultModel
+        }
+    }
 }

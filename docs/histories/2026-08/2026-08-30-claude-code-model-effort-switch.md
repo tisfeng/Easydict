@@ -37,6 +37,10 @@
   加 `StaticPickerCell`，新文件注册进 `project.pbxproj`；新增
   `service.claude_code.effort.*` 与 `service.configuration.claude_code.effort.title`
   本地化 key（六个语言），并补充 effort 透传与省略的单元测试。
+- 第六轮（code review 修复一）：老版本基类 `model` getter 的读取副作用可能已把空
+  字符串持久化进 `modelKey`，升级后会遮蔽新的 `sonnet` 默认值、静默省略 `--model`；
+  在 service `init` 中加入带持久化标记的一次性迁移（`modelMigratedKey`），存量空值
+  改回 `sonnet`，迁移后的主动清空仍表示"沿用 CLI 默认"并补充测试。
 - `ClaudeCodeCLIRunnerTests` 新增自定义模型透传和空白模型省略 `--model` 的测试。
 
 ### 设计意图
@@ -69,6 +73,7 @@
 - `Easydict/App/Localizable.xcstrings`
 - `Easydict.xcodeproj/project.pbxproj`
 - `EasydictTests/Service/ClaudeCode/ClaudeCodeCLIRunnerTests.swift`
+- `EasydictTests/Service/ClaudeCode/ClaudeCodeServiceTests.swift`
 - `docs/histories/2026-08/2026-08-30-claude-code-model-effort-switch.md`
 
 ### 后续事项
