@@ -16,6 +16,7 @@
 
 - 意图模式：planning / implementation
 - 交付授权：none / auto-local-commit / commit / integration / push
+  <!-- implementation 默认 auto-local-commit；只有用户明确要求不提交时才填 none。 -->
 - 安全状态：normal / protected
 - 目标结果：
 - 允许修改路径：
