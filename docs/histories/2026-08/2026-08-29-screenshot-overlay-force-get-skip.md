@@ -55,3 +55,8 @@ dev 分支已有的 `ca102d5d`（校验鼠标下窗口归属）针对"前台进�
 
 - `swift build -Xswiftc -target -Xswiftc arm64-apple-macos13.0`：编译通过（裸 `swift build` 因包内既有 macOS 12 可用性问题失败，与本次改动无关）。
 - 运行时行为未验证；本地 dev 构建后按原场景（飞书截图双击复制）回归。
+
+## 第三轮（2026-08-31）：简化默认触发列表构造
+
+- 合并两个禁用 ID 列表的共同 `map`，保持列表顺序、`triggerType` 和后续追加逻辑不变。
+- 通过 `swiftformat --lint`、`swiftc -parse` 和 `git diff --check` 验证。

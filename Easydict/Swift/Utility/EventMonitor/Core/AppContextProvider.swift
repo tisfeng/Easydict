@@ -103,10 +103,7 @@ final class AppContextProvider {
     }
 
     private func defaultAppTriggerList(forceGetSelectedTextType: ForceGetSelectedTextType) -> [AppTriggerConfig] {
-        var appTriggerList = Constants.screenMirrorIDs.map {
-            AppTriggerConfig(appBundleID: $0, triggerType: [])
-        }
-        appTriggerList += Constants.overlayHelperIDs.map {
+        var appTriggerList = (Constants.screenMirrorIDs + Constants.overlayHelperIDs).map {
             AppTriggerConfig(appBundleID: $0, triggerType: [])
         }
         if forceGetSelectedTextType == .simulatedShortcutCopy {
