@@ -5168,6 +5168,47 @@
         }
       }
     },
+    "in_place_screenshot_translation.settings.service_source_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Services shown here are translation services enabled for Fixed window in Services settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aquí se muestran los servicios de traducción habilitados para Ventana fija en los ajustes de Servicios."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここには、「サービス」設定の「固定ウィンドウ」で有効にした翻訳サービスが表示されます。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu sa zobrazujú prekladové služby povolené pre Fixné okno v nastaveniach Služby."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此处显示“服务”设置中为“侧悬浮窗口”启用的翻译服务。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此處顯示「服務」設定中為「固定視窗」啟用的翻譯服務。"
+          }
+        }
+      }
+    },
     "in_place_screenshot_translation.status.no_text" : {
       "extractionState" : "manual",
       "localizations" : {

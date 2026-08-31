@@ -33,6 +33,9 @@ OCR 和翻译。本次同时完成产品交互、界面、架构、隐私、本�
   被合并的重复块不会重复记账。
 - provider resolver 仅暴露 Fixed Window 中已启用、支持 translation/sentence 的服务；服务
   删除或关闭时回退到下一个有效项，无可用服务时清空，网络、鉴权或限流失败不静默换服务。
+- 修正 resolver 对普通结果卡片 `enabledQuery` 展开状态的错误依赖；折叠有道、内置 AI 等
+  卡片不再让服务从原位菜单消失。Advanced 设置补充 Fixed Window 服务来源提示，浮窗无服务
+  时显示本地化空状态；六个 locale 均已同步。
 - 首次使用显示隐私说明，明确 Apple Vision 在本地识别、只把 OCR 文字发送给当前服务、
   自动更新会产生新请求且不上传截图像素；用户继续后才记录 runtime acknowledgement。
 - 新增 Advanced 设置中的默认服务、自动更新和置顶开关；Defaults 只保存偏好，首次隐私确认
@@ -61,6 +64,9 @@ OCR 和翻译。本次同时完成产品交互、界面、架构、隐私、本�
 - 最新上游适配分支的 SwiftFormat lint 为 `0/410 files require formatting`，10 files skipped；
   `git diff --check` 通过。SwiftLint 扫描 412 个文件，5 个 warning、0 serious；warning 均为
   session/coordinator 产品或测试的 file/type length。
+- 服务菜单修复在全新 DerivedData 上通过 Debug `build-for-testing`；resolver、view model、
+  session 三个 focused suites 共 36 项测试通过，0 失败、0 跳过；Release build 通过并生成
+  `Easydict.app`。本次 4 个 Swift 文件的 SwiftFormat lint 为 `0/4 files require formatting`。
 - String Catalog JSON 有效，47 个 feature key 的六语言覆盖完整；两个 Info plist 和 PBX 的
   `plutil -lint` 均通过。
 - 静态隐私检查：新功能目录没有文件、历史、收藏或 UserDefaults 内容写入；只有显式“复制”

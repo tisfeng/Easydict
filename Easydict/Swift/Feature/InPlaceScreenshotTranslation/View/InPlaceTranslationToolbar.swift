@@ -50,7 +50,9 @@ struct InPlaceTranslationToolbar: View {
     private var selectedServiceName: String {
         viewModel.serviceOptions.first {
             $0.identifier == viewModel.configuration.serviceIdentifier
-        }?.displayName ?? ""
+        }?.displayName ?? String(
+            localized: "in_place_screenshot_translation.status.service_unavailable"
+        )
     }
 
     private var narrowDisplayModeKey: LocalizedStringKey {

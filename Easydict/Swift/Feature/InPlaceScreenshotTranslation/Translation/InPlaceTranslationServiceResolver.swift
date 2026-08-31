@@ -122,8 +122,9 @@ final class InPlaceTranslationServiceResolver: @unchecked Sendable {
 
     /// Restricts the picker to actual translation providers. AI tools may inherit
     /// StreamService's translation toggle but have non-translation prompt semantics.
+    /// `enabledQuery` is intentionally ignored because it stores whether the ordinary
+    /// Fixed Window result card is expanded, not whether the provider is enabled.
     func isEligible(_ service: QueryService) -> Bool {
-        guard service.enabledQuery else { return false }
         let type = service.serviceType()
         guard type != .appleDictionary,
               type != .mDict,

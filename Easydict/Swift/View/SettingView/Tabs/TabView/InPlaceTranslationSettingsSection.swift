@@ -57,10 +57,13 @@ struct InPlaceTranslationSettingsSection: View {
         } header: {
             Text("in_place_screenshot_translation.settings.header")
         } footer: {
-            Text("in_place_screenshot_translation.privacy.notice")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("in_place_screenshot_translation.settings.service_source_hint")
+                Text("in_place_screenshot_translation.privacy.notice")
+            }
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
         }
         .onAppear(perform: reloadServices)
         .onReceive(serviceHasUpdatedNotification) { _ in

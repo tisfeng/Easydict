@@ -869,6 +869,8 @@ xcodebuild build \
   声明已完成发布验收。
 - 2026-08-30：产品决策无阻塞性未决项；系统版本、provider 质量和设备差异作为验证不确定性，
   不作为拆分交付的理由。
+- 2026-08-31：原位服务资格以 Fixed Window 的服务启用状态、翻译能力和 usage status 为准；
+  `enabledQuery` 只表示普通结果卡片是否展开，不再影响原位服务菜单或保存选择。
 
 ## 进度记录
 
@@ -893,3 +895,6 @@ xcodebuild build \
   截图翻译提交，并暂缓依赖尚未合入配置备份 registry 的 descriptor 与对应回归测试。
 - 2026-08-31：独立适配分支通过 Debug build-for-testing、94 项 focused tests、Release build、
   SwiftFormat、String Catalog、plist/PBX 和 diff 校验；准备最终敏感信息扫描与 PR 交付。
+- 2026-08-31：修复原位服务菜单与普通结果卡片展开状态的错误耦合；补充设置来源提示和浮窗
+  空状态。新的 Debug build-for-testing、3 个相关 suite 共 36 项测试及 Release build 均通过，
+  既有 5 个 SwiftLint 长度 warning 未增加。

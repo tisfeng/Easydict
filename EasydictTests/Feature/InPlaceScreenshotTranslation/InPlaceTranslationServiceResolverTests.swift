@@ -62,24 +62,25 @@ struct InPlaceTranslationServiceResolverTests {
         #expect(resolution.shouldResetStoredSelection)
     }
 
-    @Test("A disabled saved service falls back to the next enabled option or clears")
-    func resolvesAfterSavedServiceIsDisabled() {
+    @Test("A missing saved service falls back to the next dynamic option or clears")
+    func resolvesMissingSelectionToDynamicFallbackOrEmpty() {
         let resolver = InPlaceTranslationServiceResolver()
-        let nextEnabled = InPlaceTranslationServiceOption(
-            identifier: "next-enabled",
-            displayName: "Next Enabled"
+        let dynamicIdentifier = "custom-openai:00000000-0000-4000-8000-000000000002"
+        let dynamicOption = InPlaceTranslationServiceOption(
+            identifier: dynamicIdentifier,
+            displayName: "Dynamic Fallback"
         )
 
         let fallback = resolver.resolveSelection(
-            "disabled-service",
-            availableOptions: [nextEnabled]
+            "missing-service",
+            availableOptions: [dynamicOption]
         )
         let cleared = resolver.resolveSelection(
-            "disabled-service",
+            "missing-service",
             availableOptions: []
         )
 
-        #expect(fallback.identifier == "next-enabled")
+        #expect(fallback.identifier == dynamicIdentifier)
         #expect(fallback.shouldResetStoredSelection)
         #expect(cleared.identifier == nil)
         #expect(cleared.shouldResetStoredSelection)
@@ -106,7 +107,14 @@ struct InPlaceTranslationServiceResolverTests {
         #expect(!resolver.isEligible(service(type: .polishing)))
         #expect(!resolver.isEligible(service(type: .bing, queryType: [.dictionary])))
         #expect(!resolver.isEligible(service(type: .bing, usageStatus: .alwaysOff)))
-        #expect(!resolver.isEligible(service(type: .bing, enabledQuery: false)))
+    }
+
+    @Test("A collapsed Fixed Window result card does not remove translator eligibility")
+    func keepsTranslatorEligibleWhenFixedWindowResultCardIsCollapsed() {
+        let translator = service(type: .bing, enabledQuery: false)
+
+        #expect(!translator.enabledQuery)
+        #expect(InPlaceTranslationServiceResolver().isEligible(translator))
     }
 
     // MARK: Private
