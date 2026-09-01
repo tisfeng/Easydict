@@ -17,11 +17,11 @@ Options:
       Create an isolated worktree and SHA-specific review branch. The current
       checkout may be dirty and remains unchanged. The worktree is retained.
   --merge-latest
-      Create review/pr-<number>-merge-<head-sha> from the PR head and merge
-      the latest base branch into it. Combine with --worktree to perform the
-      merge in an isolated worktree. Use only after the user explicitly asks
-      for latest-base integration or conflict resolution. The branch is
-      local-only and never pushed.
+      In local mode, prepare the PR head branch (or its collision fallback)
+      and merge the latest base branch into that selected branch. With
+      --worktree, use the isolated review/pr-<number>-merge-<head-sha> branch
+      instead. Use only after the user explicitly asks for latest-base
+      integration or conflict resolution. Never push the result.
 USAGE
 }
 
@@ -89,7 +89,7 @@ ensure_remote() {
   local remote_url="https://github.com/${owner}/${repo}.git"
   local existing_url
 
-  if existing_url=$(git remote get-url "$remote_name" 2>/dev/null); then
+  if existing_url=$(git config --get "remote.${remote_name}.url" 2>/dev/null); then
     if ! same_github_repo_url "$existing_url" "$owner" "$repo"; then
       fail "Remote '${remote_name}' points to '${existing_url}', not '${remote_url}'."
     fi
@@ -104,7 +104,7 @@ find_matching_remote() {
   local owner=$1 repo=$2 preferred=$3
   local remote url
 
-  if [[ -n $preferred ]] && url=$(git remote get-url "$preferred" 2>/dev/null); then
+  if [[ -n $preferred ]] && url=$(git config --get "remote.${preferred}.url" 2>/dev/null); then
     if same_github_repo_url "$url" "$owner" "$repo"; then
       printf '%s\n' "$preferred"
       return 0
@@ -112,7 +112,7 @@ find_matching_remote() {
   fi
 
   while IFS= read -r remote; do
-    url=$(git remote get-url "$remote" 2>/dev/null || true)
+    url=$(git config --get "remote.${remote}.url" 2>/dev/null || true)
     if same_github_repo_url "$url" "$owner" "$repo"; then
       printf '%s\n' "$remote"
       return 0
@@ -130,6 +130,15 @@ require_clean_worktree() {
   if [[ -n $(git status --porcelain=v1) ]]; then
     fail "Worktree has uncommitted changes on branch '${current_branch:-detached HEAD}'. Clean it before ${action}."
   fi
+}
+
+branch_checked_out_elsewhere() {
+  local branch=$1
+  local current_branch
+
+  current_branch=$(git branch --show-current || true)
+  [[ $current_branch != "$branch" ]] || return 1
+  [[ -n $(find_branch_worktree "$branch" || true) ]]
 }
 
 # Return a non-empty collision reason when the PR head branch cannot be
@@ -154,6 +163,11 @@ unsafe_branch_reason() {
   esac
 
   if git show-ref --verify --quiet "refs/heads/${branch}"; then
+    if branch_checked_out_elsewhere "$branch"; then
+      printf "local branch '%s' is checked out in another worktree" "$branch"
+      return 0
+    fi
+
     actual_upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/${branch}")
     if [[ $actual_upstream != "$expected_upstream" ]]; then
       [[ -n $actual_upstream ]] || actual_upstream="no upstream"
@@ -378,6 +392,11 @@ prepare_pr_branch() {
     [[ $actual_head == "$head_oid" ]] || \
       fail "Prepared review branch '${review_branch}' is at '${actual_head}', not PR head '${head_oid}'."
 
+    if [[ $mode == "merge" ]]; then
+      merge_latest_base_into_current_branch "$current_branch" "$upstream_ref"
+      return 0
+    fi
+
     printf '\nPrepared PR #%s: %s\n' "$pr_number" "$pr_url"
     printf 'Remote: %s (%s)\n' "$remote_name" "https://github.com/${head_owner}/${head_repo}.git"
     printf 'Review branch: %s (collision fallback)\n' "$review_branch"
@@ -405,11 +424,68 @@ prepare_pr_branch() {
   [[ $actual_head == "$head_oid" ]] || \
     fail "Prepared branch '${head_branch}' is at '${actual_head}', not PR head '${head_oid}'."
 
+  if [[ $mode == "merge" ]]; then
+    merge_latest_base_into_current_branch "$current_branch" "$upstream_ref"
+    return 0
+  fi
+
   printf '\nPrepared PR #%s: %s\n' "$pr_number" "$pr_url"
   printf 'Remote: %s (%s)\n' "$remote_name" "https://github.com/${head_owner}/${head_repo}.git"
   printf 'Branch: %s\n' "$head_branch"
   printf 'Upstream: %s\n' "$upstream_ref"
   printf 'Head SHA: %s\n' "$head_oid"
+}
+
+merge_latest_base_into_current_branch() {
+  local selected_branch=$1
+  local expected_upstream=$2
+  local current_head parents first_parent second_parent extra_parent
+
+  require_expected_upstream "$selected_branch" "$expected_upstream"
+  current_head=$(git rev-parse HEAD)
+  [[ $current_head == "$head_oid" ]] || \
+    fail "Selected branch '${selected_branch}' is at '${current_head}', not PR head '${head_oid}' before latest-base merge."
+
+  prepare_merge_refs
+
+  if git merge --no-edit "$base_upstream"; then
+    current_head=$(git rev-parse HEAD)
+    git merge-base --is-ancestor "$head_oid" "$current_head" || \
+      fail "Merged branch '${selected_branch}' no longer contains PR head '${head_oid}'."
+    git merge-base --is-ancestor "$base_oid" "$current_head" || \
+      fail "Merged branch '${selected_branch}' does not contain base '${base_oid}'."
+
+    if [[ $current_head != "$head_oid" && $current_head != "$base_oid" ]]; then
+      parents=$(git show -s --format=%P HEAD)
+      read -r first_parent second_parent extra_parent <<< "$parents"
+      [[ $first_parent == "$head_oid" && $second_parent == "$base_oid" && -z ${extra_parent:-} ]] || \
+        fail "Latest-base merge on '${selected_branch}' is not the expected head/base merge."
+    fi
+
+    printf '\nPrepared merged PR #%s: %s\n' "$pr_number" "$pr_url"
+    printf 'Review branch: %s\n' "$selected_branch"
+    printf 'Upstream: %s\n' "$expected_upstream"
+    printf 'Base: %s/%s (%s)\n' "$base_remote" "$base_branch" \
+      "https://github.com/${base_owner}/${base_repo}.git"
+    printf 'Head: %s/%s (%s)\n' "$head_remote" "$head_branch" \
+      "https://github.com/${head_owner}/${head_repo}.git"
+    printf 'Head SHA: %s\n' "$head_oid"
+    printf 'Push: not performed\n'
+  else
+    printf '\nMerge stopped with conflicts for PR #%s: %s\n' "$pr_number" "$pr_url" >&2
+    printf 'Review branch: %s\n' "$selected_branch" >&2
+    printf 'Base: %s\n' "$base_upstream" >&2
+    printf '\nInspect conflicts:\n' >&2
+    printf '  git status --short\n' >&2
+    printf '  git diff --name-only --diff-filter=U\n' >&2
+    printf '  git diff --cc\n' >&2
+    printf '\nAfter semantic conflict resolution:\n' >&2
+    printf '  git add <resolved-files>\n' >&2
+    printf '  git commit --no-edit\n' >&2
+    printf '\nIf conflicts cannot be resolved safely:\n' >&2
+    printf '  git merge --abort\n' >&2
+    exit 2
+  fi
 }
 
 # Fetch the exact PR head and latest base refs used by merged review modes.
@@ -420,7 +496,8 @@ prepare_merge_refs() {
   ensure_remote "$head_remote" "$head_owner" "$head_repo"
 
   if base_remote=$(find_matching_remote "$base_owner" "$base_repo" "origin"); then
-    printf 'Base remote exists: %s -> %s\n' "$base_remote" "$(git remote get-url "$base_remote")"
+    printf 'Base remote exists: %s -> %s\n' "$base_remote" \
+      "$(git config --get "remote.${base_remote}.url")"
   else
     base_remote=$base_owner
     ensure_remote "$base_remote" "$base_owner" "$base_repo"
@@ -435,44 +512,6 @@ prepare_merge_refs() {
   [[ $fetched_head == "$head_oid" ]] || \
     fail "PR head moved from '${head_oid}' to '${fetched_head}'. Rerun preparation."
   base_oid=$(git rev-parse "$base_remote_ref")
-}
-
-prepare_merged_review_branch() {
-  local review_branch
-  local head_short=${head_oid:0:10}
-
-  require_clean_worktree "preparing a merged review branch"
-  prepare_merge_refs
-  review_branch="review/pr-${pr_number}-merge-${head_short}"
-
-  if git show-ref --verify --quiet "refs/heads/${review_branch}"; then
-    fail "Local review branch '${review_branch}' already exists. Inspect or remove it before preparing this PR again."
-  fi
-
-  git switch --no-track --create "$review_branch" "$head_remote_ref"
-
-  if git merge --no-edit "$base_upstream"; then
-    printf '\nPrepared merged PR #%s: %s\n' "$pr_number" "$pr_url"
-    printf 'Review branch: %s\n' "$review_branch"
-    printf 'Base: %s/%s (%s)\n' "$base_remote" "$base_branch" "https://github.com/${base_owner}/${base_repo}.git"
-    printf 'Head: %s/%s (%s)\n' "$head_remote" "$head_branch" "https://github.com/${head_owner}/${head_repo}.git"
-    printf 'Head SHA: %s\n' "$head_oid"
-    printf 'Push: not performed\n'
-  else
-    printf '\nMerge stopped with conflicts for PR #%s: %s\n' "$pr_number" "$pr_url" >&2
-    printf 'Review branch: %s\n' "$review_branch" >&2
-    printf 'Base: %s\n' "$base_upstream" >&2
-    printf '\nInspect conflicts:\n' >&2
-    printf '  git status --short\n' >&2
-    printf '  git diff --name-only --diff-filter=U\n' >&2
-    printf '  git diff --cc\n' >&2
-    printf '\nAfter semantic conflict resolution:\n' >&2
-    printf '  git add <resolved-files>\n' >&2
-    printf '  git commit --no-edit\n' >&2
-    printf '\nIf conflicts cannot be resolved safely:\n' >&2
-    printf '  git merge --abort\n' >&2
-    exit 2
-  fi
 }
 
 print_worktree_summary() {
@@ -588,8 +627,6 @@ read_pr_metadata
 
 if [[ $checkout_mode == "worktree" ]]; then
   prepare_review_worktree
-elif [[ $mode == "merge" ]]; then
-  prepare_merged_review_branch
 else
   prepare_pr_branch
 fi
