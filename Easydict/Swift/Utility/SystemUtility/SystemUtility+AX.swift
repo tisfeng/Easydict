@@ -212,7 +212,7 @@ extension SystemUtility {
         var markerRange: CFTypeRef?
         guard AXUIElementCopyAttributeValue(
             focusedUIElement.element,
-            "AXSelectedTextMarkerRange" as CFString,
+            kAXSelectedTextMarkerRangeAttribute as CFString,
             &markerRange
         ) == .success,
             let markerRange else {
@@ -222,7 +222,7 @@ extension SystemUtility {
         var selectedText: CFTypeRef?
         guard AXUIElementCopyParameterizedAttributeValue(
             focusedUIElement.element,
-            "AXStringForTextMarkerRange" as CFString,
+            kAXStringForTextMarkerRangeParameterizedAttribute as CFString,
             markerRange,
             &selectedText
         ) == .success else {
