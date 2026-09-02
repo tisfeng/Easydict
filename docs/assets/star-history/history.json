@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "tisfeng/Easydict",
-  "generatedAt": "2026-08-16T08:16:59Z",
-  "starCount": 14225,
+  "generatedAt": "2026-08-30T02:33:13Z",
+  "starCount": 14400,
   "points": [
     {
       "date": "2023-01-13",
@@ -5147,6 +5147,14 @@
     {
       "date": "2026-08-16",
       "count": 14225
+    },
+    {
+      "date": "2026-08-23",
+      "count": 14297
+    },
+    {
+      "date": "2026-08-30",
+      "count": 14400
     }
   ],
   "avatar": {
