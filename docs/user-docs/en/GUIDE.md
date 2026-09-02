@@ -179,6 +179,8 @@ For Safari users, it is highly recommended that this option be turned on, as Saf
 
 Currently, only the system OCR is supported. OCR supported languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, German, Italian, Russian, Ukrainian.
 
+System OCR also extracts QR code payloads. When an image contains both text and QR codes, the QR code content is appended after the recognized text.
+
 ## TTS Services
 
 Currently support macOS system TTS, Bing, Google, Youdao, and Baidu online TTS service.
