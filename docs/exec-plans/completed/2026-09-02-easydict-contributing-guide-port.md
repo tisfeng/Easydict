@@ -38,6 +38,7 @@
 - [x] 将两个 README 的贡献段落收束到根目录贡献指南入口。
 - [x] 创建并更新同任务 history，运行 Markdown 和 Git 静态验证。
 - [x] 将本计划归档到 `completed/`，精确暂存并自动创建一个本地 Angular-style 提交。
+- [x] 修正语言区块中的跨语言文档引用，分别只保留对应语言可读的入口。
 
 ## 风险与决策
 
@@ -50,6 +51,7 @@
 - `git diff --check`：通过。
 - 新增 Markdown 的相对链接与锚点：通过；`CONTRIBUTING.md` 的双语锚点，以及中英文 Developer Build Guide 标题均存在。
 - 公开贡献入口的范围扫描：通过；保留 Angular-style、分支命名、关联 Issue、UI 截图和 `AGENTS.md`，未混入 Scoco 专属事实。
+- 语言边界复查：English 的 Further reading 只保留英文文档；简体中文的详细文档只保留中文文档。
 - 变更路径：通过；仅包含任务契约中的 README、贡献指南、plan 和 history 路径。
 - README 既有的第 5、14 行尾随空白未修改；新增内容无尾随空白。
 - 不运行：`xcodebuild` 或产品测试，因为本次仅修改 Markdown 文档。

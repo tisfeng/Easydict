@@ -38,9 +38,6 @@ run from the workspace rather than `Easydict.xcodeproj`.
 ### Further reading
 
 - [Developer Build Guide (English)](docs/user-docs/en/GUIDE.md#developer-build)
-- [开发者构建指南（简体中文）](docs/user-docs/zh/GUIDE.md#开发者构建)
-- [Architecture Overview](docs/architecture/overview.md)
-- Coding Agent instructions: [AGENTS.md](AGENTS.md)
 
 ## 简体中文
 
@@ -71,6 +68,5 @@ run from the workspace rather than `Easydict.xcodeproj`.
 ### 详细文档
 
 - [开发者构建指南（简体中文）](docs/user-docs/zh/GUIDE.md#开发者构建)
-- [Developer Build Guide (English)](docs/user-docs/en/GUIDE.md#developer-build)
 - [架构与源码定位](docs/architecture/overview.md)
 - 使用 Coding Agent：[AGENTS.md](AGENTS.md)
