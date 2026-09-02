@@ -10,10 +10,10 @@
 
 - 任务模式：`implementation`
 - 用户目标：将 Scoco 最新三个与 `CONTRIBUTING.md` 相关提交的最终语义合并移植到 Easydict。
-- 允许动作：新增根目录双语贡献指南，更新两个 README 的贡献入口，创建本计划与 history，运行文档级验证并自动创建一次本地提交。
+- 允许动作：新增根目录中文贡献指南，更新两个 README 的贡献入口，创建本计划与 history，运行文档级验证并自动创建本地提交。
 - 允许修改路径：`CONTRIBUTING.md`、`README.md`、`README_ZH.md`、`docs/exec-plans/`、`docs/histories/2026-09/`。
 - 禁止动作：不直接 cherry-pick；不修改产品代码、Xcode 工程、用户 GUIDE、PR 模板、`AGENTS.md` 或外部服务；不 push、pull、rebase 或 merge。
-- 验收标准：贡献入口双语可发现、Easydict 专属 PR 契约保留、Scoco 专属事实未混入、静态文档验证通过。
+- 验收标准：中文贡献入口可发现、英文 README 明确说明指南语言、Easydict 专属 PR 契约保留、Scoco 专属事实未混入、静态文档验证通过。
 
 ## 初始状态
 
@@ -34,24 +34,25 @@
 
 ## 实施步骤
 
-- [x] 新建双语 `CONTRIBUTING.md`，链接现有中英文 Developer Build Guide。
+- [x] 根据来源最终结构将 `CONTRIBUTING.md` 整理为中文指南，并链接现有中文 Developer Build Guide。
 - [x] 将两个 README 的贡献段落收束到根目录贡献指南入口。
 - [x] 创建并更新同任务 history，运行 Markdown 和 Git 静态验证。
 - [x] 将本计划归档到 `completed/`，精确暂存并自动创建一个本地 Angular-style 提交。
-- [x] 修正语言区块中的跨语言文档引用，分别只保留对应语言可读的入口。
+- [x] 取消不完整的双语镜像；英文 README 明确链接中文贡献指南，中文 README 链接同一文件。
 
 ## 风险与决策
 
 - 用户 GUIDE 中已有贡献细则；本次只链接而不重写，避免扩大为公共文档重构。
 - 根指南只保留稳定入口和 PR 契约；签名、依赖维护与 CocoaPods 故障排查继续由 Developer Build Guide 维护。
-- `AGENTS.md` 保持 Coding Agent 的唯一入口，本指南只提供链接而不复制其执行规则。
+- `AGENTS.md` 保持 Coding Agent 的唯一入口，本中文指南只提供链接而不复制其执行规则。
+- 来源最终指南与其英文 README 使用“英文 README 指向中文指南”的结构；Easydict 采用同一结构，避免维护不完整的英文镜像。
 
 ## 验证
 
 - `git diff --check`：通过。
-- 新增 Markdown 的相对链接与锚点：通过；`CONTRIBUTING.md` 的双语锚点，以及中英文 Developer Build Guide 标题均存在。
+- 新增 Markdown 的相对链接：通过；`CONTRIBUTING.md` 和所有详细文档目标均存在。
 - 公开贡献入口的范围扫描：通过；保留 Angular-style、分支命名、关联 Issue、UI 截图和 `AGENTS.md`，未混入 Scoco 专属事实。
-- 语言边界复查：English 的 Further reading 只保留英文文档；简体中文的详细文档只保留中文文档。
+- 语言结构复查：`CONTRIBUTING.md` 只含中文正文和中文详细文档入口；英文 README 明确说明其链接目标为中文贡献指南。
 - 变更路径：通过；仅包含任务契约中的 README、贡献指南、plan 和 history 路径。
 - README 既有的第 5、14 行尾随空白未修改；新增内容无尾随空白。
 - 不运行：`xcodebuild` 或产品测试，因为本次仅修改 Markdown 文档。

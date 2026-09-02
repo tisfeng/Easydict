@@ -19,23 +19,24 @@
 
 ## 变更
 
-- 新增 Easydict 双语 `CONTRIBUTING.md`，将参与方式、源码构建入口、PR 要求和详细文档集中为 GitHub 可发现的根目录入口。
-- 将 `README.md` 和 `README_ZH.md` 的贡献段落收束到对应语言锚点；保留既有 AI 编程和 Issue/PR 处理说明。
+- 新增 Easydict 中文 `CONTRIBUTING.md`，将参与方式、源码构建入口、PR 要求和详细文档集中为 GitHub 可发现的根目录入口。
+- 将 `README.md` 和 `README_ZH.md` 的贡献段落收束到同一指南；英文 README 明确说明其链接目标为中文，保留既有 AI 编程和 Issue/PR 处理说明。
 - 保留 Easydict 的 `dev`、分支命名、Angular-style、关联 Issue、验证和 UI 截图契约；未复制 Scoco 的产品、环境或发布事实。
-- 后续修正语言边界：English 的 Further reading 只保留英文构建文档；简体中文的详细文档只保留中文构建、架构和 Coding Agent 文档。
+- 经用户复核，取消先前不完整的双语镜像，改为遵循来源最终结构：中文贡献指南承载完整规则，英文 README 明确指向该中文指南。
 
 ## 适配决策
 
 - 三个来源提交是一次“扩展、纠正环境前置、收敛”的连续编辑过程，因此按 `ae7fa25f4` 的最终简洁结构合并为一个 Easydict 提交，而非直接 cherry-pick。
-- 构建入口链接现有中英文 Developer Build Guide；不将 Bundler、常规 `pod install`、签名配置或 CocoaPods 故障排查重复为首次构建前置条件。
+- 构建入口链接现有中文 Developer Build Guide；不将 Bundler、常规 `pod install`、签名配置或 CocoaPods 故障排查重复为首次构建前置条件。
+- 来源的英文 README 明确指向中文贡献指南；Easydict 复用该结构，而不是维护缺少架构和 Agent 文档译本的双语镜像。
 - 既有中英文 GUIDE 的详细贡献章节不在本次来源差异范围内，保持不变以避免无关公共文档重构。
 
 ## 验证
 
 - `git diff --check`：通过。
-- Markdown 相对链接和语言锚点：通过；所有新增本地目标存在，中英文 Developer Build 标题可定位。
+- Markdown 相对链接：通过；所有新增本地目标存在，英文 README 和中文 README 均可定位到根目录贡献指南。
 - 贡献契约和负向扫描：通过；保留 Angular-style、分支命名、关联 Issue、UI 截图和 `AGENTS.md`，公开入口未出现 Scoco、`Scoco.xcworkspace`、macOS 14.6、`README_EN.md`、`changelog.md`、Bundler 或常规 `pod install`。
-- 跨语言文档引用复查：通过；英文和简体中文区块不再互相列出另一种语言的文档入口。
+- 语言结构复查：通过；根目录贡献指南为完整中文文档，英文 README 明确标注链接目标为中文，不存在不对等的语言区块。
 - 新增 Markdown 无尾随空白；README 的既有尾随空白行未修改。
 - 未运行 `xcodebuild` 或产品测试，因为本次仅修改 Markdown 文档。
 

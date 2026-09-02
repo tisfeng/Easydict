@@ -50,7 +50,7 @@ Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译�
 ## 贡献
 
 欢迎通过 issue 和 Pull Request 参与 Easydict 的改进。开发流程和 PR 要求请参阅
-[贡献指南](./CONTRIBUTING.md#简体中文)。
+[贡献指南](./CONTRIBUTING.md)。
 
 ### AI 辅助编程
 
