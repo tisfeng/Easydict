@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import html
 from pathlib import Path
 import subprocess
 import tempfile
@@ -211,6 +212,31 @@ class ReleaseAppcastTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), "")
+
+    def test_set_link_with_notes_text_populates_description(self) -> None:
+        notes = "## What's Changed\n* feat: test feature by @user in https://example.com/pr/1\n"
+        result = self.run_script(
+            "set-link",
+            "--appcast",
+            str(self.candidate),
+            "--version",
+            "2.22.0",
+            "--build",
+            "64",
+            "--url",
+            "https://example.com/2.22.0",
+            "--notes-text",
+            notes,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+        tree = ET.parse(self.candidate)
+        target = tree.getroot().find("./channel/item")
+        desc = target.find("description")
+        self.assertIsNotNone(desc)
+        unescaped_text = html.unescape(desc.text or "")
+        self.assertIn("<h2>What's Changed</h2>", unescaped_text)
+        self.assertIn("<li>feat: test feature", unescaped_text)
 
 
 if __name__ == "__main__":
