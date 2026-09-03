@@ -229,6 +229,7 @@
 		0380484B2C4975BD006C6210 /* Encodable+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0380484A2C4975BD006C6210 /* Encodable+JSON.swift */; };
 		03825DE22F13B4FB005C1BC6 /* TTSServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03825DE12F13B4FB005C1BC6 /* TTSServiceType.swift */; };
 		03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */; };
+		A82600022F00000100000002 /* TextReplacementSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82600012F00000100000001 /* TextReplacementSettingsSection.swift */; };
 		03882F8D29D95044005B5A52 /* CTView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8429D95044005B5A52 /* CTView.m */; };
 		03882F8E29D95044005B5A52 /* ToastWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8629D95044005B5A52 /* ToastWindowController.m */; };
 		03882F8F29D95044005B5A52 /* CTScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8729D95044005B5A52 /* CTScreen.m */; };
@@ -284,6 +285,8 @@
 		03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884732F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift */; };
 		03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */; };
 		03A8847A2F14000100D5C0DE /* BingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884792F14000100D5C0DE /* BingServiceTests.swift */; };
+		7A2508250000000000000001 /* TextReplacementServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2508250000000000000002 /* TextReplacementServiceTests.swift */; };
+		7A2508250000000000000003 /* TextReplacementStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2508250000000000000004 /* TextReplacementStreamTests.swift */; };
 		03A9BE952E70631B0013E645 /* SystemUtility+Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */; };
 		03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
@@ -878,6 +881,7 @@
 		0380484A2C4975BD006C6210 /* Encodable+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+JSON.swift"; sourceTree = "<group>"; };
 		03825DE12F13B4FB005C1BC6 /* TTSServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSServiceType.swift; sourceTree = "<group>"; };
 		03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedTab.swift; sourceTree = "<group>"; };
+		A82600012F00000100000001 /* TextReplacementSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextReplacementSettingsSection.swift; sourceTree = "<group>"; };
 		03882F8229D95044005B5A52 /* CTScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTScreen.h; sourceTree = "<group>"; };
 		03882F8329D95044005B5A52 /* ToastWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToastWindowController.h; sourceTree = "<group>"; };
 		03882F8429D95044005B5A52 /* CTView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTView.m; sourceTree = "<group>"; };
@@ -945,6 +949,8 @@
 		03A884752F13000100D5C0DE /* apple-script-overview.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "apple-script-overview.md"; sourceTree = "<group>"; };
 		03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptExecutorTests.swift; sourceTree = "<group>"; };
 		03A884792F14000100D5C0DE /* BingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingServiceTests.swift; sourceTree = "<group>"; };
+		7A2508250000000000000002 /* TextReplacementServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextReplacementServiceTests.swift; sourceTree = "<group>"; };
+		7A2508250000000000000004 /* TextReplacementStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextReplacementStreamTests.swift; sourceTree = "<group>"; };
 		03A8847B2F15000100D5C0DE /* apple-script-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "apple-script-architecture.svg"; sourceTree = "<group>"; };
 		03A91F142E63E1FB00896B17 /* FocusedElementInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusedElementInfo.swift; sourceTree = "<group>"; };
 		03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Selection.swift"; sourceTree = "<group>"; };
@@ -1460,6 +1466,7 @@
 				0A8685C72B552A590022534F /* DisabledAppTab.swift */,
 				96099AE12B5D40330055C4DD /* ShortcutTab.swift */,
 				03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */,
+				A82600012F00000100000001 /* TextReplacementSettingsSection.swift */,
 				276742042B3DC230002A2C75 /* PrivacyTab.swift */,
 				276742052B3DC230002A2C75 /* AboutTab.swift */,
 			);
@@ -2836,6 +2843,8 @@
 		03C408F72EF5CAFB0025A1F0 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				7A2508250000000000000002 /* TextReplacementServiceTests.swift */,
+				7A2508250000000000000004 /* TextReplacementStreamTests.swift */,
 				FA76B47A0150434485FCBBAD /* MDictReaderTests.swift */,
 				03C408F82EF5CB830025A1F0 /* ServiceTests.swift */,
 				03A884792F14000100D5C0DE /* BingServiceTests.swift */,
@@ -4192,6 +4201,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A2508250000000000000001 /* TextReplacementServiceTests.swift in Sources */,
+				7A2508250000000000000003 /* TextReplacementStreamTests.swift in Sources */,
 				1CC83D91B3954BE7894CC2C8 /* MDictReaderTests.swift in Sources */,
 				02DEDC0420260430000000BE /* MarkdownRendererTests.swift in Sources */,
 				C09AC0F264D246FC90F9A277 /* AppleServiceTests.swift in Sources */,
@@ -4639,6 +4650,7 @@
 				DC46DF802B4417B900DEAE3E /* MyConfiguration.swift in Sources */,
 				036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */,
 				03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */,
+				A82600022F00000100000002 /* TextReplacementSettingsSection.swift in Sources */,
 				035FB78C2ED4E08500F3EB27 /* String+Layout.swift in Sources */,
 				0AC8A8452B6A4D97006DA5CC /* ServiceCells.swift in Sources */,
 				276742092B3DC230002A2C75 /* AboutTab.swift in Sources */,
