@@ -691,15 +691,26 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (nullable NSString *)firstTranslatedText {
     if (self.firstService &&
         [self.firstService.result.queryText isEqualToString:self.queryModel.queryText]) {
+        NSString *copiedText = self.firstService.result.copiedText;
+        if (copiedText.length > 0) {
+            return copiedText;
+        }
         return self.firstService.result.translatedText;
     }
     return nil;
 }
 
 - (void)toggleTranslationLanguages {
-    NSString *translatedText = self.firstService.result.isLoading ? nil : [self firstTranslatedText];
-    if (translatedText.length > 0) {
-        self.inputText = translatedText;
+    BOOL canSwap = [self.selectLanguageCell canToggleTranslationLanguages];
+    if (canSwap) {
+        BOOL isStreamingInProgress = self.firstService.isStream && !self.firstService.result.isStreamFinished;
+        BOOL isResultReady = !self.firstService.result.isLoading && !isStreamingInProgress && !self.firstService.result.error;
+        NSString *translatedText = isResultReady ? [self firstTranslatedText] : nil;
+        if (translatedText.length > 0) {
+            self.inputText = translatedText;
+            self.queryModel.ocrImage = nil;
+            self.queryModel.actionType = EZActionTypeInputQuery;
+        }
     }
 
     [self.selectLanguageCell toggleTranslationLanguages];
@@ -1009,6 +1020,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             self.queryModel.userTargetLanguage = to;
 
             [self retryQueryWithLanguage:EZLanguageAuto];
+        }];
+        [selectLanguageCell setToggleTranslationLanguagesBlock:^{
+            mm_strongify(self);
+            [self toggleTranslationLanguages];
         }];
         return selectLanguageCell;
     }

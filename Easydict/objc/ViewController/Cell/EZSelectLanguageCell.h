@@ -18,7 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) EZQueryModel *queryModel;
 
 @property (nonatomic, copy) void (^enterActionBlock)(EZLanguage from, EZLanguage to);
+@property (nonatomic, copy, nullable) void (^toggleTranslationLanguagesBlock)(void);
 
+- (BOOL)canToggleTranslationLanguages;
 - (void)toggleTranslationLanguages;
 
 @end
