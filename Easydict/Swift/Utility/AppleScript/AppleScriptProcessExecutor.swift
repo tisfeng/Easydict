@@ -47,12 +47,11 @@ final class AppleScriptProcessExecutor {
                     let outputData = try self.outputPipe.fileHandleForReading.readToEnd()
                     let errorData = try self.errorPipe.fileHandleForReading.readToEnd()
 
-                    if let error = errorData?.stringValue, !error.isEmpty {
+                    if errorData?.isEmpty == false {
                         continuation.resume(
                             throwing: QueryError(
                                 type: .appleScript,
-                                message: error,
-                                errorDataMessage: self.script
+                                message: "AppleScript process execution failed"
                             )
                         )
                     } else {

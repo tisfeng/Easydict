@@ -19,4 +19,9 @@ extension URL {
     var rootURL: URL? {
         URL(string: "/", relativeTo: self)?.absoluteURL
     }
+
+    /// Whether the URL satisfies the service endpoint transport boundary.
+    var isAllowedServiceEndpoint: Bool {
+        ServiceEndpointSecurityPolicy.allows(absoluteString)
+    }
 }

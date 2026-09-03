@@ -94,7 +94,7 @@ static NSString *const EZQueryKey = @"{Query}";
         }
     }
     
-    MMLogInfo(@"open url: %@", URL);
+    MMLogInfo(@"Open URL request");
 
     // !!!: when using openURL, URL must has scheme, like https://
     BOOL success = [[NSWorkspace sharedWorkspace] openURL:URL];

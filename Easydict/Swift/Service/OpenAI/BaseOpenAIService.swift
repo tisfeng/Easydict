@@ -7,7 +7,6 @@
 //
 
 import Alamofire
-import AsyncAlgorithms
 import Foundation
 import OpenAI
 
@@ -23,7 +22,8 @@ public class BaseOpenAIService: StreamService {
     open var supportsStreamingToggle: Bool { false }
 
     open override func cancelStream() {
-        control.cancel()
+        streamingTask?.cancel()
+        streamingTask = nil
         nonStreamingTask?.cancel()
         nonStreamingTask = nil
     }
@@ -44,20 +44,19 @@ public class BaseOpenAIService: StreamService {
         true
     }
 
-    let control = StreamControl()
-
     override func contentStreamTranslate(
         _ text: String,
         from: Language,
         to: Language
     )
         -> AsyncThrowingStream<String, any Error> {
-        let url = URL(string: endpoint)
-
-        // Check endpoint
-        guard let url, url.isValid else {
+        let url: URL
+        do {
+            url = try ServiceEndpointSecurityPolicy.validatedURL(endpoint)
+        } catch {
             let invalidURLError = QueryError(
-                type: .parameter, message: "`\(serviceType().rawValue)` endpoint is invalid"
+                type: .parameter,
+                message: String(localized: "network.endpoint.insecure_remote")
             )
             return AsyncThrowingStream { continuation in
                 continuation.finish(throwing: invalidURLError)
@@ -96,17 +95,7 @@ public class BaseOpenAIService: StreamService {
         let query = ChatQuery(messages: chatHistory, model: model, temperature: temperature)
 
         if usesStreamingTransport {
-            let openAI = OpenAI(apiToken: apiKey)
-
-            // FIXME: It seems that `control` will cause a memory leak, but it is not clear how to solve it.
-            unowned let unownedControl = control
-
-            let chatStream: AsyncThrowingStream<ChatStreamResult, Error> = openAI.chatsStream(
-                query: query,
-                url: url,
-                control: unownedControl
-            )
-            return chatStreamToContentStream(chatStream)
+            return streamingTranslate(query: query, url: url)
         } else {
             return nonStreamingTranslate(query: query, url: url)
         }
@@ -223,6 +212,9 @@ public class BaseOpenAIService: StreamService {
     /// Reference to the in-flight non-streaming task so `cancelStream()` can cancel it.
     private var nonStreamingTask: Task<(), Never>?
 
+    /// Reference to the in-flight streaming task so `cancelStream()` can cancel it.
+    private var streamingTask: Task<(), Never>?
+
     /// Whether the retry error should replace the original streaming mismatch diagnostics.
     private func shouldPreferRetryError(_ retryError: QueryError) -> Bool {
         let preferredTypes: [QueryError.ErrorType] = [
@@ -254,12 +246,16 @@ public class BaseOpenAIService: StreamService {
                 defer { self.nonStreamingTask = nil }
 
                 do {
-                    let request = try self.makeNonStreamingChatRequest(
+                    let request = try self.makeChatRequest(
                         query: query,
                         url: url,
-                        apiKey: apiKey
+                        apiKey: apiKey,
+                        stream: false
                     )
-                    let (data, response) = try await URLSession.shared.data(for: request)
+                    let (data, response) = try await ServiceEndpointRequestSecurity.data(
+                        for: request,
+                        originalURL: url
+                    )
                     try Task.checkCancellation()
 
                     if let http = response as? HTTPURLResponse,
@@ -304,20 +300,76 @@ public class BaseOpenAIService: StreamService {
         }
     }
 
-    /// Builds the HTTP request for a non-streaming OpenAI-compatible chat completion.
+    /// Performs an OpenAI-compatible SSE request using a redirect-restricted URLSession.
+    /// The upstream OpenAI package creates its own streaming session internally, which cannot
+    /// enforce Easydict's endpoint redirect policy, so streaming is decoded locally here.
+    private func streamingTranslate(
+        query: ChatQuery,
+        url: URL
+    )
+        -> AsyncThrowingStream<String, Error> {
+        let apiKey = apiKey
+
+        return AsyncThrowingStream(String.self) { [weak self] continuation in
+            guard let self else {
+                continuation.finish(throwing: CancellationError())
+                return
+            }
+
+            let task = Task {
+                defer { self.streamingTask = nil }
+
+                do {
+                    let request = try self.makeChatRequest(
+                        query: query,
+                        url: url,
+                        apiKey: apiKey,
+                        stream: true
+                    )
+                    let (asyncBytes, response) = try await ServiceEndpointRequestSecurity.bytes(
+                        for: request,
+                        originalURL: url
+                    )
+                    try await self.validateStreamingResponse(response, asyncBytes: asyncBytes)
+                    try await self.processStreamingBytes(
+                        asyncBytes,
+                        continuation: continuation
+                    )
+                    continuation.finish()
+                } catch let urlError as URLError where urlError.code == .cancelled {
+                    continuation.finish(throwing: CancellationError())
+                } catch let nsError as NSError
+                    where nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled {
+                    continuation.finish(throwing: CancellationError())
+                } catch is CancellationError {
+                    continuation.finish(throwing: CancellationError())
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+
+            streamingTask = task
+            continuation.onTermination = { @Sendable _ in
+                task.cancel()
+            }
+        }
+    }
+
+    /// Builds the HTTP request for an OpenAI-compatible chat completion.
     /// - Parameters:
     ///   - query: The chat completion query to encode.
     ///   - url: The provider endpoint URL.
     ///   - apiKey: The API token used by OpenAI-compatible providers.
     /// - Returns: A configured `URLRequest` ready for `URLSession`.
-    private func makeNonStreamingChatRequest(
+    private func makeChatRequest(
         query: ChatQuery,
         url: URL,
-        apiKey: String
+        apiKey: String,
+        stream: Bool
     ) throws
         -> URLRequest {
         var query = query
-        query.stream = false
+        query.stream = stream
 
         var request = URLRequest(url: url, timeoutInterval: EZNetWorkTimeoutInterval)
         request.httpMethod = "POST"
@@ -330,16 +382,104 @@ public class BaseOpenAIService: StreamService {
         return request
     }
 
+    private func validateStreamingResponse(
+        _ response: URLResponse,
+        asyncBytes: URLSession.AsyncBytes
+    ) async throws {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw QueryError(type: .api, message: "Invalid OpenAI response")
+        }
+
+        guard (200 ... 299).contains(httpResponse.statusCode) else {
+            let errorData = try await asyncBytes.prefix(16 * 1024).reduce(into: Data()) {
+                $0.append($1)
+            }
+            if let apiError = try? JSONDecoder().decode(APIErrorResponse.self, from: errorData) {
+                throw apiError
+            }
+            throw QueryError(
+                type: .api,
+                message: "HTTP \(httpResponse.statusCode)",
+                errorDataMessage: String(data: errorData, encoding: .utf8)
+            )
+        }
+
+        guard httpResponse.mimeType?.lowercased() == "text/event-stream" else {
+            throw OpenAIStreamingTransportError.incorrectContentType(
+                httpResponse.mimeType ?? "unknown"
+            )
+        }
+    }
+
+    private func processStreamingBytes(
+        _ asyncBytes: URLSession.AsyncBytes,
+        continuation: AsyncThrowingStream<String, Error>.Continuation
+    ) async throws {
+        var dataLines = [String]()
+
+        for try await line in asyncBytes.lines {
+            try Task.checkCancellation()
+
+            if line.isEmpty {
+                if try emitStreamingEvent(dataLines, continuation: continuation) {
+                    return
+                }
+                dataLines.removeAll(keepingCapacity: true)
+            } else if line.hasPrefix("data:") {
+                dataLines.append(
+                    line.dropFirst("data:".count).trimmingCharacters(in: .whitespaces)
+                )
+            }
+        }
+
+        _ = try emitStreamingEvent(dataLines, continuation: continuation)
+    }
+
+    /// Emits one SSE event and returns true after the terminal `[DONE]` marker.
+    private func emitStreamingEvent(
+        _ dataLines: [String],
+        continuation: AsyncThrowingStream<String, Error>.Continuation
+    ) throws
+        -> Bool {
+        guard !dataLines.isEmpty else { return false }
+
+        let payload = dataLines.joined(separator: "\n")
+        guard payload != "[DONE]" else { return true }
+        guard let data = payload.data(using: .utf8) else {
+            throw OpenAIStreamingTransportError.invalidEvent
+        }
+
+        if let chatResult = try? JSONDecoder().decode(ChatStreamResult.self, from: data) {
+            if let content = chatResult.choices.first?.delta.content, !content.isEmpty {
+                continuation.yield(content)
+            }
+            return false
+        }
+
+        if let apiError = try? JSONDecoder().decode(APIErrorResponse.self, from: data) {
+            throw apiError
+        }
+        throw OpenAIStreamingTransportError.invalidEvent
+    }
+
     private func remoteModelsURL() throws -> URL {
-        if let remoteModelsEndpoint = remoteModelsEndpoint?.trim(), !remoteModelsEndpoint.isEmpty,
-           let url = URL(string: remoteModelsEndpoint), url.isValid {
+        if let remoteModelsEndpoint = remoteModelsEndpoint?.trim(), !remoteModelsEndpoint.isEmpty {
+            guard let url = try? ServiceEndpointSecurityPolicy.validatedURL(remoteModelsEndpoint) else {
+                throw QueryError(
+                    type: .parameter,
+                    message: String(localized: "network.endpoint.insecure_remote")
+                )
+            }
             return url
         }
 
-        guard let endpointURL = URL(string: endpoint.trim()), endpointURL.isValid,
+        guard let endpointURL = try? ServiceEndpointSecurityPolicy.validatedURL(endpoint),
               var components = URLComponents(url: endpointURL, resolvingAgainstBaseURL: false)
         else {
-            throw QueryError(type: .parameter, message: "Endpoint is invalid")
+            throw QueryError(
+                type: .parameter,
+                message: String(localized: "network.endpoint.insecure_remote")
+            )
         }
 
         var parts = components.path.split(separator: "/", omittingEmptySubsequences: true).map(String.init)
@@ -359,10 +499,31 @@ public class BaseOpenAIService: StreamService {
         components.fragment = nil
         components.path = "/" + parts.joined(separator: "/")
 
-        guard let url = components.url, url.isValid else {
-            throw QueryError(type: .parameter, message: "Endpoint is invalid")
+        guard let url = components.url, url.isAllowedServiceEndpoint else {
+            throw QueryError(
+                type: .parameter,
+                message: String(localized: "network.endpoint.insecure_remote")
+            )
         }
         return url
+    }
+}
+
+// MARK: - OpenAIStreamingTransportError
+
+private enum OpenAIStreamingTransportError: LocalizedError {
+    case incorrectContentType(String)
+    case invalidEvent
+
+    // MARK: Internal
+
+    var errorDescription: String? {
+        switch self {
+        case let .incorrectContentType(mimeType):
+            "Incorrect Content-Type: \(mimeType), acceptable type is text/event-stream."
+        case .invalidEvent:
+            "Invalid OpenAI streaming event"
+        }
     }
 }
 

@@ -74,6 +74,14 @@ NS_ASSUME_NONNULL_BEGIN
                      autoQuery:(BOOL)autoQuery
                     actionType:(EZActionType)actionType;
 
+/// Show a floating window and replay one saved query without changing global language defaults.
+- (void)showFloatingWindowType:(EZWindowType)windowType
+                     queryText:(nullable NSString *)text
+                sourceLanguage:(nullable EZLanguage)sourceLanguage
+                targetLanguage:(nullable EZLanguage)targetLanguage
+                     autoQuery:(BOOL)autoQuery
+                    actionType:(EZActionType)actionType;
+
 - (void)showFloatingWindowType:(EZWindowType)windowType
                      queryText:(nullable NSString *)text
                     actionType:(EZActionType)actionType

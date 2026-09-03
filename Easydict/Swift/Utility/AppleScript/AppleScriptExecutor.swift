@@ -31,13 +31,17 @@ struct AppleScriptExecutor {
             }
         } catch is TaskTimeoutError {
             throw makeAppleScriptError(
-                "AppleScript execution timed out after \(timeout) seconds",
-                appleScript: appleScript
+                "AppleScript execution timed out after \(timeout) seconds"
             )
         }
     }
 
     // MARK: Private
+
+    /// `NSAppleScript` is not safe to execute concurrently across independent callers.
+    private static let executionQueue = DispatchQueue(
+        label: "com.izual.Easydict.apple-script-executor"
+    )
 
     /// Executes `NSAppleScript` on a background queue and returns the script string result.
     ///
@@ -51,12 +55,11 @@ struct AppleScriptExecutor {
     @discardableResult
     private func executeOnBackgroundQueue(_ appleScript: String) async throws -> String? {
         try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.global().async {
+            Self.executionQueue.async {
                 guard let script = NSAppleScript(source: appleScript) else {
                     continuation.resume(
                         throwing: makeAppleScriptError(
-                            "Failed to create AppleScript instance",
-                            appleScript: appleScript
+                            "Failed to create AppleScript instance"
                         )
                     )
                     return
@@ -65,11 +68,9 @@ struct AppleScriptExecutor {
                 var errorInfo: NSDictionary?
                 let output = script.executeAndReturnError(&errorInfo)
 
-                if let errorInfo {
-                    let errorMessage =
-                        errorInfo[NSAppleScript.errorMessage] as? String ?? "Run AppleScript error"
+                if errorInfo != nil {
                     continuation.resume(
-                        throwing: makeAppleScriptError(errorMessage, appleScript: appleScript)
+                        throwing: makeAppleScriptError("AppleScript execution failed")
                     )
                     return
                 }
@@ -79,13 +80,12 @@ struct AppleScriptExecutor {
         }
     }
 
-    /// Creates a standardized AppleScript query error with the script content attached.
+    /// Creates a standardized AppleScript query error without retaining the script source.
     ///
     /// - Parameters:
     ///   - message: The high-level failure reason.
-    ///   - appleScript: The AppleScript source string that triggered the error.
     /// - Returns: A `QueryError` configured for AppleScript failures.
-    private func makeAppleScriptError(_ message: String, appleScript: String) -> QueryError {
-        .init(type: .appleScript, message: message, errorDataMessage: appleScript)
+    private func makeAppleScriptError(_ message: String) -> QueryError {
+        .init(type: .appleScript, message: message)
     }
 }

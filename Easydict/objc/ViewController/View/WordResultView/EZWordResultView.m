@@ -1074,7 +1074,6 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
     CGFloat width = self.width - exceptedWidth;
-    //    MMLogInfo(@"text: %@, width: %@", label.text, @(width));
     //    MMLogInfo(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
 
     CGFloat height = [label ez_getTextViewHeightDesignatedWidth:width]; // 397 ?
@@ -1121,27 +1120,26 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    MMLogError(@"didFailNavigation: %@", error);
+    MMLogError(@"Web navigation failed category=committed code=%ld", (long)error.code);
     [self.result.webViewManager invalidateRenderingNavigation:navigation];
 }
 
 /** 请求服务器发生错误 (如果是goBack时，当前页面也会回调这个方法，原因是NSURLErrorCancelled取消加载) */
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    MMLogError(@"didFailProvisionalNavigation: %@", error);
+    MMLogError(@"Web navigation failed category=provisional code=%ld", (long)error.code);
     [self.result.webViewManager invalidateRenderingNavigation:navigation];
 }
 
 // 监听 JavaScript 代码是否执行
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
     // JavaScript 代码执行
-    MMLogInfo(@"runJavaScriptAlertPanelWithMessage: %@", message);
+    MMLogInfo(@"Web JavaScript alert received characters=%lu", (unsigned long)message.length);
+    completionHandler();
 }
 
 
 /** 在收到响应后，决定是否跳转 */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
-    //    MMLogInfo(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
-
     // 这里可以查看页面内部的网络请求，并做出相应的处理
     // navigationResponse 包含了请求的相关信息，你可以通过它来获取请求的 URL、请求方法、请求头等信息
     // decisionHandler 是一个回调，你可以通过它来决定是否允许这个请求发送
@@ -1155,27 +1153,25 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
 /** 接收到服务器跳转请求即服务重定向时之后调用 */
 - (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation {
-    //    MMLogInfo(@"didReceiveServerRedirectForProvisionalNavigation: %@", webView.URL.absoluteURL);
 }
 
 /** 收到服务器响应后，在发送请求之前，决定是否跳转 */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     NSURL *navigationActionURL = navigationAction.request.URL;
-    //    MMLogInfo(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
 
     /**
      If URL has a prefix "x-dictionary", means this is a Apple Dictionary URI scheme. Docs: https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/DictionaryServicesProgGuide/schema/schema.html
 
      x-dictionary:r:m_en_gbus0793530:com.apple.dictionary.NOAD:poikilotherm
      x-dictionary:r:z_DWS-004175:com.apple.dictionary.zh_CN-en.OCD
-     */
+    */
     if ([navigationActionURL.scheme isEqualToString:kAppleDictionaryURIScheme]) {
-        MMLogInfo(@"Open URI: %@", navigationActionURL);
+        MMLogInfo(@"Open Apple Dictionary URI");
 
         NSString *hrefText = [navigationActionURL.absoluteString ns_decode];
 
         [self getTextWithHref:hrefText completionHandler:^(NSString *text) {
-            MMLogInfo(@"URL text is: %@", text);
+            MMLogInfo(@"Dictionary URL text characters: %lu", (unsigned long)text.length);
 
             if (self.queryTextBlock) {
                 self.queryTextBlock([text  ns_trim]);
@@ -1399,8 +1395,9 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
     [webView evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (error) {
-            MMLogError(@"error: %@", error);
-            MMLogError(@"jsCode: %@", jsCode);
+            MMLogError(@"Evaluate JavaScript failed code=%ld script_characters=%lu",
+                       (long)error.code,
+                       (unsigned long)jsCode.length);
         }
 
         if (completionHandler) {

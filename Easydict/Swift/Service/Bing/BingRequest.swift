@@ -344,7 +344,7 @@ class BingRequest {
         }
 
         // For www.bing.com, sometimes it won't return redirect URL, so we use cn.bing.com
-        let webBingURLString = "http://\(BingConfig.chinaHost)"
+        let webBingURLString = "https://\(BingConfig.chinaHost)"
 
         let request = makeTranslateRequest(url: webBingURLString)
         request.responseData { [weak self] response in
@@ -415,15 +415,11 @@ class BingRequest {
                 failure(error)
                 return
             }
-            logInfo("bing IG: \(ig)")
-
             guard let iid = getDataIidValue(from: responseString), !iid.isEmpty else {
                 let error = QueryError(type: .api, message: "bing IID is empty")
                 failure(error)
                 return
             }
-            logInfo("bing IID: \(iid)")
-
             guard let arr = getParamsAbusePreventionHelperArray(from: responseString), arr.count == 3 else {
                 let error = QueryError(type: .api, message: "bing get key and token failed")
                 failure(error)
@@ -443,8 +439,7 @@ class BingRequest {
                 failure(error)
                 return
             }
-            logInfo("bing key: \(key)")
-            logInfo("bing token: \(token)")
+            logInfo("Bing translator session metadata refreshed")
 
             let expirationInterval = arr[2]
 

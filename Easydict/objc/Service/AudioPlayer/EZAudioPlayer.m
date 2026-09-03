@@ -230,7 +230,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
                 designatedService:service
                          forceURL:forceURL];
         } else {
-            MMLogError(@"get audio url error: %@", error);
+            MMLogError(@"Get audio URL failed category=provider");
 
             // e.g. if service get audio url failed, try to use default tts, such as Google.
             [self playFallbackTTSWithFailedServiceType:service.serviceType];
@@ -323,7 +323,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         return;
     }
 
-    MMLogInfo(@"play remote audio url: %@", audioURLString);
+    MMLogInfo(@"Play remote audio request");
 
     // Since some of Youdao's audio cannot be played directly, it needs to be downloaded first, such as 'set'.
     BOOL download = self.enableDownload;
@@ -354,7 +354,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:request completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
-            MMLogError(@"downloadWordAudio error: %@", error);
+            MMLogError(@"Download remote audio failed category=network code=%ld", (long)error.code);
             [session finishTasksAndInvalidate];
             return;
         }
@@ -374,12 +374,12 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         }
 
         if (moveError) {
-            MMLogError(@"downloadWordAudio move error: %@", moveError);
+            MMLogError(@"Save remote audio failed category=file_operation code=%ld", (long)moveError.code);
             [session finishTasksAndInvalidate];
             return;
         }
 
-        MMLogInfo(@"Download file to: %@", destinationURL.path);
+        MMLogInfo(@"Downloaded remote audio file");
         if (autoPlay) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self playLocalAudioFile:destinationURL.path];
@@ -402,7 +402,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
     [self setDownloadSourceForFilePath:filePath sourceURLs:urls];
     URLs = [self getDownloadSourcesForFilePath:filePath];
-    MMLogInfo(@"URLs: %@", URLs);
+    MMLogInfo(@"Read download source metadata count=%lu", (unsigned long)URLs.count);
 }
 
 /// Play local audio file
@@ -411,10 +411,10 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
     if (![fileManager fileExistsAtPath:filePath]) {
         self.isPlaying = NO;
-        MMLogWarn(@"playLocalAudioFile not exist: %@", filePath);
+        MMLogWarn(@"Local audio file does not exist");
         return;
     }
-    MMLogInfo(@"play local audio file: %@", filePath);
+    MMLogInfo(@"Play local audio file");
 
 
     if ([self canPlayLocalAudioFileAtPath:filePath]) {
@@ -449,14 +449,14 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
     if (!asset.readable || !asset.isPlayable) {
         // change go.mp3 to go.m4a will cause asset not readable
-        MMLogError(@"asset not readable or playable: %@", filePath);
+        MMLogError(@"Local audio failed category=asset_unreadable");
         return NO;
     }
 
     BOOL success = [audioPlayer prepareToPlay];
     if (!success || error) {
         // If audio data is .wav, but save it as .mp3, it will not be ready to play.
-        MMLogError(@"prepareToPlay failed: %@, error: %@", filePath, [error localizedDescription]);
+        MMLogError(@"Local audio failed category=prepare code=%ld", (long)error.code);
         return NO;
     }
 
@@ -533,7 +533,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
     // Check URL is valid
     if (!URL || !URL.scheme || !URL.host) {
-        MMLogWarn(@"audio url is invalid: %@", URL);
+        MMLogWarn(@"Audio URL is invalid");
         completion(nil);
         return;
     }
@@ -550,7 +550,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
                 isPlayable = YES;
             }
         } else {
-            MMLogError(@"load playable failed: %@", [error localizedDescription]);
+            MMLogError(@"Load remote audio failed category=asset");
         }
         MMLogInfo(@"audio url isPlayable: %d", isPlayable);
 
@@ -650,7 +650,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     NSError *error;
     NSData *fileData = [NSData dataWithContentsOfURL:filePathURL options:NSDataReadingMappedIfSafe error:&error];
     if (error) {
-        MMLogError(@"read audio file data error: %@", error);
+        MMLogError(@"Read audio file failed category=file_operation code=%ld", (long)error.code);
     }
 
     return [self fileTypeWithData:fileData];
@@ -663,7 +663,6 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     // 读取前几个字节
     if (fileData.length >= 4) {
         const UInt8 *bytes = [fileData bytes];
-        MMLogInfo(@"file header bytes: %s", bytes);
 
         if (memcmp(bytes, "RIFF", 4) == 0) {
             fileType = kAudioFileWAVEType;
@@ -706,7 +705,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         if ([fileManager fileExistsAtPath:newFilePath]) {
             NSError *error = nil;
             if (![fileManager removeItemAtPath:filePath error:&error]) {
-                MMLogError(@"remove file error: %@", [error localizedDescription]);
+                MMLogError(@"Remove audio file failed category=file_operation code=%ld", (long)error.code);
                 return nil;
             }
             return newFilePath;
@@ -715,10 +714,10 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
         NSError *error = nil;
         if ([fileManager moveItemAtPath:filePath toPath:newFilePath error:&error]) {
-            MMLogInfo(@"rename successful: %@", newFilePath);
+            MMLogInfo(@"Corrected local audio file extension");
             return newFilePath;
         } else {
-            MMLogError(@"rename failed: %@", [error localizedDescription]);
+            MMLogError(@"Rename audio file failed category=file_operation code=%ld", (long)error.code);
             return nil;
         }
     }
@@ -775,7 +774,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     // 获取文件属性
     NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error];
     if (error) {
-        MMLogError(@"Error getting file attributes: %@", error);
+        MMLogError(@"Read audio metadata failed category=file_attributes code=%ld", (long)error.code);
         return nil;
     }
 
@@ -787,17 +786,13 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         return nil;
     }
 
-    NSString *itemWhereFromsString = [[NSString alloc] initWithData:itemWhereFroms encoding:NSASCIIStringEncoding];
-    // bplist00¢_Chttps://codeload.github.com/yuenov/reader-ios/zip/refs/heads/master_$https://github.com/yuenov/reader-iosQ
-    MMLogInfo(@"itemWhereFromsString: %@", itemWhereFromsString);
-
     // 解析属性列表数据
     NSError *plistError = nil;
     NSPropertyListFormat format;
     id plistData = [NSPropertyListSerialization propertyListWithData:itemWhereFroms options:NSPropertyListImmutable format:&format error:&plistError];
 
     if (plistError) {
-        MMLogError(@"Error decoding property list: %@", plistError);
+        MMLogError(@"Decode audio metadata failed category=property_list code=%ld", (long)plistError.code);
         return nil;
     }
 
@@ -832,7 +827,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         attrs[kFileExtendedAttributes] = @{kItemWhereFroms : URLsData};
 
         if (![fileManager setAttributes:attrs ofItemAtPath:filePath error:&error]) {
-            MMLogError(@"Error setting download source: %@", error);
+            MMLogError(@"Write audio metadata failed category=file_attributes code=%ld", (long)error.code);
         }
 
         // Set the extended attribute using setxattr
@@ -841,7 +836,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         if (result == 0) {
             MMLogInfo(@"Download source set successfully.");
         } else {
-            MMLogError(@"Error setting download source: %s", strerror(errno));
+            MMLogError(@"Write audio metadata failed category=extended_attribute code=%d", errno);
         }
     }
 }

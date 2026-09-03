@@ -200,7 +200,7 @@ class BingService: QueryService {
             return filePath
         }
 
-        logInfo("Bing is fetching text audio: \(text)")
+        logInfo("Bing is fetching text audio (characters: \(text.count))")
 
         let audioData: Data? = try await withCheckedThrowingContinuation { continuation in
             bingRequest.fetchTextToAudio(

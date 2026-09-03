@@ -49,12 +49,12 @@ final class AppContextProvider {
         Task {
             do {
                 let urlString = try await AppleScriptTask.getCurrentTabURLFromBrowser(bundleID)
-                logInfo("Get browser tab url: \(String(describing: urlString))")
+                logInfo("Browser tab URL captured: \(urlString == nil ? "NO" : "YES")")
                 await MainActor.run {
                     updateURL(urlString)
                 }
             } catch {
-                logError("Failed to get browser tab url: \(error)")
+                logError("Failed to get browser tab URL category=apple_script")
             }
         }
     }

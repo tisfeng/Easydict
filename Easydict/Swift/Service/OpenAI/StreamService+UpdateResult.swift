@@ -6,6 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import AsyncAlgorithms
 import Foundation
 import RegexBuilder
 
@@ -97,7 +98,10 @@ extension StreamService {
                 if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorCancelled {
                     // Do not throw error if user cancelled request.
                 } else if shouldIgnoreCompletionError(error, resultText: resultText) {
-                    logInfo("Ignore stream completion error with existing content: \(error)")
+                    logInfo(
+                        "Ignore stream completion error with existing content. " +
+                            "Category: \(safeErrorCategory(error))"
+                    )
                 } else {
                     queryError = classifiedQueryError(from: error)
                 }
@@ -172,7 +176,7 @@ extension StreamService {
         guard contentLength >= minContentLengthToSuppressError else {
             logInfo(
                 "Do not ignore stream completion error due to insufficient content. " +
-                    "Content length: \(contentLength), error: \(error)"
+                    "Content length: \(contentLength), category: \(safeErrorCategory(error))"
             )
             return false
         }
@@ -189,11 +193,22 @@ extension StreamService {
         if shouldSuppress {
             logInfo(
                 "Ignore stream completion error with existing content due to content-type mismatch. " +
-                    "Content length: \(contentLength), error: \(error)"
+                    "Content length: \(contentLength), category: \(safeErrorCategory(error))"
             )
         }
 
         return shouldSuppress
+    }
+
+    private func safeErrorCategory(_ error: Error) -> String {
+        let nsError = error as NSError
+        if nsError.domain == NSURLErrorDomain {
+            return "network_\(nsError.code)"
+        }
+        if let queryError = error as? QueryError {
+            return "query_\(queryError.type.rawValue)"
+        }
+        return String(describing: type(of: error))
     }
 
     /// Build a user-friendly QueryError by classifying the Content-Type of the response.

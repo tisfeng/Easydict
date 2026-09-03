@@ -94,9 +94,12 @@ class GitHubService: OpenAIService {
 
     private func remoteModelsURL() throws -> URL {
         guard let remoteModelsEndpoint,
-              let url = URL(string: remoteModelsEndpoint), url.isValid
+              let url = try? ServiceEndpointSecurityPolicy.validatedURL(remoteModelsEndpoint)
         else {
-            throw QueryError(type: .parameter, message: "Endpoint is invalid")
+            throw QueryError(
+                type: .parameter,
+                message: String(localized: "network.endpoint.insecure_remote")
+            )
         }
         return url
     }

@@ -31,6 +31,7 @@ struct PrivacyTab: View {
                     Toggle("allow_collect_analytics", isOn: $allowCollectAnalytics)
                 }
             }
+            ConfigurationBackupSection()
         }
         .formStyle(.grouped)
     }

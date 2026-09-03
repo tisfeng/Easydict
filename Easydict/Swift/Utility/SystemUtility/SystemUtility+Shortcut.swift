@@ -25,16 +25,25 @@ extension SystemUtility {
     }
 
     /// Insert text by shortcut key, cmd+c and ctrl+v
+    @MainActor
     func insertTextByShortcut(
         _ text: String,
+        validateBeforeDispatch: () throws -> (),
         restorePasteboard: Bool = true,
         restoreInterval: TimeInterval = minPasteboardInterval
-    ) async {
-        await pasteboardManager.pasteText(
-            text,
-            restorePasteboard: restorePasteboard,
-            restoreInterval: restoreInterval
-        )
-        await Task.sleep(seconds: minPasteboardInterval)
+    ) async throws {
+        guard let snapshot = preparePasteboardForInsertion(text, restore: restorePasteboard) else {
+            throw TextInsertionError.dispatchFailed(.shortcut)
+        }
+
+        do {
+            try validateBeforeDispatch()
+            KeySender.paste()
+        } catch {
+            await restorePasteboardIfUnchanged(snapshot, after: 0)
+            throw error
+        }
+
+        await restorePasteboardIfUnchanged(snapshot, after: restoreInterval)
     }
 }

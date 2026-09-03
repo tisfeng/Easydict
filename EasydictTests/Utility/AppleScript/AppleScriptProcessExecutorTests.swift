@@ -30,14 +30,23 @@ struct AppleScriptProcessExecutorTests {
     /// Verifies that script failures are mapped into `QueryError.appleScript`.
     @Test("Maps osascript stderr to QueryError", .tags(.utilities, .unit))
     func mapsOsaScriptStdErrToQueryError() async {
-        let executor = AppleScriptProcessExecutor(script: "this is not valid AppleScript")
+        let canary = "PRIVATE_PROCESS_SCRIPT_CANARY_MUST_NOT_APPEAR"
+        let script = """
+        set privateCanary to "\(canary)"
+        this is not valid AppleScript
+        """
+        let executor = AppleScriptProcessExecutor(script: script)
 
         do {
             _ = try await executor.run()
             Issue.record("Expected AppleScript subprocess execution to fail")
         } catch let error as QueryError {
             #expect(error.type == .appleScript)
-            #expect(error.errorDataMessage == "this is not valid AppleScript")
+            #expect(error.errorDataMessage == nil)
+            #expect(error.message?.contains(canary) != true)
+            #expect(!error.description.contains(canary))
+            #expect(!error.localizedDescription.contains(canary))
+            #expect(!error.description.contains(script))
         } catch {
             Issue.record("Unexpected error type: \(error)")
         }

@@ -14,8 +14,32 @@ extension AppleScriptTask {
         case getCurrentTabURL
         case getSelectedText
         case getTextFieldText
-        case insertText(String)
+        case insertText(String, expectedTabURL: String?)
         case selectAllText
+
+        // MARK: Internal
+
+        var logValue: String {
+            switch self {
+            case .getCurrentTabURL:
+                "get_current_tab_url"
+            case .getSelectedText:
+                "get_selected_text"
+            case .getTextFieldText:
+                "get_text_field_text"
+            case .insertText:
+                "insert_text"
+            case .selectAllText:
+                "select_all_text"
+            }
+        }
+    }
+
+    /// Stable result from the browser's atomic context-check-and-insert script.
+    enum BrowserTextInsertionResult: String {
+        case inserted
+        case contextChanged = "context_changed"
+        case rejected
     }
 
     class func isBrowserSupportingAppleScript(_ bundleID: String) -> Bool {
@@ -39,12 +63,32 @@ extension AppleScriptTask {
     }
 
     class func insertTextInBrowser(_ text: String, bundleID: String) async throws -> Bool {
+        let result = try await insertTextInBrowser(
+            text,
+            bundleID: bundleID,
+            expectedTabURL: nil
+        )
+        return result == .inserted
+    }
+
+    /// Inserts only when the browser still exposes the tab captured before the provider request.
+    class func insertTextInBrowser(
+        _ text: String,
+        bundleID: String,
+        expectedTabURL: String?
+    ) async throws
+        -> BrowserTextInsertionResult {
         do {
-            let result = try await executeBrowserAction(.insertText(text), bundleID: bundleID) ?? ""
-            return result.boolValue
+            let result = try await executeBrowserAction(
+                .insertText(text, expectedTabURL: expectedTabURL),
+                bundleID: bundleID
+            ) ?? ""
+            return BrowserTextInsertionResult(rawValue: result) ?? .rejected
+        } catch is CancellationError {
+            throw CancellationError()
         } catch {
-            logInfo("Failed to insert text in browser: \(error)")
-            return false
+            logError("Browser action failed action=insert_text category=apple_script")
+            return .rejected
         }
     }
 
@@ -52,8 +96,10 @@ extension AppleScriptTask {
         do {
             let result = try await executeBrowserAction(.selectAllText, bundleID: bundleID) ?? ""
             return result.boolValue
+        } catch is CancellationError {
+            throw CancellationError()
         } catch {
-            logInfo("Failed to select all text in browser: \(error)")
+            logError("Browser action failed action=select_all_text category=apple_script")
             return false
         }
     }
@@ -67,18 +113,20 @@ extension AppleScriptTask {
 
         let script: String
         let timeout: TimeInterval?
-        let logMessage: String
 
         if isSafari(bundleID) {
-            (script, timeout, logMessage) = safariScriptFor(action: action, bundleID: bundleID)
+            (script, timeout, _) = safariScriptFor(action: action, bundleID: bundleID)
         } else if isChromeKernelBrowser(bundleID) {
-            (script, timeout, logMessage) = chromeScriptFor(action: action, bundleID: bundleID)
+            (script, timeout, _) = chromeScriptFor(action: action, bundleID: bundleID)
         } else {
             return nil
         }
 
         let result = try await runAppleScript(script, timeout: timeout ?? 5.0)
-        logInfo("\(logMessage): \(result ?? "")")
+        logInfo(
+            "Browser action completed action=\(action.logValue) " +
+                "resultCharacters=\(result?.count ?? 0)"
+        )
         return result
     }
 
@@ -119,12 +167,20 @@ extension AppleScriptTask {
             """
             return (script, 0.2, "Chrome Browser text field text")
 
-        case let .insertText(text):
+        case let .insertText(text, expectedTabURL):
             let escapedText = escapeJavaScriptString(text)
+            let contextGuard = chromeContextGuard(expectedTabURL)
             let script = """
             tell application id "\(bundleID)"
                tell active tab of front window
-                    execute javascript "document.execCommand('insertText', false, '\(escapedText)')"
+                    \(contextGuard)
+                    set insertion_result to execute javascript "document.execCommand('insertText', false, '\(
+                        escapedText
+                    )')"
+                    if insertion_result then
+                        return "inserted"
+                    end if
+                    return "rejected"
                end tell
             end tell
             """
@@ -179,15 +235,23 @@ extension AppleScriptTask {
             """
             return (script, 0.2, "Safari text field text")
 
-        case let .insertText(text):
-            logInfo("Inserting text into Safari: \(text)")
+        case let .insertText(text, expectedTabURL):
             let escapedText = escapeJavaScriptString(text)
+            let contextGuard = safariContextGuard(expectedTabURL)
             let script = """
             tell application id "\(bundleID)"
-                do JavaScript "document.execCommand('insertText', false, '\(escapedText)')" in document 1
+                tell front window
+                    \(contextGuard)
+                    set insertion_result to do JavaScript "document.execCommand('insertText', false, '\(
+                        escapedText
+                    )')" in current tab
+                    if insertion_result then
+                        return "inserted"
+                    end if
+                    return "rejected"
+                end tell
             end tell
             """
-            logInfo("Safari insert text script: \(script)")
             return (script, nil, "Safari insert text result")
 
         case .selectAllText:
@@ -267,6 +331,33 @@ extension AppleScriptTask {
             .replacing("'", with: "\\\\'") // Escape single quote: '
             .replacing("\"", with: "\\\"") // Escape double quote: "
             .replacing("\n", with: "\\\\n") // Escape new line: \n
+    }
+
+    private class func chromeContextGuard(_ expectedTabURL: String?) -> String {
+        guard let expectedTabURL else { return "" }
+        return """
+        if URL is not "\(escapeAppleScriptString(expectedTabURL))" then
+            return "context_changed"
+        end if
+        """
+    }
+
+    private class func safariContextGuard(_ expectedTabURL: String?) -> String {
+        guard let expectedTabURL else { return "" }
+        return """
+        if URL of current tab is not "\(escapeAppleScriptString(expectedTabURL))" then
+            return "context_changed"
+        end if
+        """
+    }
+
+    /// Escapes dynamic data placed directly in an AppleScript string literal.
+    private class func escapeAppleScriptString(_ string: String) -> String {
+        string
+            .replacing("\\", with: "\\\\")
+            .replacing("\"", with: "\\\"")
+            .replacing("\n", with: "\\n")
+            .replacing("\r", with: "\\r")
     }
 
     // MARK: - Static Data

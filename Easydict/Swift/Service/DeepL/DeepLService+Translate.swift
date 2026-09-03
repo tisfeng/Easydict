@@ -81,6 +81,7 @@ extension DeepLService {
         let startTime = CFAbsoluteTimeGetCurrent()
 
         let dataRequest = AF.request(request)
+            .redirect(using: ServiceEndpointRequestSecurity.alamofireRedirector(for: url))
             .validate(statusCode: 200 ..< 300)
 
         dataRequest.responseData { [weak self] response in
@@ -100,7 +101,7 @@ extension DeepLService {
             }
 
             if let error = response.error {
-                logError("deepLWebTranslate error: \(error)")
+                logError("DeepL web translate failed category=request code=\((error as NSError).code)")
                 var queryError = QueryError(type: .api, message: error.localizedDescription)
 
                 // If web first and has auth key, try official API
@@ -171,6 +172,17 @@ extension DeepLService {
             url = endPoint
         }
 
+        guard let validatedURL = try? ServiceEndpointSecurityPolicy.validatedURL(url) else {
+            completion(
+                result,
+                QueryError(
+                    type: .parameter,
+                    message: String(localized: "network.endpoint.insecure_remote")
+                )
+            )
+            return
+        }
+
         let params: [String: Any] = [
             "text": text,
             "source_lang": sourceLangCode,
@@ -180,7 +192,7 @@ extension DeepLService {
         let authorization = "DeepL-Auth-Key \(authKey)"
         let startTime = CFAbsoluteTimeGetCurrent()
         let request = AF.request(
-            url,
+            validatedURL,
             method: .post,
             parameters: params,
             encoding: URLEncoding.httpBody,
@@ -191,6 +203,7 @@ extension DeepLService {
                 request.timeoutInterval = EZNetWorkTimeoutInterval
             }
         )
+        .redirect(using: ServiceEndpointRequestSecurity.alamofireRedirector(for: validatedURL))
         .validate(statusCode: 200 ..< 300)
 
         request.responseData { [weak self] response in
@@ -210,7 +223,7 @@ extension DeepLService {
                     return
                 }
 
-                logError("deepLTranslate error: \(error)")
+                logError("DeepL translate failed category=request code=\((error as NSError).code)")
 
                 if Defaults[.deepLTranslation] == .authKeyFirst {
                     deepLWebTranslate(text, from: from, to: to, completion: completion)

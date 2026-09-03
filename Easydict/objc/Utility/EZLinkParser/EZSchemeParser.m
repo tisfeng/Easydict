@@ -8,6 +8,12 @@
 
 #import "EZSchemeParser.h"
 
+@interface EZSchemeParser ()
+
+- (BOOL)isParameterlessConfirmationRequest:(NSURLComponents *)components;
+
+@end
+
 @implementation EZSchemeParser
 
 #pragma mark - Public
@@ -26,8 +32,12 @@
     NSString *query = urlComponents.query;
     NSDictionary *parameterDict = [self extractQueryParametersFromURLComponents:urlComponents];
     
-    NSDictionary *actionDict = [self allowedActionSelectorDict];
-    NSArray *allowedActions = actionDict.allKeys;
+    NSArray *allowedActions = @[
+        EZWriteKeyValueKey,
+        EZReadValueOfKeyKey,
+        EZResetUserDefaultsDataKey,
+        EZSaveUserDefaultsDataToDownloadFolderKey,
+    ];
 
     if (![allowedActions containsObject:action]) {
         if ([action isEqualToString:EZQueryKey]) {
@@ -42,29 +52,44 @@
     
     BOOL isSuccess = NO;
     NSString *returnValue = @"Failed";
-    NSString *selectorString = actionDict[action];
-    SEL selector = NSSelectorFromString(selectorString);
-    
-    if (selector == @selector(writeKeyValues:)) {
+    if ([action isEqualToString:EZWriteKeyValueKey]) {
         isSuccess = [self writeKeyValues:parameterDict];
         returnValue = isSuccess ? @"Write Success" : @"Write Failed";
-    } else if (selector == @selector(readValueOfKey:)) {
+    } else if ([action isEqualToString:EZReadValueOfKeyKey]) {
         returnValue = [self readValueOfKey:query];
         isSuccess = returnValue ? YES : NO;
         if (isSuccess) {
             [returnValue copyToPasteboard];
         }
-    } else if (selector == @selector(resetUserDefaultsData)) {
-        [self resetUserDefaultsData];
+    } else if ([action isEqualToString:EZResetUserDefaultsDataKey]) {
+        if (![self isParameterlessConfirmationRequest:urlComponents]) {
+            completion(NO, @"Invalid Reset Request", action);
+            return;
+        }
+        [EZConfigurationSchemeActionCoordinator.shared requestResetConfirmation];
         isSuccess = YES;
-        returnValue = @"Reset Success";
-    } else if (selector == @selector(saveUserDefaultsDataToDownloadFolder)) {
-        [self saveUserDefaultsDataToDownloadFolder];
+        returnValue = @"Confirmation Required";
+    } else if ([action isEqualToString:EZSaveUserDefaultsDataToDownloadFolderKey]) {
+        if (![self isParameterlessConfirmationRequest:urlComponents]) {
+            completion(NO, @"Invalid Export Request", action);
+            return;
+        }
+        [EZConfigurationSchemeActionCoordinator.shared requestEncryptedExport];
         isSuccess = YES;
-        returnValue = @"Save Success";
+        returnValue = @"Encrypted Backup Opened";
     }
     
     completion(isSuccess, returnValue, action);
+}
+
+/// Confirmation-only actions accept no payload-bearing URL components.
+- (BOOL)isParameterlessConfirmationRequest:(NSURLComponents *)components {
+    return components.user.length == 0 &&
+        components.password.length == 0 &&
+        components.port == nil &&
+        components.path.length == 0 &&
+        components.query.length == 0 &&
+        components.fragment.length == 0;
 }
 
 - (BOOL)isEasydictScheme:(NSString *)text {
@@ -78,167 +103,65 @@
 - (BOOL)isWriteActionKey:(NSString *)actionKey {
     NSArray *writeKeys = @[
         EZWriteKeyValueKey,
-        EZResetUserDefaultsDataKey,
     ];
     
     return [writeKeys containsObject:actionKey];
 }
 
-#pragma mark -
-
-/// Allowed action keys.
-- (NSDictionary<NSString *, NSString *> *)allowedActionSelectorDict {
-    return @{
-        EZWriteKeyValueKey : NSStringFromSelector(@selector(writeKeyValues:)),
-        EZReadValueOfKeyKey : NSStringFromSelector(@selector(readValueOfKey:)),
-        EZResetUserDefaultsDataKey : NSStringFromSelector(@selector(resetUserDefaultsData)),
-        EZSaveUserDefaultsDataToDownloadFolderKey : NSStringFromSelector(@selector(saveUserDefaultsDataToDownloadFolder)),
-    };
-}
-
-/// Write key value to NSUserDefaults. easydict://writeKeyValue?EZOpenAIAPIKey=sk-zob
+/// Write a non-sensitive key value to NSUserDefaults.
 - (BOOL)writeKeyValues:(NSDictionary *)keyValues {
-    BOOL handled = NO;
+    if (keyValues.count == 0) {
+        return NO;
+    }
+
+    // Validate and type the complete batch before mutating defaults so a rejected item cannot
+    // leave a partially applied configuration behind. Credential denial intentionally runs first.
+    NSMutableDictionary<NSString *, id> *normalizedValues = [NSMutableDictionary dictionary];
     for (NSString *key in keyValues) {
         NSString *value = keyValues[key];
-        handled = [self enabledReadWriteKey:key];
-        if (handled) {
-            MyConfiguration *config = [MyConfiguration shared];
-            BOOL isBeta = config.beta;
-            
-            [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
-            
-            // If enabling beta feature, setup beta features.
-            if (!isBeta && config.beta) {
-                [MyConfiguration.shared enableBetaFeaturesIfNeeded];
-            }
+        if ([EZConfigurationItemRegistry isSensitiveKey:key] ||
+            [EZConfigurationItemRegistry isEndpointKey:key] ||
+            ![EZConfigurationItemRegistry isSchemeAutomatableKey:key]) {
+            return NO;
         }
+        id normalizedValue = [EZConfigurationItemRegistry schemeValueForKey:key rawValue:value];
+        if (!normalizedValue) {
+            return NO;
+        }
+        normalizedValues[key] = normalizedValue;
     }
-    return handled;
+
+    MyConfiguration *config = [MyConfiguration shared];
+    BOOL wasBetaEnabled = config.beta;
+    [normalizedValues enumerateKeysAndObjectsUsingBlock:^(NSString *key, id value, BOOL *stop) {
+        [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
+    }];
+    if (!wasBetaEnabled && config.beta) {
+        [MyConfiguration.shared enableBetaFeaturesIfNeeded];
+    }
+    return YES;
 }
 
-/// Read value of key from NSUserDefaults. easydict://readValueOfKey?EZOpenAIAPIKey
+/// Read a non-sensitive value from NSUserDefaults.
 - (nullable NSString *)readValueOfKey:(NSString *)key {
-    if ([self enabledReadWriteKey:key]) {
-        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
-    } else {
+    if ([EZConfigurationItemRegistry isSensitiveKey:key] ||
+        ![EZConfigurationItemRegistry isSchemeAutomatableKey:key]) {
         return nil;
     }
-}
-
-- (BOOL)enabledReadWriteKey:(NSString *)key {
-    BOOL handled = NO;
-    if ([self.allowedReadWriteKeys containsObject:key]) {
-        handled = YES;
+    // Endpoint automation is intentionally write-only. Even an otherwise valid HTTPS endpoint
+    // can carry provider-specific secrets in its path or query, while legacy saved values may
+    // contain URL userinfo. Never copy endpoint values to the pasteboard through URL Scheme.
+    if ([EZConfigurationItemRegistry isEndpointKey:key]) {
+        return nil;
     }
-    
-    NSArray *allServiceTypes = [QueryServiceFactory.shared allServiceTypes];
-    // easydict://writeKeyValue?Google-IntelligentQueryTextType=0
-    NSArray *arr = [key componentsSeparatedByString:@"-"];
-    if (arr.count) {
-        NSString *keyString = arr.firstObject;
-        if ([allServiceTypes containsObject:keyString] || [self.allowedReadWriteKeys containsObject:keyString]) {
-            handled = YES;
-        }
+    id value = [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    if ([value isKindOfClass:NSString.class]) {
+        return value;
     }
-    
-    return handled;
-}
-
-- (void)resetUserDefaultsData {
-    // easydict://resetUserDefaultsData
-    [MyConfiguration.shared resetUserDefaultsData];
-    
-    [EZLocalStorage destroySharedInstance];
-    [MyConfiguration destroySharedInstance];
-}
-
-- (void)saveUserDefaultsDataToDownloadFolder {
-    // easydict://saveUserDefaultsDataToDownloadFolder
-    [MyConfiguration.shared saveUserDefaultsDataToDownloadFolder];
-}
-
-
-/// Return allowed write keys to NSUserDefaults.
-- (NSArray *)allowedReadWriteKeys {
-    /**
-     easydict://writeKeyValue?EZBetaFeatureKey=1
-     
-     easydict://writeKeyValue?EZOpenAIAPIKey=sk-zob
-     easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
-     easydict://writeKeyValue?EZOpenAIModelKey=gpt-3.5-turbo
-     easydict://writeKeyValue?EZOpenAIEndPointKey=https://api.ohmygpt.com/azure/v1/chat/completions
-     easydict://writeKeyValue?EZOpenAIDictionaryKey=0
-     easydict://writeKeyValue?EZOpenAISentenceKey=0
-     
-     easydict://writeKeyValue?EZDeepLAuthKey=xxx
-     easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
-     
-     // Youdao TTS
-     easydict://writeKeyValue?EZDefaultTTSServiceKey=Youdao
-     
-     // Intelligent Query Mode, enable mini window
-     easydict://writeKeyValue?IntelligentQueryMode-window1=1
-     
-     // Intelligent Query
-     easydict://writeKeyValue?Google-IntelligentQueryTextType=5  // translation | sentence
-     easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2  // dictionary
-     */
-    
-    NSArray *readWriteKeys = @[
-        EZBetaFeatureKey,
-        
-        EZDeepLAuthKey,
-        EZDeepLTranslateEndPointKey,
-        EZNiuTransAPIKey,
-        EZCaiyunToken,
-        EZTencentSecretId,
-        EZTencentSecretKey,
-        EZBingCookieKey,
-        
-        EZAliAccessKeyId,
-        EZAliAccessKeySecret,
-        
-        EZVolcanoAccessKeyID,
-        EZVolcanoSecretAccessKey,
-        
-        EZDoubaoAPIKey,
-
-        EZIntelligentQueryModeKey,
-    ];
-    
-    return readWriteKeys;
-}
-
-- (NSArray *)allowedExecuteActionKeys {
-    NSArray *actionKeys = @[
-
-        // easydict://saveUserDefaultsDataToDownloadFolder
-        EZSaveUserDefaultsDataToDownloadFolderKey,
-        
-        // easydict://resetUserDefaultsData
-        EZResetUserDefaultsDataKey,
-    ];
-    
-    return actionKeys;
-}
-
-- (void)restartApplication {
-    // 获取当前应用的 NSApplication 实例
-    NSApplication *application = [NSApplication sharedApplication];
-    
-    // 请求应用退出并重启
-    [application terminate:nil];
-    
-    // 使用 NSTask 执行重启命令
-    NSString *launchPath = @"/usr/bin/open";
-    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
-    NSArray *arguments = @[bundlePath];
-    
-    NSTask *task = [[NSTask alloc] init];
-    [task setLaunchPath:launchPath];
-    [task setArguments:arguments];
-    [task launch];
+    if ([value isKindOfClass:NSNumber.class]) {
+        return [value stringValue];
+    }
+    return nil;
 }
 
 

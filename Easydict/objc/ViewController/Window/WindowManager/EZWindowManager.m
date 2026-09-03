@@ -34,6 +34,15 @@ static NSTimeInterval const EZFloatingWindowIdleWebViewDiscardDelay = 60.0;
 - (void)scheduleDictionaryWebViewDiscardForWindow:(EZBaseQueryWindow *)window;
 - (void)discardDictionaryWebViewsIfIdleForWindow:(EZBaseQueryWindow *)window;
 
+- (void)showFloatingWindowType:(EZWindowType)windowType
+                     queryText:(nullable NSString *)queryText
+                sourceLanguage:(nullable EZLanguage)sourceLanguage
+                targetLanguage:(nullable EZLanguage)targetLanguage
+                     autoQuery:(BOOL)autoQuery
+                    actionType:(EZActionType)actionType
+                       atPoint:(CGPoint)point
+             completionHandler:(nullable void (^)(void))completionHandler;
+
 @end
 
 
@@ -308,9 +317,30 @@ static EZWindowManager *_instance;
                      queryText:(nullable NSString *)queryText
                      autoQuery:(BOOL)autoQuery
                     actionType:(EZActionType)actionType {
+    [self showFloatingWindowType:windowType
+                       queryText:queryText
+                  sourceLanguage:nil
+                  targetLanguage:nil
+                       autoQuery:autoQuery
+                      actionType:actionType];
+}
+
+- (void)showFloatingWindowType:(EZWindowType)windowType
+                     queryText:(nullable NSString *)queryText
+                sourceLanguage:(nullable EZLanguage)sourceLanguage
+                targetLanguage:(nullable EZLanguage)targetLanguage
+                     autoQuery:(BOOL)autoQuery
+                    actionType:(EZActionType)actionType {
     self.windowType = windowType;
     CGPoint point = [self floatingWindowLocationWithType:windowType];
-    [self showFloatingWindowType:windowType queryText:queryText autoQuery:autoQuery actionType:actionType atPoint:point completionHandler:nil];
+    [self showFloatingWindowType:windowType
+                       queryText:queryText
+                  sourceLanguage:sourceLanguage
+                  targetLanguage:targetLanguage
+                       autoQuery:autoQuery
+                      actionType:actionType
+                         atPoint:point
+               completionHandler:nil];
 }
 
 - (void)showFloatingWindowType:(EZWindowType)windowType
@@ -324,6 +354,24 @@ static EZWindowManager *_instance;
 
 - (void)showFloatingWindowType:(EZWindowType)windowType
                      queryText:(nullable NSString *)queryText
+                     autoQuery:(BOOL)autoQuery
+                    actionType:(EZActionType)actionType
+                       atPoint:(CGPoint)point
+             completionHandler:(nullable void (^)(void))completionHandler {
+    [self showFloatingWindowType:windowType
+                       queryText:queryText
+                  sourceLanguage:nil
+                  targetLanguage:nil
+                       autoQuery:autoQuery
+                      actionType:actionType
+                         atPoint:point
+               completionHandler:completionHandler];
+}
+
+- (void)showFloatingWindowType:(EZWindowType)windowType
+                     queryText:(nullable NSString *)queryText
+                sourceLanguage:(nullable EZLanguage)sourceLanguage
+                targetLanguage:(nullable EZLanguage)targetLanguage
                      autoQuery:(BOOL)autoQuery
                     actionType:(EZActionType)actionType
                        atPoint:(CGPoint)point
@@ -346,7 +394,7 @@ static EZWindowManager *_instance;
     self.selectedText = queryText;
     self.actionType = actionType;
 
-    MMLogInfo(@"show floating windowType: %ld, queryText: %@, autoQuery: %d, actionType: %@, atPoint: %@", windowType, queryText.truncated, autoQuery, actionType, @(point));
+    MMLogInfo(@"show floating windowType: %ld, queryCharacters: %lu, autoQuery: %d, actionType: %@, atPoint: %@", windowType, (unsigned long)queryText.length, autoQuery, actionType, @(point));
 
     // Update isTextEditable value when using invoke query, such as open URL Scheme by PopClip.
     if (actionType == EZActionTypeInvokeQuery) {
@@ -388,9 +436,17 @@ static EZWindowManager *_instance;
     [self logSelectedTextEvent];
 
     void (^updateQueryTextAndStartQueryBlock)(BOOL) = ^(BOOL needFocus) {
-        // Update input text and detect.
-        [queryViewController updateQueryTextAndParagraphStyle:queryText actionType:self.actionType];
-        [queryViewController detectQueryText:nil];
+        BOOL isReplay = sourceLanguage != nil && targetLanguage != nil;
+        if (isReplay) {
+            [queryViewController prepareReplayQueryText:queryText
+                                         sourceLanguage:sourceLanguage
+                                         targetLanguage:targetLanguage
+                                             actionType:self.actionType];
+        } else {
+            // Update input text and detect using the current global preferences.
+            [queryViewController updateQueryTextAndParagraphStyle:queryText actionType:self.actionType];
+            [queryViewController detectQueryText:nil];
+        }
 
         if (needFocus) {
             // Order front and focus floating window.

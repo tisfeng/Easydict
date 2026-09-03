@@ -96,8 +96,12 @@ public final class ClaudeService: StreamService {
                         messages: userMessages
                     )
                     let urlRequest = try createURLRequest(body: requestBody)
+                    let originalURL = try ServiceEndpointSecurityPolicy.validatedURL(endpoint)
 
-                    let (asyncBytes, response) = try await URLSession.shared.bytes(for: urlRequest)
+                    let (asyncBytes, response) = try await ServiceEndpointRequestSecurity.bytes(
+                        for: urlRequest,
+                        originalURL: originalURL
+                    )
                     try await validateHTTPResponse(response, asyncBytes: asyncBytes)
 
                     try await processStreamBytes(asyncBytes, continuation: continuation)
@@ -106,7 +110,7 @@ public final class ClaudeService: StreamService {
                     logInfo("Claude task was cancelled.")
                     continuation.finish()
                 } catch {
-                    logError("Claude translate error: \(error)")
+                    logError("Claude translate failed category=request code=\((error as NSError).code)")
                     continuation.finish(throwing: error)
                 }
             }
@@ -216,10 +220,10 @@ public final class ClaudeService: StreamService {
     /// Uses the user-configured endpoint (defaults to `https://api.anthropic.com/v1/messages`).
     /// Authentication uses `x-api-key` header instead of Bearer token.
     private func createURLRequest(body: [String: Any]) throws -> URLRequest {
-        guard let url = URL(string: endpoint) else {
+        guard let url = try? ServiceEndpointSecurityPolicy.validatedURL(endpoint) else {
             throw QueryError(
                 type: .api,
-                message: "Invalid Claude API endpoint: \(endpoint)"
+                message: String(localized: "network.endpoint.insecure_remote")
             )
         }
 
@@ -324,10 +328,13 @@ public final class ClaudeService: StreamService {
     }
 
     private func remoteModelsURL(queryItems: [URLQueryItem]) throws -> URL {
-        guard let endpointURL = URL(string: endpoint.trim()), endpointURL.isValid,
+        guard let endpointURL = try? ServiceEndpointSecurityPolicy.validatedURL(endpoint),
               var components = URLComponents(url: endpointURL, resolvingAgainstBaseURL: false)
         else {
-            throw QueryError(type: .parameter, message: "Claude endpoint is invalid")
+            throw QueryError(
+                type: .parameter,
+                message: String(localized: "network.endpoint.insecure_remote")
+            )
         }
 
         var parts = components.path.split(separator: "/", omittingEmptySubsequences: true).map(String.init)
@@ -344,8 +351,11 @@ public final class ClaudeService: StreamService {
         components.queryItems = existingItems + queryItems
         components.path = "/" + parts.joined(separator: "/")
 
-        guard let url = components.url, url.isValid else {
-            throw QueryError(type: .parameter, message: "Claude endpoint is invalid")
+        guard let url = components.url, url.isAllowedServiceEndpoint else {
+            throw QueryError(
+                type: .parameter,
+                message: String(localized: "network.endpoint.insecure_remote")
+            )
         }
         return url
     }
