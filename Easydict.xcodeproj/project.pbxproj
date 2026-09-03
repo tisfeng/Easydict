@@ -200,6 +200,10 @@
 		0365B0672D3BE26000865F46 /* StreamService+UpdateResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365B0662D3BE26000865F46 /* StreamService+UpdateResult.swift */; };
 		0365B0692D3BFBDF00865F46 /* StreamService+AsyncStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */; };
 		03675A3D2D7FE598004E780A /* ScreenshotOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03675A2B2D7FE598004E780A /* ScreenshotOverlayView.swift */; };
+		ED1157010000000000000001 /* ScreenshotTranslateDisplayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1157020000000000000001 /* ScreenshotTranslateDisplayMode.swift */; };
+		ED1157010000000000000002 /* ScreenshotTranslationOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1157020000000000000002 /* ScreenshotTranslationOverlay.swift */; };
+		ED1157010000000000000003 /* ScreenshotOverlayTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1157020000000000000003 /* ScreenshotOverlayTranslator.swift */; };
+		ED1157010000000000000004 /* ScreenshotTranslationOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1157020000000000000004 /* ScreenshotTranslationOverlayView.swift */; };
 		036806582CA829F100800B76 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 036806572CA829F100800B76 /* SFSafeSymbols */; };
 		036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */; };
 		036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */; };
@@ -853,6 +857,10 @@
 		0365B0662D3BE26000865F46 /* StreamService+UpdateResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+UpdateResult.swift"; sourceTree = "<group>"; };
 		0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+AsyncStream.swift"; sourceTree = "<group>"; };
 		03675A2B2D7FE598004E780A /* ScreenshotOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOverlayView.swift; sourceTree = "<group>"; };
+		ED1157020000000000000001 /* ScreenshotTranslateDisplayMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTranslateDisplayMode.swift; sourceTree = "<group>"; };
+		ED1157020000000000000002 /* ScreenshotTranslationOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTranslationOverlay.swift; sourceTree = "<group>"; };
+		ED1157020000000000000003 /* ScreenshotOverlayTranslator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOverlayTranslator.swift; sourceTree = "<group>"; };
+		ED1157020000000000000004 /* ScreenshotTranslationOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTranslationOverlayView.swift; sourceTree = "<group>"; };
 		036A0DB92AD941F9006E6D4F /* EZReplaceTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZReplaceTextButton.h; sourceTree = "<group>"; };
 		036A0DBA2AD941F9006E6D4F /* EZReplaceTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZReplaceTextButton.m; sourceTree = "<group>"; };
 		036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowConfigurationKey.swift; sourceTree = "<group>"; };
@@ -1932,6 +1940,10 @@
 				03CF2F742D87CF68006DC7E1 /* Screenshot+UserDefaults.swift */,
 				03D9D6F62D8AB0C8009E0CEC /* ScreenshotState.swift */,
 				03675A2B2D7FE598004E780A /* ScreenshotOverlayView.swift */,
+				ED1157020000000000000001 /* ScreenshotTranslateDisplayMode.swift */,
+				ED1157020000000000000002 /* ScreenshotTranslationOverlay.swift */,
+				ED1157020000000000000004 /* ScreenshotTranslationOverlayView.swift */,
+				ED1157020000000000000003 /* ScreenshotOverlayTranslator.swift */,
 				03D9D6FE2D8C186F009E0CEC /* NSScreen+Extention.swift */,
 			);
 			path = Screenshot;
@@ -4666,6 +4678,10 @@
 				03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */,
 				03CF2F752D87CF68006DC7E1 /* Screenshot+UserDefaults.swift in Sources */,
 				03675A3D2D7FE598004E780A /* ScreenshotOverlayView.swift in Sources */,
+				ED1157010000000000000001 /* ScreenshotTranslateDisplayMode.swift in Sources */,
+				ED1157010000000000000002 /* ScreenshotTranslationOverlay.swift in Sources */,
+				ED1157010000000000000004 /* ScreenshotTranslationOverlayView.swift in Sources */,
+				ED1157010000000000000003 /* ScreenshotOverlayTranslator.swift in Sources */,
 				0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
