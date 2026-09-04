@@ -12,7 +12,7 @@ jobs:
   translate:
     runs-on: ubuntu-latest
     steps:
-      - uses: tisfeng/issues-translate-action@v2.8.1
+      - uses: tisfeng/issues-translate-action@v2.8.2
         with:
           IS_MODIFY_TITLE: false
           CUSTOM_BOT_NOTE: Bot detected this issue is not in English and translated it
