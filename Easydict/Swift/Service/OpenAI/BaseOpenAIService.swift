@@ -46,6 +46,10 @@ public class BaseOpenAIService: StreamService {
 
     let control = StreamControl()
 
+    /// Reference to the in-flight non-streaming task so `cancelStream()` can cancel it.
+    /// Internal so the Responses transport in ResponsesAPI.swift shares the same slot.
+    var nonStreamingTask: Task<(), Never>?
+
     override func contentStreamTranslate(
         _ text: String,
         from: Language,
@@ -73,6 +77,8 @@ public class BaseOpenAIService: StreamService {
         }
 
         result.isStreamFinished = false
+
+        let requestURL = normalizedRequestURL(endpoint: url, apiType: openAIAPIType)
 
         let queryType = queryType(text: text, from: from, to: to)
         let chatQueryParam = ChatQueryParam(
@@ -102,7 +108,7 @@ public class BaseOpenAIService: StreamService {
                     messages: messages,
                     model: model,
                     temperature: temperature,
-                    url: url,
+                    url: requestURL,
                     apiKey: apiKey
                 )
             } else {
@@ -110,7 +116,7 @@ public class BaseOpenAIService: StreamService {
                     messages: messages,
                     model: model,
                     temperature: temperature,
-                    url: url,
+                    url: requestURL,
                     apiKey: apiKey
                 )
             }
@@ -126,12 +132,12 @@ public class BaseOpenAIService: StreamService {
 
             let chatStream: AsyncThrowingStream<ChatStreamResult, Error> = openAI.chatsStream(
                 query: query,
-                url: url,
+                url: requestURL,
                 control: unownedControl
             )
             return chatStreamToContentStream(chatStream)
         } else {
-            return nonStreamingTranslate(query: query, url: url)
+            return nonStreamingTranslate(query: query, url: requestURL)
         }
     }
 
@@ -242,10 +248,6 @@ public class BaseOpenAIService: StreamService {
 
     /// Temporary override for streaming during validate retry. `nil` means use the persisted value.
     private var streamingOverride: Bool?
-
-    /// Reference to the in-flight non-streaming task so `cancelStream()` can cancel it.
-    /// Internal so the Responses transport in ResponsesAPI.swift shares the same slot.
-    var nonStreamingTask: Task<(), Never>?
 
     /// Whether the retry error should replace the original streaming mismatch diagnostics.
     private func shouldPreferRetryError(_ retryError: QueryError) -> Bool {

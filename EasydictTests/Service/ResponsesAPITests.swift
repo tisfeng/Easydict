@@ -67,4 +67,43 @@ struct ResponsesAPITests {
         #expect(emptyResponse.outputText == nil)
         #expect(missingResponse.outputText == nil)
     }
+
+    // MARK: - Endpoint Normalization
+
+    @Test("Swaps endpoint suffix per API type")
+    func swapsEndpointSuffix() {
+        let chat = URL(string: "https://api.example.com/v1/chat/completions")!
+        let responses = URL(string: "https://api.example.com/v1/responses")!
+
+        #expect(
+            normalizedRequestURL(endpoint: chat, apiType: .responses)
+                == URL(string: "https://api.example.com/v1/responses")
+        )
+        #expect(
+            normalizedRequestURL(endpoint: responses, apiType: .chat)
+                == URL(string: "https://api.example.com/v1/chat/completions")
+        )
+    }
+
+    @Test("Keeps endpoint unchanged when suffix already matches or is unknown")
+    func keepsUnrecognizedEndpoint() {
+        let chat = URL(string: "https://api.example.com/v1/chat/completions")!
+        let responses = URL(string: "https://api.example.com/v1/responses")!
+        let bare = URL(string: "https://api.example.com/v1")!
+
+        #expect(normalizedRequestURL(endpoint: chat, apiType: .chat) == chat)
+        #expect(normalizedRequestURL(endpoint: responses, apiType: .responses) == responses)
+        #expect(normalizedRequestURL(endpoint: bare, apiType: .responses) == bare)
+        #expect(normalizedRequestURL(endpoint: bare, apiType: .chat) == bare)
+    }
+
+    @Test("Normalizes bare completions suffix")
+    func normalizesBareCompletions() {
+        let completions = URL(string: "https://api.example.com/v1/completions")!
+
+        #expect(
+            normalizedRequestURL(endpoint: completions, apiType: .responses)
+                == URL(string: "https://api.example.com/v1/responses")
+        )
+    }
 }
