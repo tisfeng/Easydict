@@ -26,6 +26,8 @@ public class BaseOpenAIService: StreamService {
         streamTaskControl.cancel()
         nonStreamingTask?.cancel()
         nonStreamingTask = nil
+        responsesStreamingTask?.cancel()
+        responsesStreamingTask = nil
     }
 
     // MARK: Internal
@@ -67,6 +69,13 @@ public class BaseOpenAIService: StreamService {
             return AsyncThrowingStream { continuation in
                 continuation.finish(throwing: error)
             }
+        }
+
+        // Responses wire format: same prompts as `input` items instead of chat
+        // `messages`. The endpoint must be the `/v1/responses` URL.
+        if openAIAPIType == .responses {
+            let messages = chatMessageDicts(chatQueryParam)
+            return responsesContentStream(messages: messages)
         }
 
         return contentStream(messages: chatHistory)
@@ -231,7 +240,11 @@ public class BaseOpenAIService: StreamService {
     private var streamingOverride: Bool?
 
     /// Reference to the in-flight non-streaming task so `cancelStream()` can cancel it.
-    private var nonStreamingTask: Task<(), Never>?
+    /// Internal so the Responses transport in ResponsesAPI.swift shares the same slot.
+    var nonStreamingTask: Task<(), Never>?
+
+    /// Reference to the in-flight Responses streaming task so `cancelStream()` can cancel it.
+    var responsesStreamingTask: Task<(), Never>?
 
     private let streamTaskControl = OpenAIStreamTaskControl()
 
@@ -256,6 +269,36 @@ public class BaseOpenAIService: StreamService {
     private func failedContentStream(error: Error) -> AsyncThrowingStream<String, any Error> {
         AsyncThrowingStream { continuation in
             continuation.finish(throwing: error)
+        }
+    }
+
+    /// Responses wire format transport. Reuses the shared request validation hook and
+    /// normalizes the endpoint suffix for the selected `OpenAIAPIType`.
+    private func responsesContentStream(messages: [ChatMessage])
+        -> AsyncThrowingStream<String, any Error> {
+        do {
+            let endpoint = try validateChatStreamRequest()
+            result.isStreamFinished = false
+
+            let url = normalizedRequestURL(endpoint: endpoint, apiType: openAIAPIType)
+            if usesStreamingTransport {
+                return responsesStreamTranslate(
+                    messages: messages,
+                    model: model,
+                    temperature: temperature,
+                    url: url,
+                    apiKey: apiKey
+                )
+            }
+            return responsesNonStreamingTranslate(
+                messages: messages,
+                model: model,
+                temperature: temperature,
+                url: url,
+                apiKey: apiKey
+            )
+        } catch {
+            return failedContentStream(error: error)
         }
     }
 
@@ -436,6 +479,8 @@ public class BaseOpenAIService: StreamService {
         } else if Array(lowercasedParts.suffix(2)) == ["chat", "completions"] {
             parts.removeLast(2)
         } else if lowercasedParts.last == "completions" {
+            parts.removeLast()
+        } else if lowercasedParts.last == "responses" {
             parts.removeLast()
         } else if lowercasedParts.last == "models" {
             parts.removeLast()

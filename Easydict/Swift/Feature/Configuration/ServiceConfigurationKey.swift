@@ -59,4 +59,5 @@ enum ServiceConfigurationKey: String {
     // `reasoningEffort`, whose storage slot the StreamService base class already
     // claims with the incompatible `ReasoningEffort` enum.
     case cliEffort = "CLIEffort"
+    case apiType = "APIType"
 }
