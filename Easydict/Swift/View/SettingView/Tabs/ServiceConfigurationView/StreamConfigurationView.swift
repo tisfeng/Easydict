@@ -116,6 +116,14 @@ struct StreamConfigurationView: View {
                 )
             }
 
+            if service.supportsAPITypePicker {
+                StaticPickerCell(
+                    titleKey: "service.configuration.openai.api_type.title",
+                    key: service.openAIAPITypeKey,
+                    values: OpenAIAPIType.allCases
+                )
+            }
+
             if showSupportedModelsSection {
                 VStack(alignment: .trailing, spacing: 0) {
                     TextEditorCell(

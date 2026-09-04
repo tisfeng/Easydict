@@ -411,6 +411,21 @@ public class StreamService: QueryService {
         Defaults[reasoningEffortDefaultsKey]
     }
 
+    /// Whether this service shows the Chat/Responses API format picker.
+    /// Only Custom OpenAI exposes it; built-in services keep a fixed format.
+    var supportsAPITypePicker: Bool {
+        false
+    }
+
+    var openAIAPITypeKey: Defaults.Key<OpenAIAPIType> {
+        serviceDefaultsKey(.apiType, defaultValue: .chat)
+    }
+
+    var openAIAPIType: OpenAIAPIType {
+        get { Defaults[openAIAPITypeKey] }
+        set { Defaults[openAIAPITypeKey] = newValue }
+    }
+
     func validModels(from supportedModels: String) -> [String] {
         supportedModels.components(separatedBy: ",")
             .map { $0.trim() }.filter { !$0.isEmpty }

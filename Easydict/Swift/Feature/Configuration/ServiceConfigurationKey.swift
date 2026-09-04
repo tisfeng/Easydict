@@ -55,4 +55,5 @@ enum ServiceConfigurationKey: String {
     case temperature
     case enableStreaming
     case reasoningEffort = "ReasoningEffort"
+    case apiType = "APIType"
 }

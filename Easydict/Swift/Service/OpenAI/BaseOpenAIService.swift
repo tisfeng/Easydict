@@ -93,6 +93,29 @@ public class BaseOpenAIService: StreamService {
             }
         }
 
+        // Responses wire format: same prompts as `input` items instead of chat
+        // `messages`. The endpoint must be the `/v1/responses` URL.
+        if openAIAPIType == .responses {
+            let messages = chatMessageDicts(chatQueryParam)
+            if usesStreamingTransport {
+                return responsesStreamTranslate(
+                    messages: messages,
+                    model: model,
+                    temperature: temperature,
+                    url: url,
+                    apiKey: apiKey
+                )
+            } else {
+                return responsesNonStreamingTranslate(
+                    messages: messages,
+                    model: model,
+                    temperature: temperature,
+                    url: url,
+                    apiKey: apiKey
+                )
+            }
+        }
+
         let query = ChatQuery(messages: chatHistory, model: model, temperature: temperature)
 
         if usesStreamingTransport {
@@ -221,7 +244,8 @@ public class BaseOpenAIService: StreamService {
     private var streamingOverride: Bool?
 
     /// Reference to the in-flight non-streaming task so `cancelStream()` can cancel it.
-    private var nonStreamingTask: Task<(), Never>?
+    /// Internal so the Responses transport in ResponsesAPI.swift shares the same slot.
+    var nonStreamingTask: Task<(), Never>?
 
     /// Whether the retry error should replace the original streaming mismatch diagnostics.
     private func shouldPreferRetryError(_ retryError: QueryError) -> Bool {
@@ -350,6 +374,8 @@ public class BaseOpenAIService: StreamService {
         } else if Array(lowercasedParts.suffix(2)) == ["chat", "completions"] {
             parts.removeLast(2)
         } else if lowercasedParts.last == "completions" {
+            parts.removeLast()
+        } else if lowercasedParts.last == "responses" {
             parts.removeLast()
         } else if lowercasedParts.last == "models" {
             parts.removeLast()
