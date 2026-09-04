@@ -106,4 +106,63 @@ struct ResponsesAPITests {
                 == URL(string: "https://api.example.com/v1/responses")
         )
     }
+
+    // MARK: - Stream Events
+
+    @Test("Classifies delta events with and without event line")
+    func classifiesDeltaEvents() {
+        let payload = #"{"type":"response.output_text.delta","delta":"你好"}"#
+
+        if case let .delta(text) = responsesStreamEvent(
+            eventName: "response.output_text.delta", payload: payload
+        ) {
+            #expect(text == "你好")
+        } else {
+            Issue.record("expected delta")
+        }
+
+        // Data-only stream: no `event:` line, eventName empty.
+        if case let .delta(text) = responsesStreamEvent(eventName: "", payload: payload) {
+            #expect(text == "你好")
+        } else {
+            Issue.record("expected delta from decoded type")
+        }
+    }
+
+    @Test("Classifies failure events")
+    func classifiesFailureEvents() {
+        if case .failure = responsesStreamEvent(
+            eventName: "", payload: #"{"type":"response.failed","error":{"message":"boom"}}"#
+        ) {
+            // expected
+        } else {
+            Issue.record("expected failure")
+        }
+
+        if case .failure = responsesStreamEvent(
+            eventName: "error", payload: "plain error body"
+        ) {
+            // expected
+        } else {
+            Issue.record("expected failure by event name")
+        }
+    }
+
+    @Test("Ignores lifecycle events and DONE sentinel")
+    func ignoresLifecycleEvents() {
+        if case .ignored = responsesStreamEvent(
+            eventName: "response.created",
+            payload: #"{"type":"response.created"}"#
+        ) {
+            // expected
+        } else {
+            Issue.record("expected ignored")
+        }
+
+        if case .ignored = responsesStreamEvent(eventName: "", payload: "[DONE]") {
+            // expected
+        } else {
+            Issue.record("expected ignored")
+        }
+    }
 }
