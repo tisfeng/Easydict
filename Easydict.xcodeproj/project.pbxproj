@@ -205,6 +205,7 @@
 		036BCD4A2BDE8A96009C893F /* WindowConfigurationKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BCD492BDE8A96009C893F /* WindowConfigurationKey.swift */; };
 		036D62812BCAB613002C95C7 /* BuiltInAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036D62802BCAB613002C95C7 /* BuiltInAIService.swift */; };
 		036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */; };
+		0370A0B12FBA0001000A0B12 /* AnkiConnectClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0370A0B02FBA0001000A0B12 /* AnkiConnectClient.swift */; };
 		03715A282E6D24F60067259C /* SystemUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BBC8152E62062100CFC582 /* SystemUtility.swift */; };
 		03715A292E6D25170067259C /* ActionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A00D872E616D56001A4D82 /* ActionManager.swift */; };
 		03715A2A2E6D253E0067259C /* FocusedElementInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A91F142E63E1FB00896B17 /* FocusedElementInfo.swift */; };
@@ -229,6 +230,7 @@
 		0380484B2C4975BD006C6210 /* Encodable+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0380484A2C4975BD006C6210 /* Encodable+JSON.swift */; };
 		03825DE22F13B4FB005C1BC6 /* TTSServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03825DE12F13B4FB005C1BC6 /* TTSServiceType.swift */; };
 		03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */; };
+		0A057D802F7000000025C51D /* AdvancedTabAnkiSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A057D7F2F7000000025C51D /* AdvancedTabAnkiSection.swift */; };
 		03882F8D29D95044005B5A52 /* CTView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8429D95044005B5A52 /* CTView.m */; };
 		03882F8E29D95044005B5A52 /* ToastWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8629D95044005B5A52 /* ToastWindowController.m */; };
 		03882F8F29D95044005B5A52 /* CTScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8729D95044005B5A52 /* CTScreen.m */; };
@@ -859,6 +861,7 @@
 		036D62802BCAB613002C95C7 /* BuiltInAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInAIService.swift; sourceTree = "<group>"; };
 		036E7D79293F4FC8002675DF /* EZOpenLinkButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenLinkButton.h; sourceTree = "<group>"; };
 		036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOpenLinkButton.m; sourceTree = "<group>"; };
+		0370A0B02FBA0001000A0B12 /* AnkiConnectClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnkiConnectClient.swift; sourceTree = "<group>"; };
 		0371A5002DB1291E0097D4A1 /* GitHubService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubService.swift; sourceTree = "<group>"; };
 		03779F0B2BB256A7008D3C42 /* OpenAIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
 		03779F0C2BB256A7008D3C42 /* StreamService+Prompt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StreamService+Prompt.swift"; sourceTree = "<group>"; };
@@ -878,6 +881,7 @@
 		0380484A2C4975BD006C6210 /* Encodable+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+JSON.swift"; sourceTree = "<group>"; };
 		03825DE12F13B4FB005C1BC6 /* TTSServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSServiceType.swift; sourceTree = "<group>"; };
 		03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedTab.swift; sourceTree = "<group>"; };
+		0A057D7F2F7000000025C51D /* AdvancedTabAnkiSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedTabAnkiSection.swift; sourceTree = "<group>"; };
 		03882F8229D95044005B5A52 /* CTScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTScreen.h; sourceTree = "<group>"; };
 		03882F8329D95044005B5A52 /* ToastWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToastWindowController.h; sourceTree = "<group>"; };
 		03882F8429D95044005B5A52 /* CTView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTView.m; sourceTree = "<group>"; };
@@ -1460,6 +1464,7 @@
 				0A8685C72B552A590022534F /* DisabledAppTab.swift */,
 				96099AE12B5D40330055C4DD /* ShortcutTab.swift */,
 				03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */,
+				0A057D7F2F7000000025C51D /* AdvancedTabAnkiSection.swift */,
 				276742042B3DC230002A2C75 /* PrivacyTab.swift */,
 				276742052B3DC230002A2C75 /* AboutTab.swift */,
 			);
@@ -3487,6 +3492,7 @@
 			children = (
 				0328D0792D7D42520050B2C7 /* Screenshot */,
 				03A00D862E616D3D001A4D82 /* ActionManager */,
+				0370A0B22FBA0001000A0B12 /* AnkiConnect */,
 				032AAA502C456D96007996A1 /* HTTPServer */,
 				EA3B81F72B52549B004C0E8B /* Configuration */,
 				03779F122BB256B5008D3C42 /* DefaultAPIKeys */,
@@ -3495,6 +3501,14 @@
 				967712EC2B5B941600105E0F /* Shortcut */,
 			);
 			path = Feature;
+			sourceTree = "<group>";
+		};
+		0370A0B22FBA0001000A0B12 /* AnkiConnect */ = {
+			isa = PBXGroup;
+			children = (
+				0370A0B02FBA0001000A0B12 /* AnkiConnectClient.swift */,
+			);
+			path = AnkiConnect;
 			sourceTree = "<group>";
 		};
 		967712EC2B5B941600105E0F /* Shortcut */ = {
@@ -4637,8 +4651,10 @@
 				2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */,
 				03B73F7B2D9C51580051CB74 /* ChineseDetection+Poetry.swift in Sources */,
 				DC46DF802B4417B900DEAE3E /* MyConfiguration.swift in Sources */,
+				0370A0B12FBA0001000A0B12 /* AnkiConnectClient.swift in Sources */,
 				036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */,
 				03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */,
+				0A057D802F7000000025C51D /* AdvancedTabAnkiSection.swift in Sources */,
 				035FB78C2ED4E08500F3EB27 /* String+Layout.swift in Sources */,
 				0AC8A8452B6A4D97006DA5CC /* ServiceCells.swift in Sources */,
 				276742092B3DC230002A2C75 /* AboutTab.swift in Sources */,
