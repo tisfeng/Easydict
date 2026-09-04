@@ -44,7 +44,7 @@ extension SystemUtility {
     /// resolved via Accessibility APIs, an allowlist can be used to bypass the check.
     func isFocusedSelectableTextElement() -> Bool {
         do {
-            guard let focusedUIElement = try frontmostAppElement?.focusedUIElement() else {
+            guard let focusedUIElement = try resolvedFocusedUIElementForSelectedText() else {
                 logInfo("No focused UI element found: \(String(describing: frontmostAppElement)), treat as selectable")
                 return true
             }
@@ -166,6 +166,70 @@ extension SystemUtility {
 
     private var selectableTextRoles: Set<String> {
         FocusedElementInfo.selectableTextRoles
+    }
+
+    /// Resolves the focused UI element after activating an app-specific Accessibility tree.
+    private func resolvedFocusedUIElementForSelectedText() throws -> UIElement? {
+        guard let appElement = frontmostAppElement,
+              let focusedUIElement = try appElement.focusedUIElement() else {
+            return nil
+        }
+
+        let roleValue = try? focusedUIElement.roleValue()
+        guard let roleValue,
+              FocusedElementInfo.appSpecificSelectedTextRoles.contains(roleValue),
+              let selector = FocusedElementInfo
+              .appSpecificSelectedTextSelectorBindings[frontmostAppBundleID] else {
+            return focusedUIElement
+        }
+
+        switch selector {
+        case .zen:
+            _ = try? appElement.roleValue()
+        }
+
+        return try appElement.focusedUIElement()
+    }
+
+    /// Reads Zen selected text from the focused web area using its text-marker API.
+    func selectedTextByZenTextMarkerRange() -> String? {
+        guard let selector = FocusedElementInfo
+            .appSpecificSelectedTextSelectorBindings[frontmostAppBundleID] else {
+            return nil
+        }
+
+        switch selector {
+        case .zen:
+            return selectedTextByTextMarkerRange()
+        }
+    }
+
+    private func selectedTextByTextMarkerRange() -> String? {
+        guard let focusedUIElement = try? resolvedFocusedUIElementForSelectedText() else {
+            return nil
+        }
+
+        var markerRange: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(
+            focusedUIElement.element,
+            kAXSelectedTextMarkerRangeAttribute as CFString,
+            &markerRange
+        ) == .success,
+            let markerRange else {
+            return nil
+        }
+
+        var selectedText: CFTypeRef?
+        guard AXUIElementCopyParameterizedAttributeValue(
+            focusedUIElement.element,
+            kAXStringForTextMarkerRangeParameterizedAttribute as CFString,
+            markerRange,
+            &selectedText
+        ) == .success else {
+            return nil
+        }
+
+        return selectedText as? String
     }
 
     private func isEditableTextInputElement(_ element: UIElement) -> Bool {
