@@ -76,6 +76,40 @@ struct ResponsesStreamDelta: Decodable {
     let delta: String?
 }
 
+// MARK: - Stream Event
+
+enum ResponsesStreamEvent {
+    case delta(String)
+    case failure(QueryError)
+    case ignored
+}
+
+/// Classifies one Responses SSE event by its `event:` name and `data:` payload.
+/// The decoded `type` field wins over the event name so data-only streams
+/// (no `event:` line) still resolve.
+func responsesStreamEvent(eventName: String, payload: String) -> ResponsesStreamEvent {
+    guard !payload.isEmpty, payload != "[DONE]",
+          let payloadData = payload.data(using: .utf8)
+    else { return .ignored }
+
+    let decoded = try? JSONDecoder().decode(ResponsesStreamDelta.self, from: payloadData)
+    let type = decoded?.type ?? eventName
+
+    if type == "response.output_text.delta", let text = decoded?.delta, !text.isEmpty {
+        return .delta(text)
+    }
+    if type.contains("failed") || type.contains("error") {
+        return .failure(
+            QueryError(
+                type: .api,
+                message: "Responses stream \(type)",
+                errorDataMessage: payload
+            )
+        )
+    }
+    return .ignored
+}
+
 // MARK: - Input Builder
 
 /// Convert repo chat messages to Responses input items.
@@ -240,21 +274,13 @@ extension BaseOpenAIService {
                         } else if line.hasPrefix("data:") {
                             let payload = line.dropFirst("data:".count)
                                 .trimmingCharacters(in: .whitespaces)
-                            guard !payload.isEmpty, payload != "[DONE]",
-                                  let payloadData = payload.data(using: .utf8)
-                            else { continue }
-                            if eventName == "response.output_text.delta",
-                               let delta = try? JSONDecoder().decode(
-                                   ResponsesStreamDelta.self, from: payloadData
-                               ),
-                               let text = delta.delta, !text.isEmpty {
+                            switch responsesStreamEvent(eventName: eventName, payload: payload) {
+                            case .delta(let text):
                                 continuation.yield(text)
-                            } else if eventName.contains("failed") || eventName.contains("error") {
-                                throw QueryError(
-                                    type: .api,
-                                    message: "Responses stream \(eventName)",
-                                    errorDataMessage: payload
-                                )
+                            case .failure(let error):
+                                throw error
+                            case .ignored:
+                                continue
                             }
                         }
                     }
