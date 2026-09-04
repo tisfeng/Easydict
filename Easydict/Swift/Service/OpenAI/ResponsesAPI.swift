@@ -98,6 +98,38 @@ func responsesInputItems(from messages: [ChatMessage]) -> [ResponsesInputItem] {
     }
 }
 
+// MARK: - Endpoint Normalization
+
+/// Returns the request URL for `apiType` by swapping the endpoint path suffix
+/// between wire formats, so switching `OpenAIAPIType` works without editing
+/// the endpoint manually. Unrecognized paths are returned unchanged.
+func normalizedRequestURL(endpoint: URL, apiType: OpenAIAPIType) -> URL {
+    guard var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false) else {
+        return endpoint
+    }
+    var parts = components.path.split(separator: "/", omittingEmptySubsequences: true).map(String.init)
+    let lowered = parts.map { $0.lowercased() }
+
+    if apiType == .responses {
+        if Array(lowered.suffix(2)) == ["chat", "completions"] {
+            parts.removeLast(2)
+            parts.append("responses")
+        } else if lowered.last == "completions" {
+            parts.removeLast()
+            parts.append("responses")
+        } else {
+            return endpoint
+        }
+    } else {
+        guard lowered.last == "responses" else { return endpoint }
+        parts.removeLast()
+        parts.append(contentsOf: ["chat", "completions"])
+    }
+
+    components.path = "/" + parts.joined(separator: "/")
+    return components.url ?? endpoint
+}
+
 // MARK: - BaseOpenAIService + Responses
 
 extension BaseOpenAIService {
