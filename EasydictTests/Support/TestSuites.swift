@@ -86,6 +86,9 @@ extension Tag {
     /// Screenshot functionality (截图功能)
     @Tag static var screenshot: Self
 
+    /// In-place screenshot translation and automatic retranslation
+    @Tag static var inPlaceTranslation: Self
+
     /// Markdown rendering pipeline (Markdown 渲染功能)
     @Tag static var markdown: Self
 

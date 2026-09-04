@@ -94,7 +94,7 @@ extension Screenshot {
                 return
             }
 
-            NSLog("Executing delayed screenshot for preview rect: \(lastRect)")
+            NSLog("Executing delayed screenshot preview capture")
 
             performScreenshot(screen: targetScreen, rect: lastRect)
         }

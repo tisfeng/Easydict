@@ -169,7 +169,7 @@ struct ScreenshotOverlayView: View {
         state.isTipVisible = false
 
         let selectedRect = state.selectedRect
-        NSLog("Drag ended, selected rect: \(selectedRect)")
+        NSLog("Screenshot selection completed")
 
         // Check if selection meets minimum size requirements
         if selectedRect.width > 10, selectedRect.height > 10 {
@@ -177,8 +177,9 @@ struct ScreenshotOverlayView: View {
             Screenshot.shared.performScreenshot(screen: state.screen, rect: selectedRect)
         } else {
             NSLog("Screenshot cancelled - Selection too small (minimum: 10x10)")
-            // Cancel the screenshot process directly
-            Screenshot.shared.finishCapture(nil)
+            // Preserve a typed reason for selection-aware callers while the
+            // legacy image-only completion remains nil-compatible.
+            Screenshot.shared.finishSelectionCapture(error: .selectionTooSmall)
         }
     }
 }

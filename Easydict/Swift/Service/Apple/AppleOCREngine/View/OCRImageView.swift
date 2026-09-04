@@ -62,7 +62,10 @@ struct OCRBoundingBoxOverlay: View {
             // Canvas for drawing bounding boxes
             Canvas { context, size in
                 // Calculate the actual image display area within the view
-                let imageDisplayInfo = calculateImageDisplayInfo(viewSize: size, imageSize: imageSize)
+                let imageDisplayInfo = OCRImageGeometry.aspectFit(
+                    viewSize: size,
+                    imageSize: imageSize
+                )
 
                 // Get all sections from bands
                 let allSections = bands.flatMap { $0.sections }
@@ -108,7 +111,7 @@ struct OCRBoundingBoxOverlay: View {
 
             // Invisible overlay for handling taps
             GeometryReader { geometry in
-                let imageDisplayInfo = calculateImageDisplayInfo(
+                let imageDisplayInfo = OCRImageGeometry.aspectFit(
                     viewSize: geometry.size, imageSize: imageSize
                 )
 
@@ -123,20 +126,18 @@ struct OCRBoundingBoxOverlay: View {
                         // Find which section was tapped based on coordinates
                         for (sectionIndex, section) in allSections.enumerated() {
                             let sectionBoundingBox = section.observations.calculateSectionBoundingBox()
-                            let displayRect = convertVisionRectToDisplayRect(
-                                sectionBoundingBox, imageDisplayInfo: imageDisplayInfo
+                            let displayRect = OCRImageGeometry.displayRect(
+                                forVisionNormalizedRect: sectionBoundingBox,
+                                displayInfo: imageDisplayInfo
                             )
 
                             if displayRect.contains(location) {
-                                print("Tapped section \(sectionIndex) at \(location)")
-
                                 withAnimation(.easeInOut(duration: .ocrDuration)) {
                                     selectedIndex = sectionIndex
                                 }
                                 return
                             }
                         }
-                        print("Tapped outside sections at \(location)")
                     }
             }
         }
@@ -144,65 +145,18 @@ struct OCRBoundingBoxOverlay: View {
 
     // MARK: Private
 
-    private func calculateImageDisplayInfo(viewSize: CGSize, imageSize: CGSize) -> ImageDisplayInfo {
-        let imageAspectRatio = imageSize.width / imageSize.height
-        let viewAspectRatio = viewSize.width / viewSize.height
-
-        let displaySize: CGSize
-        let displayOffset: CGPoint
-
-        if imageAspectRatio > viewAspectRatio {
-            // Image is wider than view - fit to width
-            displaySize = CGSize(
-                width: viewSize.width,
-                height: viewSize.width / imageAspectRatio
-            )
-        } else {
-            // Image is taller than view - fit to height
-            displaySize = CGSize(
-                width: viewSize.height * imageAspectRatio,
-                height: viewSize.height
-            )
-        }
-
-        displayOffset = CGPoint(
-            x: (viewSize.width - displaySize.width) / 2,
-            y: (viewSize.height - displaySize.height) / 2
-        )
-
-        return ImageDisplayInfo(size: displaySize, offset: displayOffset)
-    }
-
-    private func convertVisionRectToDisplayRect(
-        _ visionRect: CGRect, imageDisplayInfo: ImageDisplayInfo
-    )
-        -> CGRect {
-        // Vision coordinates: (0,0) at bottom-left, Y increases upward
-        // SwiftUI coordinates: (0,0) at top-left, Y increases downward
-
-        let displayX = imageDisplayInfo.offset.x + (visionRect.minX * imageDisplayInfo.size.width)
-        let displayY =
-            imageDisplayInfo.offset.y + ((1.0 - visionRect.maxY) * imageDisplayInfo.size.height)
-        let displayWidth = visionRect.width * imageDisplayInfo.size.width
-        let displayHeight = visionRect.height * imageDisplayInfo.size.height
-
-        return CGRect(
-            x: displayX,
-            y: displayY,
-            width: displayWidth,
-            height: displayHeight
-        )
-    }
-
     // MARK: - Drawing Functions
 
     /// Draw band bounding box with a thick green border
     private func drawBandBoundingBox(
         context: GraphicsContext,
         boundingBox: CGRect,
-        imageDisplayInfo: ImageDisplayInfo
+        imageDisplayInfo: OCRImageDisplayInfo
     ) {
-        let rect = convertVisionRectToDisplayRect(boundingBox, imageDisplayInfo: imageDisplayInfo)
+        let rect = OCRImageGeometry.displayRect(
+            forVisionNormalizedRect: boundingBox,
+            displayInfo: imageDisplayInfo
+        )
         let strokeWidth = 4.0
 
         // Draw thick red border for bands
@@ -217,10 +171,13 @@ struct OCRBoundingBoxOverlay: View {
     private func drawSectionBoundingBox(
         context: GraphicsContext,
         boundingBox: CGRect,
-        imageDisplayInfo: ImageDisplayInfo,
+        imageDisplayInfo: OCRImageDisplayInfo,
         isSelected: Bool
     ) {
-        let rect = convertVisionRectToDisplayRect(boundingBox, imageDisplayInfo: imageDisplayInfo)
+        let rect = OCRImageGeometry.displayRect(
+            forVisionNormalizedRect: boundingBox,
+            displayInfo: imageDisplayInfo
+        )
         let strokeWidth = 3.0
 
         if isSelected {
@@ -253,10 +210,11 @@ struct OCRBoundingBoxOverlay: View {
     private func drawTextObservationBoundingBox(
         context: GraphicsContext,
         observation: EZRecognizedTextObservation,
-        imageDisplayInfo: ImageDisplayInfo
+        imageDisplayInfo: OCRImageDisplayInfo
     ) {
-        let rect = convertVisionRectToDisplayRect(
-            observation.boundingBox, imageDisplayInfo: imageDisplayInfo
+        let rect = OCRImageGeometry.displayRect(
+            forVisionNormalizedRect: observation.boundingBox,
+            displayInfo: imageDisplayInfo
         )
 
         context.stroke(
@@ -265,11 +223,4 @@ struct OCRBoundingBoxOverlay: View {
             lineWidth: 1.0
         )
     }
-}
-
-// MARK: - ImageDisplayInfo
-
-struct ImageDisplayInfo {
-    let size: CGSize
-    let offset: CGPoint
 }

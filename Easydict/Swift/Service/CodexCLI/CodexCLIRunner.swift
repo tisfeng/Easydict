@@ -250,7 +250,8 @@ final class CodexCLIRunner: @unchecked Sendable {
     func run(
         prompt: String,
         model: String? = nil,
-        reasoningEffort: String? = nil
+        reasoningEffort: String? = nil,
+        allowsPlaintextRequestLogging: Bool = true
     )
         -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { [weak self] continuation in
@@ -271,7 +272,12 @@ final class CodexCLIRunner: @unchecked Sendable {
                 do {
                     let binaryPath = try Self.detectCodexBinary()
                     #if AGENT_CLI_DEBUG
-                    self?.logger = CodexCLILogger(command: "\(binaryPath) exec --json", prompt: prompt)
+                    if allowsPlaintextRequestLogging {
+                        self?.logger = CodexCLILogger(
+                            command: "\(binaryPath) exec --json",
+                            prompt: prompt
+                        )
+                    }
                     #endif
 
                     let context = CodexRunContext()

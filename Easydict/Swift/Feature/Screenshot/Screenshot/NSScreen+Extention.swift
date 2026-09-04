@@ -9,16 +9,21 @@
 import Foundation
 
 extension NSScreen {
+    /// The CoreGraphics display identifier backing this screen.
+    var displayID: CGDirectDisplayID? {
+        let key = NSDeviceDescriptionKey("NSScreenNumber")
+        return (deviceDescription[key] as? NSNumber)?.uint32Value
+    }
+
     /// Take screenshot of the specified area in the screen.
     /// - Parameter rect: The rect in the screen to capture. The rect is `top-left` origin. If nil, capture the entire screen.
     /// - Returns: NSImage of captured screenshot or nil if failed
     func takeScreenshot(rect: CGRect? = nil) -> NSImage? {
         let rect = rect ?? bounds
-        NSLog("Taking screenshot of rect: \(rect), screen: \(debugDescription)")
+        NSLog("Taking screenshot")
 
         // Get screen's display ID
-        let screenNumber = deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber
-        guard let displayID = screenNumber?.uint32Value else {
+        guard let displayID else {
             NSLog("Failed to get display ID for screen")
             return nil
         }
@@ -60,10 +65,9 @@ extension NSScreen {
     ///        Otherwise, if `lastRect` size is larger than `currentScreen`, the adjusted rect will be scaled down to fit within the screen.
     ///        Else, the adjusted rect location to fit within the screen.
     func adjustedScreenshotRect(_ lastRect: CGRect) -> CGRect {
-        NSLog("Adjusting last screenshot rect: \(lastRect)")
+        NSLog("Adjusting previous screenshot selection")
 
         let screenFrame = frame
-        NSLog("Current screen frame: \(screenFrame)")
 
         if lastRect.isEmpty {
             NSLog("Last rect is empty, cannot adjust")
@@ -128,7 +132,7 @@ extension NSScreen {
             adjustedRect.origin.y = screenFrame.height - adjustedRect.height
         }
 
-        NSLog("Adjusted rect (top-left): \(adjustedRect)")
+        NSLog("Previous screenshot selection adjusted")
         return adjustedRect.integral
     }
 

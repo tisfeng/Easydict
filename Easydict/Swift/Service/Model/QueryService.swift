@@ -534,6 +534,10 @@ open class QueryService: NSObject {
 
     // MARK: Internal
 
+    /// Allows a caller handling transient sensitive content to suppress provider-specific
+    /// plaintext debug logs without changing the provider's normal diagnostics.
+    @nonobjc var allowsPlaintextRequestLogging = true
+
     /// Monotonic token used to drop stale stream chunks after result reset.
     ///
     /// `resetServiceResult()` may reuse the same `QueryResult` instance, so

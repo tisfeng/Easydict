@@ -154,6 +154,22 @@ extension Defaults.Keys {
         "replaceWithTranslationInCompatibilityMode",
         default: false
     )
+    static let inPlaceTranslationServiceIdentifier = Key<String>(
+        "inPlaceTranslationServiceIdentifier",
+        default: ""
+    )
+    static let inPlaceTranslationLiveUpdatesEnabled = Key<Bool>(
+        "inPlaceTranslationLiveUpdatesEnabled",
+        default: true
+    )
+    static let inPlaceTranslationPinned = Key<Bool>(
+        "inPlaceTranslationPinned",
+        default: true
+    )
+    static let inPlaceTranslationPrivacyDisclosureAcknowledged = Key<Bool>(
+        "inPlaceTranslationPrivacyDisclosureAcknowledged",
+        default: false
+    )
     static var enableHTTPServer = Key<Bool>("enableHTTPServer", default: false)
     static var httpPort = Key<String>("httpPort", default: "8080")
 
@@ -395,6 +411,9 @@ extension Defaults.Keys {
         "EZToggleAutoSelectTextShortcutKey_keyHolder"
     )
     static let snipShortcut = Key<KeyCombo?>("EZSnipShortcutKey_keyHolder")
+    static let inPlaceScreenshotTranslationShortcut = Key<KeyCombo?>(
+        "EZInPlaceScreenshotTranslationShortcutKey_keyHolder"
+    )
     static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder")
     // Note: This key value is not suitable for renaming, because it is used in old versions.
     static let silentScreenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey_keyHolder")

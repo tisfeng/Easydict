@@ -53,8 +53,6 @@ public class AppleOCREngine: NSObject {
             throw QueryError.error(type: .parameter, message: "Invalid image provided for OCR")
         }
 
-        image.write(to: OCRConstants.snipImageFileURL, using: .png)
-
         // Convert NSImage to CGImage
         guard let cgImage = image.toCGImage() else {
             throw QueryError.error(
@@ -130,6 +128,48 @@ public class AppleOCREngine: NSObject {
         logInfo("Total OCR cost time: \(startTime.elapsedTimeString) seconds")
 
         return mostConfidentResult
+    }
+
+    /// Recognizes immutable layout observations entirely in memory.
+    ///
+    /// Unlike the legacy result pipeline, this method never writes the source image,
+    /// never exposes mutable processor state, and never logs recognized text.
+    func recognizeLayout(
+        image: NSImage,
+        language: Language = .auto
+    ) async throws
+        -> AppleOCRLayoutResult {
+        guard image.isValid else {
+            throw QueryError.error(type: .parameter, message: "Invalid image provided for OCR")
+        }
+        guard let cgImage = image.toCGImage() else {
+            throw QueryError.error(
+                type: .parameter,
+                message: "Failed to convert NSImage to CGImage"
+            )
+        }
+
+        let startTime = CFAbsoluteTimeGetCurrent()
+        let observations = try await performVisionOCR(on: cgImage, language: language)
+        let mergedText = observations.simpleMergedText
+        let detector = AppleLanguageDetector()
+        let detectedLanguage = language == .auto
+            ? detector.detectLanguage(text: mergedText)
+            : language
+        let confidence = observations.isEmpty
+            ? 0
+            : observations.reduce(0) { $0 + $1.confidence } / Float(observations.count)
+
+        logInfo(
+            "Layout OCR completed: observations=\(observations.count), characters=\(mergedText.count), "
+                + "language=\(detectedLanguage), duration=\(startTime.elapsedTimeString)"
+        )
+        return AppleOCRLayoutResult(
+            mergedText: mergedText,
+            detectedLanguage: detectedLanguage,
+            confidence: confidence,
+            observations: observations.map(AppleOCRLayoutObservation.init)
+        )
     }
 
     func pasteboardOCR() {

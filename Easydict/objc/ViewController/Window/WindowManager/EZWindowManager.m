@@ -870,6 +870,11 @@ static EZWindowManager *_instance;
     }];
 }
 
+- (void)inPlaceScreenshotTranslate {
+    MMLogInfo(@"Start in-place screenshot translation");
+    [InPlaceTranslationWindowManager.shared startCapture];
+}
+
 /// Silent screenshot and OCR, without showing floating window.
 - (void)silentScreenshotOCR {
     MMLogInfo(@"Silent screenshot and OCR");

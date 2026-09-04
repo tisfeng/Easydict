@@ -7,6 +7,45 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A83100000000000000000001 /* FrameChangeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000001 /* FrameChangeDetector.swift */; };
+		A83100000000000000000002 /* RegionFrameSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000002 /* RegionFrameSource.swift */; };
+		A83100000000000000000003 /* ScreenCaptureKitRegionFrameSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000003 /* ScreenCaptureKitRegionFrameSource.swift */; };
+		A83100000000000000000004 /* ScreenshotSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000004 /* ScreenshotSelection.swift */; };
+		A83100000000000000000005 /* InPlaceOCRBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000005 /* InPlaceOCRBlock.swift */; };
+		A83100000000000000000006 /* InPlaceRenderSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000006 /* InPlaceRenderSnapshot.swift */; };
+		A83100000000000000000007 /* InPlaceTranslatedBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000007 /* InPlaceTranslatedBlock.swift */; };
+		A83100000000000000000008 /* InPlaceTranslationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000008 /* InPlaceTranslationState.swift */; };
+		A83100000000000000000009 /* InPlaceOCRBlockBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000009 /* InPlaceOCRBlockBuilder.swift */; };
+		A83100000000000000000010 /* InPlaceOCRBlockMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000010 /* InPlaceOCRBlockMatcher.swift */; };
+		A83100000000000000000011 /* InPlaceOCRPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000011 /* InPlaceOCRPipeline.swift */; };
+		A83100000000000000000012 /* InPlaceTranslationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000012 /* InPlaceTranslationSession.swift */; };
+		A83100000000000000000013 /* InPlaceTranslationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000013 /* InPlaceTranslationViewModel.swift */; };
+		A83100000000000000000014 /* InPlaceTranslationCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000014 /* InPlaceTranslationCache.swift */; };
+		A83100000000000000000015 /* InPlaceTranslationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000015 /* InPlaceTranslationCoordinator.swift */; };
+		A83100000000000000000016 /* InPlaceTranslationServiceResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000016 /* InPlaceTranslationServiceResolver.swift */; };
+		A83100000000000000000017 /* InPlaceTranslationBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000017 /* InPlaceTranslationBlockView.swift */; };
+		A83100000000000000000018 /* InPlaceTranslationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000018 /* InPlaceTranslationContentView.swift */; };
+		A83100000000000000000019 /* InPlaceTranslationPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000019 /* InPlaceTranslationPanel.swift */; };
+		A83100000000000000000020 /* InPlaceTranslationToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000020 /* InPlaceTranslationToolbar.swift */; };
+		A83100000000000000000021 /* InPlaceTranslationWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000021 /* InPlaceTranslationWindowManager.swift */; };
+		A83100000000000000000022 /* AppleOCRLayoutResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000022 /* AppleOCRLayoutResult.swift */; };
+		A83100000000000000000023 /* OCRImageGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000023 /* OCRImageGeometry.swift */; };
+		A83100000000000000000024 /* InPlaceTranslationSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83200000000000000000024 /* InPlaceTranslationSettingsSection.swift */; };
+		A83300000000000000000001 /* InPlaceFrameChangeDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000001 /* InPlaceFrameChangeDetectorTests.swift */; };
+		A83300000000000000000002 /* InPlaceOCRBlockBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000002 /* InPlaceOCRBlockBuilderTests.swift */; };
+		A83300000000000000000003 /* InPlaceOCRBlockMatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000003 /* InPlaceOCRBlockMatcherTests.swift */; };
+		A83300000000000000000004 /* InPlaceOCRBlockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000004 /* InPlaceOCRBlockTests.swift */; };
+		A83300000000000000000005 /* InPlaceOCRPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000005 /* InPlaceOCRPipelineTests.swift */; };
+		A83300000000000000000006 /* InPlaceShortcutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000006 /* InPlaceShortcutTests.swift */; };
+		A83300000000000000000007 /* InPlaceTranslationCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000007 /* InPlaceTranslationCacheTests.swift */; };
+		A83300000000000000000008 /* InPlaceTranslationCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000008 /* InPlaceTranslationCoordinatorTests.swift */; };
+		A83300000000000000000009 /* InPlaceTranslationPreferencesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000009 /* InPlaceTranslationPreferencesTests.swift */; };
+		A83300000000000000000010 /* InPlaceTranslationServiceResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000010 /* InPlaceTranslationServiceResolverTests.swift */; };
+		A83300000000000000000011 /* InPlaceTranslationSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000011 /* InPlaceTranslationSessionTests.swift */; };
+		A83300000000000000000012 /* InPlaceTranslationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000012 /* InPlaceTranslationViewModelTests.swift */; };
+		A83300000000000000000013 /* OCRImageGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000013 /* OCRImageGeometryTests.swift */; };
+		A83300000000000000000014 /* ScreenshotSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000014 /* ScreenshotSelectionTests.swift */; };
+		A83300000000000000000015 /* InPlaceRenderSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83400000000000000000015 /* InPlaceRenderSnapshotTests.swift */; };
 		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
 		02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000003 /* MarkdownLabel.swift */; };
 		02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000004 /* MarkdownToggleButton.swift */; };
@@ -634,6 +673,45 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A83200000000000000000001 /* FrameChangeDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Capture/FrameChangeDetector.swift; sourceTree = "<group>"; };
+		A83200000000000000000002 /* RegionFrameSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Capture/RegionFrameSource.swift; sourceTree = "<group>"; };
+		A83200000000000000000003 /* ScreenCaptureKitRegionFrameSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Capture/ScreenCaptureKitRegionFrameSource.swift; sourceTree = "<group>"; };
+		A83200000000000000000004 /* ScreenshotSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Capture/ScreenshotSelection.swift; sourceTree = "<group>"; };
+		A83200000000000000000005 /* InPlaceOCRBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model/InPlaceOCRBlock.swift; sourceTree = "<group>"; };
+		A83200000000000000000006 /* InPlaceRenderSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model/InPlaceRenderSnapshot.swift; sourceTree = "<group>"; };
+		A83200000000000000000007 /* InPlaceTranslatedBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model/InPlaceTranslatedBlock.swift; sourceTree = "<group>"; };
+		A83200000000000000000008 /* InPlaceTranslationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model/InPlaceTranslationState.swift; sourceTree = "<group>"; };
+		A83200000000000000000009 /* InPlaceOCRBlockBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCR/InPlaceOCRBlockBuilder.swift; sourceTree = "<group>"; };
+		A83200000000000000000010 /* InPlaceOCRBlockMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCR/InPlaceOCRBlockMatcher.swift; sourceTree = "<group>"; };
+		A83200000000000000000011 /* InPlaceOCRPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCR/InPlaceOCRPipeline.swift; sourceTree = "<group>"; };
+		A83200000000000000000012 /* InPlaceTranslationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session/InPlaceTranslationSession.swift; sourceTree = "<group>"; };
+		A83200000000000000000013 /* InPlaceTranslationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session/InPlaceTranslationViewModel.swift; sourceTree = "<group>"; };
+		A83200000000000000000014 /* InPlaceTranslationCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translation/InPlaceTranslationCache.swift; sourceTree = "<group>"; };
+		A83200000000000000000015 /* InPlaceTranslationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translation/InPlaceTranslationCoordinator.swift; sourceTree = "<group>"; };
+		A83200000000000000000016 /* InPlaceTranslationServiceResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translation/InPlaceTranslationServiceResolver.swift; sourceTree = "<group>"; };
+		A83200000000000000000017 /* InPlaceTranslationBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View/InPlaceTranslationBlockView.swift; sourceTree = "<group>"; };
+		A83200000000000000000018 /* InPlaceTranslationContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View/InPlaceTranslationContentView.swift; sourceTree = "<group>"; };
+		A83200000000000000000019 /* InPlaceTranslationPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View/InPlaceTranslationPanel.swift; sourceTree = "<group>"; };
+		A83200000000000000000020 /* InPlaceTranslationToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View/InPlaceTranslationToolbar.swift; sourceTree = "<group>"; };
+		A83200000000000000000021 /* InPlaceTranslationWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View/InPlaceTranslationWindowManager.swift; sourceTree = "<group>"; };
+		A83200000000000000000022 /* AppleOCRLayoutResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleOCRLayoutResult.swift; sourceTree = "<group>"; };
+		A83200000000000000000023 /* OCRImageGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRImageGeometry.swift; sourceTree = "<group>"; };
+		A83200000000000000000024 /* InPlaceTranslationSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceTranslationSettingsSection.swift; sourceTree = "<group>"; };
+		A83400000000000000000001 /* InPlaceFrameChangeDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceFrameChangeDetectorTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000002 /* InPlaceOCRBlockBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceOCRBlockBuilderTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000003 /* InPlaceOCRBlockMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceOCRBlockMatcherTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000004 /* InPlaceOCRBlockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceOCRBlockTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000005 /* InPlaceOCRPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceOCRPipelineTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000006 /* InPlaceShortcutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceShortcutTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000007 /* InPlaceTranslationCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceTranslationCacheTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000008 /* InPlaceTranslationCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceTranslationCoordinatorTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000009 /* InPlaceTranslationPreferencesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceTranslationPreferencesTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000010 /* InPlaceTranslationServiceResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceTranslationServiceResolverTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000011 /* InPlaceTranslationSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceTranslationSessionTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000012 /* InPlaceTranslationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceTranslationViewModelTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000013 /* OCRImageGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRImageGeometryTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000014 /* ScreenshotSelectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotSelectionTests.swift; sourceTree = "<group>"; };
+		A83400000000000000000015 /* InPlaceRenderSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPlaceRenderSnapshotTests.swift; sourceTree = "<group>"; };
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
@@ -1453,6 +1531,7 @@
 		03071E1B2BC03ADE0042CD38 /* TabView */ = {
 			isa = PBXGroup;
 			children = (
+				A83200000000000000000024 /* InPlaceTranslationSettingsSection.swift */,
 				278540332B3DE04F004E9488 /* GeneralTab.swift */,
 				0A057D6C2B499A000025C51D /* ServiceTab.swift */,
 				0A1189A12F700001005C51D /* ServiceTabListViews.swift */,
@@ -2546,6 +2625,8 @@
 		03B170982E122CF80021FDE4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A83200000000000000000022 /* AppleOCRLayoutResult.swift */,
+				A83200000000000000000023 /* OCRImageGeometry.swift */,
 				03F44F2C2E578A58003C2EA3 /* EZRecognizedTextObservation.swift */,
 				033E8A0E2E4F53B9008A7110 /* OCRSection.swift */,
 				03220E292E11A1A0002C7F3F /* OCRObservationPair.swift */,
@@ -3472,6 +3553,56 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		A83500000000000000000001 /* InPlaceScreenshotTranslation */ = {
+			isa = PBXGroup;
+			children = (
+				A83200000000000000000001 /* FrameChangeDetector.swift */,
+				A83200000000000000000002 /* RegionFrameSource.swift */,
+				A83200000000000000000003 /* ScreenCaptureKitRegionFrameSource.swift */,
+				A83200000000000000000004 /* ScreenshotSelection.swift */,
+				A83200000000000000000005 /* InPlaceOCRBlock.swift */,
+				A83200000000000000000006 /* InPlaceRenderSnapshot.swift */,
+				A83200000000000000000007 /* InPlaceTranslatedBlock.swift */,
+				A83200000000000000000008 /* InPlaceTranslationState.swift */,
+				A83200000000000000000009 /* InPlaceOCRBlockBuilder.swift */,
+				A83200000000000000000010 /* InPlaceOCRBlockMatcher.swift */,
+				A83200000000000000000011 /* InPlaceOCRPipeline.swift */,
+				A83200000000000000000012 /* InPlaceTranslationSession.swift */,
+				A83200000000000000000013 /* InPlaceTranslationViewModel.swift */,
+				A83200000000000000000014 /* InPlaceTranslationCache.swift */,
+				A83200000000000000000015 /* InPlaceTranslationCoordinator.swift */,
+				A83200000000000000000016 /* InPlaceTranslationServiceResolver.swift */,
+				A83200000000000000000017 /* InPlaceTranslationBlockView.swift */,
+				A83200000000000000000018 /* InPlaceTranslationContentView.swift */,
+				A83200000000000000000019 /* InPlaceTranslationPanel.swift */,
+				A83200000000000000000020 /* InPlaceTranslationToolbar.swift */,
+				A83200000000000000000021 /* InPlaceTranslationWindowManager.swift */,
+			);
+			path = InPlaceScreenshotTranslation;
+			sourceTree = "<group>";
+		};
+		A83500000000000000000002 /* InPlaceScreenshotTranslation */ = {
+			isa = PBXGroup;
+			children = (
+				A83400000000000000000001 /* InPlaceFrameChangeDetectorTests.swift */,
+				A83400000000000000000002 /* InPlaceOCRBlockBuilderTests.swift */,
+				A83400000000000000000003 /* InPlaceOCRBlockMatcherTests.swift */,
+				A83400000000000000000004 /* InPlaceOCRBlockTests.swift */,
+				A83400000000000000000005 /* InPlaceOCRPipelineTests.swift */,
+				A83400000000000000000006 /* InPlaceShortcutTests.swift */,
+				A83400000000000000000007 /* InPlaceTranslationCacheTests.swift */,
+				A83400000000000000000008 /* InPlaceTranslationCoordinatorTests.swift */,
+				A83400000000000000000009 /* InPlaceTranslationPreferencesTests.swift */,
+				A83400000000000000000010 /* InPlaceTranslationServiceResolverTests.swift */,
+				A83400000000000000000011 /* InPlaceTranslationSessionTests.swift */,
+				A83400000000000000000012 /* InPlaceTranslationViewModelTests.swift */,
+				A83400000000000000000013 /* OCRImageGeometryTests.swift */,
+				A83400000000000000000014 /* ScreenshotSelectionTests.swift */,
+				A83400000000000000000015 /* InPlaceRenderSnapshotTests.swift */,
+			);
+			path = InPlaceScreenshotTranslation;
+			sourceTree = "<group>";
+		};
 		9643D93E2B6FC405000FBEA6 /* MenuView */ = {
 			isa = PBXGroup;
 			children = (
@@ -3485,6 +3616,7 @@
 		967712EB2B5B93E200105E0F /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				A83500000000000000000001 /* InPlaceScreenshotTranslation */,
 				0328D0792D7D42520050B2C7 /* Screenshot */,
 				03A00D862E616D3D001A4D82 /* ActionManager */,
 				032AAA502C456D96007996A1 /* HTTPServer */,
@@ -3538,6 +3670,7 @@
 		BE5912DE778CDCD8495CA4E5 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				A83500000000000000000002 /* InPlaceScreenshotTranslation */,
 				02DEDC0420260430000000C1 /* Markdown */,
 				030732CB2F24862A0001382A /* OCR */,
 			);
@@ -4192,6 +4325,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A83300000000000000000001 /* InPlaceFrameChangeDetectorTests.swift in Sources */,
+				A83300000000000000000002 /* InPlaceOCRBlockBuilderTests.swift in Sources */,
+				A83300000000000000000003 /* InPlaceOCRBlockMatcherTests.swift in Sources */,
+				A83300000000000000000004 /* InPlaceOCRBlockTests.swift in Sources */,
+				A83300000000000000000005 /* InPlaceOCRPipelineTests.swift in Sources */,
+				A83300000000000000000006 /* InPlaceShortcutTests.swift in Sources */,
+				A83300000000000000000007 /* InPlaceTranslationCacheTests.swift in Sources */,
+				A83300000000000000000008 /* InPlaceTranslationCoordinatorTests.swift in Sources */,
+				A83300000000000000000009 /* InPlaceTranslationPreferencesTests.swift in Sources */,
+				A83300000000000000000010 /* InPlaceTranslationServiceResolverTests.swift in Sources */,
+				A83300000000000000000011 /* InPlaceTranslationSessionTests.swift in Sources */,
+				A83300000000000000000012 /* InPlaceTranslationViewModelTests.swift in Sources */,
+				A83300000000000000000013 /* OCRImageGeometryTests.swift in Sources */,
+				A83300000000000000000014 /* ScreenshotSelectionTests.swift in Sources */,
+				A83300000000000000000015 /* InPlaceRenderSnapshotTests.swift in Sources */,
 				1CC83D91B3954BE7894CC2C8 /* MDictReaderTests.swift in Sources */,
 				02DEDC0420260430000000BE /* MarkdownRendererTests.swift in Sources */,
 				C09AC0F264D246FC90F9A277 /* AppleServiceTests.swift in Sources */,
@@ -4239,6 +4387,30 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A83100000000000000000001 /* FrameChangeDetector.swift in Sources */,
+				A83100000000000000000002 /* RegionFrameSource.swift in Sources */,
+				A83100000000000000000003 /* ScreenCaptureKitRegionFrameSource.swift in Sources */,
+				A83100000000000000000004 /* ScreenshotSelection.swift in Sources */,
+				A83100000000000000000005 /* InPlaceOCRBlock.swift in Sources */,
+				A83100000000000000000006 /* InPlaceRenderSnapshot.swift in Sources */,
+				A83100000000000000000007 /* InPlaceTranslatedBlock.swift in Sources */,
+				A83100000000000000000008 /* InPlaceTranslationState.swift in Sources */,
+				A83100000000000000000009 /* InPlaceOCRBlockBuilder.swift in Sources */,
+				A83100000000000000000010 /* InPlaceOCRBlockMatcher.swift in Sources */,
+				A83100000000000000000011 /* InPlaceOCRPipeline.swift in Sources */,
+				A83100000000000000000012 /* InPlaceTranslationSession.swift in Sources */,
+				A83100000000000000000013 /* InPlaceTranslationViewModel.swift in Sources */,
+				A83100000000000000000014 /* InPlaceTranslationCache.swift in Sources */,
+				A83100000000000000000015 /* InPlaceTranslationCoordinator.swift in Sources */,
+				A83100000000000000000016 /* InPlaceTranslationServiceResolver.swift in Sources */,
+				A83100000000000000000017 /* InPlaceTranslationBlockView.swift in Sources */,
+				A83100000000000000000018 /* InPlaceTranslationContentView.swift in Sources */,
+				A83100000000000000000019 /* InPlaceTranslationPanel.swift in Sources */,
+				A83100000000000000000020 /* InPlaceTranslationToolbar.swift in Sources */,
+				A83100000000000000000021 /* InPlaceTranslationWindowManager.swift in Sources */,
+				A83100000000000000000022 /* AppleOCRLayoutResult.swift in Sources */,
+				A83100000000000000000023 /* OCRImageGeometry.swift in Sources */,
+				A83100000000000000000024 /* InPlaceTranslationSettingsSection.swift in Sources */,
 				635234F65A9D4655A045FDAF /* MDictReader.swift in Sources */,
 				63D2A8E12F1C4B2E8C9A7101 /* MDictMetadataCache.swift in Sources */,
 				A9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift in Sources */,

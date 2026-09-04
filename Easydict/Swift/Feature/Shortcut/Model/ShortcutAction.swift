@@ -18,6 +18,7 @@ public enum ShortcutAction: String, Identifiable, CaseIterable {
     // Global shortcuts
     case inputTranslate
     case snipTranslate
+    case inPlaceScreenshotTranslation
     case selectTranslate
     case toggleAutoSelectText
     case showMiniWindow
@@ -58,6 +59,7 @@ extension ShortcutAction {
     static let globalActions: [ShortcutAction] = [
         .inputTranslate,
         .snipTranslate,
+        .inPlaceScreenshotTranslation,
         .selectTranslate,
         .toggleAutoSelectText,
         .showMiniWindow,
@@ -132,6 +134,12 @@ extension ShortcutAction {
                 icon: .cameraViewfinder,
                 defaultsKey: .snipShortcut,
                 action: { windowManager.snipTranslate() }
+            ),
+            .inPlaceScreenshotTranslation: .init(
+                titleKey: "in_place_screenshot_translation.menu.title",
+                icon: .cameraViewfinder,
+                defaultsKey: .inPlaceScreenshotTranslationShortcut,
+                action: { windowManager.inPlaceScreenshotTranslate() }
             ),
             .selectTranslate: .init(
                 titleKey: "menu_selectWord_Translate",
