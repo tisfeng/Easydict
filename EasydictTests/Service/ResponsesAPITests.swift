@@ -165,4 +165,20 @@ struct ResponsesAPITests {
             Issue.record("expected ignored")
         }
     }
+
+    // MARK: - Cancellation
+
+    @Test("cancelStream cancels the in-flight streaming task slot")
+    func cancelStreamCancelsStreamingTaskSlot() {
+        let service = CustomOpenAIService()
+        let task = Task<(), Never> {
+            _ = try? await Task.sleep(for: .seconds(5))
+        }
+
+        service.responsesStreamingTask = task
+        service.cancelStream()
+
+        #expect(task.isCancelled)
+        #expect(service.responsesStreamingTask == nil)
+    }
 }

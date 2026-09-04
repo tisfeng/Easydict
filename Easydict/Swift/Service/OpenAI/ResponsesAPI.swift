@@ -239,6 +239,7 @@ extension BaseOpenAIService {
         -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream<String, Error> { continuation in
             let task = Task {
+                defer { responsesStreamingTask = nil }
                 do {
                     let request = try self.makeResponsesRequest(
                         messages: messages,
@@ -294,6 +295,7 @@ extension BaseOpenAIService {
                 }
             }
 
+            responsesStreamingTask = task
             continuation.onTermination = { @Sendable _ in
                 task.cancel()
             }
