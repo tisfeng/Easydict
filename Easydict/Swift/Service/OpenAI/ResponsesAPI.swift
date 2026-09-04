@@ -76,7 +76,7 @@ struct ResponsesStreamDelta: Decodable {
     let delta: String?
 }
 
-// MARK: - Stream Event
+// MARK: - ResponsesStreamEvent
 
 enum ResponsesStreamEvent {
     case delta(String)
@@ -275,9 +275,9 @@ extension BaseOpenAIService {
                             let payload = line.dropFirst("data:".count)
                                 .trimmingCharacters(in: .whitespaces)
                             switch responsesStreamEvent(eventName: eventName, payload: payload) {
-                            case .delta(let text):
+                            case let .delta(text):
                                 continuation.yield(text)
-                            case .failure(let error):
+                            case let .failure(error):
                                 throw error
                             case .ignored:
                                 continue
