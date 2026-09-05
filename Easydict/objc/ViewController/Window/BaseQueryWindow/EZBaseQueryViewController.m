@@ -706,7 +706,16 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         BOOL isStreamingInProgress = self.firstService.isStream && !self.firstService.result.isStreamFinished;
         BOOL isResultReady = !self.firstService.result.isLoading && !isStreamingInProgress && !self.firstService.result.error;
         NSString *translatedText = isResultReady ? [self firstTranslatedText] : nil;
-        if (translatedText.length > 0) {
+        // Capture the effective direction before adopting text that needs new detection.
+        EZLanguage fromLanguage = self.queryModel.queryFromLanguage;
+        EZLanguage toLanguage = self.queryModel.queryTargetLanguage;
+        BOOL hasReverseDirection = fromLanguage.length > 0 && toLanguage.length > 0 &&
+            ![fromLanguage isEqualToString:EZLanguageAuto] &&
+            ![toLanguage isEqualToString:EZLanguageAuto] &&
+            ![fromLanguage isEqualToString:toLanguage];
+        if (translatedText.length > 0 && hasReverseDirection) {
+            self.queryModel.userSourceLanguage = fromLanguage;
+            self.queryModel.userTargetLanguage = toLanguage;
             self.inputText = translatedText;
             self.queryModel.ocrImage = nil;
             self.queryModel.actionType = EZActionTypeInputQuery;
