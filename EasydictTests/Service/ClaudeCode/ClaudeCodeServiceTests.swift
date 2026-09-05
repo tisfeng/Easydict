@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import Defaults
 @testable import Easydict
 import Testing
 
@@ -49,5 +50,32 @@ struct ClaudeCodeServiceTests {
     func factoryRegistration() {
         let service = QueryServiceFactory.shared.service(withTypeId: ServiceType.claudeCode.rawValue)
         #expect(service is ClaudeCodeService)
+    }
+
+    @Test("legacy empty stored model migrates to the default once, deliberate clears persist")
+    func legacyEmptyModelMigration() {
+        let service = ClaudeCodeService()
+        let modelKey = service.modelKey
+        let migratedKey = service.modelMigratedKey
+        let originalModel = Defaults[modelKey]
+        let originalMigrated = Defaults[migratedKey]
+        defer {
+            Defaults[modelKey] = originalModel
+            Defaults[migratedKey] = originalMigrated
+        }
+
+        // Legacy state: an empty model persisted by the old base getter, migration
+        // not yet run — a new service instance coerces it back to the default.
+        Defaults[modelKey] = ""
+        Defaults[migratedKey] = false
+        _ = ClaudeCodeService()
+        #expect(Defaults[modelKey] == ClaudeCodeRunner.defaultModel)
+        #expect(Defaults[migratedKey] == true)
+
+        // A deliberate clear after migration means "use the CLI default" and must
+        // survive later service instantiations (e.g. app relaunch).
+        Defaults[modelKey] = ""
+        _ = ClaudeCodeService()
+        #expect(Defaults[modelKey].isEmpty)
     }
 }

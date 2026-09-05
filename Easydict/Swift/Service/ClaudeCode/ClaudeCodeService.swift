@@ -19,6 +19,13 @@ import Foundation
 /// and result management are handled by the base class.
 @objc(EZClaudeCodeService)
 final class ClaudeCodeService: StreamService {
+    // MARK: Lifecycle
+
+    required init() {
+        super.init()
+        migrateLegacyEmptyModelIfNeeded()
+    }
+
     // MARK: Public
 
     /// Claude Code has no API key, endpoint, or model fields to observe.
@@ -103,7 +110,9 @@ final class ClaudeCodeService: StreamService {
         runner = currentRunner
         let baseStream = currentRunner.run(
             prompt: conversationPrompt,
-            systemPrompt: systemPrompt.isEmpty ? nil : systemPrompt
+            systemPrompt: systemPrompt.isEmpty ? nil : systemPrompt,
+            model: Defaults[modelKey],
+            effort: Defaults[effortKey].cliValue
         )
 
         // Wrap the stream to capture token usage after the run completes.
@@ -154,7 +163,59 @@ final class ClaudeCodeService: StreamService {
         }
     }
 
+    // MARK: Internal
+
+    /// Default for the inherited `modelKey`, which stores the user's model override
+    /// edited in the configuration view. `sonnet` preserves the historical behaviour
+    /// of forcing a fast, capable model; clearing the field falls back to the CLI default.
+    override var defaultModels: [String] {
+        [ClaudeCodeRunner.defaultModel]
+    }
+
+    /// Free-form model override without the base class's valid-model coercion.
+    ///
+    /// The configuration view accepts any alias or full model name, so the base
+    /// getter — which resets values missing from `validModels` back to the default —
+    /// would silently discard a custom model the first time anything reads `model`
+    /// (e.g. the local HTTP server's fallback-model label).
+    override var model: String {
+        get { Defaults[modelKey] }
+        set { Defaults[modelKey] = newValue }
+    }
+
+    /// Stored effort override. `.default` means "do not pass `--effort`"; other
+    /// cases map to the CLI's accepted levels (`low`…`max`).
+    ///
+    /// Uses the `cliEffort` slot rather than `reasoningEffort`, which the base
+    /// class already claims with the incompatible `ReasoningEffort` enum — sharing
+    /// that key would misdecode stored values if the base picker were ever enabled.
+    var effortKey: Defaults.Key<ClaudeCodeEffort> {
+        serviceDefaultsKey(.cliEffort, defaultValue: .default)
+    }
+
+    /// Tracks whether `migrateLegacyEmptyModelIfNeeded` has run for this service's
+    /// model key, so a deliberate post-migration clear is left untouched.
+    var modelMigratedKey: Defaults.Key<Bool> {
+        .init("\(modelKey.name)LegacyEmptyMigrated", default: false)
+    }
+
     // MARK: Private
 
     private var runner: ClaudeCodeRunner?
+
+    /// One-time migration for users whose stored model was persisted as an empty
+    /// string before model switching shipped: the base `model` getter, with the old
+    /// `defaultModels` of `[""]`, wrote `""` into `modelKey` as a read side effect
+    /// (e.g. via ActionManager logging or the local HTTP server). Left in place,
+    /// that stored value would shadow the registered `sonnet` default, omit
+    /// `--model`, and silently move translation to the CLI's own default model.
+    /// After this migration runs once, an empty value means a deliberate clear
+    /// ("use the CLI default") and is preserved.
+    private func migrateLegacyEmptyModelIfNeeded() {
+        guard !Defaults[modelMigratedKey] else { return }
+        Defaults[modelMigratedKey] = true
+        if Defaults[modelKey].isEmpty {
+            Defaults[modelKey] = ClaudeCodeRunner.defaultModel
+        }
+    }
 }
