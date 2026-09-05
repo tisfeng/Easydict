@@ -702,10 +702,21 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)toggleTranslationLanguages {
     BOOL canSwap = [self.selectLanguageCell canToggleTranslationLanguages];
-    if (canSwap) {
+    BOOL bothAutomatic = [self.queryModel.userSourceLanguage isEqualToString:EZLanguageAuto] &&
+        [self.queryModel.userTargetLanguage isEqualToString:EZLanguageAuto];
+    if (canSwap || bothAutomatic) {
         BOOL isStreamingInProgress = self.firstService.isStream && !self.firstService.result.isStreamFinished;
         BOOL isResultReady = !self.firstService.result.isLoading && !isStreamingInProgress && !self.firstService.result.error;
         NSString *translatedText = isResultReady ? [self firstTranslatedText] : nil;
+        if (bothAutomatic) {
+            // Re-query the translation using Auto without changing language preferences.
+            if ([translatedText ns_trim].length > 0) {
+                self.queryModel.ocrImage = nil;
+                [self startQueryText:translatedText actionType:EZActionTypeInputQuery];
+            }
+            return;
+        }
+
         // Capture the effective direction before adopting text that needs new detection.
         EZLanguage fromLanguage = self.queryModel.queryFromLanguage;
         EZLanguage toLanguage = self.queryModel.queryTargetLanguage;

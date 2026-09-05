@@ -6,6 +6,7 @@
 //
 
 import AppKit
+import ObjectiveC
 import Testing
 
 @testable import Easydict
@@ -60,16 +61,7 @@ struct ReverseTranslationTests {
     )
     func unavailableResult(state: String) throws {
         try withFixture { controller, model, service in
-            switch state {
-            case "empty": service.result.translatedResults = []
-            case "loading": service.result.isLoading = true
-            case "streaming":
-                service.streaming = true
-                service.result.isStreamFinished = false
-            case "error": service.result.error = QueryError(type: .api)
-            case "stale": service.result.queryText = "a different query"
-            default: Issue.record("Unknown result state")
-            }
+            makeResultUnavailable(state, controller: controller, service: service)
 
             controller.perform(NSSelectorFromString("toggleTranslationLanguages"))
 
@@ -95,21 +87,107 @@ struct ReverseTranslationTests {
         }
     }
 
-    @Test("Auto to Auto retains the existing no-op behavior")
-    func bothAutomatic() throws {
-        try withFixture { controller, model, _ in
+    @Test("Auto to Auto requeries completed output without changing preferences", arguments: [false, true])
+    func bothAutomatic(streaming: Bool) throws {
+        try withFixture { controller, model, service in
+            MyConfiguration.shared.fromLanguage = .auto
+            MyConfiguration.shared.toLanguage = .auto
             model.userTargetLanguage = .auto
+            service.streaming = streaming
+            var queryCount = 0
 
-            controller.perform(NSSelectorFromString("toggleTranslationLanguages"))
+            try withCapturedQuery(controller, capture: { text, action in
+                queryCount += 1
+                #expect(text == "你好")
+                #expect(action == .inputQuery)
+                #expect(model.ocrImage == nil)
+                #expect(model.userSourceLanguage == .auto)
+                #expect(model.userTargetLanguage == .auto)
+            }) {
+                controller.perform(NSSelectorFromString("toggleTranslationLanguages"))
+            }
 
+            #expect(queryCount == 1)
+            #expect(model.userSourceLanguage == .auto)
+            #expect(model.userTargetLanguage == .auto)
+            #expect(MyConfiguration.shared.fromLanguage == .auto)
+            #expect(MyConfiguration.shared.toLanguage == .auto)
+        }
+    }
+
+    @Test(
+        "Auto to Auto ignores unavailable output without changing input or preferences",
+        arguments: ["missing", "empty", "whitespace", "loading", "streaming", "error", "stale"]
+    )
+    func bothAutomaticUnavailable(state: String) throws {
+        try withFixture { controller, model, service in
+            MyConfiguration.shared.fromLanguage = .auto
+            MyConfiguration.shared.toLanguage = .auto
+            model.userTargetLanguage = .auto
+            makeResultUnavailable(state, controller: controller, service: service)
+            var queryCount = 0
+
+            try withCapturedQuery(controller, capture: { _, _ in queryCount += 1 }) {
+                controller.perform(NSSelectorFromString("toggleTranslationLanguages"))
+            }
+
+            #expect(queryCount == 0)
             #expect(model.inputText == "こんにちは")
             #expect(model.userSourceLanguage == .auto)
             #expect(model.userTargetLanguage == .auto)
             #expect(model.ocrImage != nil)
+            #expect(model.actionType == .ocrQuery)
+            #expect(MyConfiguration.shared.fromLanguage == .auto)
+            #expect(MyConfiguration.shared.toLanguage == .auto)
         }
     }
 
     // MARK: Private
+
+    private func makeResultUnavailable(
+        _ state: String, controller: NSViewController, service: ReverseTranslationService
+    ) {
+        switch state {
+        case "missing": controller.setValue(nil, forKey: "firstService")
+        case "empty": service.result.translatedResults = []
+        case "whitespace": service.result.translatedResults = [" \n\t "]
+        case "loading": service.result.isLoading = true
+        case "streaming":
+            service.streaming = true
+            service.result.isStreamFinished = false
+        case "error": service.result.error = QueryError(type: .api)
+        case "stale": service.result.queryText = "a different query"
+        default: Issue.record("Unknown result state")
+        }
+    }
+
+    /// Replaces only this fixture's query entry point, preventing detection and
+    /// network work while leaving the production toggle and other instances intact.
+    private func withCapturedQuery(
+        _ controller: NSViewController,
+        capture: @escaping (String?, ActionType) -> (),
+        body: () -> ()
+    ) throws {
+        let originalClass: AnyClass = try #require(object_getClass(controller))
+        let selector = NSSelectorFromString("startQueryText:actionType:")
+        let method = try #require(class_getInstanceMethod(originalClass, selector))
+        let subclass: AnyClass = try #require(objc_allocateClassPair(
+            originalClass, "ReverseTranslationQueryCapture_\(UUID().uuidString)", 0
+        ))
+        let block: @convention(block) (NSObject, NSString?, NSString) -> () = { _, text, action in
+            capture(text as String?, ActionType(rawValue: action as String))
+        }
+        let implementation = imp_implementationWithBlock(block)
+        defer {
+            object_setClass(controller, originalClass)
+            objc_disposeClassPair(subclass)
+            imp_removeBlock(implementation)
+        }
+        try #require(class_addMethod(subclass, selector, implementation, method_getTypeEncoding(method)))
+        objc_registerClassPair(subclass)
+        object_setClass(controller, subclass)
+        body()
+    }
 
     /// KVC supplies existing private collaborators without adding production hooks.
     /// The inherited nib initializer avoids unrelated window and service setup.
