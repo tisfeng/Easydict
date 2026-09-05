@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1160" width="1200" height="1160">
+  <style>
+    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .diagram-title { fill: #111827; font-size: 24px; font-weight: 600; }
+    .subtitle { fill: #6b7280; font-size: 13px; }
+    .group-title { fill: #374151; font-size: 14px; font-weight: 600; }
+    .node-title { fill: #111827; font-size: 15px; font-weight: 600; }
+    .body { fill: #4b5563; font-size: 13px; }
+    .edge-label { fill: #374151; font-size: 12px; font-weight: 500; }
+    .legend { fill: #6b7280; font-size: 12px; }
+  </style>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9333ea"/>
+    </marker>
+    <marker id="arrow-alert" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="1160" fill="#ffffff"/>
+  <text x="600" y="36" text-anchor="middle" class="diagram-title">EZWindowManager 路由架构</text>
+  <text x="600" y="60" text-anchor="middle" class="subtitle">普通输入与保存语言重放共享窗口选择，但文本处理和语言来源保持分离</text>
+  <rect x="40" y="85" width="1120" height="125" rx="12" fill="#eff6ff" fill-opacity="0.55" stroke="#bfdbfe" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="95" width="96" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="112" class="group-title">调用方</text>
+  <rect x="50" y="120" width="270" height="72" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="50" y="120" width="6" height="72" rx="3" fill="#2563eb"/>
+  <circle cx="74" cy="144" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="74" cy="144" r="3" fill="#2563eb"/>
+  <text x="191" y="149" text-anchor="middle" class="node-title">Wordbook / History</text>
+  <text x="191" y="171" text-anchor="middle" class="body">text + 保存 from / to</text>
+  <rect x="465" y="120" width="270" height="72" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="465" y="120" width="6" height="72" rx="3" fill="#2563eb"/>
+  <circle cx="489" cy="144" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="489" cy="144" r="3" fill="#2563eb"/>
+  <text x="606" y="149" text-anchor="middle" class="node-title">普通取词 / 剪贴板</text>
+  <text x="606" y="171" text-anchor="middle" class="body">selected text + action type</text>
+  <rect x="880" y="120" width="270" height="72" rx="9" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="880" y="120" width="6" height="72" rx="3" fill="#2563eb"/>
+  <circle cx="904" cy="144" r="9" fill="#2563eb" opacity="0.16"/>
+  <circle cx="904" cy="144" r="3" fill="#2563eb"/>
+  <text x="1021" y="149" text-anchor="middle" class="node-title">菜单 / 快捷键 / OCR</text>
+  <text x="1021" y="171" text-anchor="middle" class="body">窗口偏好 + 显示位置</text>
+  <rect x="350" y="250" width="500" height="75" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="350" y="250" width="6" height="75" rx="3" fill="#9333ea"/>
+  <circle cx="374" cy="274" r="9" fill="#9333ea" opacity="0.16"/>
+  <circle cx="374" cy="274" r="3" fill="#9333ea"/>
+  <text x="606" y="279" text-anchor="middle" class="node-title">EZWindowManager</text>
+  <text x="606" y="301" text-anchor="middle" class="body">统一入口 / 当前窗口栈 / pin 策略 / 前台应用恢复</text>
+  <path d="M 185 192 C 250 218 360 218 450 250" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="267" y="199" width="96" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="315" y="214" text-anchor="middle" class="edge-label">保存记录重放</text>
+  <path d="M 600 192 V 250" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="565" y="205" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="600" y="220" text-anchor="middle" class="edge-label">普通查询</text>
+  <path d="M 1015 192 C 950 218 840 218 750 250" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="842" y="199" width="86" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="885" y="214" text-anchor="middle" class="edge-label">OCR / 显示</text>
+  <rect x="40" y="365" width="1120" height="180" rx="12" fill="#fff7ed" fill-opacity="0.55" stroke="#fed7aa" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="375" width="148" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="392" class="group-title">文本、语言与显示策略</text>
+  <rect x="70" y="410" width="300" height="88" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="70" y="410" width="6" height="88" rx="3" fill="#ea580c"/>
+  <circle cx="94" cy="434" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="94" cy="434" r="3" fill="#ea580c"/>
+  <text x="226" y="439" text-anchor="middle" class="node-title">Preserved replay lane</text>
+  <text x="226" y="461" text-anchor="middle" class="body">拒绝全空；不清洗原文</text>
+  <text x="226" y="479" text-anchor="middle" class="body">保存 from / to 跳过普通探测</text>
+  <rect x="450" y="410" width="300" height="88" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="450" y="410" width="6" height="88" rx="3" fill="#ea580c"/>
+  <circle cx="474" cy="434" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="474" cy="434" r="3" fill="#ea580c"/>
+  <text x="606" y="439" text-anchor="middle" class="node-title">Normal input lane</text>
+  <text x="606" y="461" text-anchor="middle" class="body">去不可见/边缘空白</text>
+  <text x="606" y="479" text-anchor="middle" class="body">空文本提示或保留旧结果</text>
+  <rect x="830" y="410" width="300" height="88" rx="9" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <rect x="830" y="410" width="6" height="88" rx="3" fill="#ea580c"/>
+  <circle cx="854" cy="434" r="9" fill="#ea580c" opacity="0.16"/>
+  <circle cx="854" cy="434" r="3" fill="#ea580c"/>
+  <text x="986" y="439" text-anchor="middle" class="node-title">窗口类型 + pin 策略</text>
+  <text x="986" y="461" text-anchor="middle" class="body">Main / Fixed / Mini</text>
+  <text x="986" y="479" text-anchor="middle" class="body">未 pin reset；pin 保留布局</text>
+  <path d="M 470 325 V 390 H 220 V 410" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="290.5" y="367" width="109" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="345" y="382" text-anchor="middle" class="edge-label">preserve text</text>
+  <path d="M 600 325 V 410" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="531.5" y="355" width="137" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="600" y="370" text-anchor="middle" class="edge-label">sanitize / detect</text>
+  <path d="M 730 325 V 390 H 980 V 410" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="820" y="367" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="855" y="382" text-anchor="middle" class="edge-label">选择窗口</text>
+  <rect x="40" y="575" width="1120" height="240" rx="12" fill="#f0fdf4" fill-opacity="0.55" stroke="#bbf7d0" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="585" width="135" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="602" class="group-title">实例路由与布局边界</text>
+  <rect x="60" y="625" width="220" height="72" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="60" y="625" width="6" height="72" rx="3" fill="#16a34a"/>
+  <circle cx="84" cy="649" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="84" cy="649" r="3" fill="#16a34a"/>
+  <text x="176" y="654" text-anchor="middle" class="node-title">Main Window</text>
+  <text x="176" y="676" text-anchor="middle" class="body">长期窗口 / 例外保持</text>
+  <rect x="340" y="625" width="220" height="72" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="340" y="625" width="6" height="72" rx="3" fill="#16a34a"/>
+  <circle cx="364" cy="649" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="364" cy="649" r="3" fill="#16a34a"/>
+  <text x="456" y="654" text-anchor="middle" class="node-title">Fixed Window</text>
+  <text x="456" y="676" text-anchor="middle" class="body">共享实例 / 配置位置</text>
+  <rect x="620" y="625" width="220" height="72" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="620" y="625" width="6" height="72" rx="3" fill="#16a34a"/>
+  <circle cx="644" cy="649" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="644" cy="649" r="3" fill="#16a34a"/>
+  <text x="736" y="654" text-anchor="middle" class="node-title">Mini Window</text>
+  <text x="736" y="676" text-anchor="middle" class="body">共享实例 / 鼠标或旧位置</text>
+  <rect x="900" y="625" width="240" height="72" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="900" y="625" width="6" height="72" rx="3" fill="#16a34a"/>
+  <circle cx="924" cy="649" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="924" cy="649" r="3" fill="#16a34a"/>
+  <text x="1026" y="654" text-anchor="middle" class="node-title">EZLayoutManager</text>
+  <text x="1026" y="676" text-anchor="middle" class="body">frame + min/max + 屏幕安全点</text>
+  <rect x="350" y="735" width="500" height="66" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <rect x="350" y="735" width="6" height="66" rx="3" fill="#16a34a"/>
+  <circle cx="374" cy="759" r="9" fill="#16a34a" opacity="0.16"/>
+  <circle cx="374" cy="759" r="3" fill="#16a34a"/>
+  <text x="606" y="764" text-anchor="middle" class="node-title">EZBaseQueryViewController</text>
+  <text x="606" y="786" text-anchor="middle" class="body">应用保存语言或 detect，随后执行服务查询</text>
+  <path d="M 980 498 V 565 H 170 V 625" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="380.5" y="542" width="79" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="420" y="557" text-anchor="middle" class="edge-label">路由 Main</text>
+  <path d="M 980 498 V 555 H 450 V 625" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="607" y="532" width="86" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="650" y="547" text-anchor="middle" class="edge-label">路由 Fixed</text>
+  <path d="M 980 498 V 545 H 730 V 625" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="815.5" y="522" width="79" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="855" y="537" text-anchor="middle" class="edge-label">路由 Mini</text>
+  <path d="M 900 661 H 840" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-green)"/>
+  <rect x="827" y="636" width="86" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="870" y="651" text-anchor="middle" class="edge-label">安全 frame</text>
+  <path d="M 170 697 V 715 H 420 V 735" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="260" y="695" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="295" y="710" text-anchor="middle" class="edge-label">复用实例</text>
+  <path d="M 450 697 V 715 H 600 V 735" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="490" y="695" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="525" y="710" text-anchor="middle" class="edge-label">复用实例</text>
+  <path d="M 730 697 V 715 H 780 V 735" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <rect x="720" y="695" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="755" y="710" text-anchor="middle" class="edge-label">复用实例</text>
+  <rect x="40" y="845" width="1120" height="145" rx="12" fill="#fef2f2" fill-opacity="0.55" stroke="#fecaca" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="855" width="96" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="872" class="group-title">失败与恢复</text>
+  <rect x="60" y="890" width="300" height="72" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="60" y="890" width="6" height="72" rx="3" fill="#dc2626"/>
+  <circle cx="84" cy="914" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="84" cy="914" r="3" fill="#dc2626"/>
+  <text x="216" y="919" text-anchor="middle" class="node-title">保存重放为空</text>
+  <text x="216" y="941" text-anchor="middle" class="body">记录警告并拒绝；不复用旧结果</text>
+  <rect x="450" y="890" width="300" height="72" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="450" y="890" width="6" height="72" rx="3" fill="#dc2626"/>
+  <circle cx="474" cy="914" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="474" cy="914" r="3" fill="#dc2626"/>
+  <text x="606" y="919" text-anchor="middle" class="node-title">普通取词失败 / 截图占用</text>
+  <text x="606" y="941" text-anchor="middle" class="body">显示提示或等待重新触发</text>
+  <rect x="840" y="890" width="300" height="72" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="840" y="890" width="6" height="72" rx="3" fill="#dc2626"/>
+  <circle cx="864" cy="914" r="9" fill="#dc2626" opacity="0.16"/>
+  <circle cx="864" cy="914" r="3" fill="#dc2626"/>
+  <text x="996" y="919" text-anchor="middle" class="node-title">越界 / 失焦 / 查询失败</text>
+  <text x="996" y="941" text-anchor="middle" class="body">安全点；pin/Main 例外；原窗口重试</text>
+  <path d="M 70 454 H 25 V 926 H 60" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="29" y="820" width="102" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="80" y="835" text-anchor="middle" class="edge-label">empty replay</text>
+  <path d="M 970 520 C 970 509 990 509 990 520" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+  <path d="M 600 498 V 520 H 970 C 970 509 990 509 990 520 H 1175 V 980 H 600 V 962" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="735.5" y="510" width="109" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="790" y="525" text-anchor="middle" class="edge-label">nil / capture</text>
+  <path d="M 1020 697 V 835 H 990 V 890" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <rect x="985" y="813" width="70" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
+  <text x="1020" y="828" text-anchor="middle" class="edge-label">边界恢复</text>
+  <rect x="40" y="1015" width="1120" height="85" rx="12" fill="#f9fafb" fill-opacity="0.55" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <rect x="56" y="1025" width="96" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
+  <text x="66" y="1042" class="group-title">调试入口</text>
+  <rect x="70" y="1048" width="1060" height="40" rx="9" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <rect x="70" y="1048" width="6" height="40" rx="3" fill="#6b7280"/>
+  <circle cx="94" cy="1072" r="9" fill="#6b7280" opacity="0.16"/>
+  <circle cx="94" cy="1072" r="3" fill="#6b7280"/>
+  <text x="606" y="1077" text-anchor="middle" class="node-title">检查 windowType 日志、保存 text/from/to、pin/reset 分支、floating stack 与多显示器 safe frame</text>
+  <line x1="55" y1="1130" x2="89" y2="1130" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text x="101" y="1134" class="legend">主流程 / 调用</text>
+  <line x1="315" y1="1130" x2="349" y2="1130" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="361" y="1134" class="legend">数据 / 持久化</text>
+  <line x1="605" y1="1130" x2="639" y2="1130" stroke="#9333ea" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
+  <text x="651" y="1134" class="legend">通知 / 状态同步</text>
+  <line x1="895" y1="1130" x2="929" y2="1130" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arrow-alert)"/>
+  <text x="941" y="1134" class="legend">失败 / 恢复</text>
+</svg>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Easydict 基础查询窗口架构概览</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; color: #111827; background: #ffffff; }
+    body { max-width: 1080px; margin: 0 auto; padding: 32px; line-height: 1.7; }
+    h1, h2, h3 { line-height: 1.3; }
+    h1 { margin-top: 0; }
+    code { padding: 0.12em 0.35em; border-radius: 4px; background: #f3f4f6; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; }
+    th, td { padding: 10px 12px; border: 1px solid #d1d5db; text-align: left; vertical-align: top; }
+    th { background: #eff6ff; }
+    .boundary { padding: 14px 18px; border-left: 4px solid #2563eb; background: #eff6ff; }
+    .failure { padding: 14px 18px; border-left: 4px solid #dc2626; background: #fef2f2; }
+  </style>
+</head>
+<body>
+  <div id="main">
+    <h1>基础查询窗口架构概览</h1>
+    <p>本目录定义查询 NSWindow 与其主控制器的公共骨架。窗口负责 AppKit 外壳、标题栏、pin/level 和位置尺寸委托；控制器负责把输入文本与有效语言方向变成并行服务请求，再把服务结果、提示和标题栏状态同步到同一窗口。</p>
+
+    <div class="section">
+      <h2>核心责任与边界</h2>
+      <table>
+        <thead><tr><th>组件</th><th>核心责任</th><th>外部边界</th></tr></thead>
+        <tbody>
+          <tr><td><code>EZBaseQueryWindow</code></td><td>创建透明标题栏的主/固定/迷你查询外壳，持有 controller 和 EZTitlebar；处理 key/resign、resize、move 与 pin level。</td><td>窗口选择与复用交给 EZWindowManager，尺寸策略交给 EZLayoutManager。</td></tr>
+          <tr><td><code>EZBaseQueryViewController</code></td><td>持有 EZQueryModel、输入/语言单元格、服务结果表、探测器和音频；协调输入、探测、查询、历史记录与结果刷新。</td><td>服务实现由 QueryService 提供，选中的服务集合来自 LocalStorage。</td></tr>
+          <tr><td><code>EZQueryModel</code></td><td>保存 inputText、queryText、用户/探测/有效源语言、目标语言、action type 和服务取消状态。</td><td>是查询窗口内的当前真相，不是 Wordbook 的持久化模型。</td></tr>
+          <tr><td><code>EZTitlebar</code></td><td>显示 pin、quick action、链接和 Wordbook star；每次查询上下文变化后读取 model 快照。</td><td>星标持久化由 Swift WordbookManager/Repository 完成。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>文本与有效语言转换</h2>
+      <ol>
+        <li>外部入口把原始文本设为 <code>inputText</code>；setter 复制字符串并写入 queryModel，避免调用方后续修改影响当前查询。</li>
+        <li>普通取词路径清理不可见字符、边缘空白和 Books 摘录信息；Wordbook/History 重放路径开启 preserveQueryText，不重写保存原文。</li>
+        <li>没有保存语言时，needDetectLanguage 为真则异步探测；完成回调先比较当前 queryText，旧文本的探测结果直接丢弃。</li>
+        <li>有保存的 from/to 时，先取消延迟探测，把 userSourceLanguage/userTargetLanguage 写入 model，并据源语言是否 Auto 决定是否仍需探测。</li>
+        <li>手动切换 source/target 或修正探测语言时，retry 路径在关闭旧结果前同步刷新标题栏；Auto 源语言会立即让星标进入等待探测状态。</li>
+        <li>文本写入和异步探测完成仍通过统一模型更新刷新输入单元格、语言单元格和 Wordbook star；因此星标只使用当前 inputText 与有效方向。</li>
+      </ol>
+      <div class="boundary"><strong>可见原文与服务文本：</strong>服务可以使用规范化后的 queryText，但标题栏保存必须使用 inputText。有效语言方向来自 queryFromLanguage/queryTargetLanguage；未解析自动源语言时星标保持禁用。</div>
+    </div>
+
+    <div class="section">
+      <h2>正常查询与结果流</h2>
+      <ol>
+        <li>开始新查询前停止旧服务、关闭旧结果；若窗口未 pin，WindowManager 先重置表格和高度再展示。</li>
+        <li>控制器在需要时探测语言，然后把同一个 queryModel 交给所有启用且支持当前查询类型的服务。</li>
+        <li>每个服务独立进入 loading，并通过 stream completion 更新自己的 EZQueryResult 和结果单元；错误被转换为 QueryError，不阻塞其他服务。</li>
+        <li>首个可用服务可以驱动自动复制；所有服务调度后记录查询次数，并把 queryText 与最终 from/to 写入 Query History。</li>
+        <li>结果/iframe 高度变化由控制器汇总并限制在 LayoutManager 的最小/最大窗口尺寸内，窗口 delegate 再持久化用户移动与 resize。</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>标题栏刷新触发点</h2>
+      <table>
+        <thead><tr><th>触发</th><th>模型变化</th><th>星标期望</th></tr></thead>
+        <tbody>
+          <tr><td>输入 setter / 清空</td><td>inputText 与 queryText 变化</td><td>新 key lookup；空输入立即变 empty。</td></tr>
+          <tr><td>Wordbook/History 重放</td><td>保存的 from/to 被应用</td><td>以保存方向 lookup，避免错误 auto 语言。</td></tr>
+          <tr><td>自动语言探测完成</td><td>detectedLanguage 与有效方向确定</td><td>从 resolving 进入 checking，再 absent/present。</td></tr>
+          <tr><td>用户切换语言或重试语言</td><td>needDetectLanguage、detected/user language 改变</td><td>旧 generation 失效，按新方向重新判断。</td></tr>
+          <tr><td>标题栏配置/应用语言通知</td><td>按钮栈或本地化变化</td><td>重建 host 后从当前 model 恢复。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>失败与恢复流</h2>
+      <div class="failure">
+        <ul>
+          <li><strong>空输入：</strong>不开始查询；普通快捷键取词失败时可显示提示，preserved replay 的空文本直接拒绝并记录警告。</li>
+          <li><strong>旧语言回调：</strong>文本比较失败即忽略，不更新语言单元或标题栏；用户可重新输入或显式选择语言。</li>
+          <li><strong>单个服务失败：</strong>结果单元显示对应错误，其他服务继续；用户可通过 retry 以 Auto 语言重新执行。</li>
+          <li><strong>服务配置更新：</strong>接收 serviceHasUpdated 后重建对应服务或完整列表；需要时用当前 model 自动再查询。</li>
+          <li><strong>窗口尺寸/iframe 振荡：</strong>resize guard、frame tolerance 与 needUpdateIframeHeight 合并重复更新，最后限制在布局边界。</li>
+          <li><strong>Wordbook 不可用：</strong>只影响星标状态，不中断翻译服务和 Query History 写入；Repository 恢复后通知星标重新 lookup。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>调试与验证入口</h2>
+      <ul>
+        <li>输入/语言错误从 <code>setInputText</code>、stored-language 应用、<code>detectQueryText</code>、统一 model/UI 更新链路排查；日志中的 query from → to 应与选择器和星标一致。</li>
+        <li>服务结果缺失时检查 latestServices、enabledQuery/autoQuery/query type gate、startQueryStream completion 和结果单元映射。</li>
+        <li>快速切换两段文本，确认第一段延迟探测不会更新第二段语言；从 Wordbook 与 History 分别重放，确认输入原文及 source/target 保留。</li>
+        <li>窗口高度异常时检查 table row height、iframe loaded/needUpdate 标记和 LayoutManager min/max；多显示器移动后检查当前 window.screen。</li>
+        <li>手工模拟服务错误、配置更新和 retry，确认错误局限于服务结果，标题栏与窗口仍可交互。</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

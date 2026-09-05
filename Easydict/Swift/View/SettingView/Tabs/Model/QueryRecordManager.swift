@@ -11,12 +11,13 @@ import Foundation
 
 // MARK: - QueryRecordManager
 
-/// Manages query record operations for favorites and history.
+/// Manages writable query history and read-only legacy Favorites records.
+/// Favorites remain readable only for migration and rollback compatibility.
 @objc
 class QueryRecordManager: NSObject {
     // MARK: Internal
 
-    /// Defines the record category stored in defaults.
+    /// Defines writable history and read-only legacy Favorites storage.
     @objc
     enum RecordType: Int {
         case favorites
@@ -64,38 +65,19 @@ class QueryRecordManager: NSObject {
     /// Shared instance used by the app.
     @objc static let shared = QueryRecordManager()
 
-    /// Adds a query record to the specified category.
+    /// Adds a history record; legacy Favorites writes are ignored.
     @objc
     func addRecord(
         queryText: String,
         fromLanguage: Language,
         toLanguage: Language,
-        to type: RecordType
-    ) {
-        addRecord(
-            queryText: queryText,
-            fromLanguage: fromLanguage,
-            toLanguage: toLanguage,
-            translatedResult: nil,
-            to: type
-        )
-    }
-
-    /// Adds a query record with an optional translated result to the specified category.
-    @objc
-    func addRecord(
-        queryText: String,
-        fromLanguage: Language,
-        toLanguage: Language,
-        translatedResult: String?,
         to type: RecordType
     ) {
         updateRecords(for: type) { records in
             let record = makeRecord(
                 queryText: queryText,
                 fromLanguage: fromLanguage,
-                toLanguage: toLanguage,
-                translatedResult: translatedResult
+                toLanguage: toLanguage
             )
 
             switch type.deduplicationPolicy {
@@ -117,7 +99,7 @@ class QueryRecordManager: NSObject {
         }
     }
 
-    /// Updates the translated result of an existing record matched by query text.
+    /// Updates the translated result of an existing history record by query text.
     @objc
     func updateTranslatedResult(
         _ translatedResult: String,
@@ -133,7 +115,7 @@ class QueryRecordManager: NSObject {
         }
     }
 
-    /// Removes a record by ID from the specified category.
+    /// Removes a history record; legacy Favorites writes are ignored.
     func removeRecord(id: UUID, from type: RecordType) {
         updateRecords(for: type) { records in
             let originalCount = records.count
@@ -142,12 +124,12 @@ class QueryRecordManager: NSObject {
         }
     }
 
-    /// Returns all records for the specified category.
+    /// Returns history or legacy Favorites retained for compatibility reads.
     func getAllRecords(for type: RecordType) -> [QueryRecord] {
         loadRecords(for: type)
     }
 
-    /// Clears all records for the specified category.
+    /// Clears history; legacy Favorites writes are ignored.
     func clearAllRecords(for type: RecordType) {
         saveRecords([], for: type)
     }
@@ -168,8 +150,12 @@ class QueryRecordManager: NSObject {
         Defaults[type.storageKey]
     }
 
-    /// Saves the records for the specified type.
+    /// Persists history while rejecting every legacy Favorites write path.
     private func saveRecords(_ records: [QueryRecord], for type: RecordType) {
+        guard type == .history else {
+            logError("Ignored write to read-only legacy Favorites")
+            return
+        }
         Defaults[type.storageKey] = records
     }
 
@@ -186,15 +172,13 @@ class QueryRecordManager: NSObject {
     private func makeRecord(
         queryText: String,
         fromLanguage: Language,
-        toLanguage: Language,
-        translatedResult: String?
+        toLanguage: Language
     )
         -> QueryRecord {
         QueryRecord(
             queryText: queryText,
             queryFromLanguage: fromLanguage,
-            queryToLanguage: toLanguage,
-            translatedResult: translatedResult
+            queryToLanguage: toLanguage
         )
     }
 }

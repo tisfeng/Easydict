@@ -7,6 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A17B0D012F9D100100000001 /* WordbookModelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D022F9D100100000002 /* WordbookModelsTests.swift */; };
+		A17B0D042F9D100100000004 /* WordbookModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D052F9D100100000005 /* WordbookModels.swift */; };
+		A17B0D062F9D100100000006 /* WordbookSnapshotValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D072F9D100100000007 /* WordbookSnapshotValidator.swift */; };
+		A17B0D092F9D100100000009 /* WordbookStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D0A2F9D10010000000A /* WordbookStoreTests.swift */; };
+		A17B0D0B2F9D10010000000B /* WordbookTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D0C2F9D10010000000C /* WordbookTestSupport.swift */; };
+		A17B0D0D2F9D10010000000D /* WordbookStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D0E2F9D10010000000E /* WordbookStore.swift */; };
+		A17B0D0F2F9D10010000000F /* WordbookMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D102F9D100100000010 /* WordbookMigrationTests.swift */; };
+		A17B0D112F9D100100000011 /* WordbookDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D122F9D100100000012 /* WordbookDefaults.swift */; };
+		A17B0D132F9D100100000013 /* WordbookMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D142F9D100100000014 /* WordbookMigration.swift */; };
+		A17B0D152F9D100100000015 /* WordbookRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D162F9D100100000016 /* WordbookRepository.swift */; };
+		A17B0D172F9D100100000017 /* WordbookRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D182F9D100100000018 /* WordbookRepositoryTests.swift */; };
+		A17B0D192F9D100100000019 /* WordbookQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D1A2F9D10010000001A /* WordbookQueryTests.swift */; };
+		A17B0D1B2F9D10010000001B /* WordbookQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D1C2F9D10010000001C /* WordbookQuery.swift */; };
+		A17B0D1D2F9D10010000001D /* WordbookCSVExporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D1E2F9D10010000001E /* WordbookCSVExporterTests.swift */; };
+		A17B0D1F2F9D10010000001F /* WordbookCSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D202F9D100100000020 /* WordbookCSVExporter.swift */; };
+		A17B0D212F9D100100000021 /* WordbookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D222F9D100100000022 /* WordbookManager.swift */; };
+		A17B0D232F9D100100000023 /* WordbookStarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D242F9D100100000024 /* WordbookStarView.swift */; };
+		A17B0D252F9D100100000025 /* WordbookViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D262F9D100100000026 /* WordbookViewModel.swift */; };
+		A17B0D272F9D100100000027 /* WordbookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D282F9D100100000028 /* WordbookView.swift */; };
+		A17B0D292F9D100100000029 /* WordbookGroupMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D2A2F9D10010000002A /* WordbookGroupMenu.swift */; };
+		A17B0D2B2F9D10010000002B /* WordbookEntryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D2C2F9D10010000002C /* WordbookEntryList.swift */; };
+		A17B0D2D2F9D10010000002D /* WordbookHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D2E2F9D10010000002E /* WordbookHistoryView.swift */; };
+		A17B0D2F2F9D10010000002F /* WordbookEntryEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D302F9D100100000030 /* WordbookEntryEditor.swift */; };
+		A17B0D312F9D100100000031 /* WordbookRecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B0D322F9D100100000032 /* WordbookRecoveryView.swift */; };
 		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
 		02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000003 /* MarkdownLabel.swift */; };
 		02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000004 /* MarkdownToggleButton.swift */; };
@@ -219,7 +243,6 @@
 		0377C08F2F13EAAC00302A2C /* View+BorderedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C08B2F13EAAC00302A2C /* View+BorderedCard.swift */; };
 		0377C0922F13EAFE00302A2C /* BuildConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C0902F13EAFE00302A2C /* BuildConfig.swift */; };
 		0377C0DA2F13F97100302A2C /* QueryRecordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C0D92F13F97100302A2C /* QueryRecordManager.swift */; };
-		0377C0F32F13FA4B00302A2C /* FavoritesTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */; };
 		037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B8295D49F900D0E2CF /* EZTableRowView.m */; };
 		03792EA22C3831040074A145 /* OllamaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03792EA12C3831040074A145 /* OllamaService.swift */; };
 		037A9CC72E24A73500668C49 /* ocr-zh-text-list-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 037A9CC62E24A73500668C49 /* ocr-zh-text-list-1.png */; };
@@ -635,6 +658,40 @@
 
 /* Begin PBXFileReference section */
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
+		A17B0D022F9D100100000002 /* WordbookModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookModelsTests.swift; sourceTree = "<group>"; };
+		A17B0D052F9D100100000005 /* WordbookModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookModels.swift; sourceTree = "<group>"; };
+		A17B0D072F9D100100000007 /* WordbookSnapshotValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookSnapshotValidator.swift; sourceTree = "<group>"; };
+		A17B0D0A2F9D10010000000A /* WordbookStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookStoreTests.swift; sourceTree = "<group>"; };
+		A17B0D0C2F9D10010000000C /* WordbookTestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookTestSupport.swift; sourceTree = "<group>"; };
+		A17B0D0E2F9D10010000000E /* WordbookStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookStore.swift; sourceTree = "<group>"; };
+		A17B0D102F9D100100000010 /* WordbookMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookMigrationTests.swift; sourceTree = "<group>"; };
+		A17B0D182F9D100100000018 /* WordbookRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookRepositoryTests.swift; sourceTree = "<group>"; };
+		A17B0D1A2F9D10010000001A /* WordbookQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookQueryTests.swift; sourceTree = "<group>"; };
+		A17B0D1C2F9D10010000001C /* WordbookQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookQuery.swift; sourceTree = "<group>"; };
+		A17B0D1E2F9D10010000001E /* WordbookCSVExporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookCSVExporterTests.swift; sourceTree = "<group>"; };
+		A17B0D202F9D100100000020 /* WordbookCSVExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookCSVExporter.swift; sourceTree = "<group>"; };
+		A17B0D222F9D100100000022 /* WordbookManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookManager.swift; sourceTree = "<group>"; };
+		A17B0D242F9D100100000024 /* WordbookStarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookStarView.swift; sourceTree = "<group>"; };
+		A17B0D262F9D100100000026 /* WordbookViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookViewModel.swift; sourceTree = "<group>"; };
+		A17B0D282F9D100100000028 /* WordbookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookView.swift; sourceTree = "<group>"; };
+		A17B0D2A2F9D10010000002A /* WordbookGroupMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookGroupMenu.swift; sourceTree = "<group>"; };
+		A17B0D2C2F9D10010000002C /* WordbookEntryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookEntryList.swift; sourceTree = "<group>"; };
+		A17B0D2E2F9D10010000002E /* WordbookHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookHistoryView.swift; sourceTree = "<group>"; };
+		A17B0D302F9D100100000030 /* WordbookEntryEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookEntryEditor.swift; sourceTree = "<group>"; };
+		A17B0D322F9D100100000032 /* WordbookRecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookRecoveryView.swift; sourceTree = "<group>"; };
+		A17B0D332F9D100100000033 /* wordbook-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "wordbook-overview.html"; sourceTree = "<group>"; };
+		A17B0D342F9D100100000034 /* wordbook-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "wordbook-architecture.svg"; sourceTree = "<group>"; };
+		A17B0D352F9D100100000035 /* view-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "view-overview.html"; sourceTree = "<group>"; };
+		A17B0D362F9D100100000036 /* view-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "view-architecture.svg"; sourceTree = "<group>"; };
+		A17B0D372F9D100100000037 /* titlebar-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "titlebar-overview.html"; sourceTree = "<group>"; };
+		A17B0D382F9D100100000038 /* titlebar-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "titlebar-architecture.svg"; sourceTree = "<group>"; };
+		A17B0D392F9D100100000039 /* base-query-window-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "base-query-window-overview.html"; sourceTree = "<group>"; };
+		A17B0D3A2F9D10010000003A /* base-query-window-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "base-query-window-architecture.svg"; sourceTree = "<group>"; };
+		A17B0D3B2F9D10010000003B /* window-manager-overview.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "window-manager-overview.html"; sourceTree = "<group>"; };
+		A17B0D3C2F9D10010000003C /* window-manager-architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "window-manager-architecture.svg"; sourceTree = "<group>"; };
+		A17B0D122F9D100100000012 /* WordbookDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookDefaults.swift; sourceTree = "<group>"; };
+		A17B0D142F9D100100000014 /* WordbookMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookMigration.swift; sourceTree = "<group>"; };
+		A17B0D162F9D100100000016 /* WordbookRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordbookRepository.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000004 /* MarkdownToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownToggleButton.swift; sourceTree = "<group>"; };
@@ -869,7 +926,6 @@
 		0377C08C2F13EAAC00302A2C /* View+DebugOnly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DebugOnly.swift"; sourceTree = "<group>"; };
 		0377C0902F13EAFE00302A2C /* BuildConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildConfig.swift; sourceTree = "<group>"; };
 		0377C0D92F13F97100302A2C /* QueryRecordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecordManager.swift; sourceTree = "<group>"; };
-		0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesTab.swift; sourceTree = "<group>"; };
 		037852B7295D49F900D0E2CF /* EZTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableRowView.h; sourceTree = "<group>"; };
 		037852B8295D49F900D0E2CF /* EZTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableRowView.m; sourceTree = "<group>"; };
 		03792EA12C3831040074A145 /* OllamaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaService.swift; sourceTree = "<group>"; };
@@ -1210,6 +1266,8 @@
 		14921B68C1D645268F93668E /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeRunner.swift; sourceTree = "<group>"; };
 		23C50DB027FC5F26D2AED298 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		A17B0C012F9D000100000001 /* 2026-07-13-wordbook-design.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "2026-07-13-wordbook-design.md"; sourceTree = "<group>"; };
+		A17B0C052F9D000100000005 /* 2026-07-13-wordbook.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "2026-07-13-wordbook.md"; sourceTree = "<group>"; };
 		24832951EE17407C852B2258 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
 		26FFFD863EBF442CB4FCE765 /* MDictManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictManager.swift; sourceTree = "<group>"; };
 		2746AEC02AF95138005FE0A1 /* CaiyunService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaiyunService.swift; sourceTree = "<group>"; };
@@ -1412,6 +1470,46 @@
 			path = Markdown;
 			sourceTree = "<group>";
 		};
+		A17B0D032F9D100100000003 /* Wordbook */ = {
+			isa = PBXGroup;
+			children = (
+				A17B0D1E2F9D10010000001E /* WordbookCSVExporterTests.swift */,
+				A17B0D022F9D100100000002 /* WordbookModelsTests.swift */,
+				A17B0D102F9D100100000010 /* WordbookMigrationTests.swift */,
+				A17B0D1A2F9D10010000001A /* WordbookQueryTests.swift */,
+				A17B0D182F9D100100000018 /* WordbookRepositoryTests.swift */,
+				A17B0D0A2F9D10010000000A /* WordbookStoreTests.swift */,
+				A17B0D0C2F9D10010000000C /* WordbookTestSupport.swift */,
+			);
+			path = Wordbook;
+			sourceTree = "<group>";
+		};
+		A17B0D082F9D100100000008 /* Wordbook */ = {
+			isa = PBXGroup;
+			children = (
+				A17B0D332F9D100100000033 /* wordbook-overview.html */,
+				A17B0D342F9D100100000034 /* wordbook-architecture.svg */,
+				A17B0D202F9D100100000020 /* WordbookCSVExporter.swift */,
+				A17B0D122F9D100100000012 /* WordbookDefaults.swift */,
+				A17B0D302F9D100100000030 /* WordbookEntryEditor.swift */,
+				A17B0D2C2F9D10010000002C /* WordbookEntryList.swift */,
+				A17B0D2A2F9D10010000002A /* WordbookGroupMenu.swift */,
+				A17B0D2E2F9D10010000002E /* WordbookHistoryView.swift */,
+				A17B0D322F9D100100000032 /* WordbookRecoveryView.swift */,
+				A17B0D222F9D100100000022 /* WordbookManager.swift */,
+				A17B0D242F9D100100000024 /* WordbookStarView.swift */,
+				A17B0D282F9D100100000028 /* WordbookView.swift */,
+				A17B0D262F9D100100000026 /* WordbookViewModel.swift */,
+				A17B0D142F9D100100000014 /* WordbookMigration.swift */,
+				A17B0D052F9D100100000005 /* WordbookModels.swift */,
+				A17B0D1C2F9D10010000001C /* WordbookQuery.swift */,
+				A17B0D162F9D100100000016 /* WordbookRepository.swift */,
+				A17B0D072F9D100100000007 /* WordbookSnapshotValidator.swift */,
+				A17B0D0E2F9D10010000000E /* WordbookStore.swift */,
+			);
+			path = Wordbook;
+			sourceTree = "<group>";
+		};
 		03008B2429408BCB0062B821 /* NSObject+DarkMode */ = {
 			isa = PBXGroup;
 			children = (
@@ -1456,7 +1554,6 @@
 				278540332B3DE04F004E9488 /* GeneralTab.swift */,
 				0A057D6C2B499A000025C51D /* ServiceTab.swift */,
 				0A1189A12F700001005C51D /* ServiceTabListViews.swift */,
-				0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */,
 				0A8685C72B552A590022534F /* DisabledAppTab.swift */,
 				96099AE12B5D40330055C4DD /* ShortcutTab.swift */,
 				03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */,
@@ -2249,6 +2346,8 @@
 		03991155292927A100E1B06D /* Titlebar */ = {
 			isa = PBXGroup;
 			children = (
+				A17B0D372F9D100100000037 /* titlebar-overview.html */,
+				A17B0D382F9D100100000038 /* titlebar-architecture.svg */,
 				03991156292927E000E1B06D /* EZTitlebar.h */,
 				03991157292927E000E1B06D /* EZTitlebar.m */,
 				03991164292A8A4400E1B06D /* EZTitleBarMoveView.h */,
@@ -2941,6 +3040,8 @@
 		03D04353292893A700E7559E /* BaseQueryWindow */ = {
 			isa = PBXGroup;
 			children = (
+				A17B0D392F9D100100000039 /* base-query-window-overview.html */,
+				A17B0D3A2F9D10010000003A /* base-query-window-architecture.svg */,
 				03B0225129231FA6001C7E63 /* EZBaseQueryViewController.h */,
 				03B0225329231FA6001C7E63 /* EZBaseQueryViewController.m */,
 				03D043542928940500E7559E /* EZBaseQueryWindow.h */,
@@ -2952,6 +3053,8 @@
 		03D043572928C49000E7559E /* WindowManager */ = {
 			isa = PBXGroup;
 			children = (
+				A17B0D3B2F9D10010000003B /* window-manager-overview.html */,
+				A17B0D3C2F9D10010000003C /* window-manager-architecture.svg */,
 				03D043582928C4C800E7559E /* EZWindowManager.h */,
 				03D043592928C4C800E7559E /* EZWindowManager.m */,
 				03991168292AA2EF00E1B06D /* EZLayoutManager.h */,
@@ -3316,6 +3419,8 @@
 		27FE98062B3DD525000AD654 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				A17B0D352F9D100100000035 /* view-overview.html */,
+				A17B0D362F9D100100000036 /* view-architecture.svg */,
 				03FEF15F2D45D06E002D5F28 /* Window */,
 				030D61262CD9BA0F000DF298 /* AcknowListView */,
 				9643D93E2B6FC405000FBEA6 /* MenuView */,
@@ -3492,6 +3597,7 @@
 				03779F122BB256B5008D3C42 /* DefaultAPIKeys */,
 				6A8C988B2BAC88A600DB835A /* Localization */,
 				02DEDC042026043000000001 /* Markdown */,
+				A17B0D082F9D100100000008 /* Wordbook */,
 				967712EC2B5B941600105E0F /* Shortcut */,
 			);
 			path = Feature;
@@ -3540,6 +3646,7 @@
 			children = (
 				02DEDC0420260430000000C1 /* Markdown */,
 				030732CB2F24862A0001382A /* OCR */,
+				A17B0D032F9D100100000003 /* Wordbook */,
 			);
 			path = Feature;
 			sourceTree = "<group>";
@@ -3608,11 +3715,45 @@
 			path = Tencent;
 			sourceTree = "<group>";
 		};
+		A17B0C022F9D000100000002 /* docs */ = {
+			isa = PBXGroup;
+			children = (
+				A17B0C032F9D000100000003 /* superpowers */,
+			);
+			path = docs;
+			sourceTree = "<group>";
+		};
+		A17B0C032F9D000100000003 /* superpowers */ = {
+			isa = PBXGroup;
+			children = (
+				A17B0C062F9D000100000006 /* plans */,
+				A17B0C042F9D000100000004 /* specs */,
+			);
+			path = superpowers;
+			sourceTree = "<group>";
+		};
+		A17B0C042F9D000100000004 /* specs */ = {
+			isa = PBXGroup;
+			children = (
+				A17B0C012F9D000100000001 /* 2026-07-13-wordbook-design.md */,
+			);
+			path = specs;
+			sourceTree = "<group>";
+		};
+		A17B0C062F9D000100000006 /* plans */ = {
+			isa = PBXGroup;
+			children = (
+				A17B0C052F9D000100000005 /* 2026-07-13-wordbook.md */,
+			);
+			path = plans;
+			sourceTree = "<group>";
+		};
 		C99EEB0F2385796700FEE666 = {
 			isa = PBXGroup;
 			children = (
 				27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */,
 				27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */,
+				A17B0C022F9D000100000002 /* docs */,
 				03B0221829231FA6001C7E63 /* Easydict */,
 				03022F2F2B370B7100B63209 /* EasydictTests */,
 				C99EEB192385796700FEE666 /* Products */,
@@ -4192,6 +4333,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A17B0D1D2F9D10010000001D /* WordbookCSVExporterTests.swift in Sources */,
+				A17B0D012F9D100100000001 /* WordbookModelsTests.swift in Sources */,
+				A17B0D0F2F9D10010000000F /* WordbookMigrationTests.swift in Sources */,
+				A17B0D192F9D100100000019 /* WordbookQueryTests.swift in Sources */,
+				A17B0D172F9D100100000017 /* WordbookRepositoryTests.swift in Sources */,
+				A17B0D092F9D100100000009 /* WordbookStoreTests.swift in Sources */,
+				A17B0D0B2F9D10010000000B /* WordbookTestSupport.swift in Sources */,
 				1CC83D91B3954BE7894CC2C8 /* MDictReaderTests.swift in Sources */,
 				02DEDC0420260430000000BE /* MarkdownRendererTests.swift in Sources */,
 				C09AC0F264D246FC90F9A277 /* AppleServiceTests.swift in Sources */,
@@ -4239,6 +4387,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A17B0D1F2F9D10010000001F /* WordbookCSVExporter.swift in Sources */,
+				A17B0D112F9D100100000011 /* WordbookDefaults.swift in Sources */,
+				A17B0D2F2F9D10010000002F /* WordbookEntryEditor.swift in Sources */,
+				A17B0D2B2F9D10010000002B /* WordbookEntryList.swift in Sources */,
+				A17B0D292F9D100100000029 /* WordbookGroupMenu.swift in Sources */,
+				A17B0D2D2F9D10010000002D /* WordbookHistoryView.swift in Sources */,
+				A17B0D312F9D100100000031 /* WordbookRecoveryView.swift in Sources */,
+				A17B0D212F9D100100000021 /* WordbookManager.swift in Sources */,
+				A17B0D232F9D100100000023 /* WordbookStarView.swift in Sources */,
+				A17B0D272F9D100100000027 /* WordbookView.swift in Sources */,
+				A17B0D252F9D100100000025 /* WordbookViewModel.swift in Sources */,
+				A17B0D132F9D100100000013 /* WordbookMigration.swift in Sources */,
+				A17B0D042F9D100100000004 /* WordbookModels.swift in Sources */,
+				A17B0D1B2F9D10010000001B /* WordbookQuery.swift in Sources */,
+				A17B0D152F9D100100000015 /* WordbookRepository.swift in Sources */,
+				A17B0D062F9D100100000006 /* WordbookSnapshotValidator.swift in Sources */,
+				A17B0D0D2F9D10010000000D /* WordbookStore.swift in Sources */,
 				635234F65A9D4655A045FDAF /* MDictReader.swift in Sources */,
 				63D2A8E12F1C4B2E8C9A7101 /* MDictMetadataCache.swift in Sources */,
 				A9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift in Sources */,
@@ -4517,7 +4682,6 @@
 				03715A2A2E6D253E0067259C /* FocusedElementInfo.swift in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,
 				031C66DB2EDA14E90025D190 /* String+Split.swift in Sources */,
-				0377C0F32F13FA4B00302A2C /* FavoritesTab.swift in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
 				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
 				0327A5A82CCB3339002BA81B /* UpdateNotificationInfo.swift in Sources */,

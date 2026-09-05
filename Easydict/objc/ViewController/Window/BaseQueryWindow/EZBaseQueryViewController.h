@@ -39,6 +39,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)resetQueryModelForBackgroundOCR;
 
 - (void)startQueryText:(nullable NSString *)text actionType:(EZActionType)actionType;
+- (void)startQueryText:(nullable NSString *)text
+          fromLanguage:(nullable EZLanguage)fromLanguage
+            toLanguage:(nullable EZLanguage)toLanguage
+            actionType:(EZActionType)actionType;
 - (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType autoQuery:(BOOL)autoQuery;
 
 - (void)retryQueryWithLanguage:(EZLanguage)language;
@@ -49,9 +53,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)copyQueryText;
 
 - (void)copyFirstTranslatedText;
-
-/// Returns the translated text of the first service result, if available.
-- (nullable NSString *)firstTranslatedText;
 
 - (void)toggleTranslationLanguages;
 

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Easydict 查询窗口管理器架构概览</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; color: #111827; background: #ffffff; }
+    body { max-width: 1080px; margin: 0 auto; padding: 32px; line-height: 1.7; }
+    h1, h2, h3 { line-height: 1.3; }
+    h1 { margin-top: 0; }
+    code { padding: 0.12em 0.35em; border-radius: 4px; background: #f3f4f6; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; }
+    th, td { padding: 10px 12px; border: 1px solid #d1d5db; text-align: left; vertical-align: top; }
+    th { background: #f0fdf4; }
+    .boundary { padding: 14px 18px; border-left: 4px solid #16a34a; background: #f0fdf4; }
+    .failure { padding: 14px 18px; border-left: 4px solid #dc2626; background: #fef2f2; }
+  </style>
+</head>
+<body>
+  <div id="main">
+    <h1>查询窗口管理器架构概览</h1>
+    <p>本目录负责“哪一个查询窗口在何处显示、是否复用、用什么文本与语言开始查询”。<code>EZWindowManager</code> 汇合菜单、快捷键、取词、剪贴板、OCR、URL scheme 以及 Wordbook/History 重放；<code>EZLayoutManager</code> 提供各窗口类型的位置与尺寸约束。</p>
+
+    <div class="section">
+      <h2>组件与所有权</h2>
+      <table>
+        <thead><tr><th>组件</th><th>拥有的状态</th><th>边界</th></tr></thead>
+        <tbody>
+          <tr><td><code>EZWindowManager</code></td><td>Main、Fixed、Mini 实例，当前/最近浮动窗口类型，前台应用、选中文本、鼠标位置与 action type。</td><td>不解析 Wordbook JSON，不决定条目是否保存。</td></tr>
+          <tr><td><code>EZLayoutManager</code></td><td>按窗口类型保存 frame，计算输入区、最小/最大尺寸和屏幕安全位置。</td><td>不发起查询，也不选择语言。</td></tr>
+          <tr><td><code>EZBaseQueryWindow/Controller</code></td><td>窗口可见/pin 状态，以及该窗口当前 query model、服务与结果。</td><td>实例由 Manager 选择，查询细节由 Controller 执行。</td></tr>
+          <tr><td>事件与调用方</td><td>EventMonitor、菜单/快捷键、OCR、URL scheme、<code>WordbookViewModel</code>。</td><td>只提供触发、文本和可选语言方向。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>窗口路由与复用</h2>
+      <ol>
+        <li>调用方选择 <code>EZWindowType</code>：主窗口长期存在；Fixed 和 Mini 通过共享实例惰性创建。Wordbook/History 使用用户的 <code>shortcutSelectTranslateWindowType</code> 偏好。</li>
+        <li><code>windowWithType</code> 把 enum 路由到对应实例；Manager 根据 Fixed/Mini 的位置配置、鼠标/旧 frame 和当前屏幕计算显示点。</li>
+        <li>未 pin 窗口在新查询前重置表格和高度，再移到安全位置并前置；已 pin 窗口保留结果布局，只更新文本、聚焦并发起查询。</li>
+        <li>Manager 维护最近显示窗口栈，窗口成为 key 或关闭时更新；应用快捷键据此找到当前浮动窗口。</li>
+        <li>非 pin 且非 Main 的窗口失焦时关闭；关闭后若没有设置窗口显示，恢复之前的前台应用。</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>普通查询与保存语言重放</h2>
+      <table>
+        <thead><tr><th>路径</th><th>文本处理</th><th>语言处理</th><th>适用调用方</th></tr></thead>
+        <tbody>
+          <tr><td>普通选择/剪贴板/URL</td><td>去不可见字符和边缘空白；必要时移除 Books 摘录。空文本按 keep previous result 配置转为 nil 或空串。</td><td>未传 from/to；Controller 在 needDetectLanguage 时自动探测。</td><td>EventMonitor、菜单、快捷键、剪贴板与 URL scheme。</td></tr>
+          <tr><td>保存记录重放</td><td><code>preserveQueryText</code> 为真；只拒绝全空文本，不清洗、截断或改写原文。</td><td>同时传入保存的 from/to；更新 query model 后按该方向开始查询，Auto 源语言才继续探测。</td><td>Wordbook 条目与 Query History 记录。</td></tr>
+        </tbody>
+      </table>
+      <div class="boundary"><strong>重放选择器：</strong><code>WordbookViewModel</code> 对条目和历史使用同一 <code>showQuery</code> 路径，从 Defaults 读取目标窗口类型，并同时传 text/from/to 与 inputQuery action。这样“在哪里显示”仍由用户偏好决定，“用什么语言查询”则由保存记录决定。</div>
+    </div>
+
+    <div class="section">
+      <h2>正常流程</h2>
+      <ol>
+        <li>调用方提交窗口类型、文本、action type，以及可选的保存语言方向。</li>
+        <li>Manager 规范化普通输入或保护保存原文，记录 action，取得/复用目标窗口，并应用默认 pin 策略。</li>
+        <li>没有文本时只展示窗口或提示；有文本时更新输入 UI。无保存方向则可先探测，有保存方向则直接应用。</li>
+        <li>窗口未 pin 时先 reset，再按最新高度重新计算位置；窗口 pin 时保持布局并聚焦。</li>
+        <li>autoQuery 为真时 Controller 开始查询；Manager 可按配置复制原文，并在完成后执行调用方 completion。</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>失败与恢复</h2>
+      <div class="failure">
+        <ul>
+          <li><strong>保存重放文本为空：</strong>立即记录警告并返回，不能把历史窗口误当普通空取词而复用旧结果。</li>
+          <li><strong>普通取词失败：</strong>nil 文本仍可显示目标窗口；若允许提示且不保留旧结果，Controller 显示取词失败提示，用户可手动输入。</li>
+          <li><strong>截图正在进行：</strong>窗口前置被中止，避免与捕获流程争夺焦点；截图结束后由原调用路径重试或重新触发。</li>
+          <li><strong>位置越过屏幕：</strong>CoordinateUtils 根据当前 screen visible frame 纠正安全点；Fixed 的 former 位置保留原屏幕上下文。</li>
+          <li><strong>查询/服务失败：</strong>Manager 保持窗口实例与保存语言，错误交给 BaseQueryController 的结果/Retry 流；用户重试时不需要重建窗口。</li>
+          <li><strong>失焦关闭：</strong>只有非 pin、非例外窗口关闭；Main 或 pin 窗口保留。关闭回调的递归通过可见性检查终止。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>调用方边界</h2>
+      <ul>
+        <li><strong>Wordbook：</strong>点击条目、双击或 Return 重放，传保存的 text/from/to。</li>
+        <li><strong>History：</strong>点击查询动作传 QueryRecord 的 queryText/queryFromLanguage/queryToLanguage；星标“加入单词本”仍走 Repository，不经过 WindowManager。</li>
+        <li><strong>普通取词：</strong>EventMonitor 产生 selectedText 与鼠标位置，Manager 选择 Fixed/Mini 并按用户配置探测和自动查询。</li>
+        <li><strong>OCR：</strong>先取得 image，再选配置的查询窗口或后台 controller；文本与语言在 OCR/detect 完成后进入 BaseQuery 流。</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>调试与手工入口</h2>
+      <ul>
+        <li>从 Wordbook 与 History 各重放一条非 Auto 语言记录，核对日志中的 windowType、queryText 与 from → to；确认未重新自动探测。</li>
+        <li>切换 shortcutSelectTranslateWindowType，在 Main/Fixed/Mini 间验证同一保存记录的原文和语言保持，仅目标窗口变化。</li>
+        <li>对 pin/未 pin 窗口重复重放，确认前者保留布局、后者 reset 后位置安全；失焦行为符合 pin/Main 例外。</li>
+        <li>普通空取词与保存空重放应走不同分支：前者可显示提示/旧结果，后者必须拒绝。</li>
+        <li>多显示器调试时检查 screenVisibleFrame、lastPoint、stored frame 和安全点；窗口栈异常时检查 becomeKey/close 对 floatingWindowTypeArray 的更新。</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

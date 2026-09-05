@@ -68,6 +68,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - URL scheme
 
+- (void)showFloatingWindowType:(EZWindowType)windowType
+                     queryText:(NSString *)queryText
+                  fromLanguage:(EZLanguage)fromLanguage
+                    toLanguage:(EZLanguage)toLanguage
+                    actionType:(EZActionType)actionType;
+
 /// Show floating window.
 - (void)showFloatingWindowType:(EZWindowType)windowType
                      queryText:(nullable NSString *)text

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Easydict 共享视图层架构概览</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; color: #111827; background: #ffffff; }
+    body { max-width: 1080px; margin: 0 auto; padding: 32px; line-height: 1.7; }
+    h1, h2, h3 { line-height: 1.3; }
+    h1 { margin-top: 0; }
+    code { padding: 0.12em 0.35em; border-radius: 4px; background: #f3f4f6; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; }
+    th, td { padding: 10px 12px; border: 1px solid #d1d5db; text-align: left; vertical-align: top; }
+    th { background: #f0fdfa; }
+    .note { padding: 14px 18px; border-left: 4px solid #0d9488; background: #f0fdfa; }
+    .failure { padding: 14px 18px; border-left: 4px solid #dc2626; background: #fef2f2; }
+  </style>
+</head>
+<body>
+  <div id="main">
+    <h1>共享视图层架构概览</h1>
+    <p><code>Swift/View</code> 是 SwiftUI 界面与既有 AppKit 应用生命周期之间的适配层。它提供菜单入口、设置页、可复用宿主窗口和轻量 NSView bridge；具体翻译、单词本持久化与查询服务状态应留在各自的 Feature、Service 或 Objective-C 控制器中。</p>
+
+    <div class="section">
+      <h2>目录职责</h2>
+      <table>
+        <thead><tr><th>区域</th><th>代表组件</th><th>拥有的责任</th></tr></thead>
+        <tbody>
+          <tr><td>菜单栏入口</td><td><code>MenuItemView</code></td><td>组合翻译、OCR、单词本、设置、更新与退出动作；菜单只路由意图，不嵌入业务界面。</td></tr>
+          <tr><td>AppKit 宿主</td><td><code>Window/HostWindowManager</code></td><td>在主线程创建 NSWindow、NSHostingView 和 NSWindowController，以稳定 id 管理控制器所有权、窗口复用和激活。</td></tr>
+          <tr><td>设置界面</td><td><code>SettingView</code> 与 Tabs</td><td>组织用户偏好页，借助 <code>WindowAccessor</code> 根据选中标签控制设置窗口大小。</td></tr>
+          <tr><td>桥接小组件</td><td><code>WindowAccessor</code>、<code>TapHandler</code></td><td>把 SwiftUI 无法直接表达的 NSWindow 获取和 AppKit 点击事件限制在很小的适配边界内。</td></tr>
+          <tr><td>共享展示</td><td><code>AdvancedTabItemView</code> 等</td><td>统一常用布局和视觉语义，不持有跨功能业务状态。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>单词本窗口入口与生命周期</h2>
+      <ol>
+        <li><code>MenuItemView</code> 的“Wordbook…”动作调用 <code>HostWindowManager.shared.showWordbookWindow()</code>。</li>
+        <li>HostWindowManager 以 <code>wordbook.window</code> 为稳定 id。首次打开时创建 900×640、可调整大小的 AppKit 窗口，把 <code>WordbookView</code> 包进 NSHostingView，并由字典中的 NSWindowController 强持有。</li>
+        <li>该窗口启用 <code>reuseExisting</code> 且 <code>isReleasedWhenClosed = false</code>。用户点击红色关闭只隐藏/关闭可见窗口，控制器与 SwiftUI 根视图仍被 manager 持有；再次打开会激活同一窗口，而不是重建 ViewModel。</li>
+        <li>激活复用窗口时先更新本地化标题，再激活应用、显示控制器并 <code>makeKeyAndOrderFront</code>；因此搜索、分区、排序及尚存的窗口会话状态可跨关闭/重开保留。</li>
+      </ol>
+      <div class="note"><strong>所有权边界：</strong>HostWindowManager 拥有“窗口/控制器存在多久”，WordbookView 拥有“窗口内部状态如何展示”，WordbookRepository 拥有“业务数据是否安全”。任一层都不应越过另外两层直接释放或伪造状态。</div>
+    </div>
+
+    <div class="section">
+      <h2>本地化环境</h2>
+      <ul>
+        <li>打开窗口时，HostWindowManager 使用 <code>I18nHelper.shared.localizeCode</code> 选择精确的 <code>.lproj</code> bundle，并以 <code>wordbook.window.title</code> 生成标题；不假设 <code>String(localized:locale:)</code> 会切换资源 bundle。</li>
+        <li><code>WordbookView</code> 持有 <code>LanguageState</code>，把对应 <code>Locale</code> 注入 SwiftUI environment；列表元数据、日期、计数、完整提示句和导出文件名都从同一 locale 计算。</li>
+        <li><code>WordbookView</code> 观察自身 <code>LanguageState</code> 已更新后的新值，用同一语言代码更新 ViewModel 查询 locale，并通过 HostWindowManager 更新现有 NSWindow 标题，避免同步通知早于另一个 <code>AppStorage</code> 实例刷新的竞态。</li>
+        <li>动态语言名、日期与插值句由 ViewModel/子视图在 locale 边界一次性格式化；共享视图层不拼接本地化片段，也不构造动态 catalog key。</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>进出边界与正常流</h2>
+      <table>
+        <thead><tr><th>方向</th><th>输入/输出</th><th>约束</th></tr></thead>
+        <tbody>
+          <tr><td>外部 → 菜单</td><td>用户点击、键盘快捷键、Sparkle 更新状态</td><td>菜单将动作交给 ShortcutAction、HostWindowManager、Settings 或 updater，不保存翻译数据。</td></tr>
+          <tr><td>菜单 → 单词本窗口</td><td>稳定窗口 id、本地化标题、WordbookView 构造器</td><td>仅激活或创建独立窗口；不把 Wordbook/History 放回 Settings TabView。</td></tr>
+          <tr><td>SwiftUI → AppKit</td><td>NSHostingView、NSWindowController、WindowAccessor</td><td>所有窗口变更在 MainActor；控制器字典是显式生命周期根。</td></tr>
+          <tr><td>功能层 → 视图</td><td>ObservableObject、通知、Defaults publisher</td><td>视图订阅并呈现；写入仍走功能层定义的门和事务。</td></tr>
+          <tr><td>视图 → 系统</td><td>窗口激活、Finder、保存面板、URL</td><td>只在用户动作或明确完成回调中产生系统副作用。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>失败与恢复</h2>
+      <div class="failure">
+        <ul>
+          <li><strong>复用表中没有控制器：</strong>按首次打开路径创建；已有控制器但窗口不可见时直接 show + order front。</li>
+          <li><strong>语言切换：</strong>不重建窗口，通过 environment 与标题更新恢复一致；业务数据不受语言变化影响。</li>
+          <li><strong>Wordbook 加载/写入失败：</strong>共享视图层不吞掉错误，WordbookView 按 Repository phase 显示重试、Finder 或保护式重置。</li>
+          <li><strong>菜单动作失败：</strong>更新检查、日志导出或 URL 打开由各自服务记录日志；不能牵连 HostWindowManager 的控制器字典。</li>
+          <li><strong>生命周期异常：</strong>若红色关闭后状态丢失，优先检查 <code>reuseExisting</code>、<code>isReleasedWhenClosed</code> 和 controller 是否仍在字典中，而不是给 ViewModel 添加额外持久化。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>调试与验证入口</h2>
+      <ul>
+        <li>从菜单栏连续两次打开 Wordbook，确认同一窗口被前置且没有重复 NSWindowController；红色关闭后重开，确认搜索和当前 section 保留。</li>
+        <li>切换六种应用语言，检查菜单项、窗口标题、日期/计数和错误提示同步更新；特别检查窗口已打开时的 <code>.onChange(of: languageState.language)</code> 路径及精确 <code>.lproj</code> 查找。</li>
+        <li>窗口未出现时从 <code>MenuItemView.wordbookItem</code> → <code>showWordbookWindow</code> → <code>activateWindow/showWindow</code> 排查；观察 window id 是否一致。</li>
+        <li>设置窗口尺寸异常时检查 <code>WindowAccessor</code> 是否取得当前 NSWindow，以及 selection 变化是否触发 resize；点击与拖拽冲突则检查 <code>TapHandlerView</code> 的 AppKit 事件边界。</li>
+        <li>手工验证 Finder/保存面板等系统出口时，同时确认取消操作不会产生 Repository 写入或清除窗口状态。</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
