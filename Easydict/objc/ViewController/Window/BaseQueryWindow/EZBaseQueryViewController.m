@@ -717,9 +717,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             return;
         }
 
-        // Capture the effective direction before adopting text that needs new detection.
-        EZLanguage fromLanguage = self.queryModel.queryFromLanguage;
-        EZLanguage toLanguage = self.queryModel.queryTargetLanguage;
+        // Use the completed result's direction; shared language preferences may have changed.
+        EZLanguage fromLanguage = self.firstService.result.from;
+        EZLanguage toLanguage = self.firstService.result.to;
         BOOL hasReverseDirection = fromLanguage.length > 0 && toLanguage.length > 0 &&
             ![fromLanguage isEqualToString:EZLanguageAuto] &&
             ![toLanguage isEqualToString:EZLanguageAuto] &&

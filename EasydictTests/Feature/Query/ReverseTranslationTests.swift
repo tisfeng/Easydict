@@ -44,6 +44,7 @@ struct ReverseTranslationTests {
     func explicitSource() throws {
         try withFixture { controller, model, service in
             model.userSourceLanguage = .english
+            service.result.from = .english
             service.streaming = true
             service.result.isStreamFinished = true
 
@@ -73,10 +74,15 @@ struct ReverseTranslationTests {
         }
     }
 
-    @Test("Equal effective languages do not replace the input")
-    func equalEffectiveLanguages() throws {
-        try withFixture { controller, model, _ in
-            model.detectedLanguage = .simplifiedChinese
+    @Test("Invalid result languages do not replace the input", arguments: ["same", "autoFrom", "autoTo"])
+    func invalidResultLanguages(state: String) throws {
+        try withFixture { controller, model, service in
+            switch state {
+            case "same": service.result.from = service.result.to
+            case "autoFrom": service.result.from = .auto
+            case "autoTo": service.result.to = .auto
+            default: Issue.record("Unknown language state")
+            }
 
             controller.perform(NSSelectorFromString("toggleTranslationLanguages"))
 
@@ -84,7 +90,47 @@ struct ReverseTranslationTests {
             #expect(model.userSourceLanguage == .simplifiedChinese)
             #expect(model.userTargetLanguage == .auto)
             #expect(model.ocrImage != nil)
+            #expect(model.actionType == .ocrQuery)
         }
+    }
+
+    @Test("Completed result direction survives language preference propagation")
+    func changedPreferences() async throws {
+        let config = MyConfiguration.shared
+        let savedFrom = config.fromLanguage
+        let savedTo = config.toLanguage
+        defer {
+            config.fromLanguage = savedFrom
+            config.toLanguage = savedTo
+        }
+
+        // Retain the fixture across the asynchronous Defaults propagation below.
+        var fixture: (NSViewController, QueryModel, ReverseTranslationService)?
+        try withFixture { fixture = ($0, $1, $2) }
+        let (controller, model, service) = try #require(fixture)
+        config.fromLanguage = .english
+        config.toLanguage = .french
+
+        let deadline = ContinuousClock.now.advanced(by: .seconds(1))
+        while model.userSourceLanguage != .english || model.userTargetLanguage != .french,
+              ContinuousClock.now < deadline {
+            try await Task.sleep(for: .milliseconds(1))
+        }
+        try #require(model.queryFromLanguage == .english)
+        try #require(model.queryTargetLanguage == .french)
+        #expect(service.result.queryModel === model)
+        #expect(service.result.from == .japanese)
+        #expect(service.result.to == .simplifiedChinese)
+
+        controller.perform(NSSelectorFromString("toggleTranslationLanguages"))
+
+        #expect(model.inputText == "你好")
+        #expect(model.userSourceLanguage == .simplifiedChinese)
+        #expect(model.userTargetLanguage == .japanese)
+        #expect(config.fromLanguage == .simplifiedChinese)
+        #expect(config.toLanguage == .japanese)
+        #expect(model.ocrImage == nil)
+        #expect(model.actionType == .inputQuery)
     }
 
     @Test("Auto to Auto requeries completed output without changing preferences", arguments: [false, true])
@@ -226,6 +272,8 @@ struct ReverseTranslationTests {
         service.queryModel = model
         service.result = QueryResult()
         service.result.queryText = model.queryText
+        service.result.from = model.queryFromLanguage
+        service.result.to = model.queryTargetLanguage
         service.result.translatedResults = ["你好"]
         controller.setValue(service, forKey: "firstService")
         try body(controller, model, service)

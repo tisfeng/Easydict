@@ -69,3 +69,21 @@
   日志确认非双 Auto 的纯空白场景实际执行。测试文件 `swiftformat --lint` 和
   `git diff --check` 通过。
 - 未运行完整测试套件或人工界面验证；未推送或修改 GitHub 评论。
+
+## 2026-09-06：使用完成结果保存的语言方向
+
+- 修复 [review comment](https://github.com/tisfeng/Easydict/pull/1276#discussion_r3941343825)
+  指出的共享语言偏好变化后，旧译文被按新方向回译的问题。
+- 本轮初始 HEAD：`0ee83d00d14f077d8bbe49cd9a9fa3b7f4876a0a`，与实时 PR head 一致；
+  初始暂存、未暂存和未跟踪文件均为空。
+- 授权：implementation，验证通过后自动本地提交，不 push。
+- 本轮允许路径：`EZBaseQueryViewController.m`、`ReverseTranslationTests.swift`、本记录。
+- 非双 Auto 分支改用首服务完成结果的 `from/to`，保留非空、非 Auto、非同语言校验。
+- 双 Auto 继续按当前自动规则重新查询译文，不增加临时语言状态或改变默认偏好。
+- 测试同步使用结果语言快照，并覆盖共享偏好变化后的回译方向。
+- 新增真实 Defaults 传播测试，并覆盖结果源或目标为 Auto、两端相同的回退行为。
+- 首轮 Xcode 使用旧版测试二进制而失败；刷新测试源码时间戳并重新编译后，
+  沿用上述 arm64 定向命令，7 个测试方法、21 个场景全部通过，0 失败。
+  日志确认新增偏好传播测试及无效结果方向场景实际执行。
+- 测试文件 `swiftformat --lint` 和 `git diff --check` 通过。
+- 未运行完整测试套件或人工界面验证；未推送或修改 GitHub 评论。
