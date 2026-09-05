@@ -20,7 +20,7 @@
 - 在采用完成译文前捕获有效源语言和目标语言，并将其交给现有语言交换路径。
 - 有效语言未确定或相同时不替换输入；加载、错误、无结果及未完成流式输出保留原行为。
 - 保留现有 OCR 转普通文本查询逻辑。
-- 不扩展默认 `Auto → Auto` 的 no-op 行为，也不修改全局自动语言选择策略。
+- 首轮修复未扩展默认 `Auto → Auto` 的 no-op 行为，也未修改全局自动语言选择策略。
 - 增加 `ReverseTranslationTests`，通过实际 controller/cell 验证 9 个场景，
   测试期间保存并恢复语言偏好，不启动翻译请求。
 
@@ -33,3 +33,22 @@
   ENABLE_PREVIEWS=YES CODE_SIGNING_ALLOWED=NO`。
 - 构建使用 `ENABLE_PREVIEWS=YES` 跳过全仓格式化步骤；测试文件单独执行 lint。
 - 未执行完整测试套件或人工界面验证；未推送或修改 GitHub PR。
+
+## 2026-09-06：双 Auto 采用译文重新查询
+
+用户确认采用简化方案：将首服务的完成译文放入输入框，再按现有 Auto 规则查询。
+不增加临时语言覆盖，不保证严格返回原语言；双 Auto 选项和默认语言偏好保持不变。
+单侧 Auto 和显式语言组合继续沿用前述修复。
+
+- 本轮初始 HEAD：`ee39e2d255b4309d552b2da6aac5301994d56712`；工作树和索引干净。
+- GitHub PR head 仍为 `b43578c55beeba3283542610259c3110e0f2ff1f`，保留现有本地修复提交。
+- 授权：implementation，验证通过后自动本地提交，不 push。
+- 本轮允许路径：`EZBaseQueryViewController.m`、`ReverseTranslationTests.swift`、本记录。
+- 双 Auto 绕过 raw 语言相等的交换门禁；只采用当前查询中已完成、无错误的首服务译文。
+- 清除旧 OCR 图片后复用普通文本查询入口；加载、错误、空或过期结果不触发重查。
+- 更新后的定向 Xcode 测试通过：6 个测试方法、17 个场景，0 失败。
+  命令：`xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict
+  -destination 'platform=macOS,arch=arm64' -only-testing:EasydictTests/ReverseTranslationTests
+  ENABLE_PREVIEWS=YES CODE_SIGNING_ALLOWED=NO`。
+- 测试以单实例临时子类捕获普通查询入口，验证译文、动作类型和 OCR 清理，不调用翻译服务。
+- 测试文件 `swiftformat --lint`、`git diff --check` 通过；未运行完整测试套件或人工界面验证。
