@@ -12,8 +12,9 @@ jobs:
   translate:
     runs-on: ubuntu-latest
     steps:
-      - uses: tisfeng/issues-translate-action@v2.8.2
+      - uses: tisfeng/issues-translate-action@v2.9.0
         with:
           IS_MODIFY_TITLE: false
-          CUSTOM_BOT_NOTE: Bot detected this issue is not in English and translated it
-            automatically.
+          PRIMARY_LANGUAGE: zh-CN
+          SECONDARY_LANGUAGE: en
+          CUSTOM_BOT_NOTE: Bot automatically translated this content.
