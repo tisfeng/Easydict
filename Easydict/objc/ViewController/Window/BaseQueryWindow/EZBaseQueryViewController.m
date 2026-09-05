@@ -724,7 +724,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             ![fromLanguage isEqualToString:EZLanguageAuto] &&
             ![toLanguage isEqualToString:EZLanguageAuto] &&
             ![fromLanguage isEqualToString:toLanguage];
-        if (translatedText.length > 0 && hasReverseDirection) {
+        if ([translatedText ns_trim].length > 0 && hasReverseDirection) {
             self.queryModel.userSourceLanguage = fromLanguage;
             self.queryModel.userTargetLanguage = toLanguage;
             self.inputText = translatedText;

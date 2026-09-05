@@ -52,3 +52,20 @@
   ENABLE_PREVIEWS=YES CODE_SIGNING_ALLOWED=NO`。
 - 测试以单实例临时子类捕获普通查询入口，验证译文、动作类型和 OCR 清理，不调用翻译服务。
 - 测试文件 `swiftformat --lint`、`git diff --check` 通过；未运行完整测试套件或人工界面验证。
+
+## 2026-09-06：拒绝纯空白回译结果
+
+- 修复 [review comment](https://github.com/tisfeng/Easydict/pull/1276#discussion_r3941266857)
+  指出的非双 Auto 分支采用纯空白译文后丢失原输入的问题。
+- 本轮初始 HEAD：`c41fcd7076dfe698e6a095fdaa8f499a0e064ece`，与实时 PR head 一致；
+  初始暂存、未暂存和未跟踪文件均为空。
+- 授权：implementation，验证通过后自动本地提交，不 push。
+- 本轮允许路径：`EZBaseQueryViewController.m`、`ReverseTranslationTests.swift`、本记录。
+- 采用译文前统一检查 trim 后非空；纯空白结果保留原输入、OCR 和查询动作，
+  沿用原有的仅交换语言回退行为。
+- 在非双 Auto 的无效结果参数化测试中补充纯空白场景，复用现有状态断言。
+- 首次定向测试通过但仍运行旧版 17 个场景；刷新测试源码时间戳后重新编译验证。
+- 验证：沿用上述 arm64 定向 Xcode 命令，6 个测试方法、18 个场景通过，0 失败；
+  日志确认非双 Auto 的纯空白场景实际执行。测试文件 `swiftformat --lint` 和
+  `git diff --check` 通过。
+- 未运行完整测试套件或人工界面验证；未推送或修改 GitHub 评论。

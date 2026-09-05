@@ -57,7 +57,7 @@ struct ReverseTranslationTests {
 
     @Test(
         "Unavailable results preserve the original text and language-only swap",
-        arguments: ["empty", "loading", "streaming", "error", "stale"]
+        arguments: ["empty", "whitespace", "loading", "streaming", "error", "stale"]
     )
     func unavailableResult(state: String) throws {
         try withFixture { controller, model, service in
