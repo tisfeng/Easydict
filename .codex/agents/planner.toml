@@ -1,5 +1,5 @@
 name = "planner"
-description = "为 planning 任务提供只读、证据驱动的方案评审。该 agent 优先保证规划质量，响应可能需要较长时间，请耐心等待，不要因短暂无输出提前终止或重复启动。"
+description = "为 planning 任务提供只读、证据驱动的方案评审；等待任务完成，不因短暂无输出提前终止或重复启动。"
 model = "gpt-6-astra"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"

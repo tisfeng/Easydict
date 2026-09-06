@@ -30,8 +30,7 @@
 
 - 有实际行为风险的 implementation 初步完成后，优先同时启用只读 `reviewer` 和
   `tester`：前者使用 `.agents/skills/review/SKILL.md`，后者编写必要测试并验证。
-  reviewer 配置为 `.codex/agents/reviewer.toml`，固定使用 `gpt-6-astra` / `high`；
-  tester 使用 `gpt-5.6-terra` / `high`。模型与推理强度以各自 TOML 为准，
+  模型与推理强度以 `.codex/agents/reviewer.toml` 和 `.codex/agents/tester.toml` 为准，
   不随主任务模型切换。简单文档、低风险配置或小改动不机械启动两个子代理。
 - 主 Agent 在第一次写入前保存初始 HEAD、分层 diff、任务相关 untracked 内容与路径
   归属；交接时给出行为目标、允许范围和冻结实现快照。reviewer 独立判断，不能只

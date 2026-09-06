@@ -1,29 +1,26 @@
 ---
 name: submit-pr
 description: >
-  根据当前 Git checkout 准备并创建通用 GitHub Pull Request：发现目标仓库、默认
-  base、push remote 与 fork 拓扑，强制统一四段式正文、Angular-style 标题和
-  Conventional 任务分支，安全推送冻结提交，并创建或复用 PR 后验证。适用于用户明确
-  要求计划、创建、提交或恢复 GitHub PR；不用于 PR review、merge 或仅本地提交。
+  根据当前 Git checkout 的已提交变更规划、创建或继续 GitHub Pull Request
+  提交流程，安全推送任务分支、复用远程状态并验证最终 PR。不用于
+  PR review、merge 或仅本地提交。
 ---
 
 # 提交 GitHub PR
 
-把当前 checkout 中已经提交的连贯工作安全提交为 GitHub Pull Request。Skill 保存在
-当前仓库，但工作流本身不绑定特定项目、remote 名称或默认分支。
+根据当前 Git checkout 的已提交变更，创建或复用 GitHub Pull Request。
 
-## 通用质量规则
-
-所有项目统一执行以下规则，不因目标仓库变化而放宽：
+## PR 规范
 
 - PR 标题使用 Angular-style：`type(scope): subject`。
 - 任务分支使用 Conventional 格式：`<type>/<kebab-case-summary>`。
-- PR 正文固定包含且仅包含一组以下规范段落，顺序不变：
+- PR 正文按以下顺序包含四个规范段落，每个仅出现一次：
   1. `变更说明 / Summary`
   2. `关联 Issue / Linked Issues`
   3. `验证 / Verification`
   4. `截图 / Screenshots`
-- 目标仓库模板中的兼容提示、checklist 和额外段落必须保留。
+- 保留目标仓库 PR 模板中非占位的说明、checklist 和额外段落。
+- 目标仓库没有 PR 模板时使用内置四段式骨架，不创建模板文件，也不中断流程。
 - 非 UI 修改的截图段填写 `N/A`；UI 修改只提示用户在 GitHub PR 页面补充截图，不能
   因缺少截图中断流程。
 
@@ -34,8 +31,7 @@ description: >
 - 默认：使用 helper 的 `apply`，fetch base、推送任务分支、创建或复用正式 PR 并验证。
 - `draft`：与默认相同，但创建 Draft PR。
 
-用户没有指定模式时使用默认模式。重复执行相同请求就是恢复机制；不提供独立
-`resume`，也不自动编辑已经存在的 PR。
+用户没有指定模式时使用默认模式。
 
 ## 必需流程
 
@@ -114,8 +110,7 @@ python3 .agents/skills/submit-pr/scripts/submit_pr.py plan \
 - `forbid`：正文和提交信息均禁止 `Fixes`、`Closes`、`Resolves` 等自动关闭语法，创建
   后还必须验证 `closingIssuesReferences` 为空。
 
-仓库需要更严格的 Issue 规则时，应由仓库 Agent 文档要求显式传入策略，不能把特定
-项目政策伪装成通用默认值。
+目标仓库要求特定 Issue 策略时，显式传入 `--issue-policy`。
 
 ## 恢复与停止条件
 

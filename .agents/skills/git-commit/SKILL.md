@@ -1,9 +1,6 @@
 ---
 name: git-commit
-description: >
-  仅根据已暂存内容创建 Angular-style 提交，并为调用方工作流推导 Conventional
-  任务分支名。支持显式交付和受保护的 implementation 自动交付，为非英语用户生成
-  双语提交信息，并且绝不推送。
+description: 根据已暂存内容创建 Angular-style 提交，并为调用方工作流推导 Conventional 任务分支名。支持显式交付和受保护的 implementation 自动交付；为非英语用户生成双语提交信息，且不推送。
 ---
 
 # Git 提交流程
@@ -224,9 +221,8 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 - 除非用户明确要求确认模式，否则将 `git-commit` 请求视为提交授权。
 - 在确认模式下，获得明确批准前不要创建 `commit_message.txt` 或运行 `git commit`。
 - 写入 `commit_message.txt` 的提交信息必须完全相同，且不包含 Markdown 代码围栏。
-- 不要在单个 shell 命令中将 `git commit` 与提交信息文件的创建或清理串联起来。
-- 不要在单个 shell 命令中将提交前校验、`git commit`、提交后校验或消息文件清理
-  串联起来；每一步成功后再进入下一步。
+- 消息文件创建、提交前校验、`git commit`、提交后校验和清理分别执行；前一步成功后
+  再继续。
 - 暂存与提交都需要对应 Git 写入权限；按实际工具权限请求提权，不将权限请求误当作
   缺少用户的任务授权。
 - 如果 `git commit` 在创建 `.git/index.lock` 时因 `Operation not permitted` 等

@@ -51,9 +51,3 @@
 
 `protected` 不撤销已有授权，也不把 planning 提升为 implementation。报告受阻操作、
 证据和可继续的工作，避免将局部失败扩大为整个任务冻结。
-
-## 规则归属
-
-- 请求来源、否定条件和任务模式由 [`request-boundary.md`](request-boundary.md) 负责。
-- Git 快照、精确暂存、自动本地提交和禁止的远程操作由 [`git-workflow.md`](git-workflow.md) 负责。
-- active plan、completed plan 和 history 的生命周期由 [`README.md`](README.md) 负责。
