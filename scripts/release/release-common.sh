@@ -22,7 +22,6 @@ RELEASE_RUN_MODE="${RELEASE_RUN_MODE:-new}"
 RELEASE_VERSION="${VERSION:-}"
 RELEASE_CHANNEL="${CHANNEL:-beta}"
 RELEASE_BUILD_OVERRIDE="${BUILD_NUMBER:-}"
-RELEASE_NOTES_FILE="${NOTES_FILE:-}"
 RELEASE_DRAFT_MODE="${DRAFT_MODE:-normal}"
 
 RELEASE_WORKFLOW_PATH="$RELEASE_SOURCE_ROOT/scripts/release/asc-workflow.json"
@@ -37,6 +36,8 @@ if [[ -n "$RELEASE_VERSION" ]]; then
     RELEASE_WORKTREE="$RELEASE_DIR/worktree"
     RELEASE_BRANCH="release/sync-$RELEASE_VERSION"
     RELEASE_STATE_DIR="$RELEASE_DIR/state"
+    RELEASE_NOTES_FILE="$RELEASE_WORKTREE/changelog/$RELEASE_VERSION.md"
+    RELEASE_NOTES_METADATA_PATH="$RELEASE_STATE_DIR/release-notes.json"
     RELEASE_SOURCE_METADATA_PATH="$RELEASE_STATE_DIR/source.env"
     RELEASE_METADATA_PATH="$RELEASE_STATE_DIR/release.env"
     RELEASE_CHANNEL_TRANSITION_PATH="$RELEASE_STATE_DIR/channel-transition.env"
@@ -332,6 +333,44 @@ require_release_worktree() {
     git -C "$RELEASE_WORKTREE" rev-parse --is-inside-work-tree \
         >/dev/null 2>&1 \
         || release_fail "invalid release worktree: $RELEASE_WORKTREE"
+}
+
+validate_release_notes_file() {
+    local notes_file="$1"
+
+    python3 "$RELEASE_SCRIPT_DIR/release_notes.py" validate \
+        --file "$notes_file" \
+        --version "$RELEASE_VERSION" >/dev/null
+}
+
+verify_release_notes_worktree() {
+    local relative_path="changelog/$RELEASE_VERSION.md"
+
+    require_release_worktree
+    git -C "$RELEASE_WORKTREE" ls-files --error-unmatch \
+        -- "$relative_path" >/dev/null 2>&1 \
+        || release_fail "release notes are not tracked: $relative_path"
+    git -C "$RELEASE_WORKTREE" diff --cached --quiet HEAD -- "$relative_path" \
+        || release_fail "staged release notes differ from the frozen release commit"
+    git -C "$RELEASE_WORKTREE" diff --quiet -- "$relative_path" \
+        || release_fail "unstaged release notes differ from the frozen release commit"
+    validate_release_notes_file "$RELEASE_NOTES_FILE"
+}
+
+snapshot_release_notes() {
+    verify_release_notes_worktree
+    python3 "$RELEASE_SCRIPT_DIR/release_notes.py" snapshot \
+        --file "$RELEASE_NOTES_FILE" \
+        --version "$RELEASE_VERSION" \
+        --state "$RELEASE_NOTES_METADATA_PATH" >/dev/null
+}
+
+verify_release_notes_snapshot() {
+    verify_release_notes_worktree
+    python3 "$RELEASE_SCRIPT_DIR/release_notes.py" verify-state \
+        --file "$RELEASE_NOTES_FILE" \
+        --version "$RELEASE_VERSION" \
+        --state "$RELEASE_NOTES_METADATA_PATH" >/dev/null
 }
 
 # Persists only non-secret values needed to resume a later workflow stage.

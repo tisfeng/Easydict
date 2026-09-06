@@ -12,6 +12,7 @@ ENTRYPOINT = ROOT / "scripts/release/release-easydict.sh"
 COMMON = ROOT / "scripts/release/release-common.sh"
 REDRAFT_GIT = ROOT / "scripts/release/release-redraft-git.sh"
 REDRAFT = ROOT / "scripts/release/release-redraft.sh"
+RELEASE_NOTES = ROOT / "scripts/release/release_notes.py"
 WORKFLOW = ROOT / "scripts/release/asc-workflow.json"
 
 
@@ -303,7 +304,13 @@ else:
             )
             run(["git", "config", "commit.gpgsign", "false"], cwd=repository)
             (repository / "source.txt").write_text("old\n", encoding="utf-8")
-            run(["git", "add", "source.txt"], cwd=repository)
+            notes = repository / f"changelog/{version}.md"
+            notes.parent.mkdir()
+            notes.write_text("## What's Changed\n\n* Replacement test\n", encoding="utf-8")
+            run(
+                ["git", "add", "source.txt", str(notes.relative_to(repository))],
+                cwd=repository,
+            )
             run(["git", "commit", "-m", "old release"], cwd=repository)
             old_commit = run(["git", "rev-parse", "HEAD"], cwd=repository).stdout.strip()
             run(["git", "branch", "main"], cwd=repository)
@@ -351,6 +358,19 @@ else:
                 )
                 + "\n",
                 encoding="utf-8",
+            )
+            run(
+                [
+                    "python3",
+                    str(RELEASE_NOTES),
+                    "snapshot",
+                    "--file",
+                    str(worktree / f"changelog/{version}.md"),
+                    "--version",
+                    version,
+                    "--state",
+                    str(state / "release-notes.json"),
+                ]
             )
             (replacement / "metadata.env").write_text(
                 "\n".join(

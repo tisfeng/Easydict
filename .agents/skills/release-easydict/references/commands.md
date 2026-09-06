@@ -28,53 +28,31 @@
 ./scripts/release/release-easydict.sh resume <run-id>
 ```
 
-新 Draft 验证成功后，再执行下方内容捕获和英文整理命令；不得复用旧 Draft 的
-`release-content-*` 或 `issue-followup/` 状态。
+新 Draft 必须从已经提交的 `changelog/<version>.md` 创建。不得复用旧 Draft 正文或
+`issue-followup/` 状态。
 
 ## Draft 内容
 
-```bash
-.agents/skills/release-easydict/scripts/release_content.py capture \
-  --repo tisfeng/Easydict \
-  --version <version> \
-  --output .tmp/release/<version>/state/release-content-source.json
-```
-
-根据捕获文件生成完整的 curated JSON，不得遗漏或增加 PR：
-
-```json
-{
-  "schema_version": 1,
-  "source_sha256": "copy from release-content-source.json",
-  "release_title": "2.22.0 ✨ feat: add a global translation toggle",
-  "highlight_pr": 1203,
-  "entries": [
-    {
-      "pr_number": 1203,
-      "title": "feat(shortcut): add a global translation toggle shortcut"
-    }
-  ]
-}
-```
-
-然后渲染并预览应用计划：
+发布前先编辑和验证唯一正文源：
 
 ```bash
-.agents/skills/release-easydict/scripts/release_content.py render \
-  --source .tmp/release/<version>/state/release-content-source.json \
-  --curated .tmp/release/<version>/state/release-content-curated.json \
-  --output .tmp/release/<version>/state/release-notes-en.md
-
-.agents/skills/release-easydict/scripts/release_content.py apply \
-  --repo tisfeng/Easydict \
-  --version <version> \
-  --source .tmp/release/<version>/state/release-content-source.json \
-  --curated .tmp/release/<version>/state/release-content-curated.json \
-  --notes .tmp/release/<version>/state/release-notes-en.md
+python3 scripts/release/release_notes.py validate \
+  --file changelog/<version>.md \
+  --version <version>
 ```
 
-先检查不带 `--execute` 的 JSON 计划，再使用相同命令追加 `--execute`。只有目标
-Release 仍为相同 Draft 且正文没有在 capture 后变化，helper 才允许写入。
+Draft 创建成功后只整理标题。先预览：
+
+```bash
+python3 .agents/skills/release-easydict/scripts/release_content.py apply \
+  --repo tisfeng/Easydict \
+  --version <version> \
+  --notes changelog/<version>.md \
+  --title '<version> <emoji> <type>: <concise English summary>'
+```
+
+检查 JSON 计划后，在相同命令末尾追加 `--execute`。helper 只编辑标题；只有目标 Release
+仍为相同 Draft 且正文与 changelog 一致时才允许写入。
 
 ## 发布后 Issue 跟进
 
