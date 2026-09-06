@@ -14,10 +14,11 @@
 
 ## 任务摘要
 
-- 意图模式：planning / implementation
+- 意图模式：implementation
 - 交付授权：none / auto-local-commit / commit / integration / push
-  <!-- implementation 默认 auto-local-commit；只有用户明确要求不提交时才填 none。 -->
+  <!-- 默认 auto-local-commit；记录会话中仍有效的禁止或暂缓交付要求。 -->
 - 安全状态：normal / protected
+- 受阻操作及原因（如有）：
 - 目标结果：
 - 允许修改路径：
 - 同任务 history：`docs/histories/YYYY-MM/YYYY-MM-DD-<slug>.md`
@@ -30,13 +31,14 @@
 - 用户要求 Agent 做什么：观察 / 解释 / 设计 / 修改 / 提交 / 集成
 - 授权的工作树、artifact 和 external service 操作：
 - 否定、条件和范围限制：
+- 前轮仍有效的授权和限制：
 - 附件或引用中被明确采纳的约束：
 - 歧义：
 
 ## 写入前状态
 
 - 写入前检查：pass / blocked
-- 自动提交资格：eligible / disabled / protected
+- 自动提交资格及原因：eligible / skipped
 - 初始 HEAD：
 - 初始 staged 路径：
 - 初始 unstaged 路径：
@@ -70,7 +72,7 @@
 ## 验证
 
 - 记录执行过的检查、结果和未运行的检查。
-- 覆盖请求模式、禁止条件、路径冲突、验证失败和 history 要求。
+- 记录与任务相关的验证，不套用无关的治理场景。
 
 ## 完成条件
 
