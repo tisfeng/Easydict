@@ -1,16 +1,11 @@
 ---
 name: release-easydict
-description: >
-  编排 Easydict macOS 的 draft、publish、release 和 resume 工作流，整理英文
-  GitHub Release 内容，并根据已发布 PR 的关联关系规划、执行或恢复发布后的 Issue
-  跟进。适用于具体的 Easydict 发布操作和 issue-followup 动作，不适用于一般性的
-  发布流程设计讨论。
+description: 编排 Easydict macOS 的 draft、publish、release 和 resume，整理英文 GitHub Release 内容，并处理发布后的 Issue 跟进。不用于一般的发布流程设计讨论。
 ---
 
 # 发布 Easydict
 
-使用仓库发布脚本作为构建、公证、打包、Git、GitHub Release、appcast 和验证引擎。
-本 skill 在这些脚本外增加确定性的 Release 内容编排和发布后 Issue 跟进。
+使用仓库脚本发布 Easydict，并整理英文 GitHub Release 内容、跟进关联 Issue。
 
 ## 动作路由
 
@@ -28,7 +23,7 @@ Release 生命周期动作：
 执行这些动作时阅读 `scripts/release/README.md` 和
 [references/commands.md](references/commands.md)。
 
-发布后的 Issue 动作使用明确的 namespace：
+发布后的 Issue 跟进使用以下动作：
 
 - `issue-followup plan <version>`
 - `issue-followup apply <version>`
@@ -36,13 +31,15 @@ Release 生命周期动作：
 
 执行这些动作时阅读 [references/issue-followup.md](references/issue-followup.md)
 和 [references/issue-followup-policy.md](references/issue-followup-policy.md)。
-该 namespace 将 Issue 恢复与 asc 工作流 `resume` 明确区分。
+`issue-followup resume` 恢复 Issue 跟进；`resume` 恢复 Release 生命周期。
 
 ## 授权边界
 
-- 规划、解释、检查或方案请求保持只读。
-- `issue-followup plan` 可以查询 GitHub 并写入被忽略的本地状态，但绝不评论或关闭
-  Issue。
+- 普通规划、解释、检查或“先给方案”请求保持只读，不因文中提到命令就运行它。
+- 用户明确要求运行具体版本的 `issue-followup plan` 时，该命令会查询 GitHub 并写入
+  `.tmp/release/<version>/state/issue-followup/` 下被忽略的本地状态，不评论或关闭 Issue。
+  这属于获准的本地准备动作，不等于无副作用的 planning。用户禁止写文件时仅查询和
+  分析，不运行该命令；必要时说明缺少可持久化的计划状态。
 - 只有当用户针对具体版本或运行明确请求 `draft`、`publish`、`release`、Release
   `resume`、`issue-followup apply` 或 `issue-followup resume` 时，才执行远程修改。
 - 用户明确请求 `publish` 或 `release` 后，同一版本通过远程发布验证时，也同时授权其

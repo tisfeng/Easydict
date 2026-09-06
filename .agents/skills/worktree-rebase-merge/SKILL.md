@@ -1,18 +1,12 @@
 ---
 name: worktree-rebase-merge
-description: >
-  用于完成 worktree 变更：必要时将 detached checkout 挂接到自动命名的
-  Conventional 分支，提交变更、rebase 到指定目标、解决冲突，并从目标分支
-  worktree 完成合并；也用于直接提交已经位于目标分支上的变更。默认目标为仓库远程
-  默认分支。
+description: 完成 worktree 变更：必要时为 detached checkout 创建 Conventional 分支，提交并 rebase 到目标分支，再从目标 worktree 合并；源、目标相同时直接提交。默认目标为远程默认分支。
 ---
 
 # Worktree Rebase/Merge 工作流
 
-使用本 skill 完成 worktree 分支：提交源分支，将其 rebase 到目标分支，再从 checkout
-到该目标分支的 worktree 合并。当当前分支已经是解析出的目标分支时，跳过
-rebase/merge 路径，直接通过 `git-commit` skill 提交。所有源分支和直接提交机制均
-委托给 `git-commit`。
+提交源分支，将其 rebase 到目标分支，再在目标分支的 worktree 中合并。源、目标相同
+时只提交，不执行 rebase 或 merge。Git 提交步骤由 `git-commit` Skill 处理。
 
 ## 默认规则
 

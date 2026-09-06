@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the deterministic structure of an Easydict commit message."""
+"""Validate the deterministic structure of a commit message."""
 
 from __future__ import annotations
 
@@ -239,7 +239,7 @@ def parse_arguments() -> argparse.Namespace:
     """Parse a file or commit validation request."""
 
     parser = argparse.ArgumentParser(
-        description="Validate the Easydict commit-message structure."
+        description="Validate the commit-message structure."
     )
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--file", type=Path, help="UTF-8 message file to validate")
