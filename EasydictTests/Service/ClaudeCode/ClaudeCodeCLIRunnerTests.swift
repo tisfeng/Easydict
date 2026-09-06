@@ -341,6 +341,81 @@ struct ClaudeCodeCLIRunnerTests {
         #expect(environment.isEmpty)
     }
 
+    @Test("explicit effort overrides inherited environment")
+    func explicitEffortOverridesInheritedEnvironment() {
+        let missingSettingsURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathComponent("settings.json")
+
+        let environment = ClaudeCodeRunner.buildProcessEnvironment(
+            settingsURL: missingSettingsURL,
+            inheritedEnvironment: ["CLAUDE_CODE_EFFORT_LEVEL": "max"],
+            effort: "low"
+        )
+
+        #expect(environment["CLAUDE_CODE_EFFORT_LEVEL"] == "low")
+    }
+
+    @Test("explicit effort overrides settings environment without dropping other values")
+    func explicitEffortOverridesSettingsEnvironment() throws {
+        let settingsURL = try makeTemporarySettingsFile(
+            """
+            {
+              "env": {
+                "CLAUDE_CODE_EFFORT_LEVEL": "max",
+                "ANTHROPIC_AUTH_TOKEN": "token-123",
+                "HTTPS_PROXY": "http://127.0.0.1:8317"
+              }
+            }
+            """
+        )
+
+        let environment = ClaudeCodeRunner.buildProcessEnvironment(
+            settingsURL: settingsURL,
+            inheritedEnvironment: ["PATH": "/usr/local/bin"],
+            effort: "low"
+        )
+
+        #expect(environment["CLAUDE_CODE_EFFORT_LEVEL"] == "low")
+        #expect(environment["ANTHROPIC_AUTH_TOKEN"] == "token-123")
+        #expect(environment["HTTPS_PROXY"] == "http://127.0.0.1:8317")
+        #expect(environment["PATH"] == "/usr/local/bin")
+    }
+
+    @Test("default effort preserves external environment precedence")
+    func defaultEffortPreservesExternalEnvironment() throws {
+        let settingsURL = try makeTemporarySettingsFile(
+            """
+            {
+              "env": {
+                "CLAUDE_CODE_EFFORT_LEVEL": "max"
+              }
+            }
+            """
+        )
+
+        let environment = ClaudeCodeRunner.buildProcessEnvironment(
+            settingsURL: settingsURL,
+            inheritedEnvironment: ["CLAUDE_CODE_EFFORT_LEVEL": "high"]
+        )
+
+        #expect(environment["CLAUDE_CODE_EFFORT_LEVEL"] == "max")
+    }
+
+    @Test("default effort does not create an environment override")
+    func defaultEffortDoesNotCreateEnvironmentOverride() {
+        let missingSettingsURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathComponent("settings.json")
+
+        let environment = ClaudeCodeRunner.buildProcessEnvironment(
+            settingsURL: missingSettingsURL,
+            inheritedEnvironment: [:]
+        )
+
+        #expect(environment["CLAUDE_CODE_EFFORT_LEVEL"] == nil)
+    }
+
     // MARK: Private
 
     /// Creates a temporary Claude settings file for loader tests.

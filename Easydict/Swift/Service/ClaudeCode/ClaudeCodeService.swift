@@ -172,6 +172,12 @@ final class ClaudeCodeService: StreamService {
         [ClaudeCodeRunner.defaultModel]
     }
 
+    /// Claude Code accepts aliases and full model identifiers as free-form input.
+    /// It must not participate in the base class's model-list synchronization.
+    override var synchronizesModelWithSupportedModels: Bool {
+        false
+    }
+
     /// Free-form model override without the base class's valid-model coercion.
     ///
     /// The configuration view accepts any alias or full model name, so the base

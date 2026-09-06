@@ -45,6 +45,15 @@
   `ServiceConfigurationKey.cliEffort` 槽位，避免与基类
   `reasoningEffortDefaultsKey`（不兼容的 `ReasoningEffort` 枚举）共用同名存储。
 - `ClaudeCodeCLIRunnerTests` 新增自定义模型透传和空白模型省略 `--model` 的测试。
+- 第七轮（重新 review 修复一）：为 `StreamService` 增加可覆写的模型列表同步能力，
+  `ClaudeCodeService` 将其关闭；延迟到达的 `modelKey`/`supportedModelsKey` 回调仍保留
+  服务配置通知，但不再回写自由文本模型或污染模型列表。
+- 第七轮（重新 review 修复二）：`ClaudeCodeRunner` 在合并继承环境与
+  `~/.claude/settings.json` 的 `env` 后，使用 UI 显式选择的 effort 覆盖
+  `CLAUDE_CODE_EFFORT_LEVEL`；选择默认档时不写入该变量，继续沿用外部配置。
+- 补充自由文本模型延迟回调、effort 环境优先级，以及认证、代理和 PATH 保留的回归测试。
+- `ClaudeCodeServiceTests` 依赖同一组 Defaults 键，测试套件改为串行执行，避免模型迁移
+  用例与其他并发创建 service 的用例互相改写配置。
 
 ### 设计意图
 
@@ -62,6 +71,9 @@
   构建正常。
 - code review 修复后复跑 `ClaudeCodeCLIRunnerTests` + `ClaudeCodeServiceTests`
   两个套件：41 条测试全部通过（含新增迁移测试），TEST SUCCEEDED。
+- 第七轮重新 review 修复：定向运行 `ClaudeCodeCLIRunnerTests` 和
+  `ClaudeCodeServiceTests`，46 条测试全部通过（TEST SUCCEEDED）；
+  `swiftformat --lint` 与 `git diff --check` 均通过。
 - 手动验证：本机 `claude` CLI（v2.1.251）实测别名解析——`sonnet` → `claude-sonnet-5`、
   `opus` → `claude-opus-5`、`haiku` → `claude-haiku-4-5-20251001`；完整 ID
   `claude-opus-4-7` 可用，`opus4.7` 等简写返回模型不存在错误并走 `parseError` 路径。

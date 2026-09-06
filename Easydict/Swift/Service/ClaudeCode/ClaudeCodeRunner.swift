@@ -133,10 +133,12 @@ final class ClaudeCodeRunner: @unchecked Sendable {
     ///
     /// Claude settings sources remain disabled, but the user's configured
     /// `env` block is injected explicitly so auth and proxy settings still
-    /// reach the subprocess.
+    /// reach the subprocess. An explicit effort selection takes precedence
+    /// over inherited and settings-file values.
     static func buildProcessEnvironment(
         settingsURL: URL? = nil,
-        inheritedEnvironment: [String: String] = ProcessInfo.processInfo.environment
+        inheritedEnvironment: [String: String] = ProcessInfo.processInfo.environment,
+        effort: String? = nil
     )
         -> [String: String] {
         var processEnvironment = inheritedEnvironment
@@ -144,6 +146,10 @@ final class ClaudeCodeRunner: @unchecked Sendable {
 
         for (key, value) in settingsEnvironment {
             processEnvironment[key] = value
+        }
+
+        if let effort, !effort.isEmpty {
+            processEnvironment["CLAUDE_CODE_EFFORT_LEVEL"] = effort
         }
 
         return processEnvironment
@@ -227,7 +233,7 @@ final class ClaudeCodeRunner: @unchecked Sendable {
                     process.currentDirectoryURL = FileManager.default.temporaryDirectory
                     // Keep Claude settings sources disabled, but explicitly inject
                     // user-configured env vars such as auth and proxy settings.
-                    process.environment = Self.buildProcessEnvironment()
+                    process.environment = Self.buildProcessEnvironment(effort: effort)
 
                     let startTime = Date()
                     // Raw stderr bytes; decoded to String once in the termination handler
