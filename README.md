@@ -55,18 +55,11 @@ request requirements.
 
 ### AI Coding
 
-We recommend using `Codex` for AI-assisted development in Easydict, especially for codebase exploration, issue diagnosis, patch generation, and refactoring.
-
-- Prefer the latest available GPT models, such as `GPT-5.4`.
-- Review AI-generated changes carefully before opening a PR, and make sure the result matches this repository's contribution workflow and coding standards.
-
-#### AI Commit Helper
-
-This repository supports `Codex` and `Claude` for automatic commit message generation.
-
-- Stage your changes first, then run `$git-commit`.
-- The command drafts an Angular-style English commit message from the staged diff and provides a Simplified Chinese preview.
-- No commit is created until you explicitly approve the generated message.
+We welcome contributions assisted by programming agents such as `Codex` and
+`Claude`. Prefer the latest available GPT or Claude model suitable for complex
+coding tasks, and carefully review and test the final changes. See the Chinese
+[contribution guide](./CONTRIBUTING.md) for the Agent workflow and
+review requirements.
 
 ## Issue/PR Triage Notes
 

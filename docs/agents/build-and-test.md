@@ -22,31 +22,27 @@
   独立验证任务默认不改测试；获准编写测试时才修改分配的测试文件及 fixture。
 - `tester` 返回修改路径、实际命令、结果及失败或阻塞证据；生产缺陷交回主 Agent，
   主 Agent 负责修复、复核、history 和最终交付。
-- 无法发现 custom agent 时，主 Agent 读取 TOML 的模型、推理强度与完整指令，使用
-  显式参数调用并说明回退。工具或配置不可用时由主 Agent 完成必要验证；用户指定
-  精确模型为硬性条件时报告无法满足的部分，不静默替换。
+- custom agent 的选择、显式调用回退和不可用处理遵循
+  [`request-boundary.md`](request-boundary.md#子代理委派与回退)。
 
 ## 任务收尾：独立 review 与测试
 
-- 有实际行为风险的 implementation 初步完成后，优先同时启用只读 `reviewer` 和
-  `tester`：前者使用 `.agents/skills/review/SKILL.md`，后者编写必要测试并验证。
-  模型与推理强度以 `.codex/agents/reviewer.toml` 和 `.codex/agents/tester.toml` 为准，
-  不随主任务模型切换。简单文档、低风险配置或小改动不机械启动两个子代理。
+- 有实际行为风险的 implementation 优先使用只读 `reviewer`；需要编写测试或复杂验证时
+  使用 `tester`。两项工作能够独立开展时可以并行。模型与推理强度以
+  `.codex/agents/reviewer.toml` 和 `.codex/agents/tester.toml` 为准，不随主任务模型切换。
+  简单文档、低风险配置或小改动由主 Agent 完成必要检查，不机械启动子代理。
 - 主 Agent 在第一次写入前保存初始 HEAD、分层 diff、任务相关 untracked 内容与路径
   归属；交接时给出行为目标、允许范围和冻结实现快照。reviewer 独立判断，不能只
   读取作者总结。tester 只写分配的测试/fixture，主 Agent 暂停相关生产编辑直至首轮
   结果返回；必须修改时通知两者快照失效。
-- 首轮可并行审查实现与编写测试。完成后主 Agent 核验 finding，在已有实施授权内
-  修复真实问题；无根据或超范围建议说明原因，不盲从。新测试及修复交 reviewer 增量
-  复核，由 tester 运行受影响的回归。最终两个结果覆盖同一最终内容快照，再进入交付。
+- 审查或测试返回后，主 Agent 核验 finding，在已有实施授权内修复真实问题；无根据或
+  超范围建议说明原因，不盲从。新增测试或修复后，按风险进行增量复核和受影响回归。
+  交付前，实际采用的审查和验证结果必须覆盖最终内容快照。
 - 不设“固定两轮后通过”；有新修复就按风险复验，没有新变化不重复空转。有效阻塞
   finding、失败验证或必要证据缺失时不能声称完成，也不能自动提交；继续可修复部分，
   需产品决策或新增授权时报告具体阻塞。
-- 不可委派时主 Agent 完成必要审查/验证并说明独立性缺失。custom reviewer 不可发现时，
-  读取其 TOML 的模型、推理强度与完整指令，以相同配置的只读子任务显式回退，
-  不声称已加载 custom role。无法满足配置时说明原因，不静默替换；用户将精确配置
-  设为硬性要求时报告受阻部分，否则由主 Agent 完成必要审查并说明降级。
-  reviewer 不递归委派、不修复、不处理 GitHub；远程动作由获准的 PR 适配器执行。
+- 不可委派时按 [`request-boundary.md`](request-boundary.md#子代理委派与回退) 回退并说明
+  独立性缺失。reviewer 不修复、不处理 GitHub；远程动作由获准的 PR 适配器执行。
 - 单独 review 默认只读；此收尾规则不将 review、planning 或 staged 提交请求升级为
   修复任务，也不授权改写用户 staged 代码。测试运行的共享 workspace 约束仍然有效。
 
