@@ -1,13 +1,14 @@
 # Agent 覆盖规则
 
-这个目录存放当前仓库的 agent overlay 规则。它们用于补充或收紧上游 skill 的默认行为，避免把本地约束写进可能被 `skills add --force` 覆盖的 skill 镜像目录。
+这个目录存放当前仓库的 agent overlay 规则。它们用于补充上游 skill 的本地行为，避免把本地约束写进可能被 `skills add --force` 覆盖的 skill 镜像目录。
 
 ## 使用方式
 
 - 先按 `AGENTS.md` 判断是否需要调用某个 skill。
 - 读取目标 skill 的 `SKILL.md`，理解上游默认工作流和输出要求。
 - 如果 `AGENTS.md` 指向本目录中的 overlay 文件，在执行该 skill 前继续读取 overlay。
-- 当 overlay 和上游 skill 规则冲突时，优先采用更严格、更贴近当前仓库需求的规则。
+- 在系统、开发者及用户有效指令之内，overlay 只覆盖其明确声明的本地职责；其他部分
+  遵循原 skill。冲突按来源和适用范围判断，不按“更严格”推断优先级或新增审批要求。
 
 ## 文件约定
 
