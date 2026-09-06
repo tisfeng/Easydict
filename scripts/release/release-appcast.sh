@@ -30,6 +30,7 @@ validate_candidate() {
         --build "$RELEASE_SAVED_BUILD" \
         --channel "$RELEASE_CHANNEL" \
         --release-notes-url "$(release_notes_url)" \
+        --notes-file "$RELEASE_NOTES_FILE" \
         --download-url "$(release_download_prefix)Easydict.zip" \
         "${transition_args[@]}"
 }
@@ -41,6 +42,7 @@ prepare_channel_transition() {
 
     require_release_worktree
     load_release_metadata
+    verify_release_notes_snapshot
     require_release_file "$RELEASE_WORKTREE/appcast.xml"
     require_release_file "$RELEASE_APPCAST_PATH"
 
@@ -77,6 +79,7 @@ generate_candidate() {
 
     require_release_worktree
     load_release_metadata
+    verify_release_notes_snapshot
     require_release_file "$RELEASE_ZIP_PATH"
     require_release_file "$RELEASE_WORKTREE/appcast.xml"
     generate_appcast="$(resolve_generate_appcast)"
@@ -104,18 +107,12 @@ generate_candidate() {
     "${command[@]}"
     require_release_file "$RELEASE_APPCAST_PATH"
 
-    local -a set_link_args=(
-        --appcast "$RELEASE_APPCAST_PATH"
-        --version "$RELEASE_VERSION"
-        --build "$RELEASE_SAVED_BUILD"
-        --url "$(release_notes_url)"
-        --repo "$RELEASE_REPOSITORY"
-    )
-    if [[ -n "$RELEASE_NOTES_FILE" ]]; then
-        set_link_args+=(--notes-file "$RELEASE_NOTES_FILE")
-    fi
-
-    python3 "$SCRIPT_DIR/release-appcast.py" set-link "${set_link_args[@]}"
+    python3 "$SCRIPT_DIR/release-appcast.py" set-link \
+        --appcast "$RELEASE_APPCAST_PATH" \
+        --version "$RELEASE_VERSION" \
+        --build "$RELEASE_SAVED_BUILD" \
+        --url "$(release_notes_url)" \
+        --notes-file "$RELEASE_NOTES_FILE"
     xmllint --noout "$RELEASE_APPCAST_PATH"
     validate_candidate "$RELEASE_WORKTREE/appcast.xml"
 }
@@ -126,6 +123,7 @@ install_candidate() {
 
     require_release_worktree
     load_release_metadata
+    verify_release_notes_snapshot
     require_release_file "$RELEASE_APPCAST_PATH"
     validate_candidate "$RELEASE_WORKTREE/appcast.xml"
 

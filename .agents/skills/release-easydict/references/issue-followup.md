@@ -80,7 +80,7 @@ schema-v1 文件是审计数据，不自动复用、迁移或删除。
 ```bash
 mkdir -p .tmp/release/<version>/state/issue-followup
 
-.agents/skills/release-easydict/scripts/release_content.py capture \
+python3 .agents/skills/release-easydict/scripts/release_content.py capture \
   --repo tisfeng/Easydict \
   --version <version> \
   --output .tmp/release/<version>/state/issue-followup/release-content.json

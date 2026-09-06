@@ -8,6 +8,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[3]
 REDRAFT = ROOT / "scripts/release/release-redraft.sh"
+RELEASE_NOTES = ROOT / "scripts/release/release_notes.py"
 
 
 def run(command, *, cwd=None, env=None):
@@ -30,8 +31,42 @@ class ReleaseRedraftGitHubTests(unittest.TestCase):
             tools = temporary / "tools"
             repository.mkdir()
             tools.mkdir()
-            replacement = repository / f".tmp/release/{version}/replacement"
+            release_dir = repository / f".tmp/release/{version}"
+            replacement = release_dir / "replacement"
+            state = release_dir / "state"
+            worktree = release_dir / "worktree"
+            notes = worktree / f"changelog/{version}.md"
             replacement.mkdir(parents=True)
+            state.mkdir()
+            notes.parent.mkdir(parents=True)
+            run(["git", "init", "-b", "release", str(worktree)])
+            run(["git", "config", "user.name", "Release Test"], cwd=worktree)
+            run(
+                ["git", "config", "user.email", "release@example.com"],
+                cwd=worktree,
+            )
+            notes.write_text(
+                "## What's Changed\n\n* Replacement release\n",
+                encoding="utf-8",
+            )
+            run(
+                ["git", "add", str(notes.relative_to(worktree))],
+                cwd=worktree,
+            )
+            run(["git", "commit", "-m", "release notes"], cwd=worktree)
+            run(
+                [
+                    "python3",
+                    str(RELEASE_NOTES),
+                    "snapshot",
+                    "--file",
+                    str(notes),
+                    "--version",
+                    version,
+                    "--state",
+                    str(state / "release-notes.json"),
+                ]
+            )
             old_commit = "1" * 40
             old_tag = "2" * 40
             (replacement / "metadata.env").write_text(

@@ -8,6 +8,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[3]
 BRANCH_SYNC = ROOT / "scripts/release/release-branch-sync.sh"
 PUBLISH_GIT = ROOT / "scripts/release/release-publish-git.sh"
+RELEASE_NOTES = ROOT / "scripts/release/release_notes.py"
 
 
 def run(command, *, cwd=None, env=None, check=True):
@@ -49,7 +50,20 @@ class ReleaseGitFlowTests(unittest.TestCase):
             configure_repository(repository)
             (repository / ".gitignore").write_text(".tmp/\n", encoding="utf-8")
             (repository / "base.txt").write_text("base\n", encoding="utf-8")
-            run(["git", "add", ".gitignore", "base.txt"], cwd=repository)
+            notes = repository / f"changelog/{version}.md"
+            notes.parent.mkdir()
+            notes_text = "## What's Changed\n\n* Test release\n"
+            notes.write_text(notes_text, encoding="utf-8")
+            run(
+                [
+                    "git",
+                    "add",
+                    ".gitignore",
+                    "base.txt",
+                    str(notes.relative_to(repository)),
+                ],
+                cwd=repository,
+            )
             run(["git", "commit", "-m", "base"], cwd=repository)
             base_commit = run(
                 ["git", "rev-parse", "HEAD"], cwd=repository
@@ -99,6 +113,19 @@ class ReleaseGitFlowTests(unittest.TestCase):
                 + "\n",
                 encoding="utf-8",
             )
+            run(
+                [
+                    "python3",
+                    str(RELEASE_NOTES),
+                    "snapshot",
+                    "--file",
+                    str(release_worktree / f"changelog/{version}.md"),
+                    "--version",
+                    version,
+                    "--state",
+                    str(state / "release-notes.json"),
+                ]
+            )
             env = os.environ.copy()
             env.update(
                 {
@@ -108,6 +135,33 @@ class ReleaseGitFlowTests(unittest.TestCase):
                     "DRAFT_MODE": "normal",
                 }
             )
+
+            release_notes = release_worktree / f"changelog/{version}.md"
+            release_notes.write_text("## Drifted\n", encoding="utf-8")
+            rejected_push = run(
+                [str(BRANCH_SYNC), "push-version"],
+                cwd=repository,
+                env=env,
+                check=False,
+            )
+            self.assertNotEqual(rejected_push.returncode, 0)
+            self.assertIn(
+                "unstaged release notes differ from the frozen release commit",
+                rejected_push.stderr,
+            )
+            missing_drifted_release = run(
+                [
+                    "git",
+                    "--git-dir",
+                    str(remote),
+                    "show-ref",
+                    "--verify",
+                    f"refs/heads/release/sync-{version}",
+                ],
+                check=False,
+            )
+            self.assertNotEqual(missing_drifted_release.returncode, 0)
+            release_notes.write_text(notes_text, encoding="utf-8")
 
             run([str(BRANCH_SYNC), "push-version"], cwd=repository, env=env)
             for ref in ("refs/heads/dev", "refs/heads/main"):

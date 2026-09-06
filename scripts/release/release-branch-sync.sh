@@ -361,6 +361,7 @@ push_draft_refs() {
 
     require_release_worktree
     load_release_metadata
+    verify_release_notes_snapshot
     if release_is_replacement; then
         "$SCRIPT_DIR/release-redraft-git.sh" push-refs
         return
