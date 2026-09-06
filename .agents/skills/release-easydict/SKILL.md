@@ -40,9 +40,11 @@ Release 生命周期动作：
 
 ## 授权边界
 
-- 规划、解释、检查或方案请求保持只读。
-- `issue-followup plan` 可以查询 GitHub 并写入被忽略的本地状态，但绝不评论或关闭
-  Issue。
+- 普通规划、解释、检查或“先给方案”请求保持只读，不因文中提到命令就运行它。
+- 用户明确要求运行具体版本的 `issue-followup plan` 时，该命令会查询 GitHub 并写入
+  `.tmp/release/<version>/state/issue-followup/` 下被忽略的本地状态，不评论或关闭 Issue。
+  这属于获准的本地准备动作，不等于无副作用的 planning。用户禁止写文件时仅查询和
+  分析，不运行该命令；必要时说明缺少可持久化的计划状态。
 - 只有当用户针对具体版本或运行明确请求 `draft`、`publish`、`release`、Release
   `resume`、`issue-followup apply` 或 `issue-followup resume` 时，才执行远程修改。
 - 用户明确请求 `publish` 或 `release` 后，同一版本通过远程发布验证时，也同时授权其

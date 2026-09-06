@@ -18,9 +18,12 @@ description: >
      `GIT_PAGER=cat git --no-pager diff --staged --no-ext-diff --no-textconv --unified=5`
    - `git branch --show-current`
    - `git log --oneline -10`
-2. 在显式 `/git commit` 交付模式下，如果初始暂存 diff 为空，只运行一次
-   `git add .`，然后重新运行 `git status` 和暂存区原始 patch 命令再继续。
+2. 在显式 `/git commit` 交付模式下，如果初始暂存 diff 为空且用户未限定路径或禁止
+   暂存，只运行一次 `git add .`，再重新运行 `git status` 和暂存区原始 patch 命令。
+   用户限定路径且允许暂存时只暂存指定路径；禁止暂存或仅要求提交已有暂存内容时，
+   报告无可提交内容，不扩大范围。
 3. 如果已经存在已暂存变更，不运行 `git add`；提交范围仅限当前暂存内容。
+   当前 staged 内容超出用户指定范围时，保留索引并报告范围冲突，不自动重写暂存边界。
 4. 如果唯一允许的一次 `git add .` 后暂存 diff 仍为空，则停止并要求用户先暂存文件。
 5. 将暂存区原始 patch 作为唯一事实来源进行分析。针对单个路径时复用同一命令形式，
    并追加 `-- <path>`。
@@ -126,7 +129,8 @@ python3 .agents/skills/git-commit/scripts/validate-commit-message.py \
   --mode "${COMMIT_MESSAGE_MODE}"
 ```
 
-提交前校验失败时停止，不运行 `git commit`，并保留 `commit_message.txt` 供修复。校验器
+提交前校验失败时停止提交，保留 `commit_message.txt`；可以修正本次生成的消息并重新
+校验，通过后继续，不因可修复的格式错误要求用户重新授权。校验器
 只检查可确定的结构：Angular 标题、80 字符限制、恰好三个正文段落、双语分隔线、两个
 语言区块一致的 type/scope/breaking 标记，以及可选的最终 `BREAKING CHANGE:` footer。
 它不判断翻译质量或三个正文段落的语义是否准确，Agent 仍须按真实 staged diff 审核内容。
@@ -223,7 +227,8 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 - 不要在单个 shell 命令中将 `git commit` 与提交信息文件的创建或清理串联起来。
 - 不要在单个 shell 命令中将提交前校验、`git commit`、提交后校验或消息文件清理
   串联起来；每一步成功后再进入下一步。
-- 将 `git commit` 视为唯一需要仓库写入权限的步骤。
+- 暂存与提交都需要对应 Git 写入权限；按实际工具权限请求提权，不将权限请求误当作
+  缺少用户的任务授权。
 - 如果 `git commit` 在创建 `.git/index.lock` 时因 `Operation not permitted` 等
   sandbox 权限错误失败，立即使用所需提权重新运行
   `git commit -F commit_message.txt`。
