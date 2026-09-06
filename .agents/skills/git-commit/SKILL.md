@@ -1,9 +1,6 @@
 ---
 name: git-commit
-description: >
-  仅根据已暂存内容创建 Angular-style 提交，并为调用方工作流推导 Conventional
-  任务分支名。支持显式交付和受保护的 implementation 自动交付，为非英语用户生成
-  双语提交信息，并且绝不推送。
+description: 根据已暂存内容创建 Angular-style 提交，并为调用方工作流推导 Conventional 任务分支名。支持显式交付和受保护的 implementation 自动交付；为非英语用户生成双语提交信息，且不推送。
 ---
 
 # Git 提交流程
@@ -18,9 +15,12 @@ description: >
      `GIT_PAGER=cat git --no-pager diff --staged --no-ext-diff --no-textconv --unified=5`
    - `git branch --show-current`
    - `git log --oneline -10`
-2. 在显式 `/git commit` 交付模式下，如果初始暂存 diff 为空，只运行一次
-   `git add .`，然后重新运行 `git status` 和暂存区原始 patch 命令再继续。
+2. 在显式 `/git commit` 交付模式下，如果初始暂存 diff 为空且用户未限定路径或禁止
+   暂存，只运行一次 `git add .`，再重新运行 `git status` 和暂存区原始 patch 命令。
+   用户限定路径且允许暂存时只暂存指定路径；禁止暂存或仅要求提交已有暂存内容时，
+   报告无可提交内容，不扩大范围。
 3. 如果已经存在已暂存变更，不运行 `git add`；提交范围仅限当前暂存内容。
+   当前 staged 内容超出用户指定范围时，保留索引并报告范围冲突，不自动重写暂存边界。
 4. 如果唯一允许的一次 `git add .` 后暂存 diff 仍为空，则停止并要求用户先暂存文件。
 5. 将暂存区原始 patch 作为唯一事实来源进行分析。针对单个路径时复用同一命令形式，
    并追加 `-- <path>`。
@@ -126,7 +126,8 @@ python3 .agents/skills/git-commit/scripts/validate-commit-message.py \
   --mode "${COMMIT_MESSAGE_MODE}"
 ```
 
-提交前校验失败时停止，不运行 `git commit`，并保留 `commit_message.txt` 供修复。校验器
+提交前校验失败时停止提交，保留 `commit_message.txt`；可以修正本次生成的消息并重新
+校验，通过后继续，不因可修复的格式错误要求用户重新授权。校验器
 只检查可确定的结构：Angular 标题、80 字符限制、恰好三个正文段落、双语分隔线、两个
 语言区块一致的 type/scope/breaking 标记，以及可选的最终 `BREAKING CHANGE:` footer。
 它不判断翻译质量或三个正文段落的语义是否准确，Agent 仍须按真实 staged diff 审核内容。
@@ -220,10 +221,10 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 - 除非用户明确要求确认模式，否则将 `git-commit` 请求视为提交授权。
 - 在确认模式下，获得明确批准前不要创建 `commit_message.txt` 或运行 `git commit`。
 - 写入 `commit_message.txt` 的提交信息必须完全相同，且不包含 Markdown 代码围栏。
-- 不要在单个 shell 命令中将 `git commit` 与提交信息文件的创建或清理串联起来。
-- 不要在单个 shell 命令中将提交前校验、`git commit`、提交后校验或消息文件清理
-  串联起来；每一步成功后再进入下一步。
-- 将 `git commit` 视为唯一需要仓库写入权限的步骤。
+- 消息文件创建、提交前校验、`git commit`、提交后校验和清理分别执行；前一步成功后
+  再继续。
+- 暂存与提交都需要对应 Git 写入权限；按实际工具权限请求提权，不将权限请求误当作
+  缺少用户的任务授权。
 - 如果 `git commit` 在创建 `.git/index.lock` 时因 `Operation not permitted` 等
   sandbox 权限错误失败，立即使用所需提权重新运行
   `git commit -F commit_message.txt`。
@@ -249,8 +250,8 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 - `chore`：进行不属于其他类型的日常维护。
 - `revert`：回滚此前变更。
 
-尽量根据涉及的模块、功能、服务或组件选择 `scope`。优先使用 `openai`、`screenshot`
-或 `settings` 等具体 scope，而不是 `app` 或 `misc` 等宽泛标签。
+尽量根据涉及的模块、功能、服务或组件选择 `scope`。优先使用 `parser`、`api` 或
+`settings` 等具体 scope，而不是 `app` 或 `misc` 等宽泛标签。
 
 ## Branch Name Guidance
 
@@ -269,26 +270,26 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 仅英文提交信息：
 
 ```text
-fix(screenshot): defer overlay capture until view appears
+fix(ui): defer rendering until view appears
 
-Overlay capture started before the view hierarchy was stable, creating a startup race in screenshot translation. When layout was still settling, that early capture could trigger conflicts or crashes.
+UI rendering started before its container was ready, creating a startup race. When layout was still settling, early rendering could trigger conflicts or produce blank content.
 
-Move screenshot capture out of the overlay initializer. Start it after the view appears and layout is ready so the capture path observes stable UI state.
+Move rendering out of the initializer. Start it after the view appears and layout is ready so the UI observes stable state.
 
-This restores stable screenshot translation startup. It also reduces layout timing risk without changing the user-facing capture flow.
+This restores stable UI startup and reduces layout timing risk without changing the user-facing flow.
 ```
 
 非英文双语提交信息。按以下顺序将这些区块和分隔线写入 `commit_message.txt`，不要包含
 Markdown 代码围栏：
 
 ```text
-fix(screenshot): 推迟悬浮层截图直到视图出现后再执行
+fix(ui): 推迟渲染直到视图出现后再执行
 
-悬浮层在视图层级尚未稳定时就启动截图，导致截图翻译启动阶段出现竞态。布局仍在变化时，过早截图可能触发布局冲突或崩溃。
+界面容器尚未准备就绪时就开始渲染，导致启动阶段出现竞态。布局仍在变化时，过早渲染可能触发冲突或出现空白内容。
 
-将截图操作从悬浮层初始化方法中移出。改为在视图出现且布局就绪后再开始截图，让截图流程读取稳定的 UI 状态。
+将渲染操作从初始化流程中移出，改为在视图出现且布局就绪后再开始，让界面读取稳定状态。
 
-此修改恢复了截图翻译启动流程的稳定性。同时降低布局时序风险，并且不改变用户可见的截图流程。
+此修改恢复了稳定的界面启动流程，降低布局时序风险，并且不改变用户可见流程。
 ```
 
 ```text
@@ -296,11 +297,11 @@ fix(screenshot): 推迟悬浮层截图直到视图出现后再执行
 ```
 
 ```text
-fix(screenshot): defer overlay capture until view appears
+fix(ui): defer rendering until view appears
 
-Overlay capture started before the view hierarchy was stable, creating a startup race in screenshot translation. When layout was still settling, that early capture could trigger conflicts or crashes.
+UI rendering started before its container was ready, creating a startup race. When layout was still settling, early rendering could trigger conflicts or produce blank content.
 
-Move screenshot capture out of the overlay initializer. Start it after the view appears and layout is ready so the capture path observes stable UI state.
+Move rendering out of the initializer. Start it after the view appears and layout is ready so the UI observes stable state.
 
-This restores stable screenshot translation startup. It also reduces layout timing risk without changing the user-facing capture flow.
+This restores stable UI startup and reduces layout timing risk without changing the user-facing flow.
 ```

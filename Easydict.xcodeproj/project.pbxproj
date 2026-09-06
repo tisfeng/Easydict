@@ -284,7 +284,6 @@
 		03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884732F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift */; };
 		03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */; };
 		03A8847A2F14000100D5C0DE /* BingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884792F14000100D5C0DE /* BingServiceTests.swift */; };
-		A5D1E5B60000000000000001 /* DeepLServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D1E5B50000000000000001 /* DeepLServiceTests.swift */; };
 		03A9BE952E70631B0013E645 /* SystemUtility+Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */; };
 		03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
@@ -542,12 +541,14 @@
 		96B2F1C52C07782400AD3126 /* RepoInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */; };
 		96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */; };
 		A0CCFCC574EE46559C7C6E39 /* ClaudeCodeDebugWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD19E15F95144B0B2CAF66F /* ClaudeCodeDebugWindow.swift */; };
+		A12760012026090500000001 /* ReverseTranslationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12760012026090500000002 /* ReverseTranslationTests.swift */; };
 		A13F30938343423C89FB9B4C /* ClaudeCodeCLIRunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */; };
 		A1C1A10130ABCDEF00112233 /* ClaudeSSEParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */; };
 		A1C1A10430ABCDEF00112233 /* ClaudeSSEParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C1A10330ABCDEF00112233 /* ClaudeSSEParser.swift */; };
 		A1D1807B2F8D100100B1C0D1 /* ThrottleGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D1807A2F8D100100B1C0D1 /* ThrottleGate.swift */; };
 		A1D1807E2F8D100100B1C0D1 /* ThrottleGateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D1807D2F8D100100B1C0D1 /* ThrottleGateTests.swift */; };
 		A2016EDA90ED45B5B66FA986 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14921B68C1D645268F93668E /* AnalyticsService.swift */; };
+		A5D1E5B60000000000000001 /* DeepLServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D1E5B50000000000000001 /* DeepLServiceTests.swift */; };
 		A94F9CB9D704426DB91B25D3 /* DeviceSystemInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54300FF4F544CC2A180FE53 /* DeviceSystemInfo.swift */; };
 		A9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift */; };
 		A9F10002B3C24D5E8A000002 /* MDictKeyBlocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F10002B3C24D5E8A000002 /* MDictKeyBlocks.swift */; };
@@ -605,6 +606,7 @@
 		EA9943F02B5354C400EE7B97 /* ShowWindowPositionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */; };
 		EA9943F22B5358BF00EE7B97 /* Language+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943F12B5358BF00EE7B97 /* Language+Extension.swift */; };
 		EAE3D3502B62E9DE001EE3E3 /* GlobalContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */; };
+		EDE0A51A08BB4905843AAD48 /* ClaudeCodeEffort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A43B01567C41CA8CF4109B /* ClaudeCodeEffort.swift */; };
 		F02EB0F1EC964084A816E36F /* ClaudeCodeRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */; };
 		F24D63E3FB144383A9B80386 /* MDictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983925DCBA81465EAE22415B /* MDictService.swift */; };
 		FA0D2894537C47E1AF63D495 /* QueryServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */; };
@@ -774,7 +776,6 @@
 		033C6DC02ED9D6D700AC39FC /* DeepLService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLService.swift; sourceTree = "<group>"; };
 		033C6DC12ED9D6D700AC39FC /* DeepLService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeepLService+Translate.swift"; sourceTree = "<group>"; };
 		033C6DC22ED9D6D700AC39FC /* DeepLTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLTranslateResponse.swift; sourceTree = "<group>"; };
-		A5D1E5B50000000000000001 /* DeepLServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLServiceTests.swift; sourceTree = "<group>"; };
 		033C6DC72ED9E2E500AC39FC /* NiuTransService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NiuTransService.swift; sourceTree = "<group>"; };
 		033C6DC82ED9E2E500AC39FC /* NiuTransTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NiuTransTranslateResponse.swift; sourceTree = "<group>"; };
 		033E8A0A2E4E5318008A7110 /* ocr-en-text-two-columns-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-two-columns-2.png"; sourceTree = "<group>"; };
@@ -1210,6 +1211,7 @@
 		0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeService.swift; sourceTree = "<group>"; };
 		14921B68C1D645268F93668E /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeRunner.swift; sourceTree = "<group>"; };
+		22A43B01567C41CA8CF4109B /* ClaudeCodeEffort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeEffort.swift; sourceTree = "<group>"; };
 		23C50DB027FC5F26D2AED298 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		24832951EE17407C852B2258 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
 		26FFFD863EBF442CB4FCE765 /* MDictManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictManager.swift; sourceTree = "<group>"; };
@@ -1279,11 +1281,13 @@
 		96DFEB812B82588000F5C7EF /* EZTableTipsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableTipsCell.h; sourceTree = "<group>"; };
 		96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableTipsCell.m; sourceTree = "<group>"; };
 		983925DCBA81465EAE22415B /* MDictService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictService.swift; sourceTree = "<group>"; };
+		A12760012026090500000002 /* ReverseTranslationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseTranslationTests.swift; sourceTree = "<group>"; };
 		A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSSEParserTests.swift; sourceTree = "<group>"; };
 		A1C1A10330ABCDEF00112233 /* ClaudeSSEParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSSEParser.swift; sourceTree = "<group>"; };
 		A1D1807A2F8D100100B1C0D1 /* ThrottleGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGate.swift; sourceTree = "<group>"; };
 		A1D1807D2F8D100100B1C0D1 /* ThrottleGateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGateTests.swift; sourceTree = "<group>"; };
 		A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.debug.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.debug.xcconfig"; sourceTree = "<group>"; };
+		A5D1E5B50000000000000001 /* DeepLServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLServiceTests.swift; sourceTree = "<group>"; };
 		A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OrderedDictionary+Variadic.m"; sourceTree = "<group>"; };
 		AA0000022E00000000000001 /* QueryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecord.swift; sourceTree = "<group>"; };
 		AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeCLIRunnerTests.swift; sourceTree = "<group>"; };
@@ -3526,6 +3530,14 @@
 			path = Support;
 			sourceTree = "<group>";
 		};
+		A12760012026090500000003 /* Query */ = {
+			isa = PBXGroup;
+			children = (
+				A12760012026090500000002 /* ReverseTranslationTests.swift */,
+			);
+			path = Query;
+			sourceTree = "<group>";
+		};
 		B4D8B2EB2F9E1D820088A304 /* EZWindowPatch */ = {
 			isa = PBXGroup;
 			children = (
@@ -3538,6 +3550,7 @@
 		BE5912DE778CDCD8495CA4E5 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				A12760012026090500000003 /* Query */,
 				02DEDC0420260430000000C1 /* Markdown */,
 				030732CB2F24862A0001382A /* OCR */,
 			);
@@ -3756,6 +3769,7 @@
 		ED3EC55898A147C8B7CAFBD5 /* ClaudeCode */ = {
 			isa = PBXGroup;
 			children = (
+				22A43B01567C41CA8CF4109B /* ClaudeCodeEffort.swift */,
 				471884F63A2B43A3BF8F1C7D /* ClaudeCodeError.swift */,
 				4D5E6F7A8B9C0D1E2F3A4B5C /* ClaudeCodeEventParser.swift */,
 				2B3C4D5E6F7A8B9C0D1E2F3A /* ClaudeCodeLogger.swift */,
@@ -4194,6 +4208,7 @@
 			files = (
 				1CC83D91B3954BE7894CC2C8 /* MDictReaderTests.swift in Sources */,
 				02DEDC0420260430000000BE /* MarkdownRendererTests.swift in Sources */,
+				A12760012026090500000001 /* ReverseTranslationTests.swift in Sources */,
 				C09AC0F264D246FC90F9A277 /* AppleServiceTests.swift in Sources */,
 				03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */,
 				03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */,
@@ -4481,6 +4496,7 @@
 				29519C9FFC6C41828386F089 /* ClaudeCodeError.swift in Sources */,
 				3C4D5E6F7A8B9C0D1E2F3A4B /* ClaudeCodeEventParser.swift in Sources */,
 				1A2B3C4D5E6F7A8B9C0D1E2F /* ClaudeCodeLogger.swift in Sources */,
+				EDE0A51A08BB4905843AAD48 /* ClaudeCodeEffort.swift in Sources */,
 				F02EB0F1EC964084A816E36F /* ClaudeCodeRunner.swift in Sources */,
 				2A2FFF4289154137B673F7FA /* ClaudeCodeService.swift in Sources */,
 				A0CCFCC574EE46559C7C6E39 /* ClaudeCodeDebugWindow.swift in Sources */,
@@ -4868,101 +4884,101 @@
 			name = Release;
 		};
 		C99EEB2D2385796900FEE666 /* Debug */ = {
-	baseConfigurationReference = 06E15747A7BD34D510ADC6A8;
-	buildSettings = {
-		"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES" = "";
-		"ASSETCATALOG_COMPILER_APPICON_NAME" = "Easydict-26";
-		"ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS" = NO;
-		"AUTOMATION_APPLE_EVENTS" = YES;
-		"CLANG_ENABLE_MODULES" = YES;
-		"CODE_SIGN_ENTITLEMENTS" = "Easydict/App/Easydict-debug.entitlements";
-		"CODE_SIGN_IDENTITY" = "$CODE_SIGN_IDENTITY";
-		"CODE_SIGN_STYLE" = "$CODE_SIGN_STYLE";
-		"COMBINE_HIDPI_IMAGES" = YES;
-		"COPY_PHASE_STRIP" = NO;
-		"CURRENT_PROJECT_VERSION" = 65;
-		"DEAD_CODE_STRIPPING" = YES;
-		"DEBUG_INFORMATION_FORMAT" = dwarf;
-		"DEVELOPMENT_TEAM" = "$(DEVELOPMENT_TEAM)";
-		"ENABLE_APP_SANDBOX" = NO;
-		"ENABLE_DEBUG_DYLIB" = YES;
-		"ENABLE_HARDENED_RUNTIME" = YES;
-		"ENABLE_TESTING_SEARCH_PATHS" = NO;
-		"ENABLE_USER_SCRIPT_SANDBOXING" = NO;
-		"FRAMEWORK_SEARCH_PATHS" = "$(inherited)";
-		"GCC_GENERATE_DEBUGGING_SYMBOLS" = YES;
-		"GCC_PREFIX_HEADER" = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
-		"INFOPLIST_FILE" = "$(TARGET_NAME)/App/Info-debug.plist";
-		"INFOPLIST_KEY_LSApplicationCategoryType" = "public.app-category.utilities";
-		"LD_RUNPATH_SEARCH_PATHS" = (
-			"$(inherited)",
-			"@executable_path/../Frameworks",
-		);
-		"MACOSX_DEPLOYMENT_TARGET" = "13.0";
-		"MARKETING_VERSION" = "2.22.0";
-		"PRODUCT_BUNDLE_IDENTIFIER" = "com.izual.Easydict-debug";
-		"PRODUCT_MODULE_NAME" = Easydict;
-		"PRODUCT_NAME" = "Easydict-debug";
-		"RUNTIME_EXCEPTION_ALLOW_JIT" = YES;
-		"RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION" = YES;
-		"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "DEBUG AGENT_CLI_DEBUG $(inherited)";
-		"SWIFT_EMIT_LOC_STRINGS" = YES;
-		"SWIFT_OBJC_BRIDGING_HEADER" = "Easydict/App/Easydict-Bridging-Header.h";
-		"SWIFT_OPTIMIZATION_LEVEL" = "-Onone";
-		"SWIFT_VERSION" = "5.0";
-	};
-	isa = XCBuildConfiguration;
-	name = Debug;
-};
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "";
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Easydict-26";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				AUTOMATION_APPLE_EVENTS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Easydict/App/Easydict-debug.entitlements";
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
+				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 65;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_DEBUG_DYLIB = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_TESTING_SEARCH_PATHS = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
+				INFOPLIST_FILE = "$(TARGET_NAME)/App/Info-debug.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 2.22.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.Easydict-debug";
+				PRODUCT_MODULE_NAME = Easydict;
+				PRODUCT_NAME = "Easydict-debug";
+				RUNTIME_EXCEPTION_ALLOW_JIT = YES;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG AGENT_CLI_DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
 		C99EEB2E2385796900FEE666 /* Release */ = {
-	baseConfigurationReference = 91E3E579C6DB88658B4BB102;
-	buildSettings = {
-		"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES" = "";
-		"ASSETCATALOG_COMPILER_APPICON_NAME" = "Easydict-26";
-		"ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS" = NO;
-		"AUTOMATION_APPLE_EVENTS" = YES;
-		"CLANG_ENABLE_MODULES" = YES;
-		"CODE_SIGN_ENTITLEMENTS" = "Easydict/App/Easydict.entitlements";
-		"CODE_SIGN_IDENTITY" = "$CODE_SIGN_IDENTITY";
-		"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-		"CODE_SIGN_STYLE" = Manual;
-		"COMBINE_HIDPI_IMAGES" = YES;
-		"COPY_PHASE_STRIP" = NO;
-		"CURRENT_PROJECT_VERSION" = 65;
-		"DEAD_CODE_STRIPPING" = YES;
-		"DEBUG_INFORMATION_FORMAT" = "dwarf-with-dsym";
-		"DEVELOPMENT_TEAM" = "";
-		"DEVELOPMENT_TEAM[sdk=macosx*]" = 45Z6V4YD5U;
-		"ENABLE_APP_SANDBOX" = NO;
-		"ENABLE_DEBUG_DYLIB" = YES;
-		"ENABLE_HARDENED_RUNTIME" = YES;
-		"ENABLE_TESTING_SEARCH_PATHS" = NO;
-		"ENABLE_USER_SCRIPT_SANDBOXING" = NO;
-		"FRAMEWORK_SEARCH_PATHS" = "$(inherited)";
-		"GCC_GENERATE_DEBUGGING_SYMBOLS" = YES;
-		"GCC_PREFIX_HEADER" = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
-		"INFOPLIST_FILE" = "$(TARGET_NAME)/App/Info.plist";
-		"INFOPLIST_KEY_LSApplicationCategoryType" = "public.app-category.utilities";
-		"LD_RUNPATH_SEARCH_PATHS" = (
-			"$(inherited)",
-			"@executable_path/../Frameworks",
-		);
-		"MACOSX_DEPLOYMENT_TARGET" = "13.0";
-		"MARKETING_VERSION" = "2.22.0";
-		"PRODUCT_BUNDLE_IDENTIFIER" = "com.izual.Easydict";
-		"PRODUCT_MODULE_NAME" = Easydict;
-		"PRODUCT_NAME" = "$(TARGET_NAME)";
-		"PROVISIONING_PROFILE_SPECIFIER" = "";
-		"RUNTIME_EXCEPTION_ALLOW_JIT" = YES;
-		"RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION" = YES;
-		"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "$(inherited)";
-		"SWIFT_EMIT_LOC_STRINGS" = YES;
-		"SWIFT_OBJC_BRIDGING_HEADER" = "Easydict/App/Easydict-Bridging-Header.h";
-		"SWIFT_VERSION" = "5.0";
-	};
-	isa = XCBuildConfiguration;
-	name = Release;
-};
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "";
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Easydict-26";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				AUTOMATION_APPLE_EVENTS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Easydict/App/Easydict.entitlements;
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 65;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 45Z6V4YD5U;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_DEBUG_DYLIB = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_TESTING_SEARCH_PATHS = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
+				INFOPLIST_FILE = "$(TARGET_NAME)/App/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 2.22.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.izual.Easydict;
+				PRODUCT_MODULE_NAME = Easydict;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				RUNTIME_EXCEPTION_ALLOW_JIT = YES;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -5097,7 +5113,7 @@
 			repositoryURL = "https://github.com/tisfeng/SelectedTextKit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.6.2;
+				minimumVersion = 2.6.5;
 			};
 		};
 		03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */ = {

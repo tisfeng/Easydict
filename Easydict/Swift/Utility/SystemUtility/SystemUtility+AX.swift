@@ -67,6 +67,11 @@ extension SystemUtility {
                 return true
             }
 
+            if bundleIDAllowListForSelectableTextCheck.contains(frontmostAppBundleID) {
+                logInfo("Frontmost app is in selectable text check allowlist, treat as selectable")
+                return true
+            }
+
             logInfo("Focused UI element not selectable text role: \(roleValue ?? "nil")")
             return false
         } catch {

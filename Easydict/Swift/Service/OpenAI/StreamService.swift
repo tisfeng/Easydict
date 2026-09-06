@@ -224,6 +224,14 @@ public class StreamService: QueryService {
         true
     }
 
+    /// Whether model changes should remain synchronized with the supported-model list.
+    ///
+    /// Services with free-form model input can disable this to prevent delayed
+    /// configuration callbacks from rewriting the user's latest model value.
+    var synchronizesModelWithSupportedModels: Bool {
+        true
+    }
+
     var model: String {
         get {
             var model = Defaults[modelKey]
