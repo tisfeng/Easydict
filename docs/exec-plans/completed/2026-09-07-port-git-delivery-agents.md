@@ -1,7 +1,8 @@
 # 移植本地 Git 交付 Agent 提交链
 
-- 状态：active
+- 状态：completed
 - 创建日期：2026-09-07
+- 完成日期：2026-09-07
 - 负责人：Codex
 - 关联 Issue/PR：无
 
@@ -22,19 +23,24 @@
 - 写入前检查：pass；自动提交资格：eligible。
 - Agent-owned paths：允许修改路径中本任务实际产生差异的文件。
 
-## 工作计划
+## 实施结果
 
 1. [x] 对比两个源提交与 Easydict 当前规则，识别并保留本地的空索引暂存差异。
 2. [x] 移植 `ae847c0e3`：新增 `git_committer`，并将普通本地交付路由到该 Agent。
-3. [ ] 验证第一层配置、完成独立审查并按交付协议创建第一笔本地提交。
-4. [ ] 移植 `4ca75d911`：以 `git_delivery` 取代 `git_committer`，纳入 worktree 集成。
-5. [ ] 验证最终配置、完成独立审查、归档计划并创建第二笔本地提交。
+3. [x] 验证第一层配置、完成独立审查并按 bootstrap fallback 创建第一笔本地提交
+   `4b4504e1f16ace840ca4eb14c8e9418727f38f8b`。
+4. [x] 移植 `4ca75d911`：以 `git_delivery` 取代 `git_committer`，纳入 worktree 集成。
+5. [x] 完成最终配置静态验证和独立审查，归档执行计划，并冻结第二笔本地提交范围。
 
 ## 验收与验证
 
-- 所有 custom agent TOML 可由 `tomllib` 解析，且模型、推理强度、沙箱配置符合源提交。
-- 路由目标与 Markdown 相对链接存在；`git diff --check` 通过。
-- 第一笔提交只包含 `git_committer` 阶段；第二笔提交只包含统一后的 `git_delivery` 阶段和
-  worktree 协议。
+- 所有 custom agent TOML 均由 `tomllib` 解析；最终 `git_delivery` 的名称、模型、推理
+  强度、沙箱及 prepare/apply 操作均符合源提交。
+- 根路由、Git 工作流和 worktree Skill 均指向 `git_delivery`；活跃配置和路由中不再引用
+  `git_committer`。
+- 最终 `git-delivery.toml` 保持 Scoco `4ca75d911` 的模型、权限和 operation 契约；为兼容
+  Easydict 自有的空索引一次暂存规则，额外冻结候选快照并在 apply 暂存后核对 staged patch。
+- `git diff --check` 与新增文件的 no-index diff 格式检查通过；独立 reviewer 发现并复核
+  空索引 prepare 草稿依据，确认修复后无有效阻塞 finding。
 - 本次仅修改 Agent 配置与治理文档，不运行 Xcode 构建或产品测试；静态验证不能替代全新
   Codex 会话对 custom agent 发现和模型身份的实际 smoke。

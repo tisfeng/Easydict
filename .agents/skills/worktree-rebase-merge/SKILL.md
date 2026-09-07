@@ -6,7 +6,35 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
 # Worktree Rebase/Merge 工作流
 
 提交源分支，将其 rebase 到目标分支，再在目标分支的 worktree 中合并。源、目标相同
-时只提交，不执行 rebase 或 merge。Git 提交步骤由 `git-commit` Skill 处理。
+时只提交，不执行 rebase 或 merge。Git 写操作由 `git_delivery` 在同一 Agent 内遵循
+`git-commit` Skill 处理，不递归委派。
+
+## 委派执行协议
+
+此 Skill 不在 frontmatter 绑定模型。主 Agent 在确认 `integration` 授权、允许路径、
+初始 Git 快照和用户限制后，串行委派 `.codex/agents/git-delivery.toml`，其固定模型和
+推理强度是本流程的执行配置。
+
+1. `prepare` 阶段只读：`git_delivery` 解析目标、检查源/目标 worktree、识别是否需要
+   新提交，并返回预检证据和完整提交信息草稿。不得创建分支、临时 worktree、暂存或写入
+   `commit_message.txt`。
+2. 若需要新提交，主 Agent 必须在主对话中原样显示 `提交信息预览` 和完整草稿。默认模式
+   显示后可继续；确认、仅预览或仅草稿模式必须等待用户。若源已提交且干净，返回
+   `preexisting-source-commit`，无需提交信息预览。
+3. 主 Agent 向同一 `git_delivery` 发送 `apply` 后，该 Agent 重新检查 HEAD、索引、
+   源/目标 worktree 和范围。任何漂移都会使草稿失效并进入 protected，不得写入。
+4. 通过重验后，`git_delivery` 执行本 Skill 后续的分支、提交、rebase、merge 和报告收集。
+   主 Agent 最后独立核验结果并向用户交付。
+
+索引为空而本流程允许 `git-commit` 的唯一一次暂存时，prepare 只能读取并冻结候选路径、
+未暂存 raw patch 与未跟踪文件内容摘要，再据此起草。apply 先重验候选快照；一致后才按
+允许路径或无路径限制时的一次 `git add .` 暂存，并核对 staged raw patch 未超出候选范围且
+与草稿依据一致。不一致时进入 protected，返回新的 prepare，不得提交。
+
+`git_delivery` 仅在明确的 `integration` 授权中可创建源分支、临时 worktree、commit、
+rebase 或 merge；始终不得 fetch、pull、push、reset、强制移动 ref、stash、clean 或递归
+委派。只有完全位于允许路径且不需产品语义判断的机械冲突可以处理，其他冲突必须保留
+现场并返回主 Agent。
 
 ## 默认规则
 
@@ -73,8 +101,8 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
 ## 目标分支直接提交
 
 - 仅当当前源分支与解析出的目标分支是同一分支时，使用直接提交模式。
-- 在直接提交模式下完全委托给 `git-commit` skill：暂存范围、空索引时唯一一次
-  `git add .`、提交信息起草、提交执行、权限重试和清理都遵循 `git-commit`。
+- 在直接提交模式下，`git_delivery` 在同一 Agent 内遵循 `git-commit` Skill：暂存范围、
+  空索引时唯一一次 `git add .`、提交信息起草、提交执行、权限重试和清理都遵循该 Skill。
 - 不创建临时源分支，不运行 `git rebase` 或 `git merge`，不查找目标 worktree，
   不创建临时目标 worktree，也不 fetch、pull 或 push。
 - 提交步骤后使用 `git-commit` 的 **Post-Commit Report**，并说明没有执行 rebase、
@@ -82,10 +110,10 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
 
 ## 提交源分支
 
-- 对已暂存的源变更使用 `git-commit` 机制。暂存区限定、空索引时唯一允许的一次
-  `git add .`、提交信息起草、提交执行、权限重试和清理均由该 skill 负责。在普通
-  rebase/merge 模式下，本工作流覆盖 `git-commit` 默认模式的报告顺序；在直接提交
-  模式下遵循 `git-commit` 报告。
+- 对已暂存的源变更，`git_delivery` 在同一 Agent 内使用 `git-commit` 机制。暂存区限定、
+  空索引时唯一允许的一次 `git add .`、提交信息起草、提交执行、权限重试和清理由该 Skill
+  负责。在普通 rebase/merge 模式下，本工作流覆盖 `git-commit` 默认模式的报告顺序；在
+  直接提交模式下遵循 `git-commit` 报告。
 - 提交步骤前记录源 `HEAD`。只有提交步骤改变 `HEAD` 时，才将源结果分类为
   `created-this-run`；否则，如果源已经提交且干净，则分类为
   `preexisting-source-commit`。
@@ -104,7 +132,7 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
 
 ## 脏目标暂停
 
-- 如果预检发现 `<target-branch>` 只有脏 worktree，则通过 `git-commit` 完成源提交并
+- 如果预检发现 `<target-branch>` 只有脏 worktree，则由 `git_delivery` 通过 `git-commit` 完成源提交并
   要求源 worktree 干净，然后在范围检查、rebase、merge 或 push 前停止。
 - 在该恢复路径中，绝不对脏目标 worktree 执行暂存、提交、stash、restore、clean 或
   其他修改。
@@ -119,13 +147,18 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
 ## Rebase
 
 - rebase 前使用 `git log --oneline <target-branch>..<source-branch>` 和
-  `git diff --stat <target-branch>...<source-branch>` 检查完整集成范围。
-- 将该范围与当前请求及本工作流处理的源提交比较。如果目标是推断得出且范围包含无关
-  或异常宽泛的既有历史，则停止并要求用户确认目标分支。rebase 成功或无操作不代表
-  范围验证通过。
+  `git diff --stat <target-branch>...<source-branch>` 记录完整集成范围，供 rebase、
+  merge 和最终报告使用。
+- 用户明确调用本 skill 且未限定提交范围时，
+  `<target-branch>..<source-branch>` 中的全部源提交均属于本次集成范围。允许范围包含
+  多个独立功能提交，不根据提交主题与当前对话的语义相关性暂停。
+- 如果用户明确限定了需要集成或排除的提交，而实际源提交范围与该限定不一致，则停止并
+  要求用户决定如何处理；不要通过 reset、交互式 rebase、丢弃提交或 cherry-pick 静默
+  改写集成范围。
 - 从源 worktree 运行 `git rebase <target-branch>`。
-- 出现冲突时检查 `git status --short`，按语义解决，只暂存已解决文件，并运行
-  `git rebase --continue`。遇到产品决策或不安全冲突时停止。
+- 出现冲突时检查 `git status --short`；只处理完全位于允许路径且不需要产品语义判断的
+  机械冲突，随后只暂存已解决文件并运行 `git rebase --continue`。遇到产品决策或不安全
+  冲突时停止。
 - rebase 后要求源 worktree 干净，运行 `git diff --check <target-branch>...HEAD`；只有
   仓库规则或涉及代码要求时才运行更广泛的验证。
 
@@ -142,7 +175,7 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
   更新目标分支。使用真实目标 worktree，让 Git 将分支、索引和文件保持在可理解状态。
 - 使用默认 Git 行为运行 `git merge <source-branch>`。除非用户明确要求，否则不要强制
   `--no-ff`、squash、再次 rebase 或 push。
-- 出现 merge 冲突时，使用与 rebase 相同的语义解决规则，然后只暂存已解决文件并运行
+- 出现 merge 冲突时，使用与 rebase 相同的机械冲突规则，然后只暂存已解决文件并运行
   `git merge --continue`。如果冲突发生在临时目标 worktree 中，保留该 worktree 并
   报告其路径供后续解决，不要删除。
 - 在临时目标 worktree 中成功合并后，使用

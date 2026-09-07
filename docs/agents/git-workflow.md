@@ -19,33 +19,43 @@
    对任务相关脏内容保留分层 diff/内容快照，不能仅凭路径重建任务归属。
 2. 按 `request-boundary.md` 区分普通只读分析与获准的工作流准备；写入和交付保护
    按 `execution-safety.md` 分别判断。不要将自动提交资格用于否决显式 staged 交付。
-3. `delivery` 由主 Agent 确认授权、允许路径、初始 Git 快照和暂存边界后，串行委派
-   [`.codex/agents/git-committer.toml`](../../.codex/agents/git-committer.toml) 执行
-   [`.agents/skills/git-commit/SKILL.md`](../../.agents/skills/git-commit/SKILL.md)。已有 staged
-   内容时只提交该范围；显式调用该 skill 且索引为空时，按它的一次暂存规则执行，
-   用户指定路径或禁止暂存时优先遵守该限制。
-4. `implementation` 在验证完成后，只有满足自动本地提交条件时才由 `git_committer`
-   执行一次自动提交。
+3. 主 Agent 确认授权、允许路径、初始 Git 快照和暂存边界后，串行委派
+   [`.codex/agents/git-delivery.toml`](../../.codex/agents/git-delivery.toml)。`commit` 与
+   `auto-local-commit` 操作执行 [`.agents/skills/git-commit/SKILL.md`](../../.agents/skills/git-commit/SKILL.md)；
+   `integration` 操作执行 [`.agents/skills/worktree-rebase-merge/SKILL.md`](../../.agents/skills/worktree-rebase-merge/SKILL.md)。
+4. `implementation` 在验证完成后，只有满足自动本地提交条件时才由 `git_delivery`
+   以 `auto-local-commit` 操作执行一次自动提交。
 
-## Git 提交执行 Agent
+## 本地 Git 交付 Agent
 
-`git_committer` 是唯一执行本仓库常规本地 Git 提交的 custom agent；其模型、推理强度
-和沙箱以 [`.codex/agents/git-committer.toml`](../../.codex/agents/git-committer.toml) 为权威。
-它不是一个新的 Skill，也不修改现有 `git-commit` Skill 的 staged-only、提交信息校验、
-变动统计和 no-push 契约。
+`git_delivery` 是唯一执行本仓库常规本地提交和获授权 worktree 集成的 custom agent；其
+模型、推理强度和沙箱以 [`.codex/agents/git-delivery.toml`](../../.codex/agents/git-delivery.toml) 为权威。
+它不是一个新的 Skill，也不修改现有 `git-commit` 或 `worktree-rebase-merge` Skill 的
+staged-only、提交信息校验、变动统计、目标解析和 no-push 契约。
 
 - 主 Agent 负责在首次写入前记录初始 HEAD、暂存/未暂存/未跟踪路径、冲突和
   `task_allowed_paths`，并在委派前完成交付授权与自动提交资格判断。
 - 只有所有其他写入 Agent 已完成，且主 Agent 冻结提交范围后，才能启动一个
-  `git_committer`；不得并发写入共享 Git index。
-- 主 Agent 仅传递授权类型、允许路径、初始状态摘要和验收标准。`git_committer` 必须自行
-  重新读取实际 staged patch、HEAD 和状态，并按 `git-commit` Skill 的完整契约执行。
-- `git_committer` 不能安全确认配置、授权、模型、范围、HEAD、索引或校验结果时，必须
-  进入 protected 并返回主 Agent。custom agent 不可发现或指定模型不可用时同样 fail closed；
-  主 Agent 不得静默改由自身或其他模型提交。
-- 仅当本轮正新增或更新 `git_committer` 配置、运行时尚不能重新发现该配置时，主 Agent
+  `git_delivery`；不得并发写入共享 Git index 或目标 worktree。
+- 主 Agent 仅传递授权类型、operation、允许路径、初始状态摘要和验收标准。`git_delivery`
+  必须自行重新读取实际 staged patch、HEAD、源和目标 worktree 状态，并按对应 Skill 的
+  完整契约执行。
+- 需要创建提交时，`git_delivery` 先以 `prepare` 只读返回精确草稿；主 Agent 在主对话原样
+  发送 `提交信息预览` 后，才向同一 Agent 发出 `apply`。确认或仅预览模式在获得用户批准
+  前不进入 apply；预览后状态漂移使草稿失效并进入 protected。
+- 索引为空但当前操作允许对应 Skill 的唯一一次暂存时，`prepare` 只读冻结候选路径、
+  未暂存 raw patch 与未跟踪文件内容摘要，并据此生成草稿。`apply` 必须先重验快照，
+  再按允许路径或无路径限制时的一次 `git add .` 暂存，并核对 staged raw patch 未超出
+  候选范围且与草稿依据一致；不一致时进入 protected 并返回新的 prepare。
+- `commit` 与 `auto-local-commit` 只允许执行 `git-commit`。只有明确 `integration` 授权
+  才允许 `git_delivery` 按 `worktree-rebase-merge` 在同一 Agent 内创建分支或临时 worktree、
+  commit、rebase 和 merge；不得递归委派。
+- `git_delivery` 不能安全确认配置、授权、模型、范围、HEAD、索引、目标 worktree 或校验
+  结果时，必须进入 protected 并返回主 Agent。custom agent 不可发现或指定模型不可用时同样
+  fail closed；主 Agent 不得静默改由自身或其他模型提交或集成。
+- 仅当本轮正新增或更新 `git_delivery` 配置、运行时尚不能重新发现该配置时，主 Agent
   可以先解析 TOML，再显式启动拥有完全相同模型、推理强度、写入权限和开发指令的提交
-  子智能体。该 bootstrap fallback 必须在交付报告中声明；无法精确复现配置时仍然
+  或集成子智能体。该 bootstrap fallback 必须在交付报告中声明；无法精确复现配置时仍然
   fail closed。
 - 完成后，主 Agent 独立核验提交哈希、实际提交信息、分支、最终工作树和未 push 状态，
   再向用户报告结果。

@@ -1,6 +1,6 @@
 ## 2026-09-07 | 任务：移植 Git 提交专用 Luna 子智能体
 
-**Links:** [执行计划](../../exec-plans/active/2026-09-07-port-git-delivery-agents.md)
+**Links:** [执行计划](../../exec-plans/completed/2026-09-07-port-git-delivery-agents.md)
 
 ### 用户请求
 
