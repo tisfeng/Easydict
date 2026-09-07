@@ -81,6 +81,11 @@ final class AppContextProvider {
             "com.catchingnow.andfiles.fusionhost",
             "com.catchingnow.andfiles.phonescreenhost",
         ]
+        /// 前台状态由截图浮层等辅助窗口占据的进程:此时鼠标事件是截图指令而不是划词,
+        /// 自动取词会对其执行强制复制,备份/恢复剪贴板的窗口期会破坏刚写入的截图内容。
+        static let overlayHelperIDs = [
+            "com.electron.lark.helper",
+        ]
     }
 
     private func appSelectTextActionType(
@@ -98,7 +103,7 @@ final class AppContextProvider {
     }
 
     private func defaultAppTriggerList(forceGetSelectedTextType: ForceGetSelectedTextType) -> [AppTriggerConfig] {
-        var appTriggerList = Constants.screenMirrorIDs.map {
+        var appTriggerList = (Constants.screenMirrorIDs + Constants.overlayHelperIDs).map {
             AppTriggerConfig(appBundleID: $0, triggerType: [])
         }
         if forceGetSelectedTextType == .simulatedShortcutCopy {

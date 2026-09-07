@@ -8,3 +8,5 @@
 
 - [`easydict-agent-documentation-port.md`](easydict-agent-documentation-port.md)：记录
   Scoco 最近五个 Agent 文档治理提交及其 Easydict 本地适配范围。
+- [`astra-agent-guidance.md`](astra-agent-guidance.md)：记录 Astra 官方提示建议、本地
+  采用范围及授权和验证场景。
