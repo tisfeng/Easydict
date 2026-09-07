@@ -42,7 +42,7 @@
         <li>普通取词路径清理不可见字符、边缘空白和 Books 摘录信息；Wordbook/History 重放路径开启 preserveQueryText，不重写保存原文。</li>
         <li>没有保存语言时，needDetectLanguage 为真则异步探测；完成回调先比较当前 queryText，旧文本的探测结果直接丢弃。</li>
         <li>有保存的 from/to 时，先取消延迟探测，把 userSourceLanguage/userTargetLanguage 写入 model，并据源语言是否 Auto 决定是否仍需探测。</li>
-        <li>手动切换 source/target 或修正探测语言时，retry 路径在关闭旧结果前同步刷新标题栏；Auto 源语言会立即让星标进入等待探测状态。</li>
+        <li>手动切换 source/target 时以当前 queryModel 判断变化，并保留未修改的另一侧语言；切回全局偏好值也必须重新查询。修正探测语言时，retry 路径在关闭旧结果前同步刷新标题栏；Auto 源语言会立即让星标进入等待探测状态。</li>
         <li>文本写入和异步探测完成仍通过统一模型更新刷新输入单元格、语言单元格和 Wordbook star；因此星标只使用当前 inputText 与有效方向。</li>
       </ol>
       <div class="boundary"><strong>可见原文与服务文本：</strong>服务可以使用规范化后的 queryText，但标题栏保存必须使用 inputText。有效语言方向来自 queryFromLanguage/queryTargetLanguage；未解析自动源语言时星标保持禁用。</div>
@@ -55,6 +55,7 @@
         <li>控制器在需要时探测语言，然后把同一个 queryModel 交给所有启用且支持当前查询类型的服务。</li>
         <li>每个服务独立进入 loading，并通过 stream completion 更新自己的 EZQueryResult 和结果单元；错误被转换为 QueryError，不阻塞其他服务。</li>
         <li>首个可用服务可以驱动自动复制；所有服务调度后记录查询次数，并把 queryText 与最终 from/to 写入 Query History。</li>
+        <li>反向翻译只读取与当前 queryText 匹配的已完成结果，优先 copiedText、回退 translatedText；使用结果快照中的方向，不恢复旧收藏写入。</li>
         <li>结果/iframe 高度变化由控制器汇总并限制在 LayoutManager 的最小/最大窗口尺寸内，窗口 delegate 再持久化用户移动与 resize。</li>
       </ol>
     </div>
@@ -92,7 +93,7 @@
       <ul>
         <li>输入/语言错误从 <code>setInputText</code>、stored-language 应用、<code>detectQueryText</code>、统一 model/UI 更新链路排查；日志中的 query from → to 应与选择器和星标一致。</li>
         <li>服务结果缺失时检查 latestServices、enabledQuery/autoQuery/query type gate、startQueryStream completion 和结果单元映射。</li>
-        <li>快速切换两段文本，确认第一段延迟探测不会更新第二段语言；从 Wordbook 与 History 分别重放，确认输入原文及 source/target 保留。</li>
+        <li>快速切换两段文本，确认第一段延迟探测不会更新第二段语言；从 Wordbook 与 History 分别重放，确认输入原文及 source/target 保留，再分别切回 Auto 和偏好目标语言，确认重新查询。</li>
         <li>窗口高度异常时检查 table row height、iframe loaded/needUpdate 标记和 LayoutManager min/max；多显示器移动后检查当前 window.screen。</li>
         <li>手工模拟服务错误、配置更新和 retry，确认错误局限于服务结果，标题栏与窗口仍可交互。</li>
       </ul>

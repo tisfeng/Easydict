@@ -55,7 +55,7 @@
   <circle cx="94" cy="294" r="9" fill="#9333ea" opacity="0.16"/>
   <circle cx="94" cy="294" r="3" fill="#9333ea"/>
   <text x="206" y="299" text-anchor="middle" class="node-title">WordbookManager</text>
-  <text x="206" y="321" text-anchor="middle" class="body">Objective-C 安全桥接</text>
+  <text x="206" y="321" text-anchor="middle" class="body">MainActor 初始化与桥接</text>
   <rect x="470" y="270" width="260" height="68" rx="9" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
   <rect x="470" y="270" width="6" height="68" rx="3" fill="#9333ea"/>
   <circle cx="494" cy="294" r="9" fill="#9333ea" opacity="0.16"/>
@@ -111,7 +111,7 @@
   <circle cx="414" cy="629" r="3" fill="#16a34a"/>
   <text x="521" y="634" text-anchor="middle" class="node-title">WordbookStore Actor</text>
   <text x="521" y="656" text-anchor="middle" class="body">JSON 主文件 + 验证备份</text>
-  <text x="521" y="674" text-anchor="middle" class="body">原子写 / 轮换 / 再解码</text>
+  <text x="521" y="674" text-anchor="middle" class="body">原子写 / Sendable 时钟</text>
   <rect x="720" y="605" width="200" height="90" rx="9" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
   <rect x="720" y="605" width="6" height="90" rx="3" fill="#16a34a"/>
   <circle cx="744" cy="629" r="9" fill="#16a34a" opacity="0.16"/>

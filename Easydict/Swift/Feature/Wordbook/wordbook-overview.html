@@ -83,7 +83,7 @@
           <li><strong>损坏主文件：</strong>先把原始字节归档为 corrupt 文件，再只从通过结构校验的备份恢复；恢复成功发布提示，失败则进入 protected，绝不显示“空单词本”。</li>
           <li><strong>未来 schema：</strong>只读取 JSON header 即进入 newerSchema 保护态，禁止写入和普通 reset，提示用户升级应用并可在 Finder 定位数据。</li>
           <li><strong>主文件与备份都不可用：</strong>恢复视图提供重试、显示目录与经确认的保护式重置。重置先归档现有文件，再创建并验证空快照。</li>
-          <li><strong>并发或旧 UI 意图：</strong>Repository 写门串行化跨 await 的事务；窗口 mutation gate 阻止重复提交，星标的 generation/mutation id 阻止旧查询回调覆盖新查询。</li>
+          <li><strong>并发或旧 UI 意图：</strong>星标在 MainActor 内取得共享 Manager；Store 与 Repository 的时钟通过显式 Sendable 闭包初始化。Repository 写门串行化跨 await 的事务；窗口 mutation gate 阻止重复提交，星标的 generation/mutation id 阻止旧查询回调覆盖新查询。</li>
         </ul>
       </div>
     </div>

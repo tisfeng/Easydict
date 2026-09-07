@@ -74,7 +74,11 @@
     mm_weakify(self);
     [self.transformButton setClickBlock:^(EZButton *button) {
         mm_strongify(self);
-        [self toggleTranslationLanguages];
+        if (self.toggleTranslationLanguagesBlock) {
+            self.toggleTranslationLanguagesBlock();
+        } else {
+            [self toggleTranslationLanguages];
+        }
     }];
     transformButton.mas_key = @"transformButton";
     
@@ -84,10 +88,11 @@
         mm_weakify(self);
         [button setSelectedMenuItemBlock:^(EZLanguage selectedLanguage) {
             mm_strongify(self);
+            BOOL languageChanged = ![selectedLanguage isEqualToString:self.queryModel.userSourceLanguage];
             self.queryModel.userSourceLanguage = selectedLanguage;
+            MyConfiguration.shared.fromLanguage = selectedLanguage;
             
-            if (![selectedLanguage isEqualToString:MyConfiguration.shared.fromLanguage]) {
-                MyConfiguration.shared.fromLanguage = selectedLanguage;
+            if (languageChanged) {
                 [self enterAction];
             }
         }];
@@ -101,10 +106,11 @@
         mm_weakify(self);
         [button setSelectedMenuItemBlock:^(EZLanguage selectedLanguage) {
             mm_strongify(self);
+            BOOL languageChanged = ![selectedLanguage isEqualToString:self.queryModel.userTargetLanguage];
             self.queryModel.userTargetLanguage = selectedLanguage;
+            MyConfiguration.shared.toLanguage = selectedLanguage;
             
-            if (![selectedLanguage isEqualToString:MyConfiguration.shared.toLanguage]) {
-                MyConfiguration.shared.toLanguage = selectedLanguage;
+            if (languageChanged) {
                 [self enterAction];
             }
         }];
@@ -159,29 +165,41 @@
     }
 }
 
-- (void)toggleTranslationLanguages {
+- (BOOL)canToggleTranslationLanguages {
     EZLanguage fromLang = self.queryModel.userSourceLanguage;
     EZLanguage toLang = self.queryModel.userTargetLanguage;
-    
-    if (![fromLang isEqualToString:toLang]) {
-        MyConfiguration.shared.fromLanguage = toLang;
-        MyConfiguration.shared.toLanguage = fromLang;
-        
-        [self.fromLanguageButton setSelectedLanguage:toLang];
-        [self.toLanguageButton setSelectedLanguage:fromLang];
-        
-        [self enterAction];
+    if (fromLang.length == 0 || toLang.length == 0) {
+        return NO;
     }
+    return ![fromLang isEqualToString:toLang];
 }
 
-// TODO: need to optimize. This should not use EZConfiguration directly.
+- (void)toggleTranslationLanguages {
+    if (![self canToggleTranslationLanguages]) {
+        return;
+    }
+
+    EZLanguage fromLang = self.queryModel.userSourceLanguage;
+    EZLanguage toLang = self.queryModel.userTargetLanguage;
+
+    self.queryModel.userSourceLanguage = toLang;
+    self.queryModel.userTargetLanguage = fromLang;
+    MyConfiguration.shared.fromLanguage = toLang;
+    MyConfiguration.shared.toLanguage = fromLang;
+
+    [self.fromLanguageButton setSelectedLanguage:toLang];
+    [self.toLanguageButton setSelectedLanguage:fromLang];
+
+    [self enterAction];
+}
+
 - (void)enterAction {
     MMLogInfo(@"enterAction");
     
     [self setNeedsUpdateConstraints:YES];
     
     if (self.enterActionBlock) {
-        self.enterActionBlock(MyConfiguration.shared.fromLanguage, MyConfiguration.shared.toLanguage);
+        self.enterActionBlock(self.queryModel.userSourceLanguage, self.queryModel.userTargetLanguage);
     }
 }
 

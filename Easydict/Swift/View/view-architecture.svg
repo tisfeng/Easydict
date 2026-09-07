@@ -52,7 +52,7 @@
   <circle cx="374" cy="269" r="9" fill="#9333ea" opacity="0.16"/>
   <circle cx="374" cy="269" r="3" fill="#9333ea"/>
   <text x="606" y="274" text-anchor="middle" class="node-title">HostWindowManager @MainActor</text>
-  <text x="606" y="296" text-anchor="middle" class="body">稳定 window id / NSWindowController 所有权 / 激活与复用</text>
+  <text x="606" y="296" text-anchor="middle" class="body">稳定 window id / 控制器所有权 / 首次与复用统一激活</text>
   <path d="M 190 180 V 220 H 450 V 245" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
   <rect x="273.5" y="196" width="83" height="21" rx="4" fill="#ffffff" opacity="0.96"/>
   <text x="315" y="211" text-anchor="middle" class="edge-label">打开单词本</text>

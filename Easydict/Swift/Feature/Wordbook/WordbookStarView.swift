@@ -44,8 +44,7 @@ private enum WordbookStarAlert: Int, Identifiable {
 private final class WordbookStarModel: ObservableObject {
     // MARK: Lifecycle
 
-    init(manager: WordbookManager = .shared) {
-        self.manager = manager
+    init() {
         self.observer = NotificationCenter.default.addObserver(
             forName: .wordbookDidChange,
             object: nil,
@@ -149,7 +148,7 @@ private final class WordbookStarModel: ObservableObject {
 
     // MARK: Private
 
-    private let manager: WordbookManager
+    private let manager = WordbookManager.shared
     private var observer: NSObjectProtocol?
     private var query: Query?
     private var pendingRemoval: Query?

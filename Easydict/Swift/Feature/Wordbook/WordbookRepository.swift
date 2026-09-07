@@ -37,7 +37,7 @@ actor WordbookRepository {
         migrationStore: any WordbookMigrationPersisting,
         validator: WordbookSnapshotValidator = .init(),
         migrator: WordbookMigrator = .init(),
-        now: @escaping @Sendable () -> Date = Date.init
+        now: @escaping @Sendable () -> Date = { Date() }
     ) {
         self.storage = storage
         self.migrationStore = migrationStore

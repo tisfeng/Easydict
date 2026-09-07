@@ -42,7 +42,7 @@
         <li><code>MenuItemView</code> 的“Wordbook…”动作调用 <code>HostWindowManager.shared.showWordbookWindow()</code>。</li>
         <li>HostWindowManager 以 <code>wordbook.window</code> 为稳定 id。首次打开时创建 900×640、可调整大小的 AppKit 窗口，把 <code>WordbookView</code> 包进 NSHostingView，并由字典中的 NSWindowController 强持有。</li>
         <li>该窗口启用 <code>reuseExisting</code> 且 <code>isReleasedWhenClosed = false</code>。用户点击红色关闭只隐藏/关闭可见窗口，控制器与 SwiftUI 根视图仍被 manager 持有；再次打开会激活同一窗口，而不是重建 ViewModel。</li>
-        <li>激活复用窗口时先更新本地化标题，再激活应用、显示控制器并 <code>makeKeyAndOrderFront</code>；因此搜索、分区、排序及尚存的窗口会话状态可跨关闭/重开保留。</li>
+        <li>首次创建与复用窗口共用激活路径：先更新本地化标题，再激活应用、显示控制器并 <code>makeKeyAndOrderFront</code>；因此搜索、分区、排序及尚存的窗口会话状态可跨关闭/重开保留。</li>
       </ol>
       <div class="note"><strong>所有权边界：</strong>HostWindowManager 拥有“窗口/控制器存在多久”，WordbookView 拥有“窗口内部状态如何展示”，WordbookRepository 拥有“业务数据是否安全”。任一层都不应越过另外两层直接释放或伪造状态。</div>
     </div>
@@ -87,7 +87,7 @@
     <div class="section">
       <h2>调试与验证入口</h2>
       <ul>
-        <li>从菜单栏连续两次打开 Wordbook，确认同一窗口被前置且没有重复 NSWindowController；红色关闭后重开，确认搜索和当前 section 保留。</li>
+        <li>在其他应用位于前台时，从菜单栏首次及再次打开 Wordbook，确认同一窗口被前置且没有重复 NSWindowController；红色关闭后重开，确认搜索和当前 section 保留。</li>
         <li>切换六种应用语言，检查菜单项、窗口标题、日期/计数和错误提示同步更新；特别检查窗口已打开时的 <code>.onChange(of: languageState.language)</code> 路径及精确 <code>.lproj</code> 查找。</li>
         <li>窗口未出现时从 <code>MenuItemView.wordbookItem</code> → <code>showWordbookWindow</code> → <code>activateWindow/showWindow</code> 排查；观察 window id 是否一致。</li>
         <li>设置窗口尺寸异常时检查 <code>WindowAccessor</code> 是否取得当前 NSWindow，以及 selection 变化是否触发 resize；点击与拖拽冲突则检查 <code>TapHandlerView</code> 的 AppKit 事件边界。</li>

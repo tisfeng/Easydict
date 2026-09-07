@@ -52,17 +52,13 @@ apply 先 fetch 精确 base ref，再要求 `<base-remote>/<base>` 是 HEAD 的�
 3. `## 验证 / Verification`
 4. `## 截图 / Screenshots`
 
-模板发现兼容 GitHub 的常见位置：
+模板发现兼容 GitHub 规则：在仓库根目录、`docs/` 或 `.github/` 中查找文件名大小写不
+敏感的 `pull_request_template.md` 或 `pull_request_template.txt`；也在这三个位置中
+查找名称大小写不敏感的 `PULL_REQUEST_TEMPLATE/` 目录，并读取其中的 `.md` 或 `.txt`
+模板。
 
-- `.github/pull_request_template.md`
-- `.github/PULL_REQUEST_TEMPLATE.md`
-- `docs/pull_request_template.md`
-- `.github/PULL_REQUEST_TEMPLATE/*.md`
-- `docs/PULL_REQUEST_TEMPLATE/*.md`
-- `PULL_REQUEST_TEMPLATE/*.md`
-
-没有模板时使用内置四段式骨架；只有一个模板时自动使用；多个模板时必须显式
-`--template`。大小写不敏感文件系统上的同一文件按 inode 去重。
+没有模板时使用内置四段式骨架，不创建模板文件；只有一个模板时自动使用；多个模板时
+必须显式 `--template`。大小写不敏感文件系统上的同一文件按 inode 去重。
 
 `Summary`、`Description`、`Related Issues`、`Testing`、`Screenshots` 等语义标题会映射到
 规范四段式。映射段落中的非占位提示和 checklist 会保留，其他项目专属二级段落按原

@@ -714,7 +714,51 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 }
 
+- (nullable NSString *)firstTranslatedText {
+    if (self.firstService &&
+        [self.firstService.result.queryText isEqualToString:self.queryModel.queryText]) {
+        NSString *copiedText = self.firstService.result.copiedText;
+        if (copiedText.length > 0) {
+            return copiedText;
+        }
+        return self.firstService.result.translatedText;
+    }
+    return nil;
+}
+
 - (void)toggleTranslationLanguages {
+    BOOL canSwap = [self.selectLanguageCell canToggleTranslationLanguages];
+    BOOL bothAutomatic = [self.queryModel.userSourceLanguage isEqualToString:EZLanguageAuto] &&
+        [self.queryModel.userTargetLanguage isEqualToString:EZLanguageAuto];
+    if (canSwap || bothAutomatic) {
+        BOOL isStreamingInProgress = self.firstService.isStream && !self.firstService.result.isStreamFinished;
+        BOOL isResultReady = !self.firstService.result.isLoading && !isStreamingInProgress && !self.firstService.result.error;
+        NSString *translatedText = isResultReady ? [self firstTranslatedText] : nil;
+        if (bothAutomatic) {
+            // Re-query the translation using Auto without changing language preferences.
+            if ([translatedText ns_trim].length > 0) {
+                self.queryModel.ocrImage = nil;
+                [self startQueryText:translatedText actionType:EZActionTypeInputQuery];
+            }
+            return;
+        }
+
+        // Use the completed result's direction; shared language preferences may have changed.
+        EZLanguage fromLanguage = self.firstService.result.from;
+        EZLanguage toLanguage = self.firstService.result.to;
+        BOOL hasReverseDirection = fromLanguage.length > 0 && toLanguage.length > 0 &&
+            ![fromLanguage isEqualToString:EZLanguageAuto] &&
+            ![toLanguage isEqualToString:EZLanguageAuto] &&
+            ![fromLanguage isEqualToString:toLanguage];
+        if ([translatedText ns_trim].length > 0 && hasReverseDirection) {
+            self.queryModel.userSourceLanguage = fromLanguage;
+            self.queryModel.userTargetLanguage = toLanguage;
+            self.inputText = translatedText;
+            self.queryModel.ocrImage = nil;
+            self.queryModel.actionType = EZActionTypeInputQuery;
+        }
+    }
+
     [self.selectLanguageCell toggleTranslationLanguages];
 }
 
@@ -1022,6 +1066,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             self.queryModel.userTargetLanguage = to;
 
             [self retryQueryWithLanguage:EZLanguageAuto];
+        }];
+        [selectLanguageCell setToggleTranslationLanguagesBlock:^{
+            mm_strongify(self);
+            [self toggleTranslationLanguages];
         }];
         return selectLanguageCell;
     }

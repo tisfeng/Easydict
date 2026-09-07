@@ -57,7 +57,7 @@ actor WordbookStore: WordbookStorage {
         directoryURL: URL? = nil,
         fileManager: FileManager = .default,
         validator: WordbookSnapshotValidator = .init(),
-        now: @escaping @Sendable () -> Date = Date.init
+        now: @escaping @Sendable () -> Date = { Date() }
     ) {
         self.fileManager = fileManager
         self.validator = validator

@@ -192,7 +192,7 @@
   <text x="900" y="1022" text-anchor="middle" class="edge-label">隔离失败</text>
   <rect x="40" y="1155" width="1120" height="50" rx="12" fill="#f9fafb" fill-opacity="0.55" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="7 5"/>
   <rect x="56" y="1165" width="730" height="24" rx="6" fill="#ffffff" opacity="0.96"/>
-  <text x="66" y="1182" class="group-title">调试：输入 setter → detect / stored language → QueryModel → service completion → History / titlebar</text>
+  <text x="66" y="1182" class="group-title">验证：保存方向重放 → 语言重选与星标刷新；完成结果 → 反向翻译；History 保持独立</text>
   <line x1="55" y1="1235" x2="89" y2="1235" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
   <text x="101" y="1239" class="legend">主流程 / 调用</text>
   <line x1="315" y1="1235" x2="349" y2="1235" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>

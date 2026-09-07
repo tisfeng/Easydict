@@ -64,7 +64,7 @@ final class HostWindowManager {
             window.isReleasedWhenClosed = false
         }
         windowControllers[windowId] = windowController
-        windowController.showWindow(nil)
+        activateWindow(windowId: windowId, title: title)
     }
 
     func closeWindow(windowId: String) {

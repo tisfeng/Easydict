@@ -65,7 +65,7 @@ parse_pr_ref() {
 
 read_pr_metadata() {
   metadata=$(
-    gh pr view "$view_ref" "${repo_args[@]}" \
+    gh pr view "$view_ref" "${repo_args[@]+"${repo_args[@]}"}" \
       --json baseRefName,headRefName,headRefOid,headRepository,headRepositoryOwner,number,url \
       --jq '[.headRepositoryOwner.login, .headRepository.name, .headRefName, .headRefOid, .baseRefName, (.number | tostring), .url] | @tsv'
   )
