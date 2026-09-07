@@ -5113,7 +5113,7 @@
 			repositoryURL = "https://github.com/tisfeng/SelectedTextKit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.6.5;
+				minimumVersion = 2.6.7;
 			};
 		};
 		03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
