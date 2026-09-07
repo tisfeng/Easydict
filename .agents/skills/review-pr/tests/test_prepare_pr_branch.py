@@ -92,8 +92,23 @@ class PreparePRBranchTests(unittest.TestCase):
             textwrap.dedent(
                 """\
                 #!/bin/sh
-                if [ "$1" != "pr" ] || [ "$2" != "view" ]; then
+                if [ "$#" -lt 4 ] || [ "$1" != "pr" ] || [ "$2" != "view" ]; then
                   exit 64
+                fi
+                if [ "$3" != "$GH_EXPECTED_VIEW_REF" ]; then
+                  exit 65
+                fi
+                shift 3
+                if [ -n "${GH_EXPECTED_REPO:-}" ]; then
+                  if [ "$1" != "--repo" ] || [ "$2" != "$GH_EXPECTED_REPO" ]; then
+                    exit 66
+                  fi
+                  shift 2
+                elif [ "$1" = "--repo" ]; then
+                  exit 67
+                fi
+                if [ "$1" != "--json" ]; then
+                  exit 68
                 fi
                 printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' \\
                   "$GH_HEAD_OWNER" "$GH_HEAD_REPO" "$GH_HEAD_BRANCH" \\
@@ -190,11 +205,21 @@ class PreparePRBranchTests(unittest.TestCase):
         )
         return environment
 
-    def _prepare(self, *arguments: str) -> subprocess.CompletedProcess[str]:
+    def _prepare(
+        self,
+        *arguments: str,
+        pr_ref: Optional[str] = None,
+        expected_repo: Optional[str] = None,
+    ) -> subprocess.CompletedProcess[str]:
+        environment = self._environment()
+        pr_number = environment["GH_PR_NUMBER"]
+        environment["GH_EXPECTED_VIEW_REF"] = pr_number
+        if expected_repo is not None:
+            environment["GH_EXPECTED_REPO"] = expected_repo
         return run(
-            ["bash", str(SCRIPT_PATH), *arguments, "1246"],
+            ["bash", str(SCRIPT_PATH), *arguments, pr_ref or pr_number],
             cwd=self.checkout,
-            env=self._environment(),
+            env=environment,
             check=False,
         )
 
@@ -212,6 +237,28 @@ class PreparePRBranchTests(unittest.TestCase):
             self._git("for-each-ref", "--format=%(upstream:short)", "refs/heads/feat/wordbook").stdout.strip(),
             "contributor/feat/wordbook",
         )
+        self._assert_clean_status()
+
+    def test_github_url_reference_passes_base_repo_to_gh(self) -> None:
+        pr_url = self._environment()["GH_PR_URL"]
+        base_repo = pr_url.removeprefix("https://github.com/").split("/pull/", 1)[0]
+
+        result = self._prepare(pr_ref=pr_url, expected_repo=base_repo)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self._assert_clean_status()
+
+    def test_shorthand_reference_passes_base_repo_to_gh(self) -> None:
+        environment = self._environment()
+        pr_url = environment["GH_PR_URL"]
+        base_repo = pr_url.removeprefix("https://github.com/").split("/pull/", 1)[0]
+
+        result = self._prepare(
+            pr_ref=f"{base_repo}#{environment['GH_PR_NUMBER']}",
+            expected_repo=base_repo,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
         self._assert_clean_status()
 
     def test_local_latest_base_keeps_head_branch_name(self) -> None:
@@ -256,6 +303,40 @@ class PreparePRBranchTests(unittest.TestCase):
         self.assertIn("Review branch: feat/wordbook", result.stderr)
         self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "feat/wordbook")
         self.assertIn("UU shared.txt", self._git("status", "--short").stdout)
+
+    def test_local_review_falls_back_when_head_branch_is_checked_out_elsewhere(self) -> None:
+        self._git(
+            "fetch",
+            str(self.fork_remote),
+            "refs/heads/feat/wordbook:refs/remotes/contributor/feat/wordbook",
+        )
+        self._git("branch", "feat/wordbook", self.head_sha)
+        occupied_path = self.root / "occupied"
+        self._git("worktree", "add", str(occupied_path), "feat/wordbook")
+        self.worktree_paths.append(occupied_path)
+
+        result = self._prepare()
+
+        expected_branch = "review/pr-1246-" + self.head_sha[:10]
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(f"Review branch: {expected_branch}", result.stdout)
+        self.assertIn("checked out in another worktree", result.stdout)
+        self.assertEqual(self._git("branch", "--show-current").stdout.strip(), expected_branch)
+        self.assertEqual(
+            run(
+                ["git", "-C", str(occupied_path), "branch", "--show-current"],
+                cwd=self.checkout,
+            ).stdout.strip(),
+            "feat/wordbook",
+        )
+        self.assertEqual(
+            run(
+                ["git", "-C", str(occupied_path), "rev-parse", "HEAD"],
+                cwd=self.checkout,
+            ).stdout.strip(),
+            self.head_sha,
+        )
+        self._assert_clean_status()
 
     def test_worktree_latest_base_keeps_source_checkout_unchanged(self) -> None:
         source_branch = self._git("branch", "--show-current").stdout.strip()
