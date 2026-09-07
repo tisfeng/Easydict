@@ -26,6 +26,7 @@ extension EasydictMainMenu {
         @State private var appShortcutCommandList = [
             MainMenuShortcutCommandDataItem(action: .clearInput),
             MainMenuShortcutCommandDataItem(action: .clearAll),
+            MainMenuShortcutCommandDataItem(action: .toggleAppendMode),
             MainMenuShortcutCommandDataItem(action: .copy),
             MainMenuShortcutCommandDataItem(action: .copyFirstResult),
             MainMenuShortcutCommandDataItem(action: .focus),

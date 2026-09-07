@@ -477,6 +477,23 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 }
 
+- (NSString *)combinePreviousText:(NSString *)oldText withNewText:(NSString *)newText {
+    if (oldText.length == 0) {
+        return newText ?: @"";
+    }
+    if (newText.length == 0) {
+        return oldText ?: @"";
+    }
+
+    NSString *trimmedOld = [oldText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *trimmedNew = [newText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+    if (trimmedOld.length == 0) return trimmedNew;
+    if (trimmedNew.length == 0) return trimmedOld;
+
+    return [NSString stringWithFormat:@"%@\n%@", trimmedOld, trimmedNew];
+}
+
 /// Before starting query text, close all result view.
 - (void)startQueryText:(NSString *)text {
     [self startQueryText:text actionType:self.queryModel.actionType];
@@ -582,12 +599,16 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         if (actionType != EZActionTypeScreenshotOCR) {
             [self.queryView startLoadingAnimation:NO];
 
-            self.inputText = inputText;
+            NSString *finalText = inputText;
+            if (MyConfiguration.shared.enableAppendMode && self.inputText.length > 0) {
+                finalText = [self combinePreviousText:self.inputText withNewText:inputText];
+            }
+            self.inputText = finalText;
 
             // Show detected language, even auto
             self.queryModel.showAutoLanguage = YES;
 
-            [self updateQueryTextAndParagraphStyle:inputText actionType:actionType];
+            [self updateQueryTextAndParagraphStyle:finalText actionType:actionType];
 
             if (error) {
                 NSString *errorMsg = [error localizedDescription];
@@ -1379,7 +1400,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)resetQueryAndResults {
     [self resetAllResults];
 
-    if (self.inputText.length) {
+    if (self.inputText.length && !MyConfiguration.shared.enableAppendMode) {
         self.inputText = @"";
     }
 }
