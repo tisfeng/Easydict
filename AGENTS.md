@@ -3,13 +3,13 @@
 Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、划词翻译和 OCR
 截图翻译。
 
-`AGENTS.md` 是 Agent 的唯一入口和任务路由。现行详细规则位于 `docs/agents/`，每项规则
-只维护一个权威来源。
+`AGENTS.md` 维护 Agent 的通用约束和唯一任务路由。现行详细规则位于 `docs/agents/`，每项
+规则只维护一个权威来源。
 
 ## 始终阅读
 
 - 每个任务先阅读 `docs/agents/request-boundary.md`，确定请求语义、写入授权、任务模式、
-  Mutation Gate 和子代理边界。
+  写入前检查（Mutation Gate）和子代理边界。
 - 回复以及新建或修改的仓库文档使用用户当前请求的语言；代码标识、API 名称、命令、
   路径、品牌名称和固定输出契约保留原文。
 - 再按当前任务读取下方最小必要规则，不通过其他 README 或索引进行二次路由。
@@ -56,6 +56,3 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 - 保留工作树中与当前任务无关的 staged、unstaged 和 untracked 变更。
 - `skills-lock.json` 和 `.codex/agents-lock.json` 管理的内容是外部受管快照，普通项目任务
   不得直接修改；项目专属例外和同步规则见 `docs/agents/README.md`。
-- 仓库治理 Markdown、计划、history、skill、参考资料和 `docs/` 下的公共 Markdown 不需要
-  Xcode 工程引用或 build phase 条目。
-- 文档使用相对仓库路径；行为变化时同步更新代码、测试和受影响文档。

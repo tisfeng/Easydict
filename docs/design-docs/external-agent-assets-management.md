@@ -16,8 +16,8 @@ Easydict 需要直接从仓库运行 Skills 和 Codex 子代理，同时又要�
 - `tisfeng/skills` 统一维护六个通用 Skills 与四个 Codex 子代理，二者使用同一个发布 tag。
 - `fireworks-tech-graph` 保持独立第三方来源，不并入通用技能仓库。
 - 外部 Skills 由 `skills-lock.json` 控制，Codex 子代理由 `.codex/agents-lock.json` 控制。
-- 项目提交可直接运行的完整资产，而不是依赖机器全局状态；lock 证明来源与内容未被本地
-  静默修改。
+- 项目提交可直接运行的完整资产，而不是依赖机器全局状态；lock 记录来源和预期内容哈希，
+  配合重新计算实际哈希来检查本地漂移。
 - `release-easydict` 保留项目维护权，Easydict 的构建、PR、发布和交付策略继续由宿主文档
   定义，不通过 fork 通用 Skill 实现。
 
@@ -27,10 +27,10 @@ Easydict 需要直接从仓库运行 Skills 和 Codex 子代理，同时又要�
 ## 取舍
 
 - 仓库会保存较大的第三方 Skill 快照，但换取离线可用、可审查和可回滚。
-- Skills lock 与 agents lock 的字段和更新语义不同，因此验证分别实现，不抽象成虚假的统一
-  重装保证。
-- 移动分支 `main` 的第三方来源需要在 reference/history 中额外记录同步时 commit；长期若
-  上游发布稳定 tag，应优先改用不可变 tag。
+- Skills lock 与 agents lock 的字段和更新语义不同，因此分别验证，不强行套用同一套安装和
+  校验流程。
+- 跟踪 `main` 这类可移动分支的第三方来源时，需要在 reference/history 中额外记录同步时
+  commit；长期若上游发布稳定 tag，应优先改用不可变 tag。
 
 ## 重新评估条件
 

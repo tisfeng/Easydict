@@ -15,12 +15,14 @@
 
 ## 交付顺序
 
-1. 主 Agent 使用首次写入前冻结的 HEAD、索引、工作树、冲突、允许路径和内容归属判断
-   交付授权及安全状态。
+1. implementation 使用首次写入前冻结的 HEAD、索引、工作树、冲突、允许路径和内容归属
+   判断交付安全；只读开始的显式 staged 交付或复用已有提交的 integration，在准备交付时建立
+   同等内容的只读基线。
 2. 完成最终审查和验证后按操作冻结交付范围：显式提交已有 staged 内容时冻结 staged paths
    与 staged raw patch；空索引且允许暂存的 commit 或 auto-local-commit 时，冻结
-   `agent_owned_paths` 与 `expected_commit_paths`，两者实际差异集合相等，且 expected 全部
-   属于允许路径；integration 复用已有提交时冻结对应提交范围。
+   `agent_owned_paths`，并把本任务实际产生且归 Agent 所有的每个改动路径逐一列入
+   `expected_commit_paths`；这份清单不能遗漏上述路径，也不能包含用户原有改动或允许路径
+   以外的文件；integration 复用已有提交时冻结对应提交范围。
 3. 所有其他写入 Agent 结束后，串行委派
    [`.codex/agents/git-delivery.toml`](../../.codex/agents/git-delivery.toml)：
    `commit` 与 `auto-local-commit` 执行
@@ -31,8 +33,8 @@
    确认、仅预览或暂缓时必须等待批准。复用已有提交且无需新提交时不强制生成草稿。
 5. 完成后，主 Agent 独立核验提交哈希、实际提交信息、分支、工作树、统计和未 push 状态。
 
-`git-delivery` 的候选快照、精确暂存、prepare/apply 重验和失败关闭算法以其受管 TOML 与
-所选 skill 为权威，本文不复制内部实现。配置、授权、模型、范围、HEAD、索引、冲突、目标
+`git-delivery` 的候选快照、精确暂存、prepare/apply 重验和校验不通过时停止交付的规则以
+其受管 TOML 与所选 skill 为权威，本文不复制内部实现。配置、授权、模型、范围、HEAD、索引、冲突、目标
 worktree 或验证不确定时进入 protected，不得改由主 Agent 或其他模型执行缩减版交付。
 
 仅在本轮刚更新 `git-delivery` 配置且运行时尚不能重新发现时，主 Agent 才能读取 TOML，
@@ -46,15 +48,16 @@ worktree 或验证不确定时进入 protected，不得改由主 Agent 或其他
 - 任务是 implementation，且没有仍有效的禁止提交或暂缓交付要求。
 - 初始索引为空，交付前没有出现新的非 Agent staged 内容。
 - HEAD 未变化，索引无冲突，用户内容与 Agent 变更可以清晰分离。
-- 最终存在仓库差异，同任务 history 已创建或更新。
-- Agent-owned 实际差异与 expected commit paths 相等，expected 全部属于允许路径；暂存后
-  staged paths 与 expected 完全一致。
-- 必要审查和验证覆盖最终快照，没有有效阻塞 finding 或失败验证。
+- 最终存在仓库差异，并已满足 [`README.md`](README.md#plan-与-history) 的同任务 history
+  要求。
+- `expected_commit_paths` 逐一列出本任务产生的全部 Agent-owned 改动，不遗漏，也不包含用户
+  原有或允许范围外的路径；暂存后只包含这些路径。
+- 必要审查和验证覆盖最终快照，没有尚未解决且经核实的阻塞问题或失败验证。
 - 当前任务尚未执行自动提交。
 
 满足条件时，`git-delivery` 只精确暂存 expected commit paths 并执行一次本地提交，不使用
-`git add .`。没有差异时不创建空提交。条件不满足时保留差异并报告原因；缺少 history 时
-先在允许范围内补齐，不能安全分离时不得暂存。
+`git add .`。没有差异时不创建空提交。条件不满足时保留差异并报告原因，不得为满足提交条件
+扩大授权或混入用户内容。
 
 ## 显式交付与集成
 
@@ -65,7 +68,8 @@ worktree 或验证不确定时进入 protected，不得改由主 Agent 或其他
   rebase 和 merge；commit 与 auto-local-commit 不包含这些动作。
 - 已授权工作流需要任务分支名时，使用 `git-commit` skill 的 `Branch Name Guidance` 推导
   Conventional 分支名；该指南本身不授权创建分支。
-- push 必须单独获得授权，并在执行前核对远程目标和提交关系。
+- push 授权可以来自用户明确要求推送，也可以来自用户明确调用且按 skill 必然包含推送的 PR
+  或发布工作流；执行前仍须核对远程目标和提交关系。
 
 ## 交付回执
 

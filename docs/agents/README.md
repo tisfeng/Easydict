@@ -19,8 +19,8 @@
 ## Plan 与 History
 
 - planning 阶段的方案只出现在当前回复中，不创建或更新 active plan。
-- 用户明确批准 implementation 且 Mutation Gate 通过后，架构、协议、迁移、多步骤、跨模块
-  或高风险工作在 `docs/exec-plans/active/` 创建执行计划。
+- 用户明确批准 implementation 且写入前检查（Mutation Gate）通过后，架构、协议、迁移、
+  多步骤、跨模块或高风险工作在 `docs/exec-plans/active/` 创建执行计划。
 - implementation 最终产生仓库文件差异时，必须在同一任务中创建或更新一条
   `docs/histories/` 记录；没有差异时不创建空记录。
 - 同一任务分多轮实施时复用同一条 history。只修改 history 的任务由该记录描述自身，不递归
@@ -31,13 +31,13 @@
   补齐；用户明确排除该路径时不扩权，并按 Git 规则报告交付阻塞。
 - 显式提交已有 staged 内容不反向要求补写 implementation history。
 - plan 记录目标、授权、范围、限制、初始 Git 快照、Agent-owned paths、工作计划、风险、验证
-  和完成条件；history 只记录已落地结果，不复制完整对话。
-- 使用现有 GitHub issue 和 pull request 进行讨论，不在 history 中重复完整讨论内容。
+  和完成条件；history 只记录已落地结果与关键决策，并通过链接引用已有 issue、pull request
+  或 plan，不复制完整对话和讨论。
 
 ## 文档维护
 
 - 每份现行规则只维护一个主要职责；跨职责使用链接，不复制完整条款。
-- 同一专题保持内聚且不超过 500 行时，不仅为缩短文件而继续拆分；超过约 500 行或出现多个
+- 同一专题保持内聚且不超过 500 行时，不应仅为缩短文件而继续拆分；超过约 500 行或出现多个
   独立职责时再评估拆分。
 - 新增、删除或重命名规则文件时，只在根 `AGENTS.md` 维护任务路由，不建立多层索引。
 - 使用相对仓库路径，不提交机器本地绝对路径。行为变化时同步更新代码、测试和受影响文档。
