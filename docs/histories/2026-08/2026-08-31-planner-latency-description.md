@@ -24,7 +24,7 @@
 ### 受影响文件
 
 - `.codex/agents/planner.toml`
-- `docs/histories/2026-08-31-planner-latency-description.md`
+- `docs/histories/2026-08/2026-08-31-planner-latency-description.md`
 
 ### 后续事项
 
