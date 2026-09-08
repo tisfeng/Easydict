@@ -58,6 +58,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 @property (nonatomic, strong) EZTableTipsCell *tipsCell;
 
 // queryText is self.queryModel.queryText;
+@property (nonatomic, copy, nullable) NSString *ocrPrefixText;
 @property (nonatomic, copy, readonly) NSString *queryText;
 @property (nonatomic, strong) NSArray<NSString *> *serviceTypeIds;
 @property (nonatomic, strong) NSArray<EZQueryService *> *services;
@@ -561,6 +562,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             autoQuery:(BOOL)autoQuery {
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
+    
+    if (image != self.queryModel.ocrImage) {
+        self.ocrPrefixText = MyConfiguration.shared.enableAppendMode ? self.inputText : nil;
+    }
 
     self.queryModel.actionType = actionType;
     self.queryModel.ocrImage = image;
@@ -600,8 +605,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             [self.queryView startLoadingAnimation:NO];
 
             NSString *finalText = inputText;
-            if (MyConfiguration.shared.enableAppendMode && self.inputText.length > 0) {
-                finalText = [self combinePreviousText:self.inputText withNewText:inputText];
+            if (MyConfiguration.shared.enableAppendMode && self.ocrPrefixText.length > 0) {
+                finalText = [self combinePreviousText:self.ocrPrefixText withNewText:inputText];
             }
             self.inputText = finalText;
 
@@ -680,6 +685,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)clearInput {
     // Clear query text, detect language and clear button right now;
     self.inputText = @"";
+    self.ocrPrefixText = nil;
     self.queryModel.ocrImage = nil;
     [self.queryView setAlertTextHidden:YES];
 
@@ -1402,6 +1408,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     if (self.inputText.length && !MyConfiguration.shared.enableAppendMode) {
         self.inputText = @"";
+        self.ocrPrefixText = nil;
     }
 }
 

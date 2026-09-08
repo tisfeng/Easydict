@@ -23,6 +23,7 @@ class ShortcutManager: NSObject {
         // Set default shortcuts for first launch
         if Defaults[.firstLaunch] {
             Defaults[.firstLaunch] = false
+            Defaults[.toggleAppendModeShortcutMigrated] = true
             setDefaultShortcutKeys()
         } else {
             migrateShortcutsIfNeeded()
@@ -38,7 +39,13 @@ class ShortcutManager: NSObject {
         if !Defaults[.toggleAppendModeShortcutMigrated] {
             Defaults[.toggleAppendModeShortcutMigrated] = true
             if Defaults[.toggleAppendModeShortcut] == nil {
-                Defaults[.toggleAppendModeShortcut] = KeyCombo(key: .a, cocoaModifiers: [.command, .shift])
+                let defaultKeyCombo = KeyCombo(key: .a, cocoaModifiers: [.command, .shift])
+                if !ShortcutManager.validateShortcutConfictBySavedShortcut(
+                    defaultKeyCombo,
+                    excluding: .toggleAppendMode
+                ) {
+                    Defaults[.toggleAppendModeShortcut] = defaultKeyCombo
+                }
             }
         }
     }
