@@ -2,7 +2,7 @@
 
 ## 状态
 
-进行中
+已完成
 
 ## 用户目标
 
@@ -18,7 +18,7 @@
 ## 当前进展
 
 - 已完成源提交范围、目标依赖和 Easydict 差异的只读核对。
-- 已完成 `58451b5fd` 对应的 MacPaw/OpenAI 迁移实现与验证，等待独立本地提交：
+- 已完成 `58451b5fd` 对应的 MacPaw/OpenAI 迁移实现与验证：
   - 将依赖从 `tisfeng/OpenAI` 固定 revision 迁移至 `MacPaw/OpenAI` 0.5.1，并同步工作区
     `Package.resolved`。
   - 使用项目自有 transport 保留精确 endpoint、Bearer 与 Azure `api-key`、免 Key、SSE
@@ -36,12 +36,12 @@
 - SwiftFormat：变更 Swift 文件均无需再次格式化。
 - SwiftLint：变更 Swift 文件 0 violations。
 - `swiftc -frontend -parse`、`plutil -lint`、`jq -e` 与 `git diff --check`：通过。
-- 独立审查发现并推动修复 SSE 空行分帧和非 2xx 错误体丢失问题；修复后再次请求复审。
+- 独立审查发现并推动修复 SSE 空行分帧和非 2xx 错误体丢失问题；两项 finding 已复审关闭。
 
 证明边界：以上结果不证明真实第三方 OpenAI 兼容服务、用户账户、网络代理或 GUI 行为。
 
 - `58451b5fd` 已提交为 `d058fcec8d60f1b72705ed5357e75de976521d91`。
-- 已完成 `283dc6b9b` 对应实现与验证，等待独立本地提交：
+- 已完成 `283dc6b9b` 对应实现与验证：
   - `StreamService` 默认提供 SDK `ChatQuery.ReasoningEffort.none`，通用 OpenAI 请求编码为
     `reasoning_effort: "none"`，子类可以覆盖该属性。
   - 将原有 `off/high/max` 用户配置访问器重命名为 `configuredReasoningEffort`，DeepSeek 继续
@@ -49,13 +49,23 @@
   - 定向运行 `OpenAIReasoningEffortTests` 与 `OpenAIStreamTransportTests`：两个 suite、
     7 个测试通过；SwiftFormat、SwiftLint、Swift 解析和 `git diff --check` 通过。
 - `283dc6b9b` 已提交为 `339714ab425e0aaf3c8ab418af9da25196eba728`。
-- 已完成 `3d47fbce8` 对应实现与验证，等待独立本地提交：
+- 已完成 `3d47fbce8` 对应实现与验证：
   - 使用单一 `OpenAIStreamTaskControl` 管理请求开始、任务安装、完成和取消；新请求开始
     时取消旧任务，陈旧请求的完成或 termination 不会清除当前任务。
   - `BaseOpenAIService.cancelStream()` 同时保留流式协调器与既有非流式 Task 的取消路径。
   - 定向运行 `OpenAIStreamTaskControlTests` 与 `OpenAIStreamTransportTests`：两个 suite、
     8 个测试通过；SwiftFormat、SwiftLint、Swift 解析和 `git diff --check` 通过。
+- `3d47fbce8` 已提交为 `e54cf4f0b3ef35ee3dbfd6ed315142b3ba650d56`。
+- 已完成 `e5aa987d8` 对应的测试模块拆分与目录规范同步：
+  - 将本任务新增的 4 个 OpenAI suite 拆分到 `EasydictTests/Service/OpenAI/`，每个文件
+    一个 `@Suite`，保留全部 11 个测试、标签、transport `.serialized` 和局部 helper。
+  - 更新 Xcode group、file reference、build file 和测试 target Sources 引用。
+  - 在 `docs/agents/build-and-test.md` 增加与生产模块对应的测试目录、fixture、串行边界和
+    Xcode 引用规则。
+  - 定向运行拆分后的 4 个 suite：11 个测试通过；SwiftFormat、SwiftLint、Swift 解析、
+    `plutil -lint` 和 `git diff --check` 通过。
+- 独立 reviewer 与 tester 均确认拆分前后测试语义和工程引用一致，无未解决 finding。
 
 ## 计划
 
-见[当前执行计划](../../exec-plans/active/2026-09-08-macpaw-openai-semantic-port.md)。
+见[已完成执行计划](../../exec-plans/completed/2026-09-08-macpaw-openai-semantic-port.md)。
