@@ -8255,37 +8255,37 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This service uses your locally installed and signed-in official Codex CLI. It does not use OAuth, private APIs, or proxy workarounds. OpenAI may change CLI policies or account rules in the future. Continue only if you understand and accept the potential account or policy risk."
+            "value" : "Local CLI mode uses the official Codex CLI you have installed and signed in to. Easydict reuses that installation and its sign-in state; it does not install a managed component or start ChatGPT sign-in in this mode. OpenAI may change CLI availability, account rules, or policies."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este servicio usa la CLI oficial de Codex instalada localmente y con sesión iniciada. No usa OAuth, API privadas ni soluciones con proxy. OpenAI puede cambiar las políticas de la CLI o las reglas de cuenta en el futuro. Continúa solo si entiendes y aceptas el posible riesgo para la cuenta o las políticas."
+            "value" : "El modo CLI local usa la CLI oficial de Codex que has instalado y en la que has iniciado sesión. Easydict reutiliza esa instalación y su sesión; en este modo no instala un componente administrado ni inicia el acceso a ChatGPT. OpenAI puede cambiar la disponibilidad de la CLI, las reglas de cuenta o las políticas."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このサービスは、ローカルにインストールされサインイン済みの公式 Codex CLI を使用します。OAuth、非公開 API、プロキシによる回避策は使用しません。OpenAI は今後 CLI のポリシーやアカウント規則を変更する可能性があります。潜在的なアカウントやポリシーのリスクを理解し受け入れる場合のみ続行してください。"
+            "value" : "ローカル CLI モードでは、インストールしてログイン済みの公式 Codex CLI を使用します。Easydict はそのインストールとログイン状態を再利用し、このモードでは管理対象コンポーネントのインストールや ChatGPT ログインを開始しません。CLI の利用条件やアカウント規則、ポリシーは OpenAI により変更される場合があります。"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Táto služba používa lokálne nainštalované a prihlásené oficiálne Codex CLI. Nepoužíva OAuth, súkromné API ani proxy obchádzky. OpenAI môže v budúcnosti zmeniť pravidlá CLI alebo účtov. Pokračujte iba vtedy, ak rozumiete možnému riziku pre účet alebo pravidlá a prijímate ho."
+            "value" : "Režim lokálneho CLI používa oficiálne Codex CLI, ktoré máte nainštalované a prihlásené. Easydict znovu použije túto inštaláciu a stav prihlásenia; v tomto režime neinštaluje spravovaný komponent ani nespúšťa prihlásenie cez ChatGPT. OpenAI môže zmeniť dostupnosť CLI, pravidlá účtu alebo zásady."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此服务使用你本机已安装并已登录的官方 Codex CLI，不使用 OAuth、私有 API 或代理绕行方案。OpenAI 未来可能调整 CLI 政策或账号规则。仅当你理解并接受潜在的账号或政策风险时再继续。"
+            "value" : "本机 CLI 模式使用你已安装并已登录的官方 Codex CLI。Easydict 复用该安装和登录状态，此模式不会安装托管组件或启动 ChatGPT 登录。OpenAI 未来可能调整 CLI 可用性、账户规则或政策。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此服務使用你本機已安裝且已登入的官方 Codex CLI，不使用 OAuth、私有 API 或代理繞行方案。OpenAI 未來可能調整 CLI 政策或帳號規則。僅當你理解並接受潛在的帳號或政策風險時再繼續。"
+            "value" : "本機 CLI 模式使用你已安裝並已登入的官方 Codex CLI。Easydict 沿用該安裝和登入狀態，此模式不會安裝託管元件或啟動 ChatGPT 登入。OpenAI 未來可能調整 CLI 可用性、帳戶規則或政策。"
           }
         }
       }
@@ -8327,6 +8327,286 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Codex 風險提示"
+          }
+        }
+      }
+    },
+    "service.codex_cli.local.unsupported_effort" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The saved reasoning effort is outside Easydict’s local CLI compatibility options. Choose Default or another available option in advanced settings. Your saved value has not been changed."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El esfuerzo de razonamiento guardado no está entre las opciones de compatibilidad de la CLI local de Easydict. Elige Predeterminado u otra opción disponible en los ajustes avanzados. El valor guardado no se ha modificado."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存された思考レベルは、Easydict のローカル CLI 互換オプションに含まれていません。詳細設定でデフォルトまたは別の選択肢を選んでください。保存値は変更されていません。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uložená úroveň uvažovania nepatrí medzi možnosti kompatibility lokálneho CLI v Easydict. V rozšírených nastaveniach vyberte predvolenú alebo inú dostupnú možnosť. Uložená hodnota sa nezmenila."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已保存的思考程度不在 Easydict 的本机 CLI 兼容选项中。请在高级设置中选择“默认”或其他可用选项。原保存值未被修改。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已儲存的思考程度不在 Easydict 的本機 CLI 相容選項中。請在進階設定中選擇「預設」或其他可用選項。原儲存值未被修改。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.enable_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT sign-in mode lets Easydict download an official Codex component on demand and authorize your ChatGPT account through the official sign-in flow. You do not need to install the CLI yourself. Enabling this service alone does not download the component or sign you in. OpenAI may change availability, account rules, or policies."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El modo de inicio de sesión de ChatGPT permite a Easydict descargar un componente oficial de Codex cuando se necesite y autorizar tu cuenta mediante el inicio de sesión oficial. No necesitas instalar la CLI. Activar el servicio por sí solo no descarga el componente ni inicia sesión. OpenAI puede cambiar la disponibilidad, las reglas de cuenta o las políticas."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT ログインモードでは、Easydict が必要に応じて公式 Codex コンポーネントをダウンロードし、公式ログイン手順で ChatGPT アカウントを認証します。CLI の手動インストールは不要です。サービスを有効にするだけではダウンロードやログインは行いません。利用条件やアカウント規則、ポリシーは OpenAI により変更される場合があります。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "V režime prihlásenia cez ChatGPT môže Easydict podľa potreby stiahnuť oficiálny komponent Codex a autorizovať účet ChatGPT cez oficiálne prihlásenie. CLI nemusíte inštalovať sami. Samotné zapnutie služby komponent nestiahne ani vás neprihlási. OpenAI môže zmeniť dostupnosť, pravidlá účtu alebo zásady."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT 登录模式由 Easydict 按需下载官方 Codex 组件，并通过官方登录流程授权你的 ChatGPT 账户，无需自行安装 CLI。仅启用服务不会下载组件或启动登录。OpenAI 未来可能调整服务可用性、账户规则或政策。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT 登入模式由 Easydict 按需下載官方 Codex 元件，並透過官方登入流程授權你的 ChatGPT 帳戶，無需自行安裝 CLI。僅啟用服務不會下載元件或啟動登入。OpenAI 未來可能調整服務可用性、帳戶規則或政策。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.login_required" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings → Services → Codex and sign in to ChatGPT, then try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre Ajustes → Servicios → Codex e inicia sesión en ChatGPT. Después, inténtalo de nuevo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「設定 → サービス → Codex」で ChatGPT にログインしてから再試行してください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otvorte Nastavenia → Služby → Codex, prihláste sa do ChatGPT a skúste to znova."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请前往“设置 → 服务 → Codex”，登录 ChatGPT 后重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請前往「設定 → 服務 → Codex」，登入 ChatGPT 後重試。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.operation.cancel_refresh" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translation cannot start while ChatGPT sign-in status is checked after cancellation. Try again after the check completes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La traducción no puede comenzar mientras se comprueba la sesión de ChatGPT tras la cancelación. Inténtalo de nuevo cuando termine la comprobación."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャンセル後に ChatGPT のログイン状態を確認している間は翻訳を開始できません。確認完了後に再試行してください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Počas kontroly prihlásenia do ChatGPT po zrušení nemožno začať preklad. Skúste to po dokončení kontroly."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消操作后需要确认 ChatGPT 登录状态，请在检查完成后重试翻译。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消操作後需要確認 ChatGPT 登入狀態，請在檢查完成後重試翻譯。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.operation.login" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translation cannot start during ChatGPT sign-in. Try again after sign-in completes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La traducción no puede comenzar durante el inicio de sesión en ChatGPT. Inténtalo de nuevo cuando termine."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT へのログイン中は翻訳を開始できません。ログイン完了後に再試行してください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Počas prihlasovania do ChatGPT nemožno začať preklad. Skúste to po dokončení prihlásenia."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登录 ChatGPT 期间无法开始翻译，请在登录完成后重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登入 ChatGPT 期間無法開始翻譯，請在登入完成後重試。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.operation.logout" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translation cannot start during ChatGPT sign-out. Sign in again after sign-out completes, then retry."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La traducción no puede comenzar mientras se cierra la sesión de ChatGPT. Cuando termine, vuelve a iniciar sesión e inténtalo de nuevo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT からのログアウト中は翻訳を開始できません。完了後に再度ログインして再試行してください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Počas odhlasovania z ChatGPT nemožno začať preklad. Po dokončení sa znova prihláste a skúste to znova."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出 ChatGPT 期间无法开始翻译，请在退出完成后重新登录再试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登出 ChatGPT 期間無法開始翻譯，請在登出完成後重新登入再試。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.operation.reset_settings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT sign-in status must be checked after restoring app settings. Try translating again after the check completes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es necesario comprobar la sesión de ChatGPT después de restablecer los ajustes de la aplicación. Vuelve a traducir cuando termine la comprobación."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリの設定を初期化した後は ChatGPT のログイン状態を確認する必要があります。確認完了後に翻訳を再試行してください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po obnovení nastavení aplikácie treba skontrolovať prihlásenie do ChatGPT. Preklad skúste znova po dokončení kontroly."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复应用设置后需要检查 ChatGPT 登录状态，请在检查完成后重试翻译。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢復應用程式設定後需要檢查 ChatGPT 登入狀態，請在檢查完成後重試翻譯。"
           }
         }
       }
@@ -18141,6 +18421,1566 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "智譜翻譯"
+          }
+        }
+      }
+    },
+    "service.codex_cli.advanced" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced settings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración avanzada"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細設定"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozšírené nastavenia"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高级设置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "進階設定"
+          }
+        }
+      }
+    },
+    "service.codex_cli.component.cancelling" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelling download…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelando la descarga…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダウンロードをキャンセル中…"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruší sa sťahovanie…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在取消下载…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在取消下載…"
+          }
+        }
+      }
+    },
+    "service.codex_cli.component.checking" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking Codex component…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprobando el componente Codex…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codexコンポーネントを確認中…"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontroluje sa komponent Codex…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在检查 Codex 组件…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在檢查 Codex 元件…"
+          }
+        }
+      }
+    },
+    "service.codex_cli.component.download" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download Codex component"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargar componente Codex"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codexコンポーネントをダウンロード"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stiahnuť komponent Codex"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载 Codex 组件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下載 Codex 元件"
+          }
+        }
+      }
+    },
+    "service.codex_cli.component.downloading" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloading Codex…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargando Codex…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codexをダウンロード中…"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sťahuje sa Codex…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在下载 Codex…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在下載 Codex…"
+          }
+        }
+      }
+    },
+    "service.codex_cli.component.installing" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifying and installing…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verificando e instalando…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検証してインストール中…"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overuje sa a inštaluje…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在校验并安装…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在驗證並安裝…"
+          }
+        }
+      }
+    },
+    "service.codex_cli.component.missing" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download the official Codex component to sign in with ChatGPT."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descarga el componente oficial de Codex para iniciar sesión con ChatGPT."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPTでログインするには、公式Codexコンポーネントをダウンロードしてください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na prihlásenie cez ChatGPT si stiahnite oficiálny komponent Codex."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载官方 Codex 组件后，即可使用 ChatGPT 登录。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下載官方 Codex 元件後，即可使用 ChatGPT 登入。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.authentication_failed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT sign-in status could not be confirmed. Check your connection and retry."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo confirmar la sesión de ChatGPT. Comprueba tu conexión e inténtalo de nuevo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPTのログイン状態を確認できませんでした。接続を確認して再試行してください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodarilo sa potvrdiť prihlásenie do ChatGPT. Skontrolujte pripojenie a skúste to znova."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法确认 ChatGPT 登录状态，请检查网络后重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法確認 ChatGPT 登入狀態，請檢查網路後重試。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.cancel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャンセル"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrušiť"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.component_invalid" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Codex component failed verification. Download it again in Codex settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El componente Codex no superó la verificación. Descárgalo de nuevo en los ajustes de Codex."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codexコンポーネントの検証に失敗しました。Codex設定から再ダウンロードしてください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overenie komponentu Codex zlyhalo. Stiahnite ho znova v nastaveniach Codex."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 组件校验失败，请在 Codex 设置中重新下载。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 元件驗證失敗，請在 Codex 設定中重新下載。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.component_missing" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Codex component is unavailable. Download it in Codex settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El componente Codex no está disponible. Descárgalo en los ajustes de Codex."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codexコンポーネントを利用できません。Codex設定からダウンロードしてください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komponent Codex nie je dostupný. Stiahnite ho v nastaveniach Codex."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 组件不可用，请在 Codex 设置中下载。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 元件無法使用，請在 Codex 設定中下載。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.description" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in with your ChatGPT account. No separate command-line installation is needed."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión con tu cuenta de ChatGPT. No necesitas instalar herramientas de línea de comandos."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPTアカウントでログインします。コマンドラインツールの別途インストールは不要です。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prihláste sa účtom ChatGPT. Nástroj príkazového riadka nemusíte inštalovať samostatne."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 ChatGPT 账户登录，无需自行安装命令行工具。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 ChatGPT 帳戶登入，無需自行安裝命令列工具。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.external_configuration" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "External Codex settings or rules were detected. Built-in sign-in is unavailable in this environment."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se detectaron ajustes o reglas externos de Codex. El acceso integrado no está disponible en este entorno."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外部のCodex設定またはルールが検出されました。この環境では内蔵ログインを利用できません。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zistili sa externé nastavenia alebo pravidlá Codex. V tomto prostredí nie je vstavané prihlásenie dostupné."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检测到外部 Codex 设置或规则，内置登录方式在当前环境中不可用。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "偵測到外部 Codex 設定或規則，內建登入方式在目前環境中無法使用。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.invalid_model" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The selected model or reasoning effort is not supported by this Codex component. Choose a supported combination in settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El modelo o nivel de razonamiento seleccionado no es compatible con este componente Codex. Elige una combinación compatible en los ajustes."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択したモデルまたは推論レベルは、このCodexコンポーネントに対応していません。設定で対応する組み合わせを選択してください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vybraný model alebo úroveň uvažovania nie je podporovaná týmto komponentom Codex. V nastaveniach vyberte podporovanú kombináciu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前 Codex 组件不支持所选模型或推理强度，请在设置中选择支持的组合。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目前 Codex 元件不支援所選模型或推理強度，請在設定中選擇支援的組合。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.invalid_response" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex did not return a valid completed translation. Please try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex no devolvió una traducción completa válida. Inténtalo de nuevo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codexから有効な翻訳結果を取得できませんでした。もう一度お試しください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex nevrátil platný dokončený preklad. Skúste to znova."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 未返回有效的完整译文，请重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 未傳回有效的完整譯文，請重試。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.keychain_unavailable" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex could not access macOS Keychain. Allow access and retry; credentials will not be saved as plain text."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex no pudo acceder al Llavero de macOS. Permite el acceso y reinténtalo; las credenciales no se guardarán en texto plano."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CodexがmacOSキーチェーンにアクセスできません。アクセスを許可して再試行してください。認証情報を平文では保存しません。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex nemá prístup ku Kľúčenke macOS. Povoľte prístup a skúste to znova. Údaje sa neuložia ako obyčajný text."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 无法访问 macOS 钥匙串，请允许访问后重试；凭据不会改为明文保存。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 無法存取 macOS 鑰匙圈，請允許存取後重試；憑證不會改為明文儲存。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.login" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in with ChatGPT"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar sesión con ChatGPT"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPTでログイン"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prihlásiť sa cez ChatGPT"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 ChatGPT 登录"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 ChatGPT 登入"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.logout" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign out"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar sesión"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログアウト"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odhlásiť sa"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出账户"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登出帳戶"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.output_too_large" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Codex response exceeded the output limit. Try a shorter text."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La respuesta de Codex superó el límite. Prueba con un texto más corto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codexの応答が上限を超えました。より短いテキストでお試しください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odpoveď Codex prekročila limit. Skúste kratší text."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 响应超过输出上限，请尝试较短的文本。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 回應超過輸出上限，請嘗試較短的文字。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.reasoning_default" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default (model setting)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predeterminado (del modelo)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルト（モデルの設定）"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predvolené (nastavenie modelu)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认（使用模型设置）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "預設（使用模型設定）"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.refresh" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh status"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizar estado"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "状態を更新"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnoviť stav"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新状态"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新整理狀態"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.reopen_browser" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reopen sign-in page"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a abrir la página de acceso"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログインページを再度開く"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Znovu otvoriť prihlasovaciu stránku"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新打开授权页面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新開啟授權頁面"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.status.authorizing" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete sign-in in your browser…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completa el inicio de sesión en el navegador…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブラウザでログインを完了してください…"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokončite prihlásenie v prehliadači…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在浏览器中完成授权…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請在瀏覽器中完成授權…"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.status.checking" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking sign-in status…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprobando la sesión…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン状態を確認中…"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontroluje sa prihlásenie…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在检查登录状态…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在檢查登入狀態…"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.status.ready" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signed in · Translation verified"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesión iniciada · Traducción verificada"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン済み・翻訳確認済み"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prihlásený · Preklad overený"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已登录 · 翻译验证通过"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已登入 · 翻譯驗證通過"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.status.signed_in" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signed in with ChatGPT"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesión iniciada con ChatGPT"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPTにログイン済み"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prihlásený cez ChatGPT"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已登录 ChatGPT"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已登入 ChatGPT"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.status.signed_out" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not signed in"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesión no iniciada"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未ログイン"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neprihlásený"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚未登录"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚未登入"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.status.unknown" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status unavailable"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estado no disponible"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "状態を取得できません"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stav nie je dostupný"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "状态尚未确认"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "狀態尚未確認"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.status.verifying" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testing a short translation…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probando una traducción breve…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短い翻訳で接続をテスト中…"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testuje sa krátky preklad…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在验证一段简短翻译…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在驗證一段簡短翻譯…"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.timeout" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex timed out. Please try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex agotó el tiempo de espera. Inténtalo de nuevo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codexがタイムアウトしました。もう一度お試しください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Časový limit Codex vypršal. Skúste to znova."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 响应超时，请重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 回應逾時，請重試。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.verify" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test connection"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probar conexión"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続をテスト"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otestovať pripojenie"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "测试连接"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "測試連線"
+          }
+        }
+      }
+    },
+    "service.codex_cli.mode.local" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Local Codex CLI"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex CLI local"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカルのCodex CLI"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokálne Codex CLI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本机 Codex CLI"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本機 Codex CLI"
+          }
+        }
+      }
+    },
+    "service.codex_cli.mode.managed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT sign-in (built-in)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar sesión con ChatGPT (integrado)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPTでログイン（内蔵）"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prihlásenie cez ChatGPT (vstavané)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT 登录（内置）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT 登入（內建）"
+          }
+        }
+      }
+    },
+    "service.codex_cli.mode.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection method"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Método de conexión"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続方法"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spôsob pripojenia"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接入方式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連線方式"
+          }
+        }
+      }
+    },
+    "service.codex_cli.reasoning_effort.max" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximum"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Máximo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最大"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximálne"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最高"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最高"
+          }
+        }
+      }
+    },
+    "service.codex_cli.reasoning_effort.ultra" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウルトラ"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超高"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超高"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.unsupported_selection" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The saved model or reasoning effort is unavailable. Choose a supported option in Advanced Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El modelo o nivel de razonamiento guardado no está disponible. Elige una opción compatible en Ajustes avanzados."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存されたモデルまたは推論レベルは利用できません。詳細設定で対応する項目を選択してください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uložený model alebo úroveň uvažovania nie je dostupná. V rozšírených nastaveniach vyberte podporovanú možnosť."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已保存的模型或思考程度不可用，请在高级设置中重新选择。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已儲存的模型或思考程度無法使用，請在進階設定中重新選擇。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.select_model" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a supported model"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un modelo compatible"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "対応モデルを選択"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte podporovaný model"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择支持的模型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請選擇支援的模型"
+          }
+        }
+      }
+    },
+    "service.codex_cli.managed.select_effort" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a supported reasoning effort"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un nivel de razonamiento compatible"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "対応する推論レベルを選択"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte podporovanú úroveň uvažovania"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择支持的思考程度"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請選擇支援的思考程度"
           }
         }
       }
