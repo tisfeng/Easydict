@@ -157,7 +157,7 @@ extension ShortcutAction {
                 }
             ),
             .toggleAppendMode: .init(
-                titleKey: "shortcut_toggle_append_mode",
+                titleKey: "shortcut.append_mode.title",
                 icon: .textBadgePlus,
                 defaultsKey: .toggleAppendModeShortcut,
                 action: {
@@ -165,8 +165,8 @@ extension ShortcutAction {
                     Defaults[.enableAppendMode] = isOn
                     let message = NSLocalizedString(
                         isOn
-                            ? "shortcut_append_mode.on"
-                            : "shortcut_append_mode.off",
+                            ? "shortcut.append_mode.toast.on"
+                            : "shortcut.append_mode.toast.off",
                         comment: ""
                     )
                     EZToast.showText(message)

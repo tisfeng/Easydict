@@ -411,6 +411,7 @@ extension Defaults.Keys {
     static let toggleAppendModeShortcut = Key<KeyCombo?>(
         "EZToggleAppendModeShortcutKey_keyHolder"
     )
+    static let toggleAppendModeShortcutMigrated = Key<Bool>("EZToggleAppendModeShortcutMigrated", default: false)
     static let polishAndReplaceShortcut = Key<KeyCombo?>(
         "EZPolishAndReplaceShortcutKey_keyHolder"
     )

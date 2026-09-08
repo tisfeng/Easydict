@@ -389,7 +389,8 @@ static EZWindowManager *_instance;
 
     void (^updateQueryTextAndStartQueryBlock)(BOOL) = ^(BOOL needFocus) {
         NSString *targetText = queryText;
-        if (MyConfiguration.shared.enableAppendMode && queryViewController.inputText.length > 0) {
+        BOOL isSelectedTextAction = (self.actionType == EZActionTypeAutoSelectQuery || self.actionType == EZActionTypeShortcutQuery);
+        if (MyConfiguration.shared.enableAppendMode && isSelectedTextAction && queryViewController.inputText.length > 0) {
             targetText = [queryViewController combinePreviousText:queryViewController.inputText withNewText:queryText];
         }
         // Update input text and detect.

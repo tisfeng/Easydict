@@ -12,6 +12,8 @@ import Magnet
 // MARK: - ShortcutManager
 
 class ShortcutManager: NSObject {
+    // MARK: Internal
+
     @objc static let shared = ShortcutManager()
 
     var confictShortcutTitle = ""
@@ -22,10 +24,23 @@ class ShortcutManager: NSObject {
         if Defaults[.firstLaunch] {
             Defaults[.firstLaunch] = false
             setDefaultShortcutKeys()
+        } else {
+            migrateShortcutsIfNeeded()
         }
 
         // Bind global shortcut actions
         setupGlobalShortcutActions()
+    }
+
+    // MARK: Private
+
+    private func migrateShortcutsIfNeeded() {
+        if !Defaults[.toggleAppendModeShortcutMigrated] {
+            Defaults[.toggleAppendModeShortcutMigrated] = true
+            if Defaults[.toggleAppendModeShortcut] == nil {
+                Defaults[.toggleAppendModeShortcut] = KeyCombo(key: .a, cocoaModifiers: [.command, .shift])
+            }
+        }
     }
 }
 
