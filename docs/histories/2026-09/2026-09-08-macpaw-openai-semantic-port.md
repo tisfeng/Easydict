@@ -48,6 +48,13 @@
     使用该配置，避免 SDK 默认值改变其既有请求语义。
   - 定向运行 `OpenAIReasoningEffortTests` 与 `OpenAIStreamTransportTests`：两个 suite、
     7 个测试通过；SwiftFormat、SwiftLint、Swift 解析和 `git diff --check` 通过。
+- `283dc6b9b` 已提交为 `339714ab425e0aaf3c8ab418af9da25196eba728`。
+- 已完成 `3d47fbce8` 对应实现与验证，等待独立本地提交：
+  - 使用单一 `OpenAIStreamTaskControl` 管理请求开始、任务安装、完成和取消；新请求开始
+    时取消旧任务，陈旧请求的完成或 termination 不会清除当前任务。
+  - `BaseOpenAIService.cancelStream()` 同时保留流式协调器与既有非流式 Task 的取消路径。
+  - 定向运行 `OpenAIStreamTaskControlTests` 与 `OpenAIStreamTransportTests`：两个 suite、
+    8 个测试通过；SwiftFormat、SwiftLint、Swift 解析和 `git diff --check` 通过。
 
 ## 计划
 

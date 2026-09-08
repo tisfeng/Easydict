@@ -23,7 +23,7 @@ public class BaseOpenAIService: StreamService {
     open var supportsStreamingToggle: Bool { false }
 
     open override func cancelStream() {
-        control.cancel()
+        streamTaskControl.cancel()
         nonStreamingTask?.cancel()
         nonStreamingTask = nil
     }
@@ -43,8 +43,6 @@ public class BaseOpenAIService: StreamService {
     override var canFetchRemoteModels: Bool {
         true
     }
-
-    let control = OpenAIStreamControl()
 
     override func contentStreamTranslate(
         _ text: String,
@@ -219,22 +217,23 @@ public class BaseOpenAIService: StreamService {
     /// Reference to the in-flight non-streaming task so `cancelStream()` can cancel it.
     private var nonStreamingTask: Task<(), Never>?
 
+    private let streamTaskControl = OpenAIStreamTaskControl()
+
     private func contentStream(
         for query: ChatQuery,
         url: URL
     )
         -> AsyncThrowingStream<String, any Error> {
         let apiKey = apiKey
-        let control = control
+        let taskControl = streamTaskControl
         let transport = OpenAIStreamTransport()
 
         return AsyncThrowingStream { continuation in
             let identifier = UUID()
-            let request = OpenAIStreamRequest()
-            control.replace(request, identifier: identifier)
+            taskControl.begin(identifier: identifier)
 
             let task = Task {
-                defer { control.clear(identifier: identifier) }
+                defer { taskControl.finish(identifier: identifier) }
 
                 do {
                     try await transport.stream(query: query, url: url, apiKey: apiKey) { result in
@@ -249,11 +248,10 @@ public class BaseOpenAIService: StreamService {
                     continuation.finish(throwing: error)
                 }
             }
-            request.setTask(task)
+            taskControl.install(task, identifier: identifier)
 
             continuation.onTermination = { @Sendable _ in
-                request.cancel()
-                control.clear(identifier: identifier)
+                taskControl.cancel(identifier: identifier)
             }
         }
     }
@@ -422,70 +420,67 @@ private struct OpenAIModelItem: Decodable {
     let id: String
 }
 
-// MARK: - OpenAIStreamControl
+// MARK: - OpenAIStreamTaskControl
 
-/// Coordinates one active OpenAI stream so service cancellation remains effective.
-final class OpenAIStreamControl: @unchecked Sendable {
+/// Coordinates one stream consumer task across cancellation callbacks.
+/// Cancellation can precede task installation, and stale callbacks cannot clear a newer request.
+final class OpenAIStreamTaskControl: @unchecked Sendable {
     // MARK: Internal
 
-    func replace(_ request: OpenAIStreamRequest, identifier: UUID) {
+    func begin(identifier: UUID) {
         lock.lock()
-        let previousRequest = currentRequest?.request
-        currentRequest = (identifier, request)
+        let previousTask = activeRequest?.task
+        activeRequest = ActiveRequest(identifier: identifier, task: nil)
         lock.unlock()
-        previousRequest?.cancel()
+        previousTask?.cancel()
     }
 
-    func clear(identifier: UUID) {
+    func install(_ task: Task<(), Never>, identifier: UUID) {
         lock.lock()
-        if currentRequest?.identifier == identifier {
-            currentRequest = nil
-        }
-        lock.unlock()
-    }
-
-    func cancel() {
-        lock.lock()
-        let request = currentRequest?.request
-        currentRequest = nil
-        lock.unlock()
-        request?.cancel()
-    }
-
-    // MARK: Private
-
-    private let lock = NSLock()
-    private var currentRequest: (identifier: UUID, request: OpenAIStreamRequest)?
-}
-
-// MARK: - OpenAIStreamRequest
-
-/// Cancels a stream task even when termination happens before installation.
-final class OpenAIStreamRequest: @unchecked Sendable {
-    // MARK: Internal
-
-    func setTask(_ task: Task<(), Never>) {
-        lock.lock()
-        self.task = task
-        let shouldCancel = isCancelled
-        lock.unlock()
-
-        if shouldCancel {
+        guard activeRequest?.identifier == identifier else {
+            lock.unlock()
             task.cancel()
+            return
         }
+        activeRequest?.task = task
+        lock.unlock()
+    }
+
+    func finish(identifier: UUID) {
+        lock.lock()
+        if activeRequest?.identifier == identifier {
+            activeRequest = nil
+        }
+        lock.unlock()
     }
 
     func cancel() {
         lock.lock()
-        isCancelled = true
-        let task = task
+        let task = activeRequest?.task
+        activeRequest = nil
+        lock.unlock()
+        task?.cancel()
+    }
+
+    func cancel(identifier: UUID) {
+        lock.lock()
+        guard activeRequest?.identifier == identifier else {
+            lock.unlock()
+            return
+        }
+        let task = activeRequest?.task
+        activeRequest = nil
         lock.unlock()
         task?.cancel()
     }
 
     // MARK: Private
 
+    private struct ActiveRequest {
+        let identifier: UUID
+        var task: Task<(), Never>?
+    }
+
     private let lock = NSLock()
-    private var task: Task<(), Never>?
-    private var isCancelled = false
+    private var activeRequest: ActiveRequest?
 }
