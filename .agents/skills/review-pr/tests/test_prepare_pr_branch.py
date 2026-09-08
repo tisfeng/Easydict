@@ -92,8 +92,23 @@ class PreparePRBranchTests(unittest.TestCase):
             textwrap.dedent(
                 """\
                 #!/bin/sh
-                if [ "$1" != "pr" ] || [ "$2" != "view" ]; then
+                if [ "$#" -lt 4 ] || [ "$1" != "pr" ] || [ "$2" != "view" ]; then
                   exit 64
+                fi
+                if [ "$3" != "$GH_EXPECTED_VIEW_REF" ]; then
+                  exit 65
+                fi
+                shift 3
+                if [ -n "${GH_EXPECTED_REPO:-}" ]; then
+                  if [ "$1" != "--repo" ] || [ "$2" != "$GH_EXPECTED_REPO" ]; then
+                    exit 66
+                  fi
+                  shift 2
+                elif [ "$1" = "--repo" ]; then
+                  exit 67
+                fi
+                if [ "$1" != "--json" ]; then
+                  exit 68
                 fi
                 printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' \\
                   "$GH_HEAD_OWNER" "$GH_HEAD_REPO" "$GH_HEAD_BRANCH" \\
@@ -123,13 +138,13 @@ class PreparePRBranchTests(unittest.TestCase):
         self._git_config(self.head_source, "user.name", "review-pr test")
         self._git_config(self.head_source, "user.email", "review-pr@example.com")
         run(["git", "remote", "set-url", "origin", str(self.fork_remote)], cwd=self.head_source)
-        run(["git", "switch", "--create", "feat/wordbook"], cwd=self.head_source)
+        run(["git", "switch", "--create", "feat/review-fixture"], cwd=self.head_source)
         if self.conflict:
             (self.head_source / "shared.txt").write_text("head\n", encoding="utf-8")
         else:
             (self.head_source / "feature.txt").write_text("feature\n", encoding="utf-8")
-        self._commit(self.head_source, "feat(wordbook): add local wordbook")
-        run(["git", "push", "origin", "feat/wordbook"], cwd=self.head_source)
+        self._commit(self.head_source, "feat(review): add review fixture")
+        run(["git", "push", "origin", "feat/review-fixture"], cwd=self.head_source)
         self.head_sha = run(
             ["git", "rev-parse", "HEAD"], cwd=self.head_source
         ).stdout.strip()
@@ -155,19 +170,19 @@ class PreparePRBranchTests(unittest.TestCase):
                 "remote",
                 "set-url",
                 "origin",
-                "https://github.com/tisfeng/Easydict.git",
+                "https://github.com/iftechio/Scoco.git",
             ],
             cwd=self.checkout,
         )
         self._git_config(
             self.checkout,
             "url." + str(self.base_remote) + ".insteadOf",
-            "https://github.com/tisfeng/Easydict.git",
+            "https://github.com/iftechio/Scoco.git",
         )
         self._git_config(
             self.checkout,
             "url." + str(self.fork_remote) + ".insteadOf",
-            "https://github.com/contributor/Easydict.git",
+            "https://github.com/contributor/Scoco.git",
         )
 
     def _git_config(self, repository: Path, key: str, value: str) -> None:
@@ -179,22 +194,32 @@ class PreparePRBranchTests(unittest.TestCase):
         environment.update(
             {
                 "GH_HEAD_OWNER": "contributor",
-                "GH_HEAD_REPO": "Easydict",
-                "GH_HEAD_BRANCH": "feat/wordbook",
+                "GH_HEAD_REPO": "Scoco",
+                "GH_HEAD_BRANCH": "feat/review-fixture",
                 "GH_HEAD_OID": self.head_sha,
                 "GH_BASE_BRANCH": "dev",
-                "GH_PR_NUMBER": "1246",
-                "GH_PR_URL": "https://github.com/tisfeng/Easydict/pull/1246",
+                "GH_PR_NUMBER": "42",
+                "GH_PR_URL": "https://github.com/iftechio/Scoco/pull/42",
                 "GIT_TERMINAL_PROMPT": "0",
             }
         )
         return environment
 
-    def _prepare(self, *arguments: str) -> subprocess.CompletedProcess[str]:
+    def _prepare(
+        self,
+        *arguments: str,
+        pr_ref: Optional[str] = None,
+        expected_repo: Optional[str] = None,
+    ) -> subprocess.CompletedProcess[str]:
+        environment = self._environment()
+        pr_number = environment["GH_PR_NUMBER"]
+        environment["GH_EXPECTED_VIEW_REF"] = pr_number
+        if expected_repo is not None:
+            environment["GH_EXPECTED_REPO"] = expected_repo
         return run(
-            ["bash", str(SCRIPT_PATH), *arguments, "1246"],
+            ["bash", str(SCRIPT_PATH), *arguments, pr_ref or pr_number],
             cwd=self.checkout,
-            env=self._environment(),
+            env=environment,
             check=False,
         )
 
@@ -205,21 +230,43 @@ class PreparePRBranchTests(unittest.TestCase):
         result = self._prepare()
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("Branch: feat/wordbook", result.stdout)
-        self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "feat/wordbook")
+        self.assertIn("Branch: feat/review-fixture", result.stdout)
+        self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "feat/review-fixture")
         self.assertEqual(self._git("rev-parse", "HEAD").stdout.strip(), self.head_sha)
         self.assertEqual(
-            self._git("for-each-ref", "--format=%(upstream:short)", "refs/heads/feat/wordbook").stdout.strip(),
-            "contributor/feat/wordbook",
+            self._git("for-each-ref", "--format=%(upstream:short)", "refs/heads/feat/review-fixture").stdout.strip(),
+            "contributor/feat/review-fixture",
         )
+        self._assert_clean_status()
+
+    def test_github_url_reference_passes_base_repo_to_gh(self) -> None:
+        pr_url = self._environment()["GH_PR_URL"]
+        base_repo = pr_url.removeprefix("https://github.com/").split("/pull/", 1)[0]
+
+        result = self._prepare(pr_ref=pr_url, expected_repo=base_repo)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self._assert_clean_status()
+
+    def test_shorthand_reference_passes_base_repo_to_gh(self) -> None:
+        environment = self._environment()
+        pr_url = environment["GH_PR_URL"]
+        base_repo = pr_url.removeprefix("https://github.com/").split("/pull/", 1)[0]
+
+        result = self._prepare(
+            pr_ref=f"{base_repo}#{environment['GH_PR_NUMBER']}",
+            expected_repo=base_repo,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
         self._assert_clean_status()
 
     def test_local_latest_base_keeps_head_branch_name(self) -> None:
         result = self._prepare("--merge-latest")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("Review branch: feat/wordbook", result.stdout)
-        self.assertNotIn("review/pr-1246-merge-", result.stdout)
+        self.assertIn("Review branch: feat/review-fixture", result.stdout)
+        self.assertNotIn("review/pr-42-merge-", result.stdout)
         merged_head = self._git("rev-parse", "HEAD").stdout.strip()
         self.assertNotEqual(merged_head, self.head_sha)
         self.assertTrue(
@@ -231,19 +278,19 @@ class PreparePRBranchTests(unittest.TestCase):
         self._assert_clean_status()
 
     def test_local_latest_base_uses_head_fallback_without_merge_suffix(self) -> None:
-        self._git("branch", "feat/wordbook")
-        self._git("branch", "--set-upstream-to=origin/dev", "feat/wordbook")
+        self._git("branch", "feat/review-fixture")
+        self._git("branch", "--set-upstream-to=origin/dev", "feat/review-fixture")
 
         result = self._prepare("--merge-latest")
 
-        expected_branch = "review/pr-1246-" + self.head_sha[:10]
+        expected_branch = "review/pr-42-" + self.head_sha[:10]
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn(f"Review branch: {expected_branch}", result.stdout)
-        self.assertNotIn("review/pr-1246-merge-", result.stdout)
+        self.assertNotIn("review/pr-42-merge-", result.stdout)
         self.assertEqual(self._git("branch", "--show-current").stdout.strip(), expected_branch)
         self.assertNotEqual(self._git("rev-parse", "HEAD").stdout.strip(), self.head_sha)
         self.assertEqual(
-            self._git("rev-parse", "refs/heads/feat/wordbook").stdout.strip(),
+            self._git("rev-parse", "refs/heads/feat/review-fixture").stdout.strip(),
             self.base_sha,
         )
         self._assert_clean_status()
@@ -253,9 +300,43 @@ class PreparePRBranchTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 2)
         self.assertIn("Merge stopped with conflicts", result.stderr)
-        self.assertIn("Review branch: feat/wordbook", result.stderr)
-        self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "feat/wordbook")
+        self.assertIn("Review branch: feat/review-fixture", result.stderr)
+        self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "feat/review-fixture")
         self.assertIn("UU shared.txt", self._git("status", "--short").stdout)
+
+    def test_local_review_falls_back_when_head_branch_is_checked_out_elsewhere(self) -> None:
+        self._git(
+            "fetch",
+            str(self.fork_remote),
+            "refs/heads/feat/review-fixture:refs/remotes/contributor/feat/review-fixture",
+        )
+        self._git("branch", "feat/review-fixture", self.head_sha)
+        occupied_path = self.root / "occupied"
+        self._git("worktree", "add", str(occupied_path), "feat/review-fixture")
+        self.worktree_paths.append(occupied_path)
+
+        result = self._prepare()
+
+        expected_branch = "review/pr-42-" + self.head_sha[:10]
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(f"Review branch: {expected_branch}", result.stdout)
+        self.assertIn("checked out in another worktree", result.stdout)
+        self.assertEqual(self._git("branch", "--show-current").stdout.strip(), expected_branch)
+        self.assertEqual(
+            run(
+                ["git", "-C", str(occupied_path), "branch", "--show-current"],
+                cwd=self.checkout,
+            ).stdout.strip(),
+            "feat/review-fixture",
+        )
+        self.assertEqual(
+            run(
+                ["git", "-C", str(occupied_path), "rev-parse", "HEAD"],
+                cwd=self.checkout,
+            ).stdout.strip(),
+            self.head_sha,
+        )
+        self._assert_clean_status()
 
     def test_worktree_latest_base_keeps_source_checkout_unchanged(self) -> None:
         source_branch = self._git("branch", "--show-current").stdout.strip()
@@ -270,7 +351,7 @@ class PreparePRBranchTests(unittest.TestCase):
         worktree_path = Path(match.group(1))
         self.worktree_paths.append(worktree_path)
         self.assertTrue(worktree_path.is_dir())
-        self.assertIn("review/pr-1246-merge-", result.stdout)
+        self.assertIn("review/pr-42-merge-", result.stdout)
         self.assertEqual(self._git("branch", "--show-current").stdout.strip(), source_branch)
         self.assertEqual(self._git("rev-parse", "HEAD").stdout.strip(), source_head)
         self._assert_clean_status()
@@ -279,7 +360,7 @@ class PreparePRBranchTests(unittest.TestCase):
             ["git", "-C", str(worktree_path), "branch", "--show-current"],
             cwd=self.checkout,
         ).stdout.strip()
-        self.assertTrue(worktree_branch.startswith("review/pr-1246-merge-"))
+        self.assertTrue(worktree_branch.startswith("review/pr-42-merge-"))
 
     def test_script_has_no_push_command(self) -> None:
         self.assertNotRegex(SCRIPT_PATH.read_text(encoding="utf-8"), r"\bgit\s+push\b")

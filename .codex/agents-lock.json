@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "agents": {
+    "planner": {
+      "source": "tisfeng/skills#v0.3.0",
+      "ref": "v0.3.0",
+      "revision": "ccc74f119f61d672cfd0cb57c07a259b7bc78614",
+      "relativePath": ".codex/agents/planner.toml",
+      "fileHash": "3b82bc7742b003c2b953fd1a3b32c7579eb6c0120a149775b4e594dcb0105ca0"
+    },
+    "reviewer": {
+      "source": "tisfeng/skills#v0.3.0",
+      "ref": "v0.3.0",
+      "revision": "ccc74f119f61d672cfd0cb57c07a259b7bc78614",
+      "relativePath": ".codex/agents/reviewer.toml",
+      "fileHash": "4355c6889c2074dc520c00610daadcb1ad9d0a92b648ffc1e1f6eb79cb6eb828"
+    },
+    "tester": {
+      "source": "tisfeng/skills#v0.3.0",
+      "ref": "v0.3.0",
+      "revision": "ccc74f119f61d672cfd0cb57c07a259b7bc78614",
+      "relativePath": ".codex/agents/tester.toml",
+      "fileHash": "91852e07a43f415c330fcd5387b6d477a18325947a026c950272faaf71bec4ec"
+    },
+    "git-delivery": {
+      "source": "tisfeng/skills#v0.3.0",
+      "ref": "v0.3.0",
+      "revision": "ccc74f119f61d672cfd0cb57c07a259b7bc78614",
+      "relativePath": ".codex/agents/git-delivery.toml",
+      "fileHash": "0fee9a7728d923d035f27a468976034522da172abcab1b9e55a36b3c1f3c39f2"
+    }
+  }
+}

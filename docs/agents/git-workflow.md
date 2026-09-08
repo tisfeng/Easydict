@@ -1,65 +1,90 @@
 # Git 工作流
 
-本文只规定仓库 Git 状态保护、暂存和本地交付；请求语义和变更门禁分别见
-[`request-boundary.md`](request-boundary.md) 与 [`execution-safety.md`](execution-safety.md)。
+本文只规定 Git 状态保护、暂存和本地交付。任务授权、首次快照和保护状态以
+[`request-boundary.md`](request-boundary.md) 为准，plan/history 生命周期以
+[`README.md`](README.md) 为准。
 
 ## 基本安全
 
-- 保留用户现有的 staged 和 unstaged 变更，不重写或丢弃无关工作树内容。
-- 除非任务明确授权、处于 `delivery` 模式或满足自动本地提交规则，否则不要暂存、提交
-  或推送；明确禁止优先。
-- 推送前核对目标远程状态及提交关系，按已授权工作流同步。实施默认只本地交付；
-  PR 创建、集成或发布请求可包含对应 skill 明示的必要 Git 操作，其他任务不自行执行
-  `push`、`pull`、`rebase` 或 `merge`。用户的禁止条件优先，不为同步而重写用户历史。
-- 每个提交聚焦于一个连贯的行为或文档变更，并使用 Angular-style 信息。
+- 保留用户已有的 staged、unstaged、untracked 和提交历史，不重写或丢弃无关内容。
+- 未获得对应授权时，不暂存、提交、创建分支、集成或推送；明确禁止优先。
+- implementation 默认只允许满足门禁后的本地自动提交，不自行扩大为 fetch、pull、push、
+  rebase、merge、reset、stash 或 clean。
+- PR、integration 和发布请求只执行对应 skill 明示且用户已授权的必要 Git 操作。
+- 每个提交聚焦一个连贯变更，并使用 Angular-style 信息。
 
-## Git 交付顺序
+## 交付顺序
 
-1. 第一次写入前记录 `initial_head`、初始 staged、unstaged、untracked、冲突和任务允许路径；
-   对任务相关脏内容保留分层 diff/内容快照，不能仅凭路径重建任务归属。
-2. 按 `request-boundary.md` 区分普通只读分析与获准的工作流准备；写入和交付保护
-   按 `execution-safety.md` 分别判断。不要将自动提交资格用于否决显式 staged 交付。
-3. `delivery` 使用
-   [`.agents/skills/git-commit/SKILL.md`](../../.agents/skills/git-commit/SKILL.md)。已有 staged
-   内容时只提交该范围；显式调用该 skill 且索引为空时，按它的一次暂存规则执行，
-   用户指定路径或禁止暂存时优先遵守该限制。
-4. `implementation` 在验证完成后，只有满足自动本地提交条件时才执行一次自动提交。
+1. implementation 使用首次写入前冻结的 HEAD、索引、工作树、冲突、允许路径和内容归属
+   判断交付安全；只读开始的显式 staged 交付或复用已有提交的 integration，在准备交付时建立
+   同等内容的只读基线。
+2. 完成最终审查和验证后按操作冻结交付范围：显式提交已有 staged 内容时冻结 staged paths
+   与 staged raw patch；空索引且允许暂存的 commit 或 auto-local-commit 时，冻结
+   `agent_owned_paths`，并把本任务实际产生且归 Agent 所有的每个改动路径逐一列入
+   `expected_commit_paths`；这份清单不能遗漏上述路径，也不能包含用户原有改动或允许路径
+   以外的文件；integration 复用已有提交时冻结对应提交范围。
+3. 所有其他写入 Agent 结束后，串行委派
+   [`.codex/agents/git-delivery.toml`](../../.codex/agents/git-delivery.toml)：
+   `commit` 与 `auto-local-commit` 执行
+   [git-commit](../../.agents/skills/git-commit/SKILL.md)，只有 `integration` 才执行
+   [worktree-rebase-merge](../../.agents/skills/worktree-rebase-merge/SKILL.md)。
+4. 需要创建提交时，`git-delivery` 先以 `prepare` 只读重验现场并返回精确提交信息草稿。
+   主 Agent 在对话中原样展示“提交信息预览”后，同一 Agent 才能进入 `apply`；用户要求
+   确认、仅预览或暂缓时必须等待批准。复用已有提交且无需新提交时不强制生成草稿。
+5. 完成后，主 Agent 独立核验提交哈希、实际提交信息、分支、工作树、统计和未 push 状态。
 
-## 自动本地提交条件
+`git-delivery` 的候选快照、精确暂存、prepare/apply 重验和校验不通过时停止交付的规则以
+其受管 TOML 与所选 skill 为权威，本文不复制内部实现。配置、授权、模型、范围、HEAD、索引、冲突、目标
+worktree 或验证不确定时进入 protected，不得改由主 Agent 或其他模型执行缩减版交付。
+
+仅在本轮刚更新 `git-delivery` 配置且运行时尚不能重新发现时，主 Agent 才能读取 TOML，
+以完全相同的模型、推理强度、写入权限和指令显式启动 bootstrap fallback，并在回执中说明；
+无法精确复现时仍然 fail closed。
+
+## 自动本地提交
 
 以下条件必须同时满足：
 
-- 任务是 `implementation`，且会话中没有仍有效的禁止提交或暂缓交付要求；
-- 初始索引为空，任务执行期间也没有出现新的非 Agent staged 内容；
-- `HEAD` 未变化，当前索引无冲突，用户变更与 Agent 变更可以清晰分离；
-- Agent 产生了仓库文件差异，并已创建或更新同任务 history；
-- 允许路径和 Agent-owned paths 已明确，暂存后 staged paths 与预期集合完全一致；
-- 按 `build-and-test.md` 完成必要审查与验证，最终结果覆盖最终代码及测试，且没有
-  未处理的有效阻塞 finding 或验证失败；
-- 当前任务尚未执行过自动提交。
+- 任务是 implementation，且没有仍有效的禁止提交或暂缓交付要求。
+- 初始索引为空，交付前没有出现新的非 Agent staged 内容。
+- HEAD 未变化，索引无冲突，用户内容与 Agent 变更可以清晰分离。
+- 最终存在仓库差异，并已满足 [`README.md`](README.md#plan-与-history) 的同任务 history
+  要求。
+- `expected_commit_paths` 逐一列出本任务产生的全部 Agent-owned 改动，不遗漏，也不包含用户
+  原有或允许范围外的路径；暂存后只包含这些路径。
+- 必要审查和验证覆盖最终快照，没有尚未解决且经核实的阻塞问题或失败验证。
+- 当前任务尚未执行自动提交。
 
-`implementation` 的执行计划如实记录交付默认值及跨轮仍有效的限制。不能因为用户没有
-单独提及“提交”，就把自动本地提交降级为未提交；计划作者或 Agent 也不能用计划字段
-添加用户未给出的禁止条件。
+满足条件时，`git-delivery` 只精确暂存 expected commit paths 并执行一次本地提交，不使用
+`git add .`。没有差异时不创建空提交。条件不满足时保留差异并报告原因，不得为满足提交条件
+扩大授权或混入用户内容。
 
-自动提交只暂存明确的 Agent-owned paths 和同任务 history，不使用 `git add .`。同一
-任务分多轮实施时复用同一条 history；仅修改 history 的任务不递归创建第二条。没有
-仓库文件差异时不创建空提交。
+## 显式交付与集成
 
-提交成功后，报告完整提交哈希、实际提交信息、工作树状态、push 状态，以及文本文件的
-代码、文档和总变动统计；二进制变动不计入统计。
+- 显式提交已有 staged 内容时以 staged raw patch 为唯一事实来源，不反向要求
+  implementation history，也不套用自动提交的空索引前提。
+- 已有 staged 内容超出用户指定范围时保留索引并报告，不自动调整或混入未暂存内容。
+- 只有 integration 授权才允许 `worktree-rebase-merge` 所需的任务分支、临时 worktree、
+  rebase 和 merge；commit 与 auto-local-commit 不包含这些动作。
+- 已授权工作流需要任务分支名时，使用 `git-commit` skill 的 `Branch Name Guidance` 推导
+  Conventional 分支名；该指南本身不授权创建分支。
+- push 授权可以来自用户明确要求推送，也可以来自用户明确调用且按 skill 必然包含推送的 PR
+  或发布工作流；执行前仍须核对远程目标和提交关系。
 
-如果条件不满足，跳过自动提交并报告原因，允许范围内的实施和修复仍可继续。
-history 缺失时先补齐；不在允许范围内或无法与用户变更分离时保留未提交结果。
-显式交付遵守所选工作流，不反向套用 implementation 的 history 和空索引前提。
+## 交付回执
 
-## Easydict PR 交付
+提交成功后按 `git-commit` skill 报告完整哈希、实际提交信息、分支、提交后校验、最终工作树、
+Push 状态，以及文本文件的总计/代码/文档变动统计。任何提交后校验或统计失败都不算完整交付，
+不得编造结果。
 
-需要创建 PR 时使用仓库现有的 `submit-pr` skill，并显式传入：
+## Easydict PR 参数
+
+创建 PR 时使用 `submit-pr` skill，并显式传入：
 
 - `--base dev`
 - `--base-remote origin`
 - `--issue-policy forbid`
 
-如果 head 需要推送到其他 fork remote，再显式传入 `--head-remote`。PR review 遵循
-`.agents/skills/review-pr/SKILL.md` 的完整流程。
+当前受管 `submit-pr v0.3.0` 需要 Python 3.10 或更高版本。执行脚本或测试前确认解释器版本；
+无法找到兼容解释器时 fail closed，不在项目内修改受管 Skill。需要推送到其他 fork remote 时
+再显式传入 `--head-remote`。PR review 使用 `review-pr` skill。
