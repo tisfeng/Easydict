@@ -94,7 +94,5 @@ Codex 会按照适用的 [`AGENTS.md`](AGENTS.md) 规则提供额外审查；也
 - [开发者构建指南](docs/user-docs/zh/GUIDE.md#开发者构建)
 - [架构与源码定位](docs/architecture/overview.md)
 - [构建与测试](docs/agents/build-and-test.md)
-- [Xcode 工程](docs/agents/swift-xcode.md)
-- [本地化](docs/agents/localization.md)
-- [代码质量](docs/agents/code-quality.md)
+- [开发规则（代码质量、Swift/Xcode 与本地化）](docs/agents/development.md)
 - [Agent 开发入口](AGENTS.md)

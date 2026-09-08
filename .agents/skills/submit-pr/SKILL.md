@@ -10,19 +10,20 @@ description: >
 
 根据当前 Git checkout 的已提交变更，创建或复用 GitHub Pull Request。
 
+下文的 `<submit-pr-skill-dir>` 表示当前加载的 `submit-pr/SKILL.md` 所在目录。
+运行随 skill 分发的脚本时，先解析该实际目录；不要假设 skill 安装在某个固定的
+Agent 或项目路径中。
+
 ## PR 规范
 
 - PR 标题使用 Angular-style：`type(scope): subject`。
 - 任务分支使用 Conventional 格式：`<type>/<kebab-case-summary>`。
-- PR 正文按以下顺序包含四个规范段落，每个仅出现一次：
-  1. `变更说明 / Summary`
-  2. `关联 Issue / Linked Issues`
-  3. `验证 / Verification`
-  4. `截图 / Screenshots`
-- 保留目标仓库 PR 模板中非占位的说明、checklist 和额外段落。
+- 目标仓库的 PR 模板优先：保留其标题、顺序、非占位说明、checklist 和额外段落。
+- 将 Summary、Issue、Verification 和 Screenshots 填入语义匹配的模板段落；模板缺少某一
+  段时，才追加该段的内置默认标题和内容。
 - 目标仓库没有 PR 模板时使用内置四段式骨架，不创建模板文件，也不中断流程。
-- 非 UI 修改的截图段填写 `N/A`；UI 修改只提示用户在 GitHub PR 页面补充截图，不能
-  因缺少截图中断流程。
+- 非 UI 修改的截图内容为 `N/A`；UI 修改只提示用户在 GitHub PR 页面补充截图，不能因
+  缺少截图中断流程。
 
 ## 模式
 
@@ -63,7 +64,7 @@ description: >
 最小调用示例：
 
 ```bash
-python3 .agents/skills/submit-pr/scripts/submit_pr.py plan \
+python3 "<submit-pr-skill-dir>/scripts/submit_pr.py" plan \
   --title '<type(scope): subject>' \
   --summary '<summary>' \
   --verification '<verification>' \
@@ -115,8 +116,8 @@ python3 .agents/skills/submit-pr/scripts/submit_pr.py plan \
 ## 恢复与停止条件
 
 - 远程任务分支不存在：创建。
-- 远程和冻结 SHA 相同：复用。
-- 远程是冻结 SHA 的祖先：允许普通 fast-forward push。
+- 远程任务分支指向计划中记录的提交：复用。
+- 远程任务分支是计划中记录提交的祖先：允许普通 fast-forward push。
 - 远程领先或分叉：停止，绝不 force push。
 - push 成功而 PR 创建失败：保留远程分支；重复原命令继续创建。
 - PR 已创建而最终验证中断：重复原命令查找相同 repository/base/head PR 并重新验证。

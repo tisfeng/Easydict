@@ -64,4 +64,6 @@ https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-sim
 
 处理特定语言、框架或 IDE 项目时，只加载对应的专项 reference。处理其他类型的代码时，不要读取或套用无关专项规则。
 
+- Electron、TypeScript、React、IPC、preload 或 renderer：阅读
+  [Electron/TypeScript 专项规则](references/electron-typescript.md)。
 - Swift、SwiftUI 或 Xcode：阅读 [Swift/Xcode 专项规则](references/swift-xcode.md)。

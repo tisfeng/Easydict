@@ -1,12 +1,19 @@
 ---
 name: review-pr
-description: 审查 GitHub Pull Request；默认使用本地分支，用户明确要求时使用隔离 worktree 或合并最新 base。复用 review 核心检查远程代码并处理已解决或不再适用的线程；用户要求只读时不写远程状态。
+description: >
+  默认在本地分支准备 GitHub pull request；明确要求时使用隔离 worktree，并可选择
+  合并最新 base 分支。复用 review 核心审查准确远程代码，并维护有证据的线程状态；
+  用户要求只读时禁用远程写入。适用于 GitHub PR review。
 ---
 
 # PR Review 工作流
 
 先读取通用核心 [`review`](../review/SKILL.md)。本 skill 只补充 GitHub 上下文、准备、
 线程维护和 PR 报告；本地工作树、提交、文件或模块 review 直接使用核心，不要求 PR。
+
+下文的 `<review-pr-skill-dir>` 表示当前加载的 `review-pr/SKILL.md` 所在目录。
+运行随 skill 分发的脚本时，先解析该实际目录；不要假设 skill 安装在某个固定的
+Agent 或项目路径中。
 
 默认使用本地 checkout。只有用户明确要求 worktree、并行 review 或并发 review 时，
 才使用隔离 Git worktree。如果缺少 PR 引用或引用存在歧义，在改变 Git 状态前先询问。
@@ -19,10 +26,9 @@ description: 审查 GitHub Pull Request；默认使用本地分支，用户明�
 
 ## 请求与准备权限
 
-明确请求按本 skill review PR，包含下述本地准备流程所需的 remote 添加、fetch、
-安全分支创建或 fast-forward、upstream 设置和 checkout。若用户/仓库已启用自动线程
-维护（Easydict 默认启用），还包含下述有证据的线程 resolve；未启用的其他仓库须取得
-该远程动作授权。此流程不授权产品修复、push、发布评论、approve、删除评论或关闭 PR。
+明确请求按本 skill review PR，包含下述本地准备流程所需的 remote 添加、fetch、安全
+分支创建或 fast-forward、upstream 设置和 checkout。线程 resolve 需要单独的工作流
+授权和远程证据。此流程不授权产品修复、push、发布评论、approve、删除评论或关闭 PR。
 worktree、latest-base 合并与冲突修复仍按下文对应条件单独判断。
 
 仅要求方案或解释时不运行准备命令。用户要求不改变 Git 状态或不切分支时，优先遵守
@@ -121,15 +127,15 @@ checkout 有变更就推断为 worktree 模式。普通本地 PR 运行以下命
 先按同一规则选择分支：
 
 ```bash
-bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh <pr-ref>
-bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --merge-latest <pr-ref>
+bash "<review-pr-skill-dir>/scripts/prepare-pr-branch.sh" <pr-ref>
+bash "<review-pr-skill-dir>/scripts/prepare-pr-branch.sh" --merge-latest <pr-ref>
 ```
 
 需要隔离 source checkout 时，显式使用：
 
 ```bash
-bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --worktree <pr-ref>
-bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --worktree --merge-latest <pr-ref>
+bash "<review-pr-skill-dir>/scripts/prepare-pr-branch.sh" --worktree <pr-ref>
+bash "<review-pr-skill-dir>/scripts/prepare-pr-branch.sh" --worktree --merge-latest <pr-ref>
 ```
 
 如果用户没有请求 latest-base，即使 GitHub 报告 `mergeable: CONFLICTING` 或
@@ -163,12 +169,8 @@ merge_base=$(git merge-base <base-remote>/<base-branch> HEAD)
 git merge-tree "$merge_base" <base-remote>/<base-branch> HEAD
 ```
 
-将 `baseRefName` 视为目标分支；不要硬编码 `dev`。只有明确请求 latest-base 后才运行：
-
-```bash
-bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --merge-latest <pr-ref>
-bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh --worktree --merge-latest <pr-ref>
-```
+将 `baseRefName` 视为目标分支；不要硬编码 `dev`。只有明确请求 latest-base 后，才使用
+上方与所选准备模式对应的 `--merge-latest` 命令。
 
 本地 latest-base helper 在已选择的本地分支上 fetch PR base，运行
 `git merge --no-edit <base-remote>/<base-branch>`，并且绝不 push。显式 worktree
@@ -273,8 +275,8 @@ git diff <base-sha>...<remote-head-sha>
 冻结 fetch 后的 base SHA 与准确 `headRefOid`。latest-base 模式不能用本地 merge HEAD
 替代远程 head；集成 diff 另行审查，并明确两种快照的证据归属。
 
-使用 `rg` 搜索周围源码、测试、配置、生成文件和文档。除非用户明确要求本地构建，PR
-review 期间不要运行 `xcodebuild`。验证状态重要时检查 PR checks：
+使用 `rg` 搜索周围源码、测试、配置、生成文件和文档。根据仓库验证要求、变更风险和
+用户授权选择适当的本地检查。验证状态重要时检查 PR checks：
 
 ```bash
 gh pr checks <number> [--repo <base-owner>/<base-repo>]
@@ -309,7 +311,8 @@ gh pr checks <number> [--repo <base-owner>/<base-repo>]
   内容，结合当前 head 和周围代码验证，更新已有评论的对应条目；只有再次 review
   识别出不同的额外问题时才补充独立发现；已有 F 条目按当前证据复核更新。
   最终输出前更新待确认决策和审查范围与验证。
-  自动化反馈和人工反馈使用相同处理方式。
+  对 reply 或 resolution/outdated 状态变化的
+  现有条目重新评估。自动化反馈和人工反馈使用相同处理方式。
 - 如果分析新活动后仍有足够时间出现另一条 review，再刷新一次。只有最新快照中没有
   未检查反馈时才完成。
 - 如果最终刷新不可用，报告该限制，不要声称已检查所有当前评论或 thread。只有最新
@@ -327,9 +330,11 @@ gh pr checks <number> [--repo <base-owner>/<base-repo>]
 
 ### 阅读顺序与复杂度
 
-报告标题和字段使用当前请求的语言；以下示例只说明结构。
+报告标题和字段使用当前请求的语言。需要编写复杂复审报告时，读取
+[复审报告示例](references/report-example.md)；示例只说明结构，不照抄结论、计数或证据。
 保留 P0–P3 优先级和稳定问题 ID：C 表示已有评论、F 表示独立发现、Q 表示待决事项。
-编号表示来源而非发现时间；F 条目注明“本轮新增”或“上轮发现，本轮仍成立”。
+C/F/Q 前缀区分问题来源或类型；数字用于稳定标识问题，不表示发现时间。F 条目注明
+“本轮新增”或“上轮发现，本轮仍成立”。
 复审缺少上轮证据时只标明本轮确认，不推断首次发现时间。
 复审沿用能对应到同一问题的 ID，不因排序变化重新编号；无旧映射时明确建立本轮编号。
 
@@ -364,7 +369,7 @@ gh pr checks <number> [--repo <base-owner>/<base-repo>]
 
 ### 问题呈现
 
-- 二级标题用于报告分区，三级标题用于具体问题，例如“### [P1] F1 — 回译方向错误”。
+- 二级标题用于报告分区，三级标题用于具体问题，例如“### [P1] F1 — 简洁问题标题”。
   不继续堆叠小标题。问题内使用“**证据：** 正文”等段内标签；多条证据可在短标签下
   分项列出，不让每个字段变成标题。只加粗短标签和关键风险，不将摘要或整段正文加粗。
   复审计数与线程计数分段或分项呈现，不挤入同一长句。
@@ -384,96 +389,15 @@ gh pr checks <number> [--repo <base-owner>/<base-repo>]
   问题中的待执行检查标为“建议验证”，与验证区的“已执行验证”区分。
 - 不依赖 HTML、折叠块、颜色、特殊卡片或页内锚点。标题、列表、横线前后保留空行，
   使用通用 Markdown；问题 ID 本身就能帮助定位。
-- 摘要和行动索引可短引用已有问题，详细评估只能有一个归属；不得把旧评论重新包装
-  成新增 finding。
-
-以下为复审结构示例，替换为实际证据与链接，不照抄示例结论或计数：
-
-```markdown
-## 审查结论：建议修复后再合并
-
-本轮复审：已修复 0 · 仍存在 1 · 新增 0；另有 1 项范围决策待确认。
-
-线程状态：最终开放 1 条，代码在上轮已修复，但本轮只读未关闭线程。
-
-CI 尚未全部完成，未进行 UI 实测。
-
-**行动项**
-
-- F1：保存实际语言对，修复回译方向。
-- Q1：确认是否同时支持 Auto → Auto。
-
----
-
-## 独立发现
-
-### [P1] F1 — Auto 模式丢失实际回译方向
-
-位置：准确快照中的文件位置链接
-
-来源：上轮发现，本轮复核仍成立
-
-**触发与影响：** 日语经 Auto 翻译为中文后，交换可能得到英语而不是日语。
-
-**证据：**
-
-- 交换入口仍使用 Auto 占位值（准确代码链接）。
-- 目标语言解析使用偏好语言（相关调用链链接）。
-
-**建议修复：** 保存原请求的有效语言对，再按原目标到原源发起查询。
-
-**建议验证：** 覆盖 Auto、显式语言、未完成流式与 OCR 场景。
-
----
-
-## 待确认决策
-
-### Q1 — 是否同时支持 Auto → Auto？
-
-推荐纳入并复用 F1 的有效语言对；否则默认配置仍无法使用此功能。
-
----
-
-## 旧评论与线程处理记录
-
-- **C1：按钮入口（评论链接）**：按钮与快捷键已共用路径（代码证据链接）；
-  代码已修复，线程仍开放（只读未操作）。
-
----
-
-## 审查范围与验证
-
-**范围与快照**
-
-- 范围：PR 目标、关联 issue 与审查边界。
-- 远程 Head：完整 SHA。
-- Base：冻结的完整 SHA。
-- Merge-base：真实差异基线的完整 SHA。
-
-**本地准备**
-
-- 准备模式、分支与 upstream；隔离模式补充 worktree 路径和源 checkout 状态。
-- 工作树状态、collision fallback 和 latest-base 是否执行，按实际情况说明。
-
-**已执行验证与限制**
-
-- 已执行：实际检查及各自结果。
-- CI：通过、失败或 pending 的实际状态。
-- 未运行／受阻：未验证事项及其对结论的影响。
-
-**刷新与操作**
-
-- 最终刷新：Head 是否与上述快照一致、PR updatedAt、线程及回复覆盖和新活动复核。
-- 线程计数：初始开放 1 · 本轮确认 resolve 0 · 最终开放 1。
-- 实际操作：本轮只读，逐项说明本地准备及 Git／远程操作，不能只写“未 push”。
-```
+- 摘要和行动索引可短引用已有问题，每个问题只在对应条目中详细说明；不得把旧评论重新包装
+  成新增 finding。展示层调整不改变 checkout、权限、resolve 条件或最终刷新流程。
 
 ### 验证区的最低信息
 
 根据实际模式简述以下信息，不能因压缩报告而省略失败或范围限制：
 
 复杂报告按“范围与快照／本地准备／已执行验证与限制／刷新与操作”组织短标签和列表，
-一项承载一个事实或紧密相关的一组事实，不重新拼成四个大段落。完整 SHA 各自分项，
+每项写一个结果或一组紧密相关的信息，不重新拼成四个大段落。完整 SHA 各自分项，
 同一远程 Head 只写一次，刷新处说明是否一致；不同快照分别记录。简单报告可合并组别，
 但仍保留适用的最低信息。
 
@@ -495,4 +419,4 @@ Finding 证据和优先级以通用 `review` 核心为准。
 交付前核对成稿，而非只核对模板：行动索引按 P0 到 P3 跨来源排序（C/F 前缀不决定
 风险顺序），逐线程检查链接与真实状态是否齐全，并把权限/API 枚举转成自然语言。
 核对结论和行动项引用的 ID 与正文一致，复审增量计数与上轮状态相符。
-没有准确位置链接时保留文本位置并说明缺口。
+没有准确位置链接时保留文本位置并说明缺口，不用 PR 首页链接伪装成代码定位链接。

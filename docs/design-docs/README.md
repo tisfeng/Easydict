@@ -7,3 +7,5 @@
 
 - [`agent-documentation-structure.md`](agent-documentation-structure.md)：说明 Agent
   文档入口、知识分层和维护边界的设计理由。
+- [`external-agent-assets-management.md`](external-agent-assets-management.md)：说明通用 Skills、
+  Codex 子代理、第三方 Skill 与项目专属 Skill 的统一版本治理设计。
