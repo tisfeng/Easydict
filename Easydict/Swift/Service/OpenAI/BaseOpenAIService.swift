@@ -44,7 +44,7 @@ public class BaseOpenAIService: StreamService {
         true
     }
 
-    let control = StreamControl()
+    let control = OpenAIStreamControl()
 
     override func contentStreamTranslate(
         _ text: String,
@@ -96,17 +96,7 @@ public class BaseOpenAIService: StreamService {
         let query = ChatQuery(messages: chatHistory, model: model, temperature: temperature)
 
         if usesStreamingTransport {
-            let openAI = OpenAI(apiToken: apiKey)
-
-            // FIXME: It seems that `control` will cause a memory leak, but it is not clear how to solve it.
-            unowned let unownedControl = control
-
-            let chatStream: AsyncThrowingStream<ChatStreamResult, Error> = openAI.chatsStream(
-                query: query,
-                url: url,
-                control: unownedControl
-            )
-            return chatStreamToContentStream(chatStream)
+            return contentStream(for: query, url: url)
         } else {
             return nonStreamingTranslate(query: query, url: url)
         }
@@ -158,11 +148,8 @@ public class BaseOpenAIService: StreamService {
     override func serviceChatMessageModels(_ chatQuery: ChatQueryParam) -> [Any] {
         var chatMessages: [OpenAIChatMessage] = []
         for message in chatMessageDicts(chatQuery) {
-            let openAIRole = message.role.rawValue
-            let content = message.content
-
-            if let role = OpenAIChatMessage.Role(rawValue: openAIRole),
-               let chat = OpenAIChatMessage(role: role, content: content) {
+            if let role = openAIRole(for: message.role),
+               let chat = OpenAIChatMessage(role: role, content: message.content) {
                 chatMessages.append(chat)
             }
         }
@@ -223,6 +210,45 @@ public class BaseOpenAIService: StreamService {
     /// Reference to the in-flight non-streaming task so `cancelStream()` can cancel it.
     private var nonStreamingTask: Task<(), Never>?
 
+    private func contentStream(
+        for query: ChatQuery,
+        url: URL
+    )
+        -> AsyncThrowingStream<String, any Error> {
+        let apiKey = apiKey
+        let control = control
+        let transport = OpenAIStreamTransport()
+
+        return AsyncThrowingStream { continuation in
+            let identifier = UUID()
+            let request = OpenAIStreamRequest()
+            control.replace(request, identifier: identifier)
+
+            let task = Task {
+                defer { control.clear(identifier: identifier) }
+
+                do {
+                    try await transport.stream(query: query, url: url, apiKey: apiKey) { result in
+                        if let content = result.choices.first?.delta.content {
+                            continuation.yield(content)
+                        }
+                    }
+                    continuation.finish()
+                } catch is CancellationError {
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+            request.setTask(task)
+
+            continuation.onTermination = { @Sendable _ in
+                request.cancel()
+                control.clear(identifier: identifier)
+            }
+        }
+    }
+
     /// Whether the retry error should replace the original streaming mismatch diagnostics.
     private func shouldPreferRetryError(_ retryError: QueryError) -> Bool {
         let preferredTypes: [QueryError.ErrorType] = [
@@ -234,6 +260,15 @@ public class BaseOpenAIService: StreamService {
             .timeout,
         ]
         return preferredTypes.contains(retryError.type)
+    }
+
+    private func openAIRole(for role: ChatMessage.ChatRole) -> OpenAIChatMessage.Role? {
+        switch role {
+        case .model:
+            .assistant
+        default:
+            OpenAIChatMessage.Role(rawValue: role.rawValue)
+        }
     }
 
     /// Perform a non-streaming chat completion, yielding the full response as a single chunk.
@@ -277,7 +312,7 @@ public class BaseOpenAIService: StreamService {
                     }
 
                     let chatResult = try JSONDecoder().decode(ChatResult.self, from: data)
-                    if let content = chatResult.choices.first?.message.content?.string,
+                    if let content = chatResult.choices.first?.message.content,
                        !content.isEmpty {
                         continuation.yield(content)
                         continuation.finish()
@@ -376,4 +411,72 @@ private struct OpenAIModelListResponse: Decodable {
 
 private struct OpenAIModelItem: Decodable {
     let id: String
+}
+
+// MARK: - OpenAIStreamControl
+
+/// Coordinates one active OpenAI stream so service cancellation remains effective.
+final class OpenAIStreamControl: @unchecked Sendable {
+    // MARK: Internal
+
+    func replace(_ request: OpenAIStreamRequest, identifier: UUID) {
+        lock.lock()
+        let previousRequest = currentRequest?.request
+        currentRequest = (identifier, request)
+        lock.unlock()
+        previousRequest?.cancel()
+    }
+
+    func clear(identifier: UUID) {
+        lock.lock()
+        if currentRequest?.identifier == identifier {
+            currentRequest = nil
+        }
+        lock.unlock()
+    }
+
+    func cancel() {
+        lock.lock()
+        let request = currentRequest?.request
+        currentRequest = nil
+        lock.unlock()
+        request?.cancel()
+    }
+
+    // MARK: Private
+
+    private let lock = NSLock()
+    private var currentRequest: (identifier: UUID, request: OpenAIStreamRequest)?
+}
+
+// MARK: - OpenAIStreamRequest
+
+/// Cancels a stream task even when termination happens before installation.
+final class OpenAIStreamRequest: @unchecked Sendable {
+    // MARK: Internal
+
+    func setTask(_ task: Task<(), Never>) {
+        lock.lock()
+        self.task = task
+        let shouldCancel = isCancelled
+        lock.unlock()
+
+        if shouldCancel {
+            task.cancel()
+        }
+    }
+
+    func cancel() {
+        lock.lock()
+        isCancelled = true
+        let task = task
+        lock.unlock()
+        task?.cancel()
+    }
+
+    // MARK: Private
+
+    private let lock = NSLock()
+    private var task: Task<(), Never>?
+    private var isCancelled = false
 }
