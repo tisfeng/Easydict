@@ -59,6 +59,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 // queryText is self.queryModel.queryText;
 @property (nonatomic, copy, nullable) NSString *ocrPrefixText;
+@property (nonatomic, assign) NSInteger ocrRequestToken;
 @property (nonatomic, copy, readonly) NSString *queryText;
 @property (nonatomic, strong) NSArray<NSString *> *serviceTypeIds;
 @property (nonatomic, strong) NSArray<EZQueryService *> *services;
@@ -562,7 +563,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             autoQuery:(BOOL)autoQuery {
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
-    
+
     if (image != self.queryModel.ocrImage) {
         self.ocrPrefixText = MyConfiguration.shared.enableAppendMode ? self.inputText : nil;
     }
@@ -575,10 +576,13 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     // Hide previous tips view first.
     [self showTipsView:NO completion:nil];
-
+    NSInteger ocrToken = ++self.ocrRequestToken;
     mm_weakify(self);
     [self.detectManager ocrAndDetectTextWithCompletion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
+        if (ocrToken != self.ocrRequestToken) {
+            return;
+        }
         // !!!: inputText should be used here, not queryText, queryText may be modified, such as easydict://query?text=xxx
         NSString *inputText = queryModel.inputText;
         MMLogInfo(@"ocr result: %@", inputText);
@@ -604,6 +608,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         if (actionType != EZActionTypeScreenshotOCR) {
             [self.queryView startLoadingAnimation:NO];
 
+            if (error) {
+                NSString *errorMsg = [error localizedDescription];
+                [self showTipsView:YES content:errorMsg type:EZTipsCellTypeErrorTips];
+                return;
+            }
             NSString *finalText = inputText;
             if (MyConfiguration.shared.enableAppendMode && self.ocrPrefixText.length > 0) {
                 finalText = [self combinePreviousText:self.ocrPrefixText withNewText:inputText];
@@ -614,12 +623,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             self.queryModel.showAutoLanguage = YES;
 
             [self updateQueryTextAndParagraphStyle:finalText actionType:actionType];
-
-            if (error) {
-                NSString *errorMsg = [error localizedDescription];
-                [self showTipsView:YES content:errorMsg type:EZTipsCellTypeErrorTips];
-                return;
-            }
 
             if (self.config.autoCopyOCRText) {
                 [inputText copyToPasteboard];

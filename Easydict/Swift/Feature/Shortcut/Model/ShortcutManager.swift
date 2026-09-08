@@ -36,17 +36,15 @@ class ShortcutManager: NSObject {
     // MARK: Private
 
     private func migrateShortcutsIfNeeded() {
-        if !Defaults[.toggleAppendModeShortcutMigrated] {
-            Defaults[.toggleAppendModeShortcutMigrated] = true
-            if Defaults[.toggleAppendModeShortcut] == nil {
-                let defaultKeyCombo = KeyCombo(key: .a, cocoaModifiers: [.command, .shift])
-                if !ShortcutManager.validateShortcutConfictBySavedShortcut(
-                    defaultKeyCombo,
-                    excluding: .toggleAppendMode
-                ) {
-                    Defaults[.toggleAppendModeShortcut] = defaultKeyCombo
-                }
-            }
+        guard !Defaults[.toggleAppendModeShortcutMigrated] else { return }
+        Defaults[.toggleAppendModeShortcutMigrated] = true
+        if Defaults[.toggleAppendModeShortcut] == nil,
+           let defaultKeyCombo = KeyCombo(key: .a, cocoaModifiers: [.command, .shift]),
+           !ShortcutManager.validateShortcutConfictBySavedShortcut(
+               defaultKeyCombo,
+               excluding: .toggleAppendMode
+           ) {
+            Defaults[.toggleAppendModeShortcut] = defaultKeyCombo
         }
     }
 }
