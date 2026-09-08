@@ -257,6 +257,7 @@
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396D613292CC4C3006A11D9 /* LocalStorage.swift */; };
 		0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */; };
+		A20908010000000000000001 /* OpenAIStreamTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20908010000000000000002 /* OpenAIStreamTransport.swift */; };
 		039785282CC678F400A49087 /* TranslationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039785242CC678F400A49087 /* TranslationManager.swift */; };
 		039785292CC678F400A49087 /* AppleTranslation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039785252CC678F400A49087 /* AppleTranslation.swift */; };
 		0397852A2CC678F400A49087 /* TranslationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039785262CC678F400A49087 /* TranslationView.swift */; };
@@ -912,6 +913,7 @@
 		0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageCell.m; sourceTree = "<group>"; };
 		0396D613292CC4C3006A11D9 /* LocalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorage.swift; sourceTree = "<group>"; };
 		0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOpenAIService.swift; sourceTree = "<group>"; };
+		A20908010000000000000002 /* OpenAIStreamTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIStreamTransport.swift; sourceTree = "<group>"; };
 		039785242CC678F400A49087 /* TranslationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationManager.swift; sourceTree = "<group>"; };
 		039785252CC678F400A49087 /* AppleTranslation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleTranslation.swift; sourceTree = "<group>"; };
 		039785262CC678F400A49087 /* TranslationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationView.swift; sourceTree = "<group>"; };
@@ -2070,6 +2072,7 @@
 			children = (
 				03A5E0912D3C020200FF7D95 /* StreamService.swift */,
 				0DEEFE010002000000000015 /* ReasoningEffort.swift */,
+				A20908010000000000000002 /* OpenAIStreamTransport.swift */,
 				0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */,
 				0365B0662D3BE26000865F46 /* StreamService+UpdateResult.swift */,
 				03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */,
@@ -4445,6 +4448,7 @@
 				031760EB2E065EF500CE8FD7 /* AppleOCREngine.swift in Sources */,
 				03882F8D29D95044005B5A52 /* CTView.m in Sources */,
 				0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */,
+				A20908010000000000000001 /* OpenAIStreamTransport.swift in Sources */,
 				278322602B0FB0EA0026644C /* CaiyunResponse.swift in Sources */,
 				03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */,
 				03CA1CF12EDE089E001908D0 /* Appearance.swift in Sources */,
@@ -5078,10 +5082,10 @@
 		};
 		03779F182BB25797008D3C42 /* XCRemoteSwiftPackageReference "OpenAI" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/tisfeng/OpenAI";
+			repositoryURL = "https://github.com/MacPaw/OpenAI";
 			requirement = {
-				kind = revision;
-				revision = ebfb671f5b6eeb65e666016a3ede942b928c17a7;
+				kind = exactVersion;
+				version = 0.5.1;
 			};
 		};
 		038030932B4106800009230C /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
