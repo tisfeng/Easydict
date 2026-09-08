@@ -9,19 +9,20 @@
 //  responses carry `output` items, and streaming emits SSE events such as
 //  `response.output_text.delta` whose `data.delta` holds the text.
 
+import Alamofire
 import Foundation
 import OpenAI
 
 // MARK: - ResponsesInputItem
 
-struct ResponsesInputItem: Encodable {
+struct ResponsesInputItem: Encodable, Sendable {
     let role: String
     let content: String
 }
 
 // MARK: - ResponsesRequest
 
-struct ResponsesRequest: Encodable {
+struct ResponsesRequest: Encodable, Sendable {
     let model: String
     let input: [ResponsesInputItem]
     let temperature: Double?
@@ -110,6 +111,38 @@ func responsesStreamEvent(eventName: String, payload: String) -> ResponsesStream
     return .ignored
 }
 
+// MARK: - ResponsesSSEBuffer
+
+/// Accumulates raw SSE bytes and returns complete lines as they arrive.
+/// Chunks may split lines at arbitrary byte boundaries (even inside
+/// multi-byte UTF-8 characters), so lines are only split on the `0x0A`
+/// newline byte and decoded once complete.
+struct ResponsesSSEBuffer {
+    // MARK: Internal
+
+    /// Appends raw chunk data and returns every complete line without its
+    /// terminator. A trailing `\r` (CRLF) is stripped.
+    mutating func append(_ data: Data) -> [String] {
+        pending.append(data)
+        var lines: [String] = []
+        while let newlineIndex = pending.firstIndex(of: 0x0A) {
+            var lineData = pending[..<newlineIndex]
+            pending.removeSubrange(...newlineIndex)
+            if lineData.last == 0x0D {
+                lineData = lineData.dropLast()
+            }
+            if let line = String(data: Data(lineData), encoding: .utf8) {
+                lines.append(line)
+            }
+        }
+        return lines
+    }
+
+    // MARK: Private
+
+    private var pending = Data()
+}
+
 // MARK: - Input Builder
 
 /// Convert repo chat messages to Responses input items.
@@ -177,42 +210,41 @@ extension BaseOpenAIService {
         apiKey: String
     )
         -> AsyncThrowingStream<String, Error> {
-        let apiKey = apiKey
-
-        return AsyncThrowingStream(String.self) { [weak self] continuation in
-            guard let self else {
-                continuation.finish(throwing: CancellationError())
-                return
-            }
-
+        AsyncThrowingStream(String.self) { continuation in
             let task = Task {
-                defer { self.nonStreamingTask = nil }
+                defer { nonStreamingTask = nil }
 
                 do {
-                    let request = try self.makeResponsesRequest(
-                        messages: messages,
-                        model: model,
-                        temperature: temperature,
-                        stream: false,
-                        url: url,
-                        apiKey: apiKey
+                    let response = await AF.request(
+                        url,
+                        method: .post,
+                        parameters: makeResponsesQuery(
+                            messages: messages,
+                            model: model,
+                            temperature: temperature,
+                            stream: false
+                        ),
+                        encoder: JSONParameterEncoder.default,
+                        headers: responsesHeaders(apiKey: apiKey),
+                        requestModifier: { $0.timeoutInterval = EZNetWorkTimeoutInterval }
                     )
-                    let (data, response) = try await URLSession.shared.data(for: request)
+                    .serializingData(automaticallyCancelling: true)
+                    .response
                     try Task.checkCancellation()
-                    try self.throwIfResponsesError(data: data, response: response)
+                    try throwIfResponsesError(
+                        data: response.data ?? Data(),
+                        statusCode: response.response?.statusCode
+                    )
 
-                    let result = try JSONDecoder().decode(ResponsesResponse.self, from: data)
+                    let result = try JSONDecoder().decode(
+                        ResponsesResponse.self, from: response.data ?? Data()
+                    )
                     if let content = result.outputText {
                         continuation.yield(content)
                         continuation.finish()
                     } else {
                         throw QueryError(type: .noResult)
                     }
-                } catch let urlError as URLError where urlError.code == .cancelled {
-                    continuation.finish(throwing: CancellationError())
-                } catch let nsError as NSError
-                    where nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled {
-                    continuation.finish(throwing: CancellationError())
                 } catch is CancellationError {
                     continuation.finish(throwing: CancellationError())
                 } catch {
@@ -241,53 +273,69 @@ extension BaseOpenAIService {
             let task = Task {
                 defer { responsesStreamingTask = nil }
                 do {
-                    let request = try self.makeResponsesRequest(
-                        messages: messages,
-                        model: model,
-                        temperature: temperature,
-                        stream: true,
-                        url: url,
-                        apiKey: apiKey
+                    let streamRequest = AF.streamRequest(
+                        url,
+                        method: .post,
+                        parameters: makeResponsesQuery(
+                            messages: messages,
+                            model: model,
+                            temperature: temperature,
+                            stream: true
+                        ),
+                        encoder: JSONParameterEncoder.default,
+                        headers: responsesHeaders(apiKey: apiKey),
+                        requestModifier: { $0.timeoutInterval = EZNetWorkTimeoutInterval }
                     )
-                    let (bytes, response) = try await URLSession.shared.bytes(for: request)
-                    try Task.checkCancellation()
-                    guard let http = response as? HTTPURLResponse,
-                          (200 ... 299).contains(http.statusCode) else {
-                        var body: String?
-                        var collected = Data()
-                        for try await byte in bytes.prefix(4096) {
-                            collected.append(byte)
-                        }
-                        body = String(data: collected, encoding: .utf8)
-                        throw QueryError(
-                            type: .api,
-                            message: "HTTP \((response as? HTTPURLResponse)?.statusCode ?? -1)",
-                            errorDataMessage: body
-                        )
-                    }
+                    let dataStream = streamRequest.streamTask()
+                        .streamingData(automaticallyCancelling: true)
 
+                    var sseBuffer = ResponsesSSEBuffer()
                     var eventName = ""
-                    for try await line in bytes.lines {
-                        try Task.checkCancellation()
-                        if line.hasPrefix("event:") {
-                            eventName = line.dropFirst("event:".count)
-                                .trimmingCharacters(in: .whitespaces)
-                        } else if line.hasPrefix("data:") {
-                            let payload = line.dropFirst("data:".count)
-                                .trimmingCharacters(in: .whitespaces)
-                            switch responsesStreamEvent(eventName: eventName, payload: payload) {
-                            case let .delta(text):
-                                continuation.yield(text)
-                            case let .failure(error):
-                                throw error
-                            case .ignored:
-                                continue
+                    var errorBody = Data()
+
+                    for await element in dataStream {
+                        switch element.event {
+                        case let .stream(.success(data)):
+                            if errorBody.count < 4096 {
+                                errorBody.append(data.prefix(4096 - errorBody.count))
+                            }
+                            for line in sseBuffer.append(data) {
+                                if line.hasPrefix("event:") {
+                                    eventName = line.dropFirst("event:".count)
+                                        .trimmingCharacters(in: .whitespaces)
+                                } else if line.hasPrefix("data:") {
+                                    let payload = line.dropFirst("data:".count)
+                                        .trimmingCharacters(in: .whitespaces)
+                                    switch responsesStreamEvent(eventName: eventName, payload: payload) {
+                                    case let .delta(text):
+                                        continuation.yield(text)
+                                    case let .failure(error):
+                                        throw error
+                                    case .ignored:
+                                        continue
+                                    }
+                                }
+                            }
+                        case let .complete(completion):
+                            try throwIfResponsesError(
+                                data: errorBody,
+                                statusCode: completion.response?.statusCode
+                            )
+                            if let afError = completion.error {
+                                if case let .sessionTaskFailed(error) = afError,
+                                   let urlError = error as? URLError,
+                                   urlError.code == .cancelled {
+                                    throw CancellationError()
+                                }
+                                throw afError
                             }
                         }
                     }
+
+                    if Task.isCancelled {
+                        throw CancellationError()
+                    }
                     continuation.finish()
-                } catch let urlError as URLError where urlError.code == .cancelled {
-                    continuation.finish(throwing: CancellationError())
                 } catch is CancellationError {
                     continuation.finish(throwing: CancellationError())
                 } catch {
@@ -302,48 +350,41 @@ extension BaseOpenAIService {
         }
     }
 
-    /// Builds the HTTP request for an OpenAI Responses call.
-    func makeResponsesRequest(
+    /// Builds the request body for an OpenAI Responses call.
+    func makeResponsesQuery(
         messages: [ChatMessage],
         model: String,
         temperature: Double,
-        stream: Bool,
-        url: URL,
-        apiKey: String
-    ) throws
-        -> URLRequest {
-        let query = ResponsesRequest(
+        stream: Bool
+    )
+        -> ResponsesRequest {
+        ResponsesRequest(
             model: model,
             input: responsesInputItems(from: messages),
             temperature: temperature,
             stream: stream
         )
+    }
 
-        var request = URLRequest(url: url, timeoutInterval: EZNetWorkTimeoutInterval)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        if !apiKey.isEmpty {
-            request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
-            request.setValue(apiKey, forHTTPHeaderField: "api-key")
-        }
-        request.httpBody = try JSONEncoder().encode(query)
-        return request
+    /// Auth headers shared by the Responses Alamofire calls.
+    func responsesHeaders(apiKey: String) -> HTTPHeaders {
+        guard !apiKey.isEmpty else { return [] }
+        return [
+            .authorization(bearerToken: apiKey),
+            HTTPHeader(name: "api-key", value: apiKey),
+        ]
     }
 
     /// Throws for non-2xx Responses results, mirroring chat error handling.
-    func throwIfResponsesError(data: Data, response: URLResponse) throws {
-        if let http = response as? HTTPURLResponse,
-           !(200 ... 299).contains(http.statusCode) {
-            if let apiError = try? JSONDecoder().decode(
-                APIErrorResponse.self, from: data
-            ) {
-                throw apiError
-            }
-            throw QueryError(
-                type: .api,
-                message: "HTTP \(http.statusCode)",
-                errorDataMessage: String(data: data, encoding: .utf8)
-            )
+    func throwIfResponsesError(data: Data, statusCode: Int?) throws {
+        guard let statusCode, !(200 ... 299).contains(statusCode) else { return }
+        if let apiError = try? JSONDecoder().decode(APIErrorResponse.self, from: data) {
+            throw apiError
         }
+        throw QueryError(
+            type: .api,
+            message: "HTTP \(statusCode)",
+            errorDataMessage: String(data: data, encoding: .utf8)
+        )
     }
 }

@@ -166,6 +166,36 @@ struct ResponsesAPITests {
         }
     }
 
+    // MARK: - SSE Buffer
+
+    @Test("SSE buffer reassembles lines split across chunks")
+    func sseBufferReassemblesSplitLines() {
+        var buffer = ResponsesSSEBuffer()
+        #expect(buffer.append(Data("data: {\"a\"".utf8)) == [])
+        #expect(buffer.append(Data(":1}\n".utf8)) == ["data: {\"a\":1}"])
+    }
+
+    @Test("SSE buffer returns multiple lines and strips CRLF")
+    func sseBufferHandlesMultipleLinesAndCRLF() {
+        var buffer = ResponsesSSEBuffer()
+        #expect(buffer.append(Data("event: x\r\ndata: y\n".utf8)) == ["event: x", "data: y"])
+    }
+
+    @Test("SSE buffer keeps a trailing partial line pending")
+    func sseBufferKeepsPartialLinePending() {
+        var buffer = ResponsesSSEBuffer()
+        #expect(buffer.append(Data("data: [DO".utf8)) == [])
+        #expect(buffer.append(Data("NE]\n".utf8)) == ["data: [DONE]"])
+    }
+
+    @Test("SSE buffer reassembles multi-byte characters split across chunks")
+    func sseBufferReassemblesSplitMultiByteCharacters() {
+        let bytes = Data("data: 你好\n".utf8)
+        var buffer = ResponsesSSEBuffer()
+        #expect(buffer.append(bytes.prefix(8)) == [])
+        #expect(buffer.append(bytes.suffix(bytes.count - 8)) == ["data: 你好"])
+    }
+
     // MARK: - Cancellation
 
     @Test("cancelStream cancels the in-flight streaming task slot")
