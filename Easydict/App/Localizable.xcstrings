@@ -67,6 +67,72 @@
         }
       }
     },
+    "service.configuration.openai.custom_headers.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Headers"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义请求头"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自訂請求標頭"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.custom_headers.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "X-Custom-Header: value"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "X-Custom-Header: value"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "X-Custom-Header: value"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.custom_headers.footnote" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One header per line. Applied to Responses API requests."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每行一条，对 Responses 接口请求生效。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每行一條，對 Responses 介面請求生效。"
+          }
+        }
+      }
+    },
     "%@ API Key" : {
       "extractionState" : "stale",
       "localizations" : {

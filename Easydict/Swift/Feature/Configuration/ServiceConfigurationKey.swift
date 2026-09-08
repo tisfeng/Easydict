@@ -60,4 +60,5 @@ enum ServiceConfigurationKey: String {
     // claims with the incompatible `ReasoningEffort` enum.
     case cliEffort = "CLIEffort"
     case apiType = "APIType"
+    case customHeaders = "CustomHeaders"
 }

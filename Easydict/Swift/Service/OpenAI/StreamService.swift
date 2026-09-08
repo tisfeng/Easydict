@@ -441,6 +441,16 @@ public class StreamService: QueryService {
         set { Defaults[openAIAPITypeKey] = newValue }
     }
 
+    /// Multi-line `Key: Value` custom request headers, applied to Responses calls.
+    var customHeadersKey: Defaults.Key<String> {
+        stringDefaultsKey(.customHeaders, defaultValue: "")
+    }
+
+    var customHeaders: String {
+        get { Defaults[customHeadersKey] }
+        set { Defaults[customHeadersKey] = newValue }
+    }
+
     func validModels(from supportedModels: String) -> [String] {
         supportedModels.components(separatedBy: ",")
             .map { $0.trim() }.filter { !$0.isEmpty }

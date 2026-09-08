@@ -122,6 +122,15 @@ struct StreamConfigurationView: View {
                     key: service.openAIAPITypeKey,
                     values: OpenAIAPIType.allCases
                 )
+
+                TextEditorCell(
+                    titleKey: "service.configuration.openai.custom_headers.title",
+                    storedValueKey: service.customHeadersKey,
+                    placeholder: "service.configuration.openai.custom_headers.placeholder",
+                    footnote: "service.configuration.openai.custom_headers.footnote",
+                    minHeight: 55,
+                    maxHeight: 120
+                )
             }
 
             if showSupportedModelsSection {

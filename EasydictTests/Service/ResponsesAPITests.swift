@@ -196,6 +196,32 @@ struct ResponsesAPITests {
         #expect(buffer.append(bytes.suffix(bytes.count - 8)) == ["data: 你好"])
     }
 
+    // MARK: - Custom Headers
+
+    @Test("Parses custom headers from multi-line text")
+    func parsesCustomHeaders() {
+        let headers = parseCustomHeaders("""
+        x-opencode-session: easydict-test
+        A-Debug: 1
+        """)
+        #expect(headers.count == 2)
+        #expect(headers["x-opencode-session"] == "easydict-test")
+        #expect(headers["a-debug"] == "1")
+    }
+
+    @Test("Skips malformed and empty custom header lines")
+    func skipsMalformedCustomHeaderLines() {
+        let headers = parseCustomHeaders("""
+        no-colon-line
+
+        Empty-Value:
+        :No-Name
+        Valid: yes
+        """)
+        #expect(headers.count == 1)
+        #expect(headers["valid"] == "yes")
+    }
+
     // MARK: - Cancellation
 
     @Test("cancelStream cancels the in-flight streaming task slot")

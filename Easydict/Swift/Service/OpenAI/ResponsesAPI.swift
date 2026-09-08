@@ -143,6 +143,24 @@ struct ResponsesSSEBuffer {
     private var pending = Data()
 }
 
+// MARK: - Custom Headers
+
+/// Parses user-configured custom headers from multi-line `Key: Value` text.
+/// Blank or malformed lines are skipped; names and values are trimmed.
+func parseCustomHeaders(_ text: String) -> HTTPHeaders {
+    let headers: [HTTPHeader] = text
+        .split(whereSeparator: \.isNewline)
+        .compactMap { line in
+            let parts = line.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: false)
+            guard parts.count == 2 else { return nil }
+            let name = String(parts[0]).trimmingCharacters(in: .whitespacesAndNewlines)
+            let value = String(parts[1]).trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !name.isEmpty, !value.isEmpty else { return nil }
+            return HTTPHeader(name: name, value: value)
+        }
+    return HTTPHeaders(headers)
+}
+
 // MARK: - Input Builder
 
 /// Convert repo chat messages to Responses input items.
@@ -366,13 +384,16 @@ extension BaseOpenAIService {
         )
     }
 
-    /// Auth headers shared by the Responses Alamofire calls.
+    /// Auth and user-configured headers shared by the Responses Alamofire calls.
+    /// Custom headers are appended last, overriding built-ins of the same name.
     func responsesHeaders(apiKey: String) -> HTTPHeaders {
-        guard !apiKey.isEmpty else { return [] }
-        return [
-            .authorization(bearerToken: apiKey),
-            HTTPHeader(name: "api-key", value: apiKey),
-        ]
+        var headers: [HTTPHeader] = []
+        if !apiKey.isEmpty {
+            headers.append(.authorization(bearerToken: apiKey))
+            headers.append(HTTPHeader(name: "api-key", value: apiKey))
+        }
+        headers.append(contentsOf: parseCustomHeaders(customHeaders))
+        return HTTPHeaders(headers)
     }
 
     /// Throws for non-2xx Responses results, mirroring chat error handling.
