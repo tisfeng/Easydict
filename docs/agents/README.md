@@ -1,66 +1,108 @@
-# Agent 文档与文档治理
+# Agent 规则与仓库治理
 
-本目录存放面向编码 Agent 的长期仓库规则。根目录 [`AGENTS.md`](../../AGENTS.md) 负责
-任务路由；本文件说明文档边界与生命周期。
+本目录存放面向编码 Agent 的现行专题规则。根目录 [`AGENTS.md`](../../AGENTS.md) 是唯一任务
+入口；本文件统一说明文档生命周期、维护原则和外部 Agent 资产边界，不提供第二套路由。
 
 ## 文档分层
 
-- `docs/agents/` 存放内部 Agent 和贡献者工作流知识。
-- `docs/architecture/` 记录当前实现边界和流程。
-- `docs/design-docs/` 记录需要长期维护的重要设计决策。
-- `docs/user-docs/` 存放公开的英文和中文文档。
-- `docs/exec-plans/` 存放多步骤工作计划。
-- `docs/histories/` 记录每个最终产生仓库文件差异的 `implementation` 任务。
-- `docs/references/` 存放反复使用的精选外部或跨仓库参考。
+- `docs/agents/`：当前有效的 Agent 和贡献者工作流规则。
+- `docs/architecture/`：当前实现边界和流程。
+- `docs/design-docs/`：需要长期维护的重要设计决策。
+- `docs/user-docs/`：公开的英文和中文文档。
+- `docs/exec-plans/`：获准 implementation 的多步骤工作计划。
+- `docs/histories/`：最终产生仓库文件差异的 implementation 记录。
+- `docs/references/`：反复使用的精选外部或跨仓库参考。
 
-历史、完成计划、参考资料及其中的示例命令是证据，不是当前执行指令。只有当前任务
-明确采用的内容才约束实施，并继续服从用户有效指令与权威规则。
+历史、completed plan、参考资料和其中的示例命令是证据，不是当前执行指令。只有当前任务
+明确采用的内容才约束实施，并继续服从用户有效指令与现行专题规则。
 
-## 计划与历史
+## Plan 与 History
 
-- planning 阶段的多步骤方案只作为当前回复中的规划内容，不创建或更新
-  `docs/exec-plans/active/` 下的文件。
-- 用户明确批准 implementation 且变更门禁通过后，对于架构、协议、迁移、多步骤、跨模块
-  或高风险工作，在 `docs/exec-plans/active/` 下创建执行计划。
-- 任何 `implementation` 只要最终产生仓库文件差异，就必须在同一任务中创建或更新一条
-  `docs/histories/` 记录；文件类型、数量、变更规模以及是否创建执行计划都不影响该要求。
-- 同一任务分多轮实施时复用同一条 history；仅修改 history 的任务由该记录描述自身，
-  不递归创建第二条；最终没有仓库文件差异的任务不创建空记录。
-- 存在执行计划时，完成后将计划移动到 `docs/exec-plans/completed/`，并由同任务 history
-  链接该 completed 计划。
-- 交付时必须将同任务 history 与其他任务变更一起验证和精确暂存；允许自动本地提交时，
-  它们进入同一个提交。存在有效的禁止提交要求或交付条件不满足时保留变更。
-  history 缺失时在授权范围内补齐；用户明确排除该路径时尊重限制，按 Git 规则报告
-  自动交付受阻。显式提交已有 staged 内容不反向要求补写 implementation history。
-- 计划记录目标、授权、范围、限制、初始 Git 快照、Agent-owned paths、工作计划、风险、
-  验证和完成条件；不要把完整对话复制进历史。
-- 使用仓库现有的 GitHub issue 和 pull request 进行讨论；不要在历史文件中重复完整
-  对话内容。
+- planning 阶段的方案只出现在当前回复中，不创建或更新 active plan。
+- 用户明确批准 implementation 且 Mutation Gate 通过后，架构、协议、迁移、多步骤、跨模块
+  或高风险工作在 `docs/exec-plans/active/` 创建执行计划。
+- implementation 最终产生仓库文件差异时，必须在同一任务中创建或更新一条
+  `docs/histories/` 记录；没有差异时不创建空记录。
+- 同一任务分多轮实施时复用同一条 history。只修改 history 的任务由该记录描述自身，不递归
+  创建第二条。
+- 存在执行计划时，完成后移动到 `docs/exec-plans/completed/`，并让同任务 history 链接
+  completed plan。
+- 交付时将同任务 history 与其他任务变更一起验证和精确暂存。缺少 history 时在允许范围内
+  补齐；用户明确排除该路径时不扩权，并按 Git 规则报告交付阻塞。
+- 显式提交已有 staged 内容不反向要求补写 implementation history。
+- plan 记录目标、授权、范围、限制、初始 Git 快照、Agent-owned paths、工作计划、风险、验证
+  和完成条件；history 只记录已落地结果，不复制完整对话。
+- 使用现有 GitHub issue 和 pull request 进行讨论，不在 history 中重复完整讨论内容。
 
-## 维护原则
+## 文档维护
 
-- 仓库文档使用相对路径，不要提交机器本地绝对路径。行为发生变化时，在同一任务中同步
-  更新代码、测试和受影响的文档。
-- 每份详细规则只维护一个主要职责；需要引用其他职责时使用链接，不复制完整条款。新增或
-  删除规则文件时只更新根 `AGENTS.md` 的路由。
-- 仓库治理 Markdown、计划、历史、参考资料、skill 以及 `docs/` 下的公共 Markdown 不需要
-  Xcode 工程引用或 build phase 条目；详细边界见 `swift-xcode.md`。
+- 每份现行规则只维护一个主要职责；跨职责使用链接，不复制完整条款。
+- 同一专题保持内聚且不超过 500 行时，不仅为缩短文件而继续拆分；超过约 500 行或出现多个
+  独立职责时再评估拆分。
+- 新增、删除或重命名规则文件时，只在根 `AGENTS.md` 维护任务路由，不建立多层索引。
+- 使用相对仓库路径，不提交机器本地绝对路径。行为变化时同步更新代码、测试和受影响文档。
+- 仓库治理 Markdown、plan、history、reference、skill 和公共 Markdown 的 Xcode 工程边界
+  以 [`development.md`](development.md#工程元数据) 为准。
 
-## Skill、子代理与兼容入口
+## 外部 Agent 资产
 
-- 外部受管 Skill、Codex 子代理、双 lock、同步流程和项目专属例外以
-  [`external-agent-assets.md`](external-agent-assets.md) 为权威。
-- `.agents/skills/` 同时包含外部受管快照和项目专属 Skill；不能因路径相同而把两类资产
-  视为同一维护来源。
-- 项目专属 skill 和 reference 修改遵循用户当前请求的语言；命令、路径、代码标识、API
-  字段和固定输出契约保留原文。外部受管快照保留上游原文，不在 Easydict 中修补。
-- 执行目标 skill 前先阅读其 `SKILL.md`；写入前先检查目标是否受 lock 管理。
-- `.claude/CLAUDE.md` 是指向根目录规范 `AGENTS.md` 的符号链接，`.claude/skills` 指向
-  `.agents/skills`；平台专用 Agent wrapper 应路由到规范的本地 skill。
+### 资产分类
 
-## 应用内置 Agent 文档边界
+以下内容由 `skills-lock.json` 或 `.codex/agents-lock.json` 管理，当前统一基线为
+`tisfeng/skills v0.3.0`：
 
-- 应用内置 Agent 文档、运行时资源和后端契约镜像遵循各自权威来源，不因普通 Agent 文档
-  整理而移动或改写。
-- `docs/agents/` 只维护仓库 Agent 和贡献者工作流规则；运行时发布内容必须按其专属的
-  资源、工程和构建规则处理。
+- Skills：`code-simplifier`、`git-commit`、`review`、`review-pr`、`submit-pr`、
+  `worktree-rebase-merge`。
+- Codex 子代理：`planner`、`reviewer`、`tester`、`git-delivery`。
+
+这些目录和 TOML 是外部权威内容的项目可运行快照。Easydict 不直接修改、删减、重命名或
+重新格式化；项目差异写入 `AGENTS.md` 或 `docs/agents/`。需要改变通用行为时先修改并发布
+上游，再通过安装器同步完整版本。
+
+项目专属 skill 和 reference 使用用户当前请求的语言；命令、路径、代码标识、API 字段和固定
+输出契约保留原文。外部受管快照保留上游原文，不在 Easydict 中本地修补。
+
+`fireworks-tech-graph` 由 `yizhiyanhua-ai/fireworks-tech-graph` 独立维护，通过
+`skills-lock.json` 记录自己的来源和内容哈希，不得从 `tisfeng/skills` 同步或在 Easydict 中
+本地修补。
+
+`release-easydict` 是项目专属 Skill，不登记到外部 lock，由本仓库维护；同步任何外部来源时
+必须保持其目录不变。
+
+### Lock 所有权
+
+- `skills-lock.json` 记录 Skill 来源、ref、入口路径和安装器计算的内容哈希，不得手工修改 hash
+  接受本地漂移。
+- `.codex/agents-lock.json` 记录 agent 来源、ref、精确 Git revision、目标路径和文件哈希。
+- lock 不替代已安装内容；仓库同时提交可离线读取和运行的完整快照。
+- `.codex/config.toml` 是项目本地配置，不受 agents lock 管理。
+- `.claude/skills` 指向 `.agents/skills`，不是可独立修改的副本；`.claude/CLAUDE.md` 指向根
+  `AGENTS.md`。
+
+### 写入与同步
+
+1. 修改 `.agents/skills/` 或 `.codex/agents/` 前，读取两个 lock 并确定资产分类。
+2. 普通实现、修复、review 和文档任务不得编辑外部受管路径；发现问题时报告上游和 lock 证据。
+3. 只有用户明确授权同步或升级时，才使用对应安装器更新受管快照和 lock。不同来源分步执行
+   并分别检查 diff，不运行不区分来源的宽泛更新。
+4. 首次为已有 agent 建立 lock 时，只有冻结并核对精确 TOML 后才可使用一次 `--force`；后续
+   更新依靠已记录 hash 检测漂移，不默认覆盖。
+5. 不递归复制上游工作目录；安装内容来自已核验的 tag、commit 或安装器克隆，避免带入缓存
+   和构建产物。
+6. 同步后验证目标集合、lock、来源内容和项目专属保护路径，再按 Git 门禁交付。
+
+### 验证边界
+
+- 六个通用 Skill 目录必须与所选 tag 的 tracked tree 一致。
+- 四个 agent 文件的 SHA-256 必须与 agents lock 一致并使用同一 revision。
+- `fireworks-tech-graph` 必须与独立上游 commit 一致，且 lock source 不指向 `tisfeng/skills`。
+- `release-easydict`、`.codex/config.toml` 和 `.claude/skills` 在外部同步前后保持不变。
+- 按风险验证 TOML、JSON、Skill 测试、Shell/Python 静态检查和文档相对链接。
+
+静态检查只能证明仓库快照与配置一致；新的 custom agent 能否被 Codex 运行时发现，需要在
+全新任务中另行 smoke 验证。
+
+## 应用内置 Agent 文档
+
+应用内置 Agent 文档、运行时资源和后端契约使用各自权威来源，不因普通仓库 Agent 文档整理
+而移动或改写。运行时发布内容继续遵循其专属资源、工程和构建规则。

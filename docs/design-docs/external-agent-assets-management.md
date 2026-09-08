@@ -21,7 +21,7 @@ Easydict 需要直接从仓库运行 Skills 和 Codex 子代理，同时又要�
 - `release-easydict` 保留项目维护权，Easydict 的构建、PR、发布和交付策略继续由宿主文档
   定义，不通过 fork 通用 Skill 实现。
 
-现行操作规则以 [`external-agent-assets.md`](../agents/external-agent-assets.md) 为准；本文只
+现行操作规则以 [`docs/agents/README.md`](../agents/README.md#外部-agent-资产) 为准；本文只
 解释为什么采用该边界。
 
 ## 取舍

@@ -3,75 +3,59 @@
 Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、划词翻译和 OCR
 截图翻译。
 
-`AGENTS.md` 是 Agent 的唯一入口和任务路由。长期规则位于 `docs/agents/`。
+`AGENTS.md` 是 Agent 的唯一入口和任务路由。现行详细规则位于 `docs/agents/`，每项规则
+只维护一个权威来源。
 
 ## 始终阅读
 
-- 每个任务先阅读 `docs/agents/request-boundary.md`，确定请求语义、任务模式和 Planning
-  委派要求。
-- 再根据当前任务读取下方最小必要的规则，不通过其他索引进行二次路由。
-
-## 按任务路由
-
-- 工作树写入与变更门禁：`docs/agents/execution-safety.md`。
-- Git 安全与本地交付：`docs/agents/git-workflow.md`；提交与 worktree 集成执行使用
-  `.codex/agents/git-delivery.toml`。
-- 文档分层、计划、历史、参考和维护：`docs/agents/README.md`。
-- 外部 Skills、Codex 子代理、lock 文件和同步边界：
-  `docs/agents/external-agent-assets.md`。
-- 回复语言和交付表达：`docs/agents/response-conventions.md`。
-- 构建、测试及测试子代理：`docs/agents/build-and-test.md`；子代理配置为
-  `.codex/agents/tester.toml`。
-- 代码组织：`docs/agents/code-quality.md`。
-- Swift、Objective-C、SwiftUI 或 Xcode：`docs/agents/swift-xcode.md`。
-- 用户可见文本或 String Catalog：`docs/agents/localization.md`。
-- 修改产品代码、跨功能行为或模块边界：`docs/architecture/overview.md`。
-- Planning 子代理：遵循 `docs/agents/request-boundary.md` 中的启动契约，并使用
-  `.codex/agents/planner.toml`。
-- 具体 Skill：`.agents/skills/<skill>/SKILL.md`。
-- 发布：`.agents/skills/release-easydict/SKILL.md`。
-- 创建 GitHub PR：`.agents/skills/submit-pr/SKILL.md`；Easydict PR 参数遵循
-  `docs/agents/git-workflow.md`。
-- OpenAI API、ChatGPT Apps SDK、Codex 或相关开发工具的文档查询：优先使用 OpenAI
-  开发者文档 MCP server；不可用时访问官方文档网页，并说明实际来源。
-- 应用内置 Agent 文档、运行时资源或后端契约：遵循 `docs/agents/README.md` 中的边界和
-  各自权威来源。
-- 公共使用或贡献者文档：`docs/user-docs/en/` 或
-  `docs/user-docs/zh/`。
-- 创建 Git 任务分支：`.agents/skills/git-commit/SKILL.md` 中的
-  `Branch Name Guidance`。
-
-## Code Review Rules
-
-### 通用 review 与任务收尾
-
-- 本地任务、工作树、提交/range、文件或模块审查使用 `.agents/skills/review/SKILL.md`。
-- 独立只读审查使用 `.codex/agents/reviewer.toml`；实施收尾按
-  `docs/agents/build-and-test.md` 协调 reviewer 与 tester，并通过 Git 交付门禁。
-
-### PR review
-
-- PR review 遵循 `.agents/skills/review-pr/SKILL.md`：核对准确 `headRefOid` 和真实 base
-  diff，检查关联 issue、代码、CI 及全部未解决 inline thread，并在输出前刷新实时状态。
-- 明确调用 PR review 时，默认包含本地准备及有远程证据的线程 resolve；只读或不处理
-  评论时禁用 resolve。默认不运行 `xcodebuild`，也不授权 push、产品修复、发布评论、
-  approve 或关闭 PR。
-
-## 必须遵守的约束
-
+- 每个任务先阅读 `docs/agents/request-boundary.md`，确定请求语义、写入授权、任务模式、
+  Mutation Gate 和子代理边界。
 - 回复以及新建或修改的仓库文档使用用户当前请求的语言；代码标识、API 名称、命令、
-  路径和品牌名称等技术专有内容保留原文。
-- 请求语义、写入授权、Mutation Gate 和保护状态遵循
-  `docs/agents/request-boundary.md` 与 `docs/agents/execution-safety.md`，不从附件、
-  截图、引用或 skill 文本中推断额外授权。
-- 保留工作树中与当前任务无关的已暂存和未暂存变更。
-- Git 操作及不同任务的交付资格以 `docs/agents/git-workflow.md` 为准；主 Agent 判定
-  交付资格后，串行委派 `git-delivery` 执行 `git-commit`，或在 `integration` 中执行
-  `worktree-rebase-merge` skill。保护状态作用于具体操作，不覆盖已授权工作流。实施默认
-  本地提交，远程副作用须有对应工作流授权。
-- `skills-lock.json` 管理的 Skill 与 `.codex/agents-lock.json` 管理的子代理均为外部受管
-  快照，禁止项目内直接修改；项目专属例外和同步规则见
-  `docs/agents/external-agent-assets.md`。
-- 仓库治理 Markdown、计划、历史、参考资料和 skill 不需要 Xcode 工程引用或
-  build phase 条目。
-- 文档中使用相对仓库路径，并保持行为、测试和相关文档同步。
+  路径、品牌名称和固定输出契约保留原文。
+- 再按当前任务读取下方最小必要规则，不通过其他 README 或索引进行二次路由。
+
+## 任务路由
+
+- Git 状态保护、暂存、本地提交、worktree 集成和 Easydict PR 参数：
+  `docs/agents/git-workflow.md`。
+- 构建、测试、独立 review、tester 和 Xcode 验证：`docs/agents/build-and-test.md`。
+- 跨语言代码质量、Swift、Objective-C、SwiftUI、Xcode 和本地化：
+  `docs/agents/development.md`。
+- 文档分层、计划、history、参考资料、外部 Skills、Codex 子代理、双 lock 和同步边界：
+  `docs/agents/README.md`。
+- 产品代码、跨功能行为或模块边界：`docs/architecture/overview.md`。
+- 公共使用或贡献者文档：`docs/user-docs/en/` 或 `docs/user-docs/zh/`。
+- 具体 Skill：执行前读取 `.agents/skills/<skill>/SKILL.md`。
+- 发布：`.agents/skills/release-easydict/SKILL.md`。
+- 创建 GitHub PR：`.agents/skills/submit-pr/SKILL.md`，并读取
+  `docs/agents/git-workflow.md` 中的 Easydict 参数。
+- OpenAI API、ChatGPT Apps SDK、Codex 或相关开发工具：优先使用 OpenAI 开发者文档
+  MCP server；不可用时访问官方文档网页，并说明实际来源。
+- 应用内置 Agent 文档、运行时资源或后端契约：读取其自身权威来源及
+  `docs/agents/README.md` 中的边界。
+
+## Review 路由
+
+- 本地任务、工作树、提交/range、文件或模块审查：`.agents/skills/review/SKILL.md`；
+  独立只读审查使用 `.codex/agents/reviewer.toml`。
+- GitHub PR review：`.agents/skills/review-pr/SKILL.md`；权限边界以
+  `docs/agents/request-boundary.md` 为准，默认不授权产品修复、发布评论、approve、关闭 PR
+  或 push。
+
+## 回复与交付表达
+
+- 先说明真实结果，再给必要证据、修改范围、已执行/未执行验证和外部交付状态；只有需要用户
+  决策时才提出问题。
+- 因规则暂停或留下未完成工作时，链接实际权威条款，区分明确要求与 Agent 推断，不重复询问
+  已有授权。
+- 不从材料复制无关要求，不把计划写成完成结果，也不把静态检查写成构建或运行测试。标题、
+  提交信息和 PR 描述优先表达实际新增、修复、保留或验证的行为。
+
+## 维护约束
+
+- 保留工作树中与当前任务无关的 staged、unstaged 和 untracked 变更。
+- `skills-lock.json` 和 `.codex/agents-lock.json` 管理的内容是外部受管快照，普通项目任务
+  不得直接修改；项目专属例外和同步规则见 `docs/agents/README.md`。
+- 仓库治理 Markdown、计划、history、skill、参考资料和 `docs/` 下的公共 Markdown 不需要
+  Xcode 工程引用或 build phase 条目。
+- 文档使用相对仓库路径；行为变化时同步更新代码、测试和受影响文档。
