@@ -1,0 +1,64 @@
+{
+  "scope": "Current output after supporting text and typography upgrade. Historical motion approval references remain unchanged.",
+  "styles": {
+    "4": {
+      "fixture": "agent-memory-types-style4.json",
+      "sha256": "dba10df3db2d0088d38f5cbd5bfc76eed2982d0040b01b8c75f3a3bef9775a8a",
+      "without_motion_metadata_sha256": "6cd32a0b3a8913318acbc19ca12e77bc227ce14af39515d9a5e703dd3765e646"
+    },
+    "7": {
+      "fixture": "api-flow-style7.json",
+      "sha256": "fd566ecd71df2fcdab85269ed371a47250a7c7e382a37dad04d73eca2dd392c3",
+      "without_motion_metadata_sha256": "1c77fcdd234c033e8999816d528d5a47d0451774dbe3e0f974095834c5de5f7a"
+    },
+    "9": {
+      "fixture": "c4-review-canvas-style9.json",
+      "sha256": "82f970cdd1f76d73e78581bf69239e562ae33201389adef9ee4b30c7540cfffd",
+      "without_motion_metadata_sha256": "2ff34759461e96a29e86c775b721dd06c0c6f2433f52b04b8dcb6daaba6a5a44"
+    },
+    "10": {
+      "fixture": "cloud-fabric-style10.json",
+      "sha256": "7cb7dc6b7841bee7a535098bf221442d8020e1a540c3377256a1077d32d78cb0",
+      "without_motion_metadata_sha256": "d6bd1d1542c641bc390357659efa6d217c19c0376c6fda3abe80be93dde4aa76"
+    },
+    "11": {
+      "fixture": "event-transit-style11.json",
+      "sha256": "89ec87c6b1baa1c8f263d51037f3e4e5075f817ddf5f4595ee638d55d0511422",
+      "without_motion_metadata_sha256": "3b40155abd5b382d5f2330941cf0d9bbc02c2c77c97050aae81be30e8ded8207"
+    },
+    "1": {
+      "fixture": "mem0-style1.json",
+      "sha256": "cfdd835e2bb90324eab644be9fb0523dc2a032bd7f9afaca3025481892598629",
+      "without_motion_metadata_sha256": "ecb915dd0a410098c021036473c720879b5319785ce03d0f454582a39fed3ef4"
+    },
+    "3": {
+      "fixture": "microservices-style3.json",
+      "sha256": "4021af2257325e0ddbff87bcdc844bca23b8a7a3176aa241e64221e9363727de",
+      "without_motion_metadata_sha256": "b7610a461cf17e0551314ecda4024e487993f0d518e0942bfba37b8fbf42c53e"
+    },
+    "5": {
+      "fixture": "multi-agent-style5.json",
+      "sha256": "c4a105ffc38a95274d92d2eb4a6531046fd5a95235dfe568436f6f83bfaf4edc",
+      "without_motion_metadata_sha256": "3af23de6bd04ae892730b1d091bf7cd09998dc1971b8b2f97d1a53400d790b63"
+    },
+    "12": {
+      "fixture": "ops-pulse-style12.json",
+      "sha256": "a24f0c821becb862483642905d6d22c595ad8b93beab14501239b24712e0e015",
+      "without_motion_metadata_sha256": "3d001115e29f0e6c1e1809e38d4b497f5bb06384a43d159879b864da985d096a"
+    },
+    "6": {
+      "fixture": "system-architecture-style6.json",
+      "sha256": "1ef524a9a71a66852c965c717fb7db9385a3e31d34134bf3ca4ef5457479c53c",
+      "without_motion_metadata_sha256": "b4f9ab9b37f60d3514bd654b3b4912437aa0474aea7a85965716ce6a9b4fed88"
+    },
+    "2": {
+      "fixture": "tool-call-style2.json",
+      "sha256": "59112ed0d3481643570997698cc0f50a100c2cebf053b464dcb2b7bcd2c0da38",
+      "without_motion_metadata_sha256": "0d22f85b368d361dd00d262a95cb262489caa679147668a715e09b9c5944362a"
+    },
+    "8": {
+      "fixture": "dark-luxury-style8.svg",
+      "sha256": "6ade2db83f0fa772c4791e1a09a2c128373125da3bcfa2624434daff72316122"
+    }
+  }
+}

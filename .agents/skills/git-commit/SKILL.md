@@ -1,11 +1,15 @@
 ---
 name: git-commit
-description: 根据已暂存内容创建 Angular-style 提交，并为调用方工作流推导 Conventional 任务分支名。支持显式交付和受保护的 implementation 自动交付；为非英语用户生成双语提交信息，且不推送。
+description: 根据已暂存内容创建 Angular-style 提交，并为调用方工作流推导 Conventional 任务分支名。支持显式交付，以及在仓库规则明确授权时安全自动提交；为非英语用户生成双语提交信息，且不推送。
 ---
 
 # Git 提交流程
 
 仅根据已暂存变更创建准确的 Angular-style Git 提交。
+
+下文的 `<git-commit-skill-dir>` 表示当前加载的 `git-commit/SKILL.md` 所在目录。
+运行随 skill 分发的脚本时，先解析该实际目录；不要假设 skill 安装在某个固定的
+Agent 或项目路径中。
 
 ## 必需流程
 
@@ -39,35 +43,47 @@ description: 根据已暂存内容创建 Angular-style 提交，并为调用方�
 9. 提交成功后遵循 **Post-Commit Report**。在向用户展示该报告之前，即使 Git 命令
    成功但提交后校验失败，也不算完成交付。
 
-## Implementation 自动交付
+## 经仓库规则授权的自动交付
 
-只有当仓库规则将任务分类为 `implementation` 且满足自动本地提交条件后，才调用此
-模式。这是收尾步骤，不是在每次编辑后执行。规划、讨论、分析以及仅修改计划或历史
-文档的任务不进入此模式。仓库规则允许时，Agent 文档 implementation 任务可以进入。
+只有仓库规则或调用方已明确授权自动本地提交时，才调用此模式。这是收尾步骤，不是在每次
+编辑后执行。规划、讨论和分析不进入此模式；已授权 implementation 是否包含仅修改计划、history
+或其他 Agent 文档的任务由宿主仓库规则决定。
 
 第一次写入前记录：
 
+- `initial_head`
 - `initial_staged_paths`
 - `initial_unstaged_paths`
 - `initial_untracked_paths`
 - `task_allowed_paths`
+- `agent_owned_paths`
+
+实现完成后冻结 `expected_commit_paths`。它是本次实际要提交的 Agent-owned 路径集合，必须属于
+`task_allowed_paths`；允许范围可以比实际修改集合更宽，不能据此暂存未修改路径。
 
 当 `initial_staged_paths` 非空、Agent 暂存前当前索引已不再为空、Agent 路径与用户现有
 变更重叠、索引存在冲突或必要验证失败时，跳过自动交付。在所有这些情况下都保持用户
 的暂存边界不变。
 
+“Agent 暂存前”指本次自动交付唯一暂存步骤开始之前。`git-delivery` 在同一 apply 中按冻结快照
+完成该步骤后，非空索引是预期结果，不得再次暂存，也不应据此反向判定自动交付失效。
+
 符合自动交付条件时：
 
-1. 确认任务修改了产品代码、测试、构建配置、运行时资源或 Agent 文档，并且尚未执行
-   自动提交。
-2. 只使用 `git add -- <paths>` 暂存 Agent 明确拥有的路径；此模式下绝不使用
+1. 确认任务属于仓库规则允许自动交付的类别，已有明确授权且没有禁止自动提交的约束，
+   修改了授权范围内的文件，并且尚未执行自动提交。
+2. 重新读取 `HEAD`、`git status --short` 和冲突状态。如果 `initial_head`、用户归属内容、
+   非预期索引或冲突状态发生变化，立即跳过自动交付并进入 protected；Agent 在允许路径内产生的
+   预期 implementation 差异不属于初始状态漂移。
+3. 只使用 `git add -- <expected_commit_paths>` 暂存冻结的 Agent-owned 路径；此模式下绝不使用
    `git add .`。
-3. 重新读取暂存区原始 patch，确认它只包含任务范围。
-4. 使用本 skill 的提交信息契约及提交前后校验流程，并执行一次本地 `git commit`。
-5. 遵循 **Post-Commit Report**。不要 push、pull、rebase、merge 或创建分支。
+4. 重新读取 `git diff --cached --name-only` 和暂存区原始 patch，确认路径集合与
+   `expected_commit_paths` 完全一致，并且后者属于 `task_allowed_paths`。
+5. 使用本 skill 的提交信息契约及提交前后校验流程，并执行一次本地 `git commit`。
+6. 遵循 **Post-Commit Report**。不要 push、pull、rebase、merge 或创建分支。
 
-如果无法安全分离路径归属，则保留变更供手动交付，并报告 protected 状态。提交失败时
-保留已暂存变更，并遵循现有提交失败规则。
+如果无法安全分离路径归属，则保留变更供手动交付并说明原因。提交失败时保留已暂存变更，
+并遵循现有提交失败规则。
 
 ## 提交信息契约
 
@@ -121,7 +137,7 @@ Optional BREAKING CHANGE: footer when applicable.
 写入 `commit_message.txt` 后、运行 `git commit` 前，必须执行：
 
 ```bash
-python3 .agents/skills/git-commit/scripts/validate-commit-message.py \
+python3 "<git-commit-skill-dir>/scripts/validate-commit-message.py" \
   --file commit_message.txt \
   --mode "${COMMIT_MESSAGE_MODE}"
 ```
@@ -135,22 +151,22 @@ python3 .agents/skills/git-commit/scripts/validate-commit-message.py \
 `git commit` 成功后、删除消息文件前，必须使用刚创建的完整 commit hash 执行：
 
 ```bash
-python3 .agents/skills/git-commit/scripts/validate-commit-message.py \
+python3 "<git-commit-skill-dir>/scripts/validate-commit-message.py" \
   --commit "${COMMIT_HASH}" \
   --expected-file commit_message.txt \
   --mode "${COMMIT_MESSAGE_MODE}"
 ```
 
-提交后校验会读取 Git 中的实际消息并与预期文件比较。失败时进入 protected 状态：不要
-自动 amend，不要删除 `commit_message.txt`，不要声称交付完成；报告 commit hash 和具体
-错误，等待用户或调用方决定后续动作。
+提交后校验会读取 Git 中的实际消息并与预期文件比较。失败时停止自动处置：不要自动 amend，
+不要删除 `commit_message.txt`，不要声称交付完成；报告 commit hash 和具体错误，等待用户或
+调用方决定后续动作。
 
 ## 变动统计
 
 提交成功后运行：
 
 ```bash
-python3 .agents/skills/git-commit/scripts/commit-change-stats.py <full-commit-hash>
+python3 "<git-commit-skill-dir>/scripts/commit-change-stats.py" <full-commit-hash>
 ```
 
 脚本只报告文本文件，并将它们划分为两个互斥类别：
@@ -166,10 +182,13 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py <full-commit-ha
 报告前，文件数、新增行、删除行和净变动的总计都必须等于 `code` 与 `docs` 之和。
 脚本失败或结果不一致都视为报告失败，不得编造统计数据。
 
+统计数字以脚本输出的 JSON 为准。在面向用户的最终回复中，按本 Skill 定义的 Markdown
+表格展示；不要修改脚本默认输出为 Markdown。
+
 对于多提交集成范围，调用方工作流可以改为运行：
 
 ```bash
-python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
+python3 "<git-commit-skill-dir>/scripts/commit-change-stats.py" \
   --range <target-commit>...<source-commit>
 ```
 
@@ -183,6 +202,10 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 - `git status --short`：最终工作树状态。
 - **变动统计**：已提交文本变更的统计结果。
 
+以下是用户可见、不可省略的完整交付回执。它必须出现在面向用户的最终回复中；终端输出、
+工具输出、子 Agent 返回、短哈希、`hash + subject` 或仅有一行总结均不能替代该回执。
+调用方可在回执前后补充本次工作流的结果，但适用字段必须完整保留。
+
 中文任务使用以下结构。英文任务翻译其中标签，但保留相同字段和顺序。
 
 ````markdown
@@ -191,14 +214,17 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 - 动作：已创建提交
 - Commit：`<full-hash>`
 - 分支：`<branch>`
+- 提交后校验：`<validation-status>`
 - 工作树：`干净` or `保留未提交变更`
 - Push：未执行
 
 变动统计
 
-- 总变动：<files> 个文件，新增 <insertions> 行，删除 <deletions> 行，净增加/减少 <net> 行
-- 代码变动：<files> 个文件，新增 <insertions> 行，删除 <deletions> 行，净增加/减少 <net> 行
-- 文档变动：<files> 个文件，新增 <insertions> 行，删除 <deletions> 行，净增加/减少 <net> 行
+| 类别 | 文件数 | 新增行 | 删除行 | 净变动 |
+| --- | ---: | ---: | ---: | ---: |
+| 总计 | <files> | <insertions> | <deletions> | <signed-net> |
+| 代码 | <files> | <insertions> | <deletions> | <signed-net> |
+| 文档 | <files> | <insertions> | <deletions> | <signed-net> |
 
 实际提交信息
 
@@ -207,12 +233,14 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 ```
 ````
 
-净变动为零时使用 `无变化`。不得用短哈希和标题取代完整报告。除代码围栏外，围栏内的
-提交信息必须与 Git 完全一致。
+正净变动使用 `+N`，负值使用 `-N`，零值使用 `0（无变化）`。英文任务翻译表头和零值
+说明，但保留相同字段、行顺序和数字。代码块中的提交信息必须与 Git 中保存的信息完全一致。
+本次创建提交且提交后校验实际通过时使用 `通过`；复用已有提交而本次未运行提交后校验时使用
+`未执行（本次复用已有提交）`。不得把只读 message 检查写成提交后一致性校验。
 
-调用方工作流复用已有提交时，只能修改动作行以说明本次运行没有创建提交。仍须保留完整
-哈希、统计、实际提交信息、最终状态和 push 状态。在收集命令中使用被复用的哈希而不是
-`HEAD`。
+调用方工作流复用已有提交时，可以修改动作行和提交后校验状态以如实说明本次没有创建或
+校验提交；仍须保留完整哈希、统计、实际提交信息、最终状态和 push 状态。在收集命令中
+使用被复用的哈希而不是 `HEAD`。
 
 ## 执行规则
 
@@ -221,10 +249,11 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 - 除非用户明确要求确认模式，否则将 `git-commit` 请求视为提交授权。
 - 在确认模式下，获得明确批准前不要创建 `commit_message.txt` 或运行 `git commit`。
 - 写入 `commit_message.txt` 的提交信息必须完全相同，且不包含 Markdown 代码围栏。
-- 消息文件创建、提交前校验、`git commit`、提交后校验和清理分别执行；前一步成功后
-  再继续。
-- 暂存与提交都需要对应 Git 写入权限；按实际工具权限请求提权，不将权限请求误当作
-  缺少用户的任务授权。
+- 不要在单个 shell 命令中将 `git commit` 与提交信息文件的创建或清理串联起来。
+- 不要在单个 shell 命令中将提交前校验、`git commit`、提交后校验或消息文件清理
+  串联起来；每一步成功后再进入下一步。
+- 将 `git add` 和 `git commit` 都视为需要仓库写入权限的步骤；任何暂存或提交失败都保留
+  当前现场。
 - 如果 `git commit` 在创建 `.git/index.lock` 时因 `Operation not permitted` 等
   sandbox 权限错误失败，立即使用所需提权重新运行
   `git commit -F commit_message.txt`。
@@ -265,43 +294,6 @@ python3 .agents/skills/git-commit/scripts/commit-change-stats.py \
 本指南只推导名称，不授权暂存、提交或创建分支。调用方工作流负责这些 Git 操作、名称
 冲突处理和状态验证。
 
-## 示例
-
-仅英文提交信息：
-
-```text
-fix(ui): defer rendering until view appears
-
-UI rendering started before its container was ready, creating a startup race. When layout was still settling, early rendering could trigger conflicts or produce blank content.
-
-Move rendering out of the initializer. Start it after the view appears and layout is ready so the UI observes stable state.
-
-This restores stable UI startup and reduces layout timing risk without changing the user-facing flow.
-```
-
-非英文双语提交信息。按以下顺序将这些区块和分隔线写入 `commit_message.txt`，不要包含
-Markdown 代码围栏：
-
-```text
-fix(ui): 推迟渲染直到视图出现后再执行
-
-界面容器尚未准备就绪时就开始渲染，导致启动阶段出现竞态。布局仍在变化时，过早渲染可能触发冲突或出现空白内容。
-
-将渲染操作从初始化流程中移出，改为在视图出现且布局就绪后再开始，让界面读取稳定状态。
-
-此修改恢复了稳定的界面启动流程，降低布局时序风险，并且不改变用户可见流程。
-```
-
-```text
-----------------------------------------------------------------------
-```
-
-```text
-fix(ui): defer rendering until view appears
-
-UI rendering started before its container was ready, creating a startup race. When layout was still settling, early rendering could trigger conflicts or produce blank content.
-
-Move rendering out of the initializer. Start it after the view appears and layout is ready so the UI observes stable state.
-
-This restores stable UI startup and reduces layout timing risk without changing the user-facing flow.
-```
+需要了解最终用户可见的完整交付格式时，读取
+[完整提交回执示例](references/post-commit-report-example.md)。回执字段、统计格式和提交
+信息一致性要求以 **Post-Commit Report** 为准。

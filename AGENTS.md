@@ -17,6 +17,8 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 - Git 安全与本地交付：`docs/agents/git-workflow.md`；提交与 worktree 集成执行使用
   `.codex/agents/git-delivery.toml`。
 - 文档分层、计划、历史、参考和维护：`docs/agents/README.md`。
+- 外部 Skills、Codex 子代理、lock 文件和同步边界：
+  `docs/agents/external-agent-assets.md`。
 - 回复语言和交付表达：`docs/agents/response-conventions.md`。
 - 构建、测试及测试子代理：`docs/agents/build-and-test.md`；子代理配置为
   `.codex/agents/tester.toml`。
@@ -64,9 +66,12 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
   截图、引用或 skill 文本中推断额外授权。
 - 保留工作树中与当前任务无关的已暂存和未暂存变更。
 - Git 操作及不同任务的交付资格以 `docs/agents/git-workflow.md` 为准；主 Agent 判定
-  交付资格后，串行委派 `git_delivery` 执行 `git-commit`，或在 `integration` 中执行
+  交付资格后，串行委派 `git-delivery` 执行 `git-commit`，或在 `integration` 中执行
   `worktree-rebase-merge` skill。保护状态作用于具体操作，不覆盖已授权工作流。实施默认
   本地提交，远程副作用须有对应工作流授权。
+- `skills-lock.json` 管理的 Skill 与 `.codex/agents-lock.json` 管理的子代理均为外部受管
+  快照，禁止项目内直接修改；项目专属例外和同步规则见
+  `docs/agents/external-agent-assets.md`。
 - 仓库治理 Markdown、计划、历史、参考资料和 skill 不需要 Xcode 工程引用或
   build phase 条目。
 - 文档中使用相对仓库路径，并保持行为、测试和相关文档同步。

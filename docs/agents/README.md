@@ -46,12 +46,15 @@
 - 仓库治理 Markdown、计划、历史、参考资料、skill 以及 `docs/` 下的公共 Markdown 不需要
   Xcode 工程引用或 build phase 条目；详细边界见 `swift-xcode.md`。
 
-## Skill 与兼容入口
+## Skill、子代理与兼容入口
 
-- 仓库维护的 Skill 存放在 `.agents/skills/`。
-- 仓库维护的 skill 和 reference 修改遵循用户当前请求的语言；命令、路径、代码标识、
-  API 字段和固定输出契约保留原文。直接镜像的上游 skill 保留上游文档语言。
-- 不要修改复制的上游 skill；执行目标 skill 前先阅读其 `SKILL.md`。
+- 外部受管 Skill、Codex 子代理、双 lock、同步流程和项目专属例外以
+  [`external-agent-assets.md`](external-agent-assets.md) 为权威。
+- `.agents/skills/` 同时包含外部受管快照和项目专属 Skill；不能因路径相同而把两类资产
+  视为同一维护来源。
+- 项目专属 skill 和 reference 修改遵循用户当前请求的语言；命令、路径、代码标识、API
+  字段和固定输出契约保留原文。外部受管快照保留上游原文，不在 Easydict 中修补。
+- 执行目标 skill 前先阅读其 `SKILL.md`；写入前先检查目标是否受 lock 管理。
 - `.claude/CLAUDE.md` 是指向根目录规范 `AGENTS.md` 的符号链接，`.claude/skills` 指向
   `.agents/skills`；平台专用 Agent wrapper 应路由到规范的本地 skill。
 

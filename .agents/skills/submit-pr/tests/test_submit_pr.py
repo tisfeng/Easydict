@@ -54,7 +54,7 @@ class RenderTests(unittest.TestCase):
         values.update(overrides)
         return submit_pr.PRContent(**values)
 
-    def test_template_fixture_still_renders_canonical_sections(self) -> None:
+    def test_template_fixture_preserves_matching_headings(self) -> None:
         template = textwrap.dedent(
             """\
             ## Summary
@@ -71,13 +71,13 @@ class RenderTests(unittest.TestCase):
             self.content(),
         )
 
-        for heading in submit_pr.CANONICAL_HEADINGS:
+        for heading in ("## Summary", "## Linked Issues", "## Verification", "## Screenshots"):
             self.assertEqual(body.count(heading), 1)
         self.assertIn("- #123", body)
-        self.assertIn("## 截图 / Screenshots\n\nN/A", body)
+        self.assertIn("## Screenshots\n\nN/A", body)
         self.assertNotIn("<!--", body)
 
-    def test_english_template_is_canonicalized_and_preserves_requirements(self) -> None:
+    def test_template_headings_and_requirements_are_preserved(self) -> None:
         template = textwrap.dedent(
             """\
             <!-- repository guidance -->
@@ -99,11 +99,31 @@ class RenderTests(unittest.TestCase):
 
         body = submit_pr.render_pr_body(template, self.content())
 
-        for heading in submit_pr.CANONICAL_HEADINGS:
-            self.assertEqual(body.count(heading), 1)
+        self.assertEqual(
+            [line for line in body.splitlines() if line.startswith("## ")],
+            [
+                "## Summary",
+                "## Related Issues",
+                "## Testing",
+                "## Screenshots",
+                "## Maintainer Checklist",
+            ],
+        )
         self.assertIn("- [ ] I ran the focused test suite.", body)
         self.assertIn("## Maintainer Checklist", body)
         self.assertIn("- [ ] Documentation is updated.", body)
+
+    def test_template_only_gets_default_sections_when_semantic_sections_are_missing(self) -> None:
+        body = submit_pr.render_pr_body(
+            "## Summary\n\nRepository context\n\n## Maintainer Checklist\n\n- [ ] Reviewed",
+            self.content(),
+        )
+
+        self.assertEqual(body.count("## Summary"), 1)
+        self.assertIn("## 关联 Issue / Linked Issues", body)
+        self.assertIn("## 验证 / Verification", body)
+        self.assertIn("## 截图 / Screenshots", body)
+        self.assertIn("## Maintainer Checklist", body)
 
     def test_missing_template_sections_use_fixed_four_section_contract(self) -> None:
         body = submit_pr.render_pr_body("", self.content(issues=()))

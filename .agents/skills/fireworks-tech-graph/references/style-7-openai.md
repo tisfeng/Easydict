@@ -20,10 +20,10 @@ Gray accent:    #71717a  (secondary elements)
 ## Typography
 
 ```
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica Neue, sans-serif
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica Neue, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif
 font-size:   16px node labels, 13px descriptions, 12px arrow labels
 font-weight: 600 for titles, 500 for labels, 400 for descriptions
-letter-spacing: -0.01em (tight)
+letter-spacing: 0
 ```
 
 No custom fonts. System font stack only for maximum compatibility.
@@ -96,7 +96,7 @@ Minimal, small labels:
 
 Labels should be:
 - 12px, gray color (`#6e6e80`)
-- No background rect (white background is default)
+- No background rect by default (white background is usually sufficient); add a white fallback rect only when offsetting cannot prevent a collision
 - Short, technical language
 - Midpoint of arrow
 
@@ -166,7 +166,7 @@ Clean, minimal text layout:
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600">
   <style>
-    text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica Neue, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif; }
   </style>
   <defs>
     <marker id="arrow-oai" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
