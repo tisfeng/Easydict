@@ -187,13 +187,17 @@ func responsesInputItems(from messages: [ChatMessage]) -> [ResponsesInputItem] {
 
 /// Returns the request URL for `apiType` by swapping the endpoint path suffix
 /// between wire formats, so switching `OpenAIAPIType` works without editing
-/// the endpoint manually. Unrecognized paths are returned unchanged.
+/// the endpoint manually. Bare base URLs without a wire-format suffix
+/// (e.g. `…/v1`) get the matching suffix appended.
 func normalizedRequestURL(endpoint: URL, apiType: OpenAIAPIType) -> URL {
     guard var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false) else {
         return endpoint
     }
     var parts = components.path.split(separator: "/", omittingEmptySubsequences: true).map(String.init)
     let lowered = parts.map { $0.lowercased() }
+
+    let endsWithResponses = lowered.last == "responses"
+    let endsWithChat = Array(lowered.suffix(2)) == ["chat", "completions"] || lowered.last == "completions"
 
     if apiType == .responses {
         if Array(lowered.suffix(2)) == ["chat", "completions"] {
@@ -202,13 +206,16 @@ func normalizedRequestURL(endpoint: URL, apiType: OpenAIAPIType) -> URL {
         } else if lowered.last == "completions" {
             parts.removeLast()
             parts.append("responses")
-        } else {
-            return endpoint
+        } else if !endsWithResponses {
+            parts.append("responses")
         }
     } else {
-        guard lowered.last == "responses" else { return endpoint }
-        parts.removeLast()
-        parts.append(contentsOf: ["chat", "completions"])
+        if endsWithResponses {
+            parts.removeLast()
+            parts.append(contentsOf: ["chat", "completions"])
+        } else if !endsWithChat {
+            parts.append(contentsOf: ["chat", "completions"])
+        }
     }
 
     components.path = "/" + parts.joined(separator: "/")

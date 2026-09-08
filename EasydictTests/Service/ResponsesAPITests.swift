@@ -85,16 +85,27 @@ struct ResponsesAPITests {
         )
     }
 
-    @Test("Keeps endpoint unchanged when suffix already matches or is unknown")
-    func keepsUnrecognizedEndpoint() {
+    @Test("Keeps endpoint unchanged when suffix already matches")
+    func keepsMatchingEndpoint() {
         let chat = URL(string: "https://api.example.com/v1/chat/completions")!
         let responses = URL(string: "https://api.example.com/v1/responses")!
-        let bare = URL(string: "https://api.example.com/v1")!
 
         #expect(normalizedRequestURL(endpoint: chat, apiType: .chat) == chat)
         #expect(normalizedRequestURL(endpoint: responses, apiType: .responses) == responses)
-        #expect(normalizedRequestURL(endpoint: bare, apiType: .responses) == bare)
-        #expect(normalizedRequestURL(endpoint: bare, apiType: .chat) == bare)
+    }
+
+    @Test("Appends wire format suffix to bare base URLs")
+    func appendsSuffixToBareBaseURL() {
+        let bare = URL(string: "https://opencode.ai/zen/go/v1")!
+
+        #expect(
+            normalizedRequestURL(endpoint: bare, apiType: .responses)
+                == URL(string: "https://opencode.ai/zen/go/v1/responses")
+        )
+        #expect(
+            normalizedRequestURL(endpoint: bare, apiType: .chat)
+                == URL(string: "https://opencode.ai/zen/go/v1/chat/completions")
+        )
     }
 
     @Test("Normalizes bare completions suffix")
