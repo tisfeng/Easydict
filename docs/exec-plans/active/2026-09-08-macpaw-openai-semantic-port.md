@@ -41,7 +41,7 @@
 1. 对应 `58451b5fd`：迁移至 MacPaw/OpenAI 0.5.1，适配请求、SSE、结果模型和取消，
    保留 Easydict 的 MIME 回退及 HTTPServer 契约。实现与定向测试已完成，等待本地提交。
 2. 对应 `283dc6b9b`：为 `StreamService` 增加可覆盖的 SDK reasoning effort 默认值
-   `.none`，并在通用 OpenAI 请求中编码。
+   `.none`，并在通用 OpenAI 请求中编码。实现与定向测试已完成，等待本地提交。
 3. 对应 `3d47fbce8`：将迁移阶段的两个取消辅助类型统一为一个加锁任务协调器，覆盖提前
    取消、请求替换和陈旧完成。
 4. 对应 `e5aa987d8`：按模块拆分本任务新增测试，更新 Xcode 引用，并补充测试目录规则。

@@ -134,7 +134,7 @@ class DeepSeekService: OpenAIService {
     private var currentTask: Task<(), Never>?
 
     private func makeChatRequest(url: URL, messages: [ChatMessage]) throws -> URLRequest {
-        let effort = reasoningEffort
+        let effort = configuredReasoningEffort
         let requestBody = DeepSeekChatRequest(
             messages: messages.map(DeepSeekChatMessage.init),
             model: model,

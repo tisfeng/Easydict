@@ -93,7 +93,7 @@ public class BaseOpenAIService: StreamService {
             }
         }
 
-        let query = ChatQuery(messages: chatHistory, model: model, temperature: temperature)
+        let query = openAIChatQuery(messages: chatHistory)
 
         if usesStreamingTransport {
             return contentStream(for: query, url: url)
@@ -174,6 +174,15 @@ public class BaseOpenAIService: StreamService {
             throw QueryError(type: .api, message: "Invalid models response")
         }
         return normalizedRemoteModelIDs(modelList.data.map(\.id))
+    }
+
+    func openAIChatQuery(messages: [OpenAIChatMessage]) -> ChatQuery {
+        ChatQuery(
+            messages: messages,
+            model: model,
+            reasoningEffort: reasoningEffort,
+            temperature: temperature
+        )
     }
 
     // MARK: Private

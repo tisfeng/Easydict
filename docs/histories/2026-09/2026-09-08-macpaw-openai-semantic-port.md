@@ -40,6 +40,15 @@
 
 证明边界：以上结果不证明真实第三方 OpenAI 兼容服务、用户账户、网络代理或 GUI 行为。
 
+- `58451b5fd` 已提交为 `d058fcec8d60f1b72705ed5357e75de976521d91`。
+- 已完成 `283dc6b9b` 对应实现与验证，等待独立本地提交：
+  - `StreamService` 默认提供 SDK `ChatQuery.ReasoningEffort.none`，通用 OpenAI 请求编码为
+    `reasoning_effort: "none"`，子类可以覆盖该属性。
+  - 将原有 `off/high/max` 用户配置访问器重命名为 `configuredReasoningEffort`，DeepSeek 继续
+    使用该配置，避免 SDK 默认值改变其既有请求语义。
+  - 定向运行 `OpenAIReasoningEffortTests` 与 `OpenAIStreamTransportTests`：两个 suite、
+    7 个测试通过；SwiftFormat、SwiftLint、Swift 解析和 `git diff --check` 通过。
+
 ## 计划
 
 见[当前执行计划](../../exec-plans/active/2026-09-08-macpaw-openai-semantic-port.md)。
