@@ -204,6 +204,13 @@ public class StreamService: QueryService {
 
     var hideThinkTagContent: Bool = true
 
+    /// The OpenAI-compatible reasoning mode sent by default for stream services.
+    /// Subclasses can override this when a provider requires a different value.
+    @nonobjc
+    var reasoningEffort: ChatQuery.ReasoningEffort {
+        .none
+    }
+
     /// Whether requests currently use streaming transport over the network.
     ///
     /// This is intentionally narrower than `isStream()`: a service may remain stream-capable
@@ -402,7 +409,7 @@ public class StreamService: QueryService {
 
     /// Whether this service exposes the shared reasoning effort picker and
     /// sends the reasoning effort parameters. Defaults to `false`; services
-    /// that support reasoning override it to `true` and read `reasoningEffort`
+    /// that support reasoning override it to `true` and read `configuredReasoningEffort`
     /// when building their request.
     var supportsReasoningEffort: Bool {
         false
@@ -415,7 +422,7 @@ public class StreamService: QueryService {
         serviceDefaultsKey(.reasoningEffort, defaultValue: .off)
     }
 
-    var reasoningEffort: ReasoningEffort {
+    var configuredReasoningEffort: ReasoningEffort {
         Defaults[reasoningEffortDefaultsKey]
     }
 
