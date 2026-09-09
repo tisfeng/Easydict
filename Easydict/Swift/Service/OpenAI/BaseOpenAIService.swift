@@ -50,28 +50,6 @@ public class BaseOpenAIService: StreamService {
         to: Language
     )
         -> AsyncThrowingStream<String, any Error> {
-        let url = URL(string: endpoint)
-
-        // Check endpoint
-        guard let url, url.isValid else {
-            let invalidURLError = QueryError(
-                type: .parameter, message: "`\(serviceType().rawValue)` endpoint is invalid"
-            )
-            return AsyncThrowingStream { continuation in
-                continuation.finish(throwing: invalidURLError)
-            }
-        }
-
-        // Check API key if required
-        if apiKeyRequirement().requiresKeyForRequest, apiKey.isEmpty {
-            let error = QueryError(type: .missingSecretKey, message: "API key is empty")
-            return AsyncThrowingStream { continuation in
-                continuation.finish(throwing: error)
-            }
-        }
-
-        result.isStreamFinished = false
-
         let queryType = queryType(text: text, from: from, to: to)
         let chatQueryParam = ChatQueryParam(
             text: text,
@@ -91,13 +69,7 @@ public class BaseOpenAIService: StreamService {
             }
         }
 
-        let query = openAIChatQuery(messages: chatHistory)
-
-        if usesStreamingTransport {
-            return contentStream(for: query, url: url)
-        } else {
-            return nonStreamingTranslate(query: query, url: url)
-        }
+        return contentStream(messages: chatHistory)
     }
 
     /// Validates the service, automatically falling back to non-streaming if the endpoint
@@ -183,6 +155,50 @@ public class BaseOpenAIService: StreamService {
         )
     }
 
+    // MARK: Stream Hooks
+
+    /// Validates the current stream configuration and returns the provider endpoint.
+    @nonobjc
+    func validateChatStreamRequest() throws -> URL {
+        guard let url = URL(string: endpoint), url.isValid else {
+            throw QueryError(
+                type: .parameter,
+                message: "`\(serviceType().rawValue)` endpoint is invalid"
+            )
+        }
+
+        if apiKeyRequirement().requiresKeyForRequest, apiKey.isEmpty {
+            throw QueryError(type: .missingSecretKey, message: "API key is empty")
+        }
+
+        return url
+    }
+
+    /// Builds the OpenAI-compatible query used by both streaming and fallback transports.
+    @nonobjc
+    func makeChatQuery(messages: [OpenAIChatMessage]) -> ChatQuery {
+        openAIChatQuery(messages: messages)
+    }
+
+    /// Sends a streaming query through the configured OpenAI-compatible transport.
+    @nonobjc
+    func performChatResultStream(
+        query: ChatQuery,
+        endpoint: URL,
+        onResult: @escaping @Sendable (ChatStreamResult) -> ()
+    ) async throws {
+        try await OpenAIStreamTransport().stream(
+            query: query,
+            url: endpoint,
+            apiKey: apiKey,
+            onResult: onResult
+        )
+    }
+
+    /// Lets specialized stream transports retain provider-specific error side effects.
+    @nonobjc
+    func handleChatStreamError(_: Error) async {}
+
     // MARK: Private
 
     /// Snapshot of first-pass validation context to avoid in-place mutation from `resetServiceResult()`.
@@ -220,13 +236,35 @@ public class BaseOpenAIService: StreamService {
     private let streamTaskControl = OpenAIStreamTaskControl()
 
     private func contentStream(
-        for query: ChatQuery,
-        url: URL
+        messages: [OpenAIChatMessage]
     )
         -> AsyncThrowingStream<String, any Error> {
-        let apiKey = apiKey
+        do {
+            let endpoint = try validateChatStreamRequest()
+            result.isStreamFinished = false
+
+            let query = makeChatQuery(messages: messages)
+            if usesStreamingTransport {
+                return contentStream(for: query, endpoint: endpoint)
+            }
+            return nonStreamingTranslate(query: query, url: endpoint)
+        } catch {
+            return failedContentStream(error: error)
+        }
+    }
+
+    private func failedContentStream(error: Error) -> AsyncThrowingStream<String, any Error> {
+        AsyncThrowingStream { continuation in
+            continuation.finish(throwing: error)
+        }
+    }
+
+    private func contentStream(
+        for query: ChatQuery,
+        endpoint: URL
+    )
+        -> AsyncThrowingStream<String, any Error> {
         let taskControl = streamTaskControl
-        let transport = OpenAIStreamTransport()
 
         return AsyncThrowingStream { continuation in
             let identifier = UUID()
@@ -236,7 +274,7 @@ public class BaseOpenAIService: StreamService {
                 defer { taskControl.finish(identifier: identifier) }
 
                 do {
-                    try await transport.stream(query: query, url: url, apiKey: apiKey) { result in
+                    try await self.performChatResultStream(query: query, endpoint: endpoint) { result in
                         if let content = result.choices.first?.delta.content {
                             continuation.yield(content)
                         }
@@ -244,7 +282,13 @@ public class BaseOpenAIService: StreamService {
                     continuation.finish()
                 } catch is CancellationError {
                     continuation.finish()
+                } catch let error as URLError where error.code == .cancelled {
+                    continuation.finish()
+                } catch let error as NSError
+                    where error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled {
+                    continuation.finish()
                 } catch {
+                    await self.handleChatStreamError(error)
                     continuation.finish(throwing: error)
                 }
             }
