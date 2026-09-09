@@ -48,7 +48,7 @@
 ### 资产分类
 
 以下内容由 `skills-lock.json` 或 `.codex/agents-lock.json` 管理，当前统一基线为
-`tisfeng/skills v0.3.0`：
+`tisfeng/skills v0.3.2`：
 
 - Skills：`code-simplifier`、`git-commit`、`review`、`review-pr`、`submit-pr`、
   `worktree-rebase-merge`。

@@ -164,13 +164,40 @@ def normalize_repository_from_remote(remote_url: str) -> str | None:
     return None
 
 
+def remote_urls(repo_root: Path, remote: str, *, push: bool = False) -> list[str]:
+    arguments = ["remote", "get-url"]
+    if push:
+        arguments.extend(("--push", "--all"))
+    result = git_result(repo_root, *arguments, remote)
+    if result.returncode != 0:
+        detail = result.stderr.strip() or result.stdout.strip()
+        raise SubmitPRError(f"cannot inspect remote {remote}: {detail}")
+    return list(dict.fromkeys(result.stdout.splitlines()))
+
+
+def unique_push_url(repo_root: Path, remote: str) -> str:
+    urls = remote_urls(repo_root, remote, push=True)
+    if len(urls) != 1:
+        detail = ", ".join(urls) if urls else "none"
+        raise SubmitPRError(
+            f"head remote {remote!r} must have exactly one push URL; found: {detail}"
+        )
+    if normalize_repository_from_remote(urls[0]) is None:
+        raise SubmitPRError(f"head remote {remote!r} does not have a GitHub push URL")
+    return urls[0]
+
+
 def remote_repositories(repo_root: Path, *, push: bool = False) -> dict[str, str]:
     result: dict[str, str] = {}
     for remote in git_output(repo_root, "remote").splitlines():
-        arguments = ["remote", "get-url"]
-        if push:
-            arguments.append("--push")
-        url = git_output(repo_root, *arguments, remote)
+        urls = remote_urls(repo_root, remote, push=push)
+        if push and len(urls) > 1:
+            detail = ", ".join(urls)
+            raise SubmitPRError(
+                f"remote {remote!r} has multiple push URLs: {detail}. "
+                "Configure one exact push destination before submitting a PR."
+            )
+        url = urls[0] if urls else ""
         repository = normalize_repository_from_remote(url)
         if repository is not None:
             result[remote] = repository
@@ -548,7 +575,7 @@ def local_branch_sha(repo_root: Path, branch: str) -> str | None:
 
 
 def remote_branch_sha(repo_root: Path, remote: str, branch: str) -> str | None:
-    push_url = git_output(repo_root, "remote", "get-url", "--push", remote)
+    push_url = unique_push_url(repo_root, remote)
     result = run_command(
         ["git", "ls-remote", "--heads", push_url, f"refs/heads/{branch}"],
         cwd=repo_root,
@@ -575,9 +602,32 @@ def choose_branch_name(
             if include_remote
             else None
         )
-        if (local_sha is None or local_sha == head_sha) and (
-            remote_sha is None or remote_sha == head_sha
-        ):
+        local_is_compatible = local_sha is None or local_sha == head_sha
+        if local_sha is not None and local_sha != head_sha:
+            local_is_compatible = (
+                git_result(
+                    repo_root,
+                    "merge-base",
+                    "--is-ancestor",
+                    local_sha,
+                    head_sha,
+                ).returncode
+                == 0
+            )
+        remote_is_compatible = remote_sha is None or remote_sha == head_sha
+        if remote_sha is not None and remote_sha != head_sha:
+            fetch_commit_object(repo_root, remote, remote_sha)
+            remote_is_compatible = (
+                git_result(
+                    repo_root,
+                    "merge-base",
+                    "--is-ancestor",
+                    remote_sha,
+                    head_sha,
+                ).returncode
+                == 0
+            )
+        if local_is_compatible and remote_is_compatible:
             return candidate
     raise SubmitPRError("cannot find an available task branch name")
 
@@ -778,11 +828,21 @@ def ensure_local_branch(
     if existing_sha is None:
         run_command(["git", "branch", head_branch, head_sha], cwd=repo_root)
         return "created"
-    if existing_sha != head_sha:
+    if existing_sha == head_sha:
+        return "reused"
+    ancestry = git_result(
+        repo_root,
+        "merge-base",
+        "--is-ancestor",
+        existing_sha,
+        head_sha,
+    )
+    if ancestry.returncode != 0:
         raise SubmitPRError(
             f"local branch {head_branch} moved after planning: {existing_sha}"
         )
-    return "reused"
+    run_command(["git", "branch", "-f", head_branch, head_sha], cwd=repo_root)
+    return "updated"
 
 
 def list_open_prs(
@@ -819,7 +879,7 @@ def list_open_prs(
 def fetch_commit_object(repo_root: Path, remote: str, commit_sha: str) -> None:
     if git_result(repo_root, "cat-file", "-e", f"{commit_sha}^{{commit}}").returncode == 0:
         return
-    push_url = git_output(repo_root, "remote", "get-url", "--push", remote)
+    push_url = unique_push_url(repo_root, remote)
     run_command(["git", "fetch", "--no-tags", push_url, commit_sha], cwd=repo_root)
 
 
@@ -829,6 +889,7 @@ def push_head_branch(
     remote_branch: str,
     head_sha: str,
 ) -> str:
+    push_url = unique_push_url(repo_root, remote)
     remote_sha = remote_branch_sha(repo_root, remote, remote_branch)
     if remote_sha == head_sha:
         return "reused"
@@ -850,7 +911,7 @@ def push_head_branch(
     else:
         action = "created"
     run_command(
-        ["git", "push", remote, f"{head_sha}:refs/heads/{remote_branch}"],
+        ["git", "push", push_url, f"{head_sha}:refs/heads/{remote_branch}"],
         cwd=repo_root,
     )
     pushed_sha = remote_branch_sha(repo_root, remote, remote_branch)
@@ -916,16 +977,22 @@ def view_pr(repo_root: Path, repository: str, reference: str) -> dict[str, Any]:
     return payload
 
 
-def verify_pr(pr: dict[str, Any], plan: dict[str, Any]) -> None:
+def verify_pr(
+    pr: dict[str, Any],
+    plan: dict[str, Any],
+    *,
+    require_head_sha: bool = True,
+) -> None:
     expected = {
         "state": "OPEN",
         "baseRefName": plan["base"],
         "headRefName": plan["head_branch"],
-        "headRefOid": plan["head_sha"],
         "title": plan["title"],
         "isDraft": plan["draft"],
         "isCrossRepository": plan["is_cross_repository"],
     }
+    if require_head_sha:
+        expected["headRefOid"] = plan["head_sha"]
     mismatches: list[str] = []
     for field, expected_value in expected.items():
         if pr.get(field) != expected_value:
@@ -1003,8 +1070,22 @@ def apply_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
         raise SubmitPRError("multiple open PRs exist for the same head/base")
     if open_prs:
         pr = view_pr(repo_root, plan["repository"], str(open_prs[0]["number"]))
+        verify_pr(pr, plan, require_head_sha=False)
+    branch_action = ensure_local_branch(
+        repo_root,
+        plan["current_branch"],
+        plan["head_branch"],
+        plan["head_sha"],
+    )
+    if open_prs:
+        push_action = push_head_branch(
+            repo_root,
+            plan["head_remote"],
+            plan["head_branch"],
+            plan["head_sha"],
+        )
+        pr = view_pr(repo_root, plan["repository"], str(open_prs[0]["number"]))
         verify_pr(pr, plan)
-        push_action = "reused"
         pr_action = "reused"
     else:
         push_action = push_head_branch(
@@ -1017,12 +1098,6 @@ def apply_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
         pr = view_pr(repo_root, plan["repository"], pr_url)
         verify_pr(pr, plan)
         pr_action = "created"
-    branch_action = ensure_local_branch(
-        repo_root,
-        plan["current_branch"],
-        plan["head_branch"],
-        plan["head_sha"],
-    )
     return {
         "mode": "apply",
         "repository": plan["repository"],

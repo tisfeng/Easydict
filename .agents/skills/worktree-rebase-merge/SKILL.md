@@ -16,8 +16,8 @@ Git 写操作由一个执行者完成，可由主 Agent 自行执行或串行委
 Agent。
 
 1. 预检阶段只读：执行者解析目标、检查源/目标 worktree、识别是否需要
-   新提交，并返回预检证据和完整提交信息草稿。不得创建分支、临时 worktree、暂存或写入
-   `commit_message.txt`。
+   新提交，并返回预检证据、`git-commit` **暂存决策**、冻结的候选路径与 raw patch，以及完整
+   提交信息草稿。不得创建分支、临时 worktree、暂存或写入 `commit_message.txt`。
 2. 若需要新提交，主 Agent 必须在主对话中原样显示 `提交信息预览` 和完整草稿。默认模式
    显示后可继续；确认、仅预览或仅草稿模式必须等待用户。若源已提交且干净，返回
    `preexisting-source-commit`，无需提交信息预览。
@@ -47,8 +47,10 @@ rebase 或 merge；始终不得 fetch、pull、push、reset、强制移动 ref�
   并要求用户指定或确认目标分支。
 - 将当前 checkout 视为源分支。如果处于 detached 状态，继续前先创建源分支。
 - 除非用户明确要求，否则不要 fetch、pull 或 push。
-- 只暂存用户选定的文件、已经暂存的提交文件或冲突解决文件；不因空索引而扩大范围，
-  不运行 `git add .`。
+- 创建源提交时完整复用 `git-commit` 的 **暂存决策**：已有索引使用 `existing-index`，显式路径范围
+  使用 `explicit-paths`。本 skill 的明确 `integration` 调用属于显式交付：初始索引为空、未限定路径且
+  未禁止暂存时使用 `explicit-worktree-once`；自动本地提交仍只可使用 `auto-exact`。预检冻结未暂存 raw
+  patch、任务相关未跟踪文件摘要和候选路径，写入前后任一状态漂移均停止，不得再次暂存扩大或修正范围。
 
 ## 预检
 
@@ -100,9 +102,8 @@ rebase 或 merge；始终不得 fetch、pull、push、reset、强制移动 ref�
 ## 目标分支直接提交
 
 - 仅当当前源分支与解析出的目标分支是同一分支时，使用直接提交模式。
-- 在直接提交模式下，执行者在同一 Agent 内遵循 `git-commit` Skill：保持
-  staged-only 范围，空索引时停止并要求用户精确暂存文件；提交信息起草、提交执行、
-  权限重试和清理都遵循该 Skill。
+- 在直接提交模式下，执行者在同一 Agent 内遵循 `git-commit` Skill 的 **暂存决策**、提交信息
+  起草、提交执行、权限重试和清理规则。
 - 不创建临时源分支，不运行 `git rebase` 或 `git merge`，不查找目标 worktree，
   不创建临时目标 worktree，也不 fetch、pull 或 push。
 - 面向用户的最终回复使用 `git-commit` 的完整 **Post-Commit Report**，并先提供
@@ -111,9 +112,8 @@ rebase 或 merge；始终不得 fetch、pull、push、reset、强制移动 ref�
 
 ## 提交源分支
 
-- 对已暂存的源变更，执行者在同一 Agent 内使用 `git-commit` 机制。保持
-  staged-only 范围；空索引时停止并要求用户精确暂存文件。提交信息起草、提交执行、
-  权限重试和清理由该 Skill 负责。在普通 rebase/merge 模式下，待 rebase 和 merge 完成后
+- 对源变更，执行者在同一 Agent 内使用 `git-commit` 机制及其 **暂存决策**。提交信息起草、提交
+  执行、权限重试和清理由该 Skill 负责。在普通 rebase/merge 模式下，待 rebase 和 merge 完成后
   合并输出提交回执与集成结果；字段、统计表和实际提交信息仍以 `git-commit` 的
   **Post-Commit Report** 为唯一权威来源。
 - 提交步骤前记录源 `HEAD`。只有提交步骤改变 `HEAD` 时，才将源结果分类为

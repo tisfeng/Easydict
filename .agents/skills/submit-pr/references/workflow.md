@@ -85,10 +85,11 @@ Verification、Issue 和 Screenshots 内容均可见。`--extra-body-file <path|
 
 ## GitHub 写入
 
-push 始终使用计划冻结的 SHA 和精确 refspec：
+push 始终使用计划冻结的 SHA、唯一验证过的 push URL 和精确 refspec。若 head remote 配置了
+多个 push URL，必须先收敛为一个目标，否则流程在远程写入前停止：
 
 ```bash
-git push <head-remote> <planned-head-sha>:refs/heads/<head-branch>
+git push <validated-push-url> <planned-head-sha>:refs/heads/<head-branch>
 ```
 
 同仓库 PR 使用 `--head <head-branch>`；fork PR 使用 `--head <owner>:<head-branch>`：
@@ -110,7 +111,9 @@ gh pr create \
 创建前按 base repository、base branch 和 head query 查询开放 PR：
 
 - 没有 PR：push 并创建。
-- 恰好一个且所有计划字段相同：复用并验证。
+- 恰好一个且仓库、base/head 分支、title、body 和 Draft 等不可变计划字段相同：允许复用。
+  远程 head 与计划 SHA 相同则不推送；远程 head 是计划 SHA 的祖先则普通快进推送。推送后
+  再验证 head SHA 和完整 PR 状态。
 - 多个 PR，或任一字段不同：停止。
 
 创建或复用后验证：
@@ -131,7 +134,7 @@ helper 向 stdout 输出 JSON。apply 结果包含：
 - base repository、remote 和 branch
 - head repository、remote、branch 和冻结 SHA
 - `is_cross_repository`、`draft`、`issue_policy`
-- `branch_action`：`created`、`reused` 或 `current`
+- `branch_action`：`created`、`updated`、`reused` 或 `current`
 - `push_action`：`created`、`updated` 或 `reused`
 - `pr_action`：`created` 或 `reused`
 - `needs_screenshots`：UI 修改时为 `true`
