@@ -13,16 +13,14 @@ Easydict 需要直接从仓库运行 Skills 和 Codex 子代理，同时又要�
 
 采用“外部版本化权威来源 + 仓库内完整快照 + lock 内容校验 + 宿主规则保留项目差异”：
 
-- `tisfeng/skills` 统一维护六个通用 Skills 与四个 Codex 子代理，二者使用同一个发布 tag。
-- `fireworks-tech-graph` 保持独立第三方来源，不并入通用技能仓库。
-- 外部 Skills 由 `skills-lock.json` 控制，Codex 子代理由 `.codex/agents-lock.json` 控制。
-- 项目提交可直接运行的完整资产，而不是依赖机器全局状态；lock 记录来源和预期内容哈希，
-  配合重新计算实际哈希来检查本地漂移。
-- `release-easydict` 保留项目维护权，Easydict 的构建、PR、发布和交付策略继续由宿主文档
-  定义，不通过 fork 通用 Skill 实现。
+- 外部仓库统一维护通用内容，项目提交可离线读取和运行的完整快照。
+- lock 记录来源和预期哈希，通过重算检查本地漂移，而不替代实际安装内容。
+- 项目差异保留在宿主规则中，不通过本地修补或 fork 通用 Skill 实现。
+- 独立第三方 Skill 保持自身来源；项目专属 Skill 继续由 Easydict 维护。
 
-现行操作规则以 [`docs/agents/README.md`](../agents/README.md#外部-agent-资产) 为准；本文只
-解释为什么采用该边界。
+现行资产分类、同步和验证规则以
+[`docs/agents/README.md`](../agents/README.md#外部-agent-资产) 为准；具体上游版本和同步命令
+记录在 [`docs/references/`](../references/) 中。本文只解释选择该治理方式的原因。
 
 ## 取舍
 

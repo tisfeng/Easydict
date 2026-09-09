@@ -349,7 +349,7 @@ Easydict 是一个 macOS 翻译和词典应用，正在进行从 Objective-C 到
 
 - [GitHub Repository](https://github.com/tisfeng/Easydict)
 - [Swift 编码规范](https://github.com/realm/SwiftLint)
-- [架构总览](../../architecture/overview.md)
+- [应用架构](../../design-docs/application-architecture.md)
 - [执行计划规范](../README.md)
 
 ---

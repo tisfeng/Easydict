@@ -23,7 +23,7 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
   `docs/agents/development.md`。
 - 文档分层、计划、history、参考资料、外部 Skills、Codex 子代理、双 lock 和同步边界：
   `docs/agents/README.md`。
-- 产品代码、跨功能行为或模块边界：`docs/architecture/overview.md`。
+- 产品代码、跨功能行为或模块边界：`docs/design-docs/application-architecture.md`。
 - 公共使用或贡献者文档：`docs/user-docs/en/` 或 `docs/user-docs/zh/`。
 - 具体 Skill：执行前读取 `.agents/skills/<skill>/SKILL.md`。
 - 发布：`.agents/skills/release-easydict/SKILL.md`。
