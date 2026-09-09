@@ -44,7 +44,7 @@ extension QueryService {
                 to: to
             )
             if prehandled {
-                logInfo("prehandled query text: \(text.prefix200)")
+                logInfo("Prehandled query text (characters: \(text.count))")
                 return result
             }
         }

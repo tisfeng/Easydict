@@ -81,15 +81,15 @@ struct FocusedElementInfo: CustomStringConvertible {
 
     var description: String {
         let rangeDesc = selectedRange.map { "(\($0.location), \($0.length))" } ?? ""
-        let selectedDesc = selectedText ?? "nil"
         let roleDesc = roleValue ?? "nil"
-        let fullTextDesc = fullText?.prefix200 ?? "nil"
+        let fullTextLength = fullText?.count ?? 0
+        let selectedTextLength = selectedText?.count ?? 0
 
         return """
         FocusedElementInfo(
-            text: \"\(fullTextDesc)\",
+            textCharacters: \(fullTextLength),
             selectedRange: \(rangeDesc),
-            selectedText: \(selectedDesc),
+            selectedTextCharacters: \(selectedTextLength),
             roleValue: \(roleDesc)
         )
         """

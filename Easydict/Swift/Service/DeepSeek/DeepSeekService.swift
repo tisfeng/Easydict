@@ -225,7 +225,7 @@ class DeepSeekService: OpenAIService {
         }
 
         guard let chunk = try? JSONDecoder().decode(DeepSeekStreamChunk.self, from: data) else {
-            logError("Failed to decode DeepSeek SSE data: \(dataString)")
+            logError("Failed to decode DeepSeek SSE data")
             return nil
         }
 

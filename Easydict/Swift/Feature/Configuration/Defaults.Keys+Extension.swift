@@ -154,6 +154,22 @@ extension Defaults.Keys {
         "replaceWithTranslationInCompatibilityMode",
         default: false
     )
+    static let translateAndReplaceServiceIdentifier = Key<String>(
+        "translateAndReplaceServiceIdentifier",
+        default: ServiceType.builtInAI.rawValue
+    )
+    static let polishAndReplaceServiceIdentifier = Key<String>(
+        "polishAndReplaceServiceIdentifier",
+        default: ServiceType.polishing.rawValue
+    )
+    static let translateAndReplaceAdditionalPrompt = Key<String>(
+        "translateAndReplaceAdditionalPrompt",
+        default: ""
+    )
+    static let polishAndReplaceAdditionalPrompt = Key<String>(
+        "polishAndReplaceAdditionalPrompt",
+        default: ""
+    )
     static var enableHTTPServer = Key<Bool>("enableHTTPServer", default: false)
     static var httpPort = Key<String>("httpPort", default: "8080")
 

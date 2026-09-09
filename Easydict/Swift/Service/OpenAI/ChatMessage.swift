@@ -48,6 +48,21 @@ enum AIToolType {
     case summary
 }
 
+// MARK: - TextReplacementPromptContext
+
+/// Carries action-only prompt semantics without extending the public HTTP request model.
+///
+/// The selected service still owns transport, endpoint, credentials, model, temperature,
+/// and streaming configuration; this context only chooses the task prompt.
+struct TextReplacementPromptContext: Equatable {
+    let action: TextReplacementAction
+    let additionalPrompt: String
+
+    var normalizedAdditionalPrompt: String {
+        additionalPrompt.trim()
+    }
+}
+
 // MARK: - ChatQueryParam
 
 struct ChatQueryParam {

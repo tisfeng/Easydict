@@ -38,6 +38,7 @@
   - [Settings](#settings)
     - [General](#general)
     - [Services](#services)
+    - [Translate and Polish Replacement](#translate-and-polish-replacement)
   - [In-App Shortcuts](#in-app-shortcuts)
   - [Tips](#tips)
   - [Similar Open Source Projects](#similar-open-source-projects)
@@ -368,6 +369,26 @@ Easydict has 3 types of Windows and you can set different services for each of t
 - Mini window: displayed when the mouse automatically picks up words.
 - Floating window: displayed when shortcut keys are used to fetch words and screenshot translation.
 - Main window: hidden by default, you can turn it on in the settings and show it when the program starts. 
+
+### Translate and Polish Replacement
+
+Assign global shortcuts to **Translate and Replace** and **Polish and Replace**, then configure
+both actions under **Settings → Advanced → Translation & Polishing Replacement**. Translation
+uses BuiltInAI by default, while polishing uses Polishing.
+
+Each action can independently use Built-In AI or a configured OpenAI-compatible service:
+OpenAI, Custom OpenAI, DeepSeek, Groq, Zhipu, MiniMax, or GitHub Models. The action always uses
+the service's current model, endpoint, API key, temperature, and streaming setting from the
+**Services** page. Multiple Custom OpenAI instances remain separate.
+
+The optional **Additional Requirements** field appends instructions to the standard translation
+or polishing task; leaving it empty preserves the default prompt. Responses continue to replace
+the selected text as chunks arrive. If the selected service fails before producing text,
+Easydict retries once with the action's built-in default. If a response stops after replacement
+has begun, the partial result is kept and Easydict warns that it may be incomplete.
+
+> [!IMPORTANT]
+> Selected text and additional requirements are sent to the chosen online service.
 
 ## In-App Shortcuts
 
