@@ -1,6 +1,6 @@
-# 开发规则
+# 编码规范
 
-本文统一规定跨语言代码质量、Swift/Xcode 实践和用户可见文本本地化。构建与测试见
+本文统一规定跨语言代码质量、Swift 实践、库与 API 以及用户可见文本本地化。构建与测试见
 [`build-and-test.md`](build-and-test.md)。
 
 ## 跨语言代码质量
@@ -27,7 +27,7 @@
 - 注释简洁并随行为更新；可行时每行不超过 80 个字符，使用对应语言的常规文档风格。
 - 源码文件头使用当前 Git 用户名，不使用 Agent 名称。
 
-## Swift 与 Xcode
+## Swift 实践
 
 ### Swift 组织与实践
 
@@ -40,16 +40,7 @@
 - 每个 class、struct、enum、protocol 和 actor 前添加类型级文档。核心类型保持 2–4 个简洁
   句子、约 220–320 个英文字符；简单私有 helper 控制在 180 个字符以内。
 - 为不明显的函数和推理添加英文文档注释。
-- 每个测试源码文件最多声明一个 `@Suite` 类型。
-
-### 工程元数据
-
-新增或移动由 Xcode 管理的源码文件或运行时资源时，更新
-`Easydict.xcodeproj/project.pbxproj`，使文件出现在 Xcode navigator 中。仓库治理 Markdown、
-计划、history、skill、参考资料和 `docs/` 下的公共 Markdown 不需要工程引用；除非文档作为
-运行时资源发布，否则不加入 build phase。
-
-### 库与 API
+## 库与 API
 
 - 使用 SFSafeSymbols，不硬编码 SF Symbol 字符串；优先使用 `Image(systemSymbol:)` 和
   `Label(systemSymbol:)`。

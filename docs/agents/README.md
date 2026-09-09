@@ -41,7 +41,7 @@
 - 新增、删除或重命名规则文件时，只在根 `AGENTS.md` 维护任务路由，不建立多层索引。
 - 使用相对仓库路径，不提交机器本地绝对路径。行为变化时同步更新代码、测试和受影响文档。
 - 仓库治理 Markdown、plan、history、reference、skill 和公共 Markdown 的 Xcode 工程边界
-  以 [`development.md`](development.md#工程元数据) 为准。
+  以 [`build-and-test.md`](build-and-test.md#工程文件与资源) 为准。
 
 ## 外部 Agent 资产
 

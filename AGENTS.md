@@ -18,9 +18,10 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 
 - Git 状态保护、暂存、本地提交、worktree 集成和 Easydict PR 参数：
   `docs/agents/git-workflow.md`。
-- 构建、测试、独立 review、tester 和 Xcode 验证：`docs/agents/build-and-test.md`。
-- 跨语言代码质量、Swift、Objective-C、SwiftUI、Xcode 和本地化：
-  `docs/agents/development.md`。
+- 构建、测试、tester、工程文件与资源、Xcode 验证：`docs/agents/build-and-test.md`。
+- 跨语言代码质量、Swift、Objective-C、SwiftUI、API 和本地化：
+  `docs/agents/coding-guidelines.md`。
+- 实质审查、独立 reviewer、审查快照与复审：`docs/agents/review.md`。
 - 文档分层、计划、history、参考资料、外部 Skills、Codex 子代理、双 lock 和同步边界：
   `docs/agents/README.md`。
 - 产品代码、跨功能行为或模块边界：`docs/design-docs/application-architecture.md`。
@@ -36,8 +37,8 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 
 ## Review 路由
 
-- 本地 review 与 GitHub PR review 均须读取 `docs/agents/build-and-test.md` 的 Reviewer
-  委派规则；具体审查分别按以下 Skill 执行。
+- 本地 review 与 GitHub PR review 先读取 `docs/agents/review.md`；具体审查分别按以下 Skill
+  执行。
 - 本地任务、工作树、提交/range、文件或模块审查：`.agents/skills/review/SKILL.md`；
 - GitHub PR review：`.agents/skills/review-pr/SKILL.md`；权限边界以
   `docs/agents/request-boundary.md` 为准，默认不授权产品修复、发布评论、approve、关闭 PR

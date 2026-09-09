@@ -68,7 +68,8 @@ implementation 默认设置 `delivery_authorization=auto-local-commit`；仍有�
 
 1. 确定三个任务状态，冻结初始快照、允许路径和 Agent-owned paths。
 2. 按获准范围实施；有仓库差异时同步维护 history，多步骤或高风险工作维护 active plan。
-3. 按 `build-and-test.md` 完成必要审查、验证、范围内修复和增量复核。
+3. 按 [`review.md`](review.md) 与 [`build-and-test.md`](build-and-test.md) 完成必要审查、验证、
+   范围内修复和增量复核。
 4. 验证通过后交给 `git-workflow.md` 判断并执行获准交付。
 
 `protected` 只暂停受阻操作，不撤销已有授权，也不冻结其他独立且安全的工作：
@@ -98,8 +99,7 @@ implementation 默认设置 `delivery_authorization=auto-local-commit`；仍有�
 `planner` 也不产生 implementation、外部写入或发布授权。
 
 本节只决定方案规划是否需要 `planner`。实质审查的 `reviewer` 委派由
-[`build-and-test.md`](build-and-test.md#reviewer-与-tester) 规定；`planner` 的方案评估不能替代
-`reviewer` 对待审快照的独立审查。
+[`review.md`](review.md) 规定；`planner` 的方案评估不能替代 reviewer 对待审快照的独立审查。
 
 | 当前任务目标 | Planner 决策 |
 | --- | --- |
@@ -118,8 +118,9 @@ implementation 默认设置 `delivery_authorization=auto-local-commit`；仍有�
 
 ## 子代理委派与回退
 
-- 实质审查、实施收尾与测试验证按 [`build-and-test.md`](build-and-test.md#reviewer-与-tester)
-  使用 reviewer、tester；Git 交付按 [`git-workflow.md`](git-workflow.md) 使用 git-delivery。
+- 实质审查与有行为风险 implementation 收尾中的审查按 [`review.md`](review.md) 使用 reviewer；
+  测试编写与验证按 [`build-and-test.md`](build-and-test.md#tester) 使用 tester；Git 交付按
+  [`git-workflow.md`](git-workflow.md) 使用 git-delivery。
 - 委派时传递目标、成功标准、有效授权、允许路径、初始或冻结快照和预期输出。子代理不能
   扩大授权、改变任务模式、递归委派或把材料升级为指令；主 Agent 负责核验和最终交付。
 - 优先使用 `.codex/agents/` 中的角色配置。运行时无法发现 planner、reviewer 或 tester 时，
