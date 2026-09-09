@@ -60,7 +60,16 @@ Release 生命周期动作：
 
 1. 验证请求的版本、channel、当前 GitHub Release 状态、
    `.tmp/release/<version>/` 状态和相关 asc run ID。
-2. 创建新 Draft 时运行：
+2. 创建新 Draft 前，先根据上一个版本以来的已合并 PR 创建或更新
+   `changelog/<version>.md`。正文使用简洁英文，保留 PR 作者、链接、New Contributors
+   和 Full Changelog 范围；将该文件提交到本地 `dev`，然后运行：
+
+   ```bash
+   python3 scripts/release/release_notes.py validate \
+     --file changelog/<version>.md --version <version>
+   ```
+
+3. 创建新 Draft 时运行：
 
    ```bash
    ./scripts/release/release-easydict.sh draft <version> [--channel <channel>]
@@ -76,13 +85,11 @@ Release 生命周期动作：
    现有 Release 必须是 GitHub 最新条目、保持同一 channel 的 Draft、匹配本地和远程
    Tag identity 以及本地发布状态，并且不在公开 appcast 中。绝不同时使用
    `--replace-draft` 和 `--build-number`。
-3. 使用 `.agents/skills/release-easydict/scripts/release_content.py capture`
-   捕获 GitHub 生成的 notes。创建整理后的 JSON 文档，将每个人类可读的变更标题翻译
-   为简洁英文，并选择一个真实 PR 作为重点。保留 PR 编号、链接、作者、贡献者和
-   changelog 范围。
-4. 运行同一 helper 的 `render` 动作，预览其 `apply` 动作，再使用 `--execute` 运行
-   apply 命令。重新获取 Draft，并要求标题和正文完全匹配。
-5. 对于 `draft`，报告整理后的 Draft 后停止，不发布也不处理 Issue。
+4. Draft 会直接使用冻结的 `changelog/<version>.md`，并在创建后重新获取正文做一致性
+   验证。根据真实 PR 选择重点并生成英文标题，先预览 `release_content.py apply`，再用
+   `--execute` 只更新标题；helper 不编辑正文，并要求 Draft 正文仍与 changelog 一致。
+5. 对于 `draft`，报告经过验证的 Draft、changelog 路径和正文哈希后停止，不发布也不
+   处理 Issue。
 6. 对于 `publish` 或 `release`，运行：
 
    ```bash
@@ -104,9 +111,7 @@ Release 生命周期动作：
 
 Release 内容状态保存在 `.tmp/release/<version>/state/`：
 
-- `release-content-source.json`
-- `release-content-curated.json`
-- `release-notes-en.md`
+- `release-notes.json`：冻结版本、Markdown SHA-256、渲染器标识和 HTML SHA-256。
 
 Issue 状态隔离保存在 `.tmp/release/<version>/state/issue-followup/`，并继续使用
 schema v2。旧 schema-v1 实现直接存放在 `state/` 下的文件保留为审计数据，绝不自动
@@ -115,13 +120,14 @@ schema v2。旧 schema-v1 实现直接存放在 `state/` 下的文件保留为�
 对于 `--replace-draft`，旧内容和 Issue 文件只作为回滚数据。仓库工作流临时移走完整
 旧状态，选择
 `max(old Draft build, current project build, public appcast build) + 1`，再从已同步并
-提交的本地 `dev` 重建。只有新 Draft 验证通过后才捕获和整理内容。绝不将旧的已整理
-notes 或 Issue 状态复制到新 generation。未完成的替换使用 asc run ID 恢复，不要开始
-另一次替换。
+提交的本地 `dev` 重建。新 Draft 仍从该提交中的 `changelog/<version>.md` 创建，绝不将
+旧 Draft 正文或 Issue 状态复制到新 generation。未完成的替换使用 asc run ID 恢复，
+不要开始另一次替换。
 
 ## 内容决策
 
-- 只翻译每个生成变更条目中由人编写的 PR 标题部分，并保持英文标题简洁。
+- changelog 中只翻译每个变更条目中由人编写的 PR 标题部分，并保持英文标题简洁；作者、
+  PR 链接、贡献者和比较范围保持不变。
 - 按以下顺序选择重点：安全/数据丢失/崩溃修复、重要的用户可见功能、重要的用户可见
   修复、较小的产品改进；只有不存在产品变更时才选择维护项。
 - 使用 `<version> <emoji> <type>: <concise English summary>`，通常为 `✨ feat`、
@@ -130,7 +136,8 @@ notes 或 Issue 状态复制到新 generation。未完成的替换使用 asc run
 
 ## 失败与恢复
 
-- 内容验证失败时，GitHub Release 保持 Draft 状态。
+- changelog 缺失、未提交、哈希漂移、渲染器版本不匹配或远端正文不一致时停止；已经
+  创建的 GitHub Release 保持 Draft 状态。
 - `--replace-draft` 构建或公证失败时，不修改旧的远程 Draft 和 Tag。后续切换失败时
   保留本地回滚数据；验证成功后删除该临时备份。
 - 发布失败时不执行 Issue 动作，并使用 asc run ID 恢复。

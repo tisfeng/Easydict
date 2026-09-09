@@ -1,5 +1,5 @@
 {
-  "originHash" : "c3a2c2683317c654852285a17ca175748fd8141464147f2b1a4c15d59d4e4eb9",
+  "originHash" : "e6770686240e7d3ed688af1b659b3a8682f4a36630d294d50aed7e341d34b2e7",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -264,9 +264,10 @@
     {
       "identity" : "openai",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tisfeng/OpenAI",
+      "location" : "https://github.com/MacPaw/OpenAI",
       "state" : {
-        "revision" : "ebfb671f5b6eeb65e666016a3ede942b928c17a7"
+        "revision" : "a532be89be9a30ec003e4ba0974a52a88d26fc6d",
+        "version" : "0.5.1"
       }
     },
     {
@@ -501,6 +502,15 @@
       "state" : {
         "revision" : "0c0290ff6b24942dadb83a929ffaaa1481df04a2",
         "version" : "1.1.1"
+      }
+    },
+    {
+      "identity" : "swift-openapi-runtime",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-openapi-runtime",
+      "state" : {
+        "revision" : "9e53df53e043b53046a371b31aaf0a1e26eef946",
+        "version" : "1.12.1"
       }
     },
     {

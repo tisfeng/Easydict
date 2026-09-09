@@ -10,6 +10,8 @@ import Testing
 
 @testable import Easydict
 
+// MARK: - ServiceTests
+
 /// Integration tests that verify each registered service can translate a sample input.
 @Suite("Service Translation Validation", .tags(.integration))
 struct ServiceTests {

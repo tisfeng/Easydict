@@ -8,6 +8,22 @@
 - 先运行与变更直接对应的检查；只有出现新变更、失败或未解决风险时才扩大或重复验证。
 - 验证失败先诊断，在授权范围内修复并复验，不跳过必要检查，也不把环境阻塞写成产品通过。
 
+## 测试目录与文件组织
+
+- 测试目录尽量对应被测主项目的功能和模块结构。Swift 测试以 `Easydict/Swift/` 为映射根，
+  例如 `Service/OpenAI/` 对应 `EasydictTests/Service/OpenAI/`。
+- 按明确的领域或职责建立子目录，避免将不同模块的测试长期堆积在 `Service/`、`Utility/`
+  等顶层目录。跨模块测试按主要业务归属放置，不要求机械复制所有源码层级。
+- 每个测试文件聚焦一个主要被测类型或行为领域，并遵循
+  [`swift-xcode.md`](swift-xcode.md) 的单文件单 `@Suite` 规则。接近文件规模限制时按职责
+  拆分 suite 和 fixture，并保留原有覆盖。
+- 单文件使用的 helper 保持局部；同一领域共享的测试工具就近放置，跨目录复用的 fixture
+  或工具放入 `EasydictTests/Support/<Domain>/`，资源放入对应测试资源目录。
+- 拆分测试时保留标签、actor 隔离、共享状态恢复和串行执行边界。独立 suite 的
+  `.serialized` 不提供跨 suite 串行保证。
+- 新增或移动测试文件时同步 Xcode group 和测试 target 的 Sources 引用，具体遵循
+  [`swift-xcode.md`](swift-xcode.md)。现有目录按任务范围渐进调整。
+
 ## Reviewer 与 Tester
 
 - 有行为风险的 implementation 优先使用只读 `reviewer`；需要编写测试或复杂独立验证时使用

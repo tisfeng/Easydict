@@ -9,7 +9,7 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 ## 始终阅读
 
 - 每个任务先阅读 `docs/agents/request-boundary.md`，确定请求语义、写入授权、任务模式、
-  写入前检查（Mutation Gate）和子代理边界。
+  写入前检查（Mutation Gate），以及是否需要按其 `Planner 委派决策` 使用子代理。
 - 回复以及新建或修改的仓库文档使用用户当前请求的语言；代码标识、API 名称、命令、
   路径、品牌名称和固定输出契约保留原文。
 - 再按当前任务读取下方最小必要规则，不通过其他 README 或索引进行二次路由。
@@ -23,7 +23,7 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
   `docs/agents/development.md`。
 - 文档分层、计划、history、参考资料、外部 Skills、Codex 子代理、双 lock 和同步边界：
   `docs/agents/README.md`。
-- 产品代码、跨功能行为或模块边界：`docs/architecture/overview.md`。
+- 产品代码、跨功能行为或模块边界：`docs/design-docs/application-architecture.md`。
 - 公共使用或贡献者文档：`docs/user-docs/en/` 或 `docs/user-docs/zh/`。
 - 具体 Skill：执行前读取 `.agents/skills/<skill>/SKILL.md`。
 - 发布：`.agents/skills/release-easydict/SKILL.md`。

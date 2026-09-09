@@ -1,4 +1,4 @@
-# Easydict 架构总览
+# Easydict 应用架构
 
 Easydict 是一款 macOS 词典和翻译应用，支持直接查词、文本翻译、划词翻译、
 OCR 截图翻译，以及多个翻译或 AI 服务提供商。

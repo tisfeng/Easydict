@@ -2,8 +2,8 @@
 """Apply Easydict feed conventions and validate a generated Sparkle appcast.
 
 Sparkle remains responsible for producing signatures, lengths, and update
-metadata. This helper only preserves the GitHub release-notes link convention
-and rejects unexpected feed churn before publication.
+metadata. This helper renders the canonical version changelog into the target
+description and rejects unexpected feed churn before publication.
 """
 
 from __future__ import annotations
@@ -15,10 +15,11 @@ from pathlib import Path
 import sys
 import xml.etree.ElementTree as ET
 
+from release_notes import read_notes, render_markdown
+
 
 SPARKLE_NS = "http://www.andymatuschak.org/xml-namespaces/sparkle"
 ET.register_namespace("sparkle", SPARKLE_NS)
-
 
 def sparkle_tag(name: str) -> str:
     """Return a namespaced Sparkle XML tag."""
@@ -93,12 +94,26 @@ def write_appcast(tree: ET.ElementTree, path: Path) -> None:
 
 
 def set_release_notes_link(args: argparse.Namespace) -> None:
-    """Set the release-notes link on the generated target item."""
+    """Render canonical notes into the generated target item."""
     tree = parse_appcast(args.appcast)
     item = find_target(tree, args.version, args.build)
-    element = item.find(sparkle_tag("releaseNotesLink"))
-    if element is None:
-        element = ET.Element(sparkle_tag("releaseNotesLink"))
+    formatted_html = render_markdown(read_notes(args.notes_file, args.version))
+    desc_element = item.find("description")
+    if desc_element is None:
+        desc_element = ET.Element("description")
+        children = list(item)
+        pub_date = item.find("pubDate")
+        insert_index = children.index(pub_date) + 1 if pub_date is not None else 0
+        item.insert(insert_index, desc_element)
+    desc_element.text = formatted_html
+
+    old_link = item.find(sparkle_tag("releaseNotesLink"))
+    if old_link is not None:
+        item.remove(old_link)
+
+    link_element = item.find(sparkle_tag("fullReleaseNotesLink"))
+    if link_element is None:
+        link_element = ET.Element(sparkle_tag("fullReleaseNotesLink"))
         children = list(item)
         version_element = item.find(sparkle_tag("shortVersionString"))
         insert_index = (
@@ -106,8 +121,8 @@ def set_release_notes_link(args: argparse.Namespace) -> None:
             if version_element is not None
             else len(children)
         )
-        item.insert(insert_index, element)
-    element.text = args.url
+        item.insert(insert_index, link_element)
+    link_element.text = args.url
 
     write_appcast(tree, args.appcast)
 
@@ -249,10 +264,25 @@ def validate_appcast(args: argparse.Namespace) -> None:
     require_equal(plain_item_value(item, "title"), args.version, "item title")
     if not plain_item_value(item, "pubDate"):
         raise ValueError("target appcast item has no publication date")
+    notes_link = (
+        item_value(item, "fullReleaseNotesLink")
+        or item_value(item, "releaseNotesLink")
+    )
     require_equal(
-        item_value(item, "releaseNotesLink"),
+        notes_link,
         args.release_notes_url,
         "release notes URL",
+    )
+    description = item.find("description")
+    if description is None:
+        raise ValueError("target appcast item has no release notes description")
+    expected_description = render_markdown(
+        read_notes(args.notes_file, args.version)
+    )
+    require_equal(
+        description.text or "",
+        expected_description,
+        "release notes description",
     )
     require_equal(
         item_value(item, "minimumSystemVersion"),
@@ -292,6 +322,7 @@ def build_parser() -> argparse.ArgumentParser:
     set_link.add_argument("--version", required=True)
     set_link.add_argument("--build", required=True)
     set_link.add_argument("--url", required=True)
+    set_link.add_argument("--notes-file", type=Path, required=True)
     set_link.set_defaults(handler=set_release_notes_link)
 
     find_previous = subparsers.add_parser("find-previous-beta")
@@ -318,6 +349,7 @@ def build_parser() -> argparse.ArgumentParser:
     validate.add_argument("--build", required=True)
     validate.add_argument("--channel", choices=("beta", "stable"), required=True)
     validate.add_argument("--release-notes-url", required=True)
+    validate.add_argument("--notes-file", type=Path, required=True)
     validate.add_argument("--download-url", required=True)
     validate.add_argument("--previous-beta-version", default="")
     validate.set_defaults(handler=validate_appcast)

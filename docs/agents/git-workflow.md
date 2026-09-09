@@ -27,7 +27,9 @@
    [`.codex/agents/git-delivery.toml`](../../.codex/agents/git-delivery.toml)：
    `commit` 与 `auto-local-commit` 执行
    [git-commit](../../.agents/skills/git-commit/SKILL.md)，只有 `integration` 才执行
-   [worktree-rebase-merge](../../.agents/skills/worktree-rebase-merge/SKILL.md)。
+   [worktree-rebase-merge](../../.agents/skills/worktree-rebase-merge/SKILL.md)。委派输入还必须
+   包含按实际 Skill 与用户范围冻结的 `staging_strategy`：`existing-index`、`explicit-paths`、
+   `explicit-worktree-once` 或 `auto-exact`。
 4. 需要创建提交时，`git-delivery` 先以 `prepare` 只读重验现场并返回精确提交信息草稿。
    主 Agent 在对话中原样展示“提交信息预览”后，同一 Agent 才能进入 `apply`；用户要求
    确认、仅预览或暂缓时必须等待批准。复用已有提交且无需新提交时不强制生成草稿。
@@ -85,6 +87,6 @@ Push 状态，以及文本文件的总计/代码/文档变动统计。任何提�
 - `--base-remote origin`
 - `--issue-policy forbid`
 
-当前受管 `submit-pr v0.3.0` 需要 Python 3.10 或更高版本。执行脚本或测试前确认解释器版本；
+当前受管 `submit-pr v0.3.2` 需要 Python 3.10 或更高版本。执行脚本或测试前确认解释器版本；
 无法找到兼容解释器时 fail closed，不在项目内修改受管 Skill。需要推送到其他 fork remote 时
 再显式传入 `--head-remote`。PR review 使用 `review-pr` skill。

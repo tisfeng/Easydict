@@ -168,6 +168,7 @@ prepare_publish_integration() {
 
     require_release_worktree
     load_release_metadata
+    verify_release_notes_snapshot
     fetch_publish_refs
     require_remote_draft_refs
 
@@ -248,6 +249,7 @@ push_published_refs() {
 
     require_release_worktree
     load_release_metadata
+    verify_release_notes_snapshot
     load_publish_git_metadata
     require_clean_integration_worktree
     [[ "$(git -C "$RELEASE_WORKTREE" log -1 --format=%s)" \
@@ -337,6 +339,7 @@ push_published_refs() {
 cleanup_remote_release_branch() {
     local remote_release
 
+    verify_release_notes_snapshot
     load_publish_git_metadata
     [[ -n "${PUBLISH_APPCAST_COMMIT:-}" ]] \
         || release_fail "published appcast commit is missing from Git metadata"

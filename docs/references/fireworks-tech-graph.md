@@ -2,7 +2,8 @@
 
 - 核对日期：2026-09-08。
 - 来源：`https://github.com/yizhiyanhua-ai/fireworks-tech-graph`。
-- Skill 路径：`skills/fireworks-tech-graph`。
+- 上游 Skill 路径：`skills/fireworks-tech-graph`。
+- 本地安装路径：`.agents/skills/fireworks-tech-graph/`。
 - 采用 ref：`main`。
 - 同步时 commit：`31fea364eda5f1852b1175f3d9e29ea31d22dcb4`。
 - 安装器：`skills@1.5.24`。
@@ -24,6 +25,9 @@ npx -y skills@1.5.24 add \
 命令只选择该来源和 Skill；同步后检查 `.agents/skills/fireworks-tech-graph/` 与
 `skills-lock.json` 中对应条目。不要用跨来源的整项目更新代替此步骤，也不要手工调整
 computed hash。
+
+Easydict 直接从 `.agents/skills/` 读取该 Skill，不维护根 `skills/` 兼容别名；
+`.claude/skills` 继续指向同一真实目录。
 
 ## 重新核对条件
 

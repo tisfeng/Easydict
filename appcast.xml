@@ -5,10 +5,55 @@
         <item>
             <title>2.22.0</title>
             <pubDate>Sun, 23 Aug 2026 11:39:50 +0800</pubDate>
+            <description>&lt;h2&gt;What's Changed&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;feat(markdown): render AI translation results with formatting by @leozanee in &lt;a href="https://github.com/tisfeng/Easydict/pull/1161"&gt;https://github.com/tisfeng/Easydict/pull/1161&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(shortcut): add a global shortcut to toggle select translation by @bsythegreat in &lt;a href="https://github.com/tisfeng/Easydict/pull/1203"&gt;https://github.com/tisfeng/Easydict/pull/1203&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(claude-code): default the translation model to Sonnet by @sonhyrd in &lt;a href="https://github.com/tisfeng/Easydict/pull/1211"&gt;https://github.com/tisfeng/Easydict/pull/1211&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(window): restore input focus after query window layout changes by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1212"&gt;https://github.com/tisfeng/Easydict/pull/1212&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(localization): add Japanese support by @syrupfresh in &lt;a href="https://github.com/tisfeng/Easydict/pull/1202"&gt;https://github.com/tisfeng/Easydict/pull/1202&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(localization): add Spanish (es_ES) support by @terorero in &lt;a href="https://github.com/tisfeng/Easydict/pull/1138"&gt;https://github.com/tisfeng/Easydict/pull/1138&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;build(deps): bump concurrent-ruby from 1.3.6 to 1.3.7 by @dependabot[bot] in &lt;a href="https://github.com/tisfeng/Easydict/pull/1219"&gt;https://github.com/tisfeng/Easydict/pull/1219&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(localization): add Catalan support by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1218"&gt;https://github.com/tisfeng/Easydict/pull/1218&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;refactor(stream): support reasoning effort across shared streaming services by @bsythegreat in &lt;a href="https://github.com/tisfeng/Easydict/pull/1204"&gt;https://github.com/tisfeng/Easydict/pull/1204&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(window): show the floating query window as a nonactivating panel by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1223"&gt;https://github.com/tisfeng/Easydict/pull/1223&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(mdict): stabilize WebView dictionary rendering by @KurodaKayn in &lt;a href="https://github.com/tisfeng/Easydict/pull/1222"&gt;https://github.com/tisfeng/Easydict/pull/1222&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(ocr): prevent Vision OCR crashes and improve error handling by @ct-jyjntc in &lt;a href="https://github.com/tisfeng/Easydict/pull/1221"&gt;https://github.com/tisfeng/Easydict/pull/1221&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(google): support distinct English TTS accents by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1243"&gt;https://github.com/tisfeng/Easydict/pull/1243&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(mdict): restore anchor navigation and dark-mode text by @KurodaKayn in &lt;a href="https://github.com/tisfeng/Easydict/pull/1244"&gt;https://github.com/tisfeng/Easydict/pull/1244&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(query): add an option to translate automatically while typing by @bsythegreat in &lt;a href="https://github.com/tisfeng/Easydict/pull/1205"&gt;https://github.com/tisfeng/Easydict/pull/1205&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(selection): disable automatic text capture in screen-mirroring apps by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1255"&gt;https://github.com/tisfeng/Easydict/pull/1255&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(settings): support adding and removing services from the service list by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1207"&gt;https://github.com/tisfeng/Easydict/pull/1207&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(query): reduce WebView resource churn in query results by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1225"&gt;https://github.com/tisfeng/Easydict/pull/1225&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(settings): resolve macOS 27 sidebar and title bar layout conflicts by @itzLan1126 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1258"&gt;https://github.com/tisfeng/Easydict/pull/1258&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(history): include translations in history and favorites exports by @ZhangDaniel942 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1220"&gt;https://github.com/tisfeng/Easydict/pull/1220&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;docs: recommend a tool for recurring permission prompts during local development by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1210"&gt;https://github.com/tisfeng/Easydict/pull/1210&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;docs(agents): complete the Agent documentation restructure by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1264"&gt;https://github.com/tisfeng/Easydict/pull/1264&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(signing): read the Team ID from the certificate OU by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1265"&gt;https://github.com/tisfeng/Easydict/pull/1265&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(readme): repair the broken Star History chart by @Dessalines39394 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1267"&gt;https://github.com/tisfeng/Easydict/pull/1267&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(star-history): generate Star History as a repository-owned artifact by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1268"&gt;https://github.com/tisfeng/Easydict/pull/1268&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;chore(star-history): update generated assets by @github-actions[bot] in &lt;a href="https://github.com/tisfeng/Easydict/pull/1272"&gt;https://github.com/tisfeng/Easydict/pull/1272&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(deepl): migrate web translation to the oneshot endpoint by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1271"&gt;https://github.com/tisfeng/Easydict/pull/1271&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(app): disable the macOS 26 Tahoe AutoFill heuristics helper by @mrasong in &lt;a href="https://github.com/tisfeng/Easydict/pull/1269"&gt;https://github.com/tisfeng/Easydict/pull/1269&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;New Contributors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;@leozanee made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1161"&gt;https://github.com/tisfeng/Easydict/pull/1161&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@sonhyrd made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1211"&gt;https://github.com/tisfeng/Easydict/pull/1211&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@syrupfresh made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1202"&gt;https://github.com/tisfeng/Easydict/pull/1202&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@terorero made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1138"&gt;https://github.com/tisfeng/Easydict/pull/1138&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@ct-jyjntc made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1221"&gt;https://github.com/tisfeng/Easydict/pull/1221&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@itzLan1126 made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1258"&gt;https://github.com/tisfeng/Easydict/pull/1258&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@ZhangDaniel942 made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1220"&gt;https://github.com/tisfeng/Easydict/pull/1220&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@Dessalines39394 made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1267"&gt;https://github.com/tisfeng/Easydict/pull/1267&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@github-actions[bot] made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1272"&gt;https://github.com/tisfeng/Easydict/pull/1272&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@mrasong made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1269"&gt;https://github.com/tisfeng/Easydict/pull/1269&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/tisfeng/Easydict/compare/2.21.0...2.22.0"&gt;https://github.com/tisfeng/Easydict/compare/2.21.0...2.22.0&lt;/a&gt;&lt;/p&gt;</description>
             <sparkle:channel>beta</sparkle:channel>
             <sparkle:version>65</sparkle:version>
             <sparkle:shortVersionString>2.22.0</sparkle:shortVersionString>
-            <sparkle:releaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.22.0</sparkle:releaseNotesLink>
+            <sparkle:fullReleaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.22.0</sparkle:fullReleaseNotesLink>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.22.0/Easydict.zip" length="32390052" type="application/octet-stream" sparkle:edSignature="NYS+EVIOcpcN1rUFoCIi7yu+tbzv1cxXy6raQeY9GzEWTz9uW0tuvURtaxMiFBrxhDS0KYa5Wgt82XEqK81XAQ==" />
         </item>

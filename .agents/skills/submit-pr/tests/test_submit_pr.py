@@ -406,6 +406,8 @@ class WorkflowIntegrationTests(unittest.TestCase):
                     state_path.write_text(json.dumps(state))
                     print(pr["url"])
                 elif args[:2] == ["pr", "view"]:
+                    state["pr"]["headRefOid"] = os.environ["FAKE_HEAD_SHA"]
+                    state_path.write_text(json.dumps(state))
                     print(json.dumps(state["pr"]))
                 else:
                     print(f"unexpected fake gh command: {args}", file=sys.stderr)
@@ -524,6 +526,50 @@ class WorkflowIntegrationTests(unittest.TestCase):
         self.assertEqual(second["pr_action"], "reused")
         self.assertEqual(state["create_count"], 1)
 
+    def test_apply_fast_forwards_existing_pr_after_new_local_commit(self) -> None:
+        first_environment = self.environment()
+        first = json.loads(
+            run(self.command("apply"), cwd=self.repo, env=first_environment).stdout
+        )
+        self.assertEqual(first["pr_action"], "created")
+
+        (self.repo / "follow-up.txt").write_text("follow-up\n", encoding="utf-8")
+        run(["git", "add", "follow-up.txt"], cwd=self.repo)
+        run(
+            [
+                "git",
+                "-c",
+                "commit.gpgsign=false",
+                "commit",
+                "-m",
+                "fix(cli): refine PR submission",
+            ],
+            cwd=self.repo,
+        )
+        self.head_sha = run(["git", "rev-parse", "HEAD"], cwd=self.repo).stdout.strip()
+
+        second = json.loads(
+            run(self.command("apply"), cwd=self.repo, env=self.environment()).stdout
+        )
+
+        self.assertEqual(second["push_action"], "updated")
+        self.assertEqual(second["pr_action"], "reused")
+        self.assertEqual(second["branch_action"], "updated")
+        state = json.loads(self.state_path.read_text(encoding="utf-8"))
+        self.assertEqual(state["create_count"], 1)
+        self.assertEqual(state["pr"]["headRefOid"], self.head_sha)
+        remote_head = run(
+            [
+                "git",
+                "--git-dir",
+                str(self.base_remote),
+                "rev-parse",
+                "refs/heads/feat/deterministic-pr-submission",
+            ],
+            cwd=self.root,
+        ).stdout.strip()
+        self.assertEqual(remote_head, self.head_sha)
+
     def test_apply_discovers_fork_push_remote(self) -> None:
         run(
             ["git", "remote", "add", "fork", "git@github.com:contrib/project.git"],
@@ -585,6 +631,45 @@ class WorkflowIntegrationTests(unittest.TestCase):
             cwd=self.root,
         ).stdout.strip()
         self.assertEqual(remote_head, self.head_sha)
+
+    def test_apply_rejects_multiple_push_urls_before_remote_writes(self) -> None:
+        run(
+            [
+                "git",
+                "remote",
+                "set-url",
+                "--add",
+                "--push",
+                "upstream",
+                "git@github.com:acme/project.git",
+            ],
+            cwd=self.repo,
+        )
+        run(
+            [
+                "git",
+                "remote",
+                "set-url",
+                "--add",
+                "--push",
+                "upstream",
+                "git@github.com:contrib/project.git",
+            ],
+            cwd=self.repo,
+        )
+
+        result = subprocess.run(
+            self.command("apply"),
+            cwd=self.repo,
+            env=self.environment(),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("multiple push URLs", result.stderr)
+        self.assertNotIn("pr", json.loads(self.state_path.read_text(encoding="utf-8")))
 
     def test_apply_rejects_dirty_worktree_before_remote_writes(self) -> None:
         (self.repo / "feature.txt").write_text("dirty\n", encoding="utf-8")

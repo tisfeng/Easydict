@@ -85,7 +85,7 @@ Codex 会按照适用的 [`AGENTS.md`](AGENTS.md) 规则提供额外审查；也
 ## 详细文档
 
 - [开发者构建指南](docs/user-docs/zh/GUIDE.md#开发者构建)
-- [架构与源码定位](docs/architecture/overview.md)
+- [架构与源码定位](docs/design-docs/application-architecture.md)
 - [构建与测试](docs/agents/build-and-test.md)
 - [开发规则（代码质量、Swift/Xcode 与本地化）](docs/agents/development.md)
 - [Agent 开发入口](AGENTS.md)

@@ -6,8 +6,7 @@
 ## 文档分层
 
 - `docs/agents/`：当前有效的 Agent 和贡献者工作流规则。
-- `docs/architecture/`：当前实现边界和流程。
-- `docs/design-docs/`：需要长期维护的重要设计决策。
+- `docs/design-docs/`：产品与技术设计，以及需要长期维护的设计决策。
 - `docs/user-docs/`：公开的英文和中文文档。
 - `docs/exec-plans/`：获准 implementation 的多步骤工作计划。
 - `docs/histories/`：最终产生仓库文件差异的 implementation 记录。
@@ -49,7 +48,7 @@
 ### 资产分类
 
 以下内容由 `skills-lock.json` 或 `.codex/agents-lock.json` 管理，当前统一基线为
-`tisfeng/skills v0.3.0`：
+`tisfeng/skills v0.3.2`：
 
 - Skills：`code-simplifier`、`git-commit`、`review`、`review-pr`、`submit-pr`、
   `worktree-rebase-merge`。

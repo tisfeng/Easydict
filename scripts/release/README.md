@@ -14,14 +14,16 @@ Easydict 的发布流程由 `asc workflow` 编排。该工作流将构建、公�
 3. 从本地 `dev` 提交创建 detached 临时 worktree，并在其中将 `origin/dev` fast-forward 或合并到本地 `dev` 源；冲突时暂停并保留该临时 worktree。
 4. 记录同步后的源提交，并从该提交创建隔离的 `release/sync-<version>` worktree。
 5. 将同步时的 `origin/main` 提交合并到该 worktree。
-6. 基于合并后的结果构建并验证。
+6. 验证并冻结 `changelog/<version>.md`，再基于合并后的结果构建，并从该文件生成
+   Sparkle description。
 7. Draft 阶段只将 `release/sync-<version>` 和带注释的版本 Tag 原子推送到远程，
    不修改 `origin/dev` 或 `origin/main`。
 8. Publish 前在第二个隔离 worktree 中，将最新本地 `dev`、`origin/dev` 和版本提交
    合并起来；如果冲突，在 GitHub Release 公开前停止。
 9. GitHub Release 公开并安装 appcast 后，将 appcast 提交合并到上述集成结果，安全更新
    本地 `dev`，再使用 lease 原子更新 `origin/dev`、`origin/main` 和临时发布分支。
-10. 远程验证全部通过后，删除远程 `release/sync-<version>`。
+10. 远程验证 GitHub 正文、公开 appcast 和冻结 changelog 一致后，删除远程
+    `release/sync-<version>`。
 
 这样可以保留本地 `dev` 上尚未推送的提交，同时吸收远程 `dev` 的更新；也可以找回误合并到 `main`、
 但尚未进入 `dev` 的更改。Draft 不会污染远程主分支。Publish 使用 merge 保留版本提交、appcast 提交和
@@ -42,12 +44,14 @@ Easydict 的发布流程由 `asc workflow` 编排。该工作流将构建、公�
 - [`create-dmg`](https://github.com/sindresorhus/create-dmg)。
 - GitHub CLI（`gh`）。
 - Sparkle 的 `generate_appcast` 工具，以及保存在 Keychain 中的 `ed25519` 密钥。
+- `scripts/release/requirements.txt` 中固定版本的 Python Markdown 渲染器。
 
 工作流要求为 `asc` 配置 App Store Connect API 认证，并通过以下命令验证：
 
 ```bash
 asc auth status --validate
 gh auth status
+python3 -m pip install -r scripts/release/requirements.txt
 ```
 
 默认情况下，工作流会先从 `PATH` 中查找 `generate_appcast`，然后查找 Sparkle 的 Xcode 包产物。
@@ -56,7 +60,19 @@ Keychain 或工具自身的凭据存储中，不会写入仓库或发布元数�
 
 ## 一条命令发布
 
-在仓库根目录执行：
+先在仓库根目录创建或编辑 `changelog/<version>.md`，检查内容后将其提交到本地 `dev`：
+
+```bash
+python3 scripts/release/release_notes.py validate \
+  --file changelog/2.22.0.md \
+  --version 2.22.0
+```
+
+这个文件是 GitHub Release 正文和 Sparkle 应用内更新日志的唯一 Markdown 来源。GitHub
+Release 标题不写入文件。发布开始后，工作流会冻结正文和渲染结果的 SHA-256；继续执行或
+恢复时如果文件发生变化会停止，避免 GitHub、appcast 和本地文件分别使用不同内容。
+
+准备好 changelog 后执行：
 
 ```bash
 ./scripts/release/release-easydict.sh release 2.22.0
@@ -68,11 +84,10 @@ Keychain 或工具自身的凭据存储中，不会写入仓库或发布元数�
 ./scripts/release/release-easydict.sh release 2.22.0 --channel stable
 ```
 
-可以指定发布说明文件和构建号：
+可以指定构建号：
 
 ```bash
 ./scripts/release/release-easydict.sh release 2.22.0 \
-    --notes /absolute/path/release-notes.md \
     --build-number 64
 ```
 
@@ -170,7 +185,7 @@ run ID：
 
 `release` 工作流按以下顺序执行检查点：
 
-1. 验证工具、凭据、证书、Sparkle 密钥、发布说明和配置。
+1. 验证工具、凭据、证书、Sparkle 密钥、已提交的版本 changelog 和配置。
 2. 将同步后的本地 `dev` 和远程 `main` 合并到隔离的 worktree。
 3. 更新并提交 Xcode 的 marketing version 和 build version。
 4. 使用 `asc xcode archive` 归档，并使用 `xcodebuild` 导出。
@@ -199,17 +214,22 @@ run ID：
 - `release-build.sh`：版本更新、归档和导出阶段。
 - `release-package.sh`：公证、ZIP、DMG 和校验和阶段。
 - `release-appcast.sh` / `release-appcast.py`：Sparkle 生成和严格的 feed 验证。
-- `tests/test_release_appcast.py`：beta 轮换和旧条目保护的行为测试。
+- `release_notes.py`：changelog 校验、快照、确定性 Markdown 渲染和 GitHub 正文比对。
+- `requirements.txt`：固定 Python Markdown 渲染器版本。
+- `tests/test_release_appcast.py` / `tests/test_release_notes.py`：正文渲染、beta 轮换、
+  漂移检测和旧条目保护的行为测试。
 - `release-github.sh`：幂等的 Draft Release/正式发布和资产验证。
 - `release-verify.sh`：本地产物和最终远程状态验证。
 - `export-options.plist`：Developer ID 导出配置。
 
-仓库和团队默认值可以通过 `release-common.sh` 中的环境变量覆盖，但正常的 Easydict 发布除了版本号、频道和发布说明外，
+仓库和团队默认值可以通过 `release-common.sh` 中的环境变量覆盖，但正常的 Easydict 发布除了版本号和频道外，
 通常不需要其他参数。
 
 ## 失败行为
 
 - 当前 checkout 中的发布脚本有未提交修改：暂停，避免使用不可复现的发布工具。
+- `changelog/<version>.md` 缺失、格式无效、渲染器版本不匹配、冻结后漂移或与 GitHub
+  Release 正文不一致：暂停并保留现有 Draft/发布状态。
 - detached dev 同步 worktree 发生合并冲突：暂停并保留临时 worktree，当前 checkout 不受影响。
 - release worktree 有脏文件：暂停，并保留现场供检查。
 - 发布源中的 `dev`/`main` 合并冲突：在版本更新或 Draft 推送前暂停。

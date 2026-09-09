@@ -98,8 +98,9 @@ python3 "<submit-pr-skill-dir>/scripts/submit_pr.py" plan \
   独立任务分支，但不切换当前 checkout、不移动当前分支，也不 push base。
 - 不 force push，不执行 rebase、merge、reset、stash、branch delete 或 remote delete。
 - 不自动添加 reviewer、label、milestone、project，不 merge PR，不评论或关闭 Issue。
-- 相同 base/head 已有开放 PR 时只复用并验证；title、body、Draft、head SHA 或 repository
-  身份不一致时停止，不覆盖维护者修改。
+- 相同 base/head 已有开放 PR 时，先验证 title、body、Draft、分支和 repository 身份；远程
+  head 与计划提交相同则复用，是计划提交的祖先则普通快进推送，领先或分叉时停止。推送后再
+  验证 head SHA 和完整 PR 状态，不覆盖维护者修改。
 - `plan` 不产生本地或远程写入。`apply` 的仓库写入仅限必要 fetch、本地任务分支 ref 和
   显式 head remote push；PR 正文临时文件写入系统临时目录并在创建后移除。
 

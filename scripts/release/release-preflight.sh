@@ -36,7 +36,7 @@ validate_synced_tooling() {
     local source_tree release_tree tooling_path
 
     load_release_source_metadata
-    for tooling_path in scripts/release; do
+    for tooling_path in scripts/release changelog; do
         source_tree="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
             "$RELEASE_SOURCE_COMMIT:$tooling_path")"
         release_tree="$(git -C "$RELEASE_WORKTREE" rev-parse \
@@ -99,10 +99,6 @@ validate_environment() {
     [[ -n "$(git -C "$RELEASE_SOURCE_ROOT" config user.email)" ]] \
         || release_fail "git user.email is not configured"
 
-    if [[ -n "$RELEASE_NOTES_FILE" ]]; then
-        require_release_file "$RELEASE_NOTES_FILE"
-    fi
-
     validate_create_dmg
     validate_release_tooling
     validate_signing_identity
@@ -121,7 +117,9 @@ validate_release() {
 
     require_release_worktree
     require_release_file "$RELEASE_WORKTREE/appcast.xml"
+    require_release_file "$RELEASE_NOTES_FILE"
     validate_synced_tooling
+    snapshot_release_notes
 
     latest_version="$(xmllint --xpath \
         'string((//*[local-name()="shortVersionString"])[1])' \
@@ -186,6 +184,7 @@ validate_release() {
 validate_publish() {
     require_release_worktree
     load_release_metadata
+    verify_release_notes_snapshot
     require_release_file "$RELEASE_ZIP_PATH"
     require_release_file "$RELEASE_DMG_PATH"
     require_release_file "$RELEASE_CHECKSUM_PATH"

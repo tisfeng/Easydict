@@ -5,7 +5,8 @@ description: 根据已暂存内容创建 Angular-style 提交，并为调用方�
 
 # Git 提交流程
 
-仅根据已暂存变更创建准确的 Angular-style Git 提交。
+根据经过范围校验的暂存变更创建准确的 Angular-style Git 提交。显式交付可按下述决策创建一次
+暂存快照；提交信息与最终提交始终只以 staged raw patch 为准。
 
 下文的 `<git-commit-skill-dir>` 表示当前加载的 `git-commit/SKILL.md` 所在目录。
 运行随 skill 分发的脚本时，先解析该实际目录；不要假设 skill 安装在某个固定的
@@ -17,15 +18,16 @@ Agent 或项目路径中。
    - `git status`
    - staged raw patch:
      `GIT_PAGER=cat git --no-pager diff --staged --no-ext-diff --no-textconv --unified=5`
+   - unstaged raw patch:
+     `GIT_PAGER=cat git --no-pager diff --no-ext-diff --no-textconv --unified=5`
+   - untracked paths: `git ls-files --others --exclude-standard`
    - `git branch --show-current`
    - `git log --oneline -10`
-2. 在显式 `/git commit` 交付模式下，如果初始暂存 diff 为空且用户未限定路径或禁止
-   暂存，只运行一次 `git add .`，再重新运行 `git status` 和暂存区原始 patch 命令。
-   用户限定路径且允许暂存时只暂存指定路径；禁止暂存或仅要求提交已有暂存内容时，
-   报告无可提交内容，不扩大范围。
-3. 如果已经存在已暂存变更，不运行 `git add`；提交范围仅限当前暂存内容。
-   当前 staged 内容超出用户指定范围时，保留索引并报告范围冲突，不自动重写暂存边界。
-4. 如果唯一允许的一次 `git add .` 后暂存 diff 仍为空，则停止并要求用户先暂存文件。
+2. 根据 **暂存决策** 冻结唯一可用的暂存策略，再执行该策略并重新运行 `git status` 和
+   staged raw patch 命令。
+3. 如果暂存后的路径或 raw patch 与冻结候选不一致，停止并保留索引；不得通过第二次
+   `git add` 修正范围。
+4. 如果唯一允许的一次暂存后 staged diff 仍为空，则停止，不创建空提交。
 5. 将暂存区原始 patch 作为唯一事实来源进行分析。针对单个路径时复用同一命令形式，
    并追加 `-- <path>`。
 6. 先起草英文提交信息；仅当 `{USR_PREFERRED_LANGUAGE}` 不是英语时，再起草含义一致的
@@ -42,6 +44,24 @@ Agent 或项目路径中。
    - 只有提交后校验成功后，才删除 `commit_message.txt`。
 9. 提交成功后遵循 **Post-Commit Report**。在向用户展示该报告之前，即使 Git 命令
    成功但提交后校验失败，也不算完成交付。
+
+## 暂存决策
+
+执行者只能选择以下一种策略；预检冻结策略、候选路径和相应 raw patch 后，写入阶段必须重新
+读取并完全匹配。`worktree-rebase-merge` 在创建源提交时复用本节，不另设空索引停止规则。
+
+- **existing-index**：初始索引非空时，不运行 `git add`；只复验既有 staged paths 与 staged raw
+  patch。若它超出用户范围，保留索引并报告冲突。
+- **explicit-paths**：用户明确调用 `git-commit` 或 `worktree-rebase-merge`，初始索引为空且限定
+  路径、并允许暂存时，只运行一次 `git add -- <selected-paths>`。
+- **explicit-worktree-once**：用户明确调用上述任一交付工作流，初始索引为空、未限定路径，且未
+  禁止暂存或要求 staged-only 时，只运行一次 `git add .`。预检必须先冻结完整未暂存 raw patch、
+  任务相关未跟踪文件摘要和候选路径；暂存后 staged paths 与 staged raw patch 必须与该快照一致。
+- **auto-exact**：仓库规则授权的 `auto-local-commit` 只运行一次
+  `git add -- <expected_commit_paths>`，并要求最终 staged paths 与该冻结集合完全相等；绝不使用
+  `git add .`。
+- 禁止暂存、仅要求提交已有 staged 内容、策略无法确定、候选内容漂移或存在冲突时，不暂存并进入
+  protected。
 
 ## 经仓库规则授权的自动交付
 
