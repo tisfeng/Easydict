@@ -131,9 +131,9 @@ struct ResponsesSSEBuffer {
             if lineData.last == 0x0D {
                 lineData = lineData.dropLast()
             }
-            if let line = String(data: Data(lineData), encoding: .utf8) {
-                lines.append(line)
-            }
+            // Lossy decode to match `URLSession.AsyncBytes.lines` semantics:
+            // corrupted bytes become U+FFFD instead of dropping the line.
+            lines.append(String(decoding: Data(lineData), as: UTF8.self))
         }
         return lines
     }
@@ -256,6 +256,14 @@ extension BaseOpenAIService {
                     .serializingData(automaticallyCancelling: true)
                     .response
                     try Task.checkCancellation()
+                    if let afError = response.error {
+                        if case let .sessionTaskFailed(error) = afError,
+                           let urlError = error as? URLError,
+                           urlError.code == .cancelled {
+                            throw CancellationError()
+                        }
+                        throw afError
+                    }
                     try throwIfResponsesError(
                         data: response.data ?? Data(),
                         statusCode: response.response?.statusCode

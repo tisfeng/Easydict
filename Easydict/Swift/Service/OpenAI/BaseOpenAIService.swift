@@ -46,6 +46,13 @@ public class BaseOpenAIService: StreamService {
         true
     }
 
+    /// Reference to the in-flight non-streaming task so `cancelStream()` can cancel it.
+    /// Internal so the Responses transport in ResponsesAPI.swift shares the same slot.
+    var nonStreamingTask: Task<(), Never>?
+
+    /// Reference to the in-flight Responses streaming task so `cancelStream()` can cancel it.
+    var responsesStreamingTask: Task<(), Never>?
+
     override func contentStreamTranslate(
         _ text: String,
         from: Language,
@@ -238,13 +245,6 @@ public class BaseOpenAIService: StreamService {
 
     /// Temporary override for streaming during validate retry. `nil` means use the persisted value.
     private var streamingOverride: Bool?
-
-    /// Reference to the in-flight non-streaming task so `cancelStream()` can cancel it.
-    /// Internal so the Responses transport in ResponsesAPI.swift shares the same slot.
-    var nonStreamingTask: Task<(), Never>?
-
-    /// Reference to the in-flight Responses streaming task so `cancelStream()` can cancel it.
-    var responsesStreamingTask: Task<(), Never>?
 
     private let streamTaskControl = OpenAIStreamTaskControl()
 
