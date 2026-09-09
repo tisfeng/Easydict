@@ -58,6 +58,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeClaudeCode;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeClaude;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeCodexCLI;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeMDict;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeOrcaRouter;
 
 FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
 FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;

@@ -60,7 +60,7 @@
 - [x] Support system TTS, along with online services from Bing, Google, Youdao and Baidu Cloud.
 - [x] Support [🍎 Apple System Dictionary](./How-to-use-macOS-system-dictionary-in-Easydict.md), support third-party dictionaries with manual mdict dictionaries import functionalities.
 - [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](./How-to-use-macOS-system-translation-in-Easydict.md)_)
-- [x] Support Youdao Dictionary, DeepL, OpenAI, Gemini, DeepSeek, Google, Tencent, Bing, Baidu, Niutrans, Lingocloud, Ali, Volcano and Doubao Translate.
+- [x] Support Youdao Dictionary, DeepL, OpenAI, Gemini, DeepSeek, Google, Tencent, Bing, Baidu, Niutrans, Lingocloud, Ali, Volcano, OrcaRouter and Doubao Translate.
 - [x] Support for 48 languages.
 
 ## Installation Guide
