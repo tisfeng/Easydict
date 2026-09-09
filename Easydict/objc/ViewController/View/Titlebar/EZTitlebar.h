@@ -30,6 +30,7 @@ typedef void(^EZTitlebarQuickActionBlock)(EZTitlebarQuickAction);
 @property (nonatomic, strong) EZOpenLinkButton *appleDictionaryButton;
 
 @property (nonatomic, strong) EZOpenLinkButton *quickActionButton;
+@property (nonatomic, strong) EZOpenLinkButton *screenshotOCRButton;
 
 @property (nonatomic, copy) EZTitlebarQuickActionBlock menuActionBlock;
 
