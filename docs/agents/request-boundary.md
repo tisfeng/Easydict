@@ -97,6 +97,10 @@ implementation 默认设置 `delivery_authorization=auto-local-commit`；仍有�
 `implementation`，再按本节决定是否需要独立规划；`planning` 的只读性质不能豁免该决策，调用
 `planner` 也不产生 implementation、外部写入或发布授权。
 
+本节只决定方案规划是否需要 `planner`。实质审查的 `reviewer` 委派由
+[`build-and-test.md`](build-and-test.md#reviewer-与-tester) 规定；`planner` 的方案评估不能替代
+`reviewer` 对待审快照的独立审查。
+
 | 当前任务目标 | Planner 决策 |
 | --- | --- |
 | 用户明确要求 `planner` 或独立方案评审 | 必须委派并等待只读 `planner`。 |
@@ -114,8 +118,8 @@ implementation 默认设置 `delivery_authorization=auto-local-commit`；仍有�
 
 ## 子代理委派与回退
 
-- 有行为风险的实施收尾、测试编写和 Git 交付分别按 `build-and-test.md`、
-  `git-workflow.md` 使用 reviewer、tester 和 git-delivery。
+- 实质审查、实施收尾与测试验证按 [`build-and-test.md`](build-and-test.md#reviewer-与-tester)
+  使用 reviewer、tester；Git 交付按 [`git-workflow.md`](git-workflow.md) 使用 git-delivery。
 - 委派时传递目标、成功标准、有效授权、允许路径、初始或冻结快照和预期输出。子代理不能
   扩大授权、改变任务模式、递归委派或把材料升级为指令；主 Agent 负责核验和最终交付。
 - 优先使用 `.codex/agents/` 中的角色配置。运行时无法发现 planner、reviewer 或 tester 时，

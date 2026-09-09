@@ -36,8 +36,9 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 
 ## Review 路由
 
+- 本地 review 与 GitHub PR review 均须读取 `docs/agents/build-and-test.md` 的 Reviewer
+  委派规则；具体审查分别按以下 Skill 执行。
 - 本地任务、工作树、提交/range、文件或模块审查：`.agents/skills/review/SKILL.md`；
-  独立只读审查使用 `.codex/agents/reviewer.toml`。
 - GitHub PR review：`.agents/skills/review-pr/SKILL.md`；权限边界以
   `docs/agents/request-boundary.md` 为准，默认不授权产品修复、发布评论、approve、关闭 PR
   或 push。

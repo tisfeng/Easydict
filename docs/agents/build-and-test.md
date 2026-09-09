@@ -26,8 +26,16 @@
 
 ## Reviewer 与 Tester
 
-- 有行为风险的 implementation 优先使用只读 `reviewer`；需要编写测试或复杂独立验证时使用
-  `tester`。简单文档、低风险配置或小改动由主 Agent 完成必要检查。
+- 主 Agent 执行实质代码、配置或文档审查时，必须委派只读 `reviewer` 并等待结果，包括本地
+  任务变更、工作树、提交/range、文件、模块、GitHub PR 和复审；调用 `review` 或 `review-pr`
+  执行审查同样适用。仅查询 CI、列举线程、解释已有报告或讨论审查流程，不因涉及 review
+  字样触发本规则。
+- 委派使用 `.codex/agents/reviewer.toml`。主 Agent 冻结待审快照并传递基线、范围和必要上下文；
+  PR 的准备、远程线程操作、CI 获取和最终刷新由主 Agent 编排，reviewer 返回绑定该快照的审查
+  结果。影响结论的代码或上下文变化后，委派 reviewer 增量复核，确保结论覆盖最终快照。
+- 未进入上述实质审查流程时，简单文档、低风险配置或小改动的 implementation 可由主 Agent
+  完成必要检查；有行为风险的 implementation 优先使用只读 `reviewer`。需要编写测试或复杂
+  独立验证时使用 `tester`。
 - 生产实现与测试可独立推进时可以分工；Git index 和本地交付始终串行。
 - 除请求边界规定的通用输入外，委派 tester 时补充行为预期和验证范围。reviewer 只读；tester
   只修改明确分配的测试与 fixture，不修改生产代码、工程配置或 history，也不执行 stage、
@@ -37,6 +45,8 @@
   按风险增量复核，最终采用的审查和验证必须覆盖最终快照。
 - 尚未解决且经核实的阻塞问题、失败验证或必要证据缺失时不能声称完成或自动提交。无法委派时按
   [`request-boundary.md`](request-boundary.md#子代理委派与回退) 回退并说明独立性缺失。
+- 必需的 reviewer 未返回时，不得宣称独立审查或本轮必需审查已完成；无法委派时明确标注
+  “未完成独立 reviewer 复核”。
 - 单独 review 默认只读；上述收尾规则不把 review、planning 或 staged 提交升级为修复任务。
 
 ## 运行 Xcode 验证的条件
