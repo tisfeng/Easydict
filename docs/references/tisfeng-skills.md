@@ -41,8 +41,8 @@ Skills lock 记录 tag、入口路径和内容哈希；agents lock 额外记录�
 `submit-pr v0.3.2` 使用 `zip(..., strict=True)`，需要 Python 3.10 或更高版本。2026-09-08
 对 v0.3.0 的核验中，Easydict 默认 `/usr/bin/python3` 3.9.6 会在相关测试中失败，改用 Python
 3.14.6 后 21 项测试全部通过。2026-09-09 升级至 v0.3.2 后，Python 3.14.6 运行 23 项
-`submit-pr` 测试全部通过。现行解释器选择规则写在
-[`git-workflow.md`](../agents/git-workflow.md)，不通过本地修改受管脚本绕过该边界。
+`submit-pr` 测试全部通过。以上是对应版本的核验记录；执行时遵循已安装 Skill 的要求，
+不通过本地修改受管脚本绕过依赖要求。
 
 ## 重新核对条件
 

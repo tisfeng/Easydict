@@ -1,6 +1,6 @@
 # Git 交付策略
 
-本文只规定 Easydict 的 Git 交付授权、项目门禁、委派和 PR 参数。任务授权、首次快照及
+本文只规定 Easydict 的 Git 交付授权、项目门禁、委派和提交 PR 约定。任务授权、首次快照及
 `protected` 状态以 [`request-boundary.md`](request-boundary.md) 为准，plan/history 生命周期以
 [`README.md`](README.md) 为准；暂存、提交、集成和回执的执行算法以受管 Skill 为准。
 
@@ -8,9 +8,9 @@
 
 - 保留用户已有的 staged、unstaged、untracked 和提交历史；没有对应授权时，不暂存、提交、
   创建分支、集成或推送，明确禁止优先。
-- `implementation` 默认允许满足门禁后的 `auto-local-commit`，但不扩展为 fetch、pull、push、
-  rebase、merge、reset、stash 或 clean。PR、integration 和发布只执行用户已授权且对应 Skill
-  明示的 Git 操作。
+- 交付授权按 [`request-boundary.md`](request-boundary.md#语义判定与任务状态) 确定；
+  各工作流只执行用户已授权且对应 Skill 明示的 Git 操作。自动本地提交不要求新建分支；
+  创建 PR 时使用任务分支。
 - 自动本地提交还必须存在最终差异、满足同任务 history 要求，并有覆盖最终快照的必要审查和验证。
   主 Agent 冻结 `expected_commit_paths` 时，必须逐项覆盖本任务全部 Agent-owned 改动，不遗漏、
   不混入用户已有或允许范围外的路径；实际暂存与一次提交由

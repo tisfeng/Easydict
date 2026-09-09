@@ -8,9 +8,9 @@ You can install Xcode from the [Mac App Store](https://apps.apple.com/app/xcode/
 3. Open the project and build it, detailed instructions on how to build the project can be found [here](../../../README.md#developer-build).
 ### Adding your language to String Catalog
 Now you can start to add your own language!
-1. Navigate to `Easydict -> Easydict -> App -> Localizable.xcstrings`. Also Expand `Main.storyboard` to find `Main.xcstrings (Strings)`. These two `.xcstrings` files are what you are going to work on.
+1. Navigate to `Easydict -> Easydict -> App -> Localizable.xcstrings`. This catalog contains the main app strings. Also open `Easydict/App/InfoPlist.xcstrings` for app metadata and permission descriptions.
 2. Click on the `Localizable.xcstrings` file and click the `+` button to find a list of available options. If you don't see the language you want to localize on the list (e.g. Canadian English). Scroll all the way down to the bottom of the menu to find `More Languages`.
-3. After you add a language, you can start translating. Don't forget to translate the strings in `Main.xcstring (Strings)`😉
+3. After you add a language, you can start translating. Add the same language to `InfoPlist.xcstrings` and translate its strings as well.
 ### Previewing your translations
 After you are done with your translations, it's nice to run the app and go over your work. You can set the app language to the one that you did with a simple few clicks.
 1. Find Easydict's icon on the top toolbar of Xcode and click on it

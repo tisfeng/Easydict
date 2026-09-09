@@ -32,13 +32,13 @@
   或工具放入 `EasydictTests/Support/<Domain>/`，资源放入对应测试资源目录。
 - 拆分测试时保留标签、actor 隔离、共享状态恢复和串行执行边界。独立 suite 的
   `.serialized` 不提供跨 suite 串行保证。
-- 新增或移动测试文件时同步 Xcode group 和测试 target 的 Sources 引用。现有目录按任务范围
-  渐进调整。
+- 测试文件的工程引用同步见下节；现有目录按任务范围渐进调整。
 
 ## 工程文件与资源
 
-新增或移动由 Xcode 管理的源码文件或运行时资源时，更新
-`Easydict.xcodeproj/project.pbxproj`，使文件出现在 Xcode navigator 中。仓库治理 Markdown、
+新增、移动或删除由 Xcode 管理的源码文件或运行时资源时，同步
+`Easydict.xcodeproj/project.pbxproj` 中的 group、文件和 build phase 引用；测试文件同时同步
+测试 target 的 Sources，删除文件不保留悬空引用。仓库治理 Markdown、
 计划、history、skill、参考资料和 `docs/` 下的公共 Markdown 不需要工程引用；除非文档作为
 运行时资源发布，否则不加入 build phase。
 
@@ -60,7 +60,8 @@
 
 - Swift、Objective-C 或其他由 Xcode 编译的应用源码发生超过 100 行实质性变更；文档、脚本、
   注释和工程元数据不计入阈值。
-- 新增或修改 `EasydictTests/**/*.swift` 下的测试源码。
+- 新增、修改或删除 `EasydictTests/**/*.swift` 下的测试源码，或调整测试 target 引用；
+  执行相关构建或定向测试。
 - 用户明确要求构建或测试。
 
 以上是默认最低要求，不是风险判断的上限。少量高风险源码、工程配置或依赖修改也应选择

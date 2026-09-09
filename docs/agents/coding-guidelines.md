@@ -27,6 +27,12 @@
 - 注释简洁并随行为更新；可行时每行不超过 80 个字符，使用对应语言的常规文档风格。
 - 源码文件头使用当前 Git 用户名，不使用 Agent 名称。
 
+## 语言与迁移
+
+- 新功能优先使用 Swift/SwiftUI；现有 AppKit 或 Objective-C 集成需要时沿用对应边界。
+- 现有 Objective-C 允许必要的 bug 修复，不要求为局部修复先迁移。迁移只在任务范围内进行。
+- Swift 迁移进度见 [`swift-migration.md`](../exec-plans/active/swift-migration.md)。
+
 ## Swift 实践
 
 ### Swift 组织与实践
