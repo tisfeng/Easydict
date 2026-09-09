@@ -258,11 +258,7 @@
 		0396D615292CC4C3006A11D9 /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396D613292CC4C3006A11D9 /* LocalStorage.swift */; };
 		0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */; };
 		A20908010000000000000001 /* OpenAIStreamTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20908010000000000000002 /* OpenAIStreamTransport.swift */; };
-		A20908020000000000000001 /* OpenAIStreamResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20908020000000000000011 /* OpenAIStreamResultTests.swift */; };
-		A20908020000000000000002 /* OpenAIStreamTransportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20908020000000000000012 /* OpenAIStreamTransportTests.swift */; };
-		A20908020000000000000003 /* OpenAIReasoningEffortTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20908020000000000000013 /* OpenAIReasoningEffortTests.swift */; };
 		A20908020000000000000004 /* OpenAIStreamTaskControlTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20908020000000000000014 /* OpenAIStreamTaskControlTests.swift */; };
-		A20909020000000000000001 /* BaseOpenAIServiceStreamHookTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20909020000000000000011 /* BaseOpenAIServiceStreamHookTests.swift */; };
 		039785282CC678F400A49087 /* TranslationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039785242CC678F400A49087 /* TranslationManager.swift */; };
 		039785292CC678F400A49087 /* AppleTranslation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039785252CC678F400A49087 /* AppleTranslation.swift */; };
 		0397852A2CC678F400A49087 /* TranslationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039785262CC678F400A49087 /* TranslationView.swift */; };
@@ -919,11 +915,7 @@
 		0396D613292CC4C3006A11D9 /* LocalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorage.swift; sourceTree = "<group>"; };
 		0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOpenAIService.swift; sourceTree = "<group>"; };
 		A20908010000000000000002 /* OpenAIStreamTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIStreamTransport.swift; sourceTree = "<group>"; };
-		A20908020000000000000011 /* OpenAIStreamResultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIStreamResultTests.swift; sourceTree = "<group>"; };
-		A20908020000000000000012 /* OpenAIStreamTransportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIStreamTransportTests.swift; sourceTree = "<group>"; };
-		A20908020000000000000013 /* OpenAIReasoningEffortTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIReasoningEffortTests.swift; sourceTree = "<group>"; };
 		A20908020000000000000014 /* OpenAIStreamTaskControlTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIStreamTaskControlTests.swift; sourceTree = "<group>"; };
-		A20909020000000000000011 /* BaseOpenAIServiceStreamHookTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOpenAIServiceStreamHookTests.swift; sourceTree = "<group>"; };
 		039785242CC678F400A49087 /* TranslationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationManager.swift; sourceTree = "<group>"; };
 		039785252CC678F400A49087 /* AppleTranslation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleTranslation.swift; sourceTree = "<group>"; };
 		039785262CC678F400A49087 /* TranslationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationView.swift; sourceTree = "<group>"; };
@@ -2871,11 +2863,7 @@
 		A20908020000000000000021 /* OpenAI */ = {
 			isa = PBXGroup;
 			children = (
-				A20909020000000000000011 /* BaseOpenAIServiceStreamHookTests.swift */,
-				A20908020000000000000013 /* OpenAIReasoningEffortTests.swift */,
-				A20908020000000000000011 /* OpenAIStreamResultTests.swift */,
 				A20908020000000000000014 /* OpenAIStreamTaskControlTests.swift */,
-				A20908020000000000000012 /* OpenAIStreamTransportTests.swift */,
 			);
 			path = OpenAI;
 			sourceTree = "<group>";
@@ -4245,11 +4233,7 @@
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
 				A1C1A10130ABCDEF00112233 /* ClaudeSSEParserTests.swift in Sources */,
 				03C408F92EF5CB830025A1F0 /* ServiceTests.swift in Sources */,
-				A20908020000000000000003 /* OpenAIReasoningEffortTests.swift in Sources */,
-				A20908020000000000000001 /* OpenAIStreamResultTests.swift in Sources */,
 				A20908020000000000000004 /* OpenAIStreamTaskControlTests.swift in Sources */,
-				A20908020000000000000002 /* OpenAIStreamTransportTests.swift in Sources */,
-				A20909020000000000000001 /* BaseOpenAIServiceStreamHookTests.swift in Sources */,
 				0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */,
 				03A8846E2F12000100D5C0DE /* TaskTimeoutTests.swift in Sources */,
 				A1D1807E2F8D100100B1C0D1 /* ThrottleGateTests.swift in Sources */,
