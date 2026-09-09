@@ -66,6 +66,21 @@
     `plutil -lint` 和 `git diff --check` 通过。
 - 独立 reviewer 与 tester 均确认拆分前后测试语义和工程引用一致，无未解决 finding。
 
+## 后续兼容性修正
+
+2026-09-09 根据模型兼容性反馈，将通用 `StreamService` 的 SDK `reasoningEffort` 改为
+optional，并默认返回 `nil`。`BaseOpenAIService` 继续直接透传该值，使流式和非流式请求
+默认都省略 `reasoning_effort`，避免不支持字符串 `none` 的模型拒绝请求。
+
+- 子类仍可在确认提供方支持时显式返回 `.some(.none)`、`.some(.high)` 等值；测试明确
+  区分 `Optional.none` 与 SDK 的 `ChatQuery.ReasoningEffort.none`。
+- DeepSeek 的 `configuredReasoningEffort`、设置 UI 和自有请求模型保持原有语义。
+- 定向运行 `OpenAIReasoningEffortTests`：3 个测试通过，覆盖默认省略、显式 `none` 和显式
+  `high`；SwiftFormat、SwiftLint、Swift 解析与 `git diff --check` 通过。
+- 独立 reviewer 确认 SDK optional 编码、生产调用链和覆盖点符合目标，无未解决 finding。
+
+证明边界：未验证真实第三方模型、用户账户或网络环境下的端到端参数兼容性。
+
 ## 计划
 
 见[已完成执行计划](../../exec-plans/completed/2026-09-08-macpaw-openai-semantic-port.md)。
