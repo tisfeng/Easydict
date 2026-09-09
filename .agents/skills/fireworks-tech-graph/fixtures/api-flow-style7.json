@@ -1,40 +1,49 @@
 {
+  "schema_version": 1,
+  "mode": "architecture",
   "template_type": "architecture",
   "style": 7,
-  "width": 1100,
-  "height": 680,
+  "motion_scene": "token-stream",
+  "quality_profile": "showcase",
+  "width": 960,
+  "height": 700,
   "title": "API Integration Flow",
-  "subtitle": "OpenAI-style clean integration diagram with precise control and response stages",
+  "subtitle": "clean application integration from SDK input to governed delivery",
   "containers": [
-    { "x": 40, "y": 118, "width": 1020, "height": 104, "label": "ENTRY", "subtitle": "", "stroke": "#e2e8f0", "fill": "none" },
-    { "x": 40, "y": 252, "width": 1020, "height": 154, "label": "MODEL + TOOLS", "subtitle": "", "stroke": "#e2e8f0", "fill": "none" },
-    { "x": 40, "y": 438, "width": 1020, "height": 154, "label": "DELIVERY", "subtitle": "", "stroke": "#e2e8f0", "fill": "none" }
+    { "id": "entry", "x": 40, "y": 120, "width": 880, "height": 110, "label": "Integration", "stroke": "#e2e8f0", "fill": "none" },
+    { "id": "runtime", "x": 40, "y": 280, "width": 880, "height": 130, "label": "Model + Tools", "stroke": "#e2e8f0", "fill": "none" },
+    { "id": "delivery", "x": 40, "y": 450, "width": 880, "height": 140, "label": "Delivery", "stroke": "#e2e8f0", "fill": "none" }
   ],
   "nodes": [
-    { "id": "app", "kind": "rect", "x": 90, "y": 146, "width": 176, "height": 56, "label": "Application", "type_label": "CLIENT", "fill": "#ffffff", "stroke": "#dce5e3", "flat": true },
-    { "id": "sdk", "kind": "double_rect", "x": 350, "y": 142, "width": 196, "height": 64, "label": "OpenAI SDK Layer", "type_label": "SDK", "fill": "#ffffff", "stroke": "#10a37f" },
-    { "id": "prompt", "kind": "rect", "x": 114, "y": 300, "width": 188, "height": 60, "label": "Prompt Builder", "type_label": "INPUT", "fill": "#ffffff", "stroke": "#dce5e3", "flat": true },
-    { "id": "model", "kind": "double_rect", "x": 418, "y": 292, "width": 236, "height": 76, "label": "Model Runtime", "type_label": "REASONING", "fill": "#ffffff", "stroke": "#10a37f" },
-    { "id": "tools", "kind": "rect", "x": 782, "y": 300, "width": 188, "height": 60, "label": "Tool Calls", "type_label": "ACTIONS", "fill": "#ffffff", "stroke": "#dce5e3", "flat": true },
-    { "id": "formatter", "kind": "rect", "x": 148, "y": 486, "width": 198, "height": 60, "label": "Response Formatter", "type_label": "OUTPUT", "fill": "#ffffff", "stroke": "#dce5e3", "flat": true },
-    { "id": "obs", "kind": "rect", "x": 470, "y": 486, "width": 176, "height": 60, "label": "Observability", "type_label": "METRICS", "fill": "#ffffff", "stroke": "#dce5e3", "flat": true },
-    { "id": "release", "kind": "rect", "x": 770, "y": 486, "width": 176, "height": 60, "label": "Release Control", "type_label": "CONFIG", "fill": "#ffffff", "stroke": "#dce5e3", "flat": true }
+    { "id": "app", "kind": "rect", "x": 80, "y": 156, "width": 180, "height": 54, "type_label": "CLIENT", "label": "Application", "fill": "#ffffff", "stroke": "#dce5e3", "flat": true },
+    { "id": "sdk", "kind": "double_rect", "x": 370, "y": 156, "width": 220, "height": 54, "type_label": "SDK", "label": "OpenAI SDK Layer", "fill": "#ffffff", "stroke": "#10a37f" },
+    { "id": "prompt", "kind": "rect", "x": 80, "y": 340, "width": 180, "height": 50, "type_label": "INPUT", "label": "Prompt Builder", "fill": "#ffffff", "stroke": "#dce5e3", "flat": true },
+    { "id": "model", "kind": "double_rect", "x": 370, "y": 340, "width": 220, "height": 50, "type_label": "REASONING", "label": "Model Runtime", "fill": "#ffffff", "stroke": "#10a37f" },
+    { "id": "tools", "kind": "rect", "x": 700, "y": 340, "width": 180, "height": 50, "type_label": "ACTIONS", "label": "Tool Calls", "fill": "#ffffff", "stroke": "#dce5e3", "flat": true },
+    { "id": "formatter", "kind": "rect", "x": 80, "y": 510, "width": 180, "height": 60, "type_label": "OUTPUT", "label": "Response Formatter", "fill": "#ffffff", "stroke": "#dce5e3", "flat": true },
+    { "id": "observability", "kind": "rect", "x": 390, "y": 510, "width": 180, "height": 60, "type_label": "METRICS", "label": "Observability", "fill": "#ffffff", "stroke": "#dce5e3", "flat": true },
+    { "id": "release", "kind": "rect", "x": 700, "y": 510, "width": 180, "height": 60, "type_label": "CONFIG", "label": "Release Control", "fill": "#ffffff", "stroke": "#dce5e3", "flat": true }
   ],
   "arrows": [
-    { "source": "app", "target": "sdk", "source_port": "right", "target_port": "left", "flow": "control" },
-    { "source": "sdk", "target": "prompt", "source_port": "bottom", "target_port": "top", "flow": "read", "label": "prepare", "route_points": [[370,232], [236,232], [236,300]] },
-    { "source": "sdk", "target": "model", "source_port": "bottom", "target_port": "top", "flow": "control", "corridor_x": [520] },
-    { "source": "model", "target": "tools", "source_port": "right", "target_port": "left", "flow": "read", "label": "tool use" },
-    { "source": "model", "target": "formatter", "source_port": "bottom", "target_port": "top", "flow": "control", "corridor_x": [278] },
-    { "source": "model", "target": "obs", "source_port": "bottom", "target_port": "top", "flow": "feedback", "dashed": true },
-    { "source": "obs", "target": "release", "source_port": "right", "target_port": "left", "flow": "control" }
+    { "id": "connect", "source": "app", "target": "sdk", "source_port": "right", "target_port": "left", "flow": "control", "motion_role": "connect", "motion_stage": 1, "motion_order": 0, "label": "connect" },
+    { "id": "prepare", "source": "sdk", "target": "prompt", "source_port": "bottom", "target_port": "top", "flow": "read", "motion_role": "prepare", "motion_stage": 2, "motion_order": 0, "label": "prepare" },
+    { "id": "invoke", "source": "prompt", "target": "model", "source_port": "right", "target_port": "left", "flow": "control", "motion_role": "invoke", "motion_stage": 3, "motion_order": 0, "label": "invoke" },
+    { "id": "tool-call", "source": "model", "target": "tools", "source_port": "right", "target_port": "left", "flow": "read", "motion_role": "tool-call", "motion_stage": 4, "motion_order": 0, "label": "tool call" },
+    { "id": "stream", "source": "model", "target": "formatter", "source_port": "bottom", "target_port": "top", "flow": "control", "motion_role": "token-stream", "motion_stage": 4, "motion_order": 1, "label": "stream" },
+    { "id": "measure", "source": "formatter", "target": "observability", "source_port": "right", "target_port": "left", "flow": "feedback", "motion_role": "measure", "motion_stage": 5, "motion_order": 1, "label": "measure" },
+    { "id": "govern", "source": "tools", "target": "release", "source_port": "bottom", "target_port": "top", "flow": "feedback", "motion_role": "govern", "motion_stage": 5, "motion_order": 0, "label": "govern" },
+    { "id": "promote", "source": "observability", "target": "release", "source_port": "right", "target_port": "left", "flow": "feedback", "motion_role": "promote", "motion_stage": 6, "motion_order": 0, "label": "promote" }
   ],
+  "legend_orientation": "horizontal",
+  "legend_x": 48,
+  "legend_y": 625,
+  "legend_locked": true,
   "legend": [
-    { "flow": "control", "label": "Primary integration path" },
-    { "flow": "read", "label": "Prompt / tool context" },
-    { "flow": "feedback", "label": "Operational feedback" }
+    { "flow": "control", "label": "primary API path" },
+    { "flow": "read", "label": "prompt / tools" },
+    { "flow": "feedback", "label": "governance" }
   ],
-  "legend_position": "bottom-left",
-  "legend_y": 612,
-  "footer": ""
+  "footer": "Style 7 · OpenAI Official · precise integration stages",
+  "footer_x": 48,
+  "footer_y": 680
 }

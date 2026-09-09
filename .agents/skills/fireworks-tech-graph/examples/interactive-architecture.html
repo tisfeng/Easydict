@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data: blob:">
+  <title>API Integration Flow</title>
+  <style>
+    :root { color-scheme: dark; --page:#0f0f1a; --panel:#0f172a; --border:#334155; --text:#e2e8f0; --muted:#94a3b8; --accent:#a855f7; }
+    html[data-theme="light"] { color-scheme:light; --page:#f8fafc; --panel:#fff; --border:#cbd5e1; --text:#0f172a; --muted:#475569; --accent:#7c3aed; }
+    * { box-sizing:border-box; }
+    html,body { width:100%; height:100%; margin:0; overflow:hidden; background:linear-gradient(135deg,var(--page),#1a1a2e); color:var(--text); font-family:'SF Mono','Fira Code',ui-monospace,monospace; }
+    body { display:grid; grid-template-rows:auto 1fr; }
+    .toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:10px 14px; background:color-mix(in srgb,var(--panel) 92%,transparent); border-bottom:1px solid var(--border); z-index:2; }
+    .title { margin-right:auto; font-size:13px; font-weight:700; }
+    button,select { min-height:34px; padding:6px 10px; color:var(--text); background:var(--panel); border:1px solid var(--border); border-radius:8px; font:inherit; cursor:pointer; }
+    button:hover,button:focus-visible,select:focus-visible { border-color:var(--accent); outline:2px solid color-mix(in srgb,var(--accent) 35%,transparent); outline-offset:1px; }
+    #stage { position:relative; overflow:hidden; touch-action:none; cursor:grab; }
+    #stage.dragging { cursor:grabbing; }
+    #canvas { width:100%; height:100%; display:grid; place-items:center; transform-origin:0 0; will-change:transform; }
+    #canvas svg { max-width:calc(100vw - 40px); max-height:calc(100vh - 92px); width:auto; height:auto; filter:drop-shadow(0 22px 60px rgba(0,0,0,.28)); user-select:none; }
+    #status { min-width:76px; color:var(--muted); font-size:12px; text-align:center; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    @media (prefers-reduced-motion:reduce) { * { scroll-behavior:auto!important; transition:none!important; } }
+  </style>
+</head>
+<body>
+  <header class="toolbar" aria-label="Diagram controls">
+    <span class="title">API Integration Flow</span>
+    <button type="button" data-action="zoom-out" aria-label="Zoom out">−</button>
+    <button type="button" data-action="reset" aria-label="Reset view">Reset</button>
+    <button type="button" data-action="zoom-in" aria-label="Zoom in">+</button>
+    <span id="status" aria-live="polite">100%</span>
+    <button type="button" data-action="theme" aria-label="Toggle theme">Theme</button>
+    <button type="button" data-action="copy" aria-label="Copy SVG source">Copy SVG</button>
+    <select id="scale" aria-label="Raster export scale"><option value="1">1×</option><option value="2" selected>2×</option><option value="3">3×</option><option value="4">4×</option></select>
+    <select id="format" aria-label="Export format"><option>SVG</option><option>PNG</option><option>JPEG</option><option>WebP</option></select>
+    <button type="button" data-action="download">Export</button>
+  </header>
+  <main id="stage" tabindex="0" aria-label="Interactive diagram. Drag to pan; use plus and minus to zoom.">
+    <div id="canvas"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 700" width="960" height="700" data-generator="fireworks-tech-graph" data-schema-version="1" data-text-metrics="heuristic-v1" data-style-id="7" data-visual-theme="OpenAI" data-diagram-type="architecture" data-motion-scene="token-stream" data-semantic-profile="generic" data-semantic-valid="true" data-quality-profile="showcase" data-max-bends-per-edge="2" data-max-total-bends="8" data-max-route-stretch="1.35" data-max-bridged-crossings="0" data-min-node-gap="40.0" data-min-container-gutter="20.0" data-min-label-clearance="4.0" data-min-segment-length="16.0" role="img" focusable="false">
+  <defs>
+    <marker id="arrowA" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10a37f" />
+    </marker>
+    <marker id="arrowB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#0f766e" />
+    </marker>
+    <marker id="arrowC" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#0891b2" />
+    </marker>
+    <marker id="arrowE" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b" />
+    </marker>
+    <marker id="arrowF" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+    </marker>
+    <marker id="arrowG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569" />
+    </marker>
+    <marker id="arrowH" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8" />
+    </marker>
+    <style>
+    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Noto Sans CJK SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif; }
+    .title { font-size: 24px; font-weight: 700; fill: #0f172a; }
+    .subtitle { font-size: 13px; font-weight: 500; fill: #64748b; }
+    .section { font-size: 13px; font-weight: 700; fill: #087f5b; letter-spacing: 1.4px; }
+    .section-sub { font-size: 12px; font-weight: 500; fill: #64748b; }
+    .node-title { font-weight: 700; fill: #0f172a; }
+    .node-sub { font-weight: 500; fill: #475569; }
+    .node-type { font-size: 11px; font-weight: 700; fill: #64748b; letter-spacing: 0.08em; }
+    .arrow-label { font-size: 12px; font-weight: 600; fill: #475569; }
+    .legend { font-size: 12px; font-weight: 500; fill: #475569; }
+    .footnote { font-size: 12px; font-weight: 500; fill: #64748b; }
+    .metric-label { font-size: 8.5px; font-weight: 700; fill: #64748b; text-transform: uppercase; }
+    .metric-value { font-size: 9.5px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+  <rect data-graph-role="background" width="960.0" height="700.0" fill="#ffffff" />
+  <text x="48.0" y="48" text-anchor="start" class="title">API Integration Flow</text>
+  <text x="48.0" y="72" text-anchor="start" class="subtitle">clean application integration from SDK input to governed delivery</text>
+  <line x1="48" y1="100" x2="912.0" y2="100" stroke="#e2e8f0" stroke-width="1" />
+  <g id="entry" data-graph-role="container" data-container-id="entry" data-semantic-role="boundary" data-graph-bounds="40,120,920,230">
+  <rect data-graph-role="container" x="40.0" y="120.0" width="880.0" height="110.0" rx="16.0" fill="none" stroke="#e2e8f0" stroke-width="1.4" stroke-dasharray="5 4" />
+  <text x="58.0" y="144.0" class="section">INTEGRATION</text>
+    <rect id="entry-header" data-graph-role="reserved" data-reserved-kind="container-header" x="48" y="126" width="106.18" height="30" fill="none" stroke="none" />
+  </g>
+  <g id="runtime" data-graph-role="container" data-container-id="runtime" data-semantic-role="boundary" data-graph-bounds="40,280,920,410">
+  <rect data-graph-role="container" x="40.0" y="280.0" width="880.0" height="130.0" rx="16.0" fill="none" stroke="#e2e8f0" stroke-width="1.4" stroke-dasharray="5 4" />
+  <text x="58.0" y="304.0" class="section">MODEL + TOOLS</text>
+    <rect id="runtime-header" data-graph-role="reserved" data-reserved-kind="container-header" x="48" y="286" width="125.42" height="30" fill="none" stroke="none" />
+  </g>
+  <g id="delivery" data-graph-role="container" data-container-id="delivery" data-semantic-role="boundary" data-graph-bounds="40,450,920,590">
+  <rect data-graph-role="container" x="40.0" y="450.0" width="880.0" height="140.0" rx="16.0" fill="none" stroke="#e2e8f0" stroke-width="1.4" stroke-dasharray="5 4" />
+  <text x="58.0" y="474.0" class="section">DELIVERY</text>
+    <rect id="delivery-header" data-graph-role="reserved" data-reserved-kind="container-header" x="48" y="456" width="86.94" height="30" fill="none" stroke="none" />
+  </g>
+  <path id="connect" data-graph-role="edge" data-edge-id="connect" data-source="app" data-target="sdk" data-edge-kind="flow" data-topic-id="" data-flow="control" data-motion-role="connect" data-motion-stage="1" data-motion-order="0" data-protocol="" data-via="" data-critical-path-id="" data-critical-hop="" data-critical-hops="" data-critical="false" data-bends="0" data-route-stretch="1.0" data-bridges="" d="M 260,183 L 370,183" fill="none" stroke="#10a37f" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowA)" />
+  <path id="prepare" data-graph-role="edge" data-edge-id="prepare" data-source="sdk" data-target="prompt" data-edge-kind="flow" data-topic-id="" data-flow="read" data-motion-role="prepare" data-motion-stage="2" data-motion-order="0" data-protocol="" data-via="" data-critical-path-id="" data-critical-hop="" data-critical-hops="" data-critical="false" data-bends="2" data-route-stretch="1.0" data-bridges="" d="M 480,210 L 480,316 L 170,316 L 170,340" fill="none" stroke="#0891b2" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowC)" />
+  <path id="invoke" data-graph-role="edge" data-edge-id="invoke" data-source="prompt" data-target="model" data-edge-kind="flow" data-topic-id="" data-flow="control" data-motion-role="invoke" data-motion-stage="3" data-motion-order="0" data-protocol="" data-via="" data-critical-path-id="" data-critical-hop="" data-critical-hops="" data-critical="false" data-bends="0" data-route-stretch="1.0" data-bridges="" d="M 260,365 L 370,365" fill="none" stroke="#10a37f" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowA)" />
+  <path id="tool-call" data-graph-role="edge" data-edge-id="tool-call" data-source="model" data-target="tools" data-edge-kind="flow" data-topic-id="" data-flow="read" data-motion-role="tool-call" data-motion-stage="4" data-motion-order="0" data-protocol="" data-via="" data-critical-path-id="" data-critical-hop="" data-critical-hops="" data-critical="false" data-bends="0" data-route-stretch="1.0" data-bridges="" d="M 590,365 L 700,365" fill="none" stroke="#0891b2" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowC)" />
+  <path id="stream" data-graph-role="edge" data-edge-id="stream" data-source="model" data-target="formatter" data-edge-kind="flow" data-topic-id="" data-flow="control" data-motion-role="token-stream" data-motion-stage="4" data-motion-order="1" data-protocol="" data-via="" data-critical-path-id="" data-critical-hop="" data-critical-hops="" data-critical="false" data-bends="2" data-route-stretch="1.0" data-bridges="" d="M 480,390 L 480,414 L 170,414 L 170,510" fill="none" stroke="#10a37f" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowA)" />
+  <path id="measure" data-graph-role="edge" data-edge-id="measure" data-source="formatter" data-target="observability" data-edge-kind="flow" data-topic-id="" data-flow="feedback" data-motion-role="measure" data-motion-stage="5" data-motion-order="1" data-protocol="" data-via="" data-critical-path-id="" data-critical-hop="" data-critical-hops="" data-critical="false" data-bends="0" data-route-stretch="1.0" data-bridges="" d="M 260,540 L 390,540" fill="none" stroke="#475569" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowG)" />
+  <path id="govern" data-graph-role="edge" data-edge-id="govern" data-source="tools" data-target="release" data-edge-kind="flow" data-topic-id="" data-flow="feedback" data-motion-role="govern" data-motion-stage="5" data-motion-order="0" data-protocol="" data-via="" data-critical-path-id="" data-critical-hop="" data-critical-hops="" data-critical="false" data-bends="0" data-route-stretch="1.0" data-bridges="" d="M 790,390 L 790,510" fill="none" stroke="#475569" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowG)" />
+  <path id="promote" data-graph-role="edge" data-edge-id="promote" data-source="observability" data-target="release" data-edge-kind="flow" data-topic-id="" data-flow="feedback" data-motion-role="promote" data-motion-stage="6" data-motion-order="0" data-protocol="" data-via="" data-critical-path-id="" data-critical-hop="" data-critical-hops="" data-critical="false" data-bends="0" data-route-stretch="1.0" data-bridges="" d="M 570,540 L 700,540" fill="none" stroke="#475569" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowG)" />
+  <g id="node-app" data-graph-role="node" data-node-id="app" data-semantic-role="rect" data-motion-role="" data-motion-stage="" data-motion-order="" data-parent="" data-deployment-id="" data-topic-id="" data-span-id="" data-station-order="" data-status="" data-start-ms="" data-duration-ms="" data-parent-span="" data-graph-bounds="80,156,260,210">
+  <rect x="80.0" y="156.0" width="180.0" height="54.0" rx="14.0" fill="#ffffff" stroke="#dce5e3" stroke-width="1.8" />
+  <text x="170.0" y="174.0" text-anchor="middle" class="node-type">CLIENT</text>
+  <text data-text-role="title" data-full-text="Application" data-text-max-width="156.0" x="170.0" y="189.0" text-anchor="middle" class="node-title" font-size="18">Application</text>
+  </g>
+  <g id="node-sdk" data-graph-role="node" data-node-id="sdk" data-semantic-role="double_rect" data-motion-role="" data-motion-stage="" data-motion-order="" data-parent="" data-deployment-id="" data-topic-id="" data-span-id="" data-station-order="" data-status="" data-start-ms="" data-duration-ms="" data-parent-span="" data-graph-bounds="370,156,590,210">
+  <rect x="370.0" y="156.0" width="220.0" height="54.0" rx="14.0" fill="#ffffff" stroke="#10a37f" stroke-width="2.0" />
+  <rect x="376.0" y="162.0" width="208.0" height="42.0" rx="11.0" fill="none" stroke="#10a37f" stroke-width="1.2" opacity="0.65" />
+  <text x="480.0" y="174.0" text-anchor="middle" class="node-type">SDK</text>
+  <text data-text-role="title" data-full-text="OpenAI SDK Layer" data-text-max-width="188.0" x="480.0" y="189.0" text-anchor="middle" class="node-title" font-size="18">OpenAI SDK Layer</text>
+  </g>
+  <g id="node-prompt" data-graph-role="node" data-node-id="prompt" data-semantic-role="rect" data-motion-role="" data-motion-stage="" data-motion-order="" data-parent="" data-deployment-id="" data-topic-id="" data-span-id="" data-station-order="" data-status="" data-start-ms="" data-duration-ms="" data-parent-span="" data-graph-bounds="80,340,260,390">
+  <rect x="80.0" y="340.0" width="180.0" height="50.0" rx="14.0" fill="#ffffff" stroke="#dce5e3" stroke-width="1.8" />
+  <text x="170.0" y="358.0" text-anchor="middle" class="node-type">INPUT</text>
+  <text data-text-role="title" data-full-text="Prompt Builder" data-text-max-width="156.0" x="170.0" y="371.0" text-anchor="middle" class="node-title" font-size="18">Prompt Builder</text>
+  </g>
+  <g id="node-model" data-graph-role="node" data-node-id="model" data-semantic-role="double_rect" data-motion-role="" data-motion-stage="" data-motion-order="" data-parent="" data-deployment-id="" data-topic-id="" data-span-id="" data-station-order="" data-status="" data-start-ms="" data-duration-ms="" data-parent-span="" data-graph-bounds="370,340,590,390">
+  <rect x="370.0" y="340.0" width="220.0" height="50.0" rx="14.0" fill="#ffffff" stroke="#10a37f" stroke-width="2.0" />
+  <rect x="376.0" y="346.0" width="208.0" height="38.0" rx="11.0" fill="none" stroke="#10a37f" stroke-width="1.2" opacity="0.65" />
+  <text x="480.0" y="358.0" text-anchor="middle" class="node-type">REASONING</text>
+  <text data-text-role="title" data-full-text="Model Runtime" data-text-max-width="188.0" x="480.0" y="371.0" text-anchor="middle" class="node-title" font-size="18">Model Runtime</text>
+  </g>
+  <g id="node-tools" data-graph-role="node" data-node-id="tools" data-semantic-role="rect" data-motion-role="" data-motion-stage="" data-motion-order="" data-parent="" data-deployment-id="" data-topic-id="" data-span-id="" data-station-order="" data-status="" data-start-ms="" data-duration-ms="" data-parent-span="" data-graph-bounds="700,340,880,390">
+  <rect x="700.0" y="340.0" width="180.0" height="50.0" rx="14.0" fill="#ffffff" stroke="#dce5e3" stroke-width="1.8" />
+  <text x="790.0" y="358.0" text-anchor="middle" class="node-type">ACTIONS</text>
+  <text data-text-role="title" data-full-text="Tool Calls" data-text-max-width="156.0" x="790.0" y="371.0" text-anchor="middle" class="node-title" font-size="18">Tool Calls</text>
+  </g>
+  <g id="node-formatter" data-graph-role="node" data-node-id="formatter" data-semantic-role="rect" data-motion-role="" data-motion-stage="" data-motion-order="" data-parent="" data-deployment-id="" data-topic-id="" data-span-id="" data-station-order="" data-status="" data-start-ms="" data-duration-ms="" data-parent-span="" data-graph-bounds="80,510,260,570">
+  <rect x="80.0" y="510.0" width="180.0" height="60.0" rx="14.0" fill="#ffffff" stroke="#dce5e3" stroke-width="1.8" />
+  <text x="170.0" y="528.0" text-anchor="middle" class="node-type">OUTPUT</text>
+  <text data-text-role="title" data-full-text="Response Formatter" data-text-max-width="156.0" x="170.0" y="546.0" text-anchor="middle" class="node-title" font-size="14.13">Response Formatter</text>
+  </g>
+  <g id="node-observability" data-graph-role="node" data-node-id="observability" data-semantic-role="rect" data-motion-role="" data-motion-stage="" data-motion-order="" data-parent="" data-deployment-id="" data-topic-id="" data-span-id="" data-station-order="" data-status="" data-start-ms="" data-duration-ms="" data-parent-span="" data-graph-bounds="390,510,570,570">
+  <rect x="390.0" y="510.0" width="180.0" height="60.0" rx="14.0" fill="#ffffff" stroke="#dce5e3" stroke-width="1.8" />
+  <text x="480.0" y="528.0" text-anchor="middle" class="node-type">METRICS</text>
+  <text data-text-role="title" data-full-text="Observability" data-text-max-width="156.0" x="480.0" y="546.0" text-anchor="middle" class="node-title" font-size="18">Observability</text>
+  </g>
+  <g id="node-release" data-graph-role="node" data-node-id="release" data-semantic-role="rect" data-motion-role="" data-motion-stage="" data-motion-order="" data-parent="" data-deployment-id="" data-topic-id="" data-span-id="" data-station-order="" data-status="" data-start-ms="" data-duration-ms="" data-parent-span="" data-graph-bounds="700,510,880,570">
+  <rect x="700.0" y="510.0" width="180.0" height="60.0" rx="14.0" fill="#ffffff" stroke="#dce5e3" stroke-width="1.8" />
+  <text x="790.0" y="528.0" text-anchor="middle" class="node-type">CONFIG</text>
+  <text data-text-role="title" data-full-text="Release Control" data-text-max-width="156.0" x="790.0" y="546.0" text-anchor="middle" class="node-title" font-size="18">Release Control</text>
+  </g>
+  <g id="connect-label" data-graph-role="label" data-owner="connect" data-graph-bounds="283.64,152,346.36,172">
+  <rect x="283.64" y="152.0" width="62.72" height="20" rx="6" fill="#ffffff" opacity="0.96" />
+  <text x="315.0" y="166.0" text-anchor="middle" class="arrow-label">connect</text>
+  </g>
+  <g id="prepare-label" data-graph-role="label" data-owner="prepare" data-graph-bounds="293.64,285,356.36,305">
+  <rect x="293.64" y="285.0" width="62.72" height="20" rx="6" fill="#ffffff" opacity="0.96" />
+  <text x="325.0" y="299.0" text-anchor="middle" class="arrow-label">prepare</text>
+  </g>
+  <g id="invoke-label" data-graph-role="label" data-owner="invoke" data-graph-bounds="288.68,334,341.32,354">
+  <rect x="288.68" y="334.0" width="52.64" height="20" rx="6" fill="#ffffff" opacity="0.96" />
+  <text x="315.0" y="348.0" text-anchor="middle" class="arrow-label">invoke</text>
+  </g>
+  <g id="tool-call-label" data-graph-role="label" data-owner="tool-call" data-graph-bounds="612.68,334,677.32,354">
+  <rect x="612.68" y="334.0" width="64.64" height="20" rx="6" fill="#ffffff" opacity="0.96" />
+  <text x="645.0" y="348.0" text-anchor="middle" class="arrow-label">tool call</text>
+  </g>
+  <g id="stream-label" data-graph-role="label" data-owner="stream" data-graph-bounds="297.12,383,352.88,403">
+  <rect x="297.12" y="383.0" width="55.76" height="20" rx="6" fill="#ffffff" opacity="0.96" />
+  <text x="325.0" y="397.0" text-anchor="middle" class="arrow-label">stream</text>
+  </g>
+  <g id="measure-label" data-graph-role="label" data-owner="measure" data-graph-bounds="293.64,509,356.36,529">
+  <rect x="293.64" y="509.0" width="62.72" height="20" rx="6" fill="#ffffff" opacity="0.96" />
+  <text x="325.0" y="523.0" text-anchor="middle" class="arrow-label">measure</text>
+  </g>
+  <g id="govern-label" data-graph-role="label" data-owner="govern" data-graph-bounds="731.24,436,787,456">
+  <rect x="731.24" y="436.0" width="55.76" height="20" rx="6" fill="#ffffff" opacity="0.96" />
+  <text x="759.12" y="450.0" text-anchor="middle" class="arrow-label">govern</text>
+  </g>
+  <g id="promote-label" data-graph-role="label" data-owner="promote" data-graph-bounds="603.64,509,666.36,529">
+  <rect x="603.64" y="509.0" width="62.72" height="20" rx="6" fill="#ffffff" opacity="0.96" />
+  <text x="635.0" y="523.0" text-anchor="middle" class="arrow-label">promote</text>
+  </g>
+  <g id="legend" data-graph-role="legend">
+    <rect id="legend-zone" data-graph-role="reserved" data-reserved-kind="legend" x="38" y="611" width="464.48" height="46" rx="10" fill="none" stroke="none" />
+    <line data-graph-role="decoration" x1="48.0" y1="625.0" x2="78.0" y2="625.0" stroke="#10a37f" stroke-width="2.0" marker-end="url(#arrowA)" />
+    <text data-graph-role="decoration" x="88.0" y="629.0" class="legend">primary API path</text>
+    <line data-graph-role="decoration" x1="215.84" y1="625.0" x2="245.84" y2="625.0" stroke="#0891b2" stroke-width="2.0" marker-end="url(#arrowC)" />
+    <text data-graph-role="decoration" x="255.84" y="629.0" class="legend">prompt / tools</text>
+    <line data-graph-role="decoration" x1="372.88" y1="625.0" x2="402.88" y2="625.0" stroke="#475569" stroke-width="2.0" marker-end="url(#arrowG)" />
+    <text data-graph-role="decoration" x="412.88" y="629.0" class="legend">governance</text>
+  </g>
+  <g id="footer" data-graph-role="reserved" data-graph-bounds="48,668,426,684">
+  <text x="48.0" y="680.0" class="footnote">Style 7 · OpenAI Official · precise integration stages</text>
+  </g>
+</svg></div>
+    <p class="sr-only">Keyboard shortcuts: plus and minus zoom, zero resets, T toggles theme, S exports.</p>
+  </main>
+  <script>
+  (() => {
+    'use strict';
+    const metadata = {"slug": "api-integration-flow"};
+    const stage = document.getElementById('stage');
+    const canvas = document.getElementById('canvas');
+    const svg = canvas.querySelector('svg');
+    const status = document.getElementById('status');
+    const scaleSelect = document.getElementById('scale');
+    const formatSelect = document.getElementById('format');
+    let view = { x:0, y:0, scale:1 };
+    let drag = null;
+    const clamp = value => Math.max(.2, Math.min(8, value));
+    const render = () => {
+      canvas.style.transform = `translate(${view.x}px,${view.y}px) scale(${view.scale})`;
+      status.textContent = `${Math.round(view.scale * 100)}%`;
+    };
+    const zoom = (factor, originX=stage.clientWidth/2, originY=stage.clientHeight/2) => {
+      const next = clamp(view.scale * factor);
+      const ratio = next / view.scale;
+      view.x = originX - (originX - view.x) * ratio;
+      view.y = originY - (originY - view.y) * ratio;
+      view.scale = next; render();
+    };
+    const reset = () => { view = {x:0,y:0,scale:1}; render(); };
+    stage.addEventListener('wheel', event => { event.preventDefault(); const rect=stage.getBoundingClientRect(); zoom(event.deltaY < 0 ? 1.12 : .89, event.clientX-rect.left, event.clientY-rect.top); }, {passive:false});
+    stage.addEventListener('pointerdown', event => { drag={id:event.pointerId,x:event.clientX,y:event.clientY,vx:view.x,vy:view.y}; stage.setPointerCapture(event.pointerId); stage.classList.add('dragging'); });
+    stage.addEventListener('pointermove', event => { if(!drag||drag.id!==event.pointerId)return; view.x=drag.vx+event.clientX-drag.x; view.y=drag.vy+event.clientY-drag.y; render(); });
+    const endDrag = () => { drag=null; stage.classList.remove('dragging'); };
+    stage.addEventListener('pointerup', endDrag); stage.addEventListener('pointercancel', endDrag);
+    const source = () => new XMLSerializer().serializeToString(svg);
+    const saveBlob = (blob, extension) => { const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${(metadata.slug||'fireworks-tech-graph')}.${extension}`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); };
+    const copySource = async () => {
+      const value=source();
+      try { await navigator.clipboard.writeText(value); status.textContent='Copied'; return; } catch {}
+      const area=document.createElement('textarea'); area.value=value; area.setAttribute('readonly',''); area.style.position='fixed'; area.style.opacity='0'; document.body.appendChild(area); area.select();
+      status.textContent=document.execCommand('copy')?'Copied':'Copy failed'; area.remove();
+    };
+    const exportDiagram = async () => {
+      const format = formatSelect.value.toLowerCase();
+      if(format==='svg') { saveBlob(new Blob([source()],{type:'image/svg+xml;charset=utf-8'}),'svg'); return; }
+      const scale = Math.max(1,Math.min(4,Number(scaleSelect.value)||2));
+      const box = svg.viewBox.baseVal; const width=box.width||svg.clientWidth; const height=box.height||svg.clientHeight;
+      const image = new Image(); const url=URL.createObjectURL(new Blob([source()],{type:'image/svg+xml'}));
+      await new Promise((resolve,reject)=>{ image.onload=resolve; image.onerror=reject; image.src=url; });
+      const raster=document.createElement('canvas'); raster.width=Math.round(width*scale); raster.height=Math.round(height*scale);
+      const ctx=raster.getContext('2d'); if(format==='jpeg'){ctx.fillStyle='#ffffff';ctx.fillRect(0,0,raster.width,raster.height);} ctx.drawImage(image,0,0,raster.width,raster.height); URL.revokeObjectURL(url);
+      const mime=format==='jpeg'?'image/jpeg':format==='webp'?'image/webp':'image/png';
+      const blob=await new Promise(resolve=>raster.toBlob(resolve,mime,.94)); if(blob) saveBlob(blob,format==='jpeg'?'jpg':format);
+    };
+    document.querySelector('.toolbar').addEventListener('click', async event => {
+      const action=event.target.closest('[data-action]')?.dataset.action; if(!action)return;
+      if(action==='zoom-in')zoom(1.2); else if(action==='zoom-out')zoom(.83); else if(action==='reset')reset();
+      else if(action==='theme')document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';
+      else if(action==='download')await exportDiagram();
+      else if(action==='copy') await copySource();
+    });
+    document.addEventListener('keydown', event => {
+      if(event.target.matches('select'))return;
+      if(event.key==='+'||event.key==='=')zoom(1.2); else if(event.key==='-')zoom(.83); else if(event.key==='0'||event.key.toLowerCase()==='r')reset();
+      else if(event.key.toLowerCase()==='t')document.querySelector('[data-action=theme]').click(); else if(event.key.toLowerCase()==='s'){event.preventDefault();exportDiagram();}
+    });
+    render();
+  })();
+  </script>
+</body>
+</html>

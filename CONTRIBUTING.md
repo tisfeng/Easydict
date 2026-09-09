@@ -4,15 +4,15 @@
 
 ## 如何参与
 
-- 报告缺陷前，请先搜索已有 issue，并提供复现步骤、预期与实际结果、版本信息，以及可安全公开的日志或截图。
+- 报告缺陷前，请搜索已有 issue，并提供复现步骤、版本和可公开的日志或截图。
 - 较大的功能、界面或架构变更，请先讨论目标和用户体验，再开始实现。
 - 范围明确的小修复、文档、本地化和测试改进可以直接提交 PR。
 - 每个 PR 保持聚焦，不混入无关改动、本地配置、密钥或用户数据。
 
 ## 使用编程 Agent
 
-Easydict 已深度集成 Agent 辅助开发流程。开始贡献前，强烈建议先阅读并理解
-[`AGENTS.md`](AGENTS.md)，再按照其中的任务路由阅读与本次改动相关的规则。
+Easydict 已深度集成 Agent 辅助开发流程。开始贡献前，强烈建议阅读
+[`AGENTS.md`](AGENTS.md)，并按其任务路由阅读相关规则。
 
 欢迎使用 Codex、Claude 等编程 Agent 阅读代码、分析问题、规划实现、生成补丁和参与
 review。建议选择当前最新、适合复杂编程任务的 GPT 或 Claude 模型。
@@ -22,16 +22,9 @@ review。建议选择当前最新、适合复杂编程任务的 GPT 或 Claude �
 
 ### Skill 与子代理
 
-Skill 定义可复用的工作流程，子代理负责独立规划、审查或验证等分工。不同 Agent 客户端
-的调用方式可能不同，请以对应工具和仓库规则为准。
-
-| 能力 | 类型 | 用途 |
-| --- | --- | --- |
-| [`review`](.agents/skills/review/SKILL.md) | Skill | 审查本地改动、提交或模块，给出有证据的问题与修复建议；默认只读，不自动修复 |
-| [`review-pr`](.agents/skills/review-pr/SKILL.md) | Skill | 审查 GitHub PR 的代码、CI 和开放 review thread，帮助作者主动推进 PR |
-| [`submit-pr`](.agents/skills/submit-pr/SKILL.md) | Skill | 根据已提交变更规划、创建或复用 PR；`plan` 可只读预览，正式执行会 push 并创建或复用 PR |
-| [`planner`](.codex/agents/planner.toml) | 子代理 | 只读分析目标、证据、取舍和实施方案 |
-| [`reviewer`](.codex/agents/reviewer.toml) | 子代理 | 独立审查指定代码快照，提供问题、修复建议和增量复核结果 |
+常用 Skill 和 Codex 子代理，包括 `review`、`submit-pr`、`planner` 和 `reviewer` 等，
+由 [`tisfeng/skills`](https://github.com/tisfeng/skills) 统一维护。具体能力、安装和使用方式
+以上游文档为准；Easydict 的项目专属规则仍以 [`AGENTS.md`](AGENTS.md) 为准。
 
 ## 开始开发
 
@@ -94,7 +87,5 @@ Codex 会按照适用的 [`AGENTS.md`](AGENTS.md) 规则提供额外审查；也
 - [开发者构建指南](docs/user-docs/zh/GUIDE.md#开发者构建)
 - [架构与源码定位](docs/architecture/overview.md)
 - [构建与测试](docs/agents/build-and-test.md)
-- [Xcode 工程](docs/agents/swift-xcode.md)
-- [本地化](docs/agents/localization.md)
-- [代码质量](docs/agents/code-quality.md)
+- [开发规则（代码质量、Swift/Xcode 与本地化）](docs/agents/development.md)
 - [Agent 开发入口](AGENTS.md)

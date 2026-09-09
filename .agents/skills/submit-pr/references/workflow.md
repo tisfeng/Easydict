@@ -1,7 +1,7 @@
 # submit-pr 工作流契约
 
-本文件定义 `submit-pr` helper 与调用 Agent 之间的确定性边界。执行 `plan`、默认或
-`draft` 模式时都要完整阅读。
+本文件说明 `submit_pr.py` 与调用 Agent 的职责，以及各阶段的检查和执行规则。执行
+`plan`、默认或 `draft` 模式时都要完整阅读。
 
 ## Repository 拓扑发现
 
@@ -43,14 +43,15 @@ apply 先 fetch 精确 base ref，再要求 `<base-remote>/<base>` 是 HEAD 的�
   仓库交付规则处理；有 unstaged 或 untracked 内容时停止。
 - helper 不修改提交历史，也不把无关提交从范围中自动剔除。
 
-## 固定正文契约与模板兼容
+## 模板优先的正文契约
 
-最终正文始终按顺序包含四个规范二级标题：
+目标仓库模板优先保留原有标题、顺序、非占位说明和 checklist。以下语义标题会接收调用方
+提供的内容：
 
-1. `## 变更说明 / Summary`
-2. `## 关联 Issue / Linked Issues`
-3. `## 验证 / Verification`
-4. `## 截图 / Screenshots`
+1. Summary、Description 或 Changes
+2. Linked Issues、Related Issues 或 Issues
+3. Verification、Testing 或 Tests
+4. Screenshots 或 Screenshot
 
 模板发现兼容 GitHub 规则：在仓库根目录、`docs/` 或 `.github/` 中查找文件名大小写不
 敏感的 `pull_request_template.md` 或 `pull_request_template.txt`；也在这三个位置中
@@ -60,9 +61,10 @@ apply 先 fetch 精确 base ref，再要求 `<base-remote>/<base>` 是 HEAD 的�
 没有模板时使用内置四段式骨架，不创建模板文件；只有一个模板时自动使用；多个模板时
 必须显式 `--template`。大小写不敏感文件系统上的同一文件按 inode 去重。
 
-`Summary`、`Description`、`Related Issues`、`Testing`、`Screenshots` 等语义标题会映射到
-规范四段式。映射段落中的非占位提示和 checklist 会保留，其他项目专属二级段落按原
-顺序附加。`--extra-body-file <path|->` 可补充项目专属段落，但不能重复规范段落。
+映射段落中的非占位提示和 checklist 会保留，其他项目专属二级段落按原顺序附加。模板缺少
+某个语义段落时，helper 才在模板内容之后追加对应的内置默认段落，确保 Summary、
+Verification、Issue 和 Screenshots 内容均可见。`--extra-body-file <path|->` 可补充项目
+专属段落，但不能重复任一语义段落。
 
 - Summary 和 Verification 不能为空。
 - 没有关联 Issue 时保持该区域为空。

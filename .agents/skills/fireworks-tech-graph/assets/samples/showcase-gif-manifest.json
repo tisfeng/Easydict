@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "approved_at": "2026-07-17",
+  "source_contract": "user-approved +2s-settled-flow",
+  "approval": {
+    "status": "user-approved",
+    "style_count": 12,
+    "full_size_frame_count": 1380,
+    "compatibility_frames_accepted": 852,
+    "compatibility_frames_total": 852
+  },
+  "overview": {
+    "layout": "3x4",
+    "tile_box": "400x320",
+    "preview_fps": "12/1",
+    "palette_colors": 160,
+    "frame_delays_centiseconds": {
+      "8": 46,
+      "9": 23
+    }
+  },
+  "assets": [
+    {
+      "file": "showcase-12-styles.gif",
+      "sha256": "361c06f415e14915198e37302beb884c3e6d223f252c163e8d0c4956a8076b08",
+      "bytes": 1020419,
+      "width": 1200,
+      "height": 1280,
+      "fps": "12/1",
+      "duration_seconds": 5.75,
+      "frames": 69
+    },
+    {
+      "file": "sample-style1-flat.gif",
+      "sha256": "db22b38f0c54d4d77c464085c66e81558fcca1ece9d352fb17f96ff06244b25e",
+      "bytes": 269337,
+      "width": 960,
+      "height": 680,
+      "fps": "20/1",
+      "duration_seconds": 5.75,
+      "frames": 115
+    },
+    {
+      "file": "sample-style2-dark.gif",
+      "sha256": "54ff54b2694ae12b995f59f7bfac658d733298e72ac0238c948fc61e41dec9d4",
+      "bytes": 388446,
+      "width": 960,
+      "height": 720,
+      "fps": "20/1",
+      "duration_seconds": 5.75,
+      "frames": 115
+    },
+    {
+      "file": "sample-style3-blueprint.gif",
+      "sha256": "94405804ba16bd6dd1b6b77c0acee576e119ef80909037418cdd9851b66033cb",
+      "bytes": 283449,
+      "width": 960,
+      "height": 720,
+      "fps": "20/1",
+      "duration_seconds": 5.75,
+      "frames": 115
+    },
+    {
+      "file": "sample-style4-notion.gif",
+      "sha256": "ef74b2582e24b9aeda41dfc1cac00aa4e45754a2da83949615b5c01719af04f5",
+      "bytes": 211403,
+      "width": 960,
+      "height": 620,
+      "fps": "20/1",
+      "duration_seconds": 5.75,
+      "frames": 115
+    },
+    {
+      "file": "sample-style5-glass.gif",
+      "sha256": "c89b0278b3792b179941f4efda300690eb769783b35b2bd055705f73cdda5314",
+      "bytes": 376688,
+      "width": 960,
+      "height": 700,
+      "fps": "20/1",
+      "duration_seconds": 5.75,
+      "frames": 115
+    },
+    {
+      "file": "sample-style6-claude.gif",
+      "sha256": "390fda2e36af77f8fe798ed93136bb9874975cffa9eb91842aa2fa430d35e67b",
+      "bytes": 246718,
+      "width": 960,
+      "height": 700,
+      "fps": "20/1",
+      "duration_seconds": 5.75,
+      "frames": 115
+    },
+    {
+      "file": "sample-style7-openai.gif",
+      "sha256": "672f9f62d0800f25918db5c411014b1fbfdde64cd5cd700f2fcb16105d4cc97e",
+      "bytes": 165225,
+      "width": 960,
+      "height": 700,
+      "fps": "20/1",
+      "duration_seconds": 5.75,
+      "frames": 115
+    },
+    {
+      "file": "sample-style8-dark-luxury.gif",
+      "sha256": "186e28cc8a35ad0434558308562c7a2c743055e3b8bbc2b3865758af39080056",
+      "bytes": 234825,
+      "width": 960,
+      "height": 600,
+      "fps": "20/1",
+      "duration_seconds": 5.75,
+      "frames": 115
+    },
+    {
+      "file": "sample-style9-c4-review-canvas.gif",
+      "sha256": "ebc1d337a38d55ba2010191c90e534d94f394dd64205a36d3a205c78771c0b5e",
+      "bytes": 205572,
+      "width": 960,
+      "height": 611,
+      "fps": "20/1",
+      "duration_seconds": 5.75,
+      "frames": 115
+    },
+    {
+      "file": "sample-style10-cloud-fabric.gif",
+      "sha256": "d02fa0d67cd4fd621fe94635938de8b6066594b7060e08cf92bbcc008c54e29f",
+      "bytes": 340823,
+      "width": 960,
+      "height": 760,
+      "fps": "20/1",
+      "duration_seconds": 5.75,
+      "frames": 115
+    },
+    {
+      "file": "sample-style11-event-transit.gif",
+      "sha256": "f3995d0269732277b6e80f5f24849b26d710f9a6c34642e94c61de000cd08637",
+      "bytes": 184537,
+      "width": 960,
+      "height": 590,
+      "fps": "20/1",
+      "duration_seconds": 5.75,
+      "frames": 115
+    },
+    {
+      "file": "sample-style12-ops-pulse.gif",
+      "sha256": "26f5657f4430f337daec744a761bc27f8554f4708bd9a564bff198fc83507800",
+      "bytes": 356902,
+      "width": 960,
+      "height": 860,
+      "fps": "20/1",
+      "duration_seconds": 5.75,
+      "frames": 115
+    }
+  ]
+}

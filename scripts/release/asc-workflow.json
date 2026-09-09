@@ -3,7 +3,6 @@
     "VERSION": "",
     "CHANNEL": "beta",
     "BUILD_NUMBER": "",
-    "NOTES_FILE": "",
     "DRAFT_MODE": "normal"
   },
   "before_all": "printf '[%s] [INFO] [workflow] Starting Easydict %s (%s) workflow\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" \"$VERSION\" \"$CHANNEL\" >&2",
@@ -11,7 +10,7 @@
   "error": "printf '[%s] [ERROR] [workflow] Release failed. Resume with the run ID printed by asc.\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" >&2",
   "workflows": {
     "prepare": {
-      "description": "Prepare and verify local release artifacts",
+      "description": "Freeze changelog and prepare verified local release artifacts",
       "steps": [
         {
           "workflow": "prepare_steps"
@@ -19,7 +18,7 @@
       ]
     },
     "draft": {
-      "description": "Prepare a release and create a GitHub draft",
+      "description": "Prepare a release and create a changelog-backed GitHub draft",
       "steps": [
         {
           "workflow": "prepare_steps"

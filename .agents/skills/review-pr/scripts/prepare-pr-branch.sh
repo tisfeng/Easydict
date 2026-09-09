@@ -6,7 +6,7 @@ set -euo pipefail
 usage() {
   cat <<'USAGE'
 Usage:
-  bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh [--worktree] [--merge-latest] <pr-ref>
+  bash <review-pr-skill-dir>/scripts/prepare-pr-branch.sh [--worktree] [--merge-latest] <pr-ref>
 
 Accepted PR references:
   https://github.com/<base-owner>/<base-repo>/pull/<number>
