@@ -35,12 +35,30 @@
 | `commit` / `auto-local-commit` | [`git-commit`](../../.agents/skills/git-commit/SKILL.md) |
 | `integration` | [`worktree-rebase-merge`](../../.agents/skills/worktree-rebase-merge/SKILL.md) |
 
-- 主 Agent 传递已确认的授权、operation、初始快照、路径归属、冻结候选范围，以及由适用 Skill
-  决定的 `staging_strategy`；不能由 git-delivery 扩大授权或范围。
-- `prepare`/`apply` 重验、精确暂存和提交信息契约以 git-delivery TOML 与适用 Skill 为唯一
-  执行依据。需要新提交时，主 Agent 必须原样展示 prepare 返回的完整提交信息预览；除非用户要求
-  确认、仅预览或暂缓，同一执行者可以继续 apply。
-- 主 Agent 独立核验执行结果，并完整呈现适用 Skill 的交付回执；不得将子代理的一行摘要当作完成。
+- 委派优先使用 `fork_turns="none"`，传递已确认的授权与仍有效的限制、operation/phase、仓库和
+  实际 Skill 路径、必要规则入口、初始及冻结快照、允许范围、路径归属与验证结果。不继承整段
+  调查对话；子代理仍读取适用规则，同一轮已读且未变化的规则和证据可以复用。
+- 需要新提交时，补齐精确候选和适用 Skill 决定的 `staging_strategy`；复用已有提交时，明确目标
+  及允许集成的提交和路径限制。字段要求以实际加载的 git-delivery 与 Skill 契约为准，不能由
+  执行者扩大授权或范围。
+- 需要新提交时先执行只读 `prepare`，主 Agent 原样展示返回的完整提交信息预览，再由同一
+  执行者按 `apply` 契约复验、暂存与提交。普通预览不是新的确认门槛；用户要求确认、仅预览、
+  仅草稿或暂缓时，继续遵守相应的等待与写入限制。
+- 已有提交的 `integration`，仅当实际加载的 git-delivery、`worktree-rebase-merge` Skill 及其
+  配套检查脚本共同支持 `integrate`，且满足该 Skill 的一次委派条件时，使用 `phase=integrate`。
+  同一执行者检查通过后继续集成，无需返回成功的 prepare 报告后再派 apply；无须暂存时按新版
+  契约不传 `staging_strategy`。不重复展开 Skill 已规定的集中检查与阶段复验步骤。
+- 完整的旧版资产继续遵循其 `prepare/apply` 和输入字段契约，不调用未安装的阶段或脚本。
+  新版资产缺失或契约不一致时停止交付，不以旧流程掩盖安装异常；受管资产升级仍按
+  [`README.md`](README.md#写入与同步) 执行。`integrate` 中需要新提交时按 Skill 返回
+  `needs-prepare` 后转入提交预览流程；脏目标、范围不符、非预期漂移或冲突均保留现场并报告，
+  不自行扩大为新提交、冲突修复或改变范围。
+- 已知 Git 元数据或目标 worktree 位于受限写入路径时，直接为已授权命令申请最小必要提权，
+  复用本轮已确认的权限边界，避免重复失败探测；权限审批仍逐操作适用，不将前次获批视为
+  新增业务授权。审批拒绝时保留现场并报告受阻操作与原因。
+- 执行者一次收集完整回执数据，实际提交信息、哈希与统计直接读取工具结果，不重新起草或翻译。
+  主 Agent 批量独立核验后，按适用 Skill 的既有模板完整呈现全部字段、统计表和实际提交信息；
+  不得将子代理的一行摘要当作完成。
 - 配置、授权、模型、范围、快照、目标 worktree 或验证不确定时 fail closed，不得改由主 Agent
   或其他模型执行缩减流程。仅本轮刚更新 git-delivery 配置且运行时尚不能重新发现时，才可按相同
   模型、推理强度、写入权限和完整指令启动 bootstrap fallback，并在回执中说明；无法精确复现时
