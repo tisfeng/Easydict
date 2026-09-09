@@ -139,27 +139,6 @@ extension StreamService {
         }
     }
 
-    /// Convert AsyncThrowingStream<ChatStreamResult> to AsyncThrowingStream<String, Error>
-    func chatStreamToContentStream(
-        _ chatStream: AsyncThrowingStream<ChatStreamResult, Error>
-    )
-        -> AsyncThrowingStream<String, Error> {
-        AsyncThrowingStream<String, Error> { continuation in
-            Task {
-                do {
-                    for try await chatStreamResult in chatStream {
-                        if let content = chatStreamResult.choices.first?.delta.content {
-                            continuation.yield(content)
-                        }
-                    }
-                    continuation.finish()
-                } catch {
-                    continuation.finish(throwing: error)
-                }
-            }
-        }
-    }
-
     /// Convert AsyncThrowingStream<String, Error> to AsyncThrowingStream<ChatStreamResult, Error>
     func contentStreamToChatStream(
         _ contentStream: AsyncThrowingStream<String, Error>
