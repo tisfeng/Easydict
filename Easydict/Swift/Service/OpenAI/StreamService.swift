@@ -204,11 +204,11 @@ public class StreamService: QueryService {
 
     var hideThinkTagContent: Bool = true
 
-    /// The OpenAI-compatible reasoning mode sent by default for stream services.
-    /// Subclasses can override this when a provider requires a different value.
+    /// The optional OpenAI-compatible reasoning mode for stream services.
+    /// Subclasses can override this when the selected provider supports the parameter.
     @nonobjc
-    var reasoningEffort: ChatQuery.ReasoningEffort {
-        .none
+    var reasoningEffort: ChatQuery.ReasoningEffort? {
+        nil
     }
 
     /// Whether requests currently use streaming transport over the network.

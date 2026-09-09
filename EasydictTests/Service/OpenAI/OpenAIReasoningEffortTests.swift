@@ -14,14 +14,22 @@ import Testing
 
 // MARK: - OpenAIReasoningEffortTests
 
-/// Tests the default and subclass-overridable reasoning mode used by OpenAI-compatible services.
+/// Tests the optional and subclass-overridable reasoning mode used by OpenAI-compatible services.
 @Suite("OpenAI Reasoning Effort", .tags(.unit))
 struct OpenAIReasoningEffortTests {
     // MARK: Internal
 
-    @Test("Default stream service sends reasoning effort none")
+    @Test("Default stream service omits reasoning effort")
     func defaultReasoningEffort() throws {
         let service = OpenAIService()
+        let body = try encodedQueryBody(service: service)
+
+        #expect(body["reasoning_effort"] == nil)
+    }
+
+    @Test("Subclass can explicitly send reasoning effort none")
+    func explicitNoneReasoningEffort() throws {
+        let service = NoneReasoningOpenAIService()
         let body = try encodedQueryBody(service: service)
 
         #expect(body["reasoning_effort"] as? String == "none")
@@ -47,10 +55,18 @@ struct OpenAIReasoningEffortTests {
     }
 }
 
+// MARK: - NoneReasoningOpenAIService
+
+private final class NoneReasoningOpenAIService: OpenAIService {
+    override var reasoningEffort: ChatQuery.ReasoningEffort? {
+        .some(.none)
+    }
+}
+
 // MARK: - HighReasoningOpenAIService
 
 private final class HighReasoningOpenAIService: OpenAIService {
-    override var reasoningEffort: ChatQuery.ReasoningEffort {
-        .high
+    override var reasoningEffort: ChatQuery.ReasoningEffort? {
+        .some(.high)
     }
 }
