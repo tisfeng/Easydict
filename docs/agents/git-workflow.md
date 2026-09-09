@@ -46,14 +46,7 @@
   模型、推理强度、写入权限和完整指令启动 bootstrap fallback，并在回执中说明；无法精确复现时
   仍然 fail closed。
 
-## Easydict PR 参数
+## 提交 PR
 
-创建 PR 时使用 `submit-pr` Skill，并显式传入：
-
-- `--base dev`
-- `--base-remote origin`
-- `--issue-policy forbid`
-
-当前受管 `submit-pr v0.3.2` 需要 Python 3.10 或更高版本。执行脚本或测试前确认解释器版本；
-无法找到兼容解释器时 fail closed，不在项目内修改受管 Skill。需要推送到其他 fork remote 时再
-显式传入 `--head-remote`。PR review 使用 `review-pr` Skill。
+- 使用 `submit-pr` Skill，默认合入 `dev`。
+- 关联 Issue 时不使用自动关闭语法，Issue 是否关闭由维护者决定。
