@@ -91,11 +91,29 @@ implementation 默认设置 `delivery_authorization=auto-local-commit`；仍有�
   inline thread resolve；“只读”或“不处理评论”禁用 resolve。
 - PR review 不自动授权产品修改、发布评论、approve、关闭 PR、push 或 Xcode 构建。
 
+## Planner 委派决策
+
+`intent_mode` 与是否委派 `planner` 是两个独立判断。先按上文确定请求是 `planning` 或
+`implementation`，再按本节决定是否需要独立规划；`planning` 的只读性质不能豁免该决策，调用
+`planner` 也不产生 implementation、外部写入或发布授权。
+
+| 当前任务目标 | Planner 决策 |
+| --- | --- |
+| 用户明确要求 `planner` 或独立方案评审 | 必须委派并等待只读 `planner`。 |
+| 设计、评估或实施发布、部署或外部服务写入流程 | 必须委派，即使用户只要求建议方案。例如 Easydict 版本、GitHub Release 与 appcast 更新的发布编排。 |
+| 需要在两个以上模块或系统间就接口、执行顺序、兼容性或失败恢复作出取舍 | 必须委派。 |
+| 设计或实施不可逆变更、数据迁移或其他高风险操作 | 必须委派。 |
+| 仅解释已有行为、查询事实或进行单模块低风险修改，且未命中以上条件 | 主 Agent 可直接处理。 |
+
+按任务目标和实际取舍判断，不按修改文件数量、产品名称或关键词判断。例如，解释某个发布参数不自动
+触发；设计完整发布流程必须触发。
+
+命中条件后，主 Agent 可以同步调查事实，但必须收到 `planner` 结论并核验关键事实，才能输出最终
+方案或实施依赖该结论的修改。最终回复如实说明是否完成独立规划。用户明确禁止委派时遵从该限制，
+并说明独立性缺失。
+
 ## 子代理委派与回退
 
-- 跨模块方案、重要取舍、高风险变更或用户要求独立规划评审时，启动并等待只读 `planner`；
-  简单查询和局部建议由主 Agent 完成。委派不改变 planning 的只读边界；用户明确禁止子代理
-  时不启动。
 - 有行为风险的实施收尾、测试编写和 Git 交付分别按 `build-and-test.md`、
   `git-workflow.md` 使用 reviewer、tester 和 git-delivery。
 - 委派时传递目标、成功标准、有效授权、允许路径、初始或冻结快照和预期输出。子代理不能
@@ -104,4 +122,4 @@ implementation 默认设置 `delivery_authorization=auto-local-commit`；仍有�
   读取对应 TOML，以相同模型、推理强度、完整指令和权限边界显式调用，并声明回退；无法精确
   复现时 fail closed。git-delivery 的回退条件仅以 [`git-workflow.md`](git-workflow.md) 为准。
 - 配置或工具不可用时，主 Agent 继续完成允许范围内的工作并说明独立性缺失；用户把精确配置
-  设为硬性条件时，报告受阻部分，不静默替换模型或推理强度。
+  设为硬性条件时，报告受阻部分，不静默替换模型或推理强度。不得声称已完成独立评审。
