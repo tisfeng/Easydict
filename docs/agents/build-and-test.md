@@ -59,22 +59,38 @@
 - 尚未解决且经核实的阻塞问题、失败验证或必要证据缺失时不能声称完成或自动提交。无法委派时按
   [`request-boundary.md`](request-boundary.md#子代理委派与回退) 回退并说明独立性缺失。
 
-## 运行 Xcode 验证的条件
+## 选择 Xcode 验证
 
-满足以下任一条件时运行 `xcodebuild`：
+根据变更需要证明的结果，选择最小且充分的 Xcode 验证。变更行数只用于决定是否扩大验证范围，
+不作为运行 `xcodebuild` 的硬阈值。
 
-- Swift、Objective-C 或其他由 Xcode 编译的应用源码发生超过 100 行实质性变更；文档、脚本、
-  注释和工程元数据不计入阈值。
-- 新增、修改或删除 `EasydictTests/**/*.swift` 下的测试源码，或调整测试 target 引用；
-  执行相关构建或定向测试。
-- 用户明确要求构建或测试。
+- 纯治理 Markdown、plan、history、注释，以及不进入 Xcode 构建图的脚本或配置，默认只运行相应
+  静态检查。
+- Xcode 编译的生产源码发生实质变化，且本轮不会运行能覆盖同一内容和构建配置的测试时，运行
+  `xcodebuild build`，验证应用 target 的编译、链接和资源集成。
+- 工程/workspace、target、build setting、build phase、依赖、entitlement、Info.plist 或运行时资源
+  发生变化时，运行覆盖受影响配置的 `xcodebuild build`；如果同一配置已由后续要求的测试覆盖，
+  不重复运行 `build`。
+- 修复 bug 或修改可测试行为且存在对应自动化测试时，直接运行覆盖该行为的 `xcodebuild test`。
+- 新增、修改或删除 `EasydictTests/**/*.swift` 下的测试源码，或调整测试 target 引用时，运行覆盖
+  相应 suite 或方法的 `xcodebuild test`。
 
-以上是默认最低要求，不是风险判断的上限。少量高风险源码、工程配置或依赖修改也应选择
-必要构建或针对性测试。纯治理 Markdown、子代理配置或文档合并默认只运行静态检查；用户明确
-要求构建或测试时仍按上述触发条件执行。PR review 能否运行构建以根入口和请求边界为准。
+`xcodebuild build` 只证明构建集成，不证明业务行为正确。`xcodebuild test` 会构建测试所需产物；
+在 workspace、scheme、destination、configuration 和 DerivedData 兼容时，成功的测试同时满足相应
+编译验证，不预先重复运行 `build`。只有测试动作未覆盖的 Release、Archive、签名或其他配置需要验证
+时，才追加对应构建。
 
-实现变化后重新计算阈值。不要针对同一 workspace 和 DerivedData 并发运行 `xcodebuild`；
-默认 DerivedData 不可用时使用外部临时目录，并在验证后删除。
+优先运行能覆盖风险的最小测试范围。共享基础设施、依赖升级、跨模块行为变化或无法可靠确定受影响
+测试时，扩大到相关 suite，必要时运行完整测试 target。同一内容和配置需要反复测试时，先执行一次
+`build-for-testing`，再使用 `test-without-building`；`build-for-testing` 本身不构成测试通过证据。
+
+在实现稳定后选择验证；实现、构建配置或测试发生影响结论的变化时，重新评估并复验相关范围。
+不要针对同一个 workspace 和 DerivedData 位置并发运行 `xcodebuild`。
+
+默认不传 `-derivedDataPath`，优先使用 Xcode 默认 DerivedData，复用与当前 workspace、scheme、
+destination 和 configuration 兼容的本地缓存。只有默认构建或测试失败，且证据表明原因来自
+DerivedData 权限、缓存损坏或 runner 状态时，才使用显式临时 DerivedData 重试；普通源码、编译、
+链接或测试失败不能据此切换目录。报告 fallback 的使用情况，并只删除本任务创建且未被使用的临时目录。
 
 ## 常用命令
 
@@ -99,22 +115,32 @@ xcodebuild build-for-testing \
 xcodebuild test-without-building \
   -workspace Easydict.xcworkspace \
   -scheme Easydict \
-  -only-testing:EasydictTests/<TestSuiteOrClass> | xcbeautify
+  -only-testing:EasydictTests/UtilityFunctionsTests | xcbeautify
 
-# Run one test method
+# Run one test method after a compatible build-for-testing
 xcodebuild test-without-building \
   -workspace Easydict.xcworkspace \
   -scheme Easydict \
-  -only-testing:EasydictTests/<TestSuiteOrClass>/<testMethod> | xcbeautify
+  -only-testing:EasydictTests/UtilityFunctionsTests/testAES | xcbeautify
 ```
 
-使用 `xcbeautify` 时启用 `pipefail`，保留真实退出状态。`test-without-building` 只能复用与
-当前源码和配置兼容的产物；测试源码发生变化时运行对应范围的 `xcodebuild test`。
+使用 `xcbeautify` 时启用 `pipefail`，保留 `xcodebuild` 的真实退出状态。默认命令不指定
+DerivedData；仅在上节规定的 fallback 条件成立时，才改用以下形式：
+
+```bash
+# Fallback only when the default DerivedData is proven unusable
+xcodebuild build \
+  -workspace Easydict.xcworkspace \
+  -scheme Easydict \
+  -derivedDataPath ~/Library/Developer/Xcode/DerivedData/Easydict-Temporary | xcbeautify
+```
+
+测试命令需要 fallback 时，在对应命令中添加相同的 `-derivedDataPath` 参数，不重复维护另一套
+命令矩阵。
 
 ## 非 Xcode 检查
 
 - 每次变更运行 `git diff --check`。
 - 对变更的 `.xcstrings` 或 JSON 数据运行 `jq -e .`。
 - 对变更的 Shell 脚本运行 `bash -n`。
-- Swift 源码变化时运行 `swiftformat --lint` 或仓库现有格式化工具。
-- 文档结构变化时检查现行相对链接、锚点和已删除路径引用。
+- 纯治理 Markdown 默认运行格式、相对链接、锚点和规则语义检查。
