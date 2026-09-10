@@ -235,17 +235,37 @@ struct ResponsesAPITests {
 
     // MARK: - Cancellation
 
-    @Test("cancelStream cancels the in-flight streaming task slot")
+    @Test("cancelStream cancels the in-flight stream task control")
     func cancelStreamCancelsStreamingTaskSlot() {
         let service = CustomOpenAIService()
+        let identifier = UUID()
+        service.streamTaskControl.begin(identifier: identifier)
+
         let task = Task<(), Never> {
             _ = try? await Task.sleep(for: .seconds(5))
         }
 
-        service.responsesStreamingTask = task
+        service.streamTaskControl.install(task, identifier: identifier)
         service.cancelStream()
 
         #expect(task.isCancelled)
-        #expect(service.responsesStreamingTask == nil)
+    }
+
+    @Test("Beginning a replacement stream cancels the previous task")
+    func beginningReplacementStreamCancelsPreviousTask() {
+        let service = CustomOpenAIService()
+        let firstIdentifier = UUID()
+        service.streamTaskControl.begin(identifier: firstIdentifier)
+
+        let firstTask = Task<(), Never> {
+            _ = try? await Task.sleep(for: .seconds(5))
+        }
+        service.streamTaskControl.install(firstTask, identifier: firstIdentifier)
+
+        let secondIdentifier = UUID()
+        service.streamTaskControl.begin(identifier: secondIdentifier)
+        defer { service.cancelStream() }
+
+        #expect(firstTask.isCancelled)
     }
 }

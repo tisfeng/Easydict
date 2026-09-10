@@ -302,9 +302,13 @@ extension BaseOpenAIService {
         apiKey: String
     )
         -> AsyncThrowingStream<String, Error> {
-        AsyncThrowingStream<String, Error> { continuation in
+        let taskControl = streamTaskControl
+        return AsyncThrowingStream<String, Error> { continuation in
+            let identifier = UUID()
+            taskControl.begin(identifier: identifier)
+
             let task = Task {
-                defer { responsesStreamingTask = nil }
+                defer { taskControl.finish(identifier: identifier) }
                 do {
                     let streamRequest = AF.streamRequest(
                         url,
@@ -376,9 +380,9 @@ extension BaseOpenAIService {
                 }
             }
 
-            responsesStreamingTask = task
+            taskControl.install(task, identifier: identifier)
             continuation.onTermination = { @Sendable _ in
-                task.cancel()
+                taskControl.cancel(identifier: identifier)
             }
         }
     }
