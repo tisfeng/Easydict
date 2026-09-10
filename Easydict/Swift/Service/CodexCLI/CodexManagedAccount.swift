@@ -44,17 +44,14 @@ final class CodexManagedAccount: ObservableObject {
     var errorMessage: String? { accountError?.localizedDescription }
 
     func errorMessage(for configuration: CodexServiceConfiguration) -> String? {
-        verificationError(for: configuration)?.localizedDescription ?? errorMessage
+        guard !isBusy else { return nil }
+        return errorMessage ?? verificationError(for: configuration)?.localizedDescription
     }
 
     func verificationError(for configuration: CodexServiceConfiguration) -> Error? {
         guard let result = currentVerification(for: configuration),
               case let .failure(error) = result.outcome else { return nil }
         return error
-    }
-
-    func refreshIfNeeded() {
-        if state == .unknown { refresh() }
     }
 
     func refresh() {
@@ -76,10 +73,10 @@ final class CodexManagedAccount: ObservableObject {
                 let status = try await runtime.command(["login", "status"], process: nextProcess())
                 try check(generation)
                 if try CodexManagedTranslation.isSignedIn(status) {
-                    authenticated = true
+                    authenticationState = true
                     state = .signedIn
                 } else {
-                    authenticated = false
+                    authenticationState = false
                     state = .authorizing
                     let parser = CodexAuthorizationURLParser()
                     let result = try await runtime.command(["login"], process: nextProcess(), timeout: 300) { chunk in
@@ -97,7 +94,7 @@ final class CodexManagedAccount: ObservableObject {
                     guard try CodexManagedTranslation.isSignedIn(status) else {
                         throw CodexManagedError.authenticationFailed
                     }
-                    authenticated = true
+                    authenticationState = true
                     authorizationURL = nil
                     try await validateConnection(generation: generation, runtime: runtime)
                 }
@@ -139,11 +136,15 @@ final class CodexManagedAccount: ObservableObject {
                 if self.generation == generation, !Task.isCancelled,
                    configuration == CodexServiceConfiguration(uuid: configuration.uuid) {
                     setFailureState(error)
-                    verificationResult = VerificationResult(
-                        configuration: configuration,
-                        release: release,
-                        outcome: .failure(error)
-                    )
+                    if (error as? CodexManagedError) == .loginRequired {
+                        accountError = error
+                    } else {
+                        verificationResult = VerificationResult(
+                            configuration: configuration,
+                            release: release,
+                            outcome: .failure(error)
+                        )
+                    }
                 }
             }
             finish(generation: generation)
@@ -163,6 +164,12 @@ final class CodexManagedAccount: ObservableObject {
             if state == .ready { state = authenticated ? .signedIn : .unknown }
         }
         if validationConfiguration?.uuid == origin { cancelCurrentOperation() }
+    }
+
+    /// Component loss invalidates connection evidence, not official credentials.
+    func componentUnavailable() {
+        verificationResult = nil
+        if !isBusy { restorePresentation() }
     }
 
     func logout() {
@@ -230,7 +237,8 @@ final class CodexManagedAccount: ObservableObject {
 
     private let runtimeFactory: () async throws -> CodexManagedRuntime
     private let coordinator: CodexRequestCoordinator
-    private var authenticated = false
+    // nil means no official authentication status has been established yet.
+    private var authenticationState: Bool?
     private var generation: UInt = 0
     private var operationKind: OperationKind?
     private var originUUID: String?
@@ -238,6 +246,8 @@ final class CodexManagedAccount: ObservableObject {
     private var process: CodexManagedProcess?
     private var validation: CodexManagedTranslation?
     private var validationConfiguration: CodexServiceConfiguration?
+
+    private var authenticated: Bool { authenticationState == true }
 
     private func currentVerification(for configuration: CodexServiceConfiguration) -> VerificationResult? {
         guard let result = verificationResult, result.configuration == configuration,
@@ -259,7 +269,7 @@ final class CodexManagedAccount: ObservableObject {
             if refreshReason != nil {
                 await readStatus(generation: generation)
             } else {
-                state = authenticated ? .signedIn : .unknown
+                restorePresentation()
             }
             finish(generation: generation)
         }
@@ -268,9 +278,13 @@ final class CodexManagedAccount: ObservableObject {
     private func begin(state: State, kind: OperationKind = .refresh) -> UInt {
         generation &+= 1
         self.state = state
-        verificationResult = nil
+        switch kind {
+        case .refresh: break
+        case .authentication, .verification:
+            verificationResult = nil
+            accountError = nil
+        }
         validationConfiguration = nil
-        accountError = nil
         authorizationURL = nil
         originUUID = nil
         operationKind = kind
@@ -299,7 +313,8 @@ final class CodexManagedAccount: ObservableObject {
     /// Only confirmed loss of authentication changes the available account actions.
     private func setFailureState(_ error: Error) {
         if (error as? CodexManagedError) == .loginRequired {
-            authenticated = false
+            authenticationState = false
+            verificationResult = nil
             state = .signedOut
         } else {
             state = authenticated ? .signedIn : .unknown
@@ -315,16 +330,38 @@ final class CodexManagedAccount: ObservableObject {
     private func readStatus(generation: UInt) async {
         do {
             let runtime = try await runtimeFactory()
+            try check(generation)
             let output = try await runtime.command(["login", "status"], process: nextProcess())
             try check(generation)
-            authenticated = try CodexManagedTranslation.isSignedIn(output)
-            state = authenticated ? .signedIn : .signedOut
+            authenticationState = try CodexManagedTranslation.isSignedIn(output)
+            if !authenticated { verificationResult = nil }
+            accountError = nil
+            restorePresentation()
         } catch is CancellationError {
         } catch {
             if self.generation == generation {
                 setFailureState(error)
                 accountError = error
             }
+        }
+    }
+
+    /// Derive idle presentation from current evidence; never revive a saved snapshot.
+    private func restorePresentation() {
+        guard let authenticationState else {
+            state = .unknown
+            return
+        }
+        guard authenticationState else {
+            state = .signedOut
+            return
+        }
+        if accountError == nil, let result = verificationResult,
+           currentVerification(for: result.configuration) != nil,
+           case .success = result.outcome {
+            state = .ready
+        } else {
+            state = .signedIn
         }
     }
 
@@ -352,7 +389,7 @@ final class CodexManagedAccount: ObservableObject {
         }
         let greeting = result.text.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
         guard ["你好", "您好"].contains(greeting) else { throw CodexManagedError.invalidResponse }
-        authenticated = true
+        authenticationState = true
         state = .ready
     }
 }

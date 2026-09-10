@@ -93,9 +93,11 @@ struct CodexCLIServiceConfigurationView: View {
             }
         }
         #if AGENT_CLI_DEBUG
-        Section {
-            Button("service.codex_cli.debug_log.show_window") {
-                CodexCLIDebugWindowController.shared.toggle()
+        if accessMode == .localCLI {
+            Section {
+                Button("service.codex_cli.debug_log.show_window") {
+                    CodexCLIDebugWindowController.shared.toggle()
+                }
             }
         }
         #endif

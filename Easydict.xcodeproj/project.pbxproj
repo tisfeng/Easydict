@@ -632,6 +632,7 @@
 		F5467B113D285C01338E3C55 /* CodexComponentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF5306040D79B1D50487C1E /* CodexComponentStore.swift */; };
 		C4BB908FFBD2D1A171F74CBC /* CodexComponentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF517B31357FC07D98440EE /* CodexComponentManager.swift */; };
 		F955D7120AD72EFC6429A79A /* CodexComponentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB3E639236DC6875625F110 /* CodexComponentStoreTests.swift */; };
+		04466B8E004E4D1BB65A4570 /* CodexManagedAccountRecoveryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87273B83A46A4319A7995E89 /* CodexManagedAccountRecoveryTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1385,6 +1386,7 @@
 		DDF5306040D79B1D50487C1E /* CodexComponentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexComponentStore.swift; sourceTree = "<group>"; };
 		CFF517B31357FC07D98440EE /* CodexComponentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexComponentManager.swift; sourceTree = "<group>"; };
 		BCB3E639236DC6875625F110 /* CodexComponentStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexComponentStoreTests.swift; sourceTree = "<group>"; };
+		87273B83A46A4319A7995E89 /* CodexManagedAccountRecoveryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedAccountRecoveryTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3633,6 +3635,7 @@
 				C3594F7282DE23CFECAD0C78 /* CodexRequestCoordinatorTests.swift */,
 				5448A25311DF3B636D9045C9 /* CodexManagedTranslationTests.swift */,
 				26A451FB8A81E2EB6077744D /* CodexManagedAccountTests.swift */,
+				87273B83A46A4319A7995E89 /* CodexManagedAccountRecoveryTests.swift */,
 				BCB3E639236DC6875625F110 /* CodexComponentStoreTests.swift */,
 				C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */,
 			);
@@ -4323,6 +4326,7 @@
 				7A7440D5127B44712E9F428C /* CodexRequestCoordinatorTests.swift in Sources */,
 				5BA419F2EF852376A925D849 /* CodexManagedTranslationTests.swift in Sources */,
 				8ECC69B8B5326B2884D3B877 /* CodexManagedAccountTests.swift in Sources */,
+				04466B8E004E4D1BB65A4570 /* CodexManagedAccountRecoveryTests.swift in Sources */,
 				F955D7120AD72EFC6429A79A /* CodexComponentStoreTests.swift in Sources */,
 				C0DEC11E0001000000000010 /* CodexCLIServiceTests.swift in Sources */,
 				030732D42F24862A0001382A /* OCRTextProcessingTests.swift in Sources */,

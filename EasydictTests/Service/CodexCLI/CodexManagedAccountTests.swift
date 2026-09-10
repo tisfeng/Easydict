@@ -583,14 +583,14 @@ struct CodexManagedAccountTests {
 
 // MARK: - AccountStatusFailure
 
-private enum AccountStatusFailure {
+enum AccountStatusFailure {
     case none
     case keychain
 }
 
 // MARK: - LoginValidationFailure
 
-private enum LoginValidationFailure: CaseIterable {
+enum LoginValidationFailure: CaseIterable {
     case statusSignedOut
     case execSignedOut
 }
@@ -598,7 +598,7 @@ private enum LoginValidationFailure: CaseIterable {
 // MARK: - AccountFixture
 
 /// Creates an empty private runtime root and a shell implementation of its CLI.
-private final class AccountFixture {
+final class AccountFixture {
     // MARK: Lifecycle
 
     init(
@@ -690,6 +690,14 @@ private final class AccountFixture {
     func invocationCount(_ name: String) -> Int {
         guard let log = try? String(contentsOf: logFile, encoding: .utf8) else { return 0 }
         return log.split(separator: "\n").filter { $0 == Substring(name) }.count
+    }
+
+    func setSignedIn(_ signedIn: Bool) throws {
+        if signedIn {
+            FileManager.default.createFile(atPath: stateFile.path, contents: Data())
+        } else if FileManager.default.fileExists(atPath: stateFile.path) {
+            try FileManager.default.removeItem(at: stateFile)
+        }
     }
 
     // MARK: Private
@@ -784,7 +792,7 @@ private final class AccountFixture {
 }
 
 @MainActor
-private func withAccountFixture<T>(
+func withAccountFixture<T>(
     initiallySignedIn: Bool = false,
     loginDelay: Int = 0,
     validationDelay: Int = 0,
@@ -810,7 +818,7 @@ private func withAccountFixture<T>(
 }
 
 @MainActor
-private func waitForAccount(
+func waitForAccount(
     timeout: TimeInterval = 4,
     _ condition: @escaping @MainActor () -> Bool
 ) async throws {
@@ -821,7 +829,7 @@ private func waitForAccount(
     }
 }
 
-private func waitForRuntimeFactory(
+func waitForRuntimeFactory(
     _ gate: RuntimeFactoryGate,
     timeout: TimeInterval = 4
 ) async throws {
@@ -833,12 +841,12 @@ private func waitForRuntimeFactory(
 }
 
 @MainActor
-private func accountIsSignedOut(_ account: CodexManagedAccount) -> Bool {
+func accountIsSignedOut(_ account: CodexManagedAccount) -> Bool {
     if case .signedOut = account.state { return true }
     return false
 }
 
-private func installManagedConfiguration(
+func installManagedConfiguration(
     uuid: String, model: String, effort: CodexReasoningEffort
 ) {
     Defaults[CodexAccessMode.key(uuid: uuid)] = .managed
@@ -846,7 +854,7 @@ private func installManagedConfiguration(
     Defaults[CodexServiceConfiguration.effortKey(uuid: uuid, mode: .managed)] = effort
 }
 
-private func resetManagedConfiguration(uuid: String) {
+func resetManagedConfiguration(uuid: String) {
     Defaults.reset(
         CodexAccessMode.key(uuid: uuid),
         CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed),
@@ -879,7 +887,7 @@ private final class AccountRegistrationCancellation: @unchecked Sendable {
 // MARK: - RuntimeFactoryCallCounter
 
 /// Counts managed-runtime resolution attempts made after static selection validation.
-private actor RuntimeFactoryCallCounter {
+actor RuntimeFactoryCallCounter {
     // MARK: Internal
 
     var count: Int { value }
@@ -900,7 +908,7 @@ private struct DelayedRuntimeFailure: Error {}
 // MARK: - RuntimeFactoryGate
 
 /// Suspends resolution until the test releases the continuation after invalidation.
-private actor RuntimeFactoryGate {
+actor RuntimeFactoryGate {
     // MARK: Internal
 
     var isWaiting: Bool { continuation != nil }

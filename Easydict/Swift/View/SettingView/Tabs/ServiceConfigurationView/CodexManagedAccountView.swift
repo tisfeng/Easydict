@@ -22,7 +22,8 @@ struct CodexManagedAccountView: View {
                 .foregroundStyle(.secondary)
             if !component.isReady {
                 componentControls
-            } else {
+            }
+            if account.isBusy || component.isReady {
                 HStack {
                     if account.isBusy { ProgressView().controlSize(.small) }
                     Text(status)
@@ -41,19 +42,15 @@ struct CodexManagedAccountView: View {
                 }
                 if let message = account.errorMessage(for: configuration) {
                     Text(message).font(.caption).foregroundStyle(.red).textSelection(.enabled)
-                    if !account.isBusy {
-                        Button("service.codex_cli.managed.refresh") { component.refresh() }
-                    }
                 }
+            }
+            if !component.isBusy, !account.isBusy {
+                Button("service.codex_cli.managed.refresh") { component.refresh() }
             }
         }
         .task {
             component.retainConsumer(origin)
-            component.refreshIfNeeded()
-            if component.isReady { account.refreshIfNeeded() }
-        }
-        .onChange(of: component.isReady) { ready in
-            if ready { account.refresh() }
+            component.refresh()
         }
     }
 
@@ -91,8 +88,10 @@ struct CodexManagedAccountView: View {
                 Text("service.codex_cli.component.installing")
             case .cancelling:
                 Text("service.codex_cli.component.cancelling")
-            case .checking, .unknown:
+            case .checking:
                 Text("service.codex_cli.component.checking")
+            case .unknown:
+                Text("service.codex_cli.managed.status.unknown")
             case .failed, .missing:
                 Text("service.codex_cli.component.missing")
             case .ready:
@@ -102,8 +101,13 @@ struct CodexManagedAccountView: View {
             if component.isBusy {
                 Button("service.codex_cli.managed.cancel") { component.cancel() }
                     .disabled({ if case .cancelling = component.state { return true }; return false }())
-            } else {
-                Button("service.codex_cli.component.download") { component.download(origin: origin) }
+            } else if !account.isBusy {
+                switch component.state {
+                case .failed, .missing:
+                    Button("service.codex_cli.component.download") { component.download(origin: origin) }
+                default:
+                    EmptyView()
+                }
             }
         }
         if let message = component.errorMessage {

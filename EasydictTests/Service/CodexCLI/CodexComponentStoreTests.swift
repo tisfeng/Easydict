@@ -6,6 +6,7 @@
 //
 
 import CryptoKit
+import Defaults
 @testable import Easydict
 import Foundation
 import Testing
@@ -136,6 +137,289 @@ struct CodexComponentStoreTests {
         #expect(repaired == installed)
         #expect(executableContents == ComponentFixture.executableContents)
         #expect(verified == installed)
+    }
+
+    @Test("a missing component check exposes recovery without downloading or touching an account")
+    @MainActor
+    func missingComponentCheckStopsAtDownloadRecovery() async throws {
+        let fixture = try ComponentFixture()
+        let archive = try fixture.makeArchive()
+        let server = try fixture.server(archive: archive, behavior: .normal)
+        let store = fixture.store(archive: archive, downloadURL: server.url)
+        let account = CodexManagedAccount(
+            runtimeFactory: { throw ComponentManagerFixtureError.unexpectedAccountRuntimeAccess },
+            coordinator: CodexRequestCoordinator()
+        )
+        let manager = CodexComponentManager(storeFactory: { store }, account: account)
+
+        manager.refresh()
+        try await waitForComponentManager { !manager.isBusy }
+
+        #expect(componentManagerIsMissing(manager))
+        #expect(server.requestCount == 0)
+        #expect(!account.isBusy)
+        #expect(account.errorMessage == nil)
+    }
+
+    @Test("a component that becomes invalid clears verification without claiming the account signed out")
+    @MainActor
+    func invalidComponentClearsVerificationAndKeepsAuthentication() async throws {
+        try await withAccountFixture(initiallySignedIn: true, release: .current) { runtimeFixture in
+            let uuid = UUID().uuidString
+            installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
+            defer { resetManagedConfiguration(uuid: uuid) }
+            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let fixture = try ComponentFixture()
+            let archive = try fixture.makeArchive()
+            let server = try fixture.server(archive: archive, behavior: .normal)
+            let store = fixture.store(archive: archive, downloadURL: server.url)
+            let installed = try await store.install { _ in }
+            let account = runtimeFixture.account()
+            let manager = CodexComponentManager(storeFactory: { store }, account: account)
+
+            manager.refresh()
+            try await waitForComponentManager { !manager.isBusy && manager.isReady }
+            try await waitForAccount { !account.isBusy && account.isSignedIn }
+            account.validate(configuration: configuration)
+            try await waitForAccount { !account.isBusy && account.isValidated(configuration: configuration) }
+            try "#!/bin/sh\necho tampered\n".write(
+                to: installed.appendingPathComponent("bin/codex"),
+                atomically: true,
+                encoding: .utf8
+            )
+
+            manager.refresh()
+            try await waitForComponentManager { !manager.isBusy }
+
+            #expect(componentManagerIsMissing(manager))
+            #expect(!account.isValidated(configuration: configuration))
+            #expect(account.isSignedIn)
+            #expect(account.errorMessage == nil)
+            #expect(server.requestCount == 1)
+        }
+    }
+
+    @Test("a successful component refresh updates a stale signed-in account to login recovery")
+    @MainActor
+    func successfulComponentRefreshUpdatesStaleAccountStatus() async throws {
+        try await withAccountFixture(initiallySignedIn: true, release: .current) { runtimeFixture in
+            let uuid = UUID().uuidString
+            installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
+            defer { resetManagedConfiguration(uuid: uuid) }
+            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let fixture = try ComponentFixture()
+            let archive = try fixture.makeArchive()
+            let server = try fixture.server(archive: archive, behavior: .normal)
+            let store = fixture.store(archive: archive, downloadURL: server.url)
+            _ = try await store.install { _ in }
+            let account = runtimeFixture.account()
+            let manager = CodexComponentManager(storeFactory: { store }, account: account)
+
+            manager.refresh()
+            try await waitForComponentManager { !manager.isBusy }
+            try await waitForAccount { !account.isBusy && account.isSignedIn }
+            account.validate(configuration: configuration)
+            try await waitForAccount { !account.isBusy && account.isValidated(configuration: configuration) }
+            let execBeforeLoss = runtimeFixture.invocationCount("exec")
+            let statusBeforeLoss = runtimeFixture.invocationCount("status")
+
+            try runtimeFixture.setSignedIn(false)
+            let translation = CodexManagedTranslation()
+            await #expect(throws: CodexManagedError.loginRequired) {
+                try await translation.run(
+                    prompt: "Translate Hello into Simplified Chinese.",
+                    model: CodexRuntimeRelease.current.defaultModel,
+                    effort: "high",
+                    runtime: runtimeFixture.runtime()
+                )
+            }
+            #expect(account.isSignedIn)
+            #expect(account.isValidated(configuration: configuration))
+
+            manager.refresh()
+            try await waitForComponentManager { !manager.isBusy }
+            try await waitForAccount { !account.isBusy && accountIsSignedOut(account) }
+
+            #expect(!account.isValidated(configuration: configuration))
+            #expect(runtimeFixture.invocationCount("exec") == execBeforeLoss)
+            #expect(runtimeFixture.invocationCount("login") == 0)
+            #expect(runtimeFixture.invocationCount("status") == statusBeforeLoss + 2)
+            #expect(server.requestCount == 1)
+        }
+    }
+
+    @Test("overlapping settings refreshes reuse the same component check")
+    @MainActor
+    func overlappingRefreshesReuseOneCheck() async throws {
+        let fixture = try ComponentFixture()
+        let archive = try fixture.makeArchive()
+        let server = try fixture.server(archive: archive, behavior: .normal)
+        let store = fixture.store(archive: archive, downloadURL: server.url)
+        let gate = ComponentStoreFactoryGate()
+        let calls = ComponentStoreFactoryCounter()
+        let account = CodexManagedAccount(
+            runtimeFactory: { throw ComponentManagerFixtureError.unexpectedAccountRuntimeAccess },
+            coordinator: CodexRequestCoordinator()
+        )
+        let manager = CodexComponentManager(
+            storeFactory: {
+                await calls.record()
+                await gate.wait()
+                return store
+            },
+            account: account
+        )
+
+        manager.refresh()
+        manager.refresh()
+        try await waitForComponentStoreFactory(gate)
+        #expect(await calls.count == 1)
+
+        await gate.release()
+        try await waitForComponentManager { !manager.isBusy }
+
+        #expect(componentManagerIsMissing(manager))
+        #expect(server.requestCount == 0)
+        #expect(account.errorMessage == nil)
+    }
+
+    @Test("canceling a read-only component check preserves availability and does not restart it")
+    @MainActor
+    func cancellingComponentCheckDoesNotRestart() async throws {
+        let fixture = try ComponentFixture()
+        let archive = try fixture.makeArchive()
+        let server = try fixture.server(archive: archive, behavior: .normal)
+        let store = fixture.store(archive: archive, downloadURL: server.url)
+        let gate = ComponentStoreFactoryGate()
+        let calls = ComponentStoreFactoryCounter()
+        let account = CodexManagedAccount(
+            runtimeFactory: { throw ComponentManagerFixtureError.unexpectedAccountRuntimeAccess },
+            coordinator: CodexRequestCoordinator()
+        )
+        let manager = CodexComponentManager(
+            storeFactory: {
+                await calls.record()
+                if await calls.count == 2 { await gate.wait() }
+                return store
+            },
+            account: account
+        )
+
+        manager.refresh()
+        try await waitForComponentManager { !manager.isBusy }
+        #expect(componentManagerIsMissing(manager))
+
+        manager.refresh()
+        try await waitForComponentStoreFactory(gate)
+        manager.cancel()
+        await gate.release()
+        try await waitForComponentManager { !manager.isBusy }
+
+        #expect(await calls.count == 2)
+        #expect(componentManagerIsMissing(manager))
+        #expect(server.requestCount == 0)
+        #expect(account.errorMessage == nil)
+    }
+
+    @Test("canceling an installation rechecks the actual component result")
+    @MainActor
+    func cancellingInstallRechecksActualComponent() async throws {
+        let fixture = try ComponentFixture()
+        let archive = try fixture.makeArchive(extraFiles: ["data/payload": pseudoRandomData(count: 1_048_576)])
+        let server = try fixture.server(archive: archive, behavior: .slow)
+        let store = fixture.store(archive: archive, downloadURL: server.url)
+        let calls = ComponentStoreFactoryCounter()
+        let account = CodexManagedAccount(
+            runtimeFactory: { throw ComponentManagerFixtureError.unexpectedAccountRuntimeAccess },
+            coordinator: CodexRequestCoordinator()
+        )
+        let manager = CodexComponentManager(
+            storeFactory: {
+                await calls.record()
+                return store
+            },
+            account: account
+        )
+
+        manager.download(origin: "first-window")
+        try await waitForRequest(server)
+        try await Task.sleep(for: .milliseconds(750))
+        manager.cancel()
+        try await waitForComponentManager { !manager.isBusy }
+
+        #expect(await calls.count == 2)
+        #expect(componentManagerIsMissing(manager))
+        #expect(server.requestCount == 1)
+        #expect(!account.isBusy)
+        #expect(account.errorMessage == nil)
+    }
+
+    @Test("canceling a component check does not interrupt an independent managed translation")
+    @MainActor
+    func cancellingComponentCheckDoesNotCancelTranslation() async throws {
+        try await withAccountFixture(initiallySignedIn: true, validationDelay: 2, release: .current) { runtimeFixture in
+            let fixture = try ComponentFixture()
+            let archive = try fixture.makeArchive()
+            let server = try fixture.server(archive: archive, behavior: .normal)
+            let store = fixture.store(archive: archive, downloadURL: server.url)
+            let gate = ComponentStoreFactoryGate()
+            let manager = CodexComponentManager(
+                storeFactory: {
+                    await gate.wait()
+                    return store
+                },
+                account: runtimeFixture.account()
+            )
+            let translation = CodexManagedTranslation()
+            let translationTask = Task {
+                try await translation.run(
+                    prompt: "Translate Hello into Simplified Chinese.",
+                    model: CodexRuntimeRelease.current.defaultModel,
+                    effort: "high",
+                    runtime: runtimeFixture.runtime()
+                )
+            }
+            try await waitForAccount { runtimeFixture.invocationCount("exec") == 1 }
+
+            manager.refresh()
+            try await waitForComponentStoreFactory(gate)
+            manager.cancel()
+            await gate.release()
+            try await waitForComponentManager { !manager.isBusy }
+            let result = try await translationTask.value
+
+            #expect(result.text == "你好")
+            #expect(server.requestCount == 0)
+        }
+    }
+
+    @Test("a component refresh does not preempt an existing account operation")
+    @MainActor
+    func refreshDoesNotPreemptBusyAccount() async throws {
+        try await withAccountFixture(firstStatusDelayedAndSignedIn: true, release: .current) { fixture in
+            let calls = ComponentStoreFactoryCounter()
+            let account = fixture.account()
+            let manager = CodexComponentManager(
+                storeFactory: {
+                    await calls.record()
+                    throw ComponentManagerFixtureError.unexpectedComponentStoreAccess
+                },
+                account: account
+            )
+
+            account.refresh()
+            try await waitForAccount { fixture.invocationCount("status") == 1 }
+            manager.refresh()
+            try await Task.sleep(for: .milliseconds(100))
+
+            let callCount = await calls.count
+            #expect(callCount == 0)
+            #expect(!manager.isBusy)
+            #expect(componentManagerIsUnknown(manager))
+
+            account.cancelCurrentOperation()
+            try await waitForAccount { !account.isBusy }
+        }
     }
 }
 
@@ -428,4 +712,85 @@ private func waitForRequest(_ server: ComponentHTTPServer, timeout: TimeInterval
         guard Date() < deadline else { throw ComponentFixtureError.waitTimedOut }
         try await Task.sleep(for: .milliseconds(10))
     }
+}
+
+@MainActor
+private func waitForComponentManager(
+    timeout: TimeInterval = 4,
+    _ condition: @escaping @MainActor () -> Bool
+) async throws {
+    let deadline = Date().addingTimeInterval(timeout)
+    while !condition() {
+        guard Date() < deadline else { throw ComponentFixtureError.waitTimedOut }
+        try await Task.sleep(for: .milliseconds(20))
+    }
+}
+
+private func waitForComponentStoreFactory(
+    _ gate: ComponentStoreFactoryGate,
+    timeout: TimeInterval = 4
+) async throws {
+    let deadline = Date().addingTimeInterval(timeout)
+    while !(await gate.isWaiting) {
+        guard Date() < deadline else { throw ComponentFixtureError.waitTimedOut }
+        try await Task.sleep(for: .milliseconds(20))
+    }
+}
+
+@MainActor
+private func componentManagerIsMissing(_ manager: CodexComponentManager) -> Bool {
+    if case .missing = manager.state { return true }
+    return false
+}
+
+@MainActor
+private func componentManagerIsUnknown(_ manager: CodexComponentManager) -> Bool {
+    if case .unknown = manager.state { return true }
+    return false
+}
+
+// MARK: - ComponentManagerFixtureError
+
+private enum ComponentManagerFixtureError: Error {
+    case unexpectedAccountRuntimeAccess
+    case unexpectedComponentStoreAccess
+}
+
+// MARK: - ComponentStoreFactoryCounter
+
+private actor ComponentStoreFactoryCounter {
+    // MARK: Internal
+
+    var count: Int { value }
+
+    func record() {
+        value += 1
+    }
+
+    // MARK: Private
+
+    private var value = 0
+}
+
+// MARK: - ComponentStoreFactoryGate
+
+private actor ComponentStoreFactoryGate {
+    // MARK: Internal
+
+    var isWaiting: Bool { continuation != nil }
+
+    func wait() async {
+        await withCheckedContinuation { continuation in
+            self.continuation = continuation
+        }
+    }
+
+    func release() {
+        continuation?.resume()
+        continuation = nil
+    }
+
+    // MARK: Private
+
+    private var continuation: CheckedContinuation<(), Never>?
 }

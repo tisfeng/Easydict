@@ -8,10 +8,23 @@
 import Combine
 import Foundation
 
-/// A single user-initiated component download shared by all managed settings pages.
-/// Component availability is separate from the account's official authentication state.
+/// Shares component checks and installation across managed settings pages.
+/// A completed component check starts an account read without changing credentials
+/// or interrupting translations; cancellation follows the operation's ownership.
 @MainActor
 final class CodexComponentManager: ObservableObject {
+    // MARK: Lifecycle
+
+    init(
+        storeFactory: @escaping () async throws -> CodexComponentStore = {
+            try CodexComponentStore.applicationStore(descriptor: .load())
+        },
+        account: CodexManagedAccount = .shared
+    ) {
+        self.storeFactory = storeFactory
+        self.account = account
+    }
+
     // MARK: Internal
 
     enum State {
@@ -26,35 +39,21 @@ final class CodexComponentManager: ObservableObject {
     var isReady: Bool { if case .ready = state { return true }; return false }
     var isBusy: Bool { operation != nil }
 
-    func refreshIfNeeded() {
-        if case .unknown = state { refresh() }
-    }
-
+    /// Appearance and manual refresh use the same entry; active work wins without queuing.
     func refresh() {
-        guard operation == nil else { return }
-        let generation = begin(state: .checking)
-        operation = Task {
-            do {
-                let store = try CodexComponentStore.applicationStore(descriptor: .load())
-                _ = try await store.verifyInstalled()
-                guard generation == self.generation else { return }
-                state = .ready
-            } catch {
-                guard generation == self.generation else { return }
-                state = .missing
-                if (error as? CodexManagedError) != .componentMissing { errorMessage = error.localizedDescription }
-            }
-            finish(generation)
-        }
+        guard operation == nil, !account.isBusy else { return }
+        let generation = begin(state: .checking, kind: .check)
+        operation = Task { await checkInstallation(generation) }
     }
 
     func download(origin: String) {
         consumers.insert(origin)
-        guard operation == nil else { return }
-        let generation = begin(state: .downloading(0))
+        guard operation == nil, !account.isBusy else { return }
+        let generation = begin(state: .downloading(0), kind: .install)
         operation = Task {
             do {
-                let store = try CodexComponentStore.applicationStore(descriptor: .load())
+                let store = try await storeFactory()
+                try Task.checkCancellation()
                 _ = try await store.install { progress in
                     Task { @MainActor [weak self] in
                         guard let self, self.generation == generation, operation != nil else { return }
@@ -63,12 +62,10 @@ final class CodexComponentManager: ObservableObject {
                 }
                 try Task.checkCancellation()
                 guard generation == self.generation else { return }
-                state = .ready
-                CodexManagedAccount.shared.refresh()
+                applyAvailability(.ready)
             } catch {
                 guard generation == self.generation else { return }
-                state = .failed
-                errorMessage = error.localizedDescription
+                applyAvailability(.failed, error: error)
             }
             finish(generation)
         }
@@ -84,27 +81,72 @@ final class CodexComponentManager: ObservableObject {
     }
 
     func cancel() {
-        guard let previous = operation else { return }
+        guard let previous = operation, let kind = operationKind else { return }
+        if case .cancelling = state { return }
         previous.cancel()
-        let generation = begin(state: .cancelling)
+        let generation = begin(state: .cancelling, kind: kind)
         operation = Task {
             await previous.value
             guard self.generation == generation else { return }
-            finish(generation)
-            state = .unknown
-            refreshIfNeeded()
+            switch kind {
+            case .check:
+                state = availability
+                errorMessage = availabilityError
+                finish(generation)
+            case .install:
+                // Installation may have completed its atomic promotion before cancellation.
+                await checkInstallation(generation)
+            }
         }
     }
 
     // MARK: Private
 
+    /// The displayed phase can change without changing cancellation semantics.
+    private enum OperationKind {
+        case check, install
+    }
+
+    private let storeFactory: () async throws -> CodexComponentStore
+    private let account: CodexManagedAccount
     private var generation: UInt = 0
     private var operation: Task<(), Never>?
+    private var operationKind: OperationKind?
     private var consumers = Set<String>()
+    private var availability: State = .unknown
+    private var availabilityError: String?
 
-    private func begin(state: State) -> UInt {
+    private func checkInstallation(_ generation: UInt) async {
+        do {
+            let store = try await storeFactory()
+            try Task.checkCancellation()
+            _ = try await store.verifyInstalled()
+            guard generation == self.generation else { return }
+            applyAvailability(.ready)
+        } catch {
+            guard generation == self.generation else { return }
+            applyAvailability(.missing, error: error)
+        }
+        finish(generation)
+    }
+
+    /// Publish the result and hand off to the account in one MainActor segment.
+    private func applyAvailability(_ state: State, error: Error? = nil) {
+        availability = state
+        availabilityError = (error as? CodexManagedError) == .componentMissing ? nil : error?.localizedDescription
+        self.state = state
+        errorMessage = availabilityError
+        if case .ready = state {
+            account.refresh()
+        } else if case .missing = state {
+            account.componentUnavailable()
+        }
+    }
+
+    private func begin(state: State, kind: OperationKind) -> UInt {
         generation &+= 1
         self.state = state
+        operationKind = kind
         errorMessage = nil
         return generation
     }
@@ -112,6 +154,7 @@ final class CodexComponentManager: ObservableObject {
     private func finish(_ generation: UInt) {
         guard self.generation == generation else { return }
         operation = nil
+        operationKind = nil
         objectWillChange.send()
     }
 }
