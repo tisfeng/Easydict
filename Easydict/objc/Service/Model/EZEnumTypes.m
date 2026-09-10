@@ -94,6 +94,8 @@ NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
             return @"fixed_window";
         case EZWindowTypeMini:
             return @"mini_window";
+        case EZWindowTypeScreenshotOverlay:
+            return @"screenshot_overlay";
         default:
             return @"none_window";
     }
