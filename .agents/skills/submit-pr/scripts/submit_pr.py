@@ -274,7 +274,16 @@ def resolve_repository_context(
     }
     requested_repo = args.repo or os.environ.get("GH_REPO")
     if requested_repo:
-        base_info = github_repository_info(repo_root, requested_repo)
+        base_info = next(
+            (
+                info
+                for repository, info in infos.items()
+                if repository.casefold() == requested_repo.casefold()
+            ),
+            None,
+        )
+        if base_info is None:
+            base_info = github_repository_info(repo_root, requested_repo)
     else:
         roots = [info.root for info in infos.values()]
         base_repository = select_unique(roots, "base repository (--repo)")

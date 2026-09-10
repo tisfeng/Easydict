@@ -2,32 +2,25 @@
   "version": 1,
   "agents": {
     "planner": {
-      "source": "tisfeng/skills#v0.3.2",
-      "ref": "v0.3.2",
-      "revision": "826b0a868f5802da8a4f2b90c8ac92e6cb2577b2",
+      "source": "tisfeng/skills#v0.3.3",
+      "ref": "v0.3.3",
+      "revision": "41555fa9a5090dd172870ba392b2dc231c767c9b",
       "relativePath": ".codex/agents/planner.toml",
       "fileHash": "3b82bc7742b003c2b953fd1a3b32c7579eb6c0120a149775b4e594dcb0105ca0"
     },
     "reviewer": {
-      "source": "tisfeng/skills#v0.3.2",
-      "ref": "v0.3.2",
-      "revision": "826b0a868f5802da8a4f2b90c8ac92e6cb2577b2",
+      "source": "tisfeng/skills#v0.3.3",
+      "ref": "v0.3.3",
+      "revision": "41555fa9a5090dd172870ba392b2dc231c767c9b",
       "relativePath": ".codex/agents/reviewer.toml",
       "fileHash": "4355c6889c2074dc520c00610daadcb1ad9d0a92b648ffc1e1f6eb79cb6eb828"
     },
     "tester": {
-      "source": "tisfeng/skills#v0.3.2",
-      "ref": "v0.3.2",
-      "revision": "826b0a868f5802da8a4f2b90c8ac92e6cb2577b2",
+      "source": "tisfeng/skills#v0.3.3",
+      "ref": "v0.3.3",
+      "revision": "41555fa9a5090dd172870ba392b2dc231c767c9b",
       "relativePath": ".codex/agents/tester.toml",
       "fileHash": "91852e07a43f415c330fcd5387b6d477a18325947a026c950272faaf71bec4ec"
-    },
-    "git-delivery": {
-      "source": "tisfeng/skills#v0.3.2",
-      "ref": "v0.3.2",
-      "revision": "826b0a868f5802da8a4f2b90c8ac92e6cb2577b2",
-      "relativePath": ".codex/agents/git-delivery.toml",
-      "fileHash": "90b1bcb6a8d09aaaad15317db2ed65061d99272021a5cb0241f0e72e575bb68f"
     }
   }
 }

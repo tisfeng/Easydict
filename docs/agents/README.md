@@ -51,7 +51,7 @@
 
 - Skills：`code-simplifier`、`git-commit`、`review`、`review-pr`、`submit-pr`、
   `worktree-rebase-merge`。
-- Codex 子代理：`planner`、`reviewer`、`tester`、`git-delivery`。
+- Codex 子代理：`planner`、`reviewer`、`tester`。
 
 这些目录和 TOML 是外部权威内容的项目可运行快照。Easydict 不直接修改、删减、重命名或
 重新格式化；项目差异写入 `AGENTS.md` 或 `docs/agents/`。需要改变通用行为时先修改并发布
@@ -85,9 +85,11 @@
    并分别检查 diff，不运行不区分来源的宽泛更新。
 4. 首次为已有 agent 建立 lock 时，只有冻结并核对精确 TOML 后才可使用一次 `--force`；后续
    更新依靠已记录 hash 检测漂移，不默认覆盖。
-5. 不递归复制上游工作目录；安装内容来自已核验的 tag、commit 或安装器克隆，避免带入缓存
+5. 上游版本明确删除受管资产且安装器不会自动清理时，只在获准的升级任务中核验发布说明、
+   已安装路径和 lock 条目后，精确删除对应快照与单个 lock 条目；不扩展到其他资产。
+6. 不递归复制上游工作目录；安装内容来自已核验的 tag、commit 或安装器克隆，避免带入缓存
    和构建产物。
-6. 同步后验证目标集合、lock、来源内容和项目专属保护路径，再按 Git 门禁交付。
+7. 同步后验证目标集合、lock、来源内容和项目专属保护路径，再按 Git 门禁交付。
 
 ### 验证边界
 
