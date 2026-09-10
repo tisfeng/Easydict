@@ -5,105 +5,76 @@ description: 根据已暂存内容创建 Angular-style 提交，并为调用方�
 
 # Git 提交流程
 
-根据经过范围校验的暂存变更创建准确的 Angular-style Git 提交。显式交付可按下述决策创建一次
-暂存快照；提交信息与最终提交始终只以 staged raw patch 为准。
+根据经过范围校验的内容创建 Angular-style Git 提交。实际提交及其回执以 staged diff 和 Git
+中的真实提交为准；只读预览可以使用尚未暂存的候选，但必须明确标为草稿。
 
-下文的 `<git-commit-skill-dir>` 表示当前加载的 `git-commit/SKILL.md` 所在目录。
-运行随 skill 分发的脚本时，先解析该实际目录；不要假设 skill 安装在某个固定的
-Agent 或项目路径中。
+`<git-commit-skill-dir>` 指实际加载的本 Skill 目录；使用该目录中的脚本，不假设安装路径。
 
-## 必需流程
+## 先确定模式
 
-1. 收集上下文：
-   - `git status`
-   - staged raw patch:
-     `GIT_PAGER=cat git --no-pager diff --staged --no-ext-diff --no-textconv --unified=5`
-   - unstaged raw patch:
-     `GIT_PAGER=cat git --no-pager diff --no-ext-diff --no-textconv --unified=5`
-   - untracked paths: `git ls-files --others --exclude-standard`
-   - `git branch --show-current`
-   - `git log --oneline -10`
-2. 根据 **暂存决策** 冻结唯一可用的暂存策略，再执行该策略并重新运行 `git status` 和
-   staged raw patch 命令。
-3. 如果暂存后的路径或 raw patch 与冻结候选不一致，停止并保留索引；不得通过第二次
-   `git add` 修正范围。
-4. 如果唯一允许的一次暂存后 staged diff 仍为空，则停止，不创建空提交。
-5. 将暂存区原始 patch 作为唯一事实来源进行分析。针对单个路径时复用同一命令形式，
-   并追加 `-- <path>`。
-6. 先起草英文提交信息；仅当 `{USR_PREFERRED_LANGUAGE}` 不是英语时，再起草含义一致的
-   本地语言区块。
-7. 除非用户明确要求先确认、仅预览、仅生成提交信息、仅起草或不要提交，否则使用
-   默认模式。
-8. 在默认模式下，或在确认模式获得批准后，严格执行：
-   - 将完整的实际提交信息写入 `commit_message.txt`。
-   - 根据 **提交信息契约** 解析出的语言模式运行提交前校验：英语用户使用
-     `english`，非英语用户使用 `bilingual`。
-   - 只有提交前校验成功后，才运行 `git commit -F commit_message.txt`。
-   - 提交成功后，读取实际 commit 并同时校验结构及其与
-     `commit_message.txt` 的一致性。
-   - 只有提交后校验成功后，才删除 `commit_message.txt`。
-9. 提交成功后遵循 **Post-Commit Report**。在向用户展示该报告之前，即使 Git 命令
-   成功但提交后校验失败，也不算完成交付。
+- **仅预览、仅起草或只读**：只检查并展示草稿，不暂存、不创建消息文件、不提交或改变 Git 状态。
+  Git 读取使用 `GIT_OPTIONAL_LOCKS=0`。已有 staged 时只使用其内容；索引为空时使用获准范围内
+  的 unstaged 和 untracked 候选。
+- **确认模式**：先展示完整预览并等待批准。只有已经明确获准的暂存动作可以提前执行；否则从
+  只读候选起草，批准后再暂存和复验。
+- **默认模式**：明确调用本 Skill 或已有宿主自动提交授权时，按下文准备、预览后直接提交。
+  预览本身不增加确认门槛。
+- 用户的禁止、范围和暂缓要求持续有效；“不提交”不自动授权暂存。没有提交授权时只完成已获准
+  的准备工作，不进入默认模式。
 
-## 暂存决策
+## 准备与暂存
 
-执行者只能选择以下一种策略；预检冻结策略、候选路径和相应 raw patch 后，写入阶段必须重新
-读取并完全匹配。`worktree-rebase-merge` 在创建源提交时复用本节，不另设空索引停止规则。
+1. 记录调用目录，用 `git rev-parse --show-toplevel` 定位仓库根目录。用户提供的相对路径先按
+   原调用目录解析；后续 Git 检查和暂存从仓库根目录执行，避免 `git add .` 漏掉其他目录。
+2. 读取 HEAD、当前分支、`git status --short`、最近提交和相关 untracked 内容。分别检查：
 
-- **existing-index**：初始索引非空时，不运行 `git add`；只复验既有 staged paths 与 staged raw
-  patch。若它超出用户范围，保留索引并报告冲突。
-- **explicit-paths**：用户明确调用 `git-commit` 或 `worktree-rebase-merge`，初始索引为空且限定
-  路径、并允许暂存时，只运行一次 `git add -- <selected-paths>`。
-- **explicit-worktree-once**：用户明确调用上述任一交付工作流，初始索引为空、未限定路径，且未
-  禁止暂存或要求 staged-only 时，只运行一次 `git add .`。预检必须先冻结完整未暂存 raw patch、
-  任务相关未跟踪文件摘要和候选路径；暂存后 staged paths 与 staged raw patch 必须与该快照一致。
-- **auto-exact**：仓库规则授权的 `auto-local-commit` 只运行一次
-  `git add -- <expected_commit_paths>`，并要求最终 staged paths 与该冻结集合完全相等；绝不使用
-  `git add .`。
-- 禁止暂存、仅要求提交已有 staged 内容、策略无法确定、候选内容漂移或存在冲突时，不暂存并进入
-  protected。
+   ```bash
+   git --no-pager diff --cached --no-ext-diff --no-textconv --unified=5
+   git --no-pager diff --no-ext-diff --no-textconv --unified=5
+   git ls-files --others --exclude-standard
+   ```
 
-## 经仓库规则授权的自动交付
+3. 按下表确定范围，记录候选路径、raw patch 和未跟踪文件内容摘要。预览/确认限制优先于任何
+   暂存策略。准备写入时复验 HEAD、索引与候选内容；非预期变化或冲突存在时停止并保留现场。
+4. 获准后只执行一次选定的暂存动作，比较 staged paths 与 raw patch 是否和候选完全一致。
+   不一致时停止，不用第二次 `git add` 修正范围；没有可提交差异时不创建空提交。
 
-只有仓库规则或调用方已明确授权自动本地提交时，才调用此模式。这是收尾步骤，不是在每次
-编辑后执行。规划、讨论和分析不进入此模式；已授权 implementation 是否包含仅修改计划、history
-或其他 Agent 文档的任务由宿主仓库规则决定。
+| 情况 | 暂存动作 |
+| --- | --- |
+| 已有索引（`existing-index`） | 不运行 `git add`，只提交既有 staged 内容；超出用户范围时停止。 |
+| 显式交付、空索引、限定路径（`explicit-paths`） | 获准后一次 `git add -- <selected-paths>`。 |
+| 显式交付、空索引、未限定路径（`explicit-worktree-once`） | 未禁止暂存且非 staged-only 时，在仓库根目录一次 `git add .`。 |
+| 宿主授权自动提交（`auto-exact`） | 一次 `git add -- <expected_commit_paths>`，禁止 `git add .`。 |
 
-第一次写入前记录：
+`worktree-rebase-merge` 创建源提交时复用本节。禁止暂存或要求 staged-only 且索引为空时，
+不生成提交；纯预览仍可报告候选或范围缺口。
 
-- `initial_head`
-- `initial_staged_paths`
-- `initial_unstaged_paths`
-- `initial_untracked_paths`
-- `task_allowed_paths`
-- `agent_owned_paths`
+## 宿主授权的自动提交
 
-实现完成后冻结 `expected_commit_paths`。它是本次实际要提交的 Agent-owned 路径集合，必须属于
-`task_allowed_paths`；允许范围可以比实际修改集合更宽，不能据此暂存未修改路径。
+自动提交只在获准任务收尾时执行，是否启用及是否需要 history 由宿主规则决定。第一次写入前
+记录 `initial_head`、初始 staged/unstaged/untracked 路径、`task_allowed_paths` 和内容归属。
+完成实现和必要验证后，冻结本次实际修改的 `agent_owned_paths` 与 `expected_commit_paths`；
+后者必须属于允许范围，不能混入用户原有内容。
 
-当 `initial_staged_paths` 非空、Agent 暂存前当前索引已不再为空、Agent 路径与用户现有
-变更重叠、索引存在冲突或必要验证失败时，跳过自动交付。在所有这些情况下都保持用户
-的暂存边界不变。
+初始索引非空、唯一暂存前出现非 Agent staged 内容、HEAD 非预期变化、归属无法分离、存在冲突、
+验证失败或仍有禁止/确认/暂缓要求时，不自动提交。保护用户的暂存边界，报告具体原因。
+按 `auto-exact` 完成唯一暂存后，预期的非空索引不使自动提交失效；此后遵循同一提交流程，
+每项任务只自动提交一次。自动模式不创建分支，也不 push、pull、rebase 或 merge。
 
-“Agent 暂存前”指本次自动交付唯一暂存步骤开始之前。`git-delivery` 在同一 apply 中按冻结快照
-完成该步骤后，非空索引是预期结果，不得再次暂存，也不应据此反向判定自动交付失效。
+## 提交与可见预览
 
-符合自动交付条件时：
-
-1. 确认任务属于仓库规则允许自动交付的类别，已有明确授权且没有禁止自动提交的约束，
-   修改了授权范围内的文件，并且尚未执行自动提交。
-2. 重新读取 `HEAD`、`git status --short` 和冲突状态。如果 `initial_head`、用户归属内容、
-   非预期索引或冲突状态发生变化，立即跳过自动交付并进入 protected；Agent 在允许路径内产生的
-   预期 implementation 差异不属于初始状态漂移。
-3. 只使用 `git add -- <expected_commit_paths>` 暂存冻结的 Agent-owned 路径；此模式下绝不使用
-   `git add .`。
-4. 重新读取 `git diff --cached --name-only` 和暂存区原始 patch，确认路径集合与
-   `expected_commit_paths` 完全一致，并且后者属于 `task_allowed_paths`。
-5. 使用本 skill 的提交信息契约及提交前后校验流程，并执行一次本地 `git commit`。
-6. 遵循 **Post-Commit Report**。不要 push、pull、rebase、merge 或创建分支。
-
-如果无法安全分离路径归属，则保留变更供手动交付并说明原因。提交失败时保留已暂存变更，
-并遵循现有提交失败规则。
+1. 已有索引时依据 staged diff 起草；尚未获准暂存的预览或确认模式可使用只读候选。实际提交前
+   必须核对 staged 内容与候选一致。先起草英文，再按 **提交信息契约** 生成用户语言区块。
+2. 在主对话发送 `提交信息预览`，用 `text` 代码围栏展示完整拟定消息。不能只写入工具输出或文件。
+   纯预览到此结束；确认模式等待批准；默认模式直接继续。
+3. 如获准后才暂存，先按冻结候选完成唯一暂存和复验。拟提交内容变化时重新起草并展示；用户
+   要求确认的消息发生变化时重新取得确认，不复用旧批准。
+4. 将与预览完全相同的消息写入 `commit_message.txt`，不包含 Markdown 围栏。不要覆盖已有的
+   无关文件；文件冲突时使用本任务独有的消息路径，并在后续命令中一致替换。
+5. 按下文分别执行提交前校验、`git commit -F commit_message.txt`、实际提交与消息文件的
+   提交后校验。每一步成功后再进入下一步，不串联为单个 shell 命令。
+6. 提交后校验成功才删除本任务消息文件，并按 **Post-Commit Report** 完整交付。失败时保留
+   现场与消息文件，不自动 amend，不把 Git 命令成功等同于交付完成。
 
 ## 提交信息契约
 
@@ -264,24 +235,11 @@ python3 "<git-commit-skill-dir>/scripts/commit-change-stats.py" \
 
 ## 执行规则
 
-- 不运行 `git push`。
-- 不描述未暂存或无关的变更。
-- 除非用户明确要求确认模式，否则将 `git-commit` 请求视为提交授权。
-- 在确认模式下，获得明确批准前不要创建 `commit_message.txt` 或运行 `git commit`。
-- 写入 `commit_message.txt` 的提交信息必须完全相同，且不包含 Markdown 代码围栏。
-- 不要在单个 shell 命令中将 `git commit` 与提交信息文件的创建或清理串联起来。
-- 不要在单个 shell 命令中将提交前校验、`git commit`、提交后校验或消息文件清理
-  串联起来；每一步成功后再进入下一步。
-- 将 `git add` 和 `git commit` 都视为需要仓库写入权限的步骤；任何暂存或提交失败都保留
-  当前现场。
-- 如果 `git commit` 在创建 `.git/index.lock` 时因 `Operation not permitted` 等
-  sandbox 权限错误失败，立即使用所需提权重新运行
-  `git commit -F commit_message.txt`。
-- 已知环境会阻止写入 `.git` 时，在提交步骤直接为 `git commit` 请求所需提权。
-- 提交前校验、提交或提交后校验任一步失败时都保留 `commit_message.txt`，除非清理
-  操作明确安全且有意执行。
-- 默认模式先提交，再遵循 **Post-Commit Report**。确认模式只展示实际提交信息并
-  等待批准。
+- 本 Skill 不运行 `git push`；提交信息不包含候选范围外的变更。
+- `git add` 和 `git commit` 都需要仓库写入权限。已知 `.git` 受限时，直接为已授权命令请求
+  必要提权；普通权限因沙箱限制失败时保留现场，按所需权限重试，不扩大业务授权。
+- 暂存或提交失败时不自动清理用户状态。提交前校验可修正本任务消息后重试；提交后校验失败的
+  后续处置遵循 **提交信息校验**。
 
 ## Type 指南
 

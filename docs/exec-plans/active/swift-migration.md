@@ -4,20 +4,10 @@
 **最后复核:** 2026-08-09
 **类型:** 长期迁移路线图
 
-## 📋 迁移政策
+## 迁移范围
 
-### 核心原则
-- ✅ 所有新功能使用 Swift/SwiftUI 实现
-- ❌ **绝对禁止添加新的 Objective-C 文件**
-- 🔄 修改现有 Objective-C 代码前，必须先迁移到 Swift
-- ⚡ 重写 Objective-C 代码必须使用 Swift
-- 🚫 任何形式的 Objective-C 代码扩展都被禁止
-
-### 强制要求
-- Swift/SwiftUI 是项目未来的唯一技术栈
-- Objective-C 代码仅允许 bug 修复
-- 所有贡献者必须遵守此政策
-- 违反此政策的 PR 将被拒绝
+本文记录长期迁移目标与进度。语言选择与现有 Objective-C 修复遵循
+[`编码规范`](../../agents/coding-guidelines.md#语言与迁移)。
 
 ## 项目概述
 

@@ -20,8 +20,12 @@ helper 只接受指向 `github.com` 的 SSH 或 HTTPS remote，并按以下顺�
    `<owner>:<branch>` 作为 `gh` 的 head 参数。
 
 显式参数只解决歧义，不能绕过 remote URL、fork 网络和 GitHub 返回身份的校验。
+同次拓扑发现中，显式 repository 与已查询的 remote repository 相同时复用元数据；每次
+`plan` 或 `apply` 调用重新发现，不跨调用缓存，也不省略写入前后的状态校验。
 
 ## 分支决策
+
+任务分支使用 Conventional 格式 `<type>/<kebab-case-summary>`。
 
 base branch、GitHub default branch 和重复传入的 `--protected-branch` 都属于保护分支。
 
@@ -41,9 +45,15 @@ apply 先 fetch 精确 base ref，再要求 `<base-remote>/<base>` 是 HEAD 的�
 - `apply` 要求工作树完全干净。
 - helper 不运行 `git add` 或 `git commit`。已有 staged 内容由调用 Agent 根据目标
   仓库交付规则处理；有 unstaged 或 untracked 内容时停止。
+- 默认/draft 的调用方在最终 plan 前完成允许的 staged 提交和精确 base fetch，解决首次提交或
+  缺少 cached base 的准备问题。纯 plan 不执行这些动作，缺少前提时只报告限制。
 - helper 不修改提交历史，也不把无关提交从范围中自动剔除。
 
 ## 模板优先的正文契约
+
+`plan`、默认和 `draft` 均依据用户请求、目标仓库规则、真实提交范围与 diff 起草正文。
+PR 标题使用 Angular-style `type(scope): subject`，说明主要行为。Summary 解释实际改动及原因；
+Verification 只列出实际执行的检查及结果；Issue 仅使用用户提供或有明确证据的引用。
 
 目标仓库模板优先保留原有标题、顺序、非占位说明和 checklist。以下语义标题会接收调用方
 提供的内容：
@@ -69,13 +79,15 @@ Verification、Issue 和 Screenshots 内容均可见。`--extra-body-file <path|
 - Summary 和 Verification 不能为空。
 - 没有关联 Issue 时保持该区域为空。
 - 非 UI 修改写入 `N/A`。
-- UI 修改写入固定提示，但不因截图缺失停止或自动改为 Draft。
+- UI 修改写入固定提示，请用户在 GitHub PR 页面补充截图；不因截图缺失停止或自动改为 Draft。
 
 ## Issue 策略
 
 `--issue-policy` 决定 GitHub 自动关闭引用的约束：
 
-- `neutral`：helper 不生成 closing keyword，也不对模板和提交历史施加额外限制。
+- `neutral`（默认）：调用 Agent 不主动生成 `Fixes`、`Closes`、`Resolves` 等自动关闭语法；
+  允许目标仓库模板或用户显式附加正文包含该语法。helper 不生成 closing keyword，也不对模板
+  和提交历史施加额外限制。
 - `allow`：显式表明目标工作流允许 closing keyword。
 - `forbid`：扫描正文和 base..HEAD 的完整提交信息，并在创建后要求
   `closingIssuesReferences == []`。
@@ -124,7 +136,10 @@ gh pr create \
 - title、body、`isDraft` 与计划一致
 - `forbid` 策略下 `closingIssuesReferences` 为空
 
-验证失败后不创建第二个 PR，也不自动覆盖现有 PR。
+验证失败后不创建第二个 PR，也不自动覆盖现有 PR。push 成功但创建失败时保留远程分支；创建
+成功但最终验证中断时保留已有 PR。使用相同内容重试原 apply 命令，重新发现并核验已完成动作。
+远程分支与计划 SHA 相同则复用，是其祖先则普通快进推送，领先或分叉时停止。
+目标仓库要求特定 Issue 策略时显式传入 `--issue-policy`；未指定时使用 `neutral`。
 
 ## 输出
 

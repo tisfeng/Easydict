@@ -6,34 +6,21 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
 # Worktree Rebase/Merge 工作流
 
 提交源分支，将其 rebase 到目标分支，再在目标分支的 worktree 中合并。源、目标相同
-时只提交，不执行 rebase 或 merge。Git 写操作由一个实际执行者遵循 `git-commit` Skill
-处理，不递归委派。
+时只提交，不执行 rebase 或 merge。当前主 Agent 直接按本 Skill 完成检查、Git 操作和回执。
 
-## 执行协议
+## 执行方式
 
-Git 写操作由一个执行者完成，可由主 Agent 自行执行或串行委派。开始前，主 Agent 确认
-集成授权、允许路径、初始 Git 快照和用户限制。下文的“执行者”指实际执行 Git 写操作的
-Agent。
-
-1. 预检阶段只读：执行者解析目标、检查源/目标 worktree、识别是否需要
-   新提交，并返回预检证据、`git-commit` **暂存决策**、冻结的候选路径与 raw patch，以及完整
-   提交信息草稿。不得创建分支、临时 worktree、暂存或写入 `commit_message.txt`。
-2. 若需要新提交，主 Agent 必须在主对话中原样显示 `提交信息预览` 和完整草稿。默认模式
-   显示后可继续；确认、仅预览或仅草稿模式必须等待用户。若源已提交且干净，返回
-   `preexisting-source-commit`，无需提交信息预览。
-3. 进入写入阶段前，执行者重新检查 HEAD、索引、源/目标 worktree 和范围。这些状态与
-   预检记录不一致时，停止写入；原提交草稿不再适用。
-4. 通过重验后，执行者执行本 Skill 后续的分支、提交、rebase、merge 和报告收集。
-   主 Agent 最后独立核验结果并向用户交付。
-
-写入阶段成功后，执行者必须返回以下已核验结果：提交哈希、完整实际提交信息、提交后校验
-是否实际执行、分支、工作树、push 状态、统计，以及源/目标、rebase、merge、worktree 和
-集成范围。不得只返回短哈希、subject 或一行成功摘要；主 Agent 负责独立核验并完整呈现。
-
-执行者仅在明确的集成授权中可创建源分支、临时 worktree、commit、
-rebase 或 merge；始终不得 fetch、pull、push、reset、强制移动 ref、stash、clean 或递归
-委派。只有完全位于允许路径且不需产品语义判断的机械冲突可以处理，其他冲突必须保留
-现场并返回主 Agent。
+- 开始前确认集成授权、允许路径与提交范围、用户限制，以及源和目标的 Git 状态。已读且未
+  变化的规则和检查结果可以复用。
+- 需要新提交时使用 `git-commit` 的暂存决策、完整提交信息预览和提交前后校验；已有干净
+  源提交时直接继续集成，不重新起草提交信息。用户的确认、预览和暂缓限制仍然有效。
+- Git 写操作串行执行。写入前复验相关 HEAD、分支、索引、工作树与占用及进行中的操作；
+  发现非预期变化时停止相关写入并保留现场。写入后确认变化符合预期，再继续下一步。
+- rebase 前记录源提交范围与目标 OID，rebase 后核对改写结果。merge 前确认源干净、目标
+  仍为记录的 OID，且目标 worktree 分支和占用未发生非预期变化；不隐式再次 rebase。
+- 不使用 reset、强制移动 ref、stash 或 clean 清理现场；冲突按下文规则处理。
+- 已知 Git 元数据或 worktree 路径受限时，直接为已授权命令申请必要提权；同轮复用已确认
+  的权限边界，避免先运行必然失败的命令。审批拒绝时保留现场并报告原因。
 
 ## 默认规则
 
@@ -47,10 +34,9 @@ rebase 或 merge；始终不得 fetch、pull、push、reset、强制移动 ref�
   并要求用户指定或确认目标分支。
 - 将当前 checkout 视为源分支。如果处于 detached 状态，继续前先创建源分支。
 - 除非用户明确要求，否则不要 fetch、pull 或 push。
-- 创建源提交时完整复用 `git-commit` 的 **暂存决策**：已有索引使用 `existing-index`，显式路径范围
-  使用 `explicit-paths`。本 skill 的明确 `integration` 调用属于显式交付：初始索引为空、未限定路径且
-  未禁止暂存时使用 `explicit-worktree-once`；自动本地提交仍只可使用 `auto-exact`。预检冻结未暂存 raw
-  patch、任务相关未跟踪文件摘要和候选路径，写入前后任一状态漂移均停止，不得再次暂存扩大或修正范围。
+- 创建源提交时使用 `git-commit` 的 **准备与暂存**、**先确定模式** 和 **提交与可见预览**。
+  明确调用本 Skill 属于显式集成交付；空索引按该 Skill 选择允许的暂存范围，不另设停止规则。
+  仅预览或只读时不创建分支、worktree、消息文件，也不暂存或执行 rebase/merge。
 
 ## 预检
 
@@ -102,7 +88,7 @@ rebase 或 merge；始终不得 fetch、pull、push、reset、强制移动 ref�
 ## 目标分支直接提交
 
 - 仅当当前源分支与解析出的目标分支是同一分支时，使用直接提交模式。
-- 在直接提交模式下，执行者在同一 Agent 内遵循 `git-commit` Skill 的 **暂存决策**、提交信息
+- 在直接提交模式下，遵循 `git-commit` Skill 的 **准备与暂存**、提交信息
   起草、提交执行、权限重试和清理规则。
 - 不创建临时源分支，不运行 `git rebase` 或 `git merge`，不查找目标 worktree，
   不创建临时目标 worktree，也不 fetch、pull 或 push。
@@ -112,21 +98,13 @@ rebase 或 merge；始终不得 fetch、pull、push、reset、强制移动 ref�
 
 ## 提交源分支
 
-- 对源变更，执行者在同一 Agent 内使用 `git-commit` 机制及其 **暂存决策**。提交信息起草、提交
+- 对源变更，使用 `git-commit` 的提交与校验流程。提交信息起草、提交
   执行、权限重试和清理由该 Skill 负责。在普通 rebase/merge 模式下，待 rebase 和 merge 完成后
   合并输出提交回执与集成结果；字段、统计表和实际提交信息仍以 `git-commit` 的
   **Post-Commit Report** 为唯一权威来源。
 - 提交步骤前记录源 `HEAD`。只有提交步骤改变 `HEAD` 时，才将源结果分类为
   `created-this-run`；否则，如果源已经提交且干净，则分类为
   `preexisting-source-commit`。
-- 创建 `commit_message.txt` 或运行 `git commit -F commit_message.txt` 前，发送一条
-  普通 assistant 消息，使用固定标题 `提交信息预览`，并在 `text` 代码围栏中包含
-  完整的实际拟定提交信息。
-- 除 Markdown 代码围栏外，预览文字必须与之后的 `commit_message.txt` 内容完全一致。
-  它不能只出现在工具输出、终端输出、隐藏推理、日志文件、`commit_message.txt` 或
-  最终 Git 命令输出中。
-- 正文预览可见后自动继续，除非用户明确要求确认、仅预览、仅草稿、不提交或修改
-  提交信息。
 - 如果 `git-commit` 报告没有可提交内容，只有源 worktree 不含未提交变更时才继续，
   并将结果标记为 `preexisting-source-commit`；否则停止并报告未提交状态。
 - 提交步骤后重新运行 `git status --short`。除非用户明确另行决定，只从干净的源
@@ -134,7 +112,7 @@ rebase 或 merge；始终不得 fetch、pull、push、reset、强制移动 ref�
 
 ## 脏目标暂停
 
-- 如果预检发现 `<target-branch>` 只有脏 worktree，则由执行者通过 `git-commit` 完成源提交并
+- 如果预检发现 `<target-branch>` 只有脏 worktree，则通过 `git-commit` 完成源提交并
   要求源 worktree 干净，然后在范围检查、rebase、merge 或 push 前停止。
 - 在该恢复路径中，绝不对脏目标 worktree 执行暂存、提交、stash、restore、clean 或
   其他修改。
@@ -151,6 +129,7 @@ rebase 或 merge；始终不得 fetch、pull、push、reset、强制移动 ref�
 - rebase 前使用 `git log --oneline <target-branch>..<source-branch>` 和
   `git diff --stat <target-branch>...<source-branch>` 记录完整集成范围，供 rebase、
   merge 和最终报告使用。
+- 用户限定路径时，检查范围内每个提交触及的路径，包括后来被撤销的变更；不能只看最终净 diff。
 - 用户明确调用本 skill 且未限定提交范围时，
   `<target-branch>..<source-branch>` 中的全部源提交均属于本次集成范围。允许范围包含
   多个独立功能提交，不根据提交主题与当前对话的语义相关性暂停。
@@ -196,5 +175,6 @@ rebase 或 merge；始终不得 fetch、pull、push、reset、强制移动 ref�
   Markdown 统计表。多提交范围没有单一实际提交信息；不得将任一提交 message 伪装为整个
   范围的 message，也不得因而省略完整提交清单或统计表。
 - `git-commit` 是提交结果、统计表和单提交实际 message 的唯一模板来源；本 Skill 只补充
-  集成事实，不复制或另行定义第二套通用提交回执。主 Agent 独立核验后仍必须完整呈现上述
-  回执，不得压缩执行者的结果。
+  集成事实，不另设通用提交回执。直接读取实际 Git message、完整哈希、最终状态与统计结果，
+  不重新起草或翻译实际提交信息。
+- 多提交统计使用记录的合并前目标 OID 与 rebase 后源 OID，避免目标已前进后读出空范围。

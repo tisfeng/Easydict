@@ -41,25 +41,24 @@
 - 新增、删除或重命名规则文件时，只在根 `AGENTS.md` 维护任务路由，不建立多层索引。
 - 使用相对仓库路径，不提交机器本地绝对路径。行为变化时同步更新代码、测试和受影响文档。
 - 仓库治理 Markdown、plan、history、reference、skill 和公共 Markdown 的 Xcode 工程边界
-  以 [`development.md`](development.md#工程元数据) 为准。
+  以 [`build-and-test.md`](build-and-test.md#工程文件与资源) 为准。
 
 ## 外部 Agent 资产
 
 ### 资产分类
 
-以下内容由 `skills-lock.json` 或 `.codex/agents-lock.json` 管理，当前统一基线为
-`tisfeng/skills v0.3.2`：
+以下内容由 `skills-lock.json` 或 `.codex/agents-lock.json` 管理，具体来源和版本以对应 lock 为准：
 
 - Skills：`code-simplifier`、`git-commit`、`review`、`review-pr`、`submit-pr`、
   `worktree-rebase-merge`。
-- Codex 子代理：`planner`、`reviewer`、`tester`、`git-delivery`。
+- Codex 子代理：`planner`、`reviewer`、`tester`。
 
 这些目录和 TOML 是外部权威内容的项目可运行快照。Easydict 不直接修改、删减、重命名或
 重新格式化；项目差异写入 `AGENTS.md` 或 `docs/agents/`。需要改变通用行为时先修改并发布
 上游，再通过安装器同步完整版本。
 
-项目专属 skill 和 reference 使用用户当前请求的语言；命令、路径、代码标识、API 字段和固定
-输出契约保留原文。外部受管快照保留上游原文，不在 Easydict 中本地修补。
+项目专属 skill 和 reference 的语言遵循根 [`AGENTS.md`](../../AGENTS.md#始终阅读)。
+外部受管快照保留上游原文，不在 Easydict 中本地修补。
 
 `fireworks-tech-graph` 由 `yizhiyanhua-ai/fireworks-tech-graph` 独立维护，通过
 `skills-lock.json` 记录自己的来源和内容哈希，不得从 `tisfeng/skills` 同步或在 Easydict 中
@@ -86,14 +85,16 @@
    并分别检查 diff，不运行不区分来源的宽泛更新。
 4. 首次为已有 agent 建立 lock 时，只有冻结并核对精确 TOML 后才可使用一次 `--force`；后续
    更新依靠已记录 hash 检测漂移，不默认覆盖。
-5. 不递归复制上游工作目录；安装内容来自已核验的 tag、commit 或安装器克隆，避免带入缓存
+5. 上游版本明确删除受管资产且安装器不会自动清理时，只在获准的升级任务中核验发布说明、
+   已安装路径和 lock 条目后，精确删除对应快照与单个 lock 条目；不扩展到其他资产。
+6. 不递归复制上游工作目录；安装内容来自已核验的 tag、commit 或安装器克隆，避免带入缓存
    和构建产物。
-6. 同步后验证目标集合、lock、来源内容和项目专属保护路径，再按 Git 门禁交付。
+7. 同步后验证目标集合、lock、来源内容和项目专属保护路径，再按 Git 门禁交付。
 
 ### 验证边界
 
-- 六个通用 Skill 目录必须与所选 tag 的 tracked tree 一致。
-- 四个 agent 文件的 SHA-256 必须与 agents lock 一致并使用同一 revision。
+- 上述通用 Skill 目录必须与所选 tag 的 tracked tree 一致。
+- 受管 agent 文件的 SHA-256 必须与 agents lock 一致并使用同一 revision。
 - `fireworks-tech-graph` 必须与独立上游 commit 一致，且 lock source 不指向 `tisfeng/skills`。
 - `release-easydict`、`.codex/config.toml` 和 `.claude/skills` 在外部同步前后保持不变。
 - 按风险验证 TOML、JSON、Skill 测试、Shell/Python 静态检查和文档相对链接。

@@ -373,7 +373,9 @@ class WorkflowIntegrationTests(unittest.TestCase):
                 if args[:2] == ["auth", "status"]:
                     print("Logged in to github.com")
                 elif args[:2] == ["repo", "view"]:
-                    print(json.dumps(state["repos"][args[2]]))
+                    state.setdefault("repo_views", []).append(args[2])
+                    state_path.write_text(json.dumps(state))
+                    print(json.dumps(state["repos"][args[2].casefold()]))
                 elif args[:2] == ["pr", "list"]:
                     print(json.dumps([state["pr"]] if "pr" in state else []))
                 elif args[:2] == ["pr", "create"]:
@@ -479,6 +481,68 @@ class WorkflowIntegrationTests(unittest.TestCase):
         fetch_after = fetch_head.read_bytes() if fetch_head.exists() else None
         self.assertEqual(fetch_after, fetch_before)
         self.assertFalse((self.repo / ".tmp" / "submit-pr").exists())
+
+    def test_explicit_repository_reuses_discovered_metadata(self) -> None:
+        cases = (
+            (["--repo", "acme/project"], None),
+            (["--repo", "ACME/Project"], None),
+            ([], "ACME/Project"),
+            (["--repo", "acme/project"], "unrelated/project"),
+        )
+        for arguments, gh_repo in cases:
+            with self.subTest(arguments=arguments, gh_repo=gh_repo):
+                state = json.loads(self.state_path.read_text(encoding="utf-8"))
+                state["repo_views"] = []
+                self.state_path.write_text(json.dumps(state), encoding="utf-8")
+                environment = self.environment()
+                environment.pop("GH_REPO", None)
+                if gh_repo:
+                    environment["GH_REPO"] = gh_repo
+
+                payload = json.loads(
+                    run(self.command("plan", *arguments), cwd=self.repo, env=environment).stdout
+                )
+
+                self.assertEqual(payload["repository"], "acme/project")
+                state = json.loads(self.state_path.read_text(encoding="utf-8"))
+                self.assertEqual(state["repo_views"], ["acme/project"])
+
+    def test_unseen_repository_alias_is_queried(self) -> None:
+        state = json.loads(self.state_path.read_text(encoding="utf-8"))
+        state["repos"]["acme/alias"] = state["repos"]["acme/project"]
+        self.state_path.write_text(json.dumps(state), encoding="utf-8")
+
+        payload = json.loads(
+            run(
+                self.command("plan", "--repo", "acme/alias"),
+                cwd=self.repo,
+                env=self.environment(),
+            ).stdout
+        )
+
+        self.assertEqual(payload["repository"], "acme/project")
+        state = json.loads(self.state_path.read_text(encoding="utf-8"))
+        self.assertEqual(state["repo_views"], ["acme/project", "acme/alias"])
+
+    def test_apply_refreshes_repository_metadata_after_plan(self) -> None:
+        environment = self.environment()
+        planned = json.loads(
+            run(self.command("plan", "--repo", "acme/project"), cwd=self.repo, env=environment).stdout
+        )
+        self.assertEqual(planned["base"], "main")
+        run(["git", "branch", "release", self.base_sha], cwd=self.base_remote)
+        state = json.loads(self.state_path.read_text(encoding="utf-8"))
+        state["repos"]["acme/project"]["defaultBranchRef"]["name"] = "release"
+        self.state_path.write_text(json.dumps(state), encoding="utf-8")
+
+        applied = json.loads(
+            run(self.command("apply", "--repo", "acme/project"), cwd=self.repo, env=environment).stdout
+        )
+
+        self.assertEqual(applied["base"], "release")
+        state = json.loads(self.state_path.read_text(encoding="utf-8"))
+        self.assertEqual(state["pr"]["baseRefName"], "release")
+        self.assertEqual(state["repo_views"], ["acme/project", "acme/project"])
 
     def test_apply_pushes_same_repo_branch_and_reuses_pr(self) -> None:
         environment = self.environment()
