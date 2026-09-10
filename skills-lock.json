@@ -3,7 +3,7 @@
   "skills": {
     "code-simplifier": {
       "source": "tisfeng/skills",
-      "ref": "v0.3.3",
+      "ref": "v0.3.4",
       "sourceType": "github",
       "skillPath": "skills/code-simplifier/SKILL.md",
       "computedHash": "ce4a439186232bf83e356182a20e13017a8926faf6272b8ffbbf37279801416b"
@@ -17,38 +17,38 @@
     },
     "git-commit": {
       "source": "tisfeng/skills",
-      "ref": "v0.3.3",
+      "ref": "v0.3.4",
       "sourceType": "github",
       "skillPath": "skills/git-commit/SKILL.md",
-      "computedHash": "4dec26c5801a9c97588412b06a0427534788e04db517af21466b3266d40c4a9a"
+      "computedHash": "a655944f121089bcf5d3c5ad495204ea77f96f83eeaed56d8f616fb05af94d90"
     },
     "review": {
       "source": "tisfeng/skills",
-      "ref": "v0.3.3",
+      "ref": "v0.3.4",
       "sourceType": "github",
       "skillPath": "skills/review/SKILL.md",
       "computedHash": "8e0db09025e8e7f9c9c697d6105d3286822ae140690ab6bb89c33e75f5089b52"
     },
     "review-pr": {
       "source": "tisfeng/skills",
-      "ref": "v0.3.3",
+      "ref": "v0.3.4",
       "sourceType": "github",
       "skillPath": "skills/review-pr/SKILL.md",
-      "computedHash": "9d2321ab34e517262b108a7ecadf0c6d99437e957fa184d5e0a7931b4dc0f62e"
+      "computedHash": "0a83d4a6647e23eca4cf2b40c721d90ff21174e185d41a37fae53bdb5ed1ec1c"
     },
     "submit-pr": {
       "source": "tisfeng/skills",
-      "ref": "v0.3.3",
+      "ref": "v0.3.4",
       "sourceType": "github",
       "skillPath": "skills/submit-pr/SKILL.md",
-      "computedHash": "7343b110c14d0f341e7c73083caa4ca250d5ccd5808880ee3986eb2805a78ba8"
+      "computedHash": "abce09b4f7d95a0259d71edc99f2affc351638160e4f68d4ecc50fc1dfe05575"
     },
     "worktree-rebase-merge": {
       "source": "tisfeng/skills",
-      "ref": "v0.3.3",
+      "ref": "v0.3.4",
       "sourceType": "github",
       "skillPath": "skills/worktree-rebase-merge/SKILL.md",
-      "computedHash": "febfba449872d3b78762d4e979ea8267b429ab17e09af7f3e79447ff27669127"
+      "computedHash": "d9e00bfb9b11d570dc25e5991f695ba6b0b286ad371ddc4ed632d1a6f19ec25a"
     }
   }
 }

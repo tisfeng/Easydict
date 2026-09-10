@@ -113,6 +113,22 @@ class RenderTests(unittest.TestCase):
         self.assertIn("## Maintainer Checklist", body)
         self.assertIn("- [ ] Documentation is updated.", body)
 
+    def test_template_preserves_localized_content_without_rewriting_headings(self) -> None:
+        body = submit_pr.render_pr_body(
+            "## Summary\n\n## Verification\n\n## Screenshots\n",
+            self.content(
+                title="perf(git-workflow): 优化技能执行编排",
+                summary="减少可预测 Git 工作流中的模型往返。",
+                verification="- 已通过针对性行为测试。",
+                issues=(),
+            ),
+        )
+
+        self.assertIn("## Summary\n\n减少可预测 Git 工作流中的模型往返。", body)
+        self.assertIn("## Verification\n\n- 已通过针对性行为测试。", body)
+        self.assertIn("## Screenshots\n\nN/A", body)
+        self.assertNotIn("## 变更说明 / Summary", body)
+
     def test_template_only_gets_default_sections_when_semantic_sections_are_missing(self) -> None:
         body = submit_pr.render_pr_body(
             "## Summary\n\nRepository context\n\n## Maintainer Checklist\n\n- [ ] Reviewed",
@@ -234,6 +250,12 @@ class RenderTests(unittest.TestCase):
         self.assertEqual(state["staged"], ["staged.md"])
         self.assertEqual(state["unstaged"], ["README.md"])
         self.assertEqual(state["untracked"], ["untracked.md"])
+
+    def test_python_version_guard_rejects_incompatible_runtime(self) -> None:
+        with self.assertRaisesRegex(submit_pr.SubmitPRError, r"Python 3.10\+"):
+            submit_pr.require_supported_python((3, 9, 6))
+
+        submit_pr.require_supported_python((3, 10, 0))
 
 
 class WorkflowIntegrationTests(unittest.TestCase):
@@ -366,6 +388,8 @@ class WorkflowIntegrationTests(unittest.TestCase):
                 args = sys.argv[1:]
                 state_path = Path(os.environ["FAKE_GH_STATE"])
                 state = json.loads(state_path.read_text())
+                state.setdefault("gh_calls", []).append(args)
+                state_path.write_text(json.dumps(state))
 
                 def value(flag):
                     return args[args.index(flag) + 1]
@@ -408,7 +432,11 @@ class WorkflowIntegrationTests(unittest.TestCase):
                     state_path.write_text(json.dumps(state))
                     print(pr["url"])
                 elif args[:2] == ["pr", "view"]:
-                    state["pr"]["headRefOid"] = os.environ["FAKE_HEAD_SHA"]
+                    state["pr"]["headRefOid"] = (
+                        "0" * 40
+                        if state.get("corrupt_final_view")
+                        else os.environ["FAKE_HEAD_SHA"]
+                    )
                     state_path.write_text(json.dumps(state))
                     print(json.dumps(state["pr"]))
                 else:
@@ -435,7 +463,14 @@ class WorkflowIntegrationTests(unittest.TestCase):
         environment["PYTHONPYCACHEPREFIX"] = str(self.root / "pycache")
         return environment
 
-    def command(self, action: str, *extra: str) -> list[str]:
+    def command(
+        self,
+        action: str,
+        *extra: str,
+        title: str = "feat(cli): add deterministic PR submission",
+        summary: str = "Add deterministic PR submission.",
+        verification: str = "- Unit tests passed.",
+    ) -> list[str]:
         return [
             sys.executable,
             str(SCRIPT_PATH),
@@ -443,11 +478,11 @@ class WorkflowIntegrationTests(unittest.TestCase):
             "--repo-root",
             str(self.repo),
             "--title",
-            "feat(cli): add deterministic PR submission",
+            title,
             "--summary",
-            "Add deterministic PR submission.",
+            summary,
             "--verification",
-            "- Unit tests passed.",
+            verification,
             "--head-branch",
             "feat/deterministic-pr-submission",
             *extra,
@@ -481,6 +516,38 @@ class WorkflowIntegrationTests(unittest.TestCase):
         fetch_after = fetch_head.read_bytes() if fetch_head.exists() else None
         self.assertEqual(fetch_after, fetch_before)
         self.assertFalse((self.repo / ".tmp" / "submit-pr").exists())
+
+    def test_plan_and_apply_preserve_localized_pr_content(self) -> None:
+        title = "perf(git-workflow): 优化技能执行编排"
+        summary = "减少可预测 Git 工作流中的模型往返，同时保留安全检查。"
+        verification = "- 已通过针对性行为测试。"
+        command_options = {
+            "title": title,
+            "summary": summary,
+            "verification": verification,
+        }
+
+        planned = json.loads(
+            run(
+                self.command("plan", **command_options),
+                cwd=self.repo,
+                env=self.environment(),
+            ).stdout
+        )
+        self.assertEqual(planned["title"], title)
+        self.assertIn(summary, planned["body"])
+        self.assertIn(verification, planned["body"])
+
+        json.loads(
+            run(
+                self.command("apply", **command_options),
+                cwd=self.repo,
+                env=self.environment(),
+            ).stdout
+        )
+        state = json.loads(self.state_path.read_text(encoding="utf-8"))
+        self.assertEqual(state["pr"]["title"], title)
+        self.assertEqual(state["pr"]["body"], planned["body"])
 
     def test_explicit_repository_reuses_discovered_metadata(self) -> None:
         cases = (
@@ -553,6 +620,24 @@ class WorkflowIntegrationTests(unittest.TestCase):
         self.assertEqual(first["push_action"], "created")
         self.assertEqual(first["pr_action"], "created")
         self.assertFalse(first["is_cross_repository"])
+        self.assertEqual(first["pr_verification"]["status"], "passed")
+        self.assertEqual(first["pr_verification"]["head_sha"], self.head_sha)
+        self.assertEqual(len(first["pr_verification"]["body_sha256"]), 64)
+        self.assertGreaterEqual(first["timings_ms"]["total"], 0)
+        self.assertTrue(
+            {
+                "worktree_check",
+                "github_auth",
+                "topology",
+                "fetch_base",
+                "plan_revalidation",
+                "existing_pr_lookup",
+                "local_branch",
+                "push",
+                "pr_create",
+                "final_pr_verification",
+            }.issubset(first["timings_ms"])
+        )
         state = json.loads(self.state_path.read_text(encoding="utf-8"))
         self.assertEqual(
             [
@@ -583,12 +668,18 @@ class WorkflowIntegrationTests(unittest.TestCase):
         self.assertEqual(remote_main, self.base_sha)
         self.assertEqual(remote_head, self.head_sha)
 
+        state["gh_calls"] = []
+        self.state_path.write_text(json.dumps(state), encoding="utf-8")
         second = json.loads(
             run(self.command("apply"), cwd=self.repo, env=environment).stdout
         )
         state = json.loads(self.state_path.read_text(encoding="utf-8"))
         self.assertEqual(second["pr_action"], "reused")
         self.assertEqual(state["create_count"], 1)
+        self.assertEqual(
+            sum(call[:2] == ["pr", "view"] for call in state["gh_calls"]),
+            1,
+        )
 
     def test_apply_fast_forwards_existing_pr_after_new_local_commit(self) -> None:
         first_environment = self.environment()
@@ -633,6 +724,24 @@ class WorkflowIntegrationTests(unittest.TestCase):
             cwd=self.root,
         ).stdout.strip()
         self.assertEqual(remote_head, self.head_sha)
+
+    def test_final_verification_failure_does_not_emit_success_receipt(self) -> None:
+        state = json.loads(self.state_path.read_text(encoding="utf-8"))
+        state["corrupt_final_view"] = True
+        self.state_path.write_text(json.dumps(state), encoding="utf-8")
+
+        result = subprocess.run(
+            self.command("apply"),
+            cwd=self.repo,
+            env=self.environment(),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("headRefOid", result.stderr)
 
     def test_apply_discovers_fork_push_remote(self) -> None:
         run(
@@ -779,6 +888,45 @@ class WorkflowIntegrationTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("auto-closing", result.stderr)
 
+    def test_batched_commit_log_preserves_multiple_subjects_and_full_messages(self) -> None:
+        (self.repo / "follow-up.txt").write_text("follow-up\n", encoding="utf-8")
+        run(["git", "add", "follow-up.txt"], cwd=self.repo)
+        run(
+            [
+                "git",
+                "-c",
+                "commit.gpgsign=false",
+                "commit",
+                "-m",
+                "fix(cli): preserve multilingual PR evidence",
+                "-m",
+                "保留多语言提交正文。\n\nResolves #321",
+            ],
+            cwd=self.repo,
+        )
+
+        planned = json.loads(
+            run(self.command("plan"), cwd=self.repo, env=self.environment()).stdout
+        )
+        self.assertEqual(
+            [commit["subject"] for commit in planned["commits"]],
+            [
+                "feat(cli): add deterministic PR submission",
+                "fix(cli): preserve multilingual PR evidence",
+            ],
+        )
+
+        forbidden = subprocess.run(
+            self.command("plan", "--issue-policy", "forbid"),
+            cwd=self.repo,
+            env=self.environment(),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(forbidden.returncode, 0)
+        self.assertIn("auto-closing", forbidden.stderr)
+
     def test_draft_and_existing_body_are_verified(self) -> None:
         environment = self.environment()
         payload = json.loads(
@@ -800,6 +948,32 @@ class WorkflowIntegrationTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("body differs", result.stderr)
+
+    def test_existing_pr_language_change_stops_without_overwrite(self) -> None:
+        environment = self.environment()
+        run(self.command("apply"), cwd=self.repo, env=environment)
+        state_before = json.loads(self.state_path.read_text(encoding="utf-8"))
+
+        result = subprocess.run(
+            self.command(
+                "apply",
+                title="perf(git-workflow): 优化技能执行编排",
+                summary="减少可预测 Git 工作流中的模型往返。",
+                verification="- 已通过针对性行为测试。",
+            ),
+            cwd=self.repo,
+            env=environment,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("title: expected", result.stderr)
+        self.assertIn("body differs", result.stderr)
+        state_after = json.loads(self.state_path.read_text(encoding="utf-8"))
+        self.assertEqual(state_after["pr"], state_before["pr"])
+        self.assertEqual(state_after["create_count"], state_before["create_count"])
 
     def test_ambiguous_base_remotes_require_explicit_selection(self) -> None:
         run(

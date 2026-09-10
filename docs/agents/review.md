@@ -19,12 +19,15 @@
 ## 快照与协作
 
 - 主 Agent 冻结待审快照并传递基线、范围和必要上下文；本地审查可使用内容快照，PR 必须绑定
-  准确 head/base。
+  准确 head/base，并包含身份一致的 PR 元数据、完整分页 threads/replies 和 checks。
 - PR 的准备、远程线程操作、CI 获取和最终刷新由主 Agent 编排，reviewer 返回绑定该快照的
-  审查结果。
+  审查结果。优先使用 `review-pr` 的稳定快照 helper；helper 不可用时，手动回退必须保持相同
+  证据范围，并在 checks 查询后复验 head，不能绕过 helper 已发现的漂移。
 - 同一内容快照的有效 reviewer 结论可以在后续实施和交付阶段复用，不因工作流阶段变化重复
   委派。影响结论的代码或上下文变化后，主 Agent 只委派受影响范围的增量复核，确保最终结论
   覆盖最终快照。
+- 最终刷新仍重新完整读取可变远程状态；fingerprint 只压缩未变化结果的输出，不表示跳过刷新。
+  head、thread、reply 或 checks 变化时重新审查受影响证据，默认不等待 pending CI。
 
 ## 结论与回退
 

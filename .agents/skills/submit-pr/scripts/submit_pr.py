@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 from dataclasses import dataclass
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -12,7 +14,8 @@ import re
 import subprocess
 import sys
 import tempfile
-from typing import Any, Sequence
+import time
+from typing import Any, Iterator, Sequence
 
 
 # Default headings are used only when a repository template does not provide a
@@ -60,10 +63,36 @@ BRANCH_PATTERN = re.compile(
 )
 TEMPLATE_PARENT_DIRECTORIES = ("", "docs", ".github")
 TEMPLATE_EXTENSIONS = {".md", ".txt"}
+MINIMUM_PYTHON = (3, 10)
 
 
 class SubmitPRError(RuntimeError):
     """Raised when PR planning or submission is unsafe."""
+
+
+def require_supported_python(
+    version_info: Sequence[int] = sys.version_info,
+) -> None:
+    actual = tuple(version_info[:2])
+    if actual < MINIMUM_PYTHON:
+        required = ".".join(str(part) for part in MINIMUM_PYTHON)
+        detected = ".".join(str(part) for part in actual)
+        raise SubmitPRError(
+            f"Python {required}+ is required; detected {detected}. "
+            "Select one compatible interpreter and reuse it for plan and apply."
+        )
+
+
+@contextmanager
+def measure_phase(
+    timings_ms: dict[str, float],
+    name: str,
+) -> Iterator[None]:
+    started = time.monotonic()
+    try:
+        yield
+    finally:
+        timings_ms[name] = round((time.monotonic() - started) * 1000, 3)
 
 
 @dataclass(frozen=True)
@@ -583,8 +612,14 @@ def local_branch_sha(repo_root: Path, branch: str) -> str | None:
     return result.stdout.strip()
 
 
-def remote_branch_sha(repo_root: Path, remote: str, branch: str) -> str | None:
-    push_url = unique_push_url(repo_root, remote)
+def remote_branch_sha(
+    repo_root: Path,
+    remote: str,
+    branch: str,
+    *,
+    push_url: str | None = None,
+) -> str | None:
+    push_url = push_url or unique_push_url(repo_root, remote)
     result = run_command(
         ["git", "ls-remote", "--heads", push_url, f"refs/heads/{branch}"],
         cwd=repo_root,
@@ -600,6 +635,7 @@ def choose_branch_name(
     head_sha: str,
     *,
     include_remote: bool,
+    push_url: str | None = None,
 ) -> str:
     validate_branch_name(repo_root, requested)
     for suffix in range(1, 101):
@@ -607,7 +643,12 @@ def choose_branch_name(
         validate_branch_name(repo_root, candidate)
         local_sha = local_branch_sha(repo_root, candidate)
         remote_sha = (
-            remote_branch_sha(repo_root, remote, candidate)
+            remote_branch_sha(
+                repo_root,
+                remote,
+                candidate,
+                push_url=push_url,
+            )
             if include_remote
             else None
         )
@@ -625,7 +666,12 @@ def choose_branch_name(
             )
         remote_is_compatible = remote_sha is None or remote_sha == head_sha
         if remote_sha is not None and remote_sha != head_sha:
-            fetch_commit_object(repo_root, remote, remote_sha)
+            fetch_commit_object(
+                repo_root,
+                remote,
+                remote_sha,
+                push_url=push_url,
+            )
             remote_is_compatible = (
                 git_result(
                     repo_root,
@@ -663,15 +709,29 @@ def ensure_commit_range(
             "automatic merge or rebase is disabled"
         )
     head_sha = git_output(repo_root, "rev-parse", "HEAD")
-    hashes_output = git_output(repo_root, "rev-list", "--reverse", f"{base_ref}..HEAD")
-    if not hashes_output:
+    commit_output = run_command(
+        [
+            "git",
+            "log",
+            "--reverse",
+            "-z",
+            "--format=%H%x00%s%x00%B",
+            f"{base_ref}..HEAD",
+        ],
+        cwd=repo_root,
+    ).stdout
+    if not commit_output:
         raise SubmitPRError(
             f"HEAD contains no commits beyond {context.base_remote}/{context.base_branch}"
         )
+    fields = commit_output.split("\0")
+    if fields[-1] == "":
+        fields.pop()
+    if not fields or len(fields) % 3 != 0:
+        raise SubmitPRError("git log returned an unexpected commit payload")
     commits: list[dict[str, str]] = []
-    for commit_hash in hashes_output.splitlines():
-        subject = git_output(repo_root, "show", "-s", "--format=%s", commit_hash)
-        message = git_output(repo_root, "show", "-s", "--format=%B", commit_hash)
+    for index in range(0, len(fields), 3):
+        commit_hash, subject, message = fields[index : index + 3]
         if issue_policy == "forbid" and AUTO_CLOSE_PATTERN.search(message):
             raise SubmitPRError(
                 f"commit {commit_hash} contains a GitHub auto-closing Issue reference"
@@ -714,6 +774,7 @@ def resolve_head_branch(
     remote: str,
     *,
     include_remote: bool,
+    push_url: str | None = None,
 ) -> tuple[str, str]:
     current_is_task = current not in protected and BRANCH_PATTERN.fullmatch(current)
     if current_is_task:
@@ -733,6 +794,7 @@ def resolve_head_branch(
         requested,
         head_sha,
         include_remote=include_remote,
+        push_url=push_url,
     )
     action = "created" if local_branch_sha(repo_root, selected) is None else "reused"
     return selected, action
@@ -744,6 +806,7 @@ def build_plan(
     context: RepositoryContext,
     *,
     include_remote_branch_check: bool,
+    push_url: str | None = None,
 ) -> tuple[dict[str, Any], str]:
     content = prepare_content(args, repo_root)
     template_text, template_path = discover_template(repo_root, args.template)
@@ -764,6 +827,7 @@ def build_plan(
         head_sha,
         context.head_remote,
         include_remote=include_remote_branch_check,
+        push_url=push_url,
     )
     head_owner = context.head_repository.split("/", 1)[0]
     head_query = (
@@ -874,7 +938,9 @@ def list_open_prs(
             "--head",
             head_query,
             "--json",
-            "number,title,url,body,baseRefName,headRefName,headRefOid,isDraft,state",
+            "number,title,url,body,baseRefName,headRefName,headRefOid,"
+            "headRepository,headRepositoryOwner,isCrossRepository,isDraft,state,"
+            "closingIssuesReferences",
         ],
         cwd=repo_root,
     )
@@ -885,10 +951,16 @@ def list_open_prs(
     return payload
 
 
-def fetch_commit_object(repo_root: Path, remote: str, commit_sha: str) -> None:
+def fetch_commit_object(
+    repo_root: Path,
+    remote: str,
+    commit_sha: str,
+    *,
+    push_url: str | None = None,
+) -> None:
     if git_result(repo_root, "cat-file", "-e", f"{commit_sha}^{{commit}}").returncode == 0:
         return
-    push_url = unique_push_url(repo_root, remote)
+    push_url = push_url or unique_push_url(repo_root, remote)
     run_command(["git", "fetch", "--no-tags", push_url, commit_sha], cwd=repo_root)
 
 
@@ -897,13 +969,25 @@ def push_head_branch(
     remote: str,
     remote_branch: str,
     head_sha: str,
+    *,
+    push_url: str | None = None,
 ) -> str:
-    push_url = unique_push_url(repo_root, remote)
-    remote_sha = remote_branch_sha(repo_root, remote, remote_branch)
+    push_url = push_url or unique_push_url(repo_root, remote)
+    remote_sha = remote_branch_sha(
+        repo_root,
+        remote,
+        remote_branch,
+        push_url=push_url,
+    )
     if remote_sha == head_sha:
         return "reused"
     if remote_sha is not None:
-        fetch_commit_object(repo_root, remote, remote_sha)
+        fetch_commit_object(
+            repo_root,
+            remote,
+            remote_sha,
+            push_url=push_url,
+        )
         ancestry = git_result(
             repo_root,
             "merge-base",
@@ -923,7 +1007,12 @@ def push_head_branch(
         ["git", "push", push_url, f"{head_sha}:refs/heads/{remote_branch}"],
         cwd=repo_root,
     )
-    pushed_sha = remote_branch_sha(repo_root, remote, remote_branch)
+    pushed_sha = remote_branch_sha(
+        repo_root,
+        remote,
+        remote_branch,
+        push_url=push_url,
+    )
     if pushed_sha != head_sha:
         raise SubmitPRError(
             f"remote branch verification failed: expected {head_sha}, got {pushed_sha}"
@@ -1032,6 +1121,19 @@ def verify_pr(
         )
 
 
+def pr_verification_receipt(pr: dict[str, Any]) -> dict[str, Any]:
+    body = pr.get("body")
+    if not isinstance(body, str):
+        raise SubmitPRError("verified PR body is missing from the final payload")
+    return {
+        "status": "passed",
+        "state": pr.get("state"),
+        "title": pr.get("title"),
+        "body_sha256": hashlib.sha256(body.encode("utf-8")).hexdigest(),
+        "head_sha": pr.get("headRefOid"),
+    }
+
+
 def plan_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
     previous_locks = os.environ.get("GIT_OPTIONAL_LOCKS")
     os.environ["GIT_OPTIONAL_LOCKS"] = "0"
@@ -1059,54 +1161,63 @@ def plan_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
 
 
 def apply_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
-    require_clean_worktree(repo_root)
-    check_github_auth(repo_root)
-    context = resolve_repository_context(args, repo_root)
-    fetch_base(repo_root, context.base_remote, context.base_branch)
-    plan, _ = build_plan(
-        args,
-        repo_root,
-        context,
-        include_remote_branch_check=True,
-    )
-    open_prs = list_open_prs(
-        repo_root,
-        plan["repository"],
-        plan["base"],
-        plan["head_query"],
-    )
+    started = time.monotonic()
+    timings_ms: dict[str, float] = {}
+    with measure_phase(timings_ms, "worktree_check"):
+        require_clean_worktree(repo_root)
+    with measure_phase(timings_ms, "github_auth"):
+        check_github_auth(repo_root)
+    with measure_phase(timings_ms, "topology"):
+        context = resolve_repository_context(args, repo_root)
+        push_url = unique_push_url(repo_root, context.head_remote)
+    with measure_phase(timings_ms, "fetch_base"):
+        fetch_base(repo_root, context.base_remote, context.base_branch)
+    with measure_phase(timings_ms, "plan_revalidation"):
+        plan, _ = build_plan(
+            args,
+            repo_root,
+            context,
+            include_remote_branch_check=True,
+            push_url=push_url,
+        )
+    with measure_phase(timings_ms, "existing_pr_lookup"):
+        open_prs = list_open_prs(
+            repo_root,
+            plan["repository"],
+            plan["base"],
+            plan["head_query"],
+        )
     if len(open_prs) > 1:
         raise SubmitPRError("multiple open PRs exist for the same head/base")
     if open_prs:
-        pr = view_pr(repo_root, plan["repository"], str(open_prs[0]["number"]))
-        verify_pr(pr, plan, require_head_sha=False)
-    branch_action = ensure_local_branch(
-        repo_root,
-        plan["current_branch"],
-        plan["head_branch"],
-        plan["head_sha"],
-    )
-    if open_prs:
+        with measure_phase(timings_ms, "existing_pr_validation"):
+            verify_pr(open_prs[0], plan, require_head_sha=False)
+    with measure_phase(timings_ms, "local_branch"):
+        branch_action = ensure_local_branch(
+            repo_root,
+            plan["current_branch"],
+            plan["head_branch"],
+            plan["head_sha"],
+        )
+    with measure_phase(timings_ms, "push"):
         push_action = push_head_branch(
             repo_root,
             plan["head_remote"],
             plan["head_branch"],
             plan["head_sha"],
+            push_url=push_url,
         )
-        pr = view_pr(repo_root, plan["repository"], str(open_prs[0]["number"]))
-        verify_pr(pr, plan)
+    if open_prs:
+        pr_reference = str(open_prs[0]["number"])
         pr_action = "reused"
     else:
-        push_action = push_head_branch(
-            repo_root,
-            plan["head_remote"],
-            plan["head_branch"],
-            plan["head_sha"],
-        )
-        pr_url = create_pr(repo_root, plan)
-        pr = view_pr(repo_root, plan["repository"], pr_url)
-        verify_pr(pr, plan)
+        with measure_phase(timings_ms, "pr_create"):
+            pr_reference = create_pr(repo_root, plan)
         pr_action = "created"
+    with measure_phase(timings_ms, "final_pr_verification"):
+        pr = view_pr(repo_root, plan["repository"], pr_reference)
+        verify_pr(pr, plan)
+    timings_ms["total"] = round((time.monotonic() - started) * 1000, 3)
     return {
         "mode": "apply",
         "repository": plan["repository"],
@@ -1124,6 +1235,8 @@ def apply_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
         "pr_action": pr_action,
         "pr_number": pr.get("number"),
         "pr_url": pr.get("url"),
+        "pr_verification": pr_verification_receipt(pr),
+        "timings_ms": timings_ms,
         "needs_screenshots": plan["needs_screenshots"],
     }
 
@@ -1165,8 +1278,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> int:
-    args = build_parser().parse_args()
     try:
+        require_supported_python()
+        args = build_parser().parse_args()
         repo_root = resolve_repo_root(args.repo_root)
         result = (
             plan_command(args, repo_root)

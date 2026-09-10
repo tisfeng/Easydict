@@ -57,6 +57,10 @@
 重新格式化；项目差异写入 `AGENTS.md` 或 `docs/agents/`。需要改变通用行为时先修改并发布
 上游，再通过安装器同步完整版本。
 
+`tisfeng/skills` 上游仓库使用 `.agents/skills/<name> -> ../../skills/<name>` 相对链接发现
+当前源码；这些链接是来源仓库的自用入口，不是消费方发布资产。Easydict 继续通过安装器保存
+完整 Skill 快照，不同步或改造为上游的发现链接。
+
 项目专属 skill 和 reference 的语言遵循根 [`AGENTS.md`](../../AGENTS.md#始终阅读)。
 外部受管快照保留上游原文，不在 Easydict 中本地修补。
 

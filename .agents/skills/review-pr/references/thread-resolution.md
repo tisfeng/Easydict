@@ -6,6 +6,10 @@ helper 不会验证证据文字是否真的成立。
 
 ## 收集与判定
 
+普通 PR review 若已经通过 `review_snapshot.py collect` 取得完整 threads、comments、每线程
+`fingerprint` 和准确 `headRefOid`，直接复用该快照进行语义判定，不要紧接着重复 collect。
+需要生成 apply plan 时使用这些真实字段；apply helper 仍会按下文在每次 mutation 前自行刷新。
+
 ```bash
 python3 "<review-pr-skill-dir>/scripts/review_threads.py" collect --repo OWNER/REPO --pr NUMBER
 ```

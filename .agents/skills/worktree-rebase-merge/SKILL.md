@@ -22,6 +22,40 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
 - 已知 Git 元数据或 worktree 路径受限时，直接为已授权命令申请必要提权；同轮复用已确认
   的权限边界，避免先运行必然失败的命令。审批拒绝时保留现场并报告原因。
 
+## 快速执行协议
+
+保持本 Skill 的全部授权、分支、暂存、写前复验、rebase 结果核对、目标 OID、冲突恢复和完整
+回执门禁；优化的是可预测成功路径中的模型往返与工具输出，不是减少 Git 安全步骤。
+
+- `<worktree-skill-dir>` 指实际加载的本 Skill 目录。预检优先运行一次只读检查器：
+
+  ```bash
+  python3 "<worktree-skill-dir>/scripts/collect-integration-facts.py" \
+    --source <source-path> [--target <target-branch>] \
+    [--source-branch <detached-candidate>]
+  ```
+
+  未提供 `--target` 时，检查器按本 Skill 规则实时解析远程 HEAD，并与本地 source 事实并行收集；
+  提供目标时不查询远程。普通集成只输出目标分支对应的 checkout、精确 source/target OID、
+  状态、进行中操作、detached 候选动作及完整提交范围，不输出全量 refs/worktrees；source 与目标
+  相同时立即返回 `direct-commit`，不读取 worktree 清单或提交范围。
+- 检查器退出 `0` 才表示本次快照收集稳定；退出 `2` 表示收集期间发生漂移，退出 `1` 表示无法
+  可靠读取。它不判断用户授权、不修改 Git，也不替代每次写入前的即时复验。JSON 的
+  `schema_version`、`stable`、必要字段和退出状态必须一起验证，不能只解析部分 stdout。
+- 运行时支持程序化工具调用时，把互不依赖的只读检查并行执行，并在一个程序中按顺序等待已授权
+  的分支挂接、唯一暂存/提交、rebase、目标复验、merge 和回执采集。每条 Git 写命令仍是独立
+  工具调用和独立权限边界；不要创建负责 stage、commit、rebase 或 merge 的宽泛写入 runner。
+- 每个命令工具调用只有明确完成且 `exit_code === 0` 才能继续。运行中会话或缺少退出码必须继续
+  等待；非零退出、审批拒绝、漂移、冲突或结果歧义立即停止程序并返回当前阶段、冻结 OID、必要
+  状态和恢复位置。非命令工具使用其原生成功与错误契约。不得把一次程序化调用当作事务，也不得
+  从批次开头自动重跑已经成功的 Git 写操作。
+- 模型只在目标或 remote 歧义、detached 分支意图、范围和提交信息语义、用户确认、真实漂移、
+  不能确定等价的 rebase 结果及需要产品判断的冲突上介入。确定性检查与预期完全一致时继续下一
+  命令，只在最终回执返回完整事实；未变化的 status、refs、worktree 清单、log 和 diff 不重复输出。
+
+首次 source raw patch 仍按 `git-commit` 完整交给模型审核。首次快照得到目标分支后，后续即时
+复验使用显式 `--target`，避免再次查询远程；已经加载且未变化的规则和回执模板不要重复读取。
+
 ## 默认规则
 
 - 用户提供目标分支时使用该分支，否则解析仓库远程默认分支。
@@ -42,13 +76,13 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
 
 - 在分支检查前解析目标分支。如果 remote 选择存在歧义、实时远程 HEAD 不可用或无法
   解析，或者解析出的本地目标分支不存在，则停止并要求用户指定或确认目标分支。
-- 运行 `git branch --show-current`、`git branch --list <target-branch>` 和
-  `git status --short`。
+- 默认使用 **快速执行协议**的只读检查器一次取得当前分支、精确本地目标分支、source/target
+  OID、status、目标 worktree 和提交范围；检查器不可用时才分别运行等价只读 Git 命令。
 - 对 detached HEAD，在选择直接提交或普通 rebase/merge 模式前先遵循
   **挂接 Detached HEAD**。
 - 如果源分支和目标分支解析为同一分支，进入直接提交模式。
-- 普通 rebase/merge 模式运行 `git worktree list`。
-- 从 `git worktree list` 中查找 branch 恰好为 `<target-branch>` 的现有目标
+- 普通 rebase/merge 模式解析 `git worktree list --porcelain -z`；不要把全量原始清单返回模型。
+- 从解析结果中查找 branch 恰好为 `<target-branch>` 的现有目标
   worktree。存在时使用该路径完成最终合并。
 - 不要求用户主 checkout 当前位于 `<target-branch>`。如果尚无 worktree checkout
   到目标分支，计划为合并步骤创建临时目标 worktree，不要切换其他 checkout 的分支。
@@ -77,7 +111,8 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
      `git switch <branch-name>` 并复用。
    - 否则依次追加 `-2`、`-3`，直到找到未使用的有效名称，再运行
      `git switch -c <numbered-branch-name>`。
-   使用 `git show-ref --verify` 和 `git worktree list --porcelain` 区分这些情况。
+   使用 `git show-ref --verify --quiet` 和 `git worktree list --porcelain -z` 区分这些情况；
+   分支不存在的退出码 `1` 是预期事实，其他非零退出才是读取失败，不要为此打印全部 refs。
    绝不 reset 或移动现有分支。
 7. 验证选定的源分支，确认 `git rev-parse HEAD` 仍与记录的提交匹配，并要求
    `git status --short` 保持完全相同的 staged、unstaged 和 untracked 状态。如果挂接
@@ -129,6 +164,8 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
 - rebase 前使用 `git log --oneline <target-branch>..<source-branch>` 和
   `git diff --stat <target-branch>...<source-branch>` 记录完整集成范围，供 rebase、
   merge 和最终报告使用。
+- 已由稳定检查器快照取得且相关 OID 未变化时，复用其中的提交清单、完整触及路径和 merge base；
+  只有范围或 OID 漂移时重新输出完整证据。
 - 用户限定路径时，检查范围内每个提交触及的路径，包括后来被撤销的变更；不能只看最终净 diff。
 - 用户明确调用本 skill 且未限定提交范围时，
   `<target-branch>..<source-branch>` 中的全部源提交均属于本次集成范围。允许范围包含
