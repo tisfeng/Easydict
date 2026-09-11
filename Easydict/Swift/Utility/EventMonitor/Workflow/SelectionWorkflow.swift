@@ -177,8 +177,10 @@ final class SelectionWorkflow {
         }
 
         // 显式快捷键查询是用户主动动作，不受强制取词开关限制
+        let isZenBrowser = contextProvider?.frontmostApplication?.bundleIdentifier == "app.zen-browser.zen"
         let allowForce = EventMonitor.shared.actionType == .shortcutQuery
             || MyConfiguration.shared.enableForceGetSelectedText
+            || isZenBrowser
         logInfo("Allow force get selected text: \(allowForce ? "YES" : "NO")")
         guard allowForce else {
             completion(nil)
@@ -335,6 +337,11 @@ final class SelectionWorkflow {
         // 显式快捷键查询是用户主动动作，不受强制取词开关限制
         if EventMonitor.shared.actionType == .shortcutQuery {
             logInfo("Shortcut query, allow force get selected text regardless of setting")
+            return true
+        }
+
+        if bundleID == "app.zen-browser.zen" {
+            logInfo("Zen Browser Accessibility text unavailable, allow force get selected text")
             return true
         }
 
