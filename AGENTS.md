@@ -9,7 +9,7 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 ## 始终阅读
 
 - 每个任务先阅读 `docs/agents/request-boundary.md`，确定请求语义、写入授权、任务模式、
-  写入前检查（Mutation Gate），以及是否需要按其 `Planner 委派决策` 使用子代理。
+  写入前检查（Mutation Gate）和受保护状态。
 - 回复和内部任务记录使用用户当前请求的语言；已有文档保持原语言，公共文档遵循 `en/zh`
   目录，用户明确要求翻译时除外。代码标识、API 名称、命令、路径、品牌名称和固定输出契约
   保留原文。
@@ -19,20 +19,19 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 
 ## 任务路由
 
-- Git 状态保护、暂存、本地提交、worktree 集成和 提交 PR 约定：
-  `docs/agents/git-workflow.md`。
-- 构建、测试、tester、工程文件与资源、Xcode 验证：`docs/agents/build-and-test.md`。
+- Git 状态保护、暂存、本地提交、worktree 集成和提交 PR 约定：
+  `docs/agents/git-delivery.md`。
+- 构建、测试、工程文件与资源、Xcode 验证：`docs/agents/build-and-test.md`。
 - 跨语言代码质量、Swift、Objective-C、SwiftUI、API 和本地化：
   `docs/agents/coding-guidelines.md`。
-- 实质审查、独立 reviewer、审查快照与复审：`docs/agents/review.md`。
-- 文档分层、计划、history、参考资料、外部 Skills、Codex 子代理、双 lock 和同步边界：
+- 文档分层、计划、history、参考资料、外部 Skills 和同步边界：
   `docs/agents/README.md`。
 - 产品代码、跨功能行为或模块边界：`docs/design-docs/application-architecture.md`。
 - 公共使用或贡献者文档：`docs/user-docs/en/` 或 `docs/user-docs/zh/`。
 - 具体 Skill：执行前读取 `.agents/skills/<skill>/SKILL.md`。
 - 发布：`.agents/skills/release-easydict/SKILL.md`。
 - 创建 GitHub PR：`.agents/skills/submit-pr/SKILL.md`，并读取
-  `docs/agents/git-workflow.md` 中的提交 PR 约定。
+  `docs/agents/git-delivery.md` 中的提交 PR 约定。
 - OpenAI API、ChatGPT Apps SDK、Codex 或相关开发工具：优先使用 OpenAI 开发者文档
   MCP server；不可用时访问官方文档网页，并说明实际来源。
 - 应用内置 Agent 文档、运行时资源或后端契约：读取其自身权威来源及
@@ -40,12 +39,13 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 
 ## Review 路由
 
-- 本地 review 与 GitHub PR review 先读取 `docs/agents/review.md`；具体审查分别按以下 Skill
-  执行。
+- 实质审查、复审和 GitHub PR review 由主 Agent 按对应 Skill 执行；简单文档、低风险配置或
+  小改动可只完成必要检查。审查默认只读，不修改文件、Git 状态或外部服务。
 - 本地任务、工作树、提交/range、文件或模块审查：`.agents/skills/review/SKILL.md`；
 - GitHub PR review：`.agents/skills/review-pr/SKILL.md`；权限边界以
   `docs/agents/request-boundary.md` 为准，默认不授权产品修复、发布评论、approve、关闭 PR
   或 push。
+- 主 Agent 不把自审写成独立审查；用户明确要求独立评审时如实报告该限制，不据此扩大授权。
 
 ## 回复与交付表达
 
@@ -61,5 +61,8 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 ## 维护约束
 
 - 保留工作树中与当前任务无关的 staged、unstaged 和 untracked 变更。
-- `skills-lock.json` 和 `.codex/agents-lock.json` 管理的内容是外部受管快照，普通项目任务
-  不得直接修改；项目专属例外和同步规则见 `docs/agents/README.md`。
+- `skills-lock.json` 管理的内容是外部受管快照，普通项目任务不得直接修改；项目专属例外和
+  同步规则见 `docs/agents/README.md`。
+- 其余维护约束不在此复述，以对应专题文件为唯一来源：材料与写入授权见
+  `docs/agents/request-boundary.md`，Git 状态保护见 `docs/agents/git-delivery.md`，
+  文档与资产生命周期见 `docs/agents/README.md`。

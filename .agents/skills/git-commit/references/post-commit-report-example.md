@@ -10,7 +10,7 @@
 
 - 动作：已创建提交
 - Commit：`0123456789abcdef0123456789abcdef01234567`
-- 分支：`docs/unify-git-delivery-receipts`
+- 分支：`docs/unify-commit-receipts`
 - 提交后校验：通过
 - 工作树：干净
 - Push：未执行

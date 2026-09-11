@@ -20,11 +20,12 @@ review。建议选择当前最新、适合复杂编程任务的 GPT 或 Claude �
 使用 Agent 不会转移贡献者的责任。提交者应理解最终代码，确认改动符合项目架构、代码
 规范和实际需求，并排除无关修改、虚构实现或未经验证的假设。
 
-### Skill 与子代理
+### Skill
 
-常用 Skill 和 Codex 子代理，包括 `review`、`submit-pr`、`planner` 和 `reviewer` 等，
-由 [`tisfeng/skills`](https://github.com/tisfeng/skills) 统一维护。具体能力、安装和使用方式
-以上游文档为准；Easydict 的项目专属规则仍以 [`AGENTS.md`](AGENTS.md) 为准。
+常用 Skill，包括 `review`、`review-pr`、`submit-pr`、`git-commit` 和
+`worktree-rebase-merge` 等，由 [`tisfeng/skills`](https://github.com/tisfeng/skills) 统一
+维护。具体能力、安装和使用方式以上游文档为准；Easydict 的项目专属规则仍以
+[`AGENTS.md`](AGENTS.md) 为准。
 
 ## 开始开发
 

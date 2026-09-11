@@ -14,8 +14,8 @@
 
 - [`agent-documentation-structure.md`](agent-documentation-structure.md)：Agent 文档入口、知识
   分层和维护边界的设计理由。
-- [`external-agent-assets-management.md`](external-agent-assets-management.md)：外部 Skills、Codex
-  子代理、第三方 Skill 与项目专属 Skill 的版本治理理由。
+- [`external-agent-assets-management.md`](external-agent-assets-management.md)：外部 Skills、
+  第三方 Skill 与项目专属 Skill 的版本治理理由。
 
 产品与技术设计随实现更新；长期设计决策保留状态、日期、背景、取舍和重新评估条件。本目录
 不保存任务日志或公共使用说明，也不作为第二套 Agent 任务路由。

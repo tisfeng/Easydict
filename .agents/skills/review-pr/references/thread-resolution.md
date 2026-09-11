@@ -6,6 +6,10 @@ helper 不会验证证据文字是否真的成立。
 
 ## 收集与判定
 
+普通 PR review 若已经通过 `review_snapshot.py collect` 取得完整 threads、comments、每线程
+`fingerprint` 和准确 `headRefOid`，直接复用该快照进行语义判定，不要紧接着重复 collect。
+需要生成 apply plan 时使用这些真实字段；apply helper 仍会按下文在每次 mutation 前自行刷新。
+
 ```bash
 python3 "<review-pr-skill-dir>/scripts/review_threads.py" collect --repo OWNER/REPO --pr NUMBER
 ```
@@ -51,11 +55,13 @@ python3 "<review-pr-skill-dir>/scripts/review_threads.py" collect --repo OWNER/R
 python3 "<review-pr-skill-dir>/scripts/review_threads.py" apply --plan PLAN.json --allow-resolve
 ```
 
-helper 每条操作前重新 collect，核对 PR 身份、开放状态、远程 head、thread 内容和
+helper 每条操作前定向读取请求 PR 与目标 thread，核对该线程确实属于该 PR，并完整分页读取
+目标线程全部回复；不为处理一条线程再次扫描其他所有线程。核对 PR 身份、开放状态、远程 head、thread 内容和
 `viewerCanResolve`。已解决的线程直接跳过；PR head 变化时停止后续处理，线程内容变化时
 跳过该线程。重新阅读变化并重新判定后生成新 plan，不自动改写旧 plan 的 SHA/指纹。
 
-mutation 后再次 collect 读回状态。异常可能意味着请求已经生效；保留结果并重新
+mutation 后再次定向读取同一线程，复验身份、head、状态和所有回复；每次分页结束额外核验
+线程标志与回复总数。初始/最终全量线程扫描仍由 snapshot helper 完成。异常可能意味着请求已经生效；保留结果并重新
 collect 确认，不盲目重试、不自动 unresolve。输出保留 evidence/permalink，报告
 resolved、already_resolved、stale、cannot_resolve、error、unknown 或 not_attempted。
 部分失败返回非零退出码，不能把整个批次写为成功。apply 后仍执行 skill 的最终全量

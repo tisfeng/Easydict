@@ -19,7 +19,7 @@
 ## Easydict 本地差异
 
 - 保留 Easydict 的 PR review 完整规则、`submit-pr` 参数、`release-easydict`、
-  Planning 子代理、Swift/Xcode 和 String Catalog 规则。
+  Swift/Xcode 和 String Catalog 规则。
 - 不引入 Scoco 的 release、R2/OCU、boss-resume、贡献者文档或产品专属规则。
 - 本文件只记录来源与本地取舍，不替代 `AGENTS.md` 或 `docs/agents/` 中的现行规则。
 

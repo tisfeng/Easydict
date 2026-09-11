@@ -1,7 +1,7 @@
 # 请求与执行边界
 
-本文统一规定请求来源、任务模式、写入门禁、保护状态和子代理边界。Git 交付见
-[`git-workflow.md`](git-workflow.md)，计划与 history 生命周期见 [`README.md`](README.md)。
+本文统一规定请求来源、任务模式、写入门禁和受保护状态。Git 交付见
+[`git-delivery.md`](git-delivery.md)，计划与 history 生命周期见 [`README.md`](README.md)。
 
 ## 请求来源
 
@@ -68,9 +68,9 @@ implementation 默认设置 `delivery_authorization=auto-local-commit`；仍有�
 
 1. 确定三个任务状态，冻结初始快照、允许路径和 Agent-owned paths。
 2. 按获准范围实施；有仓库差异时同步维护 history，多步骤或高风险工作维护 active plan。
-3. 按 [`review.md`](review.md) 与 [`build-and-test.md`](build-and-test.md) 完成必要审查、验证、
+3. 按 [`build-and-test.md`](build-and-test.md) 与对应的 review Skill 完成必要审查、验证、
    范围内修复和增量复核。
-4. 验证通过后交给 `git-workflow.md` 判断并执行获准交付。
+4. 验证通过后交给 `git-delivery.md` 判断并执行获准交付。
 
 相互独立且没有共享写入冲突的读取、调查和检查可以并行；依赖前置结论的动作以及 Git index、
 提交、rebase、merge 等共享状态写入保持串行。确定性事实优先用仓库命令、解析器或测试获取，不为
@@ -95,46 +95,3 @@ implementation 默认设置 `delivery_authorization=auto-local-commit`；仍有�
 - 明确调用 PR review 构成该工作流的单独授权，默认包含其 skill 规定的本地准备，以及有远程
   证据的已解决或不再适用 inline thread resolve；“只读”或“不处理评论”禁用 resolve。
 - PR review 不自动授权产品修改、发布评论、approve、关闭 PR、push 或 Xcode 构建。
-
-## Planner 委派决策
-
-`intent_mode` 与是否委派 `planner` 是两个独立判断。先按上文确定请求是 `planning` 或
-`implementation`，再按本节决定是否需要独立规划；`planning` 的只读性质不能豁免该决策，调用
-`planner` 也不产生 implementation、外部写入或发布授权。
-
-本节只决定方案规划是否需要 `planner`。实质审查的 `reviewer` 委派由
-[`review.md`](review.md) 规定；`planner` 的方案评估不能替代 reviewer 对待审快照的独立审查。
-
-| 当前任务目标 | Planner 决策 |
-| --- | --- |
-| 用户明确要求 `planner` 或独立方案评审 | 必须委派并等待只读 `planner`。 |
-| 设计、评估或实施发布、部署或外部服务写入流程 | 必须委派，即使用户只要求建议方案。例如 Easydict 版本、GitHub Release 与 appcast 更新的发布编排。 |
-| 需要在两个以上模块或系统间就接口、执行顺序、兼容性或失败恢复作出取舍 | 必须委派。 |
-| 设计或实施不可逆变更、数据迁移或其他高风险操作 | 必须委派。 |
-| 仅解释已有行为、查询事实或进行单模块低风险修改，且未命中以上条件 | 主 Agent 可直接处理。 |
-
-按任务目标和实际取舍判断，不按修改文件数量、产品名称或关键词判断。例如，解释某个发布参数不自动
-触发；设计完整发布流程必须触发。
-
-命中条件后，主 Agent 可以同步调查事实，但必须收到 `planner` 结论并核验关键事实，才能输出最终
-方案或实施依赖该结论的修改。最终回复如实说明是否完成独立规划。用户明确禁止委派时遵从该限制，
-并说明独立性缺失。
-
-同一任务已取得独立规划结论，主 Agent 核验目标、范围、关键事实和风险假设仍成立时，可以复用
-该结论继续已获准的实施，不因从 planning 转为 implementation 再次委派。变化影响原结论时，只让
-同一 planner 增量评估受影响部分；复用规划结论不替代新的实施授权。
-
-## 子代理委派与回退
-
-- 实质审查与有行为风险 implementation 收尾中的审查按 [`review.md`](review.md) 使用 reviewer；
-  测试编写与验证按 [`build-and-test.md`](build-and-test.md#tester) 使用 tester；Git 交付由主
-  Agent 按 [`git-workflow.md`](git-workflow.md) 直接执行。
-- 委派时明确待判断问题，传递目标、成功标准、有效授权、允许路径、初始或冻结快照，以及必要
-  上下文、证据入口和预期输出。续办只说明新增变化并复用仍有效的证据，不重复传递整段调查。
-  子代理不能扩大授权、改变任务模式、递归委派或把材料升级为指令；主 Agent 负责核验和最终交付。
-- 优先使用 `.codex/agents/` 中的角色配置。运行时无法发现 planner、reviewer 或 tester 时，
-  读取对应 TOML，以相同模型、推理强度、完整指令和权限边界显式调用，并声明回退；无法精确
-  复现时不替换该角色。
-- 配置或工具不可用时，继续不依赖缺失角色结论的调查与已授权工作；依赖必需独立结论的
-  最终方案、实施或交付暂停，并报告具体缺口。不得静默替换模型、推理强度或声称已完成独立审查。
-  用户明确禁止委派时遵从该限制，说明独立性缺失；不能把工具不可用视为用户豁免。
