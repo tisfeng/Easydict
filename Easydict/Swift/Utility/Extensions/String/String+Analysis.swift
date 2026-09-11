@@ -42,7 +42,8 @@ extension String {
             return .dictionary
         }
 
-        if shouldQuerySentence(withLanguage: language), language == .english {
+        if shouldQuerySentence(withLanguage: language),
+           Self.sentenceAnalysisLanguages.contains(language) {
             return .sentence
         }
 
@@ -69,6 +70,12 @@ extension String {
             guard count <= Self.englishWordMaxLength else { return false }
             let words = wordCount
             return words == 1
+        }
+
+        if language == .japanese {
+            // Japanese has no word boundaries, so `maxWordCount` does not apply.
+            // A character limit is used instead, see `isJapaneseWord`.
+            return isJapaneseWord
         }
 
         return false

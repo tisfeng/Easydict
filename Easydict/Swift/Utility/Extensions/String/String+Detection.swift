@@ -189,6 +189,35 @@ extension String {
         return matches ?? 0 > 0
     }
 
+    /// Check if the text contains only Japanese characters: kana, kanji, the
+    /// prolonged sound mark (ー) and the iteration marks (々, ゝ, ヽ). Spaces
+    /// and punctuation are not allowed, so sentences are excluded.
+    ///
+    /// Explicit code point ranges are used instead of `\p{Hiragana}` etc.,
+    /// because on macOS the script properties also match CJK punctuation
+    /// such as 。, which would let sentences through.
+    var isJapaneseText: Bool {
+        let pattern = "^["
+            + "\\u3005-\\u3007" // 々 〆 〇
+            + "\\u3041-\\u3096\\u3099-\\u309F" // Hiragana
+            + "\\u30A1-\\u30FA\\u30FC-\\u30FF" // Katakana, excluding the middle dot ・
+            + "\\uFF66-\\uFF9F" // Halfwidth Katakana
+            + "\\u3400-\\u4DBF\\u4E00-\\u9FFF\\uF900-\\uFAFF" // CJK ideographs
+            + "\\U00020000-\\U0003134F" // CJK ideographs extension B and later
+            + "]+$"
+        return range(of: pattern, options: .regularExpression) != nil
+    }
+
+    /// Check if the text is a Japanese word or short phrase for dictionary
+    /// lookup, e.g. 見つめる, 見つめ直す, お疲れ様. Conjugated forms such as
+    /// 見つめた are accepted so that dictionary services can resolve them to
+    /// the dictionary form.
+    var isJapaneseWord: Bool {
+        let text = tryToRemoveQuotes()
+        guard text.count <= Self.japaneseWordMaxLength else { return false }
+        return text.isJapaneseText
+    }
+
     /// Check if the text contains only numbers
     var isNumbers: Bool {
         guard !isEmpty else { return false }

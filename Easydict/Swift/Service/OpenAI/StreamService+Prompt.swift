@@ -199,12 +199,22 @@ extension StreamService {
         let stepByStepPrompt = "Then, follow these steps:\n"
         prompt += stepByStepPrompt
 
+        // Japanese words are conjugated and the grammar is carried by particles
+        // and sentence patterns, so ask for those explicitly.
+        let isJapaneseSentence = sourceLanguage == .japanese
+
+        let keyWordsDetailPrompt = isJapaneseSentence
+            ? " For conjugated words, also give the dictionary form, its hiragana reading and the conjugation used here."
+            : ""
         let keyWordsPrompt =
-            "1. List up to 5 key words, phrases, or collocations from the sentence. For each, include all parts of speech and meanings, and specify its meaning in this context if it differs from the common meaning. Use the format: \"\(keyWords):\n{key_words_pos}\".\n\n"
+            "1. List up to 5 key words, phrases, or collocations from the sentence. For each, include all parts of speech and meanings, and specify its meaning in this context if it differs from the common meaning.\(keyWordsDetailPrompt) Use the format: \"\(keyWords):\n{key_words_pos}\".\n\n"
         prompt += keyWordsPrompt
 
+        let grammarParseDetailPrompt = isJapaneseSentence
+            ? " Explain the particles, conjugations, honorific or polite forms and sentence patterns used."
+            : ""
         let grammarParsePrompt =
-            "2. Analyze the grammatical structure of the sentence. Use the format: \"\(grammarParse):\n{grammatical_analysis}\".\n\n"
+            "2. Analyze the grammatical structure of the sentence.\(grammarParseDetailPrompt) Use the format: \"\(grammarParse):\n{grammatical_analysis}\".\n\n"
         prompt += grammarParsePrompt
 
         let freeTranslationPrompt =
@@ -310,6 +320,41 @@ extension StreamService {
             ),
         ].flatMap { $0 }
 
+        // Japanese example: conjugated words are resolved to the dictionary form,
+        // and the grammar parsing covers particles and sentence patterns.
+        let japaneseChineseFewShot = [
+            chatMessagePair(
+                userContent: """
+                Here is a Japanese sentence: \"\"\"英語を、日本文化を外から見つめ直す手段と捉えている。\"\"\"
+                First, provide the Simplified Chinese translation of this sentence.
+                Then, follow these steps:
+                1. List the key vocabulary and phrases in the sentence. For conjugated words, also give the dictionary form, its hiragana reading and the conjugation used here.
+                2. Analyze the grammatical structure of the sentence. Explain the particles, conjugations, honorific or polite forms and sentence patterns used.
+                3. Provide the inferred translation in Simplified Chinese.
+                Answer in Simplified Chinese.
+                """,
+                assistantContent: """
+                直译：
+                把英语当作从外部重新审视日本文化的手段。
+
+                重点词汇：
+                見つめ直す：みつめなおす，他動詞・下一段。重新审视，重新正视。此处为修饰「手段」的連体形，与辞書形同形。
+                手段：しゅだん，名詞。手段，方法。
+                捉えている：辞書形「捉える」（とらえる，他動詞・下一段）的ている形。把……看作……。
+                「ている」在此表示持续持有的看法，而非正在进行的动作。
+                外から：从外部。「外（そと）」+ 表示起点的助词「から」。
+
+                语法分析：
+                主干为「英語を（……）手段と捉えている」，即「AをBと捉える」句型（把 A 看作 B），主语被省略。
+                「日本文化を外から見つめ直す」是修饰「手段」的連体修飾節（定语从句），其中「日本文化を」是「見つめ直す」的宾语，「外から」表示动作的起点。
+                「英語を」后的读点仅用于断句，不改变句子结构。
+
+                意译：
+                她把英语视为一种从外部重新审视日本文化的手段。
+                """
+            ),
+        ].flatMap { $0 }
+
         let englishFewShot = [
             chatMessagePair(
                 userContent: """
@@ -351,6 +396,9 @@ extension StreamService {
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {
             messages += chineseFewShot
+            if isJapaneseSentence {
+                messages += japaneseChineseFewShot
+            }
         } else {
             messages += englishFewShot
         }
@@ -379,6 +427,9 @@ extension StreamService {
         var antonym = "Antonym"
         var commonPhrases = "common Phrases"
         var exampleSentence = "Example sentence"
+        var dictionaryForm = "Dictionary form"
+        var reading = "Reading"
+        var partOfSpeech = "Part of speech"
 
         let isEnglishWord = sourceLanguage == .english && word.isEnglishWord
         let isEnglishPhrase = sourceLanguage == .english && word.isEnglishPhrase
@@ -386,7 +437,9 @@ extension StreamService {
         let isChineseWord =
             EZLanguageManager.shared().isChineseLanguage(sourceLanguage) && word.isChineseWord
 
-        let isWord = isEnglishWord || isChineseWord
+        let isJapaneseWord = sourceLanguage == .japanese && word.isJapaneseWord
+
+        let isWord = isEnglishWord || isChineseWord || isJapaneseWord
 
         let sourceLanguageString = sourceLanguage.rawValue
 
@@ -408,11 +461,45 @@ extension StreamService {
             antonym = "反义词"
             commonPhrases = "常用短语"
             exampleSentence = "例句"
+            dictionaryForm = "辞书形"
+            reading = "读音"
+            partOfSpeech = "词性·活用"
         }
 
-        let pronunciationPrompt =
-            "Look up its pronunciation, use the format: \"\(pronunciation): /{pronunciation}/\" \n"
-        prompt.append(pronunciationPrompt)
+        if isJapaneseWord {
+            // Japanese words are looked up by dictionary form and kana reading
+            // instead of an IPA pronunciation, and conjugated forms such as
+            // 見つめた are resolved to the dictionary form first.
+            let dictionaryFormPrompt = """
+            Look up its dictionary form. If the given form is conjugated, name the conjugation, use the format: "\(
+                dictionaryForm
+            ): {dictionary_form}（{conjugation_of_the_given_form}）", otherwise use the format: "\(
+                dictionaryForm
+            ): {dictionary_form}".
+            """
+            prompt.append(dictionaryFormPrompt)
+
+            let readingPrompt = """
+            Look up the reading of the dictionary form in hiragana, use the format: "\(reading): {hiragana}".
+            """
+            prompt.append(readingPrompt)
+
+            let partOfSpeechPrompt = """
+            Look up its part of speech and conjugation type, such as 他動詞・下一段, 自動詞・五段, イ形容詞, ナ形容詞, 名詞, use the format: "\(
+                partOfSpeech
+            ): {part_of_speech}".
+            """
+            prompt.append(partOfSpeechPrompt)
+
+            let meaningsPrompt = """
+            Look up all meanings in \(answerLanguage.rawValue), with one numbered meaning per line.
+            """
+            prompt.append(meaningsPrompt)
+        } else {
+            let pronunciationPrompt =
+                "Look up its pronunciation, use the format: \"\(pronunciation): /{pronunciation}/\" \n"
+            prompt.append(pronunciationPrompt)
+        }
 
         if isEnglishWord {
             let partOfSpeechAndMeaningPrompt = """
@@ -426,7 +513,7 @@ extension StreamService {
             ):\n{tenses}".
             """
             prompt.append(tensePrompt)
-        } else {
+        } else if !isJapaneseWord {
             let translationPrompt = translationPrompt(
                 text: word, from: sourceLanguage, to: targetLanguage
             )
@@ -614,6 +701,45 @@ extension StreamService {
             ),
         ].flatMap { $0 }
 
+        // Japanese example: a conjugated form is resolved to its dictionary form.
+        let japaneseChineseFewShot: [ChatMessage] = [
+            chatMessagePair(
+                userContent: """
+                Using Simplified-Chinese:
+                Here is a Japanese word: \"\"\"見つめ\"\"\",
+                Look up its dictionary form, reading, part of speech, meanings, explanation, etymology, synonyms, antonyms, phrases, example sentences.
+                """,
+                assistantContent: """
+                辞书形：見つめる（連用形）
+
+                读音：みつめる
+
+                词性·活用：他動詞・下一段
+
+                1. 凝视，注视；目不转睛地看
+                2. 正视，直面（现实、问题等）
+
+                解释：{explanation}
+
+                词源学：{etymology}
+
+                近义词：凝視する、注視する、じっと見る
+                反义词：目をそらす、見過ごす
+
+                常用短语：
+                1. じっと見つめる：目不转睛地凝视
+                2. 現実を見つめる：正视现实
+                3. 自分を見つめ直す：重新审视自己
+
+                例句：
+                1. 彼女は黙って窓の外を見つめていた。
+                （她默默地*凝视*着窗外。）
+                2. 私たちは日本の現状を冷静に見つめる必要がある。
+                （我们需要冷静地*正视*日本的现状。）
+                """
+            ),
+        ].flatMap { $0 }
+
         let englishFewShot: [ChatMessage] = [
             chatMessagePair(
                 userContent: """
@@ -681,6 +807,9 @@ extension StreamService {
 
         if EZLanguageManager.shared().isChineseLanguage(answerLanguage) {
             messages += chineseFewShot
+            if isJapaneseWord {
+                messages += japaneseChineseFewShot
+            }
         } else {
             messages += englishFewShot
         }

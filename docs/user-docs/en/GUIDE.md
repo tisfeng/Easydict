@@ -231,6 +231,8 @@ For example, [one-api](https://github.com/songquanpeng/one-api), one-api is a go
 
 Currently, OpenAI translation supports three query modes: word lookup, sentence translation, and long-text translation. They are all enabled by default, while words and sentences can be disabled.
 
+Word lookup and sentence analysis support English and Japanese: a Japanese word is first resolved to its dictionary form with the reading, part of speech and conjugation type, and a Japanese sentence is analyzed for particles, conjugations and sentence patterns.
+
 <table>
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/2KIWfp-1695612945.png">
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/tCMiec-1695637289.png">

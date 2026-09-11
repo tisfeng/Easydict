@@ -231,6 +231,8 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 目前 OpenAI 支持三种查询模式：单词，句子和长翻译，默认都是开启的，其中单词和句子也可关闭。
 
+单词和句子模式支持英语和日语：查日语单词会先还原为辞书形并给出读音、词性与活用，查日语句子会分析助词、活用与句型。
+
 <table>
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/2KIWfp-1695612945.png">
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/tCMiec-1695637289.png">

@@ -520,14 +520,10 @@ public class StreamService: QueryService {
         }
 
         let enableSentence = supportedQueryType().contains(.sentence)
-        var isQueryEnglishSentence = false
-        if !isQueryDictionary, enableSentence {
-            let isEnglishText = from == .english
-            if isEnglishText {
-                isQueryEnglishSentence = (text as NSString).shouldQuerySentence(withLanguage: from)
-                if isQueryEnglishSentence {
-                    return .sentence
-                }
+        if !isQueryDictionary, enableSentence, String.sentenceAnalysisLanguages.contains(from) {
+            let isQuerySentence = (text as NSString).shouldQuerySentence(withLanguage: from)
+            if isQuerySentence {
+                return .sentence
             }
         }
 
