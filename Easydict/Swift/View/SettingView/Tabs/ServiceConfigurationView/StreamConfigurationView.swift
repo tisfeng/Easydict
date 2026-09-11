@@ -116,6 +116,23 @@ struct StreamConfigurationView: View {
                 )
             }
 
+            if service.supportsAPITypePicker {
+                StaticPickerCell(
+                    titleKey: "service.configuration.openai.api_type.title",
+                    key: service.openAIAPITypeKey,
+                    values: OpenAIAPIType.allCases
+                )
+
+                TextEditorCell(
+                    titleKey: "service.configuration.openai.custom_headers.title",
+                    storedValueKey: service.customHeadersKey,
+                    placeholder: "service.configuration.openai.custom_headers.placeholder",
+                    footnote: "service.configuration.openai.custom_headers.footnote",
+                    minHeight: 55,
+                    maxHeight: 120
+                )
+            }
+
             if showSupportedModelsSection {
                 VStack(alignment: .trailing, spacing: 0) {
                     TextEditorCell(
