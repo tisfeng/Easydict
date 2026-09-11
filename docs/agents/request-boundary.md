@@ -68,7 +68,7 @@ implementation 默认设置 `delivery_authorization=auto-local-commit`；仍有�
 
 1. 确定三个任务状态，冻结初始快照、允许路径和 Agent-owned paths。
 2. 按获准范围实施；有仓库差异时同步维护 history，多步骤或高风险工作维护 active plan。
-3. 按 [`review.md`](review.md) 与 [`build-and-test.md`](build-and-test.md) 完成必要审查、验证、
+3. 按 [`build-and-test.md`](build-and-test.md) 与对应的 review Skill 完成必要审查、验证、
    范围内修复和增量复核。
 4. 验证通过后交给 `git-delivery.md` 判断并执行获准交付。
 

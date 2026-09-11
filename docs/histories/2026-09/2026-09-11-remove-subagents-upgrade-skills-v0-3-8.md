@@ -55,7 +55,8 @@
 - `skills-lock.json`
 - `.codex/agents-lock.json`、`.codex/agents/`、`.codex/config.toml`（删除）
 - `AGENTS.md`、`CONTRIBUTING.md`
-- `docs/agents/{README,request-boundary,review,build-and-test}.md`
+- `docs/agents/{README,request-boundary,build-and-test}.md`
+- `docs/agents/review.md`（删除）
 - `docs/agents/git-workflow.md` → `docs/agents/git-delivery.md`
 - `docs/exec-plans/README.md`、`docs/histories/README.md`
 - `docs/references/{README,tisfeng-skills,astra-agent-guidance,easydict-agent-documentation-port}.md`
@@ -67,3 +68,13 @@
 - 未 push，也未创建 tag 或 GitHub Release。
 - Scoco 与 boss-resume 的同类同步不在本次范围，仍固定各自的受管版本。
 - 上游重新引入平台专属资产或改变发布策略时，按 reference 的重新核对条件评估。
+
+### 后续清理（同任务续办）
+
+用户指出 `docs/agents/review.md` 的价值来自已移除的 reviewer 委派，该文件应一并删除。删除后把
+仍然有效的宿主政策收回根 `AGENTS.md` 的 Review 路由：实质审查与 PR review 由主 Agent 按 Skill
+执行、审查默认只读、不把自审写成独立审查；快照冻结、刷新和复用等执行细节继续由 `review` 与
+`review-pr` Skill 维护。`docs/agents/request-boundary.md` 的执行步骤改为引用 `build-and-test.md`
+与对应的 review Skill。
+
+验证：全仓检索确认现行文档不再引用 `docs/agents/review.md`；相对链接与锚点扫描无新增失效项。

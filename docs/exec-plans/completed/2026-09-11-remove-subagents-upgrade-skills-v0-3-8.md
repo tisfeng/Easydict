@@ -110,3 +110,6 @@
 与项目本地 config 已删除；`AGENTS.md`、`docs/agents/`、`CONTRIBUTING.md`、参考与设计文档已改为
 单一外部 Skill 资产模型。`git-workflow.md` 重命名为 `git-delivery.md`，宿主规则不再引用 Skill
 内部章节。全部验证通过，本地提交，未 push。
+
+同任务续办：按用户意见删除只服务于已移除 reviewer 委派的 `docs/agents/review.md`，把仍然有效的
+审查门禁收回根 `AGENTS.md` 的 Review 路由，快照与刷新细节继续由 review Skill 维护。
