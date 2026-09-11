@@ -470,8 +470,9 @@ class WorkflowIntegrationTests(unittest.TestCase):
         title: str = "feat(cli): add deterministic PR submission",
         summary: str = "Add deterministic PR submission.",
         verification: str = "- Unit tests passed.",
+        head_branch: str | None = "feat/deterministic-pr-submission",
     ) -> list[str]:
-        return [
+        command = [
             sys.executable,
             str(SCRIPT_PATH),
             action,
@@ -483,10 +484,10 @@ class WorkflowIntegrationTests(unittest.TestCase):
             summary,
             "--verification",
             verification,
-            "--head-branch",
-            "feat/deterministic-pr-submission",
-            *extra,
         ]
+        if head_branch is not None:
+            command.extend(("--head-branch", head_branch))
+        return [*command, *extra]
 
     def test_plan_discovers_non_origin_default_branch_and_is_read_only(self) -> None:
         refs_before = run(["git", "show-ref"], cwd=self.repo).stdout
@@ -516,6 +517,154 @@ class WorkflowIntegrationTests(unittest.TestCase):
         fetch_after = fetch_head.read_bytes() if fetch_head.exists() else None
         self.assertEqual(fetch_after, fetch_before)
         self.assertFalse((self.repo / ".tmp" / "submit-pr").exists())
+
+    def test_plan_accepts_explicit_git_branch_names_without_mutating_checkout_or_refs(self) -> None:
+        """An explicit branch name is a Git ref contract, not a Conventional name."""
+
+        refs_before = run(["git", "show-ref"], cwd=self.repo).stdout
+        checkout_before = run(["git", "branch", "--show-current"], cwd=self.repo).stdout
+        for requested in ("codex/foo", "feature/bar"):
+            with self.subTest(requested=requested):
+                result = run(
+                    self.command("plan", "--head-branch", requested),
+                    cwd=self.repo,
+                    env=self.environment(),
+                )
+                payload = json.loads(result.stdout)
+                self.assertEqual(payload["head_branch"], requested)
+                self.assertEqual(payload["planned_branch_action"], "would-create")
+                self.assertEqual(run(["git", "show-ref"], cwd=self.repo).stdout, refs_before)
+                self.assertEqual(
+                    run(["git", "branch", "--show-current"], cwd=self.repo).stdout,
+                    checkout_before,
+                )
+
+    def test_plan_skips_protected_collision_suffixes(self) -> None:
+        """A protected collision fallback must not become a push target."""
+
+        run(["git", "branch", "codex/foo", self.base_sha], cwd=self.repo)
+        run(["git", "checkout", "codex/foo"], cwd=self.repo)
+        (self.repo / "collision.txt").write_text("collision\n", encoding="utf-8")
+        run(["git", "add", "collision.txt"], cwd=self.repo)
+        run(
+            ["git", "-c", "commit.gpgsign=false", "commit", "-m", "test: create divergent collision"],
+            cwd=self.repo,
+        )
+        run(["git", "checkout", "main"], cwd=self.repo)
+        refs_before = run(["git", "show-ref"], cwd=self.repo).stdout
+
+        payload = json.loads(
+            run(
+                self.command(
+                    "plan", "--head-branch", "codex/foo",
+                    "--protected-branch", "codex/foo-2",
+                ),
+                cwd=self.repo,
+                env=self.environment(),
+            ).stdout
+        )
+
+        self.assertEqual(payload["head_branch"], "codex/foo-3")
+        self.assertEqual(run(["git", "show-ref"], cwd=self.repo).stdout, refs_before)
+        self.assertEqual(run(["git", "branch", "--show-current"], cwd=self.repo).stdout.strip(), "main")
+
+    def test_plan_rejects_expanded_protected_or_invalid_explicit_branch_without_mutation(self) -> None:
+        run(["git", "branch", "feat/previous-checkout", "HEAD"], cwd=self.repo)
+        run(["git", "checkout", "feat/previous-checkout"], cwd=self.repo)
+        run(["git", "checkout", "main"], cwd=self.repo)
+        expansion = run(["git", "check-ref-format", "--branch", "@{-1}"], cwd=self.repo).stdout.strip()
+        self.assertNotEqual(expansion, "@{-1}")
+
+        for requested, option in (
+            ("@{-1}", ()),
+            ("main", ("--protected-branch", "main")),
+            ("invalid..branch", ()),
+        ):
+            with self.subTest(requested=requested):
+                refs_before = run(["git", "show-ref"], cwd=self.repo).stdout
+                checkout_before = run(["git", "branch", "--show-current"], cwd=self.repo).stdout
+                result = subprocess.run(
+                    self.command("plan", "--head-branch", requested, *option),
+                    cwd=self.repo,
+                    env=self.environment(),
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual(result.stdout, "")
+                self.assertEqual(run(["git", "show-ref"], cwd=self.repo).stdout, refs_before)
+                self.assertEqual(
+                    run(["git", "branch", "--show-current"], cwd=self.repo).stdout,
+                    checkout_before,
+                )
+
+    def test_non_conventional_current_branch_requires_explicit_branch(self) -> None:
+        run(["git", "branch", "codex/current-task", "HEAD"], cwd=self.repo)
+        run(["git", "checkout", "codex/current-task"], cwd=self.repo)
+        refs_before = run(["git", "show-ref"], cwd=self.repo).stdout
+
+        result = subprocess.run(
+            self.command("plan", head_branch=None),
+            cwd=self.repo,
+            env=self.environment(),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("--head-branch is required", result.stderr)
+        self.assertEqual(run(["git", "show-ref"], cwd=self.repo).stdout, refs_before)
+        self.assertEqual(run(["git", "branch", "--show-current"], cwd=self.repo).stdout.strip(), "codex/current-task")
+
+    def test_current_conventional_branch_rejects_different_requested_branch(self) -> None:
+        run(["git", "branch", "feat/current-task", "HEAD"], cwd=self.repo)
+        run(["git", "checkout", "feat/current-task"], cwd=self.repo)
+        refs_before = run(["git", "show-ref"], cwd=self.repo).stdout
+
+        result = subprocess.run(
+            self.command("plan", "--head-branch", "codex/foo"),
+            cwd=self.repo,
+            env=self.environment(),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("does not match current branch", result.stderr)
+        self.assertEqual(run(["git", "show-ref"], cwd=self.repo).stdout, refs_before)
+        self.assertEqual(run(["git", "branch", "--show-current"], cwd=self.repo).stdout.strip(), "feat/current-task")
+
+    def test_apply_reuses_current_explicit_branch_without_switching_or_force(self) -> None:
+        run(["git", "branch", "-m", "codex/current-task"], cwd=self.repo)
+        refs_before = run(["git", "show-ref"], cwd=self.repo).stdout
+
+        payload = json.loads(
+            run(
+                self.command("apply", "--head-branch", "codex/current-task"),
+                cwd=self.repo,
+                env=self.environment(),
+            ).stdout
+        )
+
+        self.assertEqual(payload["branch_action"], "current")
+        self.assertEqual(payload["push_action"], "created")
+        self.assertEqual(run(["git", "branch", "--show-current"], cwd=self.repo).stdout.strip(), "codex/current-task")
+        self.assertEqual(
+            run(["git", "show-ref"], cwd=self.repo).stdout,
+            refs_before,
+            "apply must not create or force-update another local branch",
+        )
+        remote_head = run(
+            [
+                "git", "--git-dir", str(self.base_remote), "rev-parse",
+                "refs/heads/codex/current-task",
+            ],
+            cwd=self.root,
+        ).stdout.strip()
+        self.assertEqual(remote_head, self.head_sha)
 
     def test_plan_and_apply_preserve_localized_pr_content(self) -> None:
         title = "perf(git-workflow): 优化技能执行编排"

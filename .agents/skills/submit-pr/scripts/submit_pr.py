@@ -588,12 +588,10 @@ def parse_status(status_text: str) -> dict[str, list[str]]:
 
 def validate_branch_name(repo_root: Path, branch: str) -> None:
     result = git_result(repo_root, "check-ref-format", "--branch", branch)
-    if result.returncode != 0:
+    # --branch accepts shortcuts such as @{-1}; subsequent ref operations need
+    # the exact literal name supplied by the caller, not an expanded revision.
+    if result.returncode != 0 or result.stdout.strip() != branch:
         raise SubmitPRError(f"invalid head branch name: {branch!r}")
-    if BRANCH_PATTERN.fullmatch(branch) is None:
-        raise SubmitPRError(
-            "head branch must use Conventional <type>/<kebab-case-summary> format"
-        )
 
 
 def local_branch_sha(repo_root: Path, branch: str) -> str | None:
@@ -636,10 +634,16 @@ def choose_branch_name(
     *,
     include_remote: bool,
     push_url: str | None = None,
+    protected: set[str] | None = None,
 ) -> str:
     validate_branch_name(repo_root, requested)
+    protected = protected or set()
+    if requested in protected:
+        raise SubmitPRError(f"head branch is protected: {requested!r}")
     for suffix in range(1, 101):
         candidate = requested if suffix == 1 else f"{requested}-{suffix}"
+        if candidate in protected:
+            continue
         validate_branch_name(repo_root, candidate)
         local_sha = local_branch_sha(repo_root, candidate)
         remote_sha = (
@@ -776,7 +780,13 @@ def resolve_head_branch(
     include_remote: bool,
     push_url: str | None = None,
 ) -> tuple[str, str]:
-    current_is_task = current not in protected and BRANCH_PATTERN.fullmatch(current)
+    if requested:
+        validate_branch_name(repo_root, requested)
+        if requested in protected:
+            raise SubmitPRError(f"head branch is protected: {requested!r}")
+    current_is_task = current not in protected and (
+        BRANCH_PATTERN.fullmatch(current) or requested == current
+    )
     if current_is_task:
         if requested and requested != current:
             raise SubmitPRError(
@@ -795,6 +805,7 @@ def resolve_head_branch(
         head_sha,
         include_remote=include_remote,
         push_url=push_url,
+        protected=protected,
     )
     action = "created" if local_branch_sha(repo_root, selected) is None else "reused"
     return selected, action

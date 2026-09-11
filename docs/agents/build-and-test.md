@@ -26,6 +26,8 @@
   是当前审查状态，默认不等待，也不能作为通过证据。
 - 相互独立且没有共享写入冲突的检查可以并行；同一 workspace 和 DerivedData 的 Xcode 操作仍
   按下文保持串行。
+- 需要编写测试或复杂独立验证时由主 Agent 完成；测试只修改已授权的测试与 fixture，生产缺陷
+  在主 Agent 的实现范围内修复。
 - 不把未运行、失败或环境阻塞的检查写成通过。
 
 ## 测试目录与文件组织
@@ -49,18 +51,6 @@
 测试 target 的 Sources，删除文件不保留悬空引用。仓库治理 Markdown、
 计划、history、skill、参考资料和 `docs/` 下的公共 Markdown 不需要工程引用；除非文档作为
 运行时资源发布，否则不加入 build phase。
-
-## Tester
-
-- 需要编写测试或复杂独立验证时使用 `tester`。简单文档、低风险配置或小改动由主 Agent 完成
-  必要检查。
-- 生产实现与测试可独立推进时可以分工；Git index 和本地交付始终串行。
-- 除请求边界规定的通用输入外，委派 tester 时补充行为预期和验证范围。tester 只修改明确分配的
-  测试与 fixture，不修改生产代码、工程配置或 history，也不执行 stage、commit、push 或 Git
-  ref 操作。
-- tester 返回测试目的、修改路径、实际命令、结果和阻塞证据；生产缺陷交回主 Agent。
-- 尚未解决且经核实的阻塞问题、失败验证或必要证据缺失时不能声称完成或自动提交。无法委派时按
-  [`request-boundary.md`](request-boundary.md#子代理委派与回退) 回退并说明独立性缺失。
 
 ## 选择 Xcode 验证
 

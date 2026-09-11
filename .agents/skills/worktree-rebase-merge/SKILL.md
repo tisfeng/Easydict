@@ -1,12 +1,22 @@
 ---
 name: worktree-rebase-merge
-description: 完成 worktree 变更：必要时为 detached checkout 创建 Conventional 分支，提交并 rebase 到目标分支，再从目标 worktree 合并；源、目标相同时直接提交。默认目标为远程默认分支。
+description: 完成 worktree 变更：必要时为 detached checkout 创建任务分支，提交并 rebase 到目标分支，再从目标 worktree 合并；源、目标相同时直接提交。默认目标为远程默认分支。
 ---
 
 # Worktree Rebase/Merge 工作流
 
 提交源分支，将其 rebase 到目标分支，再在目标分支的 worktree 中合并。源、目标相同
 时只提交，不执行 rebase 或 merge。当前主 Agent 直接按本 Skill 完成检查、Git 操作和回执。
+
+## 配套能力
+
+完整交付依赖 `git-commit` 提供提交、分支命名和已有提交的统计/回执能力。先从当前 Skill 清单
+定位并读取实际入口，未提供位置时再检查 [同级安装位置](../git-commit/SKILL.md)。不要求固定
+安装路径，也不依赖它的内部章节名。必要脚本同样从已定位的依赖目录读取。
+
+即使源提交已存在，最终回执仍需要此依赖；必须在首次分支创建、暂存、提交、rebase 或 merge
+之前确认可用。缺依赖时可完成已获准的只读预检并报告缺口，不半途改用另一套提交流程，不
+要求宿主补规则。用户授权、目标分支、任务范围及现有验证证据以原有形式传递即可。
 
 ## 执行方式
 
@@ -45,7 +55,7 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
 - 运行时支持程序化工具调用时，把互不依赖的只读检查并行执行，并在一个程序中按顺序等待已授权
   的分支挂接、唯一暂存/提交、rebase、目标复验、merge 和回执采集。每条 Git 写命令仍是独立
   工具调用和独立权限边界；不要创建负责 stage、commit、rebase 或 merge 的宽泛写入 runner。
-- 每个命令工具调用只有明确完成且 `exit_code === 0` 才能继续。运行中会话或缺少退出码必须继续
+- 按实际工具契约确认命令完成且退出码为 0 才能继续（例如返回 `exit_code: 0`）。运行中会话或缺少退出码必须继续
   等待；非零退出、审批拒绝、漂移、冲突或结果歧义立即停止程序并返回当前阶段、冻结 OID、必要
   状态和恢复位置。非命令工具使用其原生成功与错误契约。不得把一次程序化调用当作事务，也不得
   从批次开头自动重跑已经成功的 Git 写操作。
@@ -68,7 +78,7 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
   并要求用户指定或确认目标分支。
 - 将当前 checkout 视为源分支。如果处于 detached 状态，继续前先创建源分支。
 - 除非用户明确要求，否则不要 fetch、pull 或 push。
-- 创建源提交时使用 `git-commit` 的 **准备与暂存**、**先确定模式** 和 **提交与可见预览**。
+- 创建源提交时，将已获准的提交任务交给 `git-commit`，由它完成范围判断、预览和提交校验。
   明确调用本 Skill 属于显式集成交付；空索引按该 Skill 选择允许的暂存范围，不另设停止规则。
   仅预览或只读时不创建分支、worktree、消息文件，也不暂存或执行 rebase/merge。
 
@@ -102,8 +112,8 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
    - unstaged diff 和相关未跟踪文件的内容；
    - `git log <target-branch>..HEAD` 中的提交。
 3. 如果三个来源都为空，报告没有可提交或合并的内容，并停止且不创建分支。
-4. 使用 `git-commit` skill 的 **Branch Name Guidance** 根据上述证据推导候选名称。
-   这里只推导名称；暂时不要进入该 skill 的暂存或提交流程。
+4. 向 `git-commit` 请求只推导任务分支名，提供上述证据和用户或项目已有命名约定；未指定约定
+   时采用其 Conventional 默认值。这里只推导名称，不请求暂存或提交。
 5. 使用 `git check-ref-format --branch <branch-name>` 验证候选名称。
 6. 在不覆盖分支的前提下解决本地名称冲突：
    - 如果候选分支不存在，运行 `git switch -c <branch-name>`。
@@ -123,11 +133,10 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
 ## 目标分支直接提交
 
 - 仅当当前源分支与解析出的目标分支是同一分支时，使用直接提交模式。
-- 在直接提交模式下，遵循 `git-commit` Skill 的 **准备与暂存**、提交信息
-  起草、提交执行、权限重试和清理规则。
+- 在直接提交模式下，调用 `git-commit` 完成获准提交，并遵守其当前入口规定。
 - 不创建临时源分支，不运行 `git rebase` 或 `git merge`，不查找目标 worktree，
   不创建临时目标 worktree，也不 fetch、pull 或 push。
-- 面向用户的最终回复使用 `git-commit` 的完整 **Post-Commit Report**，并先提供
+- 面向用户的最终回复使用 `git-commit` 的完整提交回执，并先提供
   本 Skill 的“集成结果”字段；直接提交时 `Rebase`、`Merge` 和 `Push` 均明确为未执行。
   不得以提交标题、短哈希或工具输出替代完整回执。
 
@@ -135,8 +144,7 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
 
 - 对源变更，使用 `git-commit` 的提交与校验流程。提交信息起草、提交
   执行、权限重试和清理由该 Skill 负责。在普通 rebase/merge 模式下，待 rebase 和 merge 完成后
-  合并输出提交回执与集成结果；字段、统计表和实际提交信息仍以 `git-commit` 的
-  **Post-Commit Report** 为唯一权威来源。
+  合并输出提交回执与集成结果；字段、统计表和实际提交信息仍以 `git-commit` 为唯一权威来源。
 - 提交步骤前记录源 `HEAD`。只有提交步骤改变 `HEAD` 时，才将源结果分类为
   `created-this-run`；否则，如果源已经提交且干净，则分类为
   `preexisting-source-commit`。
@@ -202,14 +210,14 @@ description: 完成 worktree 变更：必要时为 detached checkout 创建 Conv
   源提交数、集成模式（`existing-target-worktree` 或 `temporary-target-worktree`）、Rebase、
   Merge、临时 worktree 路径与清理结果（如适用）、源/目标工作树最终状态和 Push。对于已
   挂接的 checkout，还要包含原始 detached commit 及源分支是创建还是复用。
-- 集成恰好包含一个源提交时，在“集成结果”后完整附加 `git-commit` 的 **Post-Commit
-  Report**，包括 Markdown 统计表和完整实际提交信息。对 `created-this-run` 使用
+- 集成恰好包含一个源提交时，在“集成结果”后完整附加 `git-commit` 的提交回执，
+  包括 Markdown 统计表和完整实际提交信息。对 `created-this-run` 使用
   `已创建提交`；对 `preexisting-source-commit` 使用
   `本次未创建新提交；合并的是源分支已有提交`，并将提交后校验如实写为
   `未执行（本次复用已有提交）`。
 - 集成包含多个源提交时，在“集成结果”后以 Markdown 表格列出每个完整哈希和 subject，
-  再使用统计脚本的 `--range <target-commit>...<source-commit>` 输出 `git-commit` 定义的
-  Markdown 统计表。多提交范围没有单一实际提交信息；不得将任一提交 message 伪装为整个
+  再向 `git-commit` 请求汇报该冻结范围的已有提交，按其当前入口生成统计表。
+  多提交范围没有单一实际提交信息；不得将任一提交 message 伪装为整个
   范围的 message，也不得因而省略完整提交清单或统计表。
 - `git-commit` 是提交结果、统计表和单提交实际 message 的唯一模板来源；本 Skill 只补充
   集成事实，不另设通用提交回执。直接读取实际 Git message、完整哈希、最终状态与统计结果，

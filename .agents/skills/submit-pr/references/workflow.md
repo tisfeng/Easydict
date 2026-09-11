@@ -27,14 +27,18 @@ helper 只接受指向 `github.com` 的 SSH 或 HTTPS remote，并按以下顺�
 
 ## 分支决策
 
-任务分支使用 Conventional 格式 `<type>/<kebab-case-summary>`。
+任务分支默认使用 Conventional 格式 `<type>/<kebab-case-summary>`。显式 `--head-branch`
+支持用户或项目既有的其他 Git 合法字面名称，例如 `codex/fix-login`、`feature/login`；不接受
+`@{-1}` 等会被 Git 展开为其他引用的表达式。
 
 base branch、GitHub default branch 和重复传入的 `--protected-branch` 都属于保护分支。
 
 - 当前分支是保护分支或不符合 Conventional 格式：必须提供
-  `--head-branch <type>/<kebab-case-summary>`。helper 从冻结 HEAD 创建或复用该本地
+  `--head-branch <task-branch>`。helper 从冻结 HEAD 创建或复用该本地
   ref，但不切换 checkout、不移动当前分支。
-- 当前已经是合规任务分支：直接使用；如果同时提供 `--head-branch`，名称必须相同。
+- 显式名称等于当前非保护分支时直接复用，不因其格式与默认值不同而另建分支。
+- 当前已经是默认 Conventional 非保护任务分支：直接使用；如果同时提供 `--head-branch`，名称必须相同。
+- 显式名称不得是保护分支；名称冲突时尝试的后缀候选同样跳过保护分支。
 - Detached HEAD：停止。
 
 apply 先 fetch 精确 base ref，再要求 `<base-remote>/<base>` 是 HEAD 的祖先且范围至少

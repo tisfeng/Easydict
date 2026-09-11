@@ -14,6 +14,12 @@ description: >
 运行随 skill 分发的脚本时，先解析该实际目录；不要假设 skill 安装在某个固定的
 Agent 或项目路径中。
 
+仅在需要把既有 staged 内容创建为提交时，依赖 `git-commit`：先从当前 Skill 清单定位并读取
+实际入口，未提供位置时再检查 [同级安装位置](../git-commit/SKILL.md)。向它提供提交任务、
+有效范围和已有证据，由它完成预览、提交及校验；不依赖内部章节名或宿主指定的数据字段。
+纯 plan 和干净的已有提交不要求安装 `git-commit`。需要提交而依赖缺失时，可继续只读检查，
+但在提交、fetch 或 push 前停止该写入路径，报告缺口；不自行裸提交或修改项目规则补偿。
+
 ## 模式
 
 - `plan`：只读发现仓库拓扑，预览提交范围、标题、正文、base、head 和 push remote；
@@ -56,11 +62,13 @@ Agent 或项目路径中。
 保持完整预览、写前重新发现、精确 fetch、提交范围审核、现有 PR 防覆盖、精确 push 和写后验证；
 优化正常成功路径的模型与工具往返，不删除远程状态检查或权限边界。
 
-- 首次调用 helper 前选择一个 Python 3.10+ 解释器，优先使用项目已规定的版本；同一任务的
+- 首次调用 helper 前选择一个可用的 Python 3.10+ 解释器；项目已有兼容版本时优先使用，同一任务的
   `plan` 和 `apply` 复用该解释器。helper 会在任何 Git 或 GitHub 调用前拒绝不兼容版本。
+  这是工具运行时要求，不是产品依赖；项目使用更旧的 Python 时，可选环境中其他兼容解释器，
+  不要求修改项目配置。找不到兼容版本时报告所缺运行时，不声称 helper 已运行。
 - 展示最终 PR 预览后，如果用户没有确认、暂缓或其他持续限制，在一次程序化工具调用中依次等待
-  独立的 `apply` 命令和必要的本地回执命令。每个工具调用仍须明确完成且命令 `exit_code === 0`
-  才能继续；运行中 session、审批未完成、非零退出码或工具错误都立即停止后续动作并返回模型。
+  独立的 `apply` 命令和必要的本地回执命令。按实际工具契约确认完成且命令退出码为 0
+  才能继续；运行中会话、审批未完成、非零退出码或工具错误都停止后续动作，等待完成或处理错误。
 - `apply` 成功时直接使用其 `pr_verification` 和其他 JSON 字段交付，不再调用 `gh pr view` 重复
   获取正文。需要检查 CI 时只查询 checks，不重新读取完整 PR。
 - 默认不等待 CI。只报告调用时已经获得的状态；仅当用户或目标仓库规则明确要求等待时，才执行
@@ -75,20 +83,22 @@ Agent 或项目路径中。
 最小调用示例：
 
 ```bash
-python3.12 "<submit-pr-skill-dir>/scripts/submit_pr.py" plan \
+"<python-executable>" "<submit-pr-skill-dir>/scripts/submit_pr.py" plan \
   --title '<type(scope): subject>' \
   --summary '<summary>' \
   --verification '<verification>' \
-  --head-branch '<type/kebab-case-summary>' \
+  --head-branch '<task-branch>' \
   [--issue '#123'] \
   [--issue 'https://github.com/owner/repo/issues/123'] \
   [--issue 'owner/repo#123'] \
   [--ui-change]
 ```
 
-示例使用 Python 3.12；项目明确使用其他 Python 3.10+ 解释器时，以解析后的同一可执行文件替换，
-不要在 `plan` 与 `apply` 之间重新选择。创建时把 `plan` 改为 `apply`。字符串必须作为独立参数传递，不能通过 `eval` 或拼接
-可执行 shell。只有当前分支已经是合规任务分支时才可省略 `--head-branch`。
+`<python-executable>` 是已选定的兼容解释器路径，`plan` 与 `apply` 使用同一个。
+`<task-branch>` 使用用户指定或项目已有的 Git 合法字面名称；没有命名约定时，默认推导
+`<type>/<kebab-case-summary>`。当前分支已符合默认 Conventional 格式且不受保护时，可省略
+`--head-branch`；使用项目其他命名格式时显式传入该名称，复用已有分支而不要求项目改名。
+创建时把 `plan` 改为 `apply`。字符串必须作为独立参数传递，不能通过 `eval` 或拼接可执行 shell。
 
 存在拓扑歧义或项目专属规则时使用：
 

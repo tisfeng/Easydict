@@ -2,12 +2,13 @@
 
 - 状态：adopted
 - 初次记录：2026-09-08
+- 最近更新：2026-09-11
 
 ## 背景
 
-Easydict 需要直接从仓库运行 Skills 和 Codex 子代理，同时又要让多个项目共享同一套通用
-实现。若每个项目独立修改副本，同名资产会逐渐产生难以追踪的行为、测试和安全差异；若只
-引用全局目录，离线运行、代码审查和历史复现又缺少稳定证据。
+Easydict 需要直接从仓库运行通用 Skills，同时又要让多个项目共享同一套通用实现。若每个
+项目独立修改副本，同名资产会逐渐产生难以追踪的行为、测试和安全差异；若只引用全局目录，
+离线运行、代码审查和历史复现又缺少稳定证据。
 
 ## 设计决策
 
@@ -19,20 +20,20 @@ Easydict 需要直接从仓库运行 Skills 和 Codex 子代理，同时又要�
 - 独立第三方 Skill 保持自身来源；项目专属 Skill 继续由 Easydict 维护。
 
 现行资产分类、同步和验证规则以
-[`docs/agents/README.md`](../agents/README.md#外部-agent-资产) 为准；具体上游版本和同步命令
+[`docs/agents/README.md`](../agents/README.md#外部-skill-资产) 为准；具体上游版本和同步命令
 记录在 [`docs/references/`](../references/) 中。本文只解释选择该治理方式的原因。
 
 ## 取舍
 
 - 仓库会保存较大的第三方 Skill 快照，但换取离线可用、可审查和可回滚。
-- Skills lock 与 agents lock 的字段和更新语义不同，因此分别验证，不强行套用同一套安装和
-  校验流程。
+- 上游曾同时发布 Codex 子代理，子代理依赖特定平台的配置格式与发现目录；移除后仓库只保留
+  平台无关的 Skill 快照和一份 lock。
 - 跟踪 `main` 这类可移动分支的第三方来源时，需要在 reference/history 中额外记录同步时
   commit；长期若上游发布稳定 tag，应优先改用不可变 tag。
 
 ## 重新评估条件
 
 - 外部安装器改变 lock 格式、hash 算法或项目安装目录。
-- `tisfeng/skills` 拆分仓库、改变发布策略或不再同时发布 Skills 与 agents。
+- `tisfeng/skills` 拆分仓库、改变发布策略或重新引入平台专属资产。
 - `fireworks-tech-graph` 提供稳定版本 tag，或者不再以嵌套 Skill 目录发布。
 - Easydict 新增必须项目维护但与通用 Skill 同名的行为，无法通过宿主规则表达。
