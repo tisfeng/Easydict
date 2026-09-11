@@ -97,19 +97,26 @@ public class StreamService: QueryService {
         to: Language
     ) async throws
         -> QueryResult {
+        let generation = updateResultLock.withLock { resultGeneration }
         var latestResult = result ?? QueryResult()
         do {
             for try await result in translateStream(text, from: from, to: to) {
                 latestResult = result
             }
         } catch {
-            latestResult = result ?? latestResult
-            if latestResult.error == nil {
-                latestResult.error = QueryError.queryError(from: error)
+            try updateResultLock.withLock {
+                guard resultGeneration == generation else { throw CancellationError() }
+                latestResult = result ?? latestResult
+                if latestResult.error == nil {
+                    latestResult.error = QueryError.queryError(from: error)
+                }
             }
             throw error
         }
-        return latestResult
+        return try updateResultLock.withLock {
+            guard resultGeneration == generation else { throw CancellationError() }
+            return latestResult
+        }
     }
 
     /// Translate text and return a throttled stream of results.
@@ -120,13 +127,11 @@ public class StreamService: QueryService {
         to: Language
     )
         -> AsyncThrowingStream<QueryResult, Error> {
-        let activeResult = result ?? QueryResult()
-        if result == nil {
-            result = activeResult
+        let (activeResult, activeGeneration) = updateResultLock.withLock {
+            let activeResult = result ?? QueryResult()
+            if result == nil { result = activeResult }
+            return (activeResult, resultGeneration)
         }
-        // Capture the current result generation with the result object. Later
-        // chunks are ignored if a reset starts a newer query on this service.
-        let activeGeneration = resultGeneration
         let queryResultStream = streamTranslate(
             text: text,
             from: from,
@@ -137,7 +142,7 @@ public class StreamService: QueryService {
         let textStream = queryResultStreamToTextStream(queryResultStream)
 
         return AsyncThrowingStream { [weak self] continuation in
-            Task {
+            let task = Task {
                 guard let self else {
                     continuation.finish()
                     return
@@ -160,28 +165,31 @@ public class StreamService: QueryService {
                     }
                     continuation.finish()
                 } catch is CancellationError {
-                    let cancellationResult = self.result ?? QueryResult()
-                    if self.result == nil {
-                        self.result = cancellationResult
+                    self.updateResultLock.withLock {
+                        guard self.resultGeneration == activeGeneration else { return }
+                        activeResult.isStreamFinished = true
+                        activeResult.isLoading = false
+                        activeResult.error = nil
+                        continuation.yield(activeResult)
                     }
-                    cancellationResult.isStreamFinished = true
-                    cancellationResult.error = nil
-                    continuation.yield(cancellationResult)
                     continuation.finish()
                 } catch {
-                    if !didYieldError {
-                        let errorResult = self.result ?? QueryResult()
-                        if self.result == nil {
-                            self.result = errorResult
+                    self.updateResultLock.withLock {
+                        guard self.resultGeneration == activeGeneration else {
+                            continuation.finish()
+                            return
                         }
-                        if errorResult.error == nil {
-                            errorResult.error = QueryError.queryError(from: error)
+                        if !didYieldError {
+                            if activeResult.error == nil {
+                                activeResult.error = QueryError.queryError(from: error)
+                            }
+                            continuation.yield(activeResult)
                         }
-                        continuation.yield(errorResult)
+                        continuation.finish(throwing: error)
                     }
-                    continuation.finish(throwing: error)
                 }
             }
+            continuation.onTermination = { _ in task.cancel() }
         }
     }
 
@@ -194,9 +202,6 @@ public class StreamService: QueryService {
     }
 
     // MARK: Internal
-
-    /// A lock for synchronizing access to the 'result' object
-    let updateResultLock = NSLock()
 
     let mustOverride = "This property or method must be overridden by a subclass"
 

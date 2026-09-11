@@ -18,6 +18,8 @@ import Foundation
 enum CodexCLIError: Error, LocalizedError, Equatable {
     /// The `codex` binary was not found in any known location.
     case notInstalled
+    /// The saved override is outside Easydict's local CLI compatibility options.
+    case unsupportedReasoningEffort
     /// The CLI exited with an authentication error (not signed in / unauthorized).
     case notLoggedIn
     /// The CLI exited with a quota / rate-limit error.
@@ -30,6 +32,8 @@ enum CodexCLIError: Error, LocalizedError, Equatable {
 
     var errorDescription: String? {
         switch self {
+        case .unsupportedReasoningEffort:
+            return String(localized: "service.codex_cli.local.unsupported_effort")
         case .notInstalled:
             return String(localized: "service.codex_cli.not_installed")
         case .notLoggedIn:

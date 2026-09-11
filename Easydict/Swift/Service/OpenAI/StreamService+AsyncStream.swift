@@ -33,27 +33,19 @@ extension StreamService {
     )
         -> AsyncThrowingStream<QueryResult, Error> {
         AsyncThrowingStream { continuation in
-            Task {
-                let isActiveStream = updateResultLock.withLock {
-                    // The stream may start after the result has already been
-                    // reset by a new query. Do not revive stale result state.
-                    let isActiveStream = targetGeneration == resultGeneration
-                    if isActiveStream {
-                        targetResult.isStreamFinished = false
-                    }
-                    return isActiveStream
-                }
-
-                guard isActiveStream else {
-                    continuation.finish()
-                    return
-                }
-
+            let task = Task {
                 var resultText = ""
                 let queryType = queryType(text: text, from: from, to: to)
 
                 do {
-                    let contentStream = contentStreamTranslate(text, from: from, to: to)
+                    let contentStream = try updateResultLock.withLock {
+                        try Task.checkCancellation()
+                        guard targetGeneration == resultGeneration else { throw CancellationError() }
+                        targetResult.isStreamFinished = false
+                        // Runner creation can replace an existing request. Keep it
+                        // atomic with reset/stop rather than checking then unlocking.
+                        return contentStreamTranslate(text, from: from, to: to)
+                    }
                     for try await content in contentStream {
                         try Task.checkCancellation()
 
@@ -91,6 +83,7 @@ extension StreamService {
                         let isActiveStream = targetGeneration == resultGeneration
                         if isActiveStream {
                             targetResult.isStreamFinished = true
+                            targetResult.isLoading = false
                             targetResult.error = nil
                         }
                         return isActiveStream
@@ -130,12 +123,15 @@ extension StreamService {
                     ) { result in
                         continuation.yield(result)
                     }
-                    continuation.finish(throwing: error)
+                    updateResultLock.withLock {
+                        continuation.finish(throwing: targetGeneration == resultGeneration ? error : nil)
+                    }
                     return
                 }
 
                 continuation.finish()
             }
+            continuation.onTermination = { _ in task.cancel() }
         }
     }
 
@@ -145,7 +141,7 @@ extension StreamService {
     )
         -> AsyncThrowingStream<ChatStreamResult, Error> {
         AsyncThrowingStream<ChatStreamResult, Error> { continuation in
-            Task {
+            let task = Task {
                 do {
                     for try await content in contentStream {
                         let chatStreamResult = try ChatStreamResult.create(
@@ -159,6 +155,7 @@ extension StreamService {
                     continuation.finish(throwing: error)
                 }
             }
+            continuation.onTermination = { _ in task.cancel() }
         }
     }
 
@@ -168,7 +165,7 @@ extension StreamService {
     )
         -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream<String, Error> { continuation in
-            Task {
+            let task = Task {
                 do {
                     for try await queryResult in queryResultStream {
                         if let error = queryResult.error {
@@ -183,6 +180,7 @@ extension StreamService {
                     continuation.finish(throwing: error)
                 }
             }
+            continuation.onTermination = { _ in task.cancel() }
         }
     }
 }

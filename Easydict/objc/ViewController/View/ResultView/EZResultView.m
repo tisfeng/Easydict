@@ -158,6 +158,7 @@
         mm_strongify(self);
         [self.result.queryModel stopServiceRequest:self.result.serviceTypeWithUniqueIdentifier];
         self.result.isStreamFinished = YES;
+        [self updateLoadingAnimation];
         button.hidden = YES;
     }];
     
