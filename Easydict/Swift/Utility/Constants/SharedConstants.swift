@@ -27,6 +27,8 @@ enum SharedConstants {
     /// deepseek-v4-pro timed out at 15s and completed in 11s at 90s).
     /// Streaming requests share the value so a slow first token or a model
     /// that does not stream its reasoning cannot end the stream early with
-    /// a partial answer that would then be rendered as complete.
+    /// a partial answer that would then be rendered as complete. This covers
+    /// `OpenAIStreamTransport` too, which replaced the SDK streaming session
+    /// (60s timeout) with a hand-built request.
     static let llmRequestTimeoutInterval: TimeInterval = 90
 }
