@@ -386,10 +386,16 @@ static EZWindowManager *_instance;
 
     // Log selected text when querying.
     [self logSelectedTextEvent];
-
+    BOOL isSelectedTextAction = (self.actionType == EZActionTypeAutoSelectQuery || self.actionType == EZActionTypeShortcutQuery);
+    BOOL shouldAppendText = MyConfiguration.shared.enableAppendMode && isSelectedTextAction && queryViewController.inputText.length > 0;
+    BOOL shouldSkipReset = window.isPin || (MyConfiguration.shared.enableAppendMode && isSelectedTextAction && window.isVisible);
     void (^updateQueryTextAndStartQueryBlock)(BOOL) = ^(BOOL needFocus) {
+        NSString *targetText = queryText;
+        if (shouldAppendText) {
+            targetText = [queryViewController combinePreviousText:queryViewController.inputText withNewText:queryText];
+        }
         // Update input text and detect.
-        [queryViewController updateQueryTextAndParagraphStyle:queryText actionType:self.actionType];
+        [queryViewController updateQueryTextAndParagraphStyle:targetText actionType:self.actionType];
         [queryViewController detectQueryText:nil];
 
         if (needFocus) {
@@ -398,7 +404,7 @@ static EZWindowManager *_instance;
         }
 
         if (autoQuery) {
-            [queryViewController startQueryText:queryText actionType:self.actionType];
+            [queryViewController startQueryText:targetText actionType:self.actionType];
         }
 
         // TODO: Maybe we should remove this option, it seems useless.
@@ -411,7 +417,7 @@ static EZWindowManager *_instance;
         }
     };
 
-    if (!window.isPin) {
+    if (!shouldSkipReset) {
         // Reset tableView and window height first, avoid being affected by previous window height.
         [queryViewController resetTableView:^{
             // !!!: window height has changed, so we need to update location again.

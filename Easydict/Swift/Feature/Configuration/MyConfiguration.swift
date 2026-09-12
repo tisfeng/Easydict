@@ -78,6 +78,8 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.replaceNewlineWithSpace) var replaceNewlineWithSpace: Bool
     @DefaultsWrapper(.enableRemoveBooksExcerptInfo) var enableRemoveBooksExcerptInfo: Bool
 
+    @DefaultsWrapper(.enableAppendMode) var enableAppendMode: Bool
+
     @DefaultsWrapper(.autoQueryOCRText) var autoQueryOCRText: Bool
     @DefaultsWrapper(.autoQuerySelectedText) var autoQuerySelectedText: Bool
     @DefaultsWrapper(.autoQueryPastedText) var autoQueryPastedText: Bool

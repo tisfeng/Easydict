@@ -59,6 +59,7 @@ struct GeneralTab: View {
 
             Section {
                 Toggle("clear_input_when_translating", isOn: $clearInput)
+                Toggle("setting.general.input.enable_append_mode", isOn: $enableAppendMode)
                 Toggle(
                     "keep_prev_result_when_selected_text_is_empty", isOn: $keepPrevResultWhenEmpty
                 )
@@ -282,6 +283,7 @@ struct GeneralTab: View {
 
     // Input textfield
     @Default(.clearQueryWhenInputTranslate) private var clearInput
+    @Default(.enableAppendMode) private var enableAppendMode
     @Default(.keepPrevResultWhenSelectTranslateTextIsEmpty) private var keepPrevResultWhenEmpty
     @Default(.selectQueryTextWhenWindowActivate) private var selectQueryTextWhenWindowActivate
 

@@ -74,6 +74,9 @@ extension Defaults.Keys {
         "EZConfiguration_kDefaultTTSServiceTypeKey",
         default: TTSServiceType.youdao
     )
+    static let enableAppendMode = Key<Bool>(
+        "enableAppendMode", default: false
+    )
     /// When enabled, English words are spoken via Youdao TTS regardless of the
     /// configured default TTS service. Defaults to `true` to preserve the long
     /// standing behavior of using Youdao's high quality dictionary recordings.
@@ -405,6 +408,10 @@ extension Defaults.Keys {
     static let translateAndReplaceShortcut = Key<KeyCombo?>(
         "EZTranslateAndReplaceShortcutKey_keyHolder"
     )
+    static let toggleAppendModeShortcut = Key<KeyCombo?>(
+        "EZToggleAppendModeShortcutKey_keyHolder"
+    )
+    static let toggleAppendModeShortcutMigrated = Key<Bool>("EZToggleAppendModeShortcutMigrated", default: false)
     static let polishAndReplaceShortcut = Key<KeyCombo?>(
         "EZPolishAndReplaceShortcutKey_keyHolder"
     )
