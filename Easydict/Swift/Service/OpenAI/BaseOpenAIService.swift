@@ -23,7 +23,7 @@ public class BaseOpenAIService: StreamService {
     open var supportsStreamingToggle: Bool { false }
 
     open override func cancelStream() {
-        control.cancel()
+        streamTaskControl.cancel()
         nonStreamingTask?.cancel()
         nonStreamingTask = nil
     }
@@ -44,36 +44,12 @@ public class BaseOpenAIService: StreamService {
         true
     }
 
-    let control = StreamControl()
-
     override func contentStreamTranslate(
         _ text: String,
         from: Language,
         to: Language
     )
         -> AsyncThrowingStream<String, any Error> {
-        let url = URL(string: endpoint)
-
-        // Check endpoint
-        guard let url, url.isValid else {
-            let invalidURLError = QueryError(
-                type: .parameter, message: "`\(serviceType().rawValue)` endpoint is invalid"
-            )
-            return AsyncThrowingStream { continuation in
-                continuation.finish(throwing: invalidURLError)
-            }
-        }
-
-        // Check API key if required
-        if apiKeyRequirement().requiresKeyForRequest, apiKey.isEmpty {
-            let error = QueryError(type: .missingSecretKey, message: "API key is empty")
-            return AsyncThrowingStream { continuation in
-                continuation.finish(throwing: error)
-            }
-        }
-
-        result.isStreamFinished = false
-
         let queryType = queryType(text: text, from: from, to: to)
         let chatQueryParam = ChatQueryParam(
             text: text,
@@ -93,23 +69,7 @@ public class BaseOpenAIService: StreamService {
             }
         }
 
-        let query = ChatQuery(messages: chatHistory, model: model, temperature: temperature)
-
-        if usesStreamingTransport {
-            let openAI = OpenAI(apiToken: apiKey)
-
-            // FIXME: It seems that `control` will cause a memory leak, but it is not clear how to solve it.
-            unowned let unownedControl = control
-
-            let chatStream: AsyncThrowingStream<ChatStreamResult, Error> = openAI.chatsStream(
-                query: query,
-                url: url,
-                control: unownedControl
-            )
-            return chatStreamToContentStream(chatStream)
-        } else {
-            return nonStreamingTranslate(query: query, url: url)
-        }
+        return contentStream(messages: chatHistory)
     }
 
     /// Validates the service, automatically falling back to non-streaming if the endpoint
@@ -158,11 +118,8 @@ public class BaseOpenAIService: StreamService {
     override func serviceChatMessageModels(_ chatQuery: ChatQueryParam) -> [Any] {
         var chatMessages: [OpenAIChatMessage] = []
         for message in chatMessageDicts(chatQuery) {
-            let openAIRole = message.role.rawValue
-            let content = message.content
-
-            if let role = OpenAIChatMessage.Role(rawValue: openAIRole),
-               let chat = OpenAIChatMessage(role: role, content: content) {
+            if let role = openAIRole(for: message.role),
+               let chat = OpenAIChatMessage(role: role, content: message.content) {
                 chatMessages.append(chat)
             }
         }
@@ -188,6 +145,59 @@ public class BaseOpenAIService: StreamService {
         }
         return normalizedRemoteModelIDs(modelList.data.map(\.id))
     }
+
+    func openAIChatQuery(messages: [OpenAIChatMessage]) -> ChatQuery {
+        ChatQuery(
+            messages: messages,
+            model: model,
+            reasoningEffort: reasoningEffort,
+            temperature: temperature
+        )
+    }
+
+    // MARK: Stream Hooks
+
+    /// Validates the current stream configuration and returns the provider endpoint.
+    @nonobjc
+    func validateChatStreamRequest() throws -> URL {
+        guard let url = URL(string: endpoint), url.isValid else {
+            throw QueryError(
+                type: .parameter,
+                message: "`\(serviceType().rawValue)` endpoint is invalid"
+            )
+        }
+
+        if apiKeyRequirement().requiresKeyForRequest, apiKey.isEmpty {
+            throw QueryError(type: .missingSecretKey, message: "API key is empty")
+        }
+
+        return url
+    }
+
+    /// Builds the OpenAI-compatible query used by both streaming and fallback transports.
+    @nonobjc
+    func makeChatQuery(messages: [OpenAIChatMessage]) -> ChatQuery {
+        openAIChatQuery(messages: messages)
+    }
+
+    /// Sends a streaming query through the configured OpenAI-compatible transport.
+    @nonobjc
+    func performChatResultStream(
+        query: ChatQuery,
+        endpoint: URL,
+        onResult: @escaping @Sendable (ChatStreamResult) -> ()
+    ) async throws {
+        try await OpenAIStreamTransport().stream(
+            query: query,
+            url: endpoint,
+            apiKey: apiKey,
+            onResult: onResult
+        )
+    }
+
+    /// Lets specialized stream transports retain provider-specific error side effects.
+    @nonobjc
+    func handleChatStreamError(_: Error) async {}
 
     // MARK: Private
 
@@ -223,6 +233,73 @@ public class BaseOpenAIService: StreamService {
     /// Reference to the in-flight non-streaming task so `cancelStream()` can cancel it.
     private var nonStreamingTask: Task<(), Never>?
 
+    private let streamTaskControl = OpenAIStreamTaskControl()
+
+    private func contentStream(
+        messages: [OpenAIChatMessage]
+    )
+        -> AsyncThrowingStream<String, any Error> {
+        do {
+            let endpoint = try validateChatStreamRequest()
+            result.isStreamFinished = false
+
+            let query = makeChatQuery(messages: messages)
+            if usesStreamingTransport {
+                return contentStream(for: query, endpoint: endpoint)
+            }
+            return nonStreamingTranslate(query: query, url: endpoint)
+        } catch {
+            return failedContentStream(error: error)
+        }
+    }
+
+    private func failedContentStream(error: Error) -> AsyncThrowingStream<String, any Error> {
+        AsyncThrowingStream { continuation in
+            continuation.finish(throwing: error)
+        }
+    }
+
+    private func contentStream(
+        for query: ChatQuery,
+        endpoint: URL
+    )
+        -> AsyncThrowingStream<String, any Error> {
+        let taskControl = streamTaskControl
+
+        return AsyncThrowingStream { continuation in
+            let identifier = UUID()
+            taskControl.begin(identifier: identifier)
+
+            let task = Task {
+                defer { taskControl.finish(identifier: identifier) }
+
+                do {
+                    try await self.performChatResultStream(query: query, endpoint: endpoint) { result in
+                        if let content = result.choices.first?.delta.content {
+                            continuation.yield(content)
+                        }
+                    }
+                    continuation.finish()
+                } catch is CancellationError {
+                    continuation.finish()
+                } catch let error as URLError where error.code == .cancelled {
+                    continuation.finish()
+                } catch let error as NSError
+                    where error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled {
+                    continuation.finish()
+                } catch {
+                    await self.handleChatStreamError(error)
+                    continuation.finish(throwing: error)
+                }
+            }
+            taskControl.install(task, identifier: identifier)
+
+            continuation.onTermination = { @Sendable _ in
+                taskControl.cancel(identifier: identifier)
+            }
+        }
+    }
+
     /// Whether the retry error should replace the original streaming mismatch diagnostics.
     private func shouldPreferRetryError(_ retryError: QueryError) -> Bool {
         let preferredTypes: [QueryError.ErrorType] = [
@@ -234,6 +311,15 @@ public class BaseOpenAIService: StreamService {
             .timeout,
         ]
         return preferredTypes.contains(retryError.type)
+    }
+
+    private func openAIRole(for role: ChatMessage.ChatRole) -> OpenAIChatMessage.Role? {
+        switch role {
+        case .model:
+            .assistant
+        default:
+            OpenAIChatMessage.Role(rawValue: role.rawValue)
+        }
     }
 
     /// Perform a non-streaming chat completion, yielding the full response as a single chunk.
@@ -277,7 +363,7 @@ public class BaseOpenAIService: StreamService {
                     }
 
                     let chatResult = try JSONDecoder().decode(ChatResult.self, from: data)
-                    if let content = chatResult.choices.first?.message.content?.string,
+                    if let content = chatResult.choices.first?.message.content,
                        !content.isEmpty {
                         continuation.yield(content)
                         continuation.finish()
@@ -378,4 +464,69 @@ private struct OpenAIModelListResponse: Decodable {
 
 private struct OpenAIModelItem: Decodable {
     let id: String
+}
+
+// MARK: - OpenAIStreamTaskControl
+
+/// Coordinates one stream consumer task across cancellation callbacks.
+/// Cancellation can precede task installation, and stale callbacks cannot clear a newer request.
+final class OpenAIStreamTaskControl: @unchecked Sendable {
+    // MARK: Internal
+
+    func begin(identifier: UUID) {
+        lock.lock()
+        let previousTask = activeRequest?.task
+        activeRequest = ActiveRequest(identifier: identifier, task: nil)
+        lock.unlock()
+        previousTask?.cancel()
+    }
+
+    func install(_ task: Task<(), Never>, identifier: UUID) {
+        lock.lock()
+        guard activeRequest?.identifier == identifier else {
+            lock.unlock()
+            task.cancel()
+            return
+        }
+        activeRequest?.task = task
+        lock.unlock()
+    }
+
+    func finish(identifier: UUID) {
+        lock.lock()
+        if activeRequest?.identifier == identifier {
+            activeRequest = nil
+        }
+        lock.unlock()
+    }
+
+    func cancel() {
+        lock.lock()
+        let task = activeRequest?.task
+        activeRequest = nil
+        lock.unlock()
+        task?.cancel()
+    }
+
+    func cancel(identifier: UUID) {
+        lock.lock()
+        guard activeRequest?.identifier == identifier else {
+            lock.unlock()
+            return
+        }
+        let task = activeRequest?.task
+        activeRequest = nil
+        lock.unlock()
+        task?.cancel()
+    }
+
+    // MARK: Private
+
+    private struct ActiveRequest {
+        let identifier: UUID
+        var task: Task<(), Never>?
+    }
+
+    private let lock = NSLock()
+    private var activeRequest: ActiveRequest?
 }

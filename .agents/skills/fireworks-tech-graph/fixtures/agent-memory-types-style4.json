@@ -1,181 +1,64 @@
 {
+  "schema_version": 1,
+  "mode": "memory",
   "template_type": "memory",
   "style": 4,
-  "width": 1120,
-  "height": 760,
+  "motion_scene": "memory-lifecycle",
+  "quality_profile": "showcase",
+  "width": 960,
+  "height": 620,
   "title": "Agent Memory Types",
-  "subtitle": "Five memory systems an AI agent can use — characteristics, storage backends, and persistence",
+  "subtitle": "from active perception to durable knowledge and reusable procedures",
   "containers": [
-    {
-      "x": 18,
-      "y": 32,
-      "width": 1084,
-      "height": 696,
-      "label": "",
-      "subtitle": "",
-      "stroke": "#e5e7eb",
-      "fill": "none",
-      "rx": 6
-    }
+    { "id": "active-context", "x": 40, "y": 120, "width": 880, "height": 165, "label": "Active Context" },
+    { "id": "long-term", "x": 40, "y": 335, "width": 880, "height": 185, "label": "Long-term Memory" }
   ],
   "nodes": [
     {
-      "id": "sensory",
-      "kind": "rect",
-      "x": 56,
-      "y": 118,
-      "width": 266,
-      "height": 106,
-      "label": "Raw input, very short-lived",
-      "sublabel": "\"Current image / audio\"",
-      "type_label": "SENSORY MEMORY",
-      "fill": "#ffffff",
-      "stroke": "#e5e7eb",
-      "flat": true,
-      "tags": [
-        { "label": "RAM / context", "fill": "#eff6ff", "stroke": "#bfdbfe", "text_fill": "#3b82f6" }
-      ]
+      "id": "sensory", "kind": "rect", "x": 60, "y": 165, "width": 160, "height": 90,
+      "type_label": "SENSORY MEMORY", "label": "Raw Input",
+      "fill": "#ffffff", "stroke": "#e5e7eb", "flat": true,
+      "tags": [{ "label": "RAM / context", "fill": "#eff6ff", "stroke": "#bfdbfe", "text_fill": "#3b82f6" }]
     },
     {
-      "id": "working",
-      "kind": "rect",
-      "x": 56,
-      "y": 308,
-      "width": 266,
-      "height": 106,
-      "label": "Active context, session-scoped",
-      "sublabel": "\"Current conversation\"",
-      "type_label": "WORKING MEMORY",
-      "fill": "#ffffff",
-      "stroke": "#e5e7eb",
-      "flat": true,
-      "tags": [
-        { "label": "Context Window", "fill": "#eff6ff", "stroke": "#bfdbfe", "text_fill": "#3b82f6" }
-      ]
+      "id": "working", "kind": "rect", "x": 270, "y": 165, "width": 160, "height": 90,
+      "type_label": "WORKING MEMORY", "label": "Active Context",
+      "fill": "#ffffff", "stroke": "#e5e7eb", "flat": true,
+      "tags": [{ "label": "Context Window", "fill": "#eff6ff", "stroke": "#bfdbfe", "text_fill": "#3b82f6" }]
     },
     {
-      "id": "episodic",
-      "kind": "rect",
-      "x": 56,
-      "y": 498,
-      "width": 266,
-      "height": 106,
-      "label": "Past interactions, retrievable",
-      "sublabel": "\"Last week's chat summary\"",
-      "type_label": "EPISODIC MEMORY",
-      "fill": "#ffffff",
-      "stroke": "#e5e7eb",
-      "flat": true,
-      "tags": [
-        { "label": "Vector DB + timestamp", "fill": "#eff6ff", "stroke": "#bfdbfe", "text_fill": "#3b82f6" }
-      ]
+      "id": "agent", "kind": "hexagon", "x": 490, "y": 165, "width": 160, "height": 90,
+      "type_label": "AGENT CORE", "label": "LLM + Planner", "sublabel": "reason + decide",
+      "fill": "#ffffff", "stroke": "#3b82f6", "stroke_width": 1.6, "flat": true
     },
     {
-      "id": "agent",
-      "kind": "hexagon",
-      "x": 492,
-      "y": 324,
-      "width": 118,
-      "height": 90,
-      "label": "Agent",
-      "sublabel": "LLM + Planner",
-      "type_label": "CORE",
-      "fill": "#ffffff",
-      "stroke": "#3b82f6",
-      "stroke_width": 1.6,
-      "flat": true
+      "id": "procedural", "kind": "rect", "x": 700, "y": 165, "width": 180, "height": 90,
+      "type_label": "PROCEDURAL MEMORY", "label": "Skills + How-to",
+      "fill": "#ffffff", "stroke": "#e5e7eb", "flat": true,
+      "tags": [{ "label": "Code / Skills", "fill": "#f5f3ff", "stroke": "#ddd6fe", "text_fill": "#7c3aed" }]
     },
     {
-      "id": "semantic",
-      "kind": "rect",
-      "x": 810,
-      "y": 218,
-      "width": 266,
-      "height": 106,
-      "label": "Facts & knowledge, long-term",
-      "sublabel": "\"User prefers Python\"",
-      "type_label": "SEMANTIC MEMORY",
-      "fill": "#ffffff",
-      "stroke": "#e5e7eb",
-      "flat": true,
-      "tags": [
-        { "label": "Vector DB + Graph DB", "fill": "#eff6ff", "stroke": "#bfdbfe", "text_fill": "#3b82f6" }
-      ]
+      "id": "episodic", "kind": "rect", "x": 270, "y": 400, "width": 160, "height": 90,
+      "type_label": "EPISODIC MEMORY", "label": "Past Interactions",
+      "fill": "#ffffff", "stroke": "#e5e7eb", "flat": true,
+      "tags": [{ "label": "Vector DB + time", "fill": "#ecfdf5", "stroke": "#a7f3d0", "text_fill": "#059669" }]
     },
     {
-      "id": "procedural",
-      "kind": "rect",
-      "x": 810,
-      "y": 408,
-      "width": 266,
-      "height": 106,
-      "label": "Skills & how-to, persistent",
-      "sublabel": "\"How to call Stripe API\"",
-      "type_label": "PROCEDURAL MEMORY",
-      "fill": "#ffffff",
-      "stroke": "#e5e7eb",
-      "flat": true,
-      "tags": [
-        { "label": "Code store / fine-tune", "fill": "#eff6ff", "stroke": "#bfdbfe", "text_fill": "#3b82f6" }
-      ]
+      "id": "semantic", "kind": "rect", "x": 490, "y": 400, "width": 160, "height": 90,
+      "type_label": "SEMANTIC MEMORY", "label": "Facts + Knowledge",
+      "fill": "#ffffff", "stroke": "#e5e7eb", "flat": true,
+      "tags": [{ "label": "Vector + Graph", "fill": "#fff7ed", "stroke": "#fed7aa", "text_fill": "#ea580c" }]
     }
   ],
   "arrows": [
-    {
-      "source": "agent",
-      "target": "sensory",
-      "source_port": "left",
-      "target_port": "right",
-      "flow": "read",
-      "label": "read/write",
-      "route_points": [[432, 360], [386, 360], [386, 172], [322, 172]],
-      "label_dx": -18,
-      "label_dy": -8
-    },
-    {
-      "source": "agent",
-      "target": "working",
-      "source_port": "left",
-      "target_port": "right",
-      "flow": "read",
-      "label": "read/write",
-      "route_points": [[432, 369], [404, 369], [322, 360]],
-      "label_dx": -6,
-      "label_dy": -6
-    },
-    {
-      "source": "agent",
-      "target": "episodic",
-      "source_port": "left",
-      "target_port": "right",
-      "flow": "read",
-      "label": "read/write",
-      "route_points": [[432, 394], [386, 430], [386, 552], [322, 552]],
-      "label_dx": -18,
-      "label_dy": -6
-    },
-    {
-      "source": "agent",
-      "target": "semantic",
-      "source_port": "right",
-      "target_port": "left",
-      "flow": "read",
-      "label": "read/write",
-      "route_points": [[668, 360], [726, 360], [726, 271], [810, 271]],
-      "label_dx": 10,
-      "label_dy": -8
-    },
-    {
-      "source": "agent",
-      "target": "procedural",
-      "source_port": "right",
-      "target_port": "left",
-      "flow": "read",
-      "label": "read/write",
-      "route_points": [[668, 388], [740, 404], [810, 461]],
-      "label_dx": 8,
-      "label_dy": -8
-    }
+    { "id": "sample", "source": "sensory", "target": "working", "source_port": "right", "target_port": "left", "flow": "read", "motion_role": "sample", "motion_stage": 1, "motion_order": 0 },
+    { "id": "attend", "source": "working", "target": "agent", "source_port": "right", "target_port": "left", "flow": "control", "motion_role": "attend", "motion_stage": 2, "motion_order": 0 },
+    { "id": "invoke", "source": "agent", "target": "procedural", "source_port": "right", "target_port": "left", "flow": "control", "motion_role": "invoke", "motion_stage": 3, "motion_order": 0 },
+    { "id": "remember", "source": "working", "target": "episodic", "source_port": "bottom", "target_port": "top", "flow": "write", "motion_role": "remember", "motion_stage": 4, "motion_order": 0, "label": "remember" },
+    { "id": "recall", "source": "semantic", "target": "agent", "source_port": "top", "target_port": "bottom", "flow": "read", "motion_role": "recall", "motion_stage": 6, "motion_order": 0, "label": "recall" },
+    { "id": "consolidate", "source": "episodic", "target": "semantic", "source_port": "right", "target_port": "left", "flow": "write", "motion_role": "consolidate", "motion_stage": 5, "motion_order": 0 }
   ],
-  "footer": ""
+  "footer": "Style 4 · Notion Clean · five complementary memory systems",
+  "footer_x": 48,
+  "footer_y": 590
 }

@@ -1,4 +1,4 @@
 interface:
   display_name: "Fireworks Tech Graph"
-  short_description: "Generate polished SVG and PNG technical diagrams"
-  default_prompt: "Turn the user's system or workflow description into a polished SVG diagram and export a PNG."
+  short_description: "Generate geometry-safe technical diagrams"
+  default_prompt: "Use $fireworks-tech-graph to turn the user's system or workflow description into a geometry-checked SVG, then export PNG, controlled offline HTML, or a validated semantic GIF. Treat direct GIF requests as the approved 5.75s/115-frame SVG-to-GIF default."

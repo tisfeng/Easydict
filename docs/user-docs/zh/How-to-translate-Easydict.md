@@ -8,9 +8,9 @@ Easydict 的翻译是通过 Xcode 中的 String Catalog 管理的，下面是翻
 3. 打开项目并构建，有关如何构建项目的详细说明在[这里](../../../README_ZH.md#开发者构建)
 ### 添加语言到String Catalog
 现在可以添加新的语言了！
-1. 找到 `Easydict -> Easydict -> App -> Localizable.xcstrings`。同时展开 `Main.storyboard` 然后找到 `Main.xcstrings (Strings)`。这两个 `.xcstrings` 是翻译要用的
+1. 找到 `Easydict -> Easydict -> App -> Localizable.xcstrings`。该目录包含应用主要文本。同时打开 `Easydict/App/InfoPlist.xcstrings`，翻译应用元数据和权限说明。
 2. 首先打开 `Localizable.xcstrings` 文件，然后点`+`按钮添加语言，如果找不到要做翻译的语言（例如 Canadian English），滚动到菜单底部，打开二级菜单 `More Languages`
-3. 添加语言后就可以开始翻译了。不要忘记翻译 `Main.xcstring (Strings)` 中的字符串😉
+3. 添加语言后就可以开始翻译了。同时在 `InfoPlist.xcstrings` 中添加相同语言并翻译其中的字符串。
 ### 预览翻译
 在完成翻译后可以跑一下 Easydict 做检查。
 1. 在 Xcode 顶部工具栏上找到 Easydict 图标，然后点击它

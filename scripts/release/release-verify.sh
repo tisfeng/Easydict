@@ -51,6 +51,7 @@ verify_local_appcast() {
         --build "$RELEASE_SAVED_BUILD" \
         --channel "$RELEASE_SAVED_CHANNEL" \
         --release-notes-url "$(release_notes_url)" \
+        --notes-file "$RELEASE_NOTES_FILE" \
         --download-url "$(release_download_prefix)Easydict.zip" \
         "${transition_args[@]}"
 }
@@ -70,6 +71,7 @@ verify_zip_contents() {
 verify_local() {
     require_release_version
     load_release_metadata
+    verify_release_notes_snapshot
     require_release_worktree
     require_release_dir "$RELEASE_APP_PATH"
     require_release_file "$RELEASE_ZIP_PATH"
@@ -141,6 +143,7 @@ validate_remote_appcast() {
         --build "$RELEASE_SAVED_BUILD" \
         --channel "$RELEASE_SAVED_CHANNEL" \
         --release-notes-url "$(release_notes_url)" \
+        --notes-file "$RELEASE_NOTES_FILE" \
         --download-url "$(release_download_prefix)Easydict.zip"
 }
 
@@ -193,6 +196,7 @@ verify_remote_checksum() {
 verify_remote() {
     require_release_version
     load_release_metadata
+    verify_release_notes_snapshot
     require_release_worktree
     "$SCRIPT_DIR/release-github.sh" verify-published
     "$SCRIPT_DIR/release-github.sh" verify-previous

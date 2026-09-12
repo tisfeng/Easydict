@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import html
 from pathlib import Path
 import subprocess
 import tempfile
@@ -52,7 +53,12 @@ class ReleaseAppcastTests(unittest.TestCase):
         self.original = self.directory / "original.xml"
         self.candidate = self.directory / "candidate.xml"
         self.archive = self.directory / "Easydict.zip"
+        self.notes = self.directory / "2.22.0.md"
         self.archive.write_bytes(b"zip")
+        self.notes.write_text(
+            "## What's Changed\n* feat: test feature in https://example.com/pr/1\n",
+            encoding="UTF-8",
+        )
         self.original.write_text(
             appcast_document(
                 appcast_item("2.21.0", "63", "beta"),
@@ -68,6 +74,21 @@ class ReleaseAppcastTests(unittest.TestCase):
             ),
             encoding="UTF-8",
         )
+        populated = self.run_script(
+            "set-link",
+            "--appcast",
+            str(self.candidate),
+            "--version",
+            "2.22.0",
+            "--build",
+            "64",
+            "--url",
+            "https://example.com/2.22.0",
+            "--notes-file",
+            str(self.notes),
+        )
+        if populated.returncode != 0:
+            self.fail(populated.stderr)
 
     def tearDown(self) -> None:
         self.temporary_directory.cleanup()
@@ -97,6 +118,8 @@ class ReleaseAppcastTests(unittest.TestCase):
             "beta",
             "--release-notes-url",
             "https://example.com/2.22.0",
+            "--notes-file",
+            str(self.notes),
             "--download-url",
             "https://example.com/2.22.0/Easydict.zip",
         ]
@@ -211,6 +234,96 @@ class ReleaseAppcastTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), "")
+
+    def test_set_link_with_notes_file_populates_description(self) -> None:
+        result = self.run_script(
+            "set-link",
+            "--appcast",
+            str(self.candidate),
+            "--version",
+            "2.22.0",
+            "--build",
+            "64",
+            "--url",
+            "https://example.com/2.22.0",
+            "--notes-file",
+            str(self.notes),
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+        tree = ET.parse(self.candidate)
+        target = tree.getroot().find("./channel/item")
+        desc = target.find("description")
+        self.assertIsNotNone(desc)
+        unescaped_text = html.unescape(desc.text or "")
+        self.assertIn("<h2>What's Changed</h2>", unescaped_text)
+        self.assertIn("<li>feat: test feature", unescaped_text)
+
+    def test_set_link_preserves_markdown_links_images_and_code(self) -> None:
+        self.notes.write_text(
+            """## Details
+
+- Parent
+  - Child with https://example.com/path
+
+![Screenshot](https://example.com/image.png)
+
+```swift
+let url = "https://example.com/not-a-link"
+```
+""",
+            encoding="UTF-8",
+        )
+        result = self.run_script(
+            "set-link",
+            "--appcast",
+            str(self.candidate),
+            "--version",
+            "2.22.0",
+            "--build",
+            "64",
+            "--url",
+            "https://example.com/2.22.0",
+            "--notes-file",
+            str(self.notes),
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+        description = (
+            ET.parse(self.candidate)
+            .getroot()
+            .find("./channel/item/description")
+        )
+        rendered = description.text or ""
+        self.assertIn('<img alt="Screenshot" src="https://example.com/image.png">', rendered)
+        self.assertNotIn('<a href="https://example.com/image.png"', rendered)
+        self.assertIn("<ul>", rendered)
+        self.assertIn("<pre><code class=\"language-swift\">", rendered)
+        self.assertIn(
+            'let url = &quot;https://example.com/not-a-link&quot;',
+            rendered,
+        )
+
+    def test_validate_rejects_description_drift(self) -> None:
+        populated = self.run_script(
+            "set-link",
+            "--appcast",
+            str(self.candidate),
+            "--version",
+            "2.22.0",
+            "--build",
+            "64",
+            "--url",
+            "https://example.com/2.22.0",
+            "--notes-file",
+            str(self.notes),
+        )
+        self.assertEqual(populated.returncode, 0, populated.stderr)
+        self.notes.write_text("## Changed after generation\n", encoding="UTF-8")
+
+        result = self.validate()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("release notes description", result.stderr)
 
 
 if __name__ == "__main__":

@@ -1,16 +1,11 @@
 ---
 name: release-easydict
-description: >
-  编排 Easydict macOS 的 draft、publish、release 和 resume 工作流，整理英文
-  GitHub Release 内容，并根据已发布 PR 的关联关系规划、执行或恢复发布后的 Issue
-  跟进。适用于具体的 Easydict 发布操作和 issue-followup 动作，不适用于一般性的
-  发布流程设计讨论。
+description: 编排 Easydict macOS 的 draft、publish、release 和 resume，整理英文 GitHub Release 内容，并处理发布后的 Issue 跟进。不用于一般的发布流程设计讨论。
 ---
 
 # 发布 Easydict
 
-使用仓库发布脚本作为构建、公证、打包、Git、GitHub Release、appcast 和验证引擎。
-本 skill 在这些脚本外增加确定性的 Release 内容编排和发布后 Issue 跟进。
+使用仓库脚本发布 Easydict，并整理英文 GitHub Release 内容、跟进关联 Issue。
 
 ## 动作路由
 
@@ -28,7 +23,7 @@ Release 生命周期动作：
 执行这些动作时阅读 `scripts/release/README.md` 和
 [references/commands.md](references/commands.md)。
 
-发布后的 Issue 动作使用明确的 namespace：
+发布后的 Issue 跟进使用以下动作：
 
 - `issue-followup plan <version>`
 - `issue-followup apply <version>`
@@ -36,13 +31,15 @@ Release 生命周期动作：
 
 执行这些动作时阅读 [references/issue-followup.md](references/issue-followup.md)
 和 [references/issue-followup-policy.md](references/issue-followup-policy.md)。
-该 namespace 将 Issue 恢复与 asc 工作流 `resume` 明确区分。
+`issue-followup resume` 恢复 Issue 跟进；`resume` 恢复 Release 生命周期。
 
 ## 授权边界
 
-- 规划、解释、检查或方案请求保持只读。
-- `issue-followup plan` 可以查询 GitHub 并写入被忽略的本地状态，但绝不评论或关闭
-  Issue。
+- 普通规划、解释、检查或“先给方案”请求保持只读，不因文中提到命令就运行它。
+- 用户明确要求运行具体版本的 `issue-followup plan` 时，该命令会查询 GitHub 并写入
+  `.tmp/release/<version>/state/issue-followup/` 下被忽略的本地状态，不评论或关闭 Issue。
+  这属于获准的本地准备动作，不等于无副作用的 planning。用户禁止写文件时仅查询和
+  分析，不运行该命令；必要时说明缺少可持久化的计划状态。
 - 只有当用户针对具体版本或运行明确请求 `draft`、`publish`、`release`、Release
   `resume`、`issue-followup apply` 或 `issue-followup resume` 时，才执行远程修改。
 - 用户明确请求 `publish` 或 `release` 后，同一版本通过远程发布验证时，也同时授权其
@@ -63,7 +60,16 @@ Release 生命周期动作：
 
 1. 验证请求的版本、channel、当前 GitHub Release 状态、
    `.tmp/release/<version>/` 状态和相关 asc run ID。
-2. 创建新 Draft 时运行：
+2. 创建新 Draft 前，先根据上一个版本以来的已合并 PR 创建或更新
+   `changelog/<version>.md`。正文使用简洁英文，保留 PR 作者、链接、New Contributors
+   和 Full Changelog 范围；将该文件提交到本地 `dev`，然后运行：
+
+   ```bash
+   python3 scripts/release/release_notes.py validate \
+     --file changelog/<version>.md --version <version>
+   ```
+
+3. 创建新 Draft 时运行：
 
    ```bash
    ./scripts/release/release-easydict.sh draft <version> [--channel <channel>]
@@ -79,13 +85,11 @@ Release 生命周期动作：
    现有 Release 必须是 GitHub 最新条目、保持同一 channel 的 Draft、匹配本地和远程
    Tag identity 以及本地发布状态，并且不在公开 appcast 中。绝不同时使用
    `--replace-draft` 和 `--build-number`。
-3. 使用 `.agents/skills/release-easydict/scripts/release_content.py capture`
-   捕获 GitHub 生成的 notes。创建整理后的 JSON 文档，将每个人类可读的变更标题翻译
-   为简洁英文，并选择一个真实 PR 作为重点。保留 PR 编号、链接、作者、贡献者和
-   changelog 范围。
-4. 运行同一 helper 的 `render` 动作，预览其 `apply` 动作，再使用 `--execute` 运行
-   apply 命令。重新获取 Draft，并要求标题和正文完全匹配。
-5. 对于 `draft`，报告整理后的 Draft 后停止，不发布也不处理 Issue。
+4. Draft 会直接使用冻结的 `changelog/<version>.md`，并在创建后重新获取正文做一致性
+   验证。根据真实 PR 选择重点并生成英文标题，先预览 `release_content.py apply`，再用
+   `--execute` 只更新标题；helper 不编辑正文，并要求 Draft 正文仍与 changelog 一致。
+5. 对于 `draft`，报告经过验证的 Draft、changelog 路径和正文哈希后停止，不发布也不
+   处理 Issue。
 6. 对于 `publish` 或 `release`，运行：
 
    ```bash
@@ -107,9 +111,7 @@ Release 生命周期动作：
 
 Release 内容状态保存在 `.tmp/release/<version>/state/`：
 
-- `release-content-source.json`
-- `release-content-curated.json`
-- `release-notes-en.md`
+- `release-notes.json`：冻结版本、Markdown SHA-256、渲染器标识和 HTML SHA-256。
 
 Issue 状态隔离保存在 `.tmp/release/<version>/state/issue-followup/`，并继续使用
 schema v2。旧 schema-v1 实现直接存放在 `state/` 下的文件保留为审计数据，绝不自动
@@ -118,13 +120,14 @@ schema v2。旧 schema-v1 实现直接存放在 `state/` 下的文件保留为�
 对于 `--replace-draft`，旧内容和 Issue 文件只作为回滚数据。仓库工作流临时移走完整
 旧状态，选择
 `max(old Draft build, current project build, public appcast build) + 1`，再从已同步并
-提交的本地 `dev` 重建。只有新 Draft 验证通过后才捕获和整理内容。绝不将旧的已整理
-notes 或 Issue 状态复制到新 generation。未完成的替换使用 asc run ID 恢复，不要开始
-另一次替换。
+提交的本地 `dev` 重建。新 Draft 仍从该提交中的 `changelog/<version>.md` 创建，绝不将
+旧 Draft 正文或 Issue 状态复制到新 generation。未完成的替换使用 asc run ID 恢复，
+不要开始另一次替换。
 
 ## 内容决策
 
-- 只翻译每个生成变更条目中由人编写的 PR 标题部分，并保持英文标题简洁。
+- changelog 中只翻译每个变更条目中由人编写的 PR 标题部分，并保持英文标题简洁；作者、
+  PR 链接、贡献者和比较范围保持不变。
 - 按以下顺序选择重点：安全/数据丢失/崩溃修复、重要的用户可见功能、重要的用户可见
   修复、较小的产品改进；只有不存在产品变更时才选择维护项。
 - 使用 `<version> <emoji> <type>: <concise English summary>`，通常为 `✨ feat`、
@@ -133,7 +136,8 @@ notes 或 Issue 状态复制到新 generation。未完成的替换使用 asc run
 
 ## 失败与恢复
 
-- 内容验证失败时，GitHub Release 保持 Draft 状态。
+- changelog 缺失、未提交、哈希漂移、渲染器版本不匹配或远端正文不一致时停止；已经
+  创建的 GitHub Release 保持 Draft 状态。
 - `--replace-draft` 构建或公证失败时，不修改旧的远程 Draft 和 Tag。后续切换失败时
   保留本地回滚数据；验证成功后删除该临时备份。
 - 发布失败时不执行 Issue 动作，并使用 asc run ID 恢复。
