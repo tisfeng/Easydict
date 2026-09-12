@@ -81,6 +81,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     _stackView = nil;
     _quickActionButton = nil;
     _quickActionMenu = nil;
+    _wordbookHost = nil;
 
     [self updatePinButton];
     
@@ -104,6 +105,8 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         make.top.equalTo(self).offset(topOffset);
         make.right.equalTo(self).offset(-margin);
     }];
+
+    [self.stackView addArrangedSubview:self.wordbookHost.view];
     
     if (MyConfiguration.shared.showQuickActionButton) {
         [self.stackView addArrangedSubview:self.quickActionButton];
@@ -127,6 +130,20 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         EZOpenLinkButton *button = [self buttonWithType:buttonType];
         button.toolTip = [self toolTipStrWithButtonType:buttonType];
     }
+}
+
+- (void)refreshWordbookButton {
+    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+    EZQueryModel *model = window.queryViewController.queryModel;
+    if (!model) {
+        [self.wordbookHost reset];
+        return;
+    }
+    BOOL languageResolved = model.hasUserSourceLanguage || !model.needDetectLanguage;
+    [self.wordbookHost updateWithQueryText:model.inputText ?: @""
+                              fromLanguage:model.queryFromLanguage
+                                toLanguage:model.queryTargetLanguage
+                          languageResolved:languageResolved];
 }
 
 
@@ -197,15 +214,22 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     return _stackView;
 }
 
+- (WordbookStarHost *)wordbookHost {
+    if (!_wordbookHost) {
+        _wordbookHost = [[WordbookStarHost alloc] init];
+        [_wordbookHost.view mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(24);
+        }];
+        [self refreshWordbookButton];
+    }
+    return _wordbookHost;
+}
+
 - (NSMenu *)quickActionMenu {
     if (!_quickActionMenu) {
         NSMenu *menu = [NSMenu new];
         NSArray *menuSections = @[
             @[
-                @{
-                    @"title" : @"add_to_favorites",
-                    @"action" : NSStringFromSelector(@selector(addFavoriteIfNeeded))
-                },
                 @{
                     @"title" : @"replace_newline_with_space",
                     @"action" : NSStringFromSelector(@selector(replaceNewlineWithSpace))
@@ -426,29 +450,6 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     NSImage *normalTintedImage = [normalImage imageWithTintColor:pinTintColor];
     self.pinButton.image = self.pin ? selectedImage : normalTintedImage;
 }
-
-- (void)addFavoriteIfNeeded {
-    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
-    EZBaseQueryViewController *viewController = window.queryViewController;
-    EZQueryModel *queryModel = viewController.queryModel;
-    
-    NSString *queryText = queryModel.queryText;
-    if (queryText.length == 0) {
-        return;
-    }
-    
-    BOOL isFavorited = [QueryRecordManager.shared containsRecordWithQueryText:queryText
-                                                                            in:RecordTypeFavorites];
-    if (!isFavorited) {
-        NSString *translatedResult = [viewController firstTranslatedText];
-        [QueryRecordManager.shared addRecordWithQueryText:queryText
-                                             fromLanguage:queryModel.queryFromLanguage
-                                               toLanguage:queryModel.queryTargetLanguage
-                                         translatedResult:translatedResult
-                                                      to:RecordTypeFavorites];
-    }
-}
-
 
 /// Check if installed app according to bundle id array
 - (BOOL)checkInstalledApp:(NSArray<NSString *> *)bundleIds {

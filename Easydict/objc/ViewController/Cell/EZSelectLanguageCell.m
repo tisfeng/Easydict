@@ -88,10 +88,11 @@
         mm_weakify(self);
         [button setSelectedMenuItemBlock:^(EZLanguage selectedLanguage) {
             mm_strongify(self);
+            BOOL languageChanged = ![selectedLanguage isEqualToString:self.queryModel.userSourceLanguage];
             self.queryModel.userSourceLanguage = selectedLanguage;
+            MyConfiguration.shared.fromLanguage = selectedLanguage;
             
-            if (![selectedLanguage isEqualToString:MyConfiguration.shared.fromLanguage]) {
-                MyConfiguration.shared.fromLanguage = selectedLanguage;
+            if (languageChanged) {
                 [self enterAction];
             }
         }];
@@ -105,10 +106,11 @@
         mm_weakify(self);
         [button setSelectedMenuItemBlock:^(EZLanguage selectedLanguage) {
             mm_strongify(self);
+            BOOL languageChanged = ![selectedLanguage isEqualToString:self.queryModel.userTargetLanguage];
             self.queryModel.userTargetLanguage = selectedLanguage;
+            MyConfiguration.shared.toLanguage = selectedLanguage;
             
-            if (![selectedLanguage isEqualToString:MyConfiguration.shared.toLanguage]) {
-                MyConfiguration.shared.toLanguage = selectedLanguage;
+            if (languageChanged) {
                 [self enterAction];
             }
         }];
@@ -180,6 +182,8 @@
     EZLanguage fromLang = self.queryModel.userSourceLanguage;
     EZLanguage toLang = self.queryModel.userTargetLanguage;
 
+    self.queryModel.userSourceLanguage = toLang;
+    self.queryModel.userTargetLanguage = fromLang;
     MyConfiguration.shared.fromLanguage = toLang;
     MyConfiguration.shared.toLanguage = fromLang;
 
@@ -189,14 +193,13 @@
     [self enterAction];
 }
 
-// TODO: need to optimize. This should not use EZConfiguration directly.
 - (void)enterAction {
     MMLogInfo(@"enterAction");
     
     [self setNeedsUpdateConstraints:YES];
     
     if (self.enterActionBlock) {
-        self.enterActionBlock(MyConfiguration.shared.fromLanguage, MyConfiguration.shared.toLanguage);
+        self.enterActionBlock(self.queryModel.userSourceLanguage, self.queryModel.userTargetLanguage);
     }
 }
 

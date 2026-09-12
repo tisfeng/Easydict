@@ -15,6 +15,9 @@ import ZipArchive
 
 // MARK: - MenuItemView
 
+/// Provides the concise menu-bar actions that open translation workflows,
+/// browsing windows, settings, support tools, and application lifecycle
+/// commands without embedding deeper feature interfaces in the menu itself.
 struct MenuItemView: View {
     // MARK: Internal
 
@@ -47,6 +50,7 @@ struct MenuItemView: View {
 
             Divider()
 
+            wordbookItem
             settingItem.keyboardShortcut(.init(","))
             checkUpdateItem
             helpItem
@@ -163,6 +167,14 @@ struct MenuItemView: View {
                     Selector(("showSettingsWindow:")), to: nil, from: nil
                 )
             }
+        }
+    }
+
+    /// Wordbook browsing item.
+    @ViewBuilder private var wordbookItem: some View {
+        Button("wordbook.menu.open") {
+            logInfo("Open Wordbook")
+            HostWindowManager.shared.showWordbookWindow()
         }
     }
 

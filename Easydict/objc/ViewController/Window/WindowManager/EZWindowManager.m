@@ -31,6 +31,16 @@ static NSTimeInterval const EZFloatingWindowIdleWebViewDiscardDelay = 60.0;
 /// The window type that is currently showing.
 @property (nonatomic) EZWindowType windowType;
 
+- (void)showFloatingWindowType:(EZWindowType)windowType
+                     queryText:(nullable NSString *)queryText
+                     autoQuery:(BOOL)autoQuery
+                    actionType:(EZActionType)actionType
+                       atPoint:(CGPoint)point
+                  fromLanguage:(nullable EZLanguage)fromLanguage
+                    toLanguage:(nullable EZLanguage)toLanguage
+             preserveQueryText:(BOOL)preserveQueryText
+             completionHandler:(nullable void (^)(void))completionHandler;
+
 - (void)scheduleDictionaryWebViewDiscardForWindow:(EZBaseQueryWindow *)window;
 - (void)discardDictionaryWebViewsIfIdleForWindow:(EZBaseQueryWindow *)window;
 
@@ -314,6 +324,24 @@ static EZWindowManager *_instance;
 }
 
 - (void)showFloatingWindowType:(EZWindowType)windowType
+                     queryText:(NSString *)queryText
+                  fromLanguage:(EZLanguage)fromLanguage
+                    toLanguage:(EZLanguage)toLanguage
+                    actionType:(EZActionType)actionType {
+    self.windowType = windowType;
+    CGPoint point = [self floatingWindowLocationWithType:windowType];
+    [self showFloatingWindowType:windowType
+                       queryText:queryText
+                       autoQuery:YES
+                      actionType:actionType
+                         atPoint:point
+                    fromLanguage:fromLanguage
+                      toLanguage:toLanguage
+               preserveQueryText:YES
+               completionHandler:nil];
+}
+
+- (void)showFloatingWindowType:(EZWindowType)windowType
                      queryText:(nullable NSString *)queryText
                     actionType:(EZActionType)actionType
                        atPoint:(CGPoint)point
@@ -328,19 +356,46 @@ static EZWindowManager *_instance;
                     actionType:(EZActionType)actionType
                        atPoint:(CGPoint)point
              completionHandler:(nullable void (^)(void))completionHandler {
+    [self showFloatingWindowType:windowType
+                       queryText:queryText
+                       autoQuery:autoQuery
+                      actionType:actionType
+                         atPoint:point
+                    fromLanguage:nil
+                      toLanguage:nil
+               preserveQueryText:NO
+               completionHandler:completionHandler];
+}
+
+- (void)showFloatingWindowType:(EZWindowType)windowType
+                     queryText:(nullable NSString *)queryText
+                     autoQuery:(BOOL)autoQuery
+                    actionType:(EZActionType)actionType
+                       atPoint:(CGPoint)point
+                  fromLanguage:(nullable EZLanguage)fromLanguage
+                    toLanguage:(nullable EZLanguage)toLanguage
+             preserveQueryText:(BOOL)preserveQueryText
+             completionHandler:(nullable void (^)(void))completionHandler {
     
     /**
      Clear query if text is nil and user don't want to keep the last result.
 
      !!!: text may be @"" when no selected text in Chrome, so we need to handle it.
      */
-    queryText = [[queryText ns_removeInvisibleChar] ns_trim];
-    if (queryText.length == 0) {
-        queryText = MyConfiguration.shared.keepPrevResultWhenEmpty ? nil : @"";
-    }
-    // Remove the excerpt info of the books only when the frontmost app is Books.app
-    else {
-        queryText = [queryText removeBooksExcerptInfo];
+    if (preserveQueryText) {
+        if ([queryText ns_trim].length == 0) {
+            MMLogWarn(@"Stored query text is empty");
+            return;
+        }
+    } else {
+        queryText = [[queryText ns_removeInvisibleChar] ns_trim];
+        if (queryText.length == 0) {
+            queryText = MyConfiguration.shared.keepPrevResultWhenEmpty ? nil : @"";
+        }
+        // Remove the excerpt info of the books only when the frontmost app is Books.app
+        else {
+            queryText = [queryText removeBooksExcerptInfo];
+        }
     }
         
     self.selectedText = queryText;
@@ -390,7 +445,11 @@ static EZWindowManager *_instance;
     void (^updateQueryTextAndStartQueryBlock)(BOOL) = ^(BOOL needFocus) {
         // Update input text and detect.
         [queryViewController updateQueryTextAndParagraphStyle:queryText actionType:self.actionType];
-        [queryViewController detectQueryText:nil];
+
+        BOOL hasStoredLanguages = fromLanguage != nil && toLanguage != nil;
+        if (!hasStoredLanguages && queryViewController.queryModel.needDetectLanguage) {
+            [queryViewController detectQueryText:nil];
+        }
 
         if (needFocus) {
             // Order front and focus floating window.
@@ -398,7 +457,14 @@ static EZWindowManager *_instance;
         }
 
         if (autoQuery) {
-            [queryViewController startQueryText:queryText actionType:self.actionType];
+            if (hasStoredLanguages) {
+                [queryViewController startQueryText:queryText
+                                      fromLanguage:fromLanguage
+                                        toLanguage:toLanguage
+                                        actionType:self.actionType];
+            } else {
+                [queryViewController startQueryText:queryText actionType:self.actionType];
+            }
         }
 
         // TODO: Maybe we should remove this option, it seems useless.

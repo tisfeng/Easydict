@@ -17,7 +17,6 @@ enum SettingTab: Int {
     case advanced
     case shortcut
     case privacy
-    case favorites
     case about
 }
 
@@ -35,10 +34,6 @@ struct SettingView: View {
             ServiceTab()
                 .tabItem { Label("service", systemImage: "briefcase") }
                 .tag(SettingTab.service)
-
-            FavoritesTab()
-                .tabItem { Label("favorites.tab", systemImage: "star") }
-                .tag(SettingTab.favorites)
 
             DisabledAppTab()
                 .tabItem { Label("disabled_app_list", systemImage: "nosign") }
@@ -86,8 +81,6 @@ struct SettingView: View {
             340
         case .about:
             300
-        case .favorites:
-            640
         default:
             maxWidth * 0.8
         }

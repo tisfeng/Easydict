@@ -18,6 +18,7 @@ extension Notification.Name {
     static let linkButtonUpdated = Notification.Name(EZQuickLinkButtonUpdateNotification)
     static let didChangeFontSize = Notification.Name("didChangeFontSize")
     static let didChangeWindowConfiguration = Notification.Name("didChangeWindowConfiguration")
+    static let wordbookDidChange = Notification.Name("WordbookDidChangeNotification")
 
     static let maxWindowHeightSettingsChanged = Notification.Name("maxWindowHeightSettingsChanged")
 
@@ -37,6 +38,7 @@ extension NSNotification {
     static let linkButtonUpdated = Notification.Name.linkButtonUpdated
     static let didChangeFontSize = Notification.Name.didChangeFontSize
     static let didChangeWindowConfiguration = Notification.Name.didChangeWindowConfiguration
+    static let wordbookDidChange = Notification.Name.wordbookDidChange
     static let maxWindowHeightSettingsChanged = Notification.Name.maxWindowHeightSettingsChanged
     static let appDarkModeDidChange = Notification.Name.appDarkModeDidChange
 }

@@ -89,6 +89,9 @@ extension Tag {
     /// Markdown rendering pipeline (Markdown 渲染功能)
     @Tag static var markdown: Self
 
+    /// Wordbook domain and persistence (单词本领域与持久化功能)
+    @Tag static var wordbook: Self
+
     // MARK: - Test Type Tags (测试类型标签)
 
     /// Unit tests: test individual functions/methods, fast, no external dependencies
