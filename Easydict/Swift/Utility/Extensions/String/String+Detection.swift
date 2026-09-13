@@ -208,14 +208,29 @@ extension String {
         return range(of: pattern, options: .regularExpression) != nil
     }
 
+    /// Check if the text reads as a Japanese clause rather than a single word:
+    /// it closes with a sentence ending (私は学生です, お元気ですか, 行きますか), or
+    /// it tokenizes into several words that include a case or topic particle
+    /// (彼は来た, 東京に行きます). Single conjugated words (行きます, 見つめた),
+    /// compound words and set phrases without particles (見つめ直す, お疲れ様)
+    /// do not match.
+    var isJapaneseSentenceLike: Bool {
+        if range(of: Self.japaneseSentenceEndingPattern, options: .regularExpression) != nil {
+            return true
+        }
+        let words = wordsInText
+        return words.count >= 3 && words.contains { Self.japaneseParticles.contains($0) }
+    }
+
     /// Check if the text is a Japanese word or short phrase for dictionary
     /// lookup, e.g. 見つめる, 見つめ直す, お疲れ様. Conjugated forms such as
     /// 見つめた are accepted so that dictionary services can resolve them to
-    /// the dictionary form.
+    /// the dictionary form. Short unpunctuated sentences (私は学生です) are
+    /// rejected so they can go to sentence analysis instead.
     var isJapaneseWord: Bool {
         let text = tryToRemoveQuotes()
-        guard text.count <= Self.japaneseWordMaxLength else { return false }
-        return text.isJapaneseText
+        guard text.count <= Self.japaneseWordMaxLength, text.isJapaneseText else { return false }
+        return !text.isJapaneseSentenceLike
     }
 
     /// Check if the text contains only numbers

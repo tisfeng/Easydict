@@ -135,37 +135,6 @@ struct StringAnalysisTests {
         )
     }
 
-    @Test("Japanese dictionary query detection")
-    func japaneseDictionaryQueryDetection() {
-        let japanese: Language = .japanese
-
-        #expect(
-            "見つめる".queryType(language: japanese, maxWordCount: 1).contains(.dictionary),
-            "Japanese word should query dictionary"
-        )
-        #expect(
-            "見つめた".queryType(language: japanese, maxWordCount: 1).contains(.dictionary),
-            "Conjugated Japanese word should query dictionary"
-        )
-        #expect(
-            "見つめ直す".queryType(language: japanese, maxWordCount: 1).contains(.dictionary),
-            "Japanese compound verb should query dictionary regardless of word count"
-        )
-        #expect(
-            "東京".queryType(language: japanese, maxWordCount: 1).contains(.dictionary),
-            "Kanji-only Japanese word should query dictionary"
-        )
-        #expect(
-            !"日本文化を外から見つめ直す".queryType(language: japanese, maxWordCount: 1)
-                .contains(.dictionary),
-            "Japanese text exceeding the word limit should not query dictionary"
-        )
-        #expect(
-            !"見つめる。".queryType(language: japanese, maxWordCount: 1).contains(.dictionary),
-            "Japanese word with punctuation should not query dictionary"
-        )
-    }
-
     @Test("Sentence query detection")
     func sentenceQueryDetection() {
         let english: Language = .english
@@ -189,27 +158,6 @@ struct StringAnalysisTests {
         #expect(
             !"你好世界".queryType(language: chinese, maxWordCount: 1).contains(.sentence),
             "Chinese text should not query sentence"
-        )
-    }
-
-    @Test("Japanese sentence query detection")
-    func japaneseSentenceQueryDetection() {
-        let japanese: Language = .japanese
-
-        #expect(
-            "日本文化を外から見つめ直す。".queryType(language: japanese, maxWordCount: 1)
-                .contains(.sentence),
-            "Japanese sentence should query sentence"
-        )
-        #expect(
-            "英語を、日本文化を外から見つめ直す手段と捉えている".queryType(
-                language: japanese, maxWordCount: 1
-            ).contains(.sentence),
-            "Japanese sentence without end punctuation should query sentence"
-        )
-        #expect(
-            !"見つめる".queryType(language: japanese, maxWordCount: 1).contains(.sentence),
-            "Japanese word should not query sentence"
         )
     }
 

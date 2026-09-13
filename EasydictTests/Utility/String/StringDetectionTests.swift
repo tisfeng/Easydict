@@ -126,6 +126,21 @@ struct StringDetectionTests {
         #expect(!("".isJapaneseText), "Empty string should not be detected as Japanese")
     }
 
+    @Test("Japanese sentence-like detection")
+    func japaneseSentenceLikeDetection() {
+        #expect("私は学生です".isJapaneseSentenceLike, "Copula ending should be detected")
+        #expect("お元気ですか".isJapaneseSentenceLike, "Question ending should be detected")
+        #expect("行きますか".isJapaneseSentenceLike, "Polite verb with a final particle should be detected")
+        #expect("東京に行きます".isJapaneseSentenceLike, "Clause with a case particle should be detected")
+        #expect("彼は来た".isJapaneseSentenceLike, "Clause with a topic particle should be detected")
+        #expect(!("見つめる".isJapaneseSentenceLike), "Dictionary form should not be detected")
+        #expect(!("行きます".isJapaneseSentenceLike), "Single polite verb should not be detected")
+        #expect(!("励ます".isJapaneseSentenceLike), "Verb whose dictionary form ends in ます should not be detected")
+        #expect(!("見つめ直す".isJapaneseSentenceLike), "Compound verb should not be detected")
+        #expect(!("お疲れ様".isJapaneseSentenceLike), "Set phrase should not be detected")
+        #expect(!("ありがとう".isJapaneseSentenceLike), "Single expression should not be detected")
+    }
+
     @Test("Japanese word detection")
     func japaneseWordDetection() {
         #expect("見つめる".isJapaneseWord, "Dictionary form should be detected")
@@ -137,6 +152,8 @@ struct StringDetectionTests {
             !("日本文化を外から見つめ直す".isJapaneseWord),
             "Text longer than the word limit should not be detected as a word"
         )
+        #expect(!("私は学生です".isJapaneseWord), "Short sentence should not be detected as a word")
+        #expect(!("お元気ですか".isJapaneseWord), "Short question should not be detected as a word")
         #expect(!("見つめる。".isJapaneseWord), "Word with punctuation should not be detected")
         #expect(!("".isJapaneseWord), "Empty string should not be detected as Japanese word")
     }
