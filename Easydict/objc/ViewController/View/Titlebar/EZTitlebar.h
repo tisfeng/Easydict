@@ -11,6 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class WordbookStarHost;
+
 typedef NS_ENUM(NSUInteger, EZTitlebarQuickAction) {
     EZTitlebarQuickActionRemoveCommentBlockSymbols,
     EZTitlebarQuickActionWordsSegmentation,
@@ -30,10 +32,12 @@ typedef void(^EZTitlebarQuickActionBlock)(EZTitlebarQuickAction);
 @property (nonatomic, strong) EZOpenLinkButton *appleDictionaryButton;
 
 @property (nonatomic, strong) EZOpenLinkButton *quickActionButton;
+@property (nonatomic, strong) WordbookStarHost *wordbookHost;
 
 @property (nonatomic, copy) EZTitlebarQuickActionBlock menuActionBlock;
 
 - (void)updateShortcutButtonsToolTip;
+- (void)refreshWordbookButton;
 
 @end
 

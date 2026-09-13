@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 820" width="1040" height="820">
+<style>text{font-family:Helvetica,Arial,"PingFang SC",sans-serif;fill:#111827}.title{font-size:24px;font-weight:600}.label{font-size:17px;font-weight:600}.body{font-size:14px;fill:#4b5563}</style>
+<defs><marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#2563eb"/></marker></defs>
+<rect width="1040" height="820" fill="#fff"/>
+<text x="520" y="45" text-anchor="middle" class="title">查询单元格职责与语言流</text>
+<text x="520" y="75" text-anchor="middle" class="body">当前 QueryModel 决定重查；偏好仅记录用户选择</text>
+<rect x="40" y="120" width="240" height="112" rx="8" fill="#eff6ff" stroke="#d1d5db"/>
+<text x="64" y="152" class="label">用户与语言菜单</text>
+<text x="64" y="180" class="body">源语言 / 目标语言选择</text>
+<text x="64" y="204" class="body">交换按钮 / ⌘T</text>
+<rect x="400" y="120" width="240" height="112" rx="8" fill="#eff6ff" stroke="#d1d5db"/>
+<text x="424" y="152" class="label">EZSelectLanguageCell</text>
+<text x="424" y="180" class="body">先比较当前模型同侧语言</text>
+<text x="424" y="204" class="body">更新模型与对应偏好</text>
+<rect x="760" y="120" width="240" height="112" rx="8" fill="#eff6ff" stroke="#d1d5db"/>
+<text x="784" y="152" class="label">查询控制器</text>
+<text x="784" y="180" class="body">接收当前模型完整方向</text>
+<text x="784" y="204" class="body">重试 / 反向翻译调度</text>
+<path d="M280 176 L400 176" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="309.0" y="164.0" width="62" height="24" fill="#fff"/>
+<text x="340.0" y="181.0" text-anchor="middle" class="body">选择</text>
+<path d="M640 176 L760 176" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="669.0" y="164.0" width="62" height="24" fill="#fff"/>
+<text x="700.0" y="181.0" text-anchor="middle" class="body">回调</text>
+<rect x="40" y="344" width="240" height="128" rx="8" fill="#f0fdf4" stroke="#d1d5db"/>
+<text x="64" y="376" class="label">偏好与回放边界</text>
+<text x="64" y="404" class="body">回放可与偏好不同</text>
+<text x="64" y="428" class="body">只保存用户选择的同侧</text>
+<text x="64" y="452" class="body">另一侧继续保留词条语言</text>
+<rect x="400" y="344" width="240" height="128" rx="8" fill="#f0fdf4" stroke="#d1d5db"/>
+<text x="424" y="376" class="label">QueryModel</text>
+<text x="424" y="404" class="body">当前语言对是回调来源</text>
+<text x="424" y="428" class="body">Auto 展示有效探测语言</text>
+<text x="424" y="452" class="body">交换同步模型与两侧偏好</text>
+<rect x="760" y="344" width="240" height="128" rx="8" fill="#f0fdf4" stroke="#d1d5db"/>
+<text x="784" y="376" class="label">结果与星标</text>
+<text x="784" y="404" class="body">重试前刷新星标</text>
+<text x="784" y="428" class="body">关闭旧结果，再发起查询</text>
+<text x="784" y="452" class="body">单元格不直接访问服务</text>
+<path d="M520 232 L520 344" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="489.0" y="276.0" width="62" height="24" fill="#fff"/>
+<text x="520.0" y="293.0" text-anchor="middle" class="body">方向</text>
+<path d="M880 232 L880 344" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="849.0" y="276.0" width="62" height="24" fill="#fff"/>
+<text x="880.0" y="293.0" text-anchor="middle" class="body">重查</text>
+<rect x="40" y="528" width="450" height="118" rx="8" fill="#f9fafb" stroke="#d1d5db"/>
+<text x="64" y="560" class="label">提示与行外壳</text>
+<text x="64" y="588" class="body">EZTableTipsCell：错误 / 信息 / FAQ 与帮助链接</text>
+<text x="64" y="612" class="body">按本地化文字布局；错误提示隐藏 FAQ 操作</text>
+<text x="64" y="636" class="body">EZTableRowView：继承系统绘制与行生命周期</text>
+<rect x="550" y="528" width="450" height="118" rx="8" fill="#fef2f2" stroke="#d1d5db"/>
+<text x="574" y="560" class="label">失败与无操作边界</text>
+<text x="574" y="588" class="body">同侧语言未改变：不重复查询</text>
+<text x="574" y="612" class="body">相同或缺失方向：不交换；无回调：不调度</text>
+<text x="574" y="636" class="body">从模型绑定 → 回调参数 → retry 排查失配</text>
+<rect x="40" y="700" width="960" height="80" rx="8" fill="#fff" stroke="#d1d5db"/>
+<text x="64" y="732" class="label">验证入口</text>
+<text x="64" y="760" class="body">ReverseTranslationTests；Auto→中文偏好下回放英语→法语，再逐侧恢复偏好并检查重查、另一侧语言与星标。</text>
+</svg>
