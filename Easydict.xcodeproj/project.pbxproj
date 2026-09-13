@@ -573,7 +573,9 @@
 		C0DEC11E0001000000000007 /* CodexCLIServiceConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */; };
 		C0DEC11E0001000000000010 /* CodexCLIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */; };
 		C0DEC11E0001000000000011 /* CodexCLIRunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */; };
+		C0DEC11E0001000000000013 /* CodexCLIRunnerEnvironmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000013 /* CodexCLIRunnerEnvironmentTests.swift */; };
 		C0DEC11E0001000000000014 /* CodexReasoningEffort.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */; };
+		C0DEC11E0001000000000015 /* CodexManagedAccountTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000015 /* CodexManagedAccountTestSupport.swift */; };
 		C415C0AD2B450D4800A9D231 /* GeminiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C415C0AC2B450D4800A9D231 /* GeminiService.swift */; };
 		C43B566C2C693F6200EF26FD /* VolcanoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43B566B2C693F6200EF26FD /* VolcanoService.swift */; };
 		C43B566E2C693F8B00EF26FD /* VolcanoTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43B566D2C693F8B00EF26FD /* VolcanoTranslateType.swift */; };
@@ -1328,7 +1330,9 @@
 		C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIServiceConfigurationView.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIServiceTests.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIRunnerTests.swift; sourceTree = "<group>"; };
+		C0DEC11E0002000000000013 /* CodexCLIRunnerEnvironmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIRunnerEnvironmentTests.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexReasoningEffort.swift; sourceTree = "<group>"; };
+		C0DEC11E0002000000000015 /* CodexManagedAccountTestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedAccountTestSupport.swift; sourceTree = "<group>"; };
 		C415C0AC2B450D4800A9D231 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
 		C43B566B2C693F6200EF26FD /* VolcanoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoService.swift; sourceTree = "<group>"; };
 		C43B566D2C693F8B00EF26FD /* VolcanoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcanoTranslateType.swift; sourceTree = "<group>"; };
@@ -3629,12 +3633,14 @@
 			isa = PBXGroup;
 			children = (
 				C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */,
+				C0DEC11E0002000000000013 /* CodexCLIRunnerEnvironmentTests.swift */,
 				62E0DB7EB2C038D421414311 /* CodexConfigurationMigrationTests.swift */,
 				F17239571D44D3BCC9D24831 /* CodexManagedProcessTests.swift */,
 				7AD4CBC536A238B7F9B5531D /* CodexStreamInvalidationTests.swift */,
 				C3594F7282DE23CFECAD0C78 /* CodexRequestCoordinatorTests.swift */,
 				5448A25311DF3B636D9045C9 /* CodexManagedTranslationTests.swift */,
 				26A451FB8A81E2EB6077744D /* CodexManagedAccountTests.swift */,
+				C0DEC11E0002000000000015 /* CodexManagedAccountTestSupport.swift */,
 				87273B83A46A4319A7995E89 /* CodexManagedAccountRecoveryTests.swift */,
 				BCB3E639236DC6875625F110 /* CodexComponentStoreTests.swift */,
 				C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */,
@@ -4320,12 +4326,14 @@
 				A13F30938343423C89FB9B4C /* ClaudeCodeCLIRunnerTests.swift in Sources */,
 				513C5A1DEDCB410184268D48 /* ClaudeCodeServiceTests.swift in Sources */,
 				C0DEC11E0001000000000011 /* CodexCLIRunnerTests.swift in Sources */,
+				C0DEC11E0001000000000013 /* CodexCLIRunnerEnvironmentTests.swift in Sources */,
 				7D28AFA6EE47AC3B8AEDBA05 /* CodexConfigurationMigrationTests.swift in Sources */,
 				A6089B0337D52C729C9E4CEE /* CodexManagedProcessTests.swift in Sources */,
 				F75B6CC4141600C1B89E350C /* CodexStreamInvalidationTests.swift in Sources */,
 				7A7440D5127B44712E9F428C /* CodexRequestCoordinatorTests.swift in Sources */,
 				5BA419F2EF852376A925D849 /* CodexManagedTranslationTests.swift in Sources */,
 				8ECC69B8B5326B2884D3B877 /* CodexManagedAccountTests.swift in Sources */,
+				C0DEC11E0001000000000015 /* CodexManagedAccountTestSupport.swift in Sources */,
 				04466B8E004E4D1BB65A4570 /* CodexManagedAccountRecoveryTests.swift in Sources */,
 				F955D7120AD72EFC6429A79A /* CodexComponentStoreTests.swift in Sources */,
 				C0DEC11E0001000000000010 /* CodexCLIServiceTests.swift in Sources */,

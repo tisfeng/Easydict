@@ -81,9 +81,9 @@ final class CodexManagedAccount: ObservableObject {
                     let parser = CodexAuthorizationURLParser()
                     let result = try await runtime.command(["login"], process: nextProcess(), timeout: 300) { chunk in
                         if let url = parser.append(chunk) {
-                            Task { @MainActor [weak self] in
-                                guard let self, self.generation == generation, state == .authorizing else { return }
-                                authorizationURL = url
+                            Task { @MainActor in
+                                guard self.generation == generation, self.state == .authorizing else { return }
+                                self.authorizationURL = url
                             }
                         }
                     }
@@ -404,7 +404,7 @@ private final class CodexAuthorizationURLParser: @unchecked Sendable {
     func append(_ data: Data) -> URL? {
         buffer.append(data)
         if buffer.count > 16384 { buffer.removeFirst(buffer.count - 16384) }
-        let text = String(decoding: buffer, as: UTF8.self)
+        guard let text = String(data: buffer, encoding: .utf8) else { return nil }
         for word in text.split(whereSeparator: \.isWhitespace) {
             guard let url = URL(string: String(word)), url.scheme == "https",
                   url.host == "auth.openai.com", url.path == "/oauth/authorize",

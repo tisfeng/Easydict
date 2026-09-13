@@ -137,9 +137,9 @@ final class CodexCLIService: StreamService {
                     guard CodexRequestCoordinator.shared.isCurrent(token) else { throw CancellationError() }
                     let local = configuration.mode == .localCLI ? CodexCLIRunner() : nil
                     let managed = configuration.mode == .managed ? CodexManagedTranslation() : nil
-                    runLock.withLock {
-                        runner = local
-                        managedRunner = managed
+                    self.runLock.withLock {
+                        self.runner = local
+                        self.managedRunner = managed
                     }
                     return (local, managed)
                 }

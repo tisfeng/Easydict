@@ -111,8 +111,17 @@ struct CodexManagedProcessTests {
         try await withTemporaryDirectory { directory in
             let marker = directory.appendingPathComponent("term-ignoring-orphan")
             let ready = directory.appendingPathComponent("term-ignoring-orphan-ready")
+            let script = """
+            (exec 3>"$1"; trap '' TERM; exec </dev/null >/dev/null 2>/dev/null
+            echo ready >&3
+            exec 3>&-
+            sleep 1
+            echo leaked > "$0") &
+            while [ ! -e "$1" ]; do sleep 0.01; done
+            exit 0
+            """
             let output = try await runShell(
-                "(exec 3>\"$1\"; trap '' TERM; exec </dev/null >/dev/null 2>/dev/null; echo ready >&3; exec 3>&-; sleep 1; echo leaked > \"$0\") & while [ ! -e \"$1\" ]; do sleep 0.01; done; exit 0",
+                script,
                 arguments: [marker.path, ready.path],
                 directory: directory,
                 timeout: 3
@@ -160,8 +169,8 @@ struct CodexManagedProcessTests {
             try await runPython("import sys; sys.stdout.write('out'); sys.stderr.write('err'); raise SystemExit(7)")
 
         #expect(output.exitCode == 7)
-        #expect(String(decoding: output.stdout, as: UTF8.self) == "out")
-        #expect(String(decoding: output.stderr, as: UTF8.self) == "err")
+        #expect(String(data: output.stdout, encoding: .utf8) == "out")
+        #expect(String(data: output.stderr, encoding: .utf8) == "err")
     }
 }
 

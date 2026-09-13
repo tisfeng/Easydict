@@ -90,10 +90,10 @@ struct CodexComponentStore: Sendable {
             timeout: 30
         )
         guard names.exitCode == 0, kinds.exitCode == 0 else { throw CodexManagedError.componentInvalid }
-        try validateArchiveEntries(
-            names: String(decoding: names.stdout, as: UTF8.self),
-            details: String(decoding: kinds.stdout, as: UTF8.self)
-        )
+        guard let archiveNames = String(data: names.stdout, encoding: .utf8),
+              let archiveDetails = String(data: kinds.stdout, encoding: .utf8)
+        else { throw CodexManagedError.componentInvalid }
+        try validateArchiveEntries(names: archiveNames, details: archiveDetails)
         try Task.checkCancellation()
         let extraction = try await CodexManagedProcess().run(
             executable: URL(fileURLWithPath: "/usr/bin/tar"),

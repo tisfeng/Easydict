@@ -72,7 +72,10 @@ struct CodexManagedRuntime {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .withoutEscapingSlashes
         let data = try! encoder.encode(value)
-        return String(decoding: data, as: UTF8.self)
+        guard let quoted = String(data: data, encoding: .utf8) else {
+            preconditionFailure("JSONEncoder returned non-UTF-8 data")
+        }
+        return quoted
     }
 
     func command(
@@ -232,10 +235,9 @@ struct CodexManagedRuntime {
                   == skills.appendingPathComponent(".system").standardizedFileURL
             else { throw CodexManagedError.externalConfiguration }
         }
-        for key in ["config_toml_base64", "requirements_toml_base64"] {
-            if CFPreferencesCopyAppValue(key as CFString, "com.openai.codex" as CFString) != nil {
-                throw CodexManagedError.externalConfiguration
-            }
+        for key in ["config_toml_base64", "requirements_toml_base64"]
+            where CFPreferencesCopyAppValue(key as CFString, "com.openai.codex" as CFString) != nil {
+            throw CodexManagedError.externalConfiguration
         }
         guard try fileManager.contentsOfDirectory(atPath: workingDirectory.path).isEmpty else {
             throw CodexManagedError.externalConfiguration

@@ -299,7 +299,7 @@ struct CodexStreamInvalidationTests {
             firstStart.signal()
         }
 
-        guard firstStart.wait(timeout: .now() + 3) == .success else { throw StreamTestTimeout() }
+        try waitForSignalWithoutYielding(firstStart)
         try waitForErrorWithoutYielding(firstResultBox.value, message: expectedMessage)
         await firstTask.value
 
@@ -382,7 +382,7 @@ private final class ControlledContentSource: @unchecked Sendable {
     }
 
     func yield(_ text: String, index: Int) {
-        lock.withLock { continuations[index].yield(text) }
+        _ = lock.withLock { continuations[index].yield(text) }
     }
 
     func finish(index: Int, throwing error: Error? = nil) {
@@ -519,4 +519,11 @@ private func waitForErrorWithoutYielding(
         guard Date() < deadline else { throw StreamTestTimeout() }
         Thread.sleep(forTimeInterval: 0.01)
     }
+}
+
+private func waitForSignalWithoutYielding(
+    _ semaphore: DispatchSemaphore,
+    timeout: DispatchTime = .now() + 3
+) throws {
+    guard semaphore.wait(timeout: timeout) == .success else { throw StreamTestTimeout() }
 }

@@ -19,10 +19,10 @@ final class CodexComponentManager: ObservableObject {
         storeFactory: @escaping () async throws -> CodexComponentStore = {
             try CodexComponentStore.applicationStore(descriptor: .load())
         },
-        account: CodexManagedAccount = .shared
+        account: CodexManagedAccount? = nil
     ) {
         self.storeFactory = storeFactory
-        self.account = account
+        self.account = account ?? .shared
     }
 
     // MARK: Internal
@@ -55,9 +55,9 @@ final class CodexComponentManager: ObservableObject {
                 let store = try await storeFactory()
                 try Task.checkCancellation()
                 _ = try await store.install { progress in
-                    Task { @MainActor [weak self] in
-                        guard let self, self.generation == generation, operation != nil else { return }
-                        state = progress.map(State.downloading) ?? .installing
+                    Task { @MainActor in
+                        guard self.generation == generation, self.operation != nil else { return }
+                        self.state = progress.map(State.downloading) ?? .installing
                     }
                 }
                 try Task.checkCancellation()

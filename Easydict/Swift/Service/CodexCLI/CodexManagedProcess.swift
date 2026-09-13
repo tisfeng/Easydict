@@ -31,17 +31,18 @@ final class CodexManagedProcess: @unchecked Sendable {
         stderrReceived: (@Sendable (Data) -> ())? = nil
     ) async throws
         -> Output {
-        try await withTaskCancellationHandler {
+        let invocation = Invocation(
+            executable: executable,
+            arguments: arguments,
+            environment: environment,
+            workingDirectory: workingDirectory,
+            input: input,
+            timeout: timeout,
+            stderrReceived: stderrReceived
+        )
+        return try await withTaskCancellationHandler {
             try await Task.detached(priority: .userInitiated) { [self] in
-                try execute(
-                    executable: executable,
-                    arguments: arguments,
-                    environment: environment,
-                    workingDirectory: workingDirectory,
-                    input: input,
-                    timeout: timeout,
-                    stderrReceived: stderrReceived
-                )
+                try execute(invocation)
             }.value
         } onCancel: {
             self.cancel()
@@ -57,6 +58,16 @@ final class CodexManagedProcess: @unchecked Sendable {
 
     // MARK: Private
 
+    private struct Invocation: Sendable {
+        let executable: URL
+        let arguments: [String]
+        let environment: [String: String]
+        let workingDirectory: URL
+        let input: Data
+        let timeout: TimeInterval
+        let stderrReceived: (@Sendable (Data) -> ())?
+    }
+
     private let lock = NSLock()
     private var cancelled = false
     private var processID: pid_t = 0
@@ -64,12 +75,13 @@ final class CodexManagedProcess: @unchecked Sendable {
 
     /// Uses posix_spawn's process-group attribute to avoid the setpgid-after-launch
     /// race. A single polling loop writes stdin while draining both output streams.
-    private func execute(
-        executable: URL, arguments: [String], environment: [String: String],
-        workingDirectory: URL,
-        input: Data, timeout: TimeInterval, stderrReceived: (@Sendable (Data) -> ())?
-    ) throws
+    private func execute(_ invocation: Invocation) throws
         -> Output {
+        let executable = invocation.executable
+        let arguments = invocation.arguments
+        let environment = invocation.environment
+        let workingDirectory = invocation.workingDirectory
+        let input = invocation.input
         var descriptors: [Int32] = []
         defer { for descriptor in descriptors where descriptor >= 0 { close(descriptor) } }
         for _ in 0 ..< 3 {
@@ -120,8 +132,8 @@ final class CodexManagedProcess: @unchecked Sendable {
             child: child,
             descriptors: &descriptors,
             input: input,
-            timeout: timeout,
-            stderrReceived: stderrReceived
+            timeout: invocation.timeout,
+            stderrReceived: invocation.stderrReceived
         )
     }
 
@@ -180,8 +192,7 @@ final class CodexManagedProcess: @unchecked Sendable {
                             min(16384, input.count - inputOffset)
                         )
                     }
-                    if count > 0 { inputOffset += count }
-                    else if count < 0, errno != EAGAIN, errno != EINTR {
+                    if count > 0 { inputOffset += count } else if count < 0, errno != EAGAIN, errno != EINTR {
                         close(descriptors[1])
                         descriptors[1] = -1
                     }

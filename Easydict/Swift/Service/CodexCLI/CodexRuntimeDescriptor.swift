@@ -132,8 +132,11 @@ struct CodexModelCatalog: Decodable {
     let models: [Model]
 
     static func load(at url: URL) throws -> Self {
-        do { return try JSONDecoder().decode(Self.self, from: Data(contentsOf: url)) }
-        catch { throw CodexManagedError.componentMissing }
+        do {
+            return try JSONDecoder().decode(Self.self, from: Data(contentsOf: url))
+        } catch {
+            throw CodexManagedError.componentMissing
+        }
     }
 
     /// Validates selection without resolving or installing the executable package.

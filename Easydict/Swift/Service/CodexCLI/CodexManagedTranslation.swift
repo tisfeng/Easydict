@@ -22,8 +22,10 @@ final class CodexManagedTranslation: @unchecked Sendable {
     /// Official status exit 1 also covers config/keyring failures; only the exact
     /// signed-out status is classified as unauthenticated. No token data is read.
     static func isSignedIn(_ output: CodexManagedProcess.Output) throws -> Bool {
-        let text = String(decoding: output.stdout + output.stderr, as: UTF8.self)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let outputText = String(data: output.stdout + output.stderr, encoding: .utf8) else {
+            throw CodexManagedError.authenticationFailed
+        }
+        let text = outputText.trimmingCharacters(in: .whitespacesAndNewlines)
         if output.exitCode == 0, text == "Logged in using ChatGPT" { return true }
         if output.exitCode == 1, text == "Not logged in" { return false }
         if text.lowercased().contains("keyring") || text.lowercased().contains("keychain") {
