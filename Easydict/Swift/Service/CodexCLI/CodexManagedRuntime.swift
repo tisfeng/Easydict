@@ -181,8 +181,8 @@ struct CodexManagedRuntime {
         return arguments
     }
 
-    /// Ignoring user config does not ignore machine policy or globally discovered
-    /// skills. Detect only their presence, without reading any credentials or data.
+    /// Rejects machine policy and unexpected configuration inside application-managed
+    /// paths. User-home skills are disabled explicitly for every managed command.
     private func checkConfigurationSources() throws {
         let fileManager = FileManager.default
         var paths = [
@@ -191,7 +191,6 @@ struct CodexManagedRuntime {
             "/etc/codex/requirements.toml",
             "/etc/codex/skills",
         ]
-        paths.append(home.appendingPathComponent(".agents/skills").path)
         for root in [codexHome] {
             for name in [
                 ".env",
