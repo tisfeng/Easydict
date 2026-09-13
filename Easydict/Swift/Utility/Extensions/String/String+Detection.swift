@@ -189,6 +189,50 @@ extension String {
         return matches ?? 0 > 0
     }
 
+    /// Check if the text contains only Japanese characters: kana, kanji, the
+    /// prolonged sound mark (ー) and the iteration marks (々, ゝ, ヽ). Spaces
+    /// and punctuation are not allowed, so sentences are excluded.
+    ///
+    /// Explicit code point ranges are used instead of `\p{Hiragana}` etc.,
+    /// because on macOS the script properties also match CJK punctuation
+    /// such as 。, which would let sentences through.
+    var isJapaneseText: Bool {
+        let pattern = "^["
+            + "\\u3005-\\u3007" // 々 〆 〇
+            + "\\u3041-\\u3096\\u3099-\\u309F" // Hiragana
+            + "\\u30A1-\\u30FA\\u30FC-\\u30FF" // Katakana, excluding the middle dot ・
+            + "\\uFF66-\\uFF9F" // Halfwidth Katakana
+            + "\\u3400-\\u4DBF\\u4E00-\\u9FFF\\uF900-\\uFAFF" // CJK ideographs
+            + "\\U00020000-\\U0003134F" // CJK ideographs extension B and later
+            + "]+$"
+        return range(of: pattern, options: .regularExpression) != nil
+    }
+
+    /// Check if the text reads as a Japanese clause rather than a single word:
+    /// it closes with a sentence ending (私は学生です, お元気ですか, 行きますか), or
+    /// it tokenizes into several words that include a case or topic particle
+    /// (彼は来た, 東京に行きます). Single conjugated words (行きます, 見つめた),
+    /// compound words and set phrases without particles (見つめ直す, お疲れ様)
+    /// do not match.
+    var isJapaneseSentenceLike: Bool {
+        if range(of: Self.japaneseSentenceEndingPattern, options: .regularExpression) != nil {
+            return true
+        }
+        let words = wordsInText
+        return words.count >= 3 && words.contains { Self.japaneseParticles.contains($0) }
+    }
+
+    /// Check if the text is a Japanese word or short phrase for dictionary
+    /// lookup, e.g. 見つめる, 見つめ直す, お疲れ様. Conjugated forms such as
+    /// 見つめた are accepted so that dictionary services can resolve them to
+    /// the dictionary form. Short unpunctuated sentences (私は学生です) are
+    /// rejected so they can go to sentence analysis instead.
+    var isJapaneseWord: Bool {
+        let text = tryToRemoveQuotes()
+        guard text.count <= Self.japaneseWordMaxLength, text.isJapaneseText else { return false }
+        return !text.isJapaneseSentenceLike
+    }
+
     /// Check if the text contains only numbers
     var isNumbers: Bool {
         guard !isEmpty else { return false }

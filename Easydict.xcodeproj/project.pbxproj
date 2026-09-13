@@ -550,6 +550,7 @@
 		A2016EDA90ED45B5B66FA986 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14921B68C1D645268F93668E /* AnalyticsService.swift */; };
 		A20908010000000000000001 /* OpenAIStreamTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20908010000000000000002 /* OpenAIStreamTransport.swift */; };
 		A20908020000000000000004 /* OpenAIStreamTaskControlTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20908020000000000000014 /* OpenAIStreamTaskControlTests.swift */; };
+		AE10258DA80EA1DD77979E68 /* StreamServiceQueryTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4995D19DB0A05788AB31BBCA /* StreamServiceQueryTypeTests.swift */; };
 		A5D1E5B60000000000000001 /* DeepLServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D1E5B50000000000000001 /* DeepLServiceTests.swift */; };
 		A94F9CB9D704426DB91B25D3 /* DeviceSystemInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54300FF4F544CC2A180FE53 /* DeviceSystemInfo.swift */; };
 		A9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift */; };
@@ -1286,6 +1287,7 @@
 		A1D1807D2F8D100100B1C0D1 /* ThrottleGateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGateTests.swift; sourceTree = "<group>"; };
 		A20908010000000000000002 /* OpenAIStreamTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIStreamTransport.swift; sourceTree = "<group>"; };
 		A20908020000000000000014 /* OpenAIStreamTaskControlTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIStreamTaskControlTests.swift; sourceTree = "<group>"; };
+		4995D19DB0A05788AB31BBCA /* StreamServiceQueryTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamServiceQueryTypeTests.swift; sourceTree = "<group>"; };
 		A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.debug.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A5D1E5B50000000000000001 /* DeepLServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLServiceTests.swift; sourceTree = "<group>"; };
 		A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OrderedDictionary+Variadic.m"; sourceTree = "<group>"; };
@@ -3537,6 +3539,7 @@
 			isa = PBXGroup;
 			children = (
 				A20908020000000000000014 /* OpenAIStreamTaskControlTests.swift */,
+				4995D19DB0A05788AB31BBCA /* StreamServiceQueryTypeTests.swift */,
 			);
 			path = OpenAI;
 			sourceTree = "<group>";
@@ -4222,6 +4225,7 @@
 				A1C1A10130ABCDEF00112233 /* ClaudeSSEParserTests.swift in Sources */,
 				03C408F92EF5CB830025A1F0 /* ServiceTests.swift in Sources */,
 				A20908020000000000000004 /* OpenAIStreamTaskControlTests.swift in Sources */,
+				AE10258DA80EA1DD77979E68 /* StreamServiceQueryTypeTests.swift in Sources */,
 				0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */,
 				03A8846E2F12000100D5C0DE /* TaskTimeoutTests.swift in Sources */,
 				A1D1807E2F8D100100B1C0D1 /* ThrottleGateTests.swift in Sources */,

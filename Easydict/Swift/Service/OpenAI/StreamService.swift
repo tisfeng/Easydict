@@ -508,6 +508,10 @@ public class StreamService: QueryService {
             return queryType
         }
 
+        if from == .japanese {
+            return japaneseQueryType(text: text)
+        }
+
         let enableDictionary = supportedQueryType().contains(.dictionary)
         var isQueryDictionary = false
         if enableDictionary {
@@ -529,6 +533,32 @@ public class StreamService: QueryService {
                     return .sentence
                 }
             }
+        }
+
+        return .translation
+    }
+
+    /// Query type for Japanese text.
+    ///
+    /// Japanese has no word boundaries, so the shared word-count based classifier
+    /// (`shouldQueryDictionary`) cannot recognise its words. That classifier also
+    /// drives Intelligent Query Mode for every service, so it is left untouched
+    /// and the routing for LLM services is decided here: short words, including
+    /// conjugated forms (見つめた, 行きます), go to the dictionary prompt; short
+    /// unpunctuated sentences (私は学生です) and longer text go to sentence
+    /// analysis. `isJapaneseSentenceLike` is checked in addition to the shared
+    /// sentence check because it does not depend on tokenization.
+    func japaneseQueryType(text: String) -> EZQueryTextType {
+        let supportedTypes = supportedQueryType()
+
+        if supportedTypes.contains(.dictionary), text.isJapaneseWord {
+            return .dictionary
+        }
+
+        if supportedTypes.contains(.sentence),
+           text.isJapaneseSentenceLike
+           || (text as NSString).shouldQuerySentence(withLanguage: .japanese) {
+            return .sentence
         }
 
         return .translation
