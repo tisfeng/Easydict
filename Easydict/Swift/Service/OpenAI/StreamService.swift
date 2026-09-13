@@ -392,7 +392,7 @@ public class StreamService: QueryService {
     }
 
     var apiKeyPlaceholder: String {
-        "\(serviceType().rawValue) API Key"
+        String(localized: "service.configuration.api_key.placeholder \(serviceType().rawValue)")
     }
 
     var temperatureKey: Defaults.Key<Double> {
