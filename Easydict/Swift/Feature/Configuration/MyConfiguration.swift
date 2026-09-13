@@ -111,6 +111,11 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.enableAppleOfflineTranslation) var enableAppleOfflineTranslation: Bool
     @DefaultsWrapper(.enableOCRTextNormalization) var enableOCRTextNormalization: Bool
     @DefaultsWrapper(.isScreenshotTipLayerHidden) var isScreenshotTipLayerHidden: Bool
+    @DefaultsWrapper(.screenshotTranslateDisplayMode) var screenshotTranslateDisplayMode:
+        ScreenshotTranslateDisplayMode
+    @DefaultsWrapper(.screenshotOverlayDismissMode) var screenshotOverlayDismissMode:
+        ScreenshotOverlayDismissMode
+    @DefaultsWrapper(.allowMultipleScreenshotOverlays) var allowMultipleScreenshotOverlays: Bool
     @DefaultsWrapper(.formerFixedScreenVisibleFrame) var formerFixedScreenVisibleFrame: CGRect
     @DefaultsWrapper(.formerMiniScreenVisibleFrame) var formerMiniScreenVisibleFrame: CGRect
 

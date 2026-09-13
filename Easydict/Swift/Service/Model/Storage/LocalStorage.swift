@@ -84,8 +84,11 @@ final class LocalStorage: NSObject {
         let allServiceTypesKey = serviceTypesKey(of: windowType)
 
         guard let storedTypes = userDefaults.array(forKey: allServiceTypesKey) as? [String] else {
-            userDefaults.set(defaultServiceTypeIDs, forKey: allServiceTypesKey)
-            return defaultServiceTypeIDs
+            let initialTypes = windowType == .screenshotOverlay
+                ? allServiceTypes(.main)
+                : defaultServiceTypeIDs
+            userDefaults.set(initialTypes, forKey: allServiceTypesKey)
+            return initialTypes
         }
 
         return storedTypes
@@ -103,7 +106,7 @@ final class LocalStorage: NSObject {
 
     func availableServiceTypeIDs(windowType: EZWindowType) -> [String] {
         let addedServiceTypeIds = allServiceTypes(windowType)
-        let savedServiceTypeIds = [EZWindowType.fixed, .main, .mini]
+        let savedServiceTypeIds = [EZWindowType.fixed, .main, .mini, .screenshotOverlay]
             .flatMap { allServiceTypes($0) }
         let allServiceTypeIds = QueryServiceFactory.shared.allServiceTypeIDs + savedServiceTypeIds
         var seenTypeIds = Set<String>()
@@ -421,7 +424,7 @@ final class LocalStorage: NSObject {
 
     /// Ensures all known services have stored defaults for each window type.
     private func setup() {
-        let allWindowTypes: [EZWindowType] = [.mini, .fixed, .main]
+        let allWindowTypes: [EZWindowType] = [.mini, .fixed, .main, .screenshotOverlay]
 
         for windowType in allWindowTypes {
             let serviceTypeIds = allServiceTypes(windowType)
@@ -433,15 +436,16 @@ final class LocalStorage: NSObject {
                 let baseType = ServiceType(rawValue: rawType)
 
                 if serviceInfo(withType: baseType, serviceId: uuid, windowType: windowType) == nil {
+                    let mainInfo = windowType == .screenshotOverlay
+                        ? serviceInfo(withType: baseType, serviceId: uuid, windowType: .main)
+                        : nil
                     let serviceInfo = QueryServiceConfiguration(
                         uuid: uuid,
                         type: baseType,
-                        enabled: true,
-                        enabledQuery: queryCount == 0,
+                        enabled: mainInfo?.enabled ?? defaultServiceTypeIDs.contains(rawType),
+                        enabledQuery: mainInfo?.enabledQuery ?? (queryCount == 0),
                         windowType: windowType
                     )
-
-                    serviceInfo.enabled = defaultServiceTypeIDs.contains(rawType)
                     setServiceInfo(serviceInfo, windowType: windowType)
                 }
             }
