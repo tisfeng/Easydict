@@ -61,4 +61,7 @@ enum ServiceConfigurationKey: String {
     case cliEffort = "CLIEffort"
     case apiType = "APIType"
     case customHeaders = "CustomHeaders"
+    case codexAccessMode
+    case codexManagedModel
+    case codexManagedReasoningEffort
 }

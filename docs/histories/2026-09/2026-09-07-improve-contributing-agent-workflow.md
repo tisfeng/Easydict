@@ -1,6 +1,6 @@
 ## 2026-09-07 | 任务：改进贡献文档中的 Agent 协作流程
 
-**Links:** [`2026-09-07-improve-contributing-agent-workflow.md`](../../exec-plans/completed/2026-09-07-improve-contributing-agent-workflow.md)
+**Links:** [`2026-09-07-improve-contributing-agent-workflow.md`](../../exec-plans/completed/2026-09/2026-09-07-improve-contributing-agent-workflow.md)
 
 ### 用户请求
 
@@ -38,7 +38,7 @@ review、维护者处理周期、高质量 PR 优先标准，以及常用 Skill 
 - `CONTRIBUTING.md`
 - `README.md`
 - `README_ZH.md`
-- `docs/exec-plans/completed/2026-09-07-improve-contributing-agent-workflow.md`
+- `docs/exec-plans/completed/2026-09/2026-09-07-improve-contributing-agent-workflow.md`
 - `docs/histories/2026-09/2026-09-07-improve-contributing-agent-workflow.md`
 
 ### 后续事项

@@ -1,6 +1,6 @@
 ## 2026-09-09 | 任务：统一设计文档目录并移除冗余 Skill 别名
 
-**Links:** [执行计划](../../exec-plans/completed/2026-09-09-consolidate-design-documents.md)
+**Links:** [执行计划](../../exec-plans/completed/2026-09/2026-09-09-consolidate-design-documents.md)
 
 ### 用户请求
 

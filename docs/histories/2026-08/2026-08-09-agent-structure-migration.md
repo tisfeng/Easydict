@@ -1,6 +1,6 @@
 ## 2026-08-09 | 任务：迁移 Agent 文档结构
 
-**Links:** `AGENTS.md`, `docs/exec-plans/completed/2026-08-09-agent-structure-migration.md`
+**Links:** `AGENTS.md`, `docs/exec-plans/completed/2026-08/2026-08-09-agent-structure-migration.md`
 
 ### 用户请求
 

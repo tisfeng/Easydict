@@ -1,6 +1,6 @@
 ## 2026-09-07 | 任务：以版本 Changelog 统一 Release Notes
 
-**Links:** [`2026-09-07-changelog-release-notes.md`](../../exec-plans/completed/2026-09-07-changelog-release-notes.md)
+**Links:** [`2026-09-07-changelog-release-notes.md`](../../exec-plans/completed/2026-09/2026-09-07-changelog-release-notes.md)
 
 ### 用户请求
 

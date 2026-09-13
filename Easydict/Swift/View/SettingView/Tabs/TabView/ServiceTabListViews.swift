@@ -7,6 +7,7 @@
 //
 
 import AppKit
+import Defaults
 import SFSafeSymbols
 import SwiftUI
 
@@ -96,7 +97,7 @@ private struct ServiceItemView: View {
                 viewModel.setServiceEnabled(true, for: item)
             }
         } message: {
-            Text("service.codex_cli.enable_risk_alert.message")
+            Text(codexAccessMode.enableMessage)
         }
     }
 
@@ -104,6 +105,7 @@ private struct ServiceItemView: View {
 
     @State private var showClaudeCodeRiskAlert = false
     @State private var showCodexCLIRiskAlert = false
+    @State private var codexAccessMode: CodexAccessMode = .managed
 
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
@@ -118,6 +120,8 @@ private struct ServiceItemView: View {
         if item.type == .claudeCode {
             showClaudeCodeRiskAlert = true
         } else if item.type == .codexCLI {
+            guard let metadata = QueryServiceFactory.shared.metadata(withTypeId: item.id) else { return }
+            codexAccessMode = Defaults[CodexAccessMode.key(uuid: metadata.uuid)]
             showCodexCLIRiskAlert = true
         } else {
             viewModel.setServiceEnabled(true, for: item)

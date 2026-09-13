@@ -83,4 +83,4 @@ optional，并默认返回 `nil`。`BaseOpenAIService` 继续直接透传该值�
 
 ## 计划
 
-见[已完成执行计划](../../exec-plans/completed/2026-09-08-macpaw-openai-semantic-port.md)。
+见[已完成执行计划](../../exec-plans/completed/2026-09/2026-09-08-macpaw-openai-semantic-port.md)。

@@ -12,7 +12,7 @@ import SwiftUI
 
 // MARK: - CodexReasoningEffort
 
-/// Reasoning effort levels accepted by Codex's `model_reasoning_effort`.
+/// Stored reasoning effort values across Codex modes, not a capability list.
 /// The `default` case omits the CLI override and keeps the user's config.
 /// Codex does not support `none` for model reasoning effort, so it is not
 /// exposed here.
@@ -25,13 +25,26 @@ enum CodexReasoningEffort: String, CaseIterable, Defaults.Serializable {
     case medium
     case high
     case xhigh
+    case max
+    case ultra
 
     // MARK: Internal
+
+    /// Preserve the original local CLI overrides independently of managed models.
+    /// Specific local models may support fewer levels; default leaves that choice to CLI.
+    static let localOptions: [Self] = [.default, .minimal, .low, .medium, .high, .xhigh]
 
     /// The CLI value to pass via `-c model_reasoning_effort=<value>`.
     /// `nil` for `.default`, which signals "do not override the user's config".
     var cliValue: String? {
         self == .default ? nil : rawValue
+    }
+
+    static func validateLocalOverride(_ value: String?) throws {
+        guard let value, !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        guard let effort = Self(rawValue: value.trimmingCharacters(in: .whitespacesAndNewlines)),
+              localOptions.contains(effort), effort != .default
+        else { throw CodexCLIError.unsupportedReasoningEffort }
     }
 }
 
@@ -52,6 +65,10 @@ extension CodexReasoningEffort: EnumLocalizedStringConvertible {
             "service.codex_cli.reasoning_effort.high"
         case .xhigh:
             "service.codex_cli.reasoning_effort.xhigh"
+        case .max:
+            "service.codex_cli.reasoning_effort.max"
+        case .ultra:
+            "service.codex_cli.reasoning_effort.ultra"
         }
     }
 }

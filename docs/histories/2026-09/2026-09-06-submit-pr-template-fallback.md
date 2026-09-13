@@ -1,6 +1,6 @@
 ## 2026-09-06 | 任务：完善 submit-pr 无模板兼容
 
-**Links:** `../../exec-plans/completed/2026-09-06-submit-pr-template-fallback.md`
+**Links:** `../../exec-plans/completed/2026-09/2026-09-06-submit-pr-template-fallback.md`
 
 ### 用户请求
 
@@ -41,7 +41,7 @@ fixture 对 Easydict 的隐性依赖。
 ### 受影响文件
 
 - `.agents/skills/submit-pr/`
-- `docs/exec-plans/completed/2026-09-06-submit-pr-template-fallback.md`
+- `docs/exec-plans/completed/2026-09/2026-09-06-submit-pr-template-fallback.md`
 - `docs/histories/2026-09/2026-09-06-submit-pr-template-fallback.md`
 
 ### 后续事项

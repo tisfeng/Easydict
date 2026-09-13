@@ -3,10 +3,10 @@
   "skills": {
     "code-simplifier": {
       "source": "tisfeng/skills",
-      "ref": "v0.3.2",
+      "ref": "v0.4.0",
       "sourceType": "github",
       "skillPath": "skills/code-simplifier/SKILL.md",
-      "computedHash": "8e524e2cb99cd090532ddc36550a789d994f00129ee44f65b285f213f8bff2c0"
+      "computedHash": "59f615935befe37a597770ad6536e504b8b449b6c52ce0b6f6bdbeafadbe3d96"
     },
     "fireworks-tech-graph": {
       "source": "yizhiyanhua-ai/fireworks-tech-graph",
@@ -17,38 +17,38 @@
     },
     "git-commit": {
       "source": "tisfeng/skills",
-      "ref": "v0.3.2",
+      "ref": "v0.4.0",
       "sourceType": "github",
       "skillPath": "skills/git-commit/SKILL.md",
-      "computedHash": "5dbd8c9ed8e4c62dd08a2f34496fd660f2c40c0e4efd3ad3247a610abed2e192"
+      "computedHash": "b9c807f72a425b2f26c96f916a23a081b9f06befe16d029f800eb214c4af3ff5"
     },
     "review": {
       "source": "tisfeng/skills",
-      "ref": "v0.3.2",
+      "ref": "v0.4.0",
       "sourceType": "github",
       "skillPath": "skills/review/SKILL.md",
-      "computedHash": "8e0db09025e8e7f9c9c697d6105d3286822ae140690ab6bb89c33e75f5089b52"
+      "computedHash": "4e082e710e59b438fee4242ce77ab87dc0735137d4e65873b88b6ae3b839434e"
     },
     "review-pr": {
       "source": "tisfeng/skills",
-      "ref": "v0.3.2",
+      "ref": "v0.4.0",
       "sourceType": "github",
       "skillPath": "skills/review-pr/SKILL.md",
-      "computedHash": "3c15a9da9c301ab3e6e4e01a2b5522e948c88ead56f016edfebc08d172fcd638"
+      "computedHash": "d28819f394b7e748282460f09e1a1bb201e92d268f63a1f6102e9ec30cc2c3bb"
     },
     "submit-pr": {
       "source": "tisfeng/skills",
-      "ref": "v0.3.2",
+      "ref": "v0.4.0",
       "sourceType": "github",
       "skillPath": "skills/submit-pr/SKILL.md",
-      "computedHash": "1905b465d2bf45459102dc691521fc9667a6d355a08261233cb8998b69788883"
+      "computedHash": "0de84898eb1da37e4952692a75de166f84db8a2f7084383ac0fd8df81578a001"
     },
     "worktree-rebase-merge": {
       "source": "tisfeng/skills",
-      "ref": "v0.3.2",
+      "ref": "v0.4.0",
       "sourceType": "github",
       "skillPath": "skills/worktree-rebase-merge/SKILL.md",
-      "computedHash": "57b1e52788e8ab41f459e7aa5d45181cc89d04b4741e5009f89cea90efaa2de1"
+      "computedHash": "6dc71ea62c9cb1fb24a34539040aee4d4bd79c96c6f2be20ce877885ebb54ea5"
     }
   }
 }

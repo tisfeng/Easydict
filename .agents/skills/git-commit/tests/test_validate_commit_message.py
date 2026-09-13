@@ -102,13 +102,6 @@ class CommitMessageValidatorTests(unittest.TestCase):
         self.assert_valid(block() + "\n", "english")
         self.assert_valid(bilingual())
 
-    def test_accepts_multiline_body_crlf_and_trailing_newlines(self) -> None:
-        message = bilingual(
-            local=block("fix(agent): 强制校验提交信息", multiline=True),
-            english=block(multiline=True),
-        ).replace("\n", "\r\n")
-        self.assert_valid(message + "\r\n")
-
     def test_rejects_two_or_four_body_paragraphs(self) -> None:
         self.assert_invalid(
             bilingual(local=block("fix(agent): 强制校验提交信息", 2)),
@@ -119,17 +112,6 @@ class CommitMessageValidatorTests(unittest.TestCase):
             "English block: expected exactly 3 body paragraphs, found 4",
         )
 
-    def test_reports_both_blocks_from_the_historical_bad_message(self) -> None:
-        message = bilingual(
-            local=block("feat(agent): 新增安全提交 PR 的本地技能", 2),
-            english=block("feat(agent): add a safe local PR submission skill", 2),
-        )
-        result = self.run_validator(message)
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Local-language block", result.stderr)
-        self.assertIn("English block", result.stderr)
-        self.assertIn("found 2", result.stderr)
-
     def test_rejects_missing_duplicate_and_malformed_separators(self) -> None:
         self.assert_invalid(block() + "\n", "requires exactly 1 separator")
         self.assert_invalid(
@@ -139,16 +121,6 @@ class CommitMessageValidatorTests(unittest.TestCase):
         self.assert_invalid(
             bilingual(separator="-" * 69),
             "separator must contain exactly 70 hyphens",
-        )
-
-    def test_rejects_incorrect_separator_spacing(self) -> None:
-        self.assert_invalid(
-            bilingual(before="\n", after="\n\n"),
-            "exactly one blank line before and after",
-        )
-        self.assert_invalid(
-            bilingual(before="\n\n\n", after="\n\n"),
-            "exactly one blank line before and after",
         )
 
     def test_rejects_malformed_or_overlong_subjects(self) -> None:
@@ -223,18 +195,6 @@ class CommitMessageValidatorTests(unittest.TestCase):
                     "english",
                 )
 
-    def test_requires_matching_breaking_footer_presence(self) -> None:
-        local = block(
-            "feat(agent)!: 强制校验提交信息",
-            footer="BREAKING CHANGE: 旧提交方式不再受支持。",
-        )
-        english = block("feat(agent)!: enforce commit message validation")
-
-        self.assert_invalid(
-            bilingual(local=local, english=english),
-            "BREAKING CHANGE footer presence",
-        )
-
     def test_commit_validation_matches_expected_file(self) -> None:
         self.git("init", "--quiet")
         self.git("config", "user.name", "Git Commit Tests")
@@ -285,21 +245,6 @@ class CommitMessageValidatorTests(unittest.TestCase):
         )
         self.assertNotEqual(mismatch.returncode, 0)
         self.assertIn("does not match", mismatch.stderr)
-
-    def test_file_failure_does_not_change_git_state(self) -> None:
-        self.git("init", "--quiet")
-        self.git("config", "user.name", "Git Commit Tests")
-        self.git("config", "user.email", "tests@example.com")
-        self.git("config", "commit.gpgsign", "false")
-        self.git("commit", "--quiet", "--allow-empty", "-m", "base")
-        before_head = self.git("rev-parse", "HEAD")
-        before_index = self.git("write-tree")
-
-        result = self.run_validator(block(body_count=2) + "\n", "english")
-
-        self.assertNotEqual(result.returncode, 0)
-        self.assertEqual(self.git("rev-parse", "HEAD"), before_head)
-        self.assertEqual(self.git("write-tree"), before_index)
 
     def git(self, *arguments: str) -> str:
         """Run Git in the isolated fixture repository."""

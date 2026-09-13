@@ -16,7 +16,7 @@
 
 ## 计划
 
-见[执行计划](../../exec-plans/completed/2026-09-09-clarify-planner-delegation.md)。
+见[执行计划](../../exec-plans/completed/2026-09/2026-09-09-clarify-planner-delegation.md)。
 
 ## 已完成内容
 

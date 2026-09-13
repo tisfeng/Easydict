@@ -1,6 +1,6 @@
 ## 2026-09-08 | 任务：优化 Agent 文档表达与规则边界
 
-**Links:** [执行计划](../../exec-plans/completed/2026-09-08-refine-agent-documentation.md)
+**Links:** [执行计划](../../exec-plans/completed/2026-09/2026-09-08-refine-agent-documentation.md)
 
 ### 用户请求
 
@@ -42,7 +42,7 @@
 - `docs/agents/request-boundary.md`
 - `docs/design-docs/agent-documentation-structure.md`
 - `docs/design-docs/external-agent-assets-management.md`
-- `docs/exec-plans/completed/2026-09-08-refine-agent-documentation.md`
+- `docs/exec-plans/completed/2026-09/2026-09-08-refine-agent-documentation.md`
 
 ### 后续事项
 
