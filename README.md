@@ -99,7 +99,6 @@ brew install --cask easydict
 
 ## Documentation
 
-- 📚 [Public Documentation Index](./docs/user-docs/README.md) - English and Chinese guides
 - 📖 [Complete Usage Guide](./docs/user-docs/en/GUIDE.md) - Detailed features, configuration and tips
 - 🌐 [Services Overview](./docs/user-docs/en/SERVICES.md) - Complete service list and access requirements
 - 🔧 [Developer Build Guide](./docs/user-docs/en/GUIDE.md#developer-build) - Build and run from source code

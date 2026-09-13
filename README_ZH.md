@@ -95,7 +95,6 @@ brew install --cask easydict
 
 ## 文档
 
-- 📚 [公开文档索引](./docs/user-docs/README.md) - 中英文使用和贡献指南
 - 📖 [完整使用指南](./docs/user-docs/zh/GUIDE.md) - 详细功能说明和配置方法
 - 🌐 [服务总览](./docs/user-docs/zh/SERVICES.md) - 完整服务清单和配置条件
 - 🔧 [开发者构建指南](./docs/user-docs/zh/GUIDE.md#开发者构建) - 从源码编译运行
