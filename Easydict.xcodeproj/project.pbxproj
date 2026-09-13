@@ -613,6 +613,26 @@
 		F24D63E3FB144383A9B80386 /* MDictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983925DCBA81465EAE22415B /* MDictService.swift */; };
 		FA0D2894537C47E1AF63D495 /* QueryServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */; };
 		FBA62739BEA249C9BC0DFBA3 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F35C93D0925433FA0AD6066 /* ClaudeService.swift */; };
+		72A02E402B9A4327A208E0AE /* CodexAccessMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3AB5E37663693157897513 /* CodexAccessMode.swift */; };
+		72BFA6E36F37FD6E49AEEA75 /* CodexConfigurationMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62214DC3E257A25F855FCC6 /* CodexConfigurationMigration.swift */; };
+		5130C2B60FEC5E94470FB487 /* CodexManagedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEDCCF9C2FE7BEB020EB6DA /* CodexManagedError.swift */; };
+		D2ABD8945EA035D6CA456213 /* CodexManagedProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C3650B1BBD12D1980FE6C6 /* CodexManagedProcess.swift */; };
+		0C93675282708F04BAEBDFB6 /* CodexManagedRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DB7B7B4B9BCB76E7824231 /* CodexManagedRuntime.swift */; };
+		0610BFD2DE5CD00950F314E2 /* CodexManagedTranslation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D13C01013610091563E8C33 /* CodexManagedTranslation.swift */; };
+		126B89658F8B4B520F4E1FBC /* CodexRequestCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB71FF785ED1821858ABF77A /* CodexRequestCoordinator.swift */; };
+		DE948D64CB926DD8B42428EB /* CodexManagedAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96096EFA0903141A7AC9EC06 /* CodexManagedAccount.swift */; };
+		6808374D0730B5F9ADF6DD84 /* CodexManagedAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6403A348529CBE1CFB24A1 /* CodexManagedAccountView.swift */; };
+		7D28AFA6EE47AC3B8AEDBA05 /* CodexConfigurationMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E0DB7EB2C038D421414311 /* CodexConfigurationMigrationTests.swift */; };
+		A6089B0337D52C729C9E4CEE /* CodexManagedProcessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17239571D44D3BCC9D24831 /* CodexManagedProcessTests.swift */; };
+		8ECC69B8B5326B2884D3B877 /* CodexManagedAccountTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A451FB8A81E2EB6077744D /* CodexManagedAccountTests.swift */; };
+		5BA419F2EF852376A925D849 /* CodexManagedTranslationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5448A25311DF3B636D9045C9 /* CodexManagedTranslationTests.swift */; };
+		7A7440D5127B44712E9F428C /* CodexRequestCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3594F7282DE23CFECAD0C78 /* CodexRequestCoordinatorTests.swift */; };
+		F75B6CC4141600C1B89E350C /* CodexStreamInvalidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AD4CBC536A238B7F9B5531D /* CodexStreamInvalidationTests.swift */; };
+		C412FD6946719777B1361695 /* CodexRuntimeDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BFA978362272A43BC0169C0 /* CodexRuntimeDescriptor.swift */; };
+		F5467B113D285C01338E3C55 /* CodexComponentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF5306040D79B1D50487C1E /* CodexComponentStore.swift */; };
+		C4BB908FFBD2D1A171F74CBC /* CodexComponentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF517B31357FC07D98440EE /* CodexComponentManager.swift */; };
+		F955D7120AD72EFC6429A79A /* CodexComponentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB3E639236DC6875625F110 /* CodexComponentStoreTests.swift */; };
+		04466B8E004E4D1BB65A4570 /* CodexManagedAccountRecoveryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87273B83A46A4319A7995E89 /* CodexManagedAccountRecoveryTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1347,6 +1367,26 @@
 		EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalContext.swift; sourceTree = "<group>"; };
 		EF4F062ADB404915AA0EF5186FAF162A /* OrderedDictionary+Variadic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OrderedDictionary+Variadic.h"; sourceTree = "<group>"; };
 		FA76B47A0150434485FCBBAD /* MDictReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictReaderTests.swift; sourceTree = "<group>"; };
+		7E3AB5E37663693157897513 /* CodexAccessMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexAccessMode.swift; sourceTree = "<group>"; };
+		B62214DC3E257A25F855FCC6 /* CodexConfigurationMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexConfigurationMigration.swift; sourceTree = "<group>"; };
+		5EEDCCF9C2FE7BEB020EB6DA /* CodexManagedError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedError.swift; sourceTree = "<group>"; };
+		C7C3650B1BBD12D1980FE6C6 /* CodexManagedProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedProcess.swift; sourceTree = "<group>"; };
+		13DB7B7B4B9BCB76E7824231 /* CodexManagedRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedRuntime.swift; sourceTree = "<group>"; };
+		3D13C01013610091563E8C33 /* CodexManagedTranslation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedTranslation.swift; sourceTree = "<group>"; };
+		EB71FF785ED1821858ABF77A /* CodexRequestCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexRequestCoordinator.swift; sourceTree = "<group>"; };
+		96096EFA0903141A7AC9EC06 /* CodexManagedAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedAccount.swift; sourceTree = "<group>"; };
+		6F6403A348529CBE1CFB24A1 /* CodexManagedAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedAccountView.swift; sourceTree = "<group>"; };
+		62E0DB7EB2C038D421414311 /* CodexConfigurationMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexConfigurationMigrationTests.swift; sourceTree = "<group>"; };
+		F17239571D44D3BCC9D24831 /* CodexManagedProcessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedProcessTests.swift; sourceTree = "<group>"; };
+		26A451FB8A81E2EB6077744D /* CodexManagedAccountTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedAccountTests.swift; sourceTree = "<group>"; };
+		5448A25311DF3B636D9045C9 /* CodexManagedTranslationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedTranslationTests.swift; sourceTree = "<group>"; };
+		C3594F7282DE23CFECAD0C78 /* CodexRequestCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexRequestCoordinatorTests.swift; sourceTree = "<group>"; };
+		7AD4CBC536A238B7F9B5531D /* CodexStreamInvalidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexStreamInvalidationTests.swift; sourceTree = "<group>"; };
+		6BFA978362272A43BC0169C0 /* CodexRuntimeDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexRuntimeDescriptor.swift; sourceTree = "<group>"; };
+		DDF5306040D79B1D50487C1E /* CodexComponentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexComponentStore.swift; sourceTree = "<group>"; };
+		CFF517B31357FC07D98440EE /* CodexComponentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexComponentManager.swift; sourceTree = "<group>"; };
+		BCB3E639236DC6875625F110 /* CodexComponentStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexComponentStoreTests.swift; sourceTree = "<group>"; };
+		87273B83A46A4319A7995E89 /* CodexManagedAccountRecoveryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedAccountRecoveryTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3568,6 +3608,17 @@
 				C0DEC11E0002000000000005 /* CodexCLILogger.swift */,
 				C0DEC11E0002000000000002 /* CodexCLIRunner.swift */,
 				C0DEC11E0002000000000001 /* CodexCLIService.swift */,
+				7E3AB5E37663693157897513 /* CodexAccessMode.swift */,
+				B62214DC3E257A25F855FCC6 /* CodexConfigurationMigration.swift */,
+				5EEDCCF9C2FE7BEB020EB6DA /* CodexManagedError.swift */,
+				C7C3650B1BBD12D1980FE6C6 /* CodexManagedProcess.swift */,
+				13DB7B7B4B9BCB76E7824231 /* CodexManagedRuntime.swift */,
+				CFF517B31357FC07D98440EE /* CodexComponentManager.swift */,
+				DDF5306040D79B1D50487C1E /* CodexComponentStore.swift */,
+				6BFA978362272A43BC0169C0 /* CodexRuntimeDescriptor.swift */,
+				3D13C01013610091563E8C33 /* CodexManagedTranslation.swift */,
+				EB71FF785ED1821858ABF77A /* CodexRequestCoordinator.swift */,
+				96096EFA0903141A7AC9EC06 /* CodexManagedAccount.swift */,
 				C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */,
 				C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */,
 			);
@@ -3578,6 +3629,14 @@
 			isa = PBXGroup;
 			children = (
 				C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */,
+				62E0DB7EB2C038D421414311 /* CodexConfigurationMigrationTests.swift */,
+				F17239571D44D3BCC9D24831 /* CodexManagedProcessTests.swift */,
+				7AD4CBC536A238B7F9B5531D /* CodexStreamInvalidationTests.swift */,
+				C3594F7282DE23CFECAD0C78 /* CodexRequestCoordinatorTests.swift */,
+				5448A25311DF3B636D9045C9 /* CodexManagedTranslationTests.swift */,
+				26A451FB8A81E2EB6077744D /* CodexManagedAccountTests.swift */,
+				87273B83A46A4319A7995E89 /* CodexManagedAccountRecoveryTests.swift */,
+				BCB3E639236DC6875625F110 /* CodexComponentStoreTests.swift */,
 				C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */,
 			);
 			path = CodexCLI;
@@ -3764,6 +3823,7 @@
 				03F086F12DB1F5F000268DF0 /* SliderCell.swift */,
 				5F42ADC9AAB3494D9E85B5D8 /* ClaudeCodeServiceConfigurationView.swift */,
 				C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */,
+				6F6403A348529CBE1CFB24A1 /* CodexManagedAccountView.swift */,
 			);
 			path = ServiceConfigurationView;
 			sourceTree = "<group>";
@@ -3826,6 +3886,7 @@
 				EAA54DF92B8C74F6001C2CC6 /* Lint */,
 				C99EEB152385796700FEE666 /* Frameworks */,
 				C99EEB162385796700FEE666 /* Resources */,
+				C0DEC1340000000000000001 /* Prepare bundled Codex */,
 				124D690EE7236D6430CF945E /* [CP] Embed Pods Frameworks */,
 				C98CAE74239F45DA005F7DCA /* CopyFiles */,
 				0A10B7439899441180660AF2 /* Upload Debug Symbols to Sentry */,
@@ -4201,6 +4262,18 @@
 			shellPath = /bin/sh;
 			shellScript = "#!/bin/bash\n# Easydict SwiftLint Script\n\nset -e\n\nif [ \"${EASYDICT_RELEASE_PACKAGING}\" = \"YES\" ]; then\n  echo \"SwiftLint skipped for Easydict release packaging.\"\n  exit 0;\nfi\n\n# Docs https://github.com/realm/SwiftLint#xcode-run-script-build-phase\n\nSWIFT_PACKAGE_DIR=\"${BUILD_DIR%Build/*}SourcePackages/artifacts\"\nSWIFTLINT_CMD=\"$SWIFT_PACKAGE_DIR/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/macos/swiftlint\"\n\nif test -f \"$SWIFTLINT_CMD\" 2>&1\nthen\n    \"$SWIFTLINT_CMD\"\nelse\n    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#xcode-run-script-build-phase for installation instructions.\"\nfi\n";
 		};
+		C0DEC1340000000000000001 /* Prepare bundled Codex */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = ();
+			inputPaths = ("$(SRCROOT)/scripts/codex-runtime/prepare-runtime.py", "$(SRCROOT)/scripts/codex-runtime/runtime-manifest.json");
+			name = "Prepare bundled Codex";
+			outputPaths = ("$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/CodexRuntime/runtime-manifest.json");
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -eu\n/usr/bin/python3 \"$SRCROOT/scripts/codex-runtime/prepare-runtime.py\" --output \"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/CodexRuntime\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -4247,6 +4320,14 @@
 				A13F30938343423C89FB9B4C /* ClaudeCodeCLIRunnerTests.swift in Sources */,
 				513C5A1DEDCB410184268D48 /* ClaudeCodeServiceTests.swift in Sources */,
 				C0DEC11E0001000000000011 /* CodexCLIRunnerTests.swift in Sources */,
+				7D28AFA6EE47AC3B8AEDBA05 /* CodexConfigurationMigrationTests.swift in Sources */,
+				A6089B0337D52C729C9E4CEE /* CodexManagedProcessTests.swift in Sources */,
+				F75B6CC4141600C1B89E350C /* CodexStreamInvalidationTests.swift in Sources */,
+				7A7440D5127B44712E9F428C /* CodexRequestCoordinatorTests.swift in Sources */,
+				5BA419F2EF852376A925D849 /* CodexManagedTranslationTests.swift in Sources */,
+				8ECC69B8B5326B2884D3B877 /* CodexManagedAccountTests.swift in Sources */,
+				04466B8E004E4D1BB65A4570 /* CodexManagedAccountRecoveryTests.swift in Sources */,
+				F955D7120AD72EFC6429A79A /* CodexComponentStoreTests.swift in Sources */,
 				C0DEC11E0001000000000010 /* CodexCLIServiceTests.swift in Sources */,
 				030732D42F24862A0001382A /* OCRTextProcessingTests.swift in Sources */,
 				030732D52F24862A0001382A /* OCRTestSample+Chinese.swift in Sources */,
@@ -4510,8 +4591,20 @@
 				C0DEC11E0001000000000005 /* CodexCLILogger.swift in Sources */,
 				C0DEC11E0001000000000002 /* CodexCLIRunner.swift in Sources */,
 				C0DEC11E0001000000000001 /* CodexCLIService.swift in Sources */,
+				72A02E402B9A4327A208E0AE /* CodexAccessMode.swift in Sources */,
+				72BFA6E36F37FD6E49AEEA75 /* CodexConfigurationMigration.swift in Sources */,
+				5130C2B60FEC5E94470FB487 /* CodexManagedError.swift in Sources */,
+				D2ABD8945EA035D6CA456213 /* CodexManagedProcess.swift in Sources */,
+				0C93675282708F04BAEBDFB6 /* CodexManagedRuntime.swift in Sources */,
+				C4BB908FFBD2D1A171F74CBC /* CodexComponentManager.swift in Sources */,
+				F5467B113D285C01338E3C55 /* CodexComponentStore.swift in Sources */,
+				C412FD6946719777B1361695 /* CodexRuntimeDescriptor.swift in Sources */,
+				0610BFD2DE5CD00950F314E2 /* CodexManagedTranslation.swift in Sources */,
+				126B89658F8B4B520F4E1FBC /* CodexRequestCoordinator.swift in Sources */,
+				DE948D64CB926DD8B42428EB /* CodexManagedAccount.swift in Sources */,
 				C0DEC11E0001000000000006 /* CodexCLIDebugWindow.swift in Sources */,
 				C0DEC11E0001000000000007 /* CodexCLIServiceConfigurationView.swift in Sources */,
+				6808374D0730B5F9ADF6DD84 /* CodexManagedAccountView.swift in Sources */,
 				C0DEC11E0001000000000014 /* CodexReasoningEffort.swift in Sources */,
 				0333D4C02E5C6EBE00CD4613 /* ShortcutManager.swift in Sources */,
 				0352AF342E0EEE9D00C2D4B1 /* OCRDashHandler.swift in Sources */,

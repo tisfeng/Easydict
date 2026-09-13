@@ -398,6 +398,39 @@ struct CodexCLIRunnerTests {
         #expect(path == nil)
     }
 
+    @Test(
+        "run rejects retired local effort before locating a CLI binary",
+        arguments: [CodexReasoningEffort.max, .ultra]
+    )
+    func runRejectsUnsupportedLocalReasoningEffortBeforeLocatingBinary(
+        effort: CodexReasoningEffort
+    ) async {
+        let runner = CodexCLIRunner()
+        defer { runner.cancel() }
+        let stream = runner.run(
+            prompt: "Hello",
+            reasoningEffort: effort.rawValue
+        )
+
+        var receivedError: Error?
+        do {
+            for try await _ in stream {}
+        } catch {
+            receivedError = error
+        }
+
+        #expect(receivedError as? CodexCLIError == .unsupportedReasoningEffort)
+    }
+
+    @Test("local effort validation preserves nil empty default and supported overrides")
+    func localEffortValidationPreservesSupportedValues() throws {
+        try CodexReasoningEffort.validateLocalOverride(nil)
+        try CodexReasoningEffort.validateLocalOverride("")
+        try CodexReasoningEffort.validateLocalOverride("  ")
+        try CodexReasoningEffort.validateLocalOverride(CodexReasoningEffort.default.cliValue)
+        try CodexReasoningEffort.validateLocalOverride(CodexReasoningEffort.xhigh.rawValue)
+    }
+
     // MARK: - buildProcessEnvironment
 
     @Test("buildProcessEnvironment merges login-shell PATH after inherited PATH")
