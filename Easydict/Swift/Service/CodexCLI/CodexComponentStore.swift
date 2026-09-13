@@ -24,13 +24,8 @@ struct CodexComponentStore: Sendable {
     }
 
     static func applicationStore(descriptor: CodexRuntimeDescriptor) throws -> Self {
-        let support = try FileManager.default.url(
-            for: .applicationSupportDirectory,
-            in: .userDomainMask,
-            appropriateFor: nil,
-            create: true
-        ).resolvingSymlinksInPath()
-        return Self(descriptor: descriptor, root: support.appendingPathComponent("Easydict/codex-managed/components"))
+        let root = AppPathManager.current.codexManagedComponentsDirectory
+        return Self(descriptor: descriptor, root: root)
     }
 
     func verifyInstalled() async throws -> URL {

@@ -35,30 +35,29 @@ enum OCRConstants {
     /// 5.5 for English text font, may be not precise, so use a larger threshold
     static let englishDifferenceFontThreshold: Double = 5.5
 
-    /// Root directory for logs: ~/Library/Caches/com.izual.Easydic/MMLogs
+    /// Root directory for logs: ~/Library/Caches/<bundle-id>/MMLogs
     static var rootLogDirectoryURL: URL = {
-        let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-        // Append the bundle identifier to ensure uniqueness, even if sandbox is disabled
-        let identifier = Bundle.main.bundleIdentifier!
-        let path = cachesDirectory.appending(path: "\(identifier)/MMLogs")
-        try? FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
-        return path
+        let pathManager = AppPathManager.current
+        let directory = pathManager.mmLogRootDirectory
+        try? pathManager.ensureDirectoryExists(at: directory)
+        return directory
     }()
 
-    /// Directory for images: ~/Library/Caches/com.izual.Easydic/MMLogs/Image
+    /// Directory for images: ~/Library/Caches/<bundle-id>/MMLogs/Image
     static var imageDirectoryURL: URL {
-        let directory = rootLogDirectoryURL.appendingPathComponent("Image")
-        try? FileManager.default.createDirectory(atPath: directory.path, withIntermediateDirectories: true)
-        return URL(fileURLWithPath: directory.path())
+        let pathManager = AppPathManager.current
+        let directory = pathManager.ocrImageDirectory
+        try? pathManager.ensureDirectoryExists(at: directory)
+        return directory
     }
 
-    /// File for snip image: ~/Library/Caches/com.izual.Easydic/MMLogs/Image/snip_image.png
+    /// File for snip image: ~/Library/Caches/<bundle-id>/MMLogs/Image/snip_image.png
     static var snipImageFileURL: URL {
-        imageDirectoryURL.appendingPathComponent("snip_image.png")
+        AppPathManager.current.snipImageFileURL
     }
 
-    /// File for crop image: ~/Library/Caches/com.izual.Easydic/MMLogs/Image/ocr_cropped_image.png
+    /// File for crop image: ~/Library/Caches/<bundle-id>/MMLogs/Image/ocr_cropped_image.png
     static var ocrCroppedImageFileURL: URL {
-        imageDirectoryURL.appendingPathComponent("ocr_cropped_image.png")
+        AppPathManager.current.ocrCroppedImageFileURL
     }
 }

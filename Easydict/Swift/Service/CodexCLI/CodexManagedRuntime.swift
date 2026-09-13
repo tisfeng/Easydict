@@ -269,14 +269,7 @@ extension CodexManagedRuntime {
     static func installed(bundle: Bundle = .main) async throws -> Self {
         let descriptor = try CodexRuntimeDescriptor.load(bundle: bundle)
         let package = try await CodexComponentStore.applicationStore(descriptor: descriptor).verifyInstalled()
-        let support = try FileManager.default.url(
-            for: .applicationSupportDirectory,
-            in: .userDomainMask,
-            appropriateFor: nil,
-            create: true
-        ).resolvingSymlinksInPath()
-        let root = support.appendingPathComponent("Easydict/codex-managed")
-        let codexHome = root.appendingPathComponent("state")
+        let codexHome = AppPathManager.current.codexManagedStateDirectory
         // Foundation can preserve the /var alias for NSTemporaryDirectory on
         // macOS. Resolve it with the filesystem before rejecting symlink ancestors.
         guard let temporaryPath = realpath(FileManager.default.temporaryDirectory.path, nil) else {
