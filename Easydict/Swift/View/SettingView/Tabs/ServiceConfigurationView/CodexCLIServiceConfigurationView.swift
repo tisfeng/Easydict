@@ -49,9 +49,8 @@ struct CodexCLIServiceConfigurationView: View {
             }
         }
 
-        // Model + reasoning-effort overrides. Empty model and `.default` effort
-        // both fall back to whatever is configured in ~/.codex/config.toml,
-        // so users only see the CLI's behaviour change when they opt in.
+        // Managed `.default` effort uses the selected model's catalog default.
+        // Local CLI empty/default values defer to ~/.codex/config.toml instead.
         Section {
             DisclosureGroup("service.codex_cli.advanced") {
                 StaticPickerCell(
@@ -70,7 +69,11 @@ struct CodexCLIServiceConfigurationView: View {
                         "service.configuration.codex_cli.reasoning_effort.title",
                         selection: managedEffortSelection
                     ) {
-                        Text("service.codex_cli.managed.select_effort").tag(nil as CodexReasoningEffort?).disabled(true)
+                        if managedEffortSelection.wrappedValue == nil {
+                            Text("service.codex_cli.managed.select_effort")
+                                .tag(nil as CodexReasoningEffort?)
+                                .disabled(true)
+                        }
                         ForEach(managedEfforts, id: \.self) { effort in
                             Text(effort == .default ? "service.codex_cli.managed.reasoning_default" : effort.title)
                                 .tag(Optional(effort))
@@ -84,7 +87,11 @@ struct CodexCLIServiceConfigurationView: View {
                         placeholder: "service.configuration.codex_cli.model.placeholder"
                     )
                     Picker("service.configuration.codex_cli.reasoning_effort.title", selection: localEffortSelection) {
-                        Text("service.codex_cli.managed.select_effort").tag(nil as CodexReasoningEffort?).disabled(true)
+                        if localEffortSelection.wrappedValue == nil {
+                            Text("service.codex_cli.managed.select_effort")
+                                .tag(nil as CodexReasoningEffort?)
+                                .disabled(true)
+                        }
                         ForEach(localEfforts, id: \.self) { effort in
                             Text(effort.title).tag(Optional(effort))
                         }
