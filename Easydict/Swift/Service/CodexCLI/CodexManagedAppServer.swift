@@ -128,7 +128,11 @@ actor CodexManagedAppServer {
         guard let state = translations[requestID] else { return }
         guard state.failure == nil else { return }
         state.failure = CancellationError()
-        cancelPendingResponses(for: requestID, error: CancellationError())
+        // Start responses carry the identifiers needed for targeted cleanup. Keep
+        // them correlated until translate() can recover the IDs and interrupt.
+        if state.threadID != nil, state.turnID != nil {
+            cancelPendingResponses(for: requestID, error: CancellationError())
+        }
         if let session, session.identifier == state.sessionIdentifier {
             interrupt(state, session: session)
         }
