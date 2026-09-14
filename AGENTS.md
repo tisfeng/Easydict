@@ -22,7 +22,3 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 - 文档分层、计划、history、参考资料、外部 Skills 和同步边界：`docs/agents/README.md`。
 - 产品代码、跨功能行为或模块边界：`docs/design-docs/application-architecture.md`。
 - 公共使用或贡献者文档：`docs/user-docs/en/` 或 `docs/user-docs/zh/`。
-
-## 项目默认值
-
-- GitHub Pull Request 默认合入 `dev`。
