@@ -387,8 +387,8 @@ static EZWindowManager *_instance;
     // Log selected text when querying.
     [self logSelectedTextEvent];
     BOOL isSelectedTextAction = (self.actionType == EZActionTypeAutoSelectQuery || self.actionType == EZActionTypeShortcutQuery);
-    BOOL shouldAppendText = MyConfiguration.shared.enableAppendMode && isSelectedTextAction && queryViewController.inputText.length > 0;
-    BOOL shouldSkipReset = window.isPin || (MyConfiguration.shared.enableAppendMode && isSelectedTextAction && window.isVisible);
+    BOOL shouldAppendText = MyConfiguration.shared.enableAppendMode && isSelectedTextAction && queryText.length > 0 && queryViewController.inputText.length > 0;
+    BOOL shouldSkipReset = window.isPin || (MyConfiguration.shared.enableAppendMode && isSelectedTextAction && queryText.length > 0 && window.isVisible && autoQuery);
     void (^updateQueryTextAndStartQueryBlock)(BOOL) = ^(BOOL needFocus) {
         NSString *targetText = queryText;
         if (shouldAppendText) {
