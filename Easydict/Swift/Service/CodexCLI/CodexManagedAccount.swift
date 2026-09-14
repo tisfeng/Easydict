@@ -69,6 +69,7 @@ final class CodexManagedAccount: ObservableObject {
         originUUID = origin
         operation = Task {
             do {
+                await CodexManagedAppServer.shared.invalidate()
                 let runtime = try await runtimeFactory()
                 let status = try await runtime.command(["login", "status"], process: nextProcess())
                 try check(generation)
@@ -169,6 +170,7 @@ final class CodexManagedAccount: ObservableObject {
     /// Component loss invalidates connection evidence, not official credentials.
     func componentUnavailable() {
         verificationResult = nil
+        Task { await CodexManagedAppServer.shared.invalidate() }
         if !isBusy { restorePresentation() }
     }
 
@@ -177,6 +179,7 @@ final class CodexManagedAccount: ObservableObject {
         let generation = begin(state: .checking, kind: .authentication(.logout))
         operation = Task {
             do {
+                await CodexManagedAppServer.shared.invalidate()
                 let runtime = try await runtimeFactory()
                 let result = try await runtime.command(["logout"], process: nextProcess())
                 try check(generation)
@@ -267,6 +270,7 @@ final class CodexManagedAccount: ObservableObject {
             await previous?.value
             guard self.generation == generation else { return }
             if refreshReason != nil {
+                await CodexManagedAppServer.shared.invalidate()
                 await readStatus(generation: generation)
             } else {
                 restorePresentation()
