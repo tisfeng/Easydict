@@ -9,18 +9,29 @@ import Foundation
 
 extension AppPathManager {
     /// The root directory for Easydict-managed Codex files.
-    var codexManagedDirectory: URL {
-        applicationSupportDirectory.appendingPathComponent("codex-managed", isDirectory: true)
+    var codexDirectory: URL {
+        applicationSupportDirectory.appendingPathComponent("codex", isDirectory: true)
     }
 
     /// The directory containing downloaded Codex runtime components.
-    var codexManagedComponentsDirectory: URL {
-        codexManagedDirectory.appendingPathComponent("components", isDirectory: true)
+    var codexComponentsDirectory: URL {
+        codexDirectory.appendingPathComponent("components", isDirectory: true)
     }
 
     /// The isolated `CODEX_HOME` used by the managed Codex runtime.
-    var codexManagedStateDirectory: URL {
-        codexManagedDirectory.appendingPathComponent("state", isDirectory: true)
+    var codexStateDirectory: URL {
+        codexDirectory.appendingPathComponent("state", isDirectory: true)
+    }
+
+    /// Older roots checked by `CodexDirectoryMigration`, newest first.
+    var legacyCodexDirectories: [URL] {
+        let bundleScopedDirectory = applicationSupportDirectory
+            .appendingPathComponent("codex-managed", isDirectory: true)
+        let sharedDirectory = applicationSupportDirectory
+            .deletingLastPathComponent()
+            .appendingPathComponent("Easydict", isDirectory: true)
+            .appendingPathComponent("codex-managed", isDirectory: true)
+        return [bundleScopedDirectory, sharedDirectory]
     }
 
     /// The root directory for service invocation logs.

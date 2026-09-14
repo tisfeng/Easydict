@@ -8,7 +8,7 @@
 import Foundation
 
 extension AppPathManager {
-    /// The legacy CocoaLumberjack-compatible log root.
+    /// The legacy CocoaLumberjack-compatible log root opened and exported by the menu bar.
     var mmLogRootDirectory: URL {
         cachesDirectory.appendingPathComponent("MMLogs", isDirectory: true)
     }

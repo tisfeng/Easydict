@@ -24,7 +24,9 @@ struct CodexComponentStore: Sendable {
     }
 
     static func applicationStore(descriptor: CodexRuntimeDescriptor) throws -> Self {
-        let root = AppPathManager.current.codexManagedComponentsDirectory
+        let pathManager = AppPathManager.current
+        try CodexDirectoryMigration.run(pathManager: pathManager)
+        let root = pathManager.codexComponentsDirectory
         return Self(descriptor: descriptor, root: root)
     }
 
