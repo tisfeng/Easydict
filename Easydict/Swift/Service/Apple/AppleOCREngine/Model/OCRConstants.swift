@@ -35,15 +35,15 @@ enum OCRConstants {
     /// 5.5 for English text font, may be not precise, so use a larger threshold
     static let englishDifferenceFontThreshold: Double = 5.5
 
-    /// Root directory for logs: ~/Library/Caches/<bundle-id>/MMLogs
+    /// Root directory for app logs: ~/Library/Application Support/<bundle-id>/logs/app
     static var rootLogDirectoryURL: URL = {
         let pathManager = AppPathManager.current
-        let directory = pathManager.mmLogRootDirectory
+        let directory = pathManager.appLogDirectory
         try? pathManager.ensureDirectoryExists(at: directory)
         return directory
     }()
 
-    /// Directory for images: ~/Library/Caches/<bundle-id>/MMLogs/Image
+    /// Directory for diagnostic images: ~/Library/Application Support/<bundle-id>/logs/app/Image
     static var imageDirectoryURL: URL {
         let pathManager = AppPathManager.current
         let directory = pathManager.ocrImageDirectory
@@ -51,12 +51,12 @@ enum OCRConstants {
         return directory
     }
 
-    /// File for snip image: ~/Library/Caches/<bundle-id>/MMLogs/Image/snip_image.png
+    /// File for the source screenshot used during OCR diagnostics.
     static var snipImageFileURL: URL {
         AppPathManager.current.snipImageFileURL
     }
 
-    /// File for crop image: ~/Library/Caches/<bundle-id>/MMLogs/Image/ocr_cropped_image.png
+    /// File for the cropped image used during OCR diagnostics.
     static var ocrCroppedImageFileURL: URL {
         AppPathManager.current.ocrCroppedImageFileURL
     }

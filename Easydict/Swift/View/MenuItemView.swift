@@ -199,8 +199,9 @@ struct MenuItemView: View {
             }
             Button("Log Directory") {
                 logInfo("Open Log Directory")
-                let logPath = MMManagerForLog.rootLogDirectory() ?? ""
-                let directoryURL = URL(fileURLWithPath: logPath)
+                let pathManager = AppPathManager.current
+                let directoryURL = pathManager.logsDirectory
+                try? pathManager.ensureDirectoryExists(at: directoryURL)
                 NSWorkspace.shared.open(directoryURL)
             }
         }

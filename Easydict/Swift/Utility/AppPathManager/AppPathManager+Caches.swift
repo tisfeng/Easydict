@@ -8,25 +8,13 @@
 import Foundation
 
 extension AppPathManager {
-    /// The legacy CocoaLumberjack-compatible log root opened and exported by the menu bar.
-    var mmLogRootDirectory: URL {
+    /// The previous CocoaLumberjack-compatible log root.
+    var legacyAppLogDirectory: URL {
         cachesDirectory.appendingPathComponent("MMLogs", isDirectory: true)
     }
 
-    var ocrImageDirectory: URL {
-        mmLogRootDirectory.appendingPathComponent("Image", isDirectory: true)
-    }
-
-    var snipImageFileURL: URL {
-        ocrImageDirectory.appendingPathComponent("snip_image.png", isDirectory: false)
-    }
-
-    var ocrCroppedImageFileURL: URL {
-        ocrImageDirectory.appendingPathComponent("ocr_cropped_image.png", isDirectory: false)
-    }
-
-    /// The directory containing downloaded pronunciation audio.
-    var audioCacheDirectory: URL {
+    /// The previous downloaded pronunciation audio location.
+    var legacyAudioCacheDirectory: URL {
         cachesDirectory.appendingPathComponent("audio", isDirectory: true)
     }
 }

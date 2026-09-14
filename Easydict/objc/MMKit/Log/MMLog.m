@@ -83,7 +83,7 @@ BOOL MMDefaultLogAsyncEnabled = YES;
     static NSString *_path = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _path = AppPathManager.current.mmLogRootDirectory.path;
+        _path = AppPathManager.current.appLogDirectory.path;
     });
     return _path;
 }
