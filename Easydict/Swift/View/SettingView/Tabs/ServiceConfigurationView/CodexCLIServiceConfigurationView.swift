@@ -60,7 +60,6 @@ struct CodexCLIServiceConfigurationView: View {
                 )
                 if accessMode == .managed {
                     Picker("service.configuration.codex_cli.model.title", selection: managedModelSelection) {
-                        Text("service.codex_cli.managed.select_model").tag(nil as String?).disabled(true)
                         ForEach(CodexManagedRuntime.bundledModelNames, id: \.self) { model in
                             Text(verbatim: model).tag(Optional(model))
                         }
