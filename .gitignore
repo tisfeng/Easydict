@@ -87,6 +87,10 @@ node_modules/
 # macOS Finder custom icon file (contains carriage return in filename, invalid on Windows)
 Icon?
 
+# `Icon?` also matches managed `icons` directories on case-insensitive macOS.
+!.agents/skills/fireworks-tech-graph/assets/icons/
+!.agents/skills/fireworks-tech-graph/assets/icons/**
+
 .sentryclirc
 
 # Python

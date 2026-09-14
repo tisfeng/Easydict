@@ -21,7 +21,6 @@ Usage:
 Options:
   --channel beta|stable   Sparkle channel (default: beta)
   --build-number <value> Override the next build number
-  --notes <file>          Use a release notes file instead of generated notes
   --replace-draft        Rebuild and safely replace the latest matching Draft
   --dry-run               Preview the asc workflow without running it
   -h, --help              Show this help
@@ -268,7 +267,6 @@ main() {
 
     local channel="beta"
     local build_number=""
-    local notes_file=""
     local draft_mode="normal"
     local dry_run=0
 
@@ -282,11 +280,6 @@ main() {
             --build-number)
                 require_value "$1" "${2:-}"
                 build_number="$2"
-                shift 2
-                ;;
-            --notes)
-                require_value "$1" "${2:-}"
-                notes_file="$2"
                 shift 2
                 ;;
             --replace-draft)
@@ -321,11 +314,6 @@ main() {
         ((10#$build_number > 0)) \
             || fail "build number must be greater than zero"
     fi
-    if [[ -n "$notes_file" ]]; then
-        [[ -f "$notes_file" ]] || fail "release notes file not found: $notes_file"
-        notes_file="$(cd "$(dirname "$notes_file")" && pwd)/$(basename "$notes_file")"
-    fi
-
     cd "$ROOT_DIR"
     asc workflow validate --file "$WORKFLOW_PATH" >/dev/null
 
@@ -342,7 +330,6 @@ main() {
         "VERSION:$version"
         "CHANNEL:$channel"
         "BUILD_NUMBER:$build_number"
-        "NOTES_FILE:$notes_file"
         "DRAFT_MODE:$draft_mode"
     )
 

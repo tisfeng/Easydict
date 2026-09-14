@@ -43,7 +43,7 @@
 - `scripts/release/release-verify.sh`
 - `scripts/release/tests/test_release_appcast.py`
 - `scripts/release/README.md`
-- `docs/exec-plans/completed/2026-08-23-release-beta-promotion.md`
+- `docs/exec-plans/completed/2026-08/2026-08-23-release-beta-promotion.md`
 
 ### 后续事项
 

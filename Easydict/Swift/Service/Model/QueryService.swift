@@ -187,6 +187,8 @@ open class QueryService: NSObject {
 
     @discardableResult
     open func resetServiceResult() -> QueryResult {
+        updateResultLock.lock()
+        defer { updateResultLock.unlock() }
         let currentResult = result ?? QueryResult()
         storedAudioPlayer?.stop()
         // Invalidate any in-flight stream before reusing the same result object.
@@ -239,30 +241,34 @@ open class QueryService: NSObject {
         _ queryModel: QueryModel,
         completionHandler: @escaping (QueryResult, Error?) -> ()
     ) {
+        let generation = updateResultLock.withLock { resultGeneration }
+        let stream = startQueryStream(queryModel, generation: generation)
         let task = Task { [weak self] in
             guard let self else { return }
-
             var didYieldError = false
-
             do {
-                for try await result in startQueryStream(queryModel) {
-                    if result.error != nil {
-                        didYieldError = true
-                    }
+                for try await result in stream {
+                    if result.error != nil { didYieldError = true }
                     await MainActor.run {
-                        completionHandler(result, result.error)
+                        self.updateResultLock.withLock {
+                            guard self.resultGeneration == generation else { return }
+                            completionHandler(result, result.error)
+                        }
                     }
                 }
             } catch is CancellationError {
                 // Task was cancelled, nothing to report.
             } catch {
                 if !didYieldError {
-                    let errorResult = ensureResult()
-                    if errorResult.error == nil {
-                        errorResult.error = QueryError.queryError(from: error)
-                    }
                     await MainActor.run {
-                        completionHandler(errorResult, errorResult.error)
+                        self.updateResultLock.withLock {
+                            guard self.resultGeneration == generation else { return }
+                            let errorResult = self.ensureResult()
+                            if errorResult.error == nil {
+                                errorResult.error = QueryError.queryError(from: error)
+                            }
+                            completionHandler(errorResult, errorResult.error)
+                        }
                     }
                 }
             }
@@ -271,66 +277,23 @@ open class QueryService: NSObject {
         let serviceType = serviceTypeWithUniqueIdentifier()
         queryModel.setStop({ [weak self] in
             task.cancel()
-            self?.cancelStream()
+            guard let self else { return }
+            updateResultLock.withLock {
+                // A stop retained by an older QueryModel must not cancel a new runner.
+                guard self.resultGeneration == generation else { return }
+                self.resultGeneration &+= 1
+                self.cancelStream()
+                self.result?.isStreamFinished = true
+                self.result?.isLoading = false
+            }
         }, serviceType: serviceType)
     }
 
     /// Starts a query using async stream and yields incremental results.
     open func startQueryStream(_ queryModel: QueryModel)
         -> AsyncThrowingStream<QueryResult, Error> {
-        AsyncThrowingStream { [weak self] continuation in
-            Task {
-                guard let self else {
-                    continuation.finish()
-                    return
-                }
-
-                self.queryModel = queryModel
-
-                let queryText = queryModel.queryText
-                let fromLanguage = queryModel.queryFromLanguage
-                let targetLanguage = queryModel.queryTargetLanguage
-
-                var didYieldError = false
-
-                do {
-                    let (handled, prehandleResult) = try await self.prehandleQueryText(
-                        queryText,
-                        from: fromLanguage,
-                        to: targetLanguage
-                    )
-                    if handled {
-                        continuation.yield(prehandleResult)
-                        continuation.finish()
-                        return
-                    }
-
-                    for try await result in self.translateStream(
-                        queryText,
-                        from: fromLanguage,
-                        to: targetLanguage
-                    ) {
-                        if result.error != nil {
-                            didYieldError = true
-                        }
-                        continuation.yield(result)
-                    }
-
-                    continuation.finish()
-                } catch is CancellationError {
-                    continuation.finish()
-                } catch {
-                    if !didYieldError {
-                        let errorResult = self.ensureResult()
-                        if errorResult.error == nil {
-                            errorResult.error = QueryError.queryError(from: error)
-                        }
-                        continuation.yield(errorResult)
-                    }
-                    continuation.finish(throwing: error)
-                }
-            }
-        }
+        let generation = updateResultLock.withLock { resultGeneration }
+        return startQueryStream(queryModel, generation: generation)
     }
 
     open func configurationListItems() -> Any? {
@@ -541,6 +504,10 @@ open class QueryService: NSObject {
     /// to the active query.
     var resultGeneration: UInt = 0
 
+    /// Synchronizes generation checks and result changes, including terminal errors.
+    /// A main-thread completion may synchronously reset the service for another query.
+    let updateResultLock = NSRecursiveLock()
+
     // MARK: Private
 
     private var storedEnabledQuery: Bool = true
@@ -555,6 +522,67 @@ open class QueryService: NSObject {
     private var cachedLanguages: [Language]?
     private var languageFromStringDict: [String: Language]?
     private var languageIndexDict: [Language: NSNumber]?
+
+    /// Keeps preprocessing and stream creation in the originating query generation.
+    /// The synchronous prehandle core writes shared result fields, so it uses the
+    /// same lock as reset. No lock is held while awaiting stream output.
+    private func startQueryStream(_ queryModel: QueryModel, generation: UInt)
+        -> AsyncThrowingStream<QueryResult, Error> {
+        let queryText = queryModel.queryText
+        let fromLanguage = queryModel.queryFromLanguage
+        let targetLanguage = queryModel.queryTargetLanguage
+        return AsyncThrowingStream { [weak self] continuation in
+            let task = Task {
+                guard let self else {
+                    continuation.finish()
+                    return
+                }
+                var didYieldError = false
+                do {
+                    let stream = try self.updateResultLock.withLock { () -> AsyncThrowingStream<QueryResult, Error>? in
+                        try Task.checkCancellation()
+                        guard self.resultGeneration == generation else { throw CancellationError() }
+                        self.queryModel = queryModel
+                        let outcome = self.prehandleQueryTextOutcome(queryText, from: fromLanguage, to: targetLanguage)
+                        if let error = outcome.error { throw error }
+                        if outcome.handled {
+                            continuation.yield(outcome.result)
+                            return nil
+                        }
+                        return self.translateStream(queryText, from: fromLanguage, to: targetLanguage)
+                    }
+                    if let stream {
+                        for try await result in stream {
+                            self.updateResultLock.withLock {
+                                guard self.resultGeneration == generation else { return }
+                                if result.error != nil { didYieldError = true }
+                                continuation.yield(result)
+                            }
+                        }
+                    }
+                    continuation.finish()
+                } catch is CancellationError {
+                    continuation.finish()
+                } catch {
+                    self.updateResultLock.withLock {
+                        guard self.resultGeneration == generation else {
+                            continuation.finish()
+                            return
+                        }
+                        if !didYieldError {
+                            let errorResult = self.ensureResult()
+                            if errorResult.error == nil {
+                                errorResult.error = QueryError.queryError(from: error)
+                            }
+                            continuation.yield(errorResult)
+                        }
+                        continuation.finish(throwing: error)
+                    }
+                }
+            }
+            continuation.onTermination = { _ in task.cancel() }
+        }
+    }
 
     private func buildLanguageCachesIfNeeded() {
         if languageDictionary == nil {

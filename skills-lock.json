@@ -1,10 +1,54 @@
 {
   "version": 1,
   "skills": {
+    "code-simplifier": {
+      "source": "tisfeng/skills",
+      "ref": "v0.4.0",
+      "sourceType": "github",
+      "skillPath": "skills/code-simplifier/SKILL.md",
+      "computedHash": "59f615935befe37a597770ad6536e504b8b449b6c52ce0b6f6bdbeafadbe3d96"
+    },
     "fireworks-tech-graph": {
       "source": "yizhiyanhua-ai/fireworks-tech-graph",
+      "ref": "main",
       "sourceType": "github",
-      "computedHash": "157ab3270dc1dfd39c3aa182dfc574a7e7c1cf7cfa1eafd9bc35a1a7e62c6df9"
+      "skillPath": "skills/fireworks-tech-graph/SKILL.md",
+      "computedHash": "40087482471bd30220850f2ae278fabd9fbdb347d83ddd67d121f986899370fc"
+    },
+    "git-commit": {
+      "source": "tisfeng/skills",
+      "ref": "v0.4.0",
+      "sourceType": "github",
+      "skillPath": "skills/git-commit/SKILL.md",
+      "computedHash": "b9c807f72a425b2f26c96f916a23a081b9f06befe16d029f800eb214c4af3ff5"
+    },
+    "review": {
+      "source": "tisfeng/skills",
+      "ref": "v0.4.0",
+      "sourceType": "github",
+      "skillPath": "skills/review/SKILL.md",
+      "computedHash": "4e082e710e59b438fee4242ce77ab87dc0735137d4e65873b88b6ae3b839434e"
+    },
+    "review-pr": {
+      "source": "tisfeng/skills",
+      "ref": "v0.4.0",
+      "sourceType": "github",
+      "skillPath": "skills/review-pr/SKILL.md",
+      "computedHash": "d28819f394b7e748282460f09e1a1bb201e92d268f63a1f6102e9ec30cc2c3bb"
+    },
+    "submit-pr": {
+      "source": "tisfeng/skills",
+      "ref": "v0.4.0",
+      "sourceType": "github",
+      "skillPath": "skills/submit-pr/SKILL.md",
+      "computedHash": "0de84898eb1da37e4952692a75de166f84db8a2f7084383ac0fd8df81578a001"
+    },
+    "worktree-rebase-merge": {
+      "source": "tisfeng/skills",
+      "ref": "v0.4.0",
+      "sourceType": "github",
+      "skillPath": "skills/worktree-rebase-merge/SKILL.md",
+      "computedHash": "6dc71ea62c9cb1fb24a34539040aee4d4bd79c96c6f2be20ce877885ebb54ea5"
     }
   }
 }

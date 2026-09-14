@@ -3,7 +3,7 @@
 - 日期：2026-08-21
 - 状态：completed
 - 关联 Issue/PR：none
-- 执行计划：`../../exec-plans/completed/2026-08-21-agent-commit-result-reporting.md`
+- 执行计划：`../../exec-plans/completed/2026-08/2026-08-21-agent-commit-result-reporting.md`
 
 ## 用户请求
 

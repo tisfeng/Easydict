@@ -31,7 +31,8 @@ struct StreamConfigurationView: View {
         showThinkTagContent: Bool = true,
         showTemperatureSlider: Bool = true,
         temperatureMaxValue: Double = 2,
-        showStreamingToggle: Bool = false
+        showStreamingToggle: Bool = false,
+        showValidationButton: Bool = true
     ) {
         self.service = service
 
@@ -49,6 +50,7 @@ struct StreamConfigurationView: View {
         self.showTemperatureSlider = showTemperatureSlider
         self.showStreamingToggle = showStreamingToggle
         self.temperatureMaxValue = temperatureMaxValue
+        self.showValidationButton = showValidationButton
 
         // Disable user to edit built-in supported models.
         self.isEditable = service.serviceType() != .builtInAI
@@ -76,6 +78,7 @@ struct StreamConfigurationView: View {
     let showTemperatureSlider: Bool
     let temperatureMaxValue: Double
     let showStreamingToggle: Bool
+    let showValidationButton: Bool
 
     var isEditable = true
 
@@ -88,7 +91,8 @@ struct StreamConfigurationView: View {
     var body: some View {
         ServiceConfigurationSecretSectionView(
             service: service,
-            observeKeys: service.observeKeys
+            observeKeys: service.observeKeys,
+            showValidationButton: showValidationButton
         ) {
             if showCustomNameSection {
                 InputCell(

@@ -1,6 +1,6 @@
 ## 2026-09-06 | 任务：移除 Skill 覆盖层
 
-**Links:** [执行计划](../../exec-plans/completed/2026-09-06-remove-skill-overrides.md)
+**Links:** [执行计划](../../exec-plans/completed/2026-09/2026-09-06-remove-skill-overrides.md)
 
 ### 用户请求
 
@@ -36,7 +36,7 @@
 - `AGENTS.md`
 - `docs/agents/README.md`
 - `docs/agents/request-boundary.md`
-- `docs/exec-plans/completed/2026-09-06-remove-skill-overrides.md`
+- `docs/exec-plans/completed/2026-09/2026-09-06-remove-skill-overrides.md`
 - `docs/histories/2026-09/2026-09-06-remove-skill-overrides.md`
 
 ### 后续事项

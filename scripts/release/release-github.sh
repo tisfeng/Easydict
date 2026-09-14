@@ -76,6 +76,14 @@ verify_assets() {
     done
 }
 
+verify_github_release_notes() {
+    verify_release_notes_snapshot
+    python3 "$SCRIPT_DIR/release_notes.py" verify-release \
+        --file "$RELEASE_NOTES_FILE" \
+        --version "$RELEASE_VERSION" \
+        --repo "$RELEASE_REPOSITORY" >/dev/null
+}
+
 verify_release_state() {
     local expected_draft="$1"
     local expected_prerelease=false
@@ -89,6 +97,7 @@ verify_release_state() {
     fi
     [[ "$(release_field isPrerelease)" == "$expected_prerelease" ]] \
         || release_fail "GitHub prerelease state does not match the channel"
+    verify_github_release_notes
     verify_assets
 }
 
@@ -122,6 +131,7 @@ verify_previous_release_promoted() {
 }
 
 promote_previous_release() {
+    verify_github_release_notes
     verify_previous_release_ready
     if [[ -z "$RELEASE_PREVIOUS_BETA_VERSION" ]]; then
         release_log "no previous GitHub prerelease requires promotion"
@@ -170,6 +180,7 @@ create_draft() {
     local -a command
 
     load_release_metadata
+    verify_release_notes_snapshot
     if release_is_replacement; then
         load_replacement_metadata
         replacement_is_complete draft-deleted \
@@ -187,6 +198,7 @@ create_draft() {
                 != "$REPLACEMENT_DRAFT_ID" ]] \
                 || release_fail "old GitHub Draft still occupies $RELEASE_VERSION"
         fi
+        verify_github_release_notes
         for asset_path in \
             "$RELEASE_ZIP_PATH" \
             "$RELEASE_DMG_PATH" \
@@ -210,11 +222,7 @@ create_draft() {
     if [[ "$RELEASE_CHANNEL" == beta ]]; then
         command+=(--prerelease)
     fi
-    if [[ -n "$RELEASE_NOTES_FILE" ]]; then
-        command+=(--notes-file "$RELEASE_NOTES_FILE")
-    else
-        command+=(--generate-notes)
-    fi
+    command+=(--notes-file "$RELEASE_NOTES_FILE")
 
     release_log "creating GitHub draft release"
     "${command[@]}"

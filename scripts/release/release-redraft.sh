@@ -239,6 +239,7 @@ revalidate_replacement() {
         release_log "ordinary Draft; no replacement revalidation required"
         return
     fi
+    verify_release_notes_snapshot
     load_replacement_metadata
     if replacement_is_complete refs-replaced; then
         release_log "replacement refs are already updated"
@@ -272,6 +273,7 @@ delete_replaced_draft() {
         release_log "ordinary Draft; no old Draft deletion required"
         return
     fi
+    verify_release_notes_snapshot
     load_replacement_metadata
     replacement_is_complete refs-replaced \
         || release_fail "refusing to delete the old Draft before refs are replaced"

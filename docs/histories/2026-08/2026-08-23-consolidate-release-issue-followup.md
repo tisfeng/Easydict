@@ -1,6 +1,6 @@
 ## 2026-08-23 | 任务：合并发布后 Issue 跟进到主发布 Skill
 
-**Links:** `../../exec-plans/completed/2026-08-23-consolidate-release-issue-followup.md`
+**Links:** `../../exec-plans/completed/2026-08/2026-08-23-consolidate-release-issue-followup.md`
 
 ### 用户请求
 
@@ -40,7 +40,7 @@
 - `.agents/skills/release-easydict/`
 - `.agents/skills/release-easydict-issue-followup/`
 - `docs/agents/skills.md`
-- `docs/exec-plans/completed/2026-08-23-consolidate-release-issue-followup.md`
+- `docs/exec-plans/completed/2026-08/2026-08-23-consolidate-release-issue-followup.md`
 
 ### 后续事项
 

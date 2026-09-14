@@ -1,6 +1,6 @@
 ## 2026-08-23 | 任务：隔离 Draft 并在 Publish 合并发布提交
 
-**Links:** `docs/exec-plans/completed/2026-08-23-release-draft-branch-integration.md`
+**Links:** `docs/exec-plans/completed/2026-08/2026-08-23-release-draft-branch-integration.md`
 
 ### 用户请求
 
@@ -38,7 +38,7 @@ rebase 改写。远程推送前先安全移动本地 `dev`，并通过精确 lea
 
 - `scripts/release/`
 - `.agents/skills/release-easydict/`
-- `docs/exec-plans/completed/2026-08-23-release-draft-branch-integration.md`
+- `docs/exec-plans/completed/2026-08/2026-08-23-release-draft-branch-integration.md`
 - `docs/histories/2026-08/2026-08-23-release-draft-branch-integration.md`
 
 ### 后续事项

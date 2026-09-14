@@ -1,69 +1,53 @@
 # 构建与测试
 
-## 测试范围
+## 测试与验证原则
 
-- 对有实际行为或正确性风险的变更添加或更新测试，优先验证生产行为和边界条件。
-  跳过简单透传、明显 accessor、已有充分覆盖的行为及仅重复实现逻辑的断言。
-- 纯视觉调整不要求新增自动测试；UI 交互、状态转换及回归风险按实际行为选择验证。
-- 避免为低价值测试添加仅供测试使用的 protocol、mock、override 或侵入式生产 hook。
-- 先完成对应范围的检查；通过后仅在新变更、失败或未解决风险出现时扩大或重复验证。
-  验证失败先诊断，在授权范围内修复并复验，不跳过必要检查，也不因失败自动停止修复。
+- 只有用户在当前任务中明确要求添加测试代码时，才允许新增或扩写测试。修复真实 bug、新增功能、
+  修改复杂逻辑或判断存在回归风险，都不构成添加测试的授权。
+- 测试代码包括测试文件、suite、用例、断言、fixture、mock、测试 helper，以及仅为测试引入的
+  生产代码 hook。未获授权时可以运行和分析现有测试；如认为需要补充测试，只在结果中提出建议。
+- 获得授权后优先更新现有用例，并遵循最小范围原则；不要为了测试简单实现而增加生产抽象、mock
+  或测试 hook。
+- 优先运行直接覆盖变更风险的检查；共享基础设施、依赖或影响范围不明确时再扩大测试范围。
+- 测试只修改已授权的测试与 fixture；不把未运行、失败或环境阻塞的检查写成通过。
 
-## 测试子代理
+## 测试目录与文件组织
 
-- 有价值的测试编写或复杂独立验证可委派给 `tester`，配置以
-  [`.codex/agents/tester.toml`](../../.codex/agents/tester.toml) 为准；简单检查由主 Agent
-  完成。生产实现与测试可独立推进时优先分工，不能独立时先稳定实现再交接验证。
-- 委派时传递用户目标、有效授权、行为预期、允许修改的测试与 fixture 路径、当前
-  变更和验证范围。子代理保留其他 Agent 的工作，不扩大路径、不递归委派、不交付 Git。
-- 主 Agent 协调共享 checkout 和构建时机。测试代码可独立编写，但运行验证前应确认
-  相关实现已稳定；同一 workspace 不并发执行 Xcode 构建或测试。
-- `workspace-write` 只是沙箱能力，不代表修改整个仓库的授权。只读任务只分析；
-  独立验证任务默认不改测试；获准编写测试时才修改分配的测试文件及 fixture。
-- `tester` 返回修改路径、实际命令、结果及失败或阻塞证据；生产缺陷交回主 Agent，
-  主 Agent 负责修复、复核、history 和最终交付。
-- custom agent 的选择、显式调用回退和不可用处理遵循
-  [`request-boundary.md`](request-boundary.md#子代理委派与回退)。
+- 测试目录按领域对应源码模块。Swift 测试以 `Easydict/Swift/` 为映射根，例如
+  `Service/OpenAI/` 对应 `EasydictTests/Service/OpenAI/`；跨模块测试按主要业务归属放置。
+- 每个测试文件聚焦一个主要被测类型或行为领域，且最多声明一个 `@Suite` 类型。接近文件规模
+  限制时按职责拆分 suite 和 fixture，并保留原有覆盖。
+- 单文件使用的 helper 保持局部；同一领域共享的测试工具就近放置，跨目录复用的 fixture
+  或工具放入 `EasydictTests/Support/<Domain>/`，资源放入对应测试资源目录。
+- 拆分测试时保留标签、actor 隔离、共享状态恢复和串行执行边界。独立 suite 的
+  `.serialized` 不提供跨 suite 串行保证。
+- 测试文件的工程引用同步见下节；现有目录按任务范围渐进调整。
 
-## 任务收尾：独立 review 与测试
+## 工程文件与资源
 
-- 有实际行为风险的 implementation 优先使用只读 `reviewer`；需要编写测试或复杂验证时
-  使用 `tester`。两项工作能够独立开展时可以并行。模型与推理强度以
-  `.codex/agents/reviewer.toml` 和 `.codex/agents/tester.toml` 为准，不随主任务模型切换。
-  简单文档、低风险配置或小改动由主 Agent 完成必要检查，不机械启动子代理。
-- 主 Agent 在第一次写入前保存初始 HEAD、分层 diff、任务相关 untracked 内容与路径
-  归属；交接时给出行为目标、允许范围和冻结实现快照。reviewer 独立判断，不能只
-  读取作者总结。tester 只写分配的测试/fixture，主 Agent 暂停相关生产编辑直至首轮
-  结果返回；必须修改时通知两者快照失效。
-- 审查或测试返回后，主 Agent 核验 finding，在已有实施授权内修复真实问题；无根据或
-  超范围建议说明原因，不盲从。新增测试或修复后，按风险进行增量复核和受影响回归。
-  交付前，实际采用的审查和验证结果必须覆盖最终内容快照。
-- 不设“固定两轮后通过”；有新修复就按风险复验，没有新变化不重复空转。有效阻塞
-  finding、失败验证或必要证据缺失时不能声称完成，也不能自动提交；继续可修复部分，
-  需产品决策或新增授权时报告具体阻塞。
-- 不可委派时按 [`request-boundary.md`](request-boundary.md#子代理委派与回退) 回退并说明
-  独立性缺失。reviewer 不修复、不处理 GitHub；远程动作由获准的 PR 适配器执行。
-- 单独 review 默认只读；此收尾规则不将 review、planning 或 staged 提交请求升级为
-  修复任务，也不授权改写用户 staged 代码。测试运行的共享 workspace 约束仍然有效。
+新增、移动或删除由 Xcode 管理的源码文件或运行时资源时，同步
+`Easydict.xcodeproj/project.pbxproj` 中的 group、文件和 build phase 引用；测试文件同时同步
+测试 target 的 Sources，删除文件不保留悬空引用。仓库治理 Markdown、
+计划、history、skill、参考资料和 `docs/` 下的公共 Markdown 不需要工程引用；除非文档作为
+运行时资源发布，否则不加入 build phase。
 
-## 运行 Xcode 验证的条件
+## 选择 Xcode 验证
 
-满足以下任一条件时运行 `xcodebuild`：
+根据变更需要证明的结果，选择最小且充分的 Xcode 验证，不按变更行数设置硬阈值。
 
-- Swift、Objective-C 或其他由 Xcode 编译的应用源码发生超过 100 行实质性变更。
-  文档、脚本、注释和工程元数据不计入此阈值。
-- 新增或修改了 `EasydictTests/**/*.swift` 下的测试源码。
-- 用户明确要求构建或测试。
-
-上述条件是默认最低要求，不是风险判断的上限。少量高风险源码、工程配置或依赖修改
-也应选择必要的构建或针对性测试。纯治理 Markdown、子代理配置或文档合并使用静态
-检查，不因此运行应用构建；PR review 的构建授权遵循根 AGENTS.md。
-
-在实现完成后再评估该阈值。统计任务变更 diff 中新增和删除的实质性行数，排除空行
-及无关的既有变更。如果实现再次变化，重新计算。
-
-不要针对同一个 workspace 和 DerivedData 位置并发运行 `xcodebuild`。如果默认
-DerivedData 位置不可用，则使用外部临时目录，并在验证后删除。
+- 纯治理 Markdown、plan、history、注释，以及不进入 Xcode 构建图的脚本或配置，默认只运行相应
+  静态检查。
+- 生产源码、工程/workspace、target、build setting、build phase、依赖、entitlement、Info.plist
+  或运行时资源发生实质变化时，运行覆盖受影响配置的 `xcodebuild build`。
+- 修复 bug、修改可测试行为或测试源码及其 target 引用时，运行覆盖相应行为、suite 或方法的
+  `xcodebuild test`。
+- `xcodebuild build` 只证明构建集成；`xcodebuild test` 会构建测试所需产物。相同配置的成功测试
+  已覆盖编译时不重复运行 build；测试未覆盖的 Release、Archive、签名或其他配置另行验证。
+- 重复运行兼容的测试时，可先使用 `build-for-testing`，再使用 `test-without-building`；前者本身
+  不构成测试通过证据。
+- 不要对同一 workspace 和 DerivedData 并发运行 `xcodebuild`。
+- 默认使用 Xcode 的 DerivedData。只有失败证据指向权限、缓存损坏或 runner 状态时，才使用显式
+  临时 DerivedData 重试；报告 fallback，并只删除本任务创建且未被使用的临时目录。
 
 ## 常用命令
 
@@ -88,23 +72,32 @@ xcodebuild build-for-testing \
 xcodebuild test-without-building \
   -workspace Easydict.xcworkspace \
   -scheme Easydict \
-  -only-testing:EasydictTests/<TestSuiteOrClass> | xcbeautify
+  -only-testing:EasydictTests/UtilityFunctionsTests | xcbeautify
 
-# Run one test method
+# Run one test method after a compatible build-for-testing
 xcodebuild test-without-building \
   -workspace Easydict.xcworkspace \
   -scheme Easydict \
-  -only-testing:EasydictTests/<TestSuiteOrClass>/<testMethod> | xcbeautify
+  -only-testing:EasydictTests/UtilityFunctionsTests/testAES | xcbeautify
 ```
 
-如果已知变更对应的测试映射，使用 `-only-testing:`。如果映射不明确，则运行相关
-的更大范围测试目标。所有经 `xcbeautify` 的命令都在启用 `pipefail` 的 shell 中运行，
-保留真实退出状态。`test-without-building` 仅用于与当前源码和配置兼容的构建产物；
-不能用旧产物验证新修改。测试源码变化时运行对应范围的 `xcodebuild test`。
+使用 `xcbeautify` 时启用 `pipefail`，保留 `xcodebuild` 的真实退出状态。默认命令不指定
+DerivedData；仅在上节规定的 fallback 条件成立时，才改用以下形式：
+
+```bash
+# Fallback only when the default DerivedData is proven unusable
+xcodebuild build \
+  -workspace Easydict.xcworkspace \
+  -scheme Easydict \
+  -derivedDataPath ~/Library/Developer/Xcode/DerivedData/Easydict-Temporary | xcbeautify
+```
+
+测试命令需要 fallback 时，在对应命令中添加相同的 `-derivedDataPath` 参数，不重复维护另一套
+命令矩阵。
 
 ## 非 Xcode 检查
 
-- 每次变更都运行 `git diff --check`。
-- 对变更的 `.xcstrings` 或 JSON 数据（如适用）运行 `jq -e .`。
+- 每次变更运行 `git diff --check`。
+- 对变更的 `.xcstrings` 或 JSON 数据运行 `jq -e .`。
 - 对变更的 Shell 脚本运行 `bash -n`。
-- Swift 源码发生变化时运行 `swiftformat --lint` 或仓库现有格式化工具。
+- 纯治理 Markdown 默认运行格式、相对链接、锚点和规则语义检查。

@@ -155,6 +155,7 @@ push_replacement_refs() {
 
     require_release_worktree
     load_release_metadata
+    verify_release_notes_snapshot
     load_replacement_metadata
     current_head="$(git -C "$RELEASE_WORKTREE" rev-parse HEAD)"
     [[ "$current_head" == "$RELEASE_VERSION_COMMIT" ]] \
