@@ -60,7 +60,10 @@ struct OCRDebugView: View {
             minHeight: 600,
             maxHeight: .infinity
         )
-        .background(Color(NSColor.windowBackgroundColor))
+        .background {
+            Color(NSColor.windowBackgroundColor)
+                .allowsHitTesting(false)
+        }
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 4)
     }
@@ -90,6 +93,7 @@ struct OCRDebugView: View {
             Text(verbatim: "OCR Debug Preview")
                 .font(.title3)
                 .fontWeight(.semibold)
+                .allowsHitTesting(false)
 
             Spacer()
 
@@ -100,11 +104,13 @@ struct OCRDebugView: View {
         .padding(.horizontal, 10)
         .background(
             VisualEffectView(material: .titlebar, blendingMode: .behindWindow)
+                .allowsHitTesting(false)
         )
         .overlay(
             Rectangle()
                 .fill(Color.secondary.opacity(0.2))
-                .frame(height: 1),
+                .frame(height: 1)
+                .allowsHitTesting(false),
             alignment: .bottom
         )
     }

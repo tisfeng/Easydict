@@ -1,43 +1,53 @@
 # 构建与测试
 
-## 验证原则
+## 测试与验证原则
 
-- 对有实际行为或正确性风险的变更添加或更新测试，优先覆盖生产行为和边界条件。
-- 不为简单透传、明显 accessor、已有充分覆盖的行为或纯视觉调整机械添加测试。
-- 避免为了低价值测试引入仅供测试使用的 protocol、mock、override 或生产 hook。
-- 先运行与变更直接对应的检查；只有出现新变更、失败或未解决风险时才扩大或重复验证。
-- 验证失败先诊断，在授权范围内修复并复验，不跳过必要检查，也不把环境阻塞写成产品通过。
+- 只有用户在当前任务中明确要求添加测试代码时，才允许新增或扩写测试。修复真实 bug、新增功能、
+  修改复杂逻辑或判断存在回归风险，都不构成添加测试的授权。
+- 测试代码包括测试文件、suite、用例、断言、fixture、mock、测试 helper，以及仅为测试引入的
+  生产代码 hook。未获授权时可以运行和分析现有测试；如认为需要补充测试，只在结果中提出建议。
+- 获得授权后优先更新现有用例，并遵循最小范围原则；不要为了测试简单实现而增加生产抽象、mock
+  或测试 hook。
+- 优先运行直接覆盖变更风险的检查；共享基础设施、依赖或影响范围不明确时再扩大测试范围。
+- 测试只修改已授权的测试与 fixture；不把未运行、失败或环境阻塞的检查写成通过。
 
-## Reviewer 与 Tester
+## 测试目录与文件组织
 
-- 有行为风险的 implementation 优先使用只读 `reviewer`；需要编写测试或复杂独立验证时使用
-  `tester`。简单文档、低风险配置或小改动由主 Agent 完成必要检查。
-- 生产实现与测试可独立推进时可以分工；Git index 和本地交付始终串行。
-- 除请求边界规定的通用输入外，委派 tester 时补充行为预期和验证范围。reviewer 只读；tester
-  只修改明确分配的测试与 fixture，不修改生产代码、工程配置或 history，也不执行 stage、
-  commit、push 或 Git ref 操作。
-- tester 返回测试目的、修改路径、实际命令、结果和阻塞证据；生产缺陷交回主 Agent。
-- 主 Agent 核验审查意见，在已有授权内修复真实问题；无依据或超范围建议说明原因。实现变化后
-  按风险增量复核，最终采用的审查和验证必须覆盖最终快照。
-- 尚未解决且经核实的阻塞问题、失败验证或必要证据缺失时不能声称完成或自动提交。无法委派时按
-  [`request-boundary.md`](request-boundary.md#子代理委派与回退) 回退并说明独立性缺失。
-- 单独 review 默认只读；上述收尾规则不把 review、planning 或 staged 提交升级为修复任务。
+- 测试目录按领域对应源码模块。Swift 测试以 `Easydict/Swift/` 为映射根，例如
+  `Service/OpenAI/` 对应 `EasydictTests/Service/OpenAI/`；跨模块测试按主要业务归属放置。
+- 每个测试文件聚焦一个主要被测类型或行为领域，且最多声明一个 `@Suite` 类型。接近文件规模
+  限制时按职责拆分 suite 和 fixture，并保留原有覆盖。
+- 单文件使用的 helper 保持局部；同一领域共享的测试工具就近放置，跨目录复用的 fixture
+  或工具放入 `EasydictTests/Support/<Domain>/`，资源放入对应测试资源目录。
+- 拆分测试时保留标签、actor 隔离、共享状态恢复和串行执行边界。独立 suite 的
+  `.serialized` 不提供跨 suite 串行保证。
+- 测试文件的工程引用同步见下节；现有目录按任务范围渐进调整。
 
-## 运行 Xcode 验证的条件
+## 工程文件与资源
 
-满足以下任一条件时运行 `xcodebuild`：
+新增、移动或删除由 Xcode 管理的源码文件或运行时资源时，同步
+`Easydict.xcodeproj/project.pbxproj` 中的 group、文件和 build phase 引用；测试文件同时同步
+测试 target 的 Sources，删除文件不保留悬空引用。仓库治理 Markdown、
+计划、history、skill、参考资料和 `docs/` 下的公共 Markdown 不需要工程引用；除非文档作为
+运行时资源发布，否则不加入 build phase。
 
-- Swift、Objective-C 或其他由 Xcode 编译的应用源码发生超过 100 行实质性变更；文档、脚本、
-  注释和工程元数据不计入阈值。
-- 新增或修改 `EasydictTests/**/*.swift` 下的测试源码。
-- 用户明确要求构建或测试。
+## 选择 Xcode 验证
 
-以上是默认最低要求，不是风险判断的上限。少量高风险源码、工程配置或依赖修改也应选择
-必要构建或针对性测试。纯治理 Markdown、子代理配置或文档合并默认只运行静态检查；用户明确
-要求构建或测试时仍按上述触发条件执行。PR review 能否运行构建以根入口和请求边界为准。
+根据变更需要证明的结果，选择最小且充分的 Xcode 验证，不按变更行数设置硬阈值。
 
-实现变化后重新计算阈值。不要针对同一 workspace 和 DerivedData 并发运行 `xcodebuild`；
-默认 DerivedData 不可用时使用外部临时目录，并在验证后删除。
+- 纯治理 Markdown、plan、history、注释，以及不进入 Xcode 构建图的脚本或配置，默认只运行相应
+  静态检查。
+- 生产源码、工程/workspace、target、build setting、build phase、依赖、entitlement、Info.plist
+  或运行时资源发生实质变化时，运行覆盖受影响配置的 `xcodebuild build`。
+- 修复 bug、修改可测试行为或测试源码及其 target 引用时，运行覆盖相应行为、suite 或方法的
+  `xcodebuild test`。
+- `xcodebuild build` 只证明构建集成；`xcodebuild test` 会构建测试所需产物。相同配置的成功测试
+  已覆盖编译时不重复运行 build；测试未覆盖的 Release、Archive、签名或其他配置另行验证。
+- 重复运行兼容的测试时，可先使用 `build-for-testing`，再使用 `test-without-building`；前者本身
+  不构成测试通过证据。
+- 不要对同一 workspace 和 DerivedData 并发运行 `xcodebuild`。
+- 默认使用 Xcode 的 DerivedData。只有失败证据指向权限、缓存损坏或 runner 状态时，才使用显式
+  临时 DerivedData 重试；报告 fallback，并只删除本任务创建且未被使用的临时目录。
 
 ## 常用命令
 
@@ -62,22 +72,32 @@ xcodebuild build-for-testing \
 xcodebuild test-without-building \
   -workspace Easydict.xcworkspace \
   -scheme Easydict \
-  -only-testing:EasydictTests/<TestSuiteOrClass> | xcbeautify
+  -only-testing:EasydictTests/UtilityFunctionsTests | xcbeautify
 
-# Run one test method
+# Run one test method after a compatible build-for-testing
 xcodebuild test-without-building \
   -workspace Easydict.xcworkspace \
   -scheme Easydict \
-  -only-testing:EasydictTests/<TestSuiteOrClass>/<testMethod> | xcbeautify
+  -only-testing:EasydictTests/UtilityFunctionsTests/testAES | xcbeautify
 ```
 
-使用 `xcbeautify` 时启用 `pipefail`，保留真实退出状态。`test-without-building` 只能复用与
-当前源码和配置兼容的产物；测试源码发生变化时运行对应范围的 `xcodebuild test`。
+使用 `xcbeautify` 时启用 `pipefail`，保留 `xcodebuild` 的真实退出状态。默认命令不指定
+DerivedData；仅在上节规定的 fallback 条件成立时，才改用以下形式：
+
+```bash
+# Fallback only when the default DerivedData is proven unusable
+xcodebuild build \
+  -workspace Easydict.xcworkspace \
+  -scheme Easydict \
+  -derivedDataPath ~/Library/Developer/Xcode/DerivedData/Easydict-Temporary | xcbeautify
+```
+
+测试命令需要 fallback 时，在对应命令中添加相同的 `-derivedDataPath` 参数，不重复维护另一套
+命令矩阵。
 
 ## 非 Xcode 检查
 
 - 每次变更运行 `git diff --check`。
 - 对变更的 `.xcstrings` 或 JSON 数据运行 `jq -e .`。
 - 对变更的 Shell 脚本运行 `bash -n`。
-- Swift 源码变化时运行 `swiftformat --lint` 或仓库现有格式化工具。
-- 文档结构变化时检查现行相对链接、锚点和已删除路径引用。
+- 纯治理 Markdown 默认运行格式、相对链接、锚点和规则语义检查。

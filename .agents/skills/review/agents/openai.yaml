@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Review"
+  short_description: "审查本地变更、提交或模块，并给出有证据的缺陷与修复建议"
+  default_prompt: "使用 $review 审查当前本地变更，找出有证据的正确性问题。"

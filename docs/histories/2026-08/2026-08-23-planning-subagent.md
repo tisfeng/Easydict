@@ -1,6 +1,6 @@
 # 2026-08-23 | 任务：新增 Planning 子代理编排
 
-**Links:** `../../exec-plans/completed/2026-08-23-planning-subagent.md`
+**Links:** `../../exec-plans/completed/2026-08/2026-08-23-planning-subagent.md`
 
 ## 用户请求
 
@@ -32,7 +32,7 @@
 - `.codex/agents/planner.toml`
 - `docs/agents/repository-guide.md`
 - `docs/agents/skills.md`
-- `docs/exec-plans/completed/2026-08-23-planning-subagent.md`
+- `docs/exec-plans/completed/2026-08/2026-08-23-planning-subagent.md`
 - `docs/histories/2026-08/2026-08-23-planning-subagent.md`
 
 ## 后续事项

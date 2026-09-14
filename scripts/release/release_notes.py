@@ -26,7 +26,7 @@ except ImportError:
 
 
 SCHEMA_VERSION = 1
-EXPECTED_MARKDOWN_VERSION = "3.6"
+EXPECTED_MARKDOWN_VERSION = "3.8.1"
 VERSION_PATTERN = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 BARE_URL_PATTERN = r"(?<![\w\"'=])(https?://[^\s<>]+)"
 TRAILING_URL_PUNCTUATION = ".,;:!?]}"

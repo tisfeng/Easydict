@@ -10,6 +10,7 @@ import unittest
 
 
 SCRIPT = Path(__file__).resolve().parents[1] / "release_notes.py"
+REQUIREMENTS = SCRIPT.with_name("requirements.txt")
 SPEC = importlib.util.spec_from_file_location("release_notes", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
 release_notes = importlib.util.module_from_spec(SPEC)
@@ -28,6 +29,12 @@ class ReleaseNotesTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.temporary_directory.cleanup()
+
+    def test_pinned_renderer_matches_expected_version(self) -> None:
+        self.assertEqual(
+            REQUIREMENTS.read_text(encoding="utf-8").strip(),
+            f"Markdown=={release_notes.EXPECTED_MARKDOWN_VERSION}",
+        )
 
     def test_validates_and_hashes_terminal_newline_consistently(self) -> None:
         with_newline = release_notes.read_notes(self.notes, "2.22.0")

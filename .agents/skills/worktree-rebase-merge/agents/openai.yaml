@@ -1,0 +1,4 @@
+interface:
+  display_name: "Worktree Rebase/Merge"
+  short_description: "提交 worktree 变更，rebase 到目标分支并完成本地合并"
+  default_prompt: "使用 $worktree-rebase-merge 将当前 worktree 变更提交并集成到目标分支。"

@@ -2,7 +2,7 @@
 
 - 日期：2026-09-04
 - 状态：completed
-- 关联计划：[`2026-09-04-issue-translator-v2.8.2.md`](../../exec-plans/completed/2026-09-04-issue-translator-v2.8.2.md)
+- 关联计划：[`2026-09-04-issue-translator-v2.8.2.md`](../../exec-plans/completed/2026-09/2026-09-04-issue-translator-v2.8.2.md)
 - 上游 Action 提交：`tisfeng/issues-translate-action@f0170e1913ea679197821b5b7058ed5d9d221f9c`
 
 ## 用户请求

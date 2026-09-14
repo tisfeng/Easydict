@@ -1,7 +1,7 @@
 # 完整提交回执示例
 
 需要参考完整提交回复时阅读。将示例中的哈希、分支、状态、统计和提交信息替换为本次实际
-结果；`SKILL.md` 的 Post-Commit Report 规则和 Git 的实际输出优先。
+结果；[统计与提交回执](reporting.md) 和 Git 的实际输出优先。
 
 ````markdown
 本地 Git 提交完成。
@@ -10,7 +10,7 @@
 
 - 动作：已创建提交
 - Commit：`0123456789abcdef0123456789abcdef01234567`
-- 分支：`docs/unify-git-delivery-receipts`
+- 分支：`docs/unify-commit-receipts`
 - 提交后校验：通过
 - 工作树：干净
 - Push：未执行

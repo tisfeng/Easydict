@@ -12,7 +12,7 @@
 
 ## 计划
 
-本任务执行计划：[`2026-08-26-agent-documentation-structure-port.md`](../../exec-plans/completed/2026-08-26-agent-documentation-structure-port.md)。
+本任务执行计划：[`2026-08-26-agent-documentation-structure-port.md`](../../exec-plans/completed/2026-08/2026-08-26-agent-documentation-structure-port.md)。
 
 ## 范围
 
