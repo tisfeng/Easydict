@@ -1,9 +1,10 @@
 # `tisfeng/skills` 来源参考
 
-- 核对日期：2026-09-13。
+- 核对日期：2026-09-15。
 - 来源：`https://github.com/tisfeng/skills`。
-- 采用版本：`v0.4.0`。
-- peeled commit：`5c112937e098b14f0d3d63dc4e4691e541c48c88`。
+- 采用版本：`v0.5.0`。
+- annotated tag object：`df620be154c791a9f1779c035d7583e4bcb9e175`。
+- peeled commit：`18464b75fa6a2d8ead8e4f9e0488ba4e3ef018cf`。
 - Tag 签名状态：annotated、unsigned；核验时同时固定 tag 和 peeled commit。
 - Skills 安装器：`skills@1.5.25`。
 
@@ -20,6 +21,10 @@
 PR 审查及 worktree 集成的低频细节拆入 references。上游同时删除未调用 selector 的静态触发语料
 和重复实现细节测试，保留 Git 状态、PR 身份、证据漂移、分页与远程写入门禁等高风险覆盖。
 
+`v0.4.0 → v0.5.0` 仅改变 `submit-pr`：PR 正文改为使用 Skill 自带的固定双语模板，支持
+detached checkout 在 `apply` 阶段创建或复用任务分支，并增加相应的预览、漂移与复用验证。
+其余五个受管 Skill 内容不变，但 lock 中的固定 ref 同步升级。
+
 `code-simplifier` 同时包含 `electron-typescript.md` 与 `swift-xcode.md` 条件规则。Easydict
 不删减不适用的 Electron reference；具体任务只按 Skill 路由读取适用内容。
 
@@ -35,7 +40,7 @@ Skill 源码，不属于消费方安装内容。Easydict 继续使用 `--copy --
 
 ```bash
 npx -y skills@1.5.25 add \
-  https://github.com/tisfeng/skills/tree/v0.4.0 \
+  https://github.com/tisfeng/skills/tree/v0.5.0 \
   --skill code-simplifier git-commit review review-pr submit-pr worktree-rebase-merge \
   --agent codex --yes --copy --full-depth
 ```
