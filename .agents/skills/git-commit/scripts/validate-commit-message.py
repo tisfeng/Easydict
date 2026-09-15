@@ -9,6 +9,7 @@ import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import urlsplit
 
 
 ALLOWED_TYPES = {
@@ -30,6 +31,17 @@ FOOTER_LIKE_PATTERN = re.compile(
     r"^(?:BREAKING[ -]CHANGE|[A-Za-z][A-Za-z0-9-]*)(?::| #)"
 )
 BREAKING_FOOTER_PATTERN = re.compile(r"^BREAKING CHANGE: \S")
+ENGLISH_BODY_LABELS = ("context: ", "change: ", "impact: ")
+CHINESE_BODY_LABELS = ("背景：", "变更：", "影响：")
+BODY_LABEL_LIKE_PATTERN = re.compile(
+    r"^(?:context|change|impact|result):",
+    re.I,
+)
+REFERENCES_HEADER = "References:"
+REFERENCES_HEADER_LIKE_PATTERN = re.compile(r"^[ \t]*references?[ \t]*:", re.I)
+REFERENCE_ITEM_PATTERN = re.compile(
+    r"^- (?:(?P<label>\S(?:.*\S)?): )?(?P<url>https?://\S+)$"
+)
 HEADER_PATTERN = re.compile(
     r"^(?P<type>[a-z]+)(?:\((?P<scope>[^()\s]+)\))?(?P<breaking>!)?: "
     r"(?P<subject>\S(?:.*\S)?)$"
@@ -102,6 +114,64 @@ def split_paragraphs(block: str) -> list[str]:
     return [paragraph for paragraph in re.split(r"\n[ \t]*\n+", block) if paragraph]
 
 
+def strip_and_validate_references(message: str) -> str:
+    """Remove one final global references section after validating its entries."""
+
+    lines = message.rstrip("\n").split("\n")
+    malformed_headings = [
+        line
+        for line in lines
+        if REFERENCES_HEADER_LIKE_PATTERN.match(line) and line != REFERENCES_HEADER
+    ]
+    if malformed_headings:
+        raise ValidationError("References section heading must be exactly 'References:'")
+
+    positions = [index for index, line in enumerate(lines) if line == REFERENCES_HEADER]
+    if not positions:
+        return message.rstrip("\n")
+    if len(positions) != 1:
+        raise ValidationError(
+            f"commit message allows at most 1 References section, found {len(positions)}"
+        )
+
+    index = positions[0]
+    spacing_is_exact = (
+        index >= 2 and lines[index - 1] == "" and lines[index - 2] != ""
+    )
+    if not spacing_is_exact:
+        raise ValidationError(
+            "References section must have exactly one blank line before it"
+        )
+
+    entries = lines[index + 1 :]
+    if not entries:
+        raise ValidationError("References section requires at least 1 entry")
+
+    urls: set[str] = set()
+    for entry in entries:
+        match = REFERENCE_ITEM_PATTERN.fullmatch(entry)
+        if match is None:
+            raise ValidationError(
+                "References entries must use '- [label: ]http(s)://...' on one line"
+            )
+        url = match.group("url")
+        try:
+            parsed = urlsplit(url)
+        except ValueError as error:
+            raise ValidationError(
+                "References entries must end with an absolute HTTP(S) URL"
+            ) from error
+        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+            raise ValidationError(
+                "References entries must end with an absolute HTTP(S) URL"
+            )
+        if url in urls:
+            raise ValidationError(f"References section contains duplicate URL '{url}'")
+        urls.add(url)
+
+    return "\n".join(lines[: index - 1])
+
+
 def validate_header(text: str, block_name: str) -> Header:
     """Validate one Angular header and return its comparable signature."""
 
@@ -129,7 +199,45 @@ def validate_header(text: str, block_name: str) -> Header:
     )
 
 
-def validate_block(block: str, block_name: str) -> Header:
+def validate_body_labels(
+    body: list[str],
+    block_name: str,
+    allowed_label_sets: tuple[tuple[str, str, str], ...],
+) -> None:
+    """Require one complete, ordered body-label set with non-empty content."""
+
+    selected_labels = next(
+        (
+            labels
+            for labels in allowed_label_sets
+            if body[0].startswith(labels[0])
+        ),
+        None,
+    )
+    if selected_labels is None:
+        expected = " or ".join(repr(labels[0]) for labels in allowed_label_sets)
+        raise ValidationError(
+            f"{block_name}: body paragraph 1 must start with {expected}"
+        )
+
+    for index, (paragraph, label) in enumerate(zip(body, selected_labels), start=1):
+        if not paragraph.startswith(label):
+            raise ValidationError(
+                f"{block_name}: body paragraph {index} must start with {label!r}"
+            )
+        content = paragraph[len(label) :]
+        if not content or content[0].isspace():
+            raise ValidationError(
+                f"{block_name}: body paragraph {index} must include content "
+                f"immediately after {label!r}"
+            )
+
+
+def validate_block(
+    block: str,
+    block_name: str,
+    allowed_label_sets: tuple[tuple[str, str, str], ...],
+) -> Header:
     """Validate one subject, three body paragraphs, and an optional footer."""
 
     paragraphs = split_paragraphs(block)
@@ -148,7 +256,9 @@ def validate_block(block: str, block_name: str) -> Header:
                 )
             has_breaking_footer = True
             continue
-        if FOOTER_LIKE_PATTERN.match(paragraph):
+        is_footer_like = FOOTER_LIKE_PATTERN.match(paragraph) is not None
+        is_body_label = BODY_LABEL_LIKE_PATTERN.match(paragraph) is not None
+        if is_footer_like and not is_body_label:
             raise ValidationError(
                 f"{block_name}: unsupported or malformed footer paragraph"
             )
@@ -158,6 +268,7 @@ def validate_block(block: str, block_name: str) -> Header:
         raise ValidationError(
             f"{block_name}: expected exactly 3 body paragraphs, found {len(body)}"
         )
+    validate_body_labels(body, block_name, allowed_label_sets)
     return Header(
         commit_type=header.commit_type,
         scope=header.scope,
@@ -204,23 +315,36 @@ def validate_message(message: str, mode: str) -> None:
     if "```" in message:
         raise ValidationError("commit message must not contain Markdown code fences")
 
+    message_without_references = strip_and_validate_references(message)
+
     if mode == "english":
-        if any(DIVIDER_PATTERN.fullmatch(line) for line in message.splitlines()):
+        if any(
+            DIVIDER_PATTERN.fullmatch(line)
+            for line in message_without_references.splitlines()
+        ):
             raise ValidationError(
                 "english message must not contain a language separator"
             )
-        validate_block(message.rstrip("\n"), "English block")
+        validate_block(
+            message_without_references,
+            "English block",
+            (ENGLISH_BODY_LABELS,),
+        )
         return
 
-    blocks = split_bilingual_message(message)
+    blocks = split_bilingual_message(message_without_references)
     headers: list[Header | None] = []
     errors: list[str] = []
-    for block, block_name in zip(
+    block_specs = (
+        ("Local-language block", (CHINESE_BODY_LABELS, ENGLISH_BODY_LABELS)),
+        ("English block", (ENGLISH_BODY_LABELS,)),
+    )
+    for block, (block_name, allowed_label_sets) in zip(
         blocks,
-        ("Local-language block", "English block"),
+        block_specs,
     ):
         try:
-            headers.append(validate_block(block, block_name))
+            headers.append(validate_block(block, block_name, allowed_label_sets))
         except ValidationError as error:
             headers.append(None)
             errors.append(str(error))
