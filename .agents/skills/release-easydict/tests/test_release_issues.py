@@ -13,6 +13,14 @@ SKILL_ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = SKILL_ROOT.parents[2]
 SCRIPT_PATH = SKILL_ROOT / "scripts" / "release_issues.py"
 PR_TEMPLATE_PATH = REPOSITORY_ROOT / ".github" / "pull_request_template.md"
+SUBMIT_PR_TEMPLATE_PATH = (
+    REPOSITORY_ROOT
+    / ".agents"
+    / "skills"
+    / "submit-pr"
+    / "assets"
+    / "pull_request_template.md"
+)
 SPEC = importlib.util.spec_from_file_location("release_issues", SCRIPT_PATH)
 assert SPEC is not None and SPEC.loader is not None
 release_issues = importlib.util.module_from_spec(SPEC)
@@ -202,17 +210,28 @@ Regression context: #1300
 
         self.assertEqual(references, [])
 
-    def test_repository_pr_template_contains_no_issue_candidate(self) -> None:
+    def test_repository_pr_template_matches_submit_pr_structure(self) -> None:
         template = PR_TEMPLATE_PATH.read_text(encoding="utf-8")
+        submit_pr_template = SUBMIT_PR_TEMPLATE_PATH.read_text(encoding="utf-8")
 
         references = release_issues.extract_text_references(
             template,
             "tisfeng/Easydict",
             "pr_body",
         )
+        headings = [
+            line for line in template.splitlines() if line.startswith("## ")
+        ]
+        submit_pr_headings = [
+            line
+            for line in submit_pr_template.splitlines()
+            if line.startswith("## ")
+        ]
 
         self.assertEqual(references, [])
         self.assertEqual(len(release_issues.linked_issue_ranges(template)), 1)
+        self.assertEqual(headings, submit_pr_headings)
+        self.assertNotRegex(template, r"\{\{[^{}]+\}\}")
 
     def test_linked_issue_formats_share_one_candidate(self) -> None:
         prs = [

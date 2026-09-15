@@ -1,6 +1,6 @@
 ## YYYY-MM-DD | 任务：<简短动作>
 
-<!-- 文件名：YYYY-MM-DD-<slug>.md；<slug> 使用小写 kebab-case。 -->
+<!-- 文件名：YYYY-MM-DD-<slug>.md；命名规则见 docs/agents/README.md 的“Plan 与 History”。 -->
 
 **Links:** <issue、PR、计划或 commit>
 

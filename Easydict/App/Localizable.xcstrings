@@ -19419,6 +19419,7 @@
       }
     },
     "service.codex_cli.managed.select_model" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
