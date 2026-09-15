@@ -1,6 +1,6 @@
 # <任务标题>
 
-<!-- 文件名：YYYY-MM-DD-<slug>.md；<slug> 使用小写 kebab-case。 -->
+<!-- 文件名：YYYY-MM-DD-<slug>.md；命名规则见 docs/agents/README.md 的“Plan 与 History”。 -->
 <!-- 本模板只用于多步骤、跨模块或高风险的执行任务。 -->
 
 - 状态：active
