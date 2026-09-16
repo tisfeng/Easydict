@@ -4,7 +4,7 @@
 
 **Links:** <issue、PR、计划或 commit>
 
-### Execution Context
+### 执行上下文
 
 <!--
 - Agent Name：填写主执行 agent 的明确名称，不填客户端、会话 ID 或内部角色。

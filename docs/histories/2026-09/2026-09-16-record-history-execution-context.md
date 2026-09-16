@@ -2,7 +2,7 @@
 
 **Links:** None
 
-### Execution Context
+### 执行上下文
 
 - **Agent Name:** `Codex`
 - **Model ID:** `Unknown`
@@ -21,7 +21,7 @@
 ### 设计意图
 
 将 agent、模型和执行环境分开，避免把客户端或系统架构误写成 agent 或 runtime，也避免用
-`GPT-5` 等模型族名称替代实际模型标识。既有 history 不回填，防止根据旧文本推测执行上下文。
+`GPT-5` 等模型族名称替代实际模型标识。
 
 ### 验证
 

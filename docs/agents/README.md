@@ -13,6 +13,7 @@ design doc 记录长期设计，plan 记录执行过程，history 记录落地�
   [`template.md`](../histories/template.md) 记录结果；没有差异时不创建空记录。
 - plan 与 history 使用 `YYYY-MM-DD-<slug>.md`，同一任务共享 slug 并跨轮复用；存在 plan 时，
   history 链接归档后的 plan。
+- 新建 plan 或 history 时从对应的当前模板创建，并保留模板中的必填字段、章节和顺序。
 - `<slug>` 使用小写 kebab-case；其中完整的标准标识可保留点号（如 `release-0.1.1`、
   `upgrade-skills-v0.3.8`）。不使用空格、下划线、大写字母、斜杠、反斜杠或冒号。
 - plan 记录目标、范围、步骤、风险和验证；history 记录已落地结果与关键决策，不复制完整对话。

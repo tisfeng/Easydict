@@ -4,6 +4,11 @@
 [设计文档](../../design-docs/app-path-management.md)、提交 `9ed1c0713`、`04c6b7be4`、
 `c70dca285`、`8ce6cdbbe`
 
+### 执行上下文
+
+- **Agent Name:** `Codex`
+- **Model ID:** `Unknown`
+
 ### 用户请求
 
 参考项目现有路径管理方式，新增统一的 `AppPathManager`，按 bundle ID 隔离 Debug 与 Release，
