@@ -31,6 +31,8 @@ scripts/release/                # 发布、签名、打包和 appcast 流程
 - 翻译服务提供商在 `Easydict/Swift/Service` 下实现特定服务的请求和响应解析。
 - 划词、快捷键、截图和操作路由属于功能模块；可复用的事件以及
   Foundation/AppKit 辅助工具放在 `Utility` 下。
+- Easydict 自主管理的本地文件通过 `Utility/AppPathManager` 统一定位；目录布局、迁移和日志导出
+  边界见 [`app-path-management.md`](app-path-management.md)。
 - Objective-C 代码仍是遗留边界。新的 UI 和产品组件使用 SwiftUI，除非现有的
   AppKit 或 Objective-C 集成要求使用其他边界。
 - 测试应在最窄的稳定边界验证具体行为，避免与视图实现细节耦合。

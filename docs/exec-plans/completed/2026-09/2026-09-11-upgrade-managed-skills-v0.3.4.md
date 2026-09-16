@@ -19,7 +19,7 @@ Easydict 当前将六项通用 Skills 与 planner、reviewer、tester 锁定在
 - 目标结果：同步固定 `v0.3.4` 受管资产，并语义化更新项目 Agent 规则和来源参考。
 - 允许修改路径：六项 `tisfeng/skills` 受管 Skill 目录、三个受管 agent、双 lock、
   `docs/agents/` 相关规则、`docs/references/tisfeng-skills.md` 以及本任务 plan/history。
-- 同任务 history：`docs/histories/2026-09/2026-09-11-upgrade-managed-skills-v0-3-4.md`。
+- 同任务 history：`docs/histories/2026-09/2026-09-11-upgrade-managed-skills-v0.3.4.md`。
 - 禁止动作：不修改项目专属或独立 Skill、Codex 本地配置、Claude 链接、产品代码或 Xcode
   工程；不 push。
 - 验收标准：受管内容与固定 tag 一致，双 lock 有效，项目规则与新版契约一致，保护路径不变，

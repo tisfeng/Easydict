@@ -45,7 +45,7 @@
 - `skills-lock.json`
 - `docs/references/tisfeng-skills.md`
 - `docs/references/fireworks-tech-graph.md`
-- `docs/histories/2026-09/2026-09-13-upgrade-managed-skills-v0-3-9.md`
+- `docs/histories/2026-09/2026-09-13-upgrade-managed-skills-v0.3.9.md`
 
 ### 后续事项
 
