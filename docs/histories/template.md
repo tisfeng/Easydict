@@ -7,13 +7,15 @@
 ### 执行上下文
 
 <!--
-- Agent Name：填写主执行 agent 的明确名称，不填客户端、会话 ID 或内部角色。
-- Model ID：填写当前任务明确提供的完整模型 ID；不得缩写或推测，无法确认时填 Unknown。
+- Agent Name：优先填写当前对话上下文明确声明的主执行 agent 名称；不得把客户端、会话 ID 或
+  内部角色当作 agent 名称，无法确认时填 Unknown。
+- Model：优先填写当前对话上下文明确提供的完整模型 ID；无法取得完整 ID 时，使用上下文明确提供的
+  base model。不得根据客户端名称、可用模型列表或命名习惯推测，两者均无法确认时填 Unknown。
 - 环境信息仅在影响结果时写入“验证”。
 -->
 
-- **Agent Name:** `<name>`
-- **Model ID:** `<model-id or Unknown>`
+- **Agent Name:** `<name or Unknown>`
+- **Model:** `<model-id, base-model, or Unknown>`
 
 ### 用户请求
 
