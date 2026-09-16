@@ -4,6 +4,17 @@
 
 **Links:** <issue、PR、计划或 commit>
 
+### Execution Context
+
+<!--
+- Agent Name：填写主执行 agent 的明确名称，不填客户端、会话 ID 或内部角色。
+- Model ID：填写当前任务明确提供的完整模型 ID；不得缩写或推测，无法确认时填 Unknown。
+- 环境信息仅在影响结果时写入“验证”。
+-->
+
+- **Agent Name:** `<name>`
+- **Model ID:** `<model-id or Unknown>`
+
 ### 用户请求
 
 <对请求进行简洁且已脱敏的总结。>
