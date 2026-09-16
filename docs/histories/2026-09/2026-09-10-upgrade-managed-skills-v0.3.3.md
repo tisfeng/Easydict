@@ -2,7 +2,7 @@
 
 - 日期：2026-09-10
 - 状态：completed
-- 关联计划：[`2026-09-10-upgrade-managed-skills-v0-3-3.md`](../../exec-plans/completed/2026-09/2026-09-10-upgrade-managed-skills-v0-3-3.md)
+- 关联计划：[`2026-09-10-upgrade-managed-skills-v0.3.3.md`](../../exec-plans/completed/2026-09/2026-09-10-upgrade-managed-skills-v0.3.3.md)
 
 ## 用户请求
 
@@ -54,7 +54,7 @@
 - `docs/agents/git-workflow.md`
 - `docs/agents/request-boundary.md`
 - `docs/agents/review.md`
-- `docs/exec-plans/completed/2026-09/2026-09-10-upgrade-managed-skills-v0-3-3.md`
+- `docs/exec-plans/completed/2026-09/2026-09-10-upgrade-managed-skills-v0.3.3.md`
 
 ## 后续事项
 

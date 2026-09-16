@@ -2,7 +2,7 @@
 
 - 日期：2026-09-11
 - 状态：completed
-- 关联计划：[`2026-09-11-upgrade-managed-skills-v0-3-4.md`](../../exec-plans/completed/2026-09/2026-09-11-upgrade-managed-skills-v0-3-4.md)
+- 关联计划：[`2026-09-11-upgrade-managed-skills-v0.3.4.md`](../../exec-plans/completed/2026-09/2026-09-11-upgrade-managed-skills-v0.3.4.md)
 
 ## 用户请求
 

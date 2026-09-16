@@ -1,6 +1,6 @@
 ## 2026-09-11 | 任务：升级受管 Skills 至 v0.3.8 并移除子代理
 
-**Links:** [`2026-09-11-remove-subagents-upgrade-skills-v0-3-8.md`](../../exec-plans/completed/2026-09/2026-09-11-remove-subagents-upgrade-skills-v0-3-8.md)
+**Links:** [`2026-09-11-remove-subagents-upgrade-skills-v0.3.8.md`](../../exec-plans/completed/2026-09/2026-09-11-remove-subagents-upgrade-skills-v0.3.8.md)
 
 ### 用户请求
 
