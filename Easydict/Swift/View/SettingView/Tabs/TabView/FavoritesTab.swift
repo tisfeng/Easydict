@@ -318,8 +318,3 @@ struct QueryRecordRow: View {
         windowManager.showFloating(windowType, queryText: record.queryText, autoQuery: true, actionType: .inputQuery)
     }
 }
-
-#Preview {
-    FavoritesTab()
-        .frame(width: 960, height: 640)
-}
