@@ -138,6 +138,7 @@
 		033EA07E2CFC66380017F86C /* View+Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033EA07D2CFC66380017F86C /* View+Builder.swift */; };
 		033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */; };
 		034080A22F6B1C75005C8508 /* AppleSpeechServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034080A12F6B1C75005C8508 /* AppleSpeechServiceTests.swift */; };
+		A13180022026091600000001 /* AppleDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13180012026091600000001 /* AppleDictionaryTests.swift */; };
 		0340D3912C8EEEE3004C9910 /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3902C8EEEE3004C9910 /* Data+Extension.swift */; };
 		0340D3942C8EEF58004C9910 /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3932C8EEF58004C9910 /* Dictionary+Extension.swift */; };
 		0340D3962C9184D3004C9910 /* AppleScriptTask+Browser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3952C9184D3004C9910 /* AppleScriptTask+Browser.swift */; };
@@ -812,6 +813,7 @@
 		033EA07D2CFC66380017F86C /* View+Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Builder.swift"; sourceTree = "<group>"; };
 		033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceGetSelectedTextType.swift; sourceTree = "<group>"; };
 		034080A12F6B1C75005C8508 /* AppleSpeechServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSpeechServiceTests.swift; sourceTree = "<group>"; };
+		A13180012026091600000001 /* AppleDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionaryTests.swift; sourceTree = "<group>"; };
 		0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppleScriptTask.swift; sourceTree = "<group>"; };
 		0340D3902C8EEEE3004C9910 /* Data+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
 		0340D3932C8EEF58004C9910 /* Dictionary+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extension.swift"; sourceTree = "<group>"; };
@@ -2891,6 +2893,7 @@
 				03A884792F14000100D5C0DE /* BingServiceTests.swift */,
 				A5D1E5B50000000000000001 /* DeepLServiceTests.swift */,
 				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
+				A13180012026091600000001 /* AppleDictionaryTests.swift */,
 				034080A12F6B1C75005C8508 /* AppleSpeechServiceTests.swift */,
 				A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */,
 				0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */,
@@ -4332,6 +4335,7 @@
 				030732D22F24862A0001382A /* OCRTestSample+Other.swift in Sources */,
 				030732D32F24862A0001382A /* OCRTestSample+English.swift in Sources */,
 				034080A22F6B1C75005C8508 /* AppleSpeechServiceTests.swift in Sources */,
+				A13180022026091600000001 /* AppleDictionaryTests.swift in Sources */,
 				A13F30938343423C89FB9B4C /* ClaudeCodeCLIRunnerTests.swift in Sources */,
 				513C5A1DEDCB410184268D48 /* ClaudeCodeServiceTests.swift in Sources */,
 				C0DEC11E0001000000000011 /* CodexCLIRunnerTests.swift in Sources */,
