@@ -37,7 +37,7 @@
 - `.agents/skills/worktree-rebase-merge/`
 - `skills-lock.json`
 - `docs/references/tisfeng-skills.md`
-- `docs/histories/2026-09/2026-09-13-upgrade-managed-skills-v0-4-0.md`
+- `docs/histories/2026-09/2026-09-13-upgrade-managed-skills-v0.4.0.md`
 
 ### 后续事项
 

@@ -21,7 +21,7 @@ Easydict 当前将六项通用 Skills 与四个 Codex agents 锁定在 `tisfeng/
 - 目标结果：同步固定 `v0.3.3` 受管资产，移除旧 `git-delivery`，并语义化更新项目 Agent 规则。
 - 允许修改路径：六项受管 Skill 目录、三个保留 agent、旧 `git-delivery`、双 lock、`AGENTS.md`、
   `docs/agents/` 相关规则以及同任务 plan/history。
-- 同任务 history：`docs/histories/2026-09/2026-09-10-upgrade-managed-skills-v0-3-3.md`
+- 同任务 history：`docs/histories/2026-09/2026-09-10-upgrade-managed-skills-v0.3.3.md`
 - 禁止动作：不修改项目专属或独立 Skill、应用运行时内容和产品代码；不 push。
 - 预期交付物：完整 v0.3.3 快照、匹配的宿主规则、验证证据和一个本地 Angular-style 提交。
 - 验收标准：受管内容与 tag 一致，双 lock 有效，旧角色与现行引用清理完成，保护路径不变，
