@@ -321,5 +321,5 @@ struct QueryRecordRow: View {
 
 #Preview {
     FavoritesTab()
-        .frame(width: 900, height: 640)
+        .frame(width: 960, height: 640)
 }
