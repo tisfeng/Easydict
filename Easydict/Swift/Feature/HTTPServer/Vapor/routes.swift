@@ -6,7 +6,6 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import MJExtension
 import OpenAI
 import SelectedTextKit
 import Vapor
@@ -49,18 +48,21 @@ func routes(_ app: Application) throws {
         )
 
         // Decode word result to DictionaryEntry
-        if let jsonData = result.wordResult?.mj_JSONData() {
-            do {
-                let decoder = JSONDecoder()
-                let entry = try decoder.decode(DictionaryEntry.self, from: jsonData)
-                response.dictionaryEntry = entry
-            } catch {
-                print("Decode DictionaryEntry failed: \(error)")
-            }
+        if let entry = DictionaryEntry(wordResult: result.wordResult) {
+            response.dictionaryEntry = entry
         }
 
         if service is AppleDictionary {
             response.HTMLStrings = result.htmlStrings
+        }
+
+        let queryModel = result.queryModel
+        let text = queryModel.queryText
+        let shouldRecord = !service.isStream() || result.isStreamFinished
+        let hasContent = !text.isEmpty
+            && (result.wordResult != nil || !(result.translatedText ?? "").isEmpty)
+        if shouldRecord, hasContent, result.error == nil {
+            VocabularyNotebookService.shared.append(queryModel: queryModel, result: result)
         }
 
         return response
@@ -90,17 +92,49 @@ func routes(_ app: Application) throws {
         ])
 
         let chatStream = try await streamService.streamTranslate(request: request)
-        let jsonStream = chatStreamToJSONStream(
-            chatStream: chatStream,
-            fallbackModel: streamService.model
-        )
+        let fallbackModel = streamService.model
 
         let asyncBodyStream: @Sendable (AsyncBodyStreamWriter) async throws -> () = { writer in
-            for await json in jsonStream {
-                // SSE format https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using-server-sent_events
-                let data = "data: \(json)\n\n"
-                try await writer.write(.buffer(.init(string: data)))
+            var accumulatedText = ""
+            var streamError: Error?
+            do {
+                for try await chatResult in chatStream {
+                    if let content = chatResult.content {
+                        accumulatedText += content
+                    }
+                    if let json = chatResult.jsonString {
+                        // SSE format https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using-server-sent_events
+                        let data = "data: \(json)\n\n"
+                        try await writer.write(.buffer(.init(string: data)))
+                    }
+                }
+            } catch {
+                streamError = error
+                if let errorJson = makeJSONErrorMessage(error, fallbackModel: fallbackModel) {
+                    let data = "data: \(errorJson)\n\n"
+                    try await writer.write(.buffer(.init(string: data)))
+                }
             }
+
+            // Record the vocabulary entry after the stream finishes. The HTTP stream
+            // path never populates `streamService.result.translatedResults`, so backfill
+            // it from the accumulated chunks before appending. A stream error leaves
+            // `result.error` unset, so it must be gated separately to avoid recording an
+            // incomplete translation.
+            if streamError == nil, let result = streamService.result {
+                let shouldRecord = !streamService.isStream() || result.isStreamFinished
+                let hasContent = !accumulatedText.isEmpty
+                if shouldRecord, hasContent, result.error == nil {
+                    result.translatedResults = accumulatedText
+                        .split(separator: "\n", omittingEmptySubsequences: false)
+                        .map(String.init)
+                    VocabularyNotebookService.shared.append(
+                        queryModel: result.queryModel,
+                        result: result
+                    )
+                }
+            }
+
             try await writer.write(.end)
         }
 
@@ -144,31 +178,6 @@ func routes(_ app: Application) throws {
     app.get("selectedText") { _ async throws -> GetSelectedTextResponse in
         let selectedText = try await SelectedTextManager.shared.getSelectedText(strategy: .auto)
         return GetSelectedTextResponse(selectedText: selectedText)
-    }
-}
-
-/// Convert chat stream to JSON messages, wrapping errors in a chunk-compatible
-/// JSON object so chunk-based stream clients can still decode the payload.
-private func chatStreamToJSONStream(
-    chatStream: AsyncThrowingStream<ChatStreamResult, Error>,
-    fallbackModel: String
-)
-    -> AsyncStream<String> {
-    AsyncStream<String> { continuation in
-        Task {
-            defer { continuation.finish() }
-            do {
-                for try await chatResult in chatStream {
-                    if let json = chatResult.jsonString {
-                        continuation.yield(json)
-                    }
-                }
-            } catch {
-                if let errorJson = makeJSONErrorMessage(error, fallbackModel: fallbackModel) {
-                    continuation.yield(errorJson)
-                }
-            }
-        }
     }
 }
 
