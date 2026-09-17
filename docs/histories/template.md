@@ -7,16 +7,18 @@
 ### 执行上下文
 
 <!--
-- Agent Name：优先填写当前对话上下文明确声明的主执行 agent 名称；不得把客户端、会话 ID 或
-  内部角色当作 agent 名称，无法确认时填 Unknown。
-- Model：优先填写当前对话上下文明确提供的完整模型 ID；无法取得完整 ID 时，使用上下文明确提供的
-  base model。不得根据客户端名称、可用模型列表或命名习惯推测，两者均无法确认时填 Unknown。
+- Agent Name：填写当前主执行 Agent 的运行上下文明确提供的名称，并原样记录。客户端名称只有在运行上下文
+  明确将其声明为当前 Agent 身份时才可使用。不得根据应用名称、进程名、默认配置、会话 ID、内部角色或
+  历史记录推测；无法确认时填写 Unknown。
+- Model ID：填写当前主执行 turn 的运行上下文或响应元数据明确提供的完整模型 ID，并原样记录。不得根据
+  客户端名称、默认配置、启动参数、可用模型列表、模型家族或历史记录推测。客户端仅提供 Auto、模型别名、
+  基础模型或未向 Agent 暴露实际模型 ID 时，填写 Unknown。
 - Environment：使用 `sw_vers -productVersion` 和 `xcodebuild -version` 记录当前执行环境；无法取得的值填
   Unknown。执行中切换环境时更新该字段，并在“验证”中说明影响。
 -->
 
 - **Agent Name:** `<name or Unknown>`
-- **Model:** `<model-id, base-model, or Unknown>`
+- **Model ID:** `<model-id or Unknown>`
 - **Environment:** `macOS <version or Unknown> / Xcode <version or Unknown> (<build-version or Unknown>)`
 
 ### 用户请求
