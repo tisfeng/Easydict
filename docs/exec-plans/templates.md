@@ -8,6 +8,21 @@
 - 负责人：<name>
 - 关联 Issue/PR：<link or none>
 
+## 执行上下文
+
+<!--
+- Agent Name：优先填写当前对话上下文明确声明的主执行 agent 名称；不得把客户端、会话 ID 或
+  内部角色当作 agent 名称，无法确认时填 Unknown。
+- Model：优先填写当前对话上下文明确提供的完整模型 ID；无法取得完整 ID 时，使用上下文明确提供的
+  base model。不得根据客户端名称、可用模型列表或命名习惯推测，两者均无法确认时填 Unknown。
+- Environment：使用 `sw_vers -productVersion` 和 `xcodebuild -version` 记录当前执行环境；无法取得的值填
+  Unknown。执行中切换环境时更新该字段，并在“验证”中说明影响。
+-->
+
+- **Agent Name:** `<name or Unknown>`
+- **Model:** `<model-id, base-model, or Unknown>`
+- **Environment:** `macOS <version or Unknown> / Xcode <version or Unknown> (<build-version or Unknown>)`
+
 ## 背景
 
 说明问题、当前状态以及为什么需要这项工作。

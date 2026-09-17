@@ -11,11 +11,13 @@
   内部角色当作 agent 名称，无法确认时填 Unknown。
 - Model：优先填写当前对话上下文明确提供的完整模型 ID；无法取得完整 ID 时，使用上下文明确提供的
   base model。不得根据客户端名称、可用模型列表或命名习惯推测，两者均无法确认时填 Unknown。
-- 环境信息仅在影响结果时写入“验证”。
+- Environment：使用 `sw_vers -productVersion` 和 `xcodebuild -version` 记录当前执行环境；无法取得的值填
+  Unknown。执行中切换环境时更新该字段，并在“验证”中说明影响。
 -->
 
 - **Agent Name:** `<name or Unknown>`
 - **Model:** `<model-id, base-model, or Unknown>`
+- **Environment:** `macOS <version or Unknown> / Xcode <version or Unknown> (<build-version or Unknown>)`
 
 ### 用户请求
 
