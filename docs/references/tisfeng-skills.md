@@ -1,10 +1,10 @@
 # `tisfeng/skills` 来源参考
 
-- 核对日期：2026-09-15。
+- 核对日期：2026-09-17。
 - 来源：`https://github.com/tisfeng/skills`。
-- 采用版本：`v0.6.0`。
-- annotated tag object：`1e8cbe576a1558c731a520ef8d008a43be73c46b`。
-- peeled commit：`b4a4791265ca376f3deb4700791cce6e5a470be7`。
+- 采用版本：`v0.6.1`。
+- annotated tag object：`46a1ad4a001609e97b0d5a6a577a786bfe7287d6`。
+- peeled commit：`3105de8b2d6e4e03ebf1d9242d9ed9023978f8b1`。
 - Tag 签名状态：annotated、unsigned；核验时同时固定 tag 和 peeled commit。
 - Skills 安装器：`skills@1.5.25`。
 
@@ -29,6 +29,11 @@ detached checkout 在 `apply` 阶段创建或复用任务分支，并增加相�
 `背景/变更/影响` 与 `context/change/impact` 标记，并支持位于全部语言区块之后的单一全局
 `References:` 尾段。其余五个受管 Skill 内容不变，但 lock 中的固定 ref 同步升级。
 
+`v0.6.0 → v0.6.1` 让 `review-pr` 在当前 GitHub 用户是 PR 作者、同名本地分支可以安全
+fast-forward 且 upstream 仓库与分支等价时复用该分支；他人 PR、身份不明、错误 upstream、领先或
+分叉仍走 collision fallback。`worktree-rebase-merge` 仅移除 UI 展示名称中的斜杠，其余四个
+受管 Skill 内容不变，但 lock 中的固定 ref 同步升级。
+
 `code-simplifier` 同时包含 `electron-typescript.md` 与 `swift-xcode.md` 条件规则。Easydict
 不删减不适用的 Electron reference；具体任务只按 Skill 路由读取适用内容。
 
@@ -44,7 +49,7 @@ Skill 源码，不属于消费方安装内容。Easydict 继续使用 `--copy --
 
 ```bash
 npx -y skills@1.5.25 add \
-  https://github.com/tisfeng/skills/tree/v0.6.0 \
+  https://github.com/tisfeng/skills/tree/v0.6.1 \
   --skill code-simplifier git-commit review review-pr submit-pr worktree-rebase-merge \
   --agent codex --yes --copy --full-depth
 ```
@@ -52,15 +57,16 @@ npx -y skills@1.5.25 add \
 npm 默认缓存可能包含 root-owned 文件并返回 `EPERM`；用独立的 `npm_config_cache` 运行安装器。
 
 `skills-lock.json` 记录 tag、入口路径和内容哈希（sha256；把 Skill 目录内全部文件按相对路径
-排序后拼接路径与内容再哈希）。2026-09-15 重算六个 `tisfeng/skills` 目录并核对未修改的
+排序后拼接路径与内容再哈希）。2026-09-17 重算六个 `tisfeng/skills` 目录并核对未修改的
 `fireworks-tech-graph` lock，全部一致。
 
 `submit-pr` 需要 Python 3.10 或更高版本；同一任务的 `plan` 与 `apply` 使用同一个已核验
 解释器，项目命令示例优先使用 Python 3.12。Easydict 的系统 `/usr/bin/python3` 3.9.6 不满足
-该要求，不通过本地修改受管脚本绕过运行时依赖。2026-09-13 使用 Python 3.12 运行
-本次使用 Python 3.14 运行内容发生变化的 `git-commit` 19 项测试并完成语法检查，全部通过。
+该要求，不通过本地修改受管脚本绕过运行时依赖。2026-09-15 使用 Python 3.14 运行内容发生变化的
+`git-commit` 19 项测试并完成语法检查，全部通过。
 上游仓库级格式校验不属于安装器复制的 Skill 目录；本项目另行核对 frontmatter、
-`agents/openai.yaml` 和相对链接。
+`agents/openai.yaml` 和相对链接。2026-09-17 使用 Python 3.12.3 运行内容发生变化的
+`review-pr` 53 项测试，并完成 Shell/Python 语法及两个变更 Skill 的结构校验。
 
 ## 重新核对条件
 

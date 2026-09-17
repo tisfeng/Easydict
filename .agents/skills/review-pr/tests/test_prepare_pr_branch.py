@@ -103,8 +103,21 @@ class PreparePRBranchTests(unittest.TestCase):
                   printf '%s\\n' "$*" >> "$GH_VIEW_LOG"
                 fi
                 if [ "${GH_MUST_NOT_BE_CALLED:-}" = "1" ]; then
-                  printf '%s\\n' 'unexpected gh pr view' >&2
+                  printf '%s\\n' 'unexpected gh call' >&2
                   exit 96
+                fi
+                if [ "$#" -eq 4 ] && [ "$1" = "api" ] && [ "$2" = "user" ] && \\
+                   [ "$3" = "--jq" ] && [ "$4" = ".login" ]; then
+                  if [ "${GH_API_USER_FAIL:-}" = "1" ]; then
+                    exit 97
+                  fi
+                  printf '%s\\n' "$GH_VIEWER_LOGIN"
+                  exit 0
+                fi
+                if [ "${GH_PR_VIEW_MUST_NOT_BE_CALLED:-}" = "1" ] && \\
+                   [ "$1" = "pr" ] && [ "$2" = "view" ]; then
+                  printf '%s\\n' 'unexpected gh pr view' >&2
+                  exit 98
                 fi
                 if [ "$#" -lt 4 ] || [ "$1" != "pr" ] || [ "$2" != "view" ]; then
                   exit 64
@@ -124,9 +137,10 @@ class PreparePRBranchTests(unittest.TestCase):
                 if [ "$1" != "--json" ]; then
                   exit 68
                 fi
-                printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' \\
+                printf '%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n' \\
                   "$GH_HEAD_OWNER" "$GH_HEAD_REPO" "$GH_HEAD_BRANCH" \\
-                  "$GH_HEAD_OID" "$GH_BASE_BRANCH" "$GH_PR_NUMBER" "$GH_PR_URL"
+                  "$GH_HEAD_OID" "$GH_BASE_BRANCH" "$GH_PR_NUMBER" "$GH_PR_URL" \\
+                  "$GH_PR_AUTHOR"
                 """
             ),
             encoding="utf-8",
@@ -231,6 +245,8 @@ class PreparePRBranchTests(unittest.TestCase):
                 "GH_BASE_BRANCH": "dev",
                 "GH_PR_NUMBER": "42",
                 "GH_PR_URL": "https://github.com/iftechio/Scoco/pull/42",
+                "GH_PR_AUTHOR": "contributor",
+                "GH_VIEWER_LOGIN": "contributor",
                 "GIT_TERMINAL_PROMPT": "0",
                 "GIT_FETCH_LOG": str(self.fetch_log),
                 "GH_VIEW_LOG": str(self.gh_log),
@@ -244,6 +260,10 @@ class PreparePRBranchTests(unittest.TestCase):
         pr_ref: Optional[str] = None,
         expected_repo: Optional[str] = None,
         metadata_head: Optional[str] = None,
+        pr_author: Optional[str] = None,
+        viewer_login: Optional[str] = None,
+        fail_viewer_lookup: bool = False,
+        reject_pr_view: bool = False,
         reject_gh: bool = False,
     ) -> subprocess.CompletedProcess[str]:
         environment = self._environment()
@@ -253,6 +273,14 @@ class PreparePRBranchTests(unittest.TestCase):
         environment["GH_EXPECTED_VIEW_REF"] = pr_number
         if metadata_head is not None:
             environment["GH_HEAD_OID"] = metadata_head
+        if pr_author is not None:
+            environment["GH_PR_AUTHOR"] = pr_author
+        if viewer_login is not None:
+            environment["GH_VIEWER_LOGIN"] = viewer_login
+        if fail_viewer_lookup:
+            environment["GH_API_USER_FAIL"] = "1"
+        if reject_pr_view:
+            environment["GH_PR_VIEW_MUST_NOT_BE_CALLED"] = "1"
         if reject_gh:
             environment["GH_MUST_NOT_BE_CALLED"] = "1"
         if expected_repo is not None:
@@ -279,8 +307,10 @@ class PreparePRBranchTests(unittest.TestCase):
         pr_head_sha: Optional[str] = None,
         url: Optional[str] = None,
         path_suffix: str = "",
+        author: object | None = None,
     ) -> tuple[Path, str]:
         frozen_head = head_sha or self.head_sha
+        saved_author = {"login": "contributor"} if author is None else author
         snapshot = {
             "schema_version": 1,
             "repo": repo,
@@ -291,6 +321,7 @@ class PreparePRBranchTests(unittest.TestCase):
                 "url": url or f"https://github.com/{repo}/pull/{number}",
                 "headRefOid": pr_head_sha or frozen_head,
                 "headRefName": "feat/review-fixture",
+                "author": saved_author,
                 "headRepositoryOwner": {"login": "contributor"},
                 "headRepository": {"name": "Scoco"},
                 "baseRefName": "dev",
@@ -331,6 +362,30 @@ class PreparePRBranchTests(unittest.TestCase):
     def _assert_clean_status(self) -> None:
         self.assertEqual(self._git("status", "--porcelain").stdout, "")
 
+    def _create_same_name_branch_with_upstream(
+        self,
+        *,
+        remote_name: str,
+        remote_url: str,
+    ) -> None:
+        branch = "feat/review-fixture"
+        self._git("remote", "add", remote_name, remote_url)
+        self._git(
+            "fetch",
+            remote_name,
+            f"refs/heads/{branch}:refs/remotes/{remote_name}/{branch}",
+        )
+        self._git("branch", "--track", branch, f"{remote_name}/{branch}")
+
+    def _assert_collision_fallback(self, receipt: dict[str, object]) -> None:
+        expected_branch = "review/pr-42-" + self.head_sha[:10]
+        checkout = receipt["checkout"]
+        self.assertIsInstance(checkout, dict)
+        self.assertEqual(checkout["branch"], expected_branch)
+        self.assertEqual(checkout["upstream"], "contributor/feat/review-fixture")
+        self.assertIsNotNone(receipt["collision_reason"])
+        self.assertFalse(receipt["self_authored_branch_reused"])
+
     def test_json_receipt_freezes_normal_review_identity_and_fetches_each_ref_once(self) -> None:
         result = self._prepare("--json", "--expected-head", self.head_sha)
         receipt = self._json_receipt(result)
@@ -347,9 +402,11 @@ class PreparePRBranchTests(unittest.TestCase):
             receipt["merge_base_sha"],
         )
         self.assertEqual(receipt["collision_reason"], None)
+        self.assertFalse(receipt["self_authored_branch_reused"])
         self.assertEqual(receipt["source_unchanged"], None)
         self.assertFalse(receipt["integration"])
         self.assertEqual(receipt["actions"], {"head_fetches": 1, "base_fetches": 1})
+        self.assertNotIn("api user", "\n".join(self._gh_calls()))
         checkout = receipt["checkout"]
         self.assertIsInstance(checkout, dict)
         self.assertEqual(Path(checkout["path"]).resolve(), self.checkout.resolve())
@@ -363,6 +420,162 @@ class PreparePRBranchTests(unittest.TestCase):
             },
         )
         self._assert_fetches_once_per_remote()
+        self._assert_clean_status()
+
+    def test_self_authored_pr_reuses_same_name_branch_with_equivalent_remote_alias(self) -> None:
+        self._create_same_name_branch_with_upstream(
+            remote_name="personal",
+            remote_url="https://github.com/contributor/Scoco.git",
+        )
+
+        result = self._prepare("--json")
+        receipt = self._json_receipt(result)
+
+        self.assertEqual(receipt["collision_reason"], None)
+        self.assertTrue(receipt["self_authored_branch_reused"])
+        checkout = receipt["checkout"]
+        self.assertIsInstance(checkout, dict)
+        self.assertEqual(checkout["branch"], "feat/review-fixture")
+        self.assertEqual(checkout["head_sha"], self.head_sha)
+        self.assertEqual(checkout["upstream"], "personal/feat/review-fixture")
+        self.assertEqual(
+            self._git("branch", "--show-current").stdout.strip(),
+            "feat/review-fixture",
+        )
+        self._assert_clean_status()
+
+    def test_saved_snapshot_reuses_self_authored_same_name_branch_without_pr_view(self) -> None:
+        self._create_same_name_branch_with_upstream(
+            remote_name="personal",
+            remote_url="https://github.com/contributor/Scoco.git",
+        )
+        snapshot_path, snapshot_hash = self._write_saved_snapshot()
+
+        result = self._prepare(
+            "--json",
+            "--snapshot-file",
+            str(snapshot_path),
+            "--snapshot-sha256",
+            snapshot_hash,
+            "--expected-head",
+            self.head_sha,
+            pr_ref="iftechio/Scoco#42",
+            reject_pr_view=True,
+        )
+        receipt = self._json_receipt(result)
+
+        self.assertTrue(receipt["self_authored_branch_reused"])
+        checkout = receipt["checkout"]
+        self.assertIsInstance(checkout, dict)
+        self.assertEqual(checkout["branch"], "feat/review-fixture")
+        self.assertEqual(checkout["upstream"], "personal/feat/review-fixture")
+        self.assertNotIn("pr view", "\n".join(self._gh_calls()))
+        self.assertIn("api user --jq .login", self._gh_calls())
+        self._assert_clean_status()
+
+    def test_saved_snapshot_with_invalid_author_keeps_collision_fallback(self) -> None:
+        self._create_same_name_branch_with_upstream(
+            remote_name="personal",
+            remote_url="https://github.com/contributor/Scoco.git",
+        )
+        snapshot_path, snapshot_hash = self._write_saved_snapshot(author="invalid")
+
+        result = self._prepare(
+            "--json",
+            "--snapshot-file",
+            str(snapshot_path),
+            "--snapshot-sha256",
+            snapshot_hash,
+            "--expected-head",
+            self.head_sha,
+            pr_ref="iftechio/Scoco#42",
+            reject_pr_view=True,
+        )
+        receipt = self._json_receipt(result)
+
+        self._assert_collision_fallback(receipt)
+        self.assertEqual(self._gh_calls(), [])
+        self._assert_clean_status()
+
+    def test_self_authored_pr_sets_upstream_on_safe_same_name_branch_without_one(self) -> None:
+        self._git("fetch", str(self.fork_remote), "feat/review-fixture")
+        merge_base = self._git("merge-base", self.base_sha, self.head_sha).stdout.strip()
+        self._git("branch", "feat/review-fixture", merge_base)
+
+        result = self._prepare("--json")
+        receipt = self._json_receipt(result)
+
+        self.assertEqual(receipt["collision_reason"], None)
+        self.assertTrue(receipt["self_authored_branch_reused"])
+        checkout = receipt["checkout"]
+        self.assertIsInstance(checkout, dict)
+        self.assertEqual(checkout["branch"], "feat/review-fixture")
+        self.assertEqual(checkout["head_sha"], self.head_sha)
+        self.assertEqual(checkout["upstream"], "contributor/feat/review-fixture")
+        self._assert_clean_status()
+
+    def test_other_authors_pr_keeps_collision_fallback_for_equivalent_remote_alias(self) -> None:
+        self._create_same_name_branch_with_upstream(
+            remote_name="personal",
+            remote_url="https://github.com/contributor/Scoco.git",
+        )
+
+        result = self._prepare("--json", viewer_login="reviewer")
+        receipt = self._json_receipt(result)
+
+        self._assert_collision_fallback(receipt)
+        self.assertIn(
+            "personal/feat/review-fixture",
+            str(receipt["collision_reason"]),
+        )
+        self._assert_clean_status()
+
+    def test_self_authored_pr_keeps_collision_fallback_for_wrong_upstream_repository(self) -> None:
+        branch = "feat/review-fixture"
+        self._git("fetch", str(self.fork_remote), branch)
+        self._git("update-ref", f"refs/remotes/origin/{branch}", self.head_sha)
+        self._git("branch", "--track", branch, f"origin/{branch}")
+
+        result = self._prepare("--json")
+        receipt = self._json_receipt(result)
+
+        self._assert_collision_fallback(receipt)
+        self.assertIn(
+            "origin/feat/review-fixture",
+            str(receipt["collision_reason"]),
+        )
+        self._assert_clean_status()
+
+    def test_self_authored_pr_keeps_collision_fallback_when_identity_lookup_fails(self) -> None:
+        self._create_same_name_branch_with_upstream(
+            remote_name="personal",
+            remote_url="https://github.com/contributor/Scoco.git",
+        )
+
+        result = self._prepare("--json", fail_viewer_lookup=True)
+        receipt = self._json_receipt(result)
+
+        self._assert_collision_fallback(receipt)
+        self._assert_clean_status()
+
+    def test_self_authored_pr_keeps_collision_fallback_for_ahead_same_name_branch(self) -> None:
+        self._create_same_name_branch_with_upstream(
+            remote_name="personal",
+            remote_url="https://github.com/contributor/Scoco.git",
+        )
+        self._git("switch", "feat/review-fixture")
+        (self.checkout / "local-only.txt").write_text("local\n", encoding="utf-8")
+        self._commit(self.checkout, "test: add local-only commit")
+        self._git("switch", "dev")
+
+        result = self._prepare("--json")
+        receipt = self._json_receipt(result)
+
+        self._assert_collision_fallback(receipt)
+        self.assertIn(
+            "does not safely fast-forward",
+            str(receipt["collision_reason"]),
+        )
         self._assert_clean_status()
 
     def test_expected_head_mismatch_fails_before_fetch_or_git_writes(self) -> None:
