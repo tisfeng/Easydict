@@ -16,7 +16,7 @@ import SwiftUI
 @main
 enum EasydictCmpatibilityEntry {
     static func main() {
-        AppPathMigrationCoordinator.prepareForLaunch()
+        AppPathMigration.prepareForLaunch()
         parseArmguments()
 
         // Capturing crash logs must be placed first.
