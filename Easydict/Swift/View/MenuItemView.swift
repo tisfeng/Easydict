@@ -28,15 +28,16 @@ struct MenuItemView: View {
             Divider()
 
             inputItem.keyboardShortcut(.inputTranslate)
-            screenshotItem.keyboardShortcut(.snipTranslate)
             selectWordItem.keyboardShortcut(.selectTranslate)
             pasteboardTranslateItem.keyboardShortcut(.pasteboardTranslate)
-            polishAndReplaceItem.keyboardShortcut(.polishAndReplace)
-            translateAndReplaceItem.keyboardShortcut(.translateAndReplace)
-            miniWindowItem.keyboardShortcut(.showMiniWindow)
+
+            if mouseSelectTranslateWindowType != shortcutSelectTranslateWindowType {
+                miniWindowItem.keyboardShortcut(.showMiniWindow)
+            }
 
             Divider()
 
+            screenshotItem.keyboardShortcut(.snipTranslate)
             silentScreenshotOCRItem.keyboardShortcut(.silentScreenshotOCR)
 
             if showOCRMenuItems {
@@ -44,6 +45,11 @@ struct MenuItemView: View {
                 pasteboardOCRItem
                 showOCRWindowItem
             }
+
+            Divider()
+
+            translateAndReplaceItem.keyboardShortcut(.translateAndReplace)
+            polishAndReplaceItem.keyboardShortcut(.polishAndReplace)
 
             Divider()
 
@@ -78,6 +84,8 @@ struct MenuItemView: View {
     @Environment(\.openURL) private var openURL
 
     @Default(.showOCRMenuItems) private var showOCRMenuItems
+    @Default(.mouseSelectTranslateWindowType) private var mouseSelectTranslateWindowType
+    @Default(.shortcutSelectTranslateWindowType) private var shortcutSelectTranslateWindowType
 
     private var versionString: String {
         let defaultLabel = "Easydict  \(currentVersion)"
