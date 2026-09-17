@@ -81,6 +81,14 @@ final class VocabularyNotebookService: NSObject {
         }
     }
 
+    /// Blocks until all previously queued appends have been written to disk.
+    ///
+    /// Called from `applicationWillTerminate` so a query that completes right before
+    /// the app quits is still persisted instead of being dropped with the process.
+    func flush() {
+        appendQueue.sync {}
+    }
+
     // MARK: Private
 
     /// File name of the JSONL notebook in the selected directory.

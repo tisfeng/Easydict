@@ -547,7 +547,7 @@ struct AdvancedTab: View {
             alert.messageText = String(
                 localized: "setting.advance.vocabulary_notebook_directory_not_writable"
             )
-            alert.addButton(withTitle: "OK")
+            alert.addButton(withTitle: String(localized: "ok"))
             alert.runModal()
             return
         }
