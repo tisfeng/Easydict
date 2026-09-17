@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BFC431E797E945B795B81589 /* AppPathManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED70C029AC2438A8EBE25F1 /* AppPathManager.swift */; };
+		44476FC198C54239B507098E /* AppPathManager+ApplicationSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD3C7A500554103B1723150 /* AppPathManager+ApplicationSupport.swift */; };
+		78F5EB4FCA084046AD550B98 /* AppPathManager+Caches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D3CBE03FBC94E69A460538F /* AppPathManager+Caches.swift */; };
+		B11F773A639D431BB1D320F3 /* AppPathManager+Preparation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE8364C45FA492183DC4477 /* AppPathManager+Preparation.swift */; };
+		A77009152026000000000001 /* AppPathMigrationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A77009152026000000000002 /* AppPathMigrationCoordinator.swift */; };
 		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
 		02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000003 /* MarkdownLabel.swift */; };
 		02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000004 /* MarkdownToggleButton.swift */; };
@@ -624,6 +629,7 @@
 		0C93675282708F04BAEBDFB6 /* CodexManagedRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DB7B7B4B9BCB76E7824231 /* CodexManagedRuntime.swift */; };
 		C0DE13030004000000000001 /* CodexManagedAppServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DE13030003000000000001 /* CodexManagedAppServer.swift */; };
 		C0DE13030004000000000002 /* CodexManagedAppServerProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DE13030003000000000002 /* CodexManagedAppServerProcess.swift */; };
+		C0DE13032026091400000001 /* CodexDirectoryMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DE13032026091400000002 /* CodexDirectoryMigration.swift */; };
 		0610BFD2DE5CD00950F314E2 /* CodexManagedTranslation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D13C01013610091563E8C33 /* CodexManagedTranslation.swift */; };
 		126B89658F8B4B520F4E1FBC /* CodexRequestCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB71FF785ED1821858ABF77A /* CodexRequestCoordinator.swift */; };
 		DE948D64CB926DD8B42428EB /* CodexManagedAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96096EFA0903141A7AC9EC06 /* CodexManagedAccount.swift */; };
@@ -665,6 +671,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FED70C029AC2438A8EBE25F1 /* AppPathManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathManager.swift; sourceTree = "<group>"; };
+		0DD3C7A500554103B1723150 /* AppPathManager+ApplicationSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+ApplicationSupport.swift"; sourceTree = "<group>"; };
+		8D3CBE03FBC94E69A460538F /* AppPathManager+Caches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+Caches.swift"; sourceTree = "<group>"; };
+		3BE8364C45FA492183DC4477 /* AppPathManager+Preparation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+Preparation.swift"; sourceTree = "<group>"; };
+		A77009152026000000000002 /* AppPathMigrationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathMigrationCoordinator.swift; sourceTree = "<group>"; };
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
@@ -1385,6 +1396,7 @@
 		13DB7B7B4B9BCB76E7824231 /* CodexManagedRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedRuntime.swift; sourceTree = "<group>"; };
 		C0DE13030003000000000001 /* CodexManagedAppServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedAppServer.swift; sourceTree = "<group>"; };
 		C0DE13030003000000000002 /* CodexManagedAppServerProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedAppServerProcess.swift; sourceTree = "<group>"; };
+		C0DE13032026091400000002 /* CodexDirectoryMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexDirectoryMigration.swift; sourceTree = "<group>"; };
 		3D13C01013610091563E8C33 /* CodexManagedTranslation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedTranslation.swift; sourceTree = "<group>"; };
 		EB71FF785ED1821858ABF77A /* CodexRequestCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexRequestCoordinator.swift; sourceTree = "<group>"; };
 		96096EFA0903141A7AC9EC06 /* CodexManagedAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedAccount.swift; sourceTree = "<group>"; };
@@ -3639,6 +3651,7 @@
 				13DB7B7B4B9BCB76E7824231 /* CodexManagedRuntime.swift */,
 				C0DE13030003000000000001 /* CodexManagedAppServer.swift */,
 				C0DE13030003000000000002 /* CodexManagedAppServerProcess.swift */,
+				C0DE13032026091400000002 /* CodexDirectoryMigration.swift */,
 				CFF517B31357FC07D98440EE /* CodexComponentManager.swift */,
 				DDF5306040D79B1D50487C1E /* CodexComponentStore.swift */,
 				6BFA978362272A43BC0169C0 /* CodexRuntimeDescriptor.swift */,
@@ -3769,6 +3782,7 @@
 		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				C45DF36C72434BC789260597 /* AppPathManager */,
 				4D4D6D6F0000000000000024 /* DarkReader */,
 				0377C0912F13EAFE00302A2C /* Environment */,
 				0377C08D2F13EAAC00302A2C /* Views */,
@@ -3788,6 +3802,18 @@
 				03A3E1542BEBDB2000E7E210 /* Throttler.swift */,
 			);
 			path = Utility;
+			sourceTree = "<group>";
+		};
+		C45DF36C72434BC789260597 /* AppPathManager */ = {
+			isa = PBXGroup;
+			children = (
+				FED70C029AC2438A8EBE25F1 /* AppPathManager.swift */,
+				0DD3C7A500554103B1723150 /* AppPathManager+ApplicationSupport.swift */,
+				8D3CBE03FBC94E69A460538F /* AppPathManager+Caches.swift */,
+				3BE8364C45FA492183DC4477 /* AppPathManager+Preparation.swift */,
+				A77009152026000000000002 /* AppPathMigrationCoordinator.swift */,
+			);
+			path = AppPathManager;
 			sourceTree = "<group>";
 		};
 		EA9943E12B534C2900EE7B97 /* Model */ = {
@@ -4370,6 +4396,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFC431E797E945B795B81589 /* AppPathManager.swift in Sources */,
+				44476FC198C54239B507098E /* AppPathManager+ApplicationSupport.swift in Sources */,
+				78F5EB4FCA084046AD550B98 /* AppPathManager+Caches.swift in Sources */,
+				B11F773A639D431BB1D320F3 /* AppPathManager+Preparation.swift in Sources */,
+				A77009152026000000000001 /* AppPathMigrationCoordinator.swift in Sources */,
 				635234F65A9D4655A045FDAF /* MDictReader.swift in Sources */,
 				63D2A8E12F1C4B2E8C9A7101 /* MDictMetadataCache.swift in Sources */,
 				A9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift in Sources */,
@@ -4630,6 +4661,7 @@
 				0C93675282708F04BAEBDFB6 /* CodexManagedRuntime.swift in Sources */,
 				C0DE13030004000000000001 /* CodexManagedAppServer.swift in Sources */,
 				C0DE13030004000000000002 /* CodexManagedAppServerProcess.swift in Sources */,
+				C0DE13032026091400000001 /* CodexDirectoryMigration.swift in Sources */,
 				C4BB908FFBD2D1A171F74CBC /* CodexComponentManager.swift in Sources */,
 				F5467B113D285C01338E3C55 /* CodexComponentStore.swift in Sources */,
 				C412FD6946719777B1361695 /* CodexRuntimeDescriptor.swift in Sources */,

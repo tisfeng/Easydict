@@ -10,7 +10,7 @@
 - 意图模式：implementation
 - 交付授权：push
 - 目标：仅在上游 `tisfeng/issues-translate-action@v2.9.1` 已发布并核验后，更新 Easydict 的 Issue 翻译工作流引用。
-- 允许写入：`.github/workflows/issue-translator.yml`、本计划及其 completed 归档、`docs/histories/2026-09/2026-09-09-issue-translator-v2-9-1.md`。
+- 允许写入：`.github/workflows/issue-translator.yml`、本计划及其 completed 归档、`docs/histories/2026-09/2026-09-09-issue-translator-v2.9.1.md`。
 - 禁止操作：不改动工作流触发器、权限、输入配置、产品代码或其他自动化；不触发真实 workflow。
 
 ## 写入前快照

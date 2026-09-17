@@ -24,7 +24,7 @@
 - 允许修改路径：`.agents/skills/`（六项受管 Skill）、`skills-lock.json`、`.codex/`、
   `AGENTS.md`、`CONTRIBUTING.md`、`docs/agents/`、`docs/references/`、`docs/design-docs/`、
   `docs/exec-plans/`、`docs/histories/`、本计划与同任务 history
-- 同任务 history：`docs/histories/2026-09/2026-09-11-remove-subagents-upgrade-skills-v0-3-8.md`
+- 同任务 history：`docs/histories/2026-09/2026-09-11-remove-subagents-upgrade-skills-v0.3.8.md`
 - 禁止动作：push、创建 tag、创建 GitHub Release、同步其他仓库、改动 `fireworks-tech-graph`
   与 `release-easydict`
 - 预期交付物：升级后的受管快照与 lock、单资产宿主规则、更新的来源参考与设计文档、本地提交

@@ -12,9 +12,13 @@ Easydict 当前固定使用 `tisfeng/skills v0.5.0` 的六个通用 Skill。上�
 
 ## 目标与范围
 
-- 允许修改六个 `tisfeng/skills` 受管目录、`skills-lock.json`、来源参考以及本任务 plan/history。
-- 不修改 `fireworks-tech-graph`、`release-easydict`、`.claude/skills`、产品代码或运行时资产。
-- 不 push、不创建 PR、不发布；验证通过后创建本地 Angular-style 提交。
+- 目标结果：将六个 `tisfeng/skills` 受管 Skill、lock 和来源参考统一固定到 v0.6.0。
+- 允许修改路径：六个 `tisfeng/skills` 受管目录、`skills-lock.json`、
+  `docs/references/tisfeng-skills.md` 及本任务 plan/history。
+- 同任务 history：`docs/histories/2026-09/2026-09-15-upgrade-tisfeng-skills-v0.6.0.md`
+- 用户限制：采用正式发布的 v0.6.0；不 push、不创建 PR、不发布。
+- 非目标：不修改 `fireworks-tech-graph`、`release-easydict`、`.claude/skills`、产品代码或运行时资产。
+- 验收标准：六个目录匹配 v0.6.0 tag tree，目录 hash 与 lock 一致，相关测试和静态检查通过。
 
 ## 工作计划
 
@@ -28,26 +32,21 @@ Easydict 当前固定使用 `tisfeng/skills v0.5.0` 的六个通用 Skill。上�
 - 固定使用正式发布的 annotated tag，不跟随可移动分支。
 - 安装器只覆盖 lock 已声明的六个 Skill，项目专属与第三方 Skill 保持不变。
 
-## 验证
-
-- 六个目录与 v0.6.0 tag tree 逐文件一致，目录 hash 与 lock 一致。
-- 运行变更 Skill 的现有测试、Python 语法检查与 `git diff --check`。
-
 ## 进度
 
 - [x] 已冻结初始状态和采用范围。
 - [x] 已同步并验证受管 Skill。
 - [x] 已完成记录、审查和本地提交准备。
 
-## 完成条件
-
-- [x] 受管目录、lock 和来源参考统一固定到 v0.6.0。
-- [x] 必要验证通过，保护路径未修改。
-- [x] 计划与 history 已归档并进入本地提交交付。
-
-## 验证结果
+## 验证
 
 - 六个受管目录逐文件匹配 tag `v0.6.0`；独立重算目录 SHA-256 后全部等于 lock。
 - Python 3.14.6：`git-commit` 19 项测试与变更脚本语法检查通过。
 - `jq -e . skills-lock.json` 与 `git diff --check` 通过；最终范围无项目专属、第三方或产品资产。
 - 提交前本地 review 无 P0-P3 finding；固定 tag 的完整复制方案已经足够。
+
+## 完成条件
+
+- [x] 受管目录、lock 和来源参考统一固定到 v0.6.0。
+- [x] 必要验证通过，保护路径未修改。
+- [x] 计划与 history 已归档并进入本地提交交付。

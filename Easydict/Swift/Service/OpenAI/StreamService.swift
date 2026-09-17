@@ -247,8 +247,9 @@ public class StreamService: QueryService {
     var model: String {
         get {
             var model = Defaults[modelKey]
-            if !validModels.contains(model) || model.isEmpty {
-                model = validModels.first ?? ""
+            let currentValidModels = validModels
+            if !currentValidModels.contains(model) || model.isEmpty {
+                model = currentValidModels.first ?? ""
                 Defaults[modelKey] = model
             }
             return model
@@ -332,7 +333,8 @@ public class StreamService: QueryService {
     }
 
     var endpoint: String {
-        Defaults[endpointKey].isEmpty ? defaultEndpoint : Defaults[endpointKey]
+        let configuredEndpoint = Defaults[endpointKey]
+        return configuredEndpoint.isEmpty ? defaultEndpoint : configuredEndpoint
     }
 
     var endpointKey: Defaults.Key<String> {

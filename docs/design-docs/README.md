@@ -8,6 +8,8 @@
 
 - [`application-architecture.md`](application-architecture.md)：当前源码布局、运行时边界和
   验证入口。
+- [`app-path-management.md`](app-path-management.md)：应用本地文件的目录布局、所有权、迁移和
+  日志导出边界。
 - [`select-text-flow.md`](select-text-flow.md)：文本选择的回退流程。
 
 ## Agent 与仓库治理
