@@ -44,13 +44,26 @@ final class AppPathManager: NSObject {
     let bundleIdentifier: String
 
     /// The bundle-scoped root in `Application Support`.
-    var applicationSupportDirectory: URL {
+    var appSupportDirectory: URL {
         applicationSupportBaseURL.appendingPathComponent(bundleIdentifier, isDirectory: true)
     }
 
     /// The bundle-scoped root in `Caches`.
     var cachesDirectory: URL {
         cachesBaseURL.appendingPathComponent(bundleIdentifier, isDirectory: true)
+    }
+
+    /// Creates a directory and any missing ancestors.
+    @nonobjc
+    func ensureDirectoryExists(
+        at directoryURL: URL,
+        attributes: [FileAttributeKey: Any]? = nil
+    ) throws {
+        try FileManager.default.createDirectory(
+            at: directoryURL,
+            withIntermediateDirectories: true,
+            attributes: attributes
+        )
     }
 
     // MARK: Private
