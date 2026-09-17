@@ -2,7 +2,7 @@
 //  AppleDictionaryTests.swift
 //  EasydictTests
 //
-//  Created by Codex on 2026/9/16.
+//  Created by tisfeng on 2026/9/16.
 //  Copyright © 2026 izual. All rights reserved.
 //
 
