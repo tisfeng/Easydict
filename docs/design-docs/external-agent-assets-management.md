@@ -19,7 +19,7 @@ Easydict 需要直接从仓库运行共享 Skills，并让安装内容可离线�
   Skill 维护，不通过本地修补或 fork 改写。
 - 独立第三方 Skill 保持自身来源；项目专属 Skill 继续由 Easydict 维护。
 
-现行治理规则以 [`docs/agents/README.md`](../agents/README.md#外部-skill-资产) 为准；上游版本
+现行治理规则见 [`docs/agents/skills.md`](../agents/skills.md)；上游版本
 和同步命令记录在 [`docs/references/`](../references/) 中。
 
 ## 取舍

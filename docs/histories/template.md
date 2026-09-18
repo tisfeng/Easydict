@@ -1,6 +1,6 @@
 ## YYYY-MM-DD | 任务：<简短动作>
 
-<!-- 文件名：YYYY-MM-DD-<slug>.md；命名规则见 docs/agents/README.md 的“Plan 与 History”。 -->
+<!-- 文件名：YYYY-MM-DD-<slug>.md；命名规则见 docs/histories/README.md 的“命名与 slug”。 -->
 
 **Links:** <issue、PR、计划或 commit>
 

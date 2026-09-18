@@ -15,7 +15,8 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 用户要求修改、修复、更新、实现或执行时，按以下顺序完成任务：
 
 1. **执行前**：首次写入前读取任务路由要求的专题规则；任何可能产生仓库差异的任务都必须读取
-   [`README.md`](docs/agents/README.md#plan-与-history)，并按其规则判断 plan 和 history。
+   [`exec-plans/README.md`](docs/exec-plans/README.md) 与
+   [`histories/README.md`](docs/histories/README.md)，并按其规则判断 plan 和 history。
 2. **实现与验证**：完成范围内的修改并运行风险匹配的验证；失败时修复并重新验证。
 3. **Review**：生产代码、复杂逻辑、跨模块或高风险变更在验证通过后使用
    [`review`](.agents/skills/review/SKILL.md) 技能审查；
@@ -30,12 +31,18 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
   要求时执行。
 - 回复使用用户当前请求的语言；已有文档保持原语言；代码标识、
   API 名称、命令、路径、品牌名称和固定输出契约保留原文。
+- 现行规则文档单一职责，跨职责使用链接，不复制条款；文档使用相对仓库路径，
+  不提交机器本地绝对路径。
+- 历史记录与设计文档只在被当前任务明确采用时才构成约束。
 
 ## 任务路由
 
 - 只读取当前任务需要的专题规则。
 - 构建、测试、工程文件与资源、Xcode 验证：[`build-and-test.md`](docs/agents/build-and-test.md)。
 - 跨语言代码质量、Swift、Objective-C、SwiftUI、API 和本地化：[`coding-guidelines.md`](docs/agents/coding-guidelines.md)。
-- 文档分层、计划、history、参考资料、外部 Skills 和同步边界：[`README.md`](docs/agents/README.md)。
+- 计划与 history 记录：[`exec-plans/README.md`](docs/exec-plans/README.md) 与
+  [`histories/README.md`](docs/histories/README.md)。
+- 参考资料与同步基线：[`references/README.md`](docs/references/README.md)。
+- 外部 Skills 和同步边界：[`skills.md`](docs/agents/skills.md)。
 - 产品代码、跨功能行为或模块边界：[`application-architecture.md`](docs/design-docs/application-architecture.md)。
 - 公共使用或贡献者文档：[`en/zh`](docs/user-docs/)。
