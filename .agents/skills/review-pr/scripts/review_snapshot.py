@@ -26,7 +26,7 @@ from pr_identity import matches_pr_url, same_repository  # noqa: E402
 
 
 PR_FIELDS = (
-    "number,title,url,body,baseRefName,baseRefOid,headRefName,headRefOid,"
+    "number,title,url,body,author,baseRefName,baseRefOid,headRefName,headRefOid,"
     "headRepository,headRepositoryOwner,isCrossRepository,isDraft,state,"
     "mergeable,mergeStateStatus,updatedAt,files,commits,"
     "closingIssuesReferences,comments,reviews"

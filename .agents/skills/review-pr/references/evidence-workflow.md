@@ -45,7 +45,7 @@ python3 "<review-pr-skill-dir>/scripts/review_snapshot.py" collect \
 
    ```bash
    gh pr view <number> --repo <base-owner>/<base-repo> \
-     --json number,title,url,body,baseRefName,baseRefOid,headRefName,headRefOid,headRepository,headRepositoryOwner,isCrossRepository,isDraft,state,mergeable,mergeStateStatus,updatedAt,files,commits,closingIssuesReferences,comments,reviews
+     --json number,title,url,body,author,baseRefName,baseRefOid,headRefName,headRefOid,headRepository,headRepositoryOwner,isCrossRepository,isDraft,state,mergeable,mergeStateStatus,updatedAt,files,commits,closingIssuesReferences,comments,reviews
    ```
 
    冻结 `number`、`url`、`headRefOid`、`baseRefName` 和 `baseRefOid`，验证编号与仓库身份。

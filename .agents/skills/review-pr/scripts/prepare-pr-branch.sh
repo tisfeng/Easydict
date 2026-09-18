@@ -81,16 +81,19 @@ read_pr_metadata() {
   else
   metadata=$(
     gh pr view "$view_ref" "${repo_args[@]+"${repo_args[@]}"}" \
-      --json baseRefName,headRefName,headRefOid,headRepository,headRepositoryOwner,number,url \
-      --jq '[.headRepositoryOwner.login, .headRepository.name, .headRefName, .headRefOid, .baseRefName, (.number | tostring), .url] | @tsv'
+      --json author,baseRefName,headRefName,headRefOid,headRepository,headRepositoryOwner,number,url \
+      --jq '[.headRepositoryOwner.login, .headRepository.name, .headRefName, .headRefOid, .baseRefName, (.number | tostring), .url, (.author.login // "")] | @tsv'
   )
   fi
-  IFS=$'\t' read -r head_owner head_repo head_branch head_oid base_branch pr_number pr_url <<< "$metadata"
+  IFS=$'\t' read -r head_owner head_repo head_branch head_oid base_branch pr_number pr_url pr_author <<< "$metadata"
   [[ -n ${head_owner:-} ]] || fail "PR head owner is empty. The fork may be unavailable."
   [[ -n ${head_repo:-} ]] || fail "PR head repository is empty. The fork may be unavailable."
   [[ -n ${head_branch:-} ]] || fail "PR head branch is empty."
   [[ -n ${head_oid:-} ]] || fail "PR head SHA is empty."
   [[ -n ${base_branch:-} ]] || fail "PR base branch is empty."
+  if [[ -n ${pr_author:-} && ! $pr_author =~ ^[A-Za-z0-9][A-Za-z0-9-]*$ ]]; then
+    pr_author=""
+  fi
   git check-ref-format "refs/heads/${head_branch}" >/dev/null || fail "Invalid PR head branch."
   git check-ref-format "refs/heads/${base_branch}" >/dev/null || fail "Invalid PR base branch."
   if [[ -n $expected_head && $head_oid != "$expected_head" ]]; then
@@ -162,43 +165,83 @@ branch_checked_out_elsewhere() {
   [[ -n $(find_branch_worktree "$branch" || true) ]]
 }
 
-# Return a non-empty collision reason when the PR head branch cannot be
-# prepared under its exact local name, or nothing when the exact-name path is
-# safe. Reads only local refs, not network state.
-unsafe_branch_reason() {
+# Return success only when the active GitHub login authored this PR. Failure
+# preserves the existing collision fallback instead of blocking preparation.
+current_user_owns_pr() {
+  local viewer_login normalized_viewer normalized_author
+
+  [[ -n ${pr_author:-} ]] || return 1
+  viewer_login=$(gh api user --jq .login 2>/dev/null) || return 1
+  [[ $viewer_login =~ ^[A-Za-z0-9][A-Za-z0-9-]*$ ]] || return 1
+  normalized_viewer=$(printf '%s' "$viewer_login" | tr '[:upper:]' '[:lower:]')
+  normalized_author=$(printf '%s' "$pr_author" | tr '[:upper:]' '[:lower:]')
+  [[ $normalized_viewer == "$normalized_author" ]]
+}
+
+# Verify an existing branch upstream by remote repository and remote branch,
+# not by the local remote alias displayed in %(upstream:short).
+upstream_targets_pr_head() {
+  local branch=$1 actual_remote actual_ref actual_url
+
+  actual_remote=$(git for-each-ref --format='%(upstream:remotename)' "refs/heads/${branch}")
+  actual_ref=$(git for-each-ref --format='%(upstream:remoteref)' "refs/heads/${branch}")
+  [[ -n $actual_remote && $actual_ref == "refs/heads/${head_branch}" ]] || return 1
+  actual_url=$(git config --get "remote.${actual_remote}.url" 2>/dev/null) || return 1
+  same_github_repo_url "$actual_url" "$head_owner" "$head_repo"
+}
+
+# Classify whether the PR head branch can be prepared under its exact local
+# name. Only a self-authored PR may reuse an equivalent upstream alias or add a
+# missing upstream; all other mismatches retain the collision fallback.
+inspect_head_branch() {
   local branch=$1
   local expected_upstream=$2
   local base=$3
   local actual_upstream
 
+  collision_reason=""
+  selected_upstream_ref=$expected_upstream
+  set_selected_upstream=false
+
   if [[ $branch == "$base" ]]; then
-    printf "PR head branch '%s' matches the base branch '%s'" "$branch" "$base"
+    collision_reason="PR head branch '${branch}' matches the base branch '${base}'"
     return 0
   fi
 
   case "$branch" in
     dev | main | master | develop | trunk)
-      printf "PR head branch '%s' is a protected local branch name" "$branch"
+      collision_reason="PR head branch '${branch}' is a protected local branch name"
       return 0
       ;;
   esac
 
   if git show-ref --verify --quiet "refs/heads/${branch}"; then
     if branch_checked_out_elsewhere "$branch"; then
-      printf "local branch '%s' is checked out in another worktree" "$branch"
+      collision_reason="local branch '${branch}' is checked out in another worktree"
       return 0
     fi
 
     actual_upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/${branch}")
-    if [[ $actual_upstream != "$expected_upstream" ]]; then
-      [[ -n $actual_upstream ]] || actual_upstream="no upstream"
-      printf "local branch '%s' has upstream '%s', not '%s'" \
-        "$branch" "$actual_upstream" "$expected_upstream"
+    if [[ $actual_upstream == "$expected_upstream" ]]; then
       return 0
     fi
-  fi
 
-  return 1
+    if current_user_owns_pr; then
+      if [[ -z $actual_upstream ]]; then
+        set_selected_upstream=true
+        receipt_self_authored_branch=true
+        return 0
+      fi
+      if upstream_targets_pr_head "$branch"; then
+        selected_upstream_ref=$actual_upstream
+        receipt_self_authored_branch=true
+        return 0
+      fi
+    fi
+
+    [[ -n $actual_upstream ]] || actual_upstream="no upstream"
+    collision_reason="local branch '${branch}' has upstream '${actual_upstream}', not '${expected_upstream}'"
+  fi
 }
 
 # Create or reuse the collision-fallback review branch
@@ -367,10 +410,12 @@ print_source_checkout() {
 
 prepare_pr_branch() {
   local current_branch branch_exists=false fetched_head local_head
-  local ahead_count behind_count actual_head collision_reason
+  local ahead_count behind_count actual_head collision_reason=""
   local remote_name=$head_owner
   local remote_ref="refs/remotes/${remote_name}/${head_branch}"
   local upstream_ref="${remote_name}/${head_branch}"
+  local selected_upstream_ref=$upstream_ref
+  local set_selected_upstream=false
 
   current_branch=$(git branch --show-current || true)
 
@@ -382,7 +427,7 @@ prepare_pr_branch() {
     fail "Worktree has uncommitted changes on branch '${current_branch:-detached HEAD}'. Commit, stash, or clean them before switching to PR branch '${head_branch}'."
   fi
 
-  collision_reason=$(unsafe_branch_reason "$head_branch" "$upstream_ref" "$base_branch" || true)
+  inspect_head_branch "$head_branch" "$upstream_ref" "$base_branch"
 
   prepare_head_ref
   fetched_head=$(git rev-parse "$remote_ref")
@@ -403,6 +448,8 @@ prepare_pr_branch() {
   fi
 
   if [[ -n $collision_reason ]]; then
+    receipt_self_authored_branch=false
+    expected_checkout_upstream=$upstream_ref
     prepare_collision_review_branch "$collision_reason"
 
     current_branch=$(git branch --show-current || true)
@@ -433,27 +480,36 @@ prepare_pr_branch() {
       git switch "$head_branch"
     fi
     git merge --ff-only "$upstream_ref"
+    if [[ $set_selected_upstream == true ]]; then
+      git branch --set-upstream-to="$upstream_ref" "$head_branch"
+      selected_upstream_ref=$upstream_ref
+    fi
   else
     git switch --create "$head_branch" --track "$upstream_ref"
+    selected_upstream_ref=$upstream_ref
   fi
 
+  expected_checkout_upstream=$selected_upstream_ref
   current_branch=$(git branch --show-current || true)
   [[ $current_branch == "$head_branch" ]] || \
     fail "Prepared checkout is not on PR branch '${head_branch}'."
-  require_expected_upstream "$head_branch" "$upstream_ref"
+  require_expected_upstream "$head_branch" "$selected_upstream_ref"
   actual_head=$(git rev-parse HEAD)
   [[ $actual_head == "$head_oid" ]] || \
     fail "Prepared branch '${head_branch}' is at '${actual_head}', not PR head '${head_oid}'."
 
   if [[ $mode == "merge" ]]; then
-    merge_latest_base_into_current_branch "$current_branch" "$upstream_ref"
+    merge_latest_base_into_current_branch "$current_branch" "$selected_upstream_ref"
     return 0
   fi
 
   printf '\nPrepared PR #%s: %s\n' "$pr_number" "$pr_url"
   printf 'Remote: %s (%s)\n' "$remote_name" "https://github.com/${head_owner}/${head_repo}.git"
   printf 'Branch: %s\n' "$head_branch"
-  printf 'Upstream: %s\n' "$upstream_ref"
+  printf 'Upstream: %s\n' "$selected_upstream_ref"
+  if [[ $receipt_self_authored_branch == true ]]; then
+    printf 'Local branch: reused for self-authored PR\n'
+  fi
   printf 'Head SHA: %s\n' "$head_oid"
 }
 
@@ -579,6 +635,7 @@ prepare_review_worktree() {
   if [[ $mode == "prepare" ]]; then
     prepare_head_ref
     upstream_ref="${head_remote}/${head_branch}"
+    expected_checkout_upstream=$upstream_ref
     fetched_head=$(git rev-parse "$head_remote_ref")
     [[ $fetched_head == "$head_oid" ]] || \
       fail "PR head moved from '${head_oid}' to '${fetched_head}'. Rerun preparation."
@@ -638,7 +695,12 @@ finalize_preparation() {
   [[ -z $(git -C "$receipt_path" status --porcelain=v1) ]] || fail "Prepared checkout is no longer clean."
   if [[ $mode == prepare ]]; then
     [[ $receipt_head == "$head_oid" ]] || fail "Prepared checkout no longer matches PR head."
-    [[ $receipt_upstream == "${head_owner}/${head_branch}" ]] || fail "Prepared upstream changed."
+    [[ -n $expected_checkout_upstream && $receipt_upstream == "$expected_checkout_upstream" ]] || \
+      fail "Prepared upstream changed."
+    if [[ $receipt_self_authored_branch == true ]]; then
+      upstream_targets_pr_head "$receipt_branch" || \
+        fail "Reused local branch upstream no longer matches the PR head repository and branch."
+    fi
   else
     git merge-base --is-ancestor "$head_oid" "$receipt_head" || fail "Integration lost PR head."
     git merge-base --is-ancestor "$base_oid" "$receipt_head" || fail "Integration lost base."
@@ -657,11 +719,13 @@ emit_receipt() {
   python3 - "$exit_code" "$phase" "${base_owner:-}/${base_repo:-}" "${pr_number:-0}" \
     "${head_oid:-}" "${base_oid:-}" "${base_branch:-}" "${receipt_merge_base:-}" \
     "${receipt_path:-}" "${receipt_branch:-}" "${receipt_head:-}" "${receipt_upstream:-}" \
-    "$receipt_collision" "$checkout_mode" "$mode" "$head_fetches" "$base_fetches" >&3 <<'PY'
+    "$receipt_collision" "$receipt_self_authored_branch" "$checkout_mode" "$mode" \
+    "$head_fetches" "$base_fetches" >&3 <<'PY'
 import json
 import sys
 (code, phase, repo, number, head, base, base_branch, merge_base, path, branch,
- checkout_head, upstream, collision, checkout_mode, mode, head_fetches, base_fetches) = sys.argv[1:]
+ checkout_head, upstream, collision, self_branch, checkout_mode, mode,
+ head_fetches, base_fetches) = sys.argv[1:]
 success = code == "0" and phase == "complete"
 print(json.dumps({
     "schema_version": 1, "status": "prepared" if success else "failed",
@@ -671,6 +735,7 @@ print(json.dumps({
     "checkout": {"path": path, "branch": branch, "head_sha": checkout_head,
                  "upstream": upstream or None, "dirty": False if success else None},
     "collision_reason": collision or None,
+    "self_authored_branch_reused": self_branch == "true" if success else None,
     "source_unchanged": True if success and checkout_mode == "worktree" else None,
     "integration": mode == "merge",
     "actions": {"head_fetches": int(head_fetches), "base_fetches": int(base_fetches)},
@@ -689,6 +754,8 @@ phase=arguments
 head_fetches=0
 base_fetches=0
 receipt_collision=""
+receipt_self_authored_branch=false
+expected_checkout_upstream=""
 head_remote=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
