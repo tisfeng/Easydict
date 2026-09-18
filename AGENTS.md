@@ -42,7 +42,7 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 - 跨语言代码质量、Swift、Objective-C、SwiftUI、API 和本地化：[`coding-guidelines.md`](docs/agents/coding-guidelines.md)。
 - 计划与 history 记录：[`exec-plans/README.md`](docs/exec-plans/README.md) 与
   [`histories/README.md`](docs/histories/README.md)。
-- 参考资料与同步基线：[`references/README.md`](docs/references/README.md)。
+- 参考资料与外部证据：[`references/README.md`](docs/references/README.md)。
 - 外部 Skills 和同步边界：[`skills.md`](docs/agents/skills.md)。
 - 产品代码、跨功能行为或模块边界：[`application-architecture.md`](docs/design-docs/application-architecture.md)。
 - 公共使用或贡献者文档：[`en/zh`](docs/user-docs/)。
