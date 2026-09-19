@@ -13,4 +13,5 @@ import Foundation
 final class AppBundleIDs: NSObject {
     static let weChat = "com.tencent.xinWeChat"
     static let books = "com.apple.iBooksX"
+    static let zenBrowser = "app.zen-browser.zen"
 }

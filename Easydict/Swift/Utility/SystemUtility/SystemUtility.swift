@@ -33,7 +33,7 @@ class SystemUtility: NSObject {
     var bundleIDAllowListForSelectableTextCheck: Set<String> = [
         AppBundleIDs.weChat,
         "com.sublimetext.4",
-        "app.zen-browser.zen",
+        AppBundleIDs.zenBrowser,
     ]
 
     /// Get selected text from current focused application.
