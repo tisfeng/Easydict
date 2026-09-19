@@ -79,6 +79,25 @@ Release 标题不写入文件。发布开始后，工作流会冻结正文和渲
 ./scripts/release/release-easydict.sh release 2.22.0
 ```
 
+### 发布后修订日志并同步
+
+`changelog/<version>.md` 是 GitHub Release 正文和 Sparkle description 的 canonical 来源。
+如果版本已经发布后人工修订该文件，使用独立的 `sync-notes` 动作；不要使用 `resume`，因为
+`resume` 只恢复中断的 ASC 发布工作流：
+
+```bash
+# 默认只查询并输出差异，不修改远程状态
+./scripts/release/release-easydict.sh sync-notes 2.22.0
+
+# 检查预览后，显式同步已发布 Release 和远程 main/appcast.xml
+./scripts/release/release-easydict.sh sync-notes 2.22.0 --execute
+```
+
+它不重建 App、不重新签名、不上传附件，也不修改 Tag、版本号、构建号或渠道。执行时要求
+worktree 干净，并通过 GitHub Release ETag 和 appcast blob SHA 保护并发更新；状态写入
+`.tmp/release/<version>/state/notes-sync.json`，可安全重复执行。可用 `--repo`、
+`--notes-file`、`--appcast-branch` 和 `--state` 覆盖默认值。
+
 默认发布频道为 `beta`。如果要发布稳定版本：
 
 ```bash
@@ -230,10 +249,12 @@ fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证
   的 Release DerivedData。
 - `release-package.sh`：公证、ZIP、DMG 和校验和阶段。
 - `release-appcast.sh` / `release-appcast.py`：Sparkle 生成和严格的 feed 验证。
+- `release-notes-sync.py`：预览或同步已发布 Release 正文和目标 appcast description。
 - `release_notes.py`：changelog 校验、快照、确定性 Markdown 渲染和 GitHub 正文比对。
 - `requirements.txt`：固定 Python Markdown 渲染器版本。
 - `tests/test_release_appcast.py` / `tests/test_release_notes.py`：正文渲染、beta 轮换、
   漂移检测和旧条目保护的行为测试。
+- `tests/test_release_notes_sync.py`：发布后日志同步的 preview、CAS 失败和幂等行为测试。
 - `release-github.sh`：幂等的 Draft Release/正式发布和资产验证。
 - `release-verify.sh`：本地产物和最终远程状态验证。
 - `export-options.plist`：Developer ID 导出配置。

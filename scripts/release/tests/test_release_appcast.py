@@ -259,6 +259,44 @@ class ReleaseAppcastTests(unittest.TestCase):
         self.assertIn("<h2>What's Changed</h2>", unescaped_text)
         self.assertIn("<li>feat: test feature", unescaped_text)
 
+    def test_set_description_changes_only_target_description(self) -> None:
+        before = ET.parse(self.candidate)
+        before_items = before.getroot().findall("./channel/item")
+        before_target = before_items[0]
+        before_target.find("description").text = "old description"
+        before.write(self.candidate, encoding="UTF-8", xml_declaration=True)
+        original = self.candidate.read_bytes()
+
+        result = self.run_script(
+            "set-description",
+            "--appcast",
+            str(self.candidate),
+            "--version",
+            "2.22.0",
+            "--build",
+            "64",
+            "--notes-file",
+            str(self.notes),
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+        candidate_tree = ET.parse(self.candidate)
+        candidate_items = candidate_tree.getroot().findall("./channel/item")
+        self.assertEqual(len(before_items), len(candidate_items))
+        for index, (old, new) in enumerate(zip(before_items, candidate_items)):
+            if index == 0:
+                self.assertNotEqual(
+                    old.findtext("description"),
+                    new.findtext("description"),
+                )
+                old.remove(old.find("description"))
+                new.remove(new.find("description"))
+            self.assertEqual(
+                ET.tostring(old, encoding="UTF-8"),
+                ET.tostring(new, encoding="UTF-8"),
+            )
+        self.assertNotEqual(original, self.candidate.read_bytes())
+
     def test_set_link_preserves_markdown_links_images_and_code(self) -> None:
         self.notes.write_text(
             """## Details

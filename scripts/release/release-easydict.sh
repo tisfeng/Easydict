@@ -17,6 +17,7 @@ Usage:
   release-easydict.sh publish <version> [options]
   release-easydict.sh release <version> [options]
   release-easydict.sh resume <run-id>
+  release-easydict.sh sync-notes <version> [options]
 
 Options:
   --channel beta|stable   Sparkle channel (default: beta)
@@ -24,6 +25,11 @@ Options:
   --replace-draft        Rebuild and safely replace the latest matching Draft
   --force-clean          Force a clean Xcode Archive
   --dry-run               Preview the asc workflow without running it
+  --execute               Write synced notes to the published Release and main appcast
+  --repo <owner/repo>     GitHub repository for sync-notes
+  --notes-file <path>     Canonical changelog path for sync-notes
+  --appcast-branch <name> Remote appcast branch for sync-notes (default: main)
+  --state <path>          Override sync-notes state JSON path
   -h, --help              Show this help
 
 Workflow results are summarized in the terminal. Detailed stderr and result
@@ -32,6 +38,69 @@ JSON are saved under .tmp/release/<version>/logs/.
 The legacy release implementation remains available as:
   scripts/release/release-easydict-legacy.sh
 EOF
+}
+
+run_notes_sync() {
+    local version="$1"
+    shift
+    local repo="tisfeng/Easydict"
+    local notes_file=""
+    local appcast_branch="main"
+    local state_path=""
+    local execute=0
+
+    while (($# > 0)); do
+        case "$1" in
+            --execute)
+                execute=1
+                shift
+                ;;
+            --repo)
+                require_value "$1" "${2:-}"
+                repo="$2"
+                shift 2
+                ;;
+            --notes-file)
+                require_value "$1" "${2:-}"
+                notes_file="$2"
+                shift 2
+                ;;
+            --appcast-branch)
+                require_value "$1" "${2:-}"
+                appcast_branch="$2"
+                shift 2
+                ;;
+            --state)
+                require_value "$1" "${2:-}"
+                state_path="$2"
+                shift 2
+                ;;
+            -h | --help)
+                usage
+                return
+                ;;
+            *)
+                fail "unknown option for sync-notes: $1"
+                ;;
+        esac
+    done
+
+    cd "$ROOT_DIR"
+    local -a command=(
+        python3 "$SCRIPT_DIR/release-notes-sync.py" "$version"
+        --repo "$repo"
+        --appcast-branch "$appcast_branch"
+    )
+    if [[ -n "$notes_file" ]]; then
+        command+=(--notes-file "$notes_file")
+    fi
+    if [[ -n "$state_path" ]]; then
+        command+=(--state "$state_path")
+    fi
+    if ((execute == 1)); then
+        command+=(--execute)
+    fi
+    "${command[@]}"
 }
 
 fail() {
@@ -263,6 +332,15 @@ main() {
                 --file "$WORKFLOW_PATH" \
                 "$workflow_name" \
                 --resume "$run_id"
+            return $?
+            ;;
+        sync-notes)
+            local sync_version="${2:-}"
+            require_value sync-notes "$sync_version"
+            [[ "$sync_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] \
+                || fail "version must use x.y.z format"
+            shift 2
+            run_notes_sync "$sync_version" "$@"
             return $?
             ;;
         prepare | draft | publish | release)
