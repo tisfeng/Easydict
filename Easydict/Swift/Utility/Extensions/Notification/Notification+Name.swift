@@ -21,6 +21,8 @@ extension Notification.Name {
 
     static let maxWindowHeightSettingsChanged = Notification.Name("maxWindowHeightSettingsChanged")
 
+    static let vocabularyNotebookWriteFailed = Notification.Name("vocabularyNotebookWriteFailed")
+
     // System dark mode change notification
     static let appleInterfaceThemeChanged = Notification.Name("AppleInterfaceThemeChangedNotification")
 
@@ -38,6 +40,7 @@ extension NSNotification {
     static let didChangeFontSize = Notification.Name.didChangeFontSize
     static let didChangeWindowConfiguration = Notification.Name.didChangeWindowConfiguration
     static let maxWindowHeightSettingsChanged = Notification.Name.maxWindowHeightSettingsChanged
+    static let vocabularyNotebookWriteFailed = Notification.Name.vocabularyNotebookWriteFailed
     static let appDarkModeDidChange = Notification.Name.appDarkModeDidChange
 }
 
@@ -51,6 +54,8 @@ class UserInfoKey: NSObject {
     static let windowType = "windowType"
     static let serviceType = "serviceType"
     static let autoQuery = "autoQuery"
+
+    static let vocabularyNotebookDirectory = "vocabularyNotebookDirectory"
 }
 
 @objc

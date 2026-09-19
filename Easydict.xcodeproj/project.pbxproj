@@ -161,6 +161,8 @@
 		034227F42E37144200325B47 /* ocr-zh-poetry-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227F32E37144200325B47 /* ocr-zh-poetry-11.png */; };
 		034227F62E37145200325B47 /* ocr-ru-poetry-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 034227F52E37145200325B47 /* ocr-ru-poetry-11.png */; };
 		0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */; };
+		A1B2C3D4E5F6000000000002 /* VocabularyEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000001 /* VocabularyEntry.swift */; };
+		A1B2C3D4E5F6000000000004 /* VocabularyNotebookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000003 /* VocabularyNotebookService.swift */; };
 		034E309A2E17809C0079E371 /* OCRTextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034E30992E17809C0079E371 /* OCRTextProcessor.swift */; };
 		035166F92E0C0FF9004C65BB /* Int+ToDouble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */; };
 		035179182EF301C20054C985 /* AppTriggerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035179172EF301C20054C985 /* AppTriggerConfig.swift */; };
@@ -843,6 +845,8 @@
 		034227F32E37144200325B47 /* ocr-zh-poetry-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-poetry-11.png"; sourceTree = "<group>"; };
 		034227F52E37145200325B47 /* ocr-ru-poetry-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-ru-poetry-11.png"; sourceTree = "<group>"; };
 		0346F3CD2CAD6DAE006A6CDF /* DictionaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryEntry.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000001 /* VocabularyEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyEntry.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000003 /* VocabularyNotebookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyNotebookService.swift; sourceTree = "<group>"; };
 		034E30992E17809C0079E371 /* OCRTextProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessor.swift; sourceTree = "<group>"; };
 		035166F82E0C0FF9004C65BB /* Int+ToDouble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+ToDouble.swift"; sourceTree = "<group>"; };
 		035179172EF301C20054C985 /* AppTriggerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTriggerConfig.swift; sourceTree = "<group>"; };
@@ -1760,6 +1764,15 @@
 				0315D3E12C4E64F600AC0442 /* Vapor */,
 			);
 			path = HTTPServer;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6000000000005 /* VocabularyNotebook */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6000000000001 /* VocabularyEntry.swift */,
+				A1B2C3D4E5F6000000000003 /* VocabularyNotebookService.swift */,
+			);
+			path = VocabularyNotebook;
 			sourceTree = "<group>";
 		};
 		033363A3293C4AFA00FED9C8 /* PrintBeautifulLog */ = {
@@ -3552,6 +3565,7 @@
 				0328D0792D7D42520050B2C7 /* Screenshot */,
 				03A00D862E616D3D001A4D82 /* ActionManager */,
 				032AAA502C456D96007996A1 /* HTTPServer */,
+				A1B2C3D4E5F6000000000005 /* VocabularyNotebook */,
 				EA3B81F72B52549B004C0E8B /* Configuration */,
 				03779F122BB256B5008D3C42 /* DefaultAPIKeys */,
 				6A8C988B2BAC88A600DB835A /* Localization */,
@@ -4730,6 +4744,8 @@
 				0377C08E2F13EAAC00302A2C /* View+DebugOnly.swift in Sources */,
 				0377C08F2F13EAAC00302A2C /* View+BorderedCard.swift in Sources */,
 				0346F3CE2CAD6DAE006A6CDF /* DictionaryEntry.swift in Sources */,
+				A1B2C3D4E5F6000000000002 /* VocabularyEntry.swift in Sources */,
+				A1B2C3D4E5F6000000000004 /* VocabularyNotebookService.swift in Sources */,
 				0340D3962C9184D3004C9910 /* AppleScriptTask+Browser.swift in Sources */,
 				03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */,
 				0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */,
