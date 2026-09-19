@@ -28,15 +28,16 @@ struct MenuItemView: View {
             Divider()
 
             inputItem.keyboardShortcut(.inputTranslate)
-            screenshotItem.keyboardShortcut(.snipTranslate)
             selectWordItem.keyboardShortcut(.selectTranslate)
             pasteboardTranslateItem.keyboardShortcut(.pasteboardTranslate)
-            polishAndReplaceItem.keyboardShortcut(.polishAndReplace)
-            translateAndReplaceItem.keyboardShortcut(.translateAndReplace)
-            miniWindowItem.keyboardShortcut(.showMiniWindow)
+
+            if mouseSelectTranslateWindowType != shortcutSelectTranslateWindowType {
+                miniWindowItem.keyboardShortcut(.showMiniWindow)
+            }
 
             Divider()
 
+            screenshotItem.keyboardShortcut(.snipTranslate)
             silentScreenshotOCRItem.keyboardShortcut(.silentScreenshotOCR)
 
             if showOCRMenuItems {
@@ -44,6 +45,11 @@ struct MenuItemView: View {
                 pasteboardOCRItem
                 showOCRWindowItem
             }
+
+            Divider()
+
+            translateAndReplaceItem.keyboardShortcut(.translateAndReplace)
+            polishAndReplaceItem.keyboardShortcut(.polishAndReplace)
 
             Divider()
 
@@ -78,6 +84,8 @@ struct MenuItemView: View {
     @Environment(\.openURL) private var openURL
 
     @Default(.showOCRMenuItems) private var showOCRMenuItems
+    @Default(.mouseSelectTranslateWindowType) private var mouseSelectTranslateWindowType
+    @Default(.shortcutSelectTranslateWindowType) private var shortcutSelectTranslateWindowType
 
     private var versionString: String {
         let defaultLabel = "Easydict  \(currentVersion)"
@@ -209,7 +217,9 @@ struct MenuItemView: View {
 
     private func exportLogAction() {
         logInfo("Export Log")
-        let logPath = MMManagerForLog.rootLogDirectory() ?? ""
+        let pathManager = AppPathManager.current
+        let directoryURL = pathManager.logsDirectory
+        try? pathManager.ensureDirectoryExists(at: directoryURL)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH-mm-ss-SSS"
         let dataString = dateFormatter.string(from: Date())
@@ -220,7 +230,7 @@ struct MenuItemView: View {
             .path(percentEncoded: false)
         let success = SSZipArchive.createZipFile(
             atPath: zipPath,
-            withContentsOfDirectory: logPath,
+            withContentsOfDirectory: directoryURL.path(percentEncoded: false),
             keepParentDirectory: false
         )
         if success {

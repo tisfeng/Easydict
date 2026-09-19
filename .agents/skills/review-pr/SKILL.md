@@ -32,6 +32,8 @@ description: 审查 GitHub PR 的准确 head/base diff、关联 issue、CI 和 r
 - 不覆盖、删除、重命名、rebase、reset、强制更新、stash 或丢弃本地分支、worktree 或变更。
 - 普通审查必须对应 PR 元数据的准确 `headRefOid` 和真实 base/merge-base diff；
   不用 detached HEAD、已 fetch ref 或无关 `origin` 绕过身份检查。
+- 只有当前 GitHub 用户是 PR 作者，且本地同名分支可安全 fast-forward 时，才允许复用等价 remote
+  别名的 upstream 或补设缺失的 upstream；其他 upstream 不匹配仍使用 collision fallback。
 - `mergeable: CONFLICTING`、`mergeStateStatus: DIRTY` 或 base 领先不构成 latest-base 授权。
 - 除非用户明确要求，审查、准备、冲突处理和线程维护都不 push。审查后保留准备好的
   分支或 worktree，不自动删除。

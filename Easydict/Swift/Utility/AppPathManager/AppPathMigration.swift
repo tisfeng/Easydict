@@ -1,5 +1,5 @@
 //
-//  AppPathMigrationCoordinator.swift
+//  AppPathMigration.swift
 //  Easydict
 //
 //  Created by tisfeng on 2026/09/15.
@@ -7,10 +7,10 @@
 
 import Foundation
 
-// MARK: - AppPathMigrationCoordinator
+// MARK: - AppPathMigration
 
 /// Migrates app-managed files before any subsystem starts writing to their new locations.
-enum AppPathMigrationCoordinator {
+enum AppPathMigration {
     // MARK: Internal
 
     static func prepareForLaunch(

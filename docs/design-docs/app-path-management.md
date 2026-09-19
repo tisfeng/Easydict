@@ -19,7 +19,7 @@ Easydict 的应用日志、OCR 调试图片、音频缓存、MDict 元数据、�
 - 使用实际 bundle ID 隔离 Debug 与 Release，避免开发数据污染正式版本。
 - 路径查询保持无副作用，目录创建由写入方显式执行。
 - 路径调整必须保留既有用户数据，并且不静默覆盖同名差异文件。
-- 普通日志导出不包含可能记录原文和模型响应的 AI 服务调用日志。
+- 日志目录入口只展示常规应用日志，完整调试导出包含所有受管日志。
 
 ## 目录布局
 
@@ -51,8 +51,8 @@ Easydict 自主管理文件的新写入位置。系统临时目录只用于生�
 ## 路径所有权与 API 边界
 
 `AppPathManager.current` 从 `Bundle.main.bundleIdentifier` 和系统提供的用户目录构建路径。
-主类型只保存不可变的路径上下文，分类扩展按 Application Support、旧 Caches 来源和目录准备职责
-组织具体路径。
+主类型保存不可变的路径上下文，并提供显式目录创建能力；分类扩展按 Codex、日志和缓存业务域
+组织当前与历史路径。
 
 读取路径不会创建目录。写入方必须在写入前调用 `ensureDirectoryExists(at:attributes:)`，从而让
 创建时机、权限和错误处理保持可见。`@objcMembers` 允许现有 Objective-C 日志和音频边界复用
@@ -60,7 +60,7 @@ Easydict 自主管理文件的新写入位置。系统临时目录只用于生�
 
 ## 通用启动迁移
 
-`AppPathMigrationCoordinator.prepareForLaunch()` 在参数解析、日志初始化和应用 UI 启动之前运行，
+`AppPathMigration.prepareForLaunch()` 在参数解析、日志初始化和应用 UI 启动之前运行，
 负责以下迁移：
 
 | 数据 | 旧位置 | 新位置 |
@@ -97,11 +97,11 @@ Codex home。
 
 ## 日志查看与导出
 
-菜单栏的“日志目录”和“导出日志”都使用 `logs/app`，保持与旧版本一致。导出的压缩包包含应用
-日志、崩溃日志和 OCR 调试文件，但不包含 `codex-cli` 或 `claude-code`。
+菜单栏的“日志目录”使用 `logs/app`，只打开常规应用日志、崩溃日志和 OCR 调试文件。“导出日志”
+使用 `logs`，将 `app`、`codex-cli` 和 `claude-code` 一并打包，以便提供完整调试材料。
 
 服务调用日志会记录 command、prompt、stdout 和 stderr，可能包含用户输入、翻译原文或模型响应。
-它们保存在 `logs` 下的独立子目录，并通过对应服务的调试入口查看，不进入普通日志导出流程。
+用户导出并分享完整日志包前需要将其视为可能包含敏感内容的调试材料。
 
 ## 取舍
 

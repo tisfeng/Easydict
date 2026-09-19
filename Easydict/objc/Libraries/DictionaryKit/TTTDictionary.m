@@ -189,13 +189,13 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 
 /// CFBundleIdentifier
 @property (readwrite, nonatomic, copy, nullable) NSString *identifier;
-@property (readwrite, nonatomic, strong) NSURL *dictionaryURL;
+@property (readwrite, nonatomic, strong, nullable) NSURL *dictionaryURL;
 
 @end
 
 @implementation TTTDictionary
 
-+ (instancetype)dictionaryNamed:(NSString *)name {
++ (nullable instancetype)dictionaryNamed:(NSString *)name {
     static NSDictionary *_availableDictionariesKeyedByName = nil;
     
     static dispatch_once_t onceToken;
@@ -218,7 +218,10 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
     dispatch_once(&onceToken, ^{
         NSMutableSet *mutableDictionaries = [NSMutableSet set];
         for (id dictionary in (__bridge_transfer NSArray *)DCSCopyAvailableDictionaries()) {
-            [mutableDictionaries addObject:[[TTTDictionary alloc] initWithDictionaryRef:(__bridge DCSDictionaryRef)dictionary]];
+            TTTDictionary *availableDictionary = [[TTTDictionary alloc] initWithDictionaryRef:(__bridge DCSDictionaryRef)dictionary];
+            if (availableDictionary) {
+                [mutableDictionaries addObject:availableDictionary];
+            }
         }
         _availableDictionaries = [NSSet setWithSet:mutableDictionaries];
     });
@@ -235,8 +238,31 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
         NSMutableArray *mutableActiveDictionaries = [NSMutableArray array];
         NSArray *activeDictionaries = (__bridge_transfer NSArray *)DCSGetActiveDictionaries();
         for (id dictionary in activeDictionaries) {
-            [mutableActiveDictionaries addObject:[[TTTDictionary alloc] initWithDictionaryRef:(__bridge DCSDictionaryRef)dictionary]];
+            TTTDictionary *activeDictionary = [[TTTDictionary alloc] initWithDictionaryRef:(__bridge DCSDictionaryRef)dictionary];
+            if (activeDictionary) {
+                [mutableActiveDictionaries addObject:activeDictionary];
+            }
         }
+
+        MMLogInfo(@"Active Apple dictionaries count: %lu", (unsigned long)mutableActiveDictionaries.count);
+        [mutableActiveDictionaries enumerateObjectsUsingBlock:^(TTTDictionary *dictionary, NSUInteger index, BOOL *stop) {
+            NSString *dictionaryFile = dictionary.dictionaryURL.lastPathComponent ?: @"<missing>";
+            MMLogInfo(
+                @"Active Apple dictionary [%lu]: name=%@, shortName=%@, identifier=%@, file=%@",
+                (unsigned long)index,
+                dictionary.name ?: @"<missing>",
+                dictionary.shortName ?: @"<missing>",
+                dictionary.identifier ?: @"<missing>",
+                dictionaryFile
+            );
+            if (!dictionary.dictionaryURL) {
+                MMLogWarn(
+                    @"Active Apple dictionary has no URL: name=%@, identifier=%@",
+                    dictionary.name ?: @"<missing>",
+                    dictionary.identifier ?: @"<missing>"
+                );
+            }
+        }];
         _activeDictionaries = [NSArray arrayWithArray:mutableActiveDictionaries];
     });
     

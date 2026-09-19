@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		BFC431E797E945B795B81589 /* AppPathManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED70C029AC2438A8EBE25F1 /* AppPathManager.swift */; };
-		44476FC198C54239B507098E /* AppPathManager+ApplicationSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD3C7A500554103B1723150 /* AppPathManager+ApplicationSupport.swift */; };
-		78F5EB4FCA084046AD550B98 /* AppPathManager+Caches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D3CBE03FBC94E69A460538F /* AppPathManager+Caches.swift */; };
-		B11F773A639D431BB1D320F3 /* AppPathManager+Preparation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE8364C45FA492183DC4477 /* AppPathManager+Preparation.swift */; };
-		A77009152026000000000001 /* AppPathMigrationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A77009152026000000000002 /* AppPathMigrationCoordinator.swift */; };
+		44476FC198C54239B507098E /* AppPathManager+Codex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD3C7A500554103B1723150 /* AppPathManager+Codex.swift */; };
+		78F5EB4FCA084046AD550B98 /* AppPathManager+Logs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D3CBE03FBC94E69A460538F /* AppPathManager+Logs.swift */; };
+		B11F773A639D431BB1D320F3 /* AppPathManager+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE8364C45FA492183DC4477 /* AppPathManager+Cache.swift */; };
+		A77009152026000000000001 /* AppPathMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A77009152026000000000002 /* AppPathMigration.swift */; };
 		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
 		02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000003 /* MarkdownLabel.swift */; };
 		02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000004 /* MarkdownToggleButton.swift */; };
@@ -143,6 +143,7 @@
 		033EA07E2CFC66380017F86C /* View+Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033EA07D2CFC66380017F86C /* View+Builder.swift */; };
 		033EAA9F2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */; };
 		034080A22F6B1C75005C8508 /* AppleSpeechServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034080A12F6B1C75005C8508 /* AppleSpeechServiceTests.swift */; };
+		A13180022026091600000001 /* AppleDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13180012026091600000001 /* AppleDictionaryTests.swift */; };
 		0340D3912C8EEEE3004C9910 /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3902C8EEEE3004C9910 /* Data+Extension.swift */; };
 		0340D3942C8EEF58004C9910 /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3932C8EEF58004C9910 /* Dictionary+Extension.swift */; };
 		0340D3962C9184D3004C9910 /* AppleScriptTask+Browser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D3952C9184D3004C9910 /* AppleScriptTask+Browser.swift */; };
@@ -672,10 +673,10 @@
 
 /* Begin PBXFileReference section */
 		FED70C029AC2438A8EBE25F1 /* AppPathManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathManager.swift; sourceTree = "<group>"; };
-		0DD3C7A500554103B1723150 /* AppPathManager+ApplicationSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+ApplicationSupport.swift"; sourceTree = "<group>"; };
-		8D3CBE03FBC94E69A460538F /* AppPathManager+Caches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+Caches.swift"; sourceTree = "<group>"; };
-		3BE8364C45FA492183DC4477 /* AppPathManager+Preparation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+Preparation.swift"; sourceTree = "<group>"; };
-		A77009152026000000000002 /* AppPathMigrationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathMigrationCoordinator.swift; sourceTree = "<group>"; };
+		0DD3C7A500554103B1723150 /* AppPathManager+Codex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+Codex.swift"; sourceTree = "<group>"; };
+		8D3CBE03FBC94E69A460538F /* AppPathManager+Logs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+Logs.swift"; sourceTree = "<group>"; };
+		3BE8364C45FA492183DC4477 /* AppPathManager+Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+Cache.swift"; sourceTree = "<group>"; };
+		A77009152026000000000002 /* AppPathMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathMigration.swift; sourceTree = "<group>"; };
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
@@ -825,6 +826,7 @@
 		033EA07D2CFC66380017F86C /* View+Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Builder.swift"; sourceTree = "<group>"; };
 		033EAA9E2CBBBE2B004DC199 /* ForceGetSelectedTextType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceGetSelectedTextType.swift; sourceTree = "<group>"; };
 		034080A12F6B1C75005C8508 /* AppleSpeechServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSpeechServiceTests.swift; sourceTree = "<group>"; };
+		A13180012026091600000001 /* AppleDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionaryTests.swift; sourceTree = "<group>"; };
 		0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppleScriptTask.swift; sourceTree = "<group>"; };
 		0340D3902C8EEEE3004C9910 /* Data+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
 		0340D3932C8EEF58004C9910 /* Dictionary+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extension.swift"; sourceTree = "<group>"; };
@@ -2916,6 +2918,7 @@
 				03A884792F14000100D5C0DE /* BingServiceTests.swift */,
 				A5D1E5B50000000000000001 /* DeepLServiceTests.swift */,
 				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
+				A13180012026091600000001 /* AppleDictionaryTests.swift */,
 				034080A12F6B1C75005C8508 /* AppleSpeechServiceTests.swift */,
 				A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */,
 				0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */,
@@ -3808,10 +3811,10 @@
 			isa = PBXGroup;
 			children = (
 				FED70C029AC2438A8EBE25F1 /* AppPathManager.swift */,
-				0DD3C7A500554103B1723150 /* AppPathManager+ApplicationSupport.swift */,
-				8D3CBE03FBC94E69A460538F /* AppPathManager+Caches.swift */,
-				3BE8364C45FA492183DC4477 /* AppPathManager+Preparation.swift */,
-				A77009152026000000000002 /* AppPathMigrationCoordinator.swift */,
+				0DD3C7A500554103B1723150 /* AppPathManager+Codex.swift */,
+				8D3CBE03FBC94E69A460538F /* AppPathManager+Logs.swift */,
+				3BE8364C45FA492183DC4477 /* AppPathManager+Cache.swift */,
+				A77009152026000000000002 /* AppPathMigration.swift */,
 			);
 			path = AppPathManager;
 			sourceTree = "<group>";
@@ -4372,6 +4375,7 @@
 				030732D22F24862A0001382A /* OCRTestSample+Other.swift in Sources */,
 				030732D32F24862A0001382A /* OCRTestSample+English.swift in Sources */,
 				034080A22F6B1C75005C8508 /* AppleSpeechServiceTests.swift in Sources */,
+				A13180022026091600000001 /* AppleDictionaryTests.swift in Sources */,
 				A13F30938343423C89FB9B4C /* ClaudeCodeCLIRunnerTests.swift in Sources */,
 				513C5A1DEDCB410184268D48 /* ClaudeCodeServiceTests.swift in Sources */,
 				C0DEC11E0001000000000011 /* CodexCLIRunnerTests.swift in Sources */,
@@ -4397,10 +4401,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFC431E797E945B795B81589 /* AppPathManager.swift in Sources */,
-				44476FC198C54239B507098E /* AppPathManager+ApplicationSupport.swift in Sources */,
-				78F5EB4FCA084046AD550B98 /* AppPathManager+Caches.swift in Sources */,
-				B11F773A639D431BB1D320F3 /* AppPathManager+Preparation.swift in Sources */,
-				A77009152026000000000001 /* AppPathMigrationCoordinator.swift in Sources */,
+				44476FC198C54239B507098E /* AppPathManager+Codex.swift in Sources */,
+				78F5EB4FCA084046AD550B98 /* AppPathManager+Logs.swift in Sources */,
+				B11F773A639D431BB1D320F3 /* AppPathManager+Cache.swift in Sources */,
+				A77009152026000000000001 /* AppPathMigration.swift in Sources */,
 				635234F65A9D4655A045FDAF /* MDictReader.swift in Sources */,
 				63D2A8E12F1C4B2E8C9A7101 /* MDictMetadataCache.swift in Sources */,
 				A9F10001B3C24D5E8A000001 /* MDictHeaderParser.swift in Sources */,
@@ -5049,101 +5053,101 @@
 			name = Release;
 		};
 		C99EEB2D2385796900FEE666 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "";
-				ASSETCATALOG_COMPILER_APPICON_NAME = "Easydict-26";
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				AUTOMATION_APPLE_EVENTS = YES;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "Easydict/App/Easydict-debug.entitlements";
-				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
-				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 65;
-				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
-				ENABLE_APP_SANDBOX = NO;
-				ENABLE_DEBUG_DYLIB = YES;
-				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_TESTING_SEARCH_PATHS = NO;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
-				INFOPLIST_FILE = "$(TARGET_NAME)/App/Info-debug.plist";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.22.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.Easydict-debug";
-				PRODUCT_MODULE_NAME = Easydict;
-				PRODUCT_NAME = "Easydict-debug";
-				RUNTIME_EXCEPTION_ALLOW_JIT = YES;
-				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG AGENT_CLI_DEBUG $(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
+	baseConfigurationReference = 06E15747A7BD34D510ADC6A8;
+	buildSettings = {
+		"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES" = "";
+		"ASSETCATALOG_COMPILER_APPICON_NAME" = "Easydict-26";
+		"ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS" = NO;
+		"AUTOMATION_APPLE_EVENTS" = YES;
+		"CLANG_ENABLE_MODULES" = YES;
+		"CODE_SIGN_ENTITLEMENTS" = "Easydict/App/Easydict-debug.entitlements";
+		"CODE_SIGN_IDENTITY" = "$CODE_SIGN_IDENTITY";
+		"CODE_SIGN_STYLE" = "$CODE_SIGN_STYLE";
+		"COMBINE_HIDPI_IMAGES" = YES;
+		"COPY_PHASE_STRIP" = NO;
+		"CURRENT_PROJECT_VERSION" = 66;
+		"DEAD_CODE_STRIPPING" = YES;
+		"DEBUG_INFORMATION_FORMAT" = dwarf;
+		"DEVELOPMENT_TEAM" = "$(DEVELOPMENT_TEAM)";
+		"ENABLE_APP_SANDBOX" = NO;
+		"ENABLE_DEBUG_DYLIB" = YES;
+		"ENABLE_HARDENED_RUNTIME" = YES;
+		"ENABLE_TESTING_SEARCH_PATHS" = NO;
+		"ENABLE_USER_SCRIPT_SANDBOXING" = NO;
+		"FRAMEWORK_SEARCH_PATHS" = "$(inherited)";
+		"GCC_GENERATE_DEBUGGING_SYMBOLS" = YES;
+		"GCC_PREFIX_HEADER" = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
+		"INFOPLIST_FILE" = "$(TARGET_NAME)/App/Info-debug.plist";
+		"INFOPLIST_KEY_LSApplicationCategoryType" = "public.app-category.utilities";
+		"LD_RUNPATH_SEARCH_PATHS" = (
+			"$(inherited)",
+			"@executable_path/../Frameworks",
+		);
+		"MACOSX_DEPLOYMENT_TARGET" = "13.0";
+		"MARKETING_VERSION" = "2.23.0";
+		"PRODUCT_BUNDLE_IDENTIFIER" = "com.izual.Easydict-debug";
+		"PRODUCT_MODULE_NAME" = Easydict;
+		"PRODUCT_NAME" = "Easydict-debug";
+		"RUNTIME_EXCEPTION_ALLOW_JIT" = YES;
+		"RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION" = YES;
+		"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "DEBUG AGENT_CLI_DEBUG $(inherited)";
+		"SWIFT_EMIT_LOC_STRINGS" = YES;
+		"SWIFT_OBJC_BRIDGING_HEADER" = "Easydict/App/Easydict-Bridging-Header.h";
+		"SWIFT_OPTIMIZATION_LEVEL" = "-Onone";
+		"SWIFT_VERSION" = "5.0";
+	};
+	isa = XCBuildConfiguration;
+	name = Debug;
+};
 		C99EEB2E2385796900FEE666 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "";
-				ASSETCATALOG_COMPILER_APPICON_NAME = "Easydict-26";
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				AUTOMATION_APPLE_EVENTS = YES;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Easydict/App/Easydict.entitlements;
-				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 65;
-				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = 45Z6V4YD5U;
-				ENABLE_APP_SANDBOX = NO;
-				ENABLE_DEBUG_DYLIB = YES;
-				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_TESTING_SEARCH_PATHS = NO;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
-				INFOPLIST_FILE = "$(TARGET_NAME)/App/Info.plist";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.22.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.izual.Easydict;
-				PRODUCT_MODULE_NAME = Easydict;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				RUNTIME_EXCEPTION_ALLOW_JIT = YES;
-				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
+	baseConfigurationReference = 91E3E579C6DB88658B4BB102;
+	buildSettings = {
+		"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES" = "";
+		"ASSETCATALOG_COMPILER_APPICON_NAME" = "Easydict-26";
+		"ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS" = NO;
+		"AUTOMATION_APPLE_EVENTS" = YES;
+		"CLANG_ENABLE_MODULES" = YES;
+		"CODE_SIGN_ENTITLEMENTS" = "Easydict/App/Easydict.entitlements";
+		"CODE_SIGN_IDENTITY" = "$CODE_SIGN_IDENTITY";
+		"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+		"CODE_SIGN_STYLE" = Manual;
+		"COMBINE_HIDPI_IMAGES" = YES;
+		"COPY_PHASE_STRIP" = NO;
+		"CURRENT_PROJECT_VERSION" = 66;
+		"DEAD_CODE_STRIPPING" = YES;
+		"DEBUG_INFORMATION_FORMAT" = "dwarf-with-dsym";
+		"DEVELOPMENT_TEAM" = "";
+		"DEVELOPMENT_TEAM[sdk=macosx*]" = 45Z6V4YD5U;
+		"ENABLE_APP_SANDBOX" = NO;
+		"ENABLE_DEBUG_DYLIB" = YES;
+		"ENABLE_HARDENED_RUNTIME" = YES;
+		"ENABLE_TESTING_SEARCH_PATHS" = NO;
+		"ENABLE_USER_SCRIPT_SANDBOXING" = NO;
+		"FRAMEWORK_SEARCH_PATHS" = "$(inherited)";
+		"GCC_GENERATE_DEBUGGING_SYMBOLS" = YES;
+		"GCC_PREFIX_HEADER" = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
+		"INFOPLIST_FILE" = "$(TARGET_NAME)/App/Info.plist";
+		"INFOPLIST_KEY_LSApplicationCategoryType" = "public.app-category.utilities";
+		"LD_RUNPATH_SEARCH_PATHS" = (
+			"$(inherited)",
+			"@executable_path/../Frameworks",
+		);
+		"MACOSX_DEPLOYMENT_TARGET" = "13.0";
+		"MARKETING_VERSION" = "2.23.0";
+		"PRODUCT_BUNDLE_IDENTIFIER" = "com.izual.Easydict";
+		"PRODUCT_MODULE_NAME" = Easydict;
+		"PRODUCT_NAME" = "$(TARGET_NAME)";
+		"PROVISIONING_PROFILE_SPECIFIER" = "";
+		"RUNTIME_EXCEPTION_ALLOW_JIT" = YES;
+		"RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION" = YES;
+		"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "$(inherited)";
+		"SWIFT_EMIT_LOC_STRINGS" = YES;
+		"SWIFT_OBJC_BRIDGING_HEADER" = "Easydict/App/Easydict-Bridging-Header.h";
+		"SWIFT_VERSION" = "5.0";
+	};
+	isa = XCBuildConfiguration;
+	name = Release;
+};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -5278,7 +5282,7 @@
 			repositoryURL = "https://github.com/tisfeng/SelectedTextKit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.6.5;
+				minimumVersion = 2.6.7;
 			};
 		};
 		03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
