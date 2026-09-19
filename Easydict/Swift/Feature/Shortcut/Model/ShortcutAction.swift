@@ -34,6 +34,7 @@ public enum ShortcutAction: String, Identifiable, CaseIterable {
     // In App shortcuts
     case clearInput
     case clearAll
+    case toggleAppendMode
     case copy
     case copyFirstResult
     case focus
@@ -150,6 +151,22 @@ extension ShortcutAction {
                         isOn
                             ? "shortcut_auto_select_text.on"
                             : "shortcut_auto_select_text.off",
+                        comment: ""
+                    )
+                    EZToast.showText(message)
+                }
+            ),
+            .toggleAppendMode: .init(
+                titleKey: "shortcut.append_mode.title",
+                icon: .textBadgePlus,
+                defaultsKey: .toggleAppendModeShortcut,
+                action: {
+                    let isOn = !Defaults[.enableAppendMode]
+                    Defaults[.enableAppendMode] = isOn
+                    let message = NSLocalizedString(
+                        isOn
+                            ? "shortcut.append_mode.toast.on"
+                            : "shortcut.append_mode.toast.off",
                         comment: ""
                     )
                     EZToast.showText(message)

@@ -58,6 +58,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 @property (nonatomic, strong) EZTableTipsCell *tipsCell;
 
 // queryText is self.queryModel.queryText;
+@property (nonatomic, copy, nullable) NSString *ocrPrefixText;
+@property (nonatomic, assign) NSInteger ocrRequestToken;
 @property (nonatomic, copy, readonly) NSString *queryText;
 @property (nonatomic, strong) NSArray<NSString *> *serviceTypeIds;
 @property (nonatomic, strong) NSArray<EZQueryService *> *services;
@@ -477,6 +479,23 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 }
 
+- (NSString *)combinePreviousText:(NSString *)oldText withNewText:(NSString *)newText {
+    if (oldText.length == 0) {
+        return newText ?: @"";
+    }
+    if (newText.length == 0) {
+        return oldText ?: @"";
+    }
+
+    NSString *trimmedOld = [oldText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *trimmedNew = [newText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+    if (trimmedOld.length == 0) return trimmedNew;
+    if (trimmedNew.length == 0) return trimmedOld;
+
+    return [NSString stringWithFormat:@"%@\n%@", trimmedOld, trimmedNew];
+}
+
 /// Before starting query text, close all result view.
 - (void)startQueryText:(NSString *)text {
     [self startQueryText:text actionType:self.queryModel.actionType];
@@ -545,6 +564,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
+    if (image != self.queryModel.ocrImage) {
+        self.ocrPrefixText = MyConfiguration.shared.enableAppendMode ? self.inputText : nil;
+    }
+
     self.queryModel.actionType = actionType;
     self.queryModel.ocrImage = image;
 
@@ -553,10 +576,13 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     // Hide previous tips view first.
     [self showTipsView:NO completion:nil];
-
+    NSInteger ocrToken = ++self.ocrRequestToken;
     mm_weakify(self);
     [self.detectManager ocrAndDetectTextWithCompletion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
+        if (ocrToken != self.ocrRequestToken) {
+            return;
+        }
         // !!!: inputText should be used here, not queryText, queryText may be modified, such as easydict://query?text=xxx
         NSString *inputText = queryModel.inputText;
         MMLogInfo(@"ocr result: %@", inputText);
@@ -582,18 +608,21 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         if (actionType != EZActionTypeScreenshotOCR) {
             [self.queryView startLoadingAnimation:NO];
 
-            self.inputText = inputText;
-
-            // Show detected language, even auto
-            self.queryModel.showAutoLanguage = YES;
-
-            [self updateQueryTextAndParagraphStyle:inputText actionType:actionType];
-
             if (error) {
                 NSString *errorMsg = [error localizedDescription];
                 [self showTipsView:YES content:errorMsg type:EZTipsCellTypeErrorTips];
                 return;
             }
+            NSString *finalText = inputText;
+            if (MyConfiguration.shared.enableAppendMode && self.ocrPrefixText.length > 0) {
+                finalText = [self combinePreviousText:self.ocrPrefixText withNewText:inputText];
+            }
+            self.inputText = finalText;
+
+            // Show detected language, even auto
+            self.queryModel.showAutoLanguage = YES;
+
+            [self updateQueryTextAndParagraphStyle:finalText actionType:actionType];
 
             if (self.config.autoCopyOCRText) {
                 [inputText copyToPasteboard];
@@ -659,6 +688,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)clearInput {
     // Clear query text, detect language and clear button right now;
     self.inputText = @"";
+    self.ocrPrefixText = nil;
     self.queryModel.ocrImage = nil;
     [self.queryView setAlertTextHidden:YES];
 
@@ -1379,8 +1409,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)resetQueryAndResults {
     [self resetAllResults];
 
-    if (self.inputText.length) {
+    if (self.inputText.length && !MyConfiguration.shared.enableAppendMode) {
         self.inputText = @"";
+        self.ocrPrefixText = nil;
     }
 }
 
