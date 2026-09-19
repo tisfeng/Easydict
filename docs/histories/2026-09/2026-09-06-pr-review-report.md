@@ -1,6 +1,6 @@
 ## 2026-09-06 | 任务：优化 PR 审查报告结构
 
-**Links:** [执行计划](../../exec-plans/completed/2026-09-06-pr-review-report.md)
+**Links:** [执行计划](../../exec-plans/completed/2026-09/2026-09-06-pr-review-report.md)
 
 ### 用户请求
 

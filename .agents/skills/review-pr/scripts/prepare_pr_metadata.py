@@ -19,18 +19,22 @@ def metadata(path, storage_hash, repo, number):
         raise ValueError("Saved snapshot does not match the requested PR identity/head")
     owner = pr["headRepositoryOwner"]["login"]
     repository = pr["headRepository"]["name"]
+    author_data = pr.get("author")
+    author = author_data.get("login", "") if isinstance(author_data, dict) else ""
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]*", owner):
         raise ValueError("Invalid head owner")
     if not re.fullmatch(r"[A-Za-z0-9_.-]+", repository):
         raise ValueError("Invalid head repository")
     if not re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", pr["headRefOid"]):
         raise ValueError("Invalid head SHA")
+    if author and not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]*", author):
+        author = ""
     values = [owner, repository, pr["headRefName"], pr["headRefOid"], pr["baseRefName"],
               str(number), pr["url"]]
     if any(not isinstance(value, str) or not value or any(c.isspace() for c in value)
            or "\0" in value for value in values):
         raise ValueError("Missing or unsafe preparation metadata")
-    return "\t".join(values)
+    return "\t".join([*values, author])
 
 
 def main():

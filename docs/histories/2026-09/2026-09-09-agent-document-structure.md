@@ -2,7 +2,7 @@
 
 - 日期：2026-09-09
 - 状态：completed
-- 关联计划：[`2026-09-09-agent-document-structure.md`](../../exec-plans/completed/2026-09-09-agent-document-structure.md)
+- 关联计划：[`2026-09-09-agent-document-structure.md`](../../exec-plans/completed/2026-09/2026-09-09-agent-document-structure.md)
 
 ## 用户请求
 
@@ -38,7 +38,7 @@ planner 的既有职责和触发强度。
 - `docs/agents/build-and-test.md`
 - `docs/agents/coding-guidelines.md`
 - `docs/agents/README.md`
-- `docs/exec-plans/completed/2026-09-09-agent-document-structure.md`
+- `docs/exec-plans/completed/2026-09/2026-09-09-agent-document-structure.md`
 
 ## 后续事项
 

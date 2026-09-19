@@ -2,6 +2,7 @@
 """Collect read-only problem evidence; never infer requirements from references."""
 
 from concurrent.futures import ThreadPoolExecutor
+import hashlib
 import json
 import re
 import subprocess
@@ -201,24 +202,51 @@ def collect(repo, pr, issue_refs=(), discussion_refs=()):
             "issues": issues}
 
 
-def fingerprint_content(pr):
-    """Keep source content and coverage, excluding transport diagnostic wording."""
-    result = dict(pr)
+def content_hash(value):
+    """Return a stable SHA-256 digest for JSON-compatible content."""
+    payload = json.dumps(
+        value,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def source_id(issue):
+    """Return the stable identity used to compare problem sources."""
+    return f"{issue['repo']}#{issue['number']}"
+
+
+def source_fingerprint(issue):
+    """Fingerprint one source's content, excluding transport diagnostic wording."""
+    return content_hash({key: value for key, value in issue.items() if key != "diagnostic"})
+
+
+def fingerprint_pr(pr):
+    """Fingerprint PR-level evidence without the problem context section."""
+    result = {key: value for key, value in pr.items() if key != "reviewContext"}
     if isinstance(pr.get("closingIssuesReferences"), list):
-        result["closingIssuesReferences"] = sorted(pr["closingIssuesReferences"], key=lambda item: json.dumps(item, sort_keys=True))
-    context = pr.get("reviewContext")
-    if isinstance(context, dict):
-        context = dict(context)
-        context.pop("reference_errors", None)
-        context["issues"] = sorted(
-            [{key: value for key, value in issue.items() if key != "diagnostic"}
-             for issue in context.get("issues", [])], key=lambda issue: (issue["repo"], issue["number"]))
-        result["reviewContext"] = context
+        result["closingIssuesReferences"] = sorted(
+            pr["closingIssuesReferences"], key=lambda item: json.dumps(item, sort_keys=True)
+        )
     return result
 
 
-def coverage(pr):
-    context = pr.get("reviewContext")
+def fingerprint_context(context):
+    """Keep source content and coverage, excluding transport diagnostic wording."""
+    if not isinstance(context, dict):
+        return context
+    result = dict(context)
+    result.pop("reference_errors", None)
+    result["issues"] = sorted(
+        [{key: value for key, value in issue.items() if key != "diagnostic"}
+         for issue in context.get("issues", [])], key=lambda issue: (issue["repo"], issue["number"]))
+    return result
+
+
+def coverage(context):
+    """Describe requirement-evidence coverage without claiming the goal is understood."""
     if not isinstance(context, dict) or context.get("schema_version") != 1:
         return "not_collected"
     if not context.get("references_complete") or any(item.get("read_status") != "read" for item in context["issues"]):

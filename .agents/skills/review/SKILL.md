@@ -1,6 +1,6 @@
 ---
 name: review
-description: 审查本地任务变更、工作树、提交或提交范围，以及文件或模块的正确性。提供有证据的缺陷与修复建议；GitHub PR 上下文和线程操作由 review-pr 编排。
+description: 审查本地工作树、提交、range、文件或模块，找出有证据的缺陷。GitHub PR 审查使用 review-pr；代码清理使用 code-simplifier。
 ---
 
 # 通用代码审查
@@ -26,69 +26,13 @@ description: 审查本地任务变更、工作树、提交或提交范围，以�
 
 路径限制约束修改及报告范围，不禁止为判断问题读取必要调用链。不要扩大为无边界的全库审计。
 
-## 快速执行协议
+## 取证与复验
 
-按“收集冻结快照、语义审查与针对性验证、最终复验和报告”组织正常路径。保留完整审查范围、
-raw patch 与报告契约；工具轮次是优化指标，不是跳过证据或提前结束的硬上限。
+收集完整 raw diff 和必要上下文，再做语义审查与针对性验证。测试通过不代替代码审查；
+审查后复验冻结快照，内容变化时检查增量后再结论。
 
-- 唯一 parent 的单提交或语义明确的 range，直接批量预检；parent、范围或归属有歧义时再处理
-  具体缺口。不要在取得实际 diff 前反复规划假设性缺陷。
-- 支持程序化工具编排时，在一次调用内并行无依赖读取；依赖 SHA 解析的步骤等待成功后执行。
-  命令必须明确完成且退出码为 0 才接受结果，运行中会话继续等待，不重复启动。
-- 已加载且在有效上下文中的 Skill、规则和冻结证据直接复用。raw diff 完整读取一次；较大时
-  分页并记录覆盖区间。读过 diff 后不默认再打印全部完整文件，按调用链、错误路径或候选问题
-  补足上下文；行号只补读相关片段。压缩后证据确实丢失时允许针对性重读，不凭摘要编造证据。
-- 验证命令及范围确定后，按授权并行无共享写入冲突的检查。相同快照、命令及相关环境的有效
-  测试记录可复用并注明来源；新变更、失败、疑点或证据缺口影响结论时重新运行。语义审查仍
-  独立完成，绿色测试不能替代审查。完成必要检查后收集最终状态并报告，不无条件扩大验证。
-
-### commit/range 只读快照
-
-`<review-skill-dir>` 是实际加载的本 Skill 目录。对 commit/range 优先运行：
-
-```bash
-python3 "<review-skill-dir>/scripts/collect_review_snapshot.py" --repo <repo-root> --commit <ref>
-python3 "<review-skill-dir>/scripts/collect_review_snapshot.py" --repo <repo-root> --range '<A>..<B>'
-python3 "<review-skill-dir>/scripts/collect_review_snapshot.py" --repo <repo-root> --range '<A>...<B>'
-```
-
-三条是不同输入的示例，不需全部执行。merge commit 必须明确 `--parent <1-based-number>`；root
-commit 对比空树。`--path <repo-relative-path>` 可重复，用于字面路径过滤，不支持 glob/pathspec
-魔法，也不接受路径穿越。工作树、任务归属、文件/模块仍按原有快照规则执行。PR 编排器可以
-把已冻结的真实 base 与远程 head 作为 `--range '<base-sha>...<remote-head-sha>'` 交给本 helper；
-这只复用本地取证，不授权 GitHub 查询、checkout 或线程操作。latest-base 本地集成结果另取快照。
-
-helper 只读本地 Git 对象；不写索引、ref 或对象，不自动 fetch。接受 `schema_version: 1` 且
-命令成功的结果，冻结 `snapshot` 中的完整端点和 `fingerprint`，检查 `changes` 与 `patch`。
-其中 `A..B` 表示端点树差异，`A...B` 使用唯一 merge-base；缺失对象、merge parent 歧义或多重
-merge-base 均停止该快照，不能默默选基线。helper 不可用时，按本节同等范围用 Git 命令收集，
-仍需明确 parent、冻结端点、完整读取 diff 并在结束前复验，不把摘要或失败输出当成功。
-
-`patch` 默认至多返回 24000 个字符，包含完整 patch 的 SHA-256、总字节数、总字符数、当前
-`offset/end` 和 `next_offset`。有后续页时，用返回的完整 SHA 固定原 commit/range 及 parent、
-路径参数，传入 `--patch-offset <next_offset>` 续读，可用 `--patch-chars <count>` 调整每页大小。
-分页期间不传 `--expected-fingerprint`，否则未变内容会省略。只有所有页的 fingerprint/patch
-哈希一致，且区间连续覆盖 `[0, total_chars)`，才算读完；工具层截断时缩小页大小重新读取。
-`patch.complete` 只表示本次返回整份 patch，最后一页不代表之前页已经审查。
-JSON 使用 UTF-8/surrogateescape 无损表示原始字节，特殊路径由 NUL 分隔记录解析；二进制 patch、
-删除、rename 和 mode 变化保留为证据，语义或视觉验证不足时另行说明。
-
-最后以原输入引用与相同 parent、路径参数再次调用，附加：
-
-```text
---expected-fingerprint <initial-fingerprint>
-```
-
-`state: unchanged` 只省略未变的路径清单和 patch；`changed` 返回新快照与 patch，需检查增量。
-固定 SHA 指向的对象不随 HEAD 移动而变化，原输入是分支时复验该分支的最新解析结果。返回的
-`checkout` 独立描述当前 HEAD 和脏状态，不属于提交 fingerprint；status 摘要不是文件内容哈希。
-补读历史源码应使用 `git show <frozen-sha>:<path>`。运行当前 checkout 的测试前必须证明相关源码、
-测试及配置匹配所审查提交；HEAD 不同或相关内容有修改时不能把测试结果归属给历史提交。helper
-不替代测试前后内容一致性检查，也不证明语义审查已经完成。
-
-检查已提交内容的空白错误时使用 `git diff --check <base_sha> <target_sha>`，其中 base 是快照实际
-比较的 parent、端点或 merge-base。裸 `git diff --check` 只检查当前未暂存差异，不能证明提交或
-PR patch 通过检查。命令返回非零时保留诊断，不将其当作“工作树干净所以检查通过”。
+审查 commit 或 range 时读取
+[commit/range 快照协议](references/commit-range-snapshot.md)；工作树、任务归属和文件/模块审查直接按上表取证。
 
 ### 外部依赖调查
 
@@ -110,6 +54,12 @@ PR patch 通过检查。命令返回非零时保留诊断，不将其当作“�
 目标来源与实现证据分别保留；缺少上下文时说明推断，不用代码反向定义需求。PR 的背景发现和
 需求刷新仍由 `review-pr` 负责，此契约不使本地 review 自动查询 GitHub 或启动功能修复。
 
+目标确定后，还要评估所选实现方式是否足够好：结合目标、关键验收条件和既有架构与契约，比较
+当前做法与可行替代的范围、复杂度、代价和引入的风险。当前方案存在具体风险时按 finding 处理
+并给出替代方案；没有缺陷但存在更优的低风险替代时放入待决事项；找不到更好方案时明确说明当前
+方式已经足够，不为结论制造建议。只评价与目标相关的实现路径，不扩大为整体重构，也不因个人
+风格偏好制造修复任务。
+
 每个 finding 给出优先级、准确位置、触发条件、影响、代码证据、最小具体
 `Suggested Fix` 和验证建议。不能证实的问题放到待验证事项，不当作确定缺陷。
 PR 已有开放线程的问题由 `review-pr` 放入对应评论条目，不重复列为独立 finding。
@@ -119,7 +69,7 @@ PR 已有开放线程的问题由 `review-pr` 放入对应评论条目，不重�
 - P2：可复现的边界、兼容性或需求覆盖缺陷。
 - P3：具有具体后果的维护或验证缺口，不包含单纯风格偏好。
 
-本地报告包含范围/快照、按风险排序的 findings、实际验证及未验证项、结论。没有
+本地报告包含范围/快照、按风险排序的 findings、实际验证及未验证项、实现方式判断、结论。没有
 finding 时明确说明，而不是承诺没有 bug。PR 报告遵循 `review-pr` 的输出格式。只读审查默认不运行
 会修改工作树或外部服务的命令；构建与测试按调用方授权及仓库规则执行。
 

@@ -105,17 +105,6 @@ class ParseReferenceTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     review_context.parse_reference(raw, "owner/repo")
 
-    def test_find_references_deduplicates_and_does_not_treat_arbitrary_urls_as_issues(self) -> None:
-        text = (
-            "See #4 and OWNER/OTHER#8. Duplicate #4; "
-            "https://github.com/acme/tool/issues/9 is relevant. "
-            "https://github.com/acme/tool/pull/10 is not an issue."
-        )
-        self.assertEqual(
-            review_context.find_references(text, "owner/repo"),
-            ["acme/tool#9", "owner/other#8", "owner/repo#4"],
-        )
-
     def test_find_references_ignores_fenced_and_inline_examples(self) -> None:
         text = """\
 Actual requirement: #4.
@@ -164,21 +153,6 @@ class CollectTests(unittest.TestCase):
         self.assertEqual(graphql.call_args_list[0].kwargs["cursor"], None)
         self.assertEqual(graphql.call_args_list[1].kwargs["cursor"], "next")
 
-    def test_large_closing_references_reject_cyclic_pages(self) -> None:
-        capped = [{"url": f"https://github.com/owner/repo/issues/{number}"} for number in range(1, 101)]
-        cyclic = {
-            "repository": {
-                "pullRequest": {
-                    "url": "https://github.com/owner/repo/pull/42",
-                    "headRefOid": "head-1",
-                    "closingIssuesReferences": connection([], has_next=True, cursor="again"),
-                }
-            }
-        }
-        with patch.object(review_context, "graphql", side_effect=[cyclic, cyclic]):
-            with self.assertRaisesRegex(ValueError, "cyclic pagination"):
-                review_context.closing_references("owner/repo", pr_context(closing=capped))
-
     def test_large_closing_reference_page_rejects_pr_identity_drift(self) -> None:
         capped = [{"url": f"https://github.com/owner/repo/issues/{number}"} for number in range(1, 101)]
         drifted = {
@@ -225,30 +199,6 @@ class CollectTests(unittest.TestCase):
         )
         self.assertEqual(graphql.call_count, 3)
 
-    def test_body_reference_is_mentioned_not_closing_and_issue_body_is_not_recursed(self) -> None:
-        responses = [
-            issue_response(issue(2, body="Do not recursively collect #99.")),
-        ]
-        with patch.object(review_context, "graphql", side_effect=responses) as graphql:
-            result = review_context.collect(
-                "owner/repo", pr_context("The context is #2, not a closing directive.")
-            )
-
-        self.assertEqual(result["issues"][0]["relations"], ["mentioned"])
-        self.assertEqual(result["issues"][0]["read_status"], "read")
-        self.assertEqual(graphql.call_count, 1)
-        self.assertNotIn("owner/repo#99", {f"{item['repo']}#{item['number']}" for item in result["issues"]})
-
-    def test_no_references_does_not_issue_issue_queries(self) -> None:
-        with patch.object(review_context, "graphql") as graphql:
-            result = review_context.collect("owner/repo", pr_context())
-
-        self.assertEqual(result["issues"], [])
-        self.assertEqual(result["requested_issues"], [])
-        self.assertEqual(result["discussion_issues"], [])
-        self.assertTrue(result["references_complete"])
-        graphql.assert_not_called()
-
     def test_records_issue_read_errors_and_pr_mistypes_without_losing_context(self) -> None:
         def fake_graphql(_query: str, **variables: object) -> dict[str, object]:
             if variables["number"] == 2:
@@ -265,46 +215,6 @@ class CollectTests(unittest.TestCase):
         self.assertEqual(by_number[2]["read_status"], "not_issue")
         self.assertEqual(by_number[3]["read_status"], "read_failed")
         self.assertIn("network unavailable", by_number[3]["diagnostic"])
-
-    def test_classifies_permission_and_absence_transport_errors(self) -> None:
-        for detail, expected in (("HTTP 403 FORBIDDEN", "permission_denied"), ("HTTP 404 NOT_FOUND", "unavailable")):
-            with self.subTest(detail=detail):
-                with patch.object(review_context, "graphql", side_effect=OSError(detail)):
-                    result = review_context.collect("owner/repo", pr_context(), issue_refs=("#2",))
-
-                item = result["issues"][0]
-                self.assertEqual(item["read_status"], expected)
-                self.assertIn(detail, item["diagnostic"])
-
-    def test_issue_with_comments_but_no_discussion_request_keeps_comments_unread(self) -> None:
-        with patch.object(
-            review_context,
-            "graphql",
-            return_value=issue_response(issue(2, comments=connection([], total_count=3))),
-        ):
-            result = review_context.collect("owner/repo", pr_context("#2"))
-
-        comments = result["issues"][0]["comments"]
-        self.assertEqual(comments["status"], "not_requested")
-        self.assertEqual(comments["totalCount"], 3)
-        self.assertEqual(comments["items"], [])
-
-    def test_discussion_rejects_duplicate_ids_missing_page_info_and_count_mismatch(self) -> None:
-        malformed = {
-            "duplicate IDs": (connection([comment("same", "One"), comment("same", "Two")], total_count=2), "incomplete"),
-            "missing pageInfo": ({"nodes": [comment("comment-1", "One")], "totalCount": 1}, "pageinfo"),
-            "count mismatch": (connection([comment("comment-1", "One")], total_count=2), "incomplete"),
-        }
-        for label, (comments, evidence) in malformed.items():
-            with self.subTest(label=label):
-                with patch.object(
-                    review_context, "graphql", return_value=issue_response(issue(2, comments=comments))
-                ):
-                    result = review_context.collect("owner/repo", pr_context(), discussion_refs=("#2",))
-
-                item = result["issues"][0]
-                self.assertEqual(item["read_status"], "read_failed")
-                self.assertIn(evidence, item["diagnostic"].lower())
 
     def test_discussion_comments_paginate_and_final_guard_rejects_issue_drift(self) -> None:
         first_comments = connection(

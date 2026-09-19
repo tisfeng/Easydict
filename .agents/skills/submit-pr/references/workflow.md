@@ -3,6 +3,10 @@
 本文件说明 `submit_pr.py` 与调用 Agent 的职责，以及各阶段的检查和执行规则。执行
 `plan`、默认或 `draft` 模式时都要完整阅读。
 
+首次运行 helper 前选择一个可用的 Python 3.10+ 解释器；同一任务的 `plan` 和 `apply`
+使用同一解释器。这是 helper 的运行时要求，不是产品依赖；不要为此修改项目的 Python 配置。
+找不到兼容解释器时报告缺口，不声称 helper 已运行。
+
 ## Repository 拓扑发现
 
 helper 只接受指向 `github.com` 的 SSH 或 HTTPS remote，并按以下顺序解析：
@@ -11,11 +15,11 @@ helper 只接受指向 `github.com` 的 SSH 或 HTTPS remote，并按以下顺�
    唯一根仓库；多个根仓库时停止。
 2. base remote：显式 `--base-remote`，否则唯一指向 base repository 的 remote；不能
    仅因名称是 `origin` 就信任它。
-3. base branch：显式 `--base`、当前分支的 `branch.<name>.gh-merge-base`、GitHub
-   repository 的 default branch。
-4. head remote：显式 `--head-remote`、`branch.<name>.pushRemote`、
-   `remote.pushDefault`、唯一 fork remote、当前 upstream、base remote。任一步产生多个
-   有效候选时停止。
+3. base branch：显式 `--base`、attached 当前分支的 `branch.<name>.gh-merge-base`、GitHub
+   repository 的 default branch；detached checkout 跳过 branch-scoped 配置。
+4. head remote：显式 `--head-remote`、attached 当前分支的 `branch.<name>.pushRemote`、
+   `remote.pushDefault`、唯一 fork remote、attached 当前 upstream、base remote。detached checkout
+   跳过 branch-scoped 配置；任一步产生多个有效候选时停止。
 5. head repository 必须与 base repository 位于同一 fork 网络；跨 fork PR 使用
    `<owner>:<branch>` 作为 `gh` 的 head 参数。
 
@@ -39,7 +43,10 @@ base branch、GitHub default branch 和重复传入的 `--protected-branch` 都�
 - 显式名称等于当前非保护分支时直接复用，不因其格式与默认值不同而另建分支。
 - 当前已经是默认 Conventional 非保护任务分支：直接使用；如果同时提供 `--head-branch`，名称必须相同。
 - 显式名称不得是保护分支；名称冲突时尝试的后缀候选同样跳过保护分支。
-- Detached HEAD：停止。
+- Detached HEAD：调用 Agent 根据用户明确名称、项目既有命名或任务与只读 diff 生成分支名，并向
+  helper 显式传入 `--head-branch`。helper 自身不从 PR 标题猜测名称；缺少参数时在写入前停止。
+  `plan` 以 `current_branch: null` 和 `would-create`、`would-update` 或 `would-reuse` 预览动作且不创建
+  ref；`apply` 从冻结 HEAD 创建、更新或复用本地 ref，不切换 checkout。
 
 apply 先 fetch 精确 base ref，再要求 `<base-remote>/<base>` 是 HEAD 的祖先且范围至少
 包含一个提交。该拓扑检查不替代调用 Agent 对提交范围和任务边界的语义审查。
@@ -49,17 +56,34 @@ apply 先 fetch 精确 base ref，再要求 `<base-remote>/<base>` 是 HEAD 的�
 - `plan` 使用 `GIT_OPTIONAL_LOCKS=0` 执行 Git 读取，可以报告 staged、unstaged 和
   untracked 状态，但不 fetch、不创建 ref、不写临时文件。
 - `apply` 要求工作树完全干净。
+- `apply` 在本地 ref 写入前重新检查 checkout 的 attached/detached 状态与 HEAD；与冻结计划不一致时
+  停止，并重新读取目标 ref。分支更新继续使用 Git 的 worktree 检出保护，不移动其他 worktree
+  正在使用的分支。
 - helper 不运行 `git add` 或 `git commit`。已有 staged 内容由调用 Agent 根据目标
   仓库交付规则处理；有 unstaged 或 untracked 内容时停止。
 - 默认/draft 的调用方在最终 plan 前完成允许的 staged 提交和精确 base fetch，解决首次提交或
   缺少 cached base 的准备问题。纯 plan 不执行这些动作，缺少前提时只报告限制。
 - helper 不修改提交历史，也不把无关提交从范围中自动剔除。
 
-## 模板优先的正文契约
+## 固定 PR 正文契约
 
 `plan`、默认和 `draft` 均依据用户请求、目标仓库规则、真实提交范围与 diff 起草正文。
-PR 标题使用 Angular-style `type(scope): subject`，说明主要行为。Summary 解释实际改动及原因；
-Verification 只列出实际执行的检查及结果；Issue 仅使用用户提供或有明确证据的引用。
+PR 标题使用 Angular-style `type(scope): subject`，说明主要行为。
+
+正文只使用 Skill 自带的 [固定模板](../assets/pull_request_template.md)，依次包含：
+
+1. `背景 / Context`：说明为什么需要本 PR、目标和必要约束。
+2. `变更内容 / Changes`：说明实际改变的行为或实现，不重复验证结果。
+3. `关联 Issue / Linked Issues`：只使用用户提供或有明确证据的引用。
+4. `验证 / Verification`：只列实际执行的检查及结果；未执行时写明原因。
+5. `截图 / Screenshots`：非 UI 修改使用 `N/A`；UI 修改使用固定补图提示。
+
+调用 Agent 不发现或读取目标仓库根目录、`docs/`、`.github/` 或其他位置的 GitHub PR 模板，
+也不把其中的标题、说明或 checklist 合并进正文。目标仓库的明确规则仍可约束语言、证据和 Issue
+策略；规则要求与固定结构不兼容时停止并说明冲突，不恢复模板合并。
+
+helper 要求 `--title`、`--context`、`--changes` 和 `--verification`；不接受 `--summary`、
+`--template`、`--extra-body-file` 或任意正文文件。Context、Changes 和 Verification 均不能为空。
 
 ### 用户语言
 
@@ -72,52 +96,28 @@ Verification 只列出实际执行的检查及结果；Issue 仅使用用户提�
 4. 以上均无法确定时使用英语。
 
 目标仓库明确要求特定 PR 语言时，将其作为独立硬约束并在预览中说明；若它与用户明确偏好冲突，
-停止并请求用户决定。英文模板、提交信息、分支名或单独的英文终端 locale 不能覆盖已经确定的对话
-语言，也不能单独视为仓库语言要求。
+停止并请求用户决定。固定模板标题、提交信息、分支名或单独的英文终端 locale 不能覆盖已经确定的
+对话语言，也不能单独视为仓库语言要求。
 
-PR 默认使用一种首选语言。标题的 subject、Summary、Verification、调用 Agent 自拟的 Issue 或截图
-说明、`--extra-body-file` 中由 Agent 新写的内容，以及用户可见的最终报告都使用该语言；只有用户或
-仓库明确要求时才生成双语内容。Angular `type(scope)`、Issue 关键字、命令、路径、branch、SHA、
-API、产品名和检查名等技术标识保留原文。
+PR 默认使用一种首选语言。标题的 subject、Context、Changes、Verification、调用 Agent 自拟的
+Issue 或截图说明，以及用户可见的最终报告都使用该语言；只有用户或仓库明确要求时才生成双语
+内容。Angular `type(scope)`、Issue 关键字、命令、路径、branch、SHA、API、产品名和检查名等
+技术标识保留原文。
 
-模板原有标题、说明、checklist 和顺序继续按下文保留；英文模板不要求插入内容也使用英文。无模板
-时的固定双语标题、`N/A` 和 helper 固定截图提示属于稳定结构，不参与语言推断。调用 Agent 在运行
-helper 前负责检查草稿与首选语言一致，并在 PR 预览中显示语言及来源；helper 只校验和原样渲染
-传入内容，不检测语言或翻译。
+固定模板的双语标题、`N/A` 和 helper 固定截图提示属于稳定结构，不参与语言推断。调用 Agent
+在运行 helper 前负责检查草稿与首选语言一致，并在 PR 预览中显示语言及来源；helper 只校验并
+原样渲染传入内容，不检测语言或翻译。
 
-目标仓库模板优先保留原有标题、顺序、非占位说明和 checklist。以下语义标题会接收调用方
-提供的内容：
-
-1. Summary、Description 或 Changes
-2. Linked Issues、Related Issues 或 Issues
-3. Verification、Testing 或 Tests
-4. Screenshots 或 Screenshot
-
-模板发现兼容 GitHub 规则：在仓库根目录、`docs/` 或 `.github/` 中查找文件名大小写不
-敏感的 `pull_request_template.md` 或 `pull_request_template.txt`；也在这三个位置中
-查找名称大小写不敏感的 `PULL_REQUEST_TEMPLATE/` 目录，并读取其中的 `.md` 或 `.txt`
-模板。
-
-没有模板时使用内置四段式骨架，不创建模板文件；只有一个模板时自动使用；多个模板时
-必须显式 `--template`。大小写不敏感文件系统上的同一文件按 inode 去重。
-
-映射段落中的非占位提示和 checklist 会保留，其他项目专属二级段落按原顺序附加。模板缺少
-某个语义段落时，helper 才在模板内容之后追加对应的内置默认段落，确保 Summary、
-Verification、Issue 和 Screenshots 内容均可见。`--extra-body-file <path|->` 可补充项目
-专属段落，但不能重复任一语义段落。
-
-- Summary 和 Verification 不能为空。
 - 没有关联 Issue 时保持该区域为空。
-- 非 UI 修改写入 `N/A`。
-- UI 修改写入固定提示，请用户在 GitHub PR 页面补充截图；不因截图缺失停止或自动改为 Draft。
+- UI 修改需要补图时不因截图缺失停止，也不自动改为 Draft。
 
 ## Issue 策略
 
 `--issue-policy` 决定 GitHub 自动关闭引用的约束：
 
 - `neutral`（默认）：调用 Agent 不主动生成 `Fixes`、`Closes`、`Resolves` 等自动关闭语法；
-  允许目标仓库模板或用户显式附加正文包含该语法。helper 不生成 closing keyword，也不对模板
-  和提交历史施加额外限制。
+  允许用户明确要求的正文包含该语法。helper 不生成 closing keyword，也不对正文和提交历史
+  施加额外限制。
 - `allow`：显式表明目标工作流允许 closing keyword。
 - `forbid`：扫描正文和 base..HEAD 的完整提交信息，并在创建后要求
   `closingIssuesReferences == []`。
@@ -190,6 +190,9 @@ helper 向 stdout 输出 JSON。apply 结果包含：
 - `timings_ms`：apply 的 worktree、认证、拓扑、fetch、计划复验、PR 查询、push、创建和最终验证
   等阶段耗时；用于诊断而不是固定性能承诺
 - `needs_screenshots`：UI 修改时为 `true`
+
+plan 结果包含 `current_branch`；detached checkout 为 `null`。`planned_branch_action` 使用
+`would-create`、`would-update`、`would-reuse` 或 `current`，且不会执行对应 Git 写入。
 
 调用 Agent 应直接使用成功 JSON 生成最终回执，不再为相同字段读取完整 PR 正文。只有 helper 返回
 成功并且 `pr_verification.status == "passed"` 时才可声称 PR 最终验证通过。

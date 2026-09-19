@@ -1,11 +1,12 @@
 # Getting Started on Localization
 Easydict uses Xcode String Catalog to manage translations, so the following steps are what you need to get started on localizing the app.
-### Installing Xcode 15+
+### Installing Xcode 16+
 You can install Xcode from the [Mac App Store](https://apps.apple.com/app/xcode/id497799835) or its beta versions on [Apple Developer](https://developer.apple.com/xcode/resources/).
 ### Cloning and building the project
 1. Use git to clone the project from GitHub to your Mac. You can do this by using the [git command line tool](https://docs.github.com/en/get-started/getting-started-with-git) or  [GitHub Desktop](https://desktop.github.com).
 2. Make sure to base your changes on the [dev](https://github.com/tisfeng/Easydict/tree/dev) branch, this is where localization work takes place.
-3. Open the project and build it, detailed instructions on how to build the project can be found [here](../../../README.md#developer-build).
+3. Open the project and build it. Detailed instructions are available in the
+   [developer build guide](./GUIDE.md#developer-build).
 ### Adding your language to String Catalog
 Now you can start to add your own language!
 1. Navigate to `Easydict -> Easydict -> App -> Localizable.xcstrings`. This catalog contains the main app strings. Also open `Easydict/App/InfoPlist.xcstrings` for app metadata and permission descriptions.

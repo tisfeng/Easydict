@@ -1,6 +1,6 @@
 ## 2026-08-23 | 任务：新增 PR 模板与关联 Issue 解析
 
-**Links:** `../../exec-plans/completed/2026-08-23-pr-template-linked-issues.md`
+**Links:** `../../exec-plans/completed/2026-08/2026-08-23-pr-template-linked-issues.md`
 
 ### 用户请求
 
@@ -39,4 +39,4 @@ URL 或仓库编号格式，并由版本发布后的 Issue 跟进统一检查、
 - `docs/agents/skills.md`
 - `docs/user-docs/en/GUIDE.md`
 - `docs/user-docs/zh/GUIDE.md`
-- `docs/exec-plans/completed/2026-08-23-pr-template-linked-issues.md`
+- `docs/exec-plans/completed/2026-08/2026-08-23-pr-template-linked-issues.md`

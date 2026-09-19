@@ -1,6 +1,6 @@
 ## 2026-09-06 | 任务：适配 Astra Agent 规则与 Terra 测试委派
 
-**Links:** [执行计划](../../exec-plans/completed/2026-09-06-astra-agent-rules.md)、
+**Links:** [执行计划](../../exec-plans/completed/2026-09/2026-09-06-astra-agent-rules.md)、
 [官方建议采用记录](../../references/astra-agent-guidance.md)
 
 ### 用户请求

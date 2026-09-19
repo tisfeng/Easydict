@@ -1,7 +1,7 @@
 ## 2026-09-09 | 任务：升级受管 `tisfeng/skills` 快照至 v0.3.2
 
 **Links:** [`v0.3.2 release`](https://github.com/tisfeng/skills/releases/tag/v0.3.2)、
-[`执行计划`](../../exec-plans/completed/2026-09-09-upgrade-tisfeng-skills-v0.3.2.md)
+[`执行计划`](../../exec-plans/completed/2026-09/2026-09-09-upgrade-tisfeng-skills-v0.3.2.md)
 
 ### 用户请求
 

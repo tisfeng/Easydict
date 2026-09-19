@@ -26,7 +26,7 @@ from pr_identity import matches_pr_url, same_repository  # noqa: E402
 
 
 PR_FIELDS = (
-    "number,title,url,body,baseRefName,baseRefOid,headRefName,headRefOid,"
+    "number,title,url,body,author,baseRefName,baseRefOid,headRefName,headRefOid,"
     "headRepository,headRepositoryOwner,isCrossRepository,isDraft,state,"
     "mergeable,mergeStateStatus,updatedAt,files,commits,"
     "closingIssuesReferences,comments,reviews"
@@ -52,12 +52,17 @@ def canonical_fingerprint(value: Any) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
-def section_fingerprints(pr, threads, checks):
+def section_fingerprints(pr, context, threads, checks):
     """Ignore transport order for sets, but retain chronological reply content."""
     thread_set = dict(threads, threads=sorted(threads["threads"], key=lambda item: item["id"]))
     check_set = dict(checks, items=sorted(checks["items"], key=canonical_fingerprint))
-    return {"pr": canonical_fingerprint(review_context.fingerprint_content(pr)), "threads": canonical_fingerprint(thread_set),
+    return {"pr": canonical_fingerprint(review_context.fingerprint_pr(pr)),
+            "context": canonical_fingerprint(review_context.fingerprint_context(context)),
+            "threads": canonical_fingerprint(thread_set),
             "checks": canonical_fingerprint(check_set)}
+
+
+SECTIONS = ("pr", "context", "threads", "checks")
 
 
 def run_json(
@@ -270,8 +275,7 @@ def collect_snapshot(repo: str, number: int, *, issue_refs=(), discussion_refs=(
             "PR identity changed after parallel collection (" + ", ".join(changed) + "); collect again"
         )
 
-    pr = dict(pr, reviewContext=context)
-    fingerprints = section_fingerprints(pr, threads, checks)
+    fingerprints = section_fingerprints(pr, context, threads, checks)
     return {
         "schema_version": 1,
         "mode": "collect",
@@ -285,7 +289,10 @@ def collect_snapshot(repo: str, number: int, *, issue_refs=(), discussion_refs=(
         "mergeStateStatus": pr["mergeStateStatus"],
         "fingerprints": fingerprints,
         "summary": {
-            "context": {"coverage": review_context.coverage(pr), "issues": len(context["issues"])},
+            "context": {
+                "coverage": review_context.coverage(context),
+                "issues": len(context.get("issues", [])),
+            },
             "threads": summarize_threads(threads),
             "checks": summarize_checks(checks),
         },
@@ -298,6 +305,7 @@ def collect_snapshot(repo: str, number: int, *, issue_refs=(), discussion_refs=(
             "wall": round((time.monotonic() - started) * 1000, 3),
         },
         "pr": pr,
+        "context": context,
         "threads": threads,
         "checks": checks,
     }
@@ -308,14 +316,15 @@ def reviewed_previous(snapshot, repo, number, head, expected):
     try:
         return (snapshot["schema_version"] == 1 and same_repository(snapshot["repo"], repo)
                 and snapshot["number"] == number and snapshot["headRefOid"] == head
-                and section_fingerprints(snapshot["pr"], snapshot["threads"], snapshot["checks"]) == expected)
+                and section_fingerprints(snapshot["pr"], snapshot["context"],
+                                         snapshot["threads"], snapshot["checks"]) == expected)
     except (KeyError, TypeError, ValueError):
         return False
 
 
 def collect_selected(repo, number, issues=None, discussions=None, previous=None):
     """Carry forward explicit source selection only from a validated prior snapshot."""
-    context = (previous or {}).get("pr", {}).get("reviewContext", {})
+    context = (previous or {}).get("context") or {}
     issues = issues if issues is not None else context.get("requested_issues", [])
     discussions = discussions if discussions is not None else context.get("discussion_issues", [])
     if not issues and not discussions:
@@ -329,6 +338,7 @@ def refresh_snapshot(
     *,
     expected_head: str,
     expected_pr_fingerprint: str,
+    expected_context_fingerprint: str,
     expected_threads_fingerprint: str,
     expected_checks_fingerprint: str,
     expected_base_name: str | None = None,
@@ -340,6 +350,7 @@ def refresh_snapshot(
 
     expected = {
         "pr": expected_pr_fingerprint,
+        "context": expected_context_fingerprint,
         "threads": expected_threads_fingerprint,
         "checks": expected_checks_fingerprint,
     }
@@ -356,7 +367,7 @@ def refresh_snapshot(
         or current["pr"]["baseRefOid"] != expected_base_sha
     ):
         changed_fields.append("base")
-    for name in ("pr", "threads", "checks"):
+    for name in SECTIONS:
         if current["fingerprints"][name] != expected[name]:
             changed_fields.append(name)
 
@@ -383,39 +394,78 @@ def refresh_snapshot(
             "unchanged": not changed_fields,
             "changed_fields": changed_fields,
             "base_comparison": "checked" if expected_base_name is not None else "not_provided",
-            "context_coverage": review_context.coverage(current["pr"]),
+            "context_coverage": review_context.coverage(current["context"]),
         }
     )
     if "head" in changed_fields:
         result.update(
-            {name: current[name] for name in ("pr", "threads", "checks")}
+            {name: current[name] for name in SECTIONS}
         )
     else:
-        for name in ("pr", "threads", "checks"):
+        for name in SECTIONS:
             if name in changed_fields:
                 result[name] = current[name]
     if previous_snapshot is not None:
         # A saved file is useful only if its contents independently match the
         # caller's previously reviewed fingerprints, identity and head.
         if not valid_previous:
-            result.update({name: current[name] for name in ("pr", "threads", "checks")})
+            result.update({name: current[name] for name in SECTIONS})
             result["evidence_reset"] = "previous snapshot does not match reviewed evidence; read full sections"
-        elif "head" not in changed_fields and "threads" in changed_fields:
-            before = {item["id"]: item for item in previous_snapshot["threads"]["threads"]}
-            after = {item["id"]: item for item in current["threads"]["threads"]}
-            result.pop("threads", None)
-            result["threads_delta"] = {
-                "previous_fingerprint": expected_threads_fingerprint,
-                "fingerprint": current["fingerprints"]["threads"],
-                "identity": {key: value for key, value in current["threads"].items() if key != "threads"},
-                "index": [{"id": key, "fingerprint": review_threads.fingerprint(value),
-                           "isResolved": value["isResolved"], "isOutdated": value["isOutdated"]}
-                          for key, value in sorted(after.items())],
-                "removed_ids": sorted(before.keys() - after.keys()),
-                "changed": [value for key, value in sorted(after.items()) if key not in before
-                            or review_threads.fingerprint(value) != review_threads.fingerprint(before[key])],
-            }
+        else:
+            for name, delta in (
+                ("context", context_delta(current, previous_snapshot, expected_context_fingerprint, changed_fields)),
+                ("threads", threads_delta(current, previous_snapshot, expected_threads_fingerprint, changed_fields)),
+            ):
+                if delta is not None:
+                    result.pop(name, None)
+                    result[f"{name}_delta"] = delta
     return result
+
+
+def threads_delta(current, previous_snapshot, expected_threads_fingerprint, changed_fields):
+    """Return only the review threads that changed since the previous snapshot."""
+    if "head" in changed_fields or "threads" not in changed_fields:
+        return None
+    before = {item["id"]: item for item in previous_snapshot["threads"]["threads"]}
+    after = {item["id"]: item for item in current["threads"]["threads"]}
+    return {
+        "previous_fingerprint": expected_threads_fingerprint,
+        "fingerprint": current["fingerprints"]["threads"],
+        "identity": {key: value for key, value in current["threads"].items() if key != "threads"},
+        "index": [{"id": key, "fingerprint": review_threads.fingerprint(value),
+                   "isResolved": value["isResolved"], "isOutdated": value["isOutdated"]}
+                  for key, value in sorted(after.items())],
+        "removed_ids": sorted(before.keys() - after.keys()),
+        "changed": [value for key, value in sorted(after.items()) if key not in before
+                    or review_threads.fingerprint(value) != review_threads.fingerprint(before[key])],
+    }
+
+
+def context_delta(current, previous_snapshot, expected_context_fingerprint, changed_fields):
+    """Return only the problem sources that changed since the previous snapshot."""
+    if "head" in changed_fields or "context" not in changed_fields:
+        return None
+    before = {review_context.source_id(item): item
+              for item in (previous_snapshot.get("context") or {}).get("issues", [])}
+    after = {review_context.source_id(item): item for item in current["context"].get("issues", [])}
+    ordered = sorted(after.values(), key=lambda item: (item["repo"], item["number"]))
+    context = current["context"]
+    return {
+        "previous_fingerprint": expected_context_fingerprint,
+        "fingerprint": current["fingerprints"]["context"],
+        "coverage": review_context.coverage(context),
+        "requested_issues": context.get("requested_issues", []),
+        "discussion_issues": context.get("discussion_issues", []),
+        "references_complete": context.get("references_complete", False),
+        "index": [{"id": review_context.source_id(item), "fingerprint": review_context.source_fingerprint(item),
+                   "relations": item.get("relations", []), "read_status": item.get("read_status")}
+                  for item in ordered],
+        "removed_ids": sorted(before.keys() - after.keys()),
+        "changed": [item for item in ordered
+                    if review_context.source_id(item) not in before
+                    or review_context.source_fingerprint(item)
+                    != review_context.source_fingerprint(before[review_context.source_id(item)])],
+    }
 
 
 def main() -> int:
@@ -439,6 +489,7 @@ def main() -> int:
         command_parser.add_argument("--issue-comments", action="append", help="Issue whose full discussion must be read and refreshed (repeatable)")
     refresh_parser.add_argument("--expected-head", required=True)
     refresh_parser.add_argument("--expected-pr-fingerprint", required=True)
+    refresh_parser.add_argument("--expected-context-fingerprint", required=True)
     refresh_parser.add_argument("--expected-threads-fingerprint", required=True)
     refresh_parser.add_argument("--expected-checks-fingerprint", required=True)
     refresh_parser.add_argument("--expected-base-name")
@@ -470,6 +521,7 @@ def main() -> int:
                     reset = str(error)
             valid_previous = reviewed_previous(previous, arguments.repo, arguments.pr, arguments.expected_head,
                 {"pr": arguments.expected_pr_fingerprint, "threads": arguments.expected_threads_fingerprint,
+                 "context": arguments.expected_context_fingerprint,
                  "checks": arguments.expected_checks_fingerprint})
             current = collect_selected(arguments.repo, arguments.pr, arguments.issue, arguments.issue_comments,
                                        previous if valid_previous else None)
@@ -478,6 +530,7 @@ def main() -> int:
                 arguments.pr,
                 expected_head=arguments.expected_head,
                 expected_pr_fingerprint=arguments.expected_pr_fingerprint,
+                expected_context_fingerprint=arguments.expected_context_fingerprint,
                 expected_threads_fingerprint=arguments.expected_threads_fingerprint,
                 expected_checks_fingerprint=arguments.expected_checks_fingerprint,
                 expected_base_name=arguments.expected_base_name,
@@ -486,7 +539,7 @@ def main() -> int:
                 current_snapshot=current,
             )
             if reset is not None:
-                result.update({name: current[name] for name in ("pr", "threads", "checks")})
+                result.update({name: current[name] for name in SECTIONS})
                 result["evidence_reset"] = "previous snapshot unavailable; read full sections: " + reset
         if arguments.snapshot_out:
             storage_hash = snapshot_transport.save(arguments.snapshot_out, current, result)

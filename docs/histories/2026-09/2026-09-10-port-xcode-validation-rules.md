@@ -3,7 +3,7 @@
 - 日期：2026-09-10
 - 状态：completed
 - 来源：Scoco `2d57b691d8512781af3c4571aaf113d926a3caa4`
-- 关联计划：[移植 Xcode 验证选择规则](../../exec-plans/completed/2026-09-10-port-xcode-validation-rules.md)
+- 关联计划：[移植 Xcode 验证选择规则](../../exec-plans/completed/2026-09/2026-09-10-port-xcode-validation-rules.md)
 
 ## 变更
 
@@ -24,4 +24,4 @@
 ## 受影响文件
 
 - `docs/agents/build-and-test.md`
-- `docs/exec-plans/completed/2026-09-10-port-xcode-validation-rules.md`
+- `docs/exec-plans/completed/2026-09/2026-09-10-port-xcode-validation-rules.md`

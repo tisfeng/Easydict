@@ -2,7 +2,7 @@
 
 - 日期：2026-09-10
 - 状态：completed
-- 关联计划：[`2026-09-10-simplify-git-delivery-policy.md`](../../exec-plans/completed/2026-09-10-simplify-git-delivery-policy.md)
+- 关联计划：[`2026-09-10-simplify-git-delivery-policy.md`](../../exec-plans/completed/2026-09/2026-09-10-simplify-git-delivery-policy.md)
 
 ## 用户请求
 
@@ -31,7 +31,7 @@
 ## 受影响文件
 
 - `docs/agents/git-workflow.md`
-- `docs/exec-plans/completed/2026-09-10-simplify-git-delivery-policy.md`
+- `docs/exec-plans/completed/2026-09/2026-09-10-simplify-git-delivery-policy.md`
 
 ## 后续事项
 

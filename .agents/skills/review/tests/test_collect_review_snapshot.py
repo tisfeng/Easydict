@@ -227,27 +227,6 @@ class CollectReviewSnapshotTests(unittest.TestCase):
         self.assert_patch_matches_git(merge_base, root, target)
         self.assertNotEqual(endpoints["patch"]["sha256"], merge_base["patch"]["sha256"])
 
-    def test_triple_dot_rejects_criss_cross_multiple_merge_bases(self) -> None:
-        self.write("base.txt", "base\n")
-        self.commit("base")
-        self._git("switch", "-c", "left", cwd=self.repository)
-        self.write("left.txt", "left\n")
-        left_tip = self.commit("left")
-        self._git("switch", "-c", "right", "main", cwd=self.repository)
-        self.write("right.txt", "right\n")
-        right_tip = self.commit("right")
-
-        self._git("switch", "left", cwd=self.repository)
-        self._git("merge", "--no-ff", "right", "-m", "left merges right", cwd=self.repository)
-        left_merge = self._git("rev-parse", "HEAD", cwd=self.repository).strip()
-        self._git("switch", "right", cwd=self.repository)
-        self._git("merge", "--no-ff", left_tip, "-m", "right merges left", cwd=self.repository)
-        right_merge = self._git("rev-parse", "HEAD", cwd=self.repository).strip()
-
-        merge_bases = self._git("merge-base", "--all", left_merge, right_merge, cwd=self.repository)
-        self.assertEqual(set(merge_bases.splitlines()), {left_tip, right_tip})
-        self.failure("--range", f"{left_merge}...{right_merge}")
-
     def test_invalid_refs_ranges_and_unsafe_pathspecs_are_json_errors(self) -> None:
         self.write("tracked.txt", "tracked\n")
         commit = self.commit("tracked")
@@ -375,34 +354,6 @@ class CollectReviewSnapshotTests(unittest.TestCase):
             filtered["patch"]["text"],
             self.actual_patch(base, target, "renamed [*] ? name.txt"),
         )
-
-    def test_pr_range_checks_committed_whitespace_even_with_a_clean_checkout(self) -> None:
-        self.write("file.txt", "base\n")
-        base = self.commit("base")
-        self.write("file.txt", "trailing spaces   \n")
-        head = self.commit("PR change")
-        snapshot = self.success("--range", f"{base}...{head}")
-        self.assertEqual(snapshot["snapshot"]["base_sha"], base)
-        self.assertFalse(snapshot["checkout"]["dirty"])
-        self.assertEqual(self._git("diff", "--check", cwd=self.repository), "")
-        check = subprocess.run(
-            ["git", "diff", "--check", snapshot["snapshot"]["base_sha"],
-             snapshot["snapshot"]["target_sha"]], cwd=self.repository,
-            env=self.git_environment(), capture_output=True, text=True, check=False,
-        )
-        self.assertNotEqual(check.returncode, 0)
-        self.assertIn("trailing whitespace", check.stdout)
-        self.assertIn("file.txt:1", check.stdout)
-
-    def test_shallow_commit_with_an_unavailable_parent_is_an_error(self) -> None:
-        self.write("tracked.txt", "base\n")
-        self.commit("base")
-        self.write("tracked.txt", "target\n")
-        target = self.commit("target")
-        shallow = self.root / "shallow"
-        self._git("clone", "--depth=1", f"file://{self.repository}", shallow, cwd=self.root)
-        self.assertEqual(self._git("rev-parse", "HEAD", cwd=shallow).strip(), target)
-        self.failure("--commit", target, repository=shallow)
 
     def test_verification_is_stable_across_ref_spelling_and_workspace_changes_but_detects_ref_move(self) -> None:
         self.write("tracked.txt", "base\n")

@@ -9,23 +9,21 @@
 
 ### 组织与命名
 
-- 按功能和明确职责组织不断增长的区域；解析、UI、I/O、编排和验证混杂时提取同级文件或模块。
-- 每个源码文件聚焦一个职责。手写文件通常控制在 500 行以内；没有具体拆分计划时不得超过
-  1000 行。生成文件、第三方代码、纯数据、模板、大型 fixture 和随仓库维护的完整第三方运行时
-  副本除外。
-- 较长文件使用 section marker 组织生命周期、状态、命令处理、I/O、解析和恢复逻辑。
-- 遵循语言常规命名约定；不参与导入的文档、导出产物、应用管理的运行时路径和独立脚本使用
-  kebab-case，编译的 Swift、Objective-C 和测试文件使用 `UpperCamelCase`。
-- 名称保持简洁，除简单循环索引外避免单字母变量。避免没有语义价值的一次性变量、全局可变
-  状态和无领域意义的类型级 helper。
+- 按功能和明确职责组织代码；解析、UI、I/O、编排和验证混杂时，在当前任务范围内提取同级文件或模块。
+- 每个源码文件聚焦一个职责；文件或类型超过项目 lint 阈值时评估拆分。现有大文件不自动纳入
+  当前任务范围。
+- 较长但职责单一的文件使用 section marker 组织生命周期、状态、命令处理、I/O、解析和恢复逻辑。
+- 编译的 Swift、Objective-C 和测试文件使用 `UpperCamelCase`；其他文件遵循对应工具和所在目录
+  的既有约定。
+- 名称应表达意图；除简单循环索引外避免无语义的单字母变量和缩写，避免不必要的全局可变状态。
 - 代码库已经采用 async/await 时优先沿用。
 
 ### 注释
 
-- 为非简单脚本或模块添加文件级注释，说明入口、职责和重要副作用。
-- 为复杂函数、状态机、解析器、I/O 边界和恢复逻辑添加文档，不注释明显 accessor 或薄 wrapper。
-- 注释简洁并随行为更新；可行时每行不超过 80 个字符，使用对应语言的常规文档风格。
-- 源码文件头使用当前 Git 用户名，不使用 Agent 名称。
+- 为公开 API，以及职责、约束、副作用或实现原因不明显的模块、类型和函数添加必要文档；不注释
+  明显 accessor 或薄 wrapper。
+- 注释说明代码本身无法表达的意图、约束或副作用，并随行为更新；格式遵循项目工具配置和相邻代码风格。
+- 保留现有文件头；新文件遵循相邻文件模板，不使用 Agent 名称作为作者。
 
 ## 语言与迁移
 
@@ -33,23 +31,17 @@
 - 现有 Objective-C 允许必要的 bug 修复，不要求为局部修复先迁移。迁移只在任务范围内进行。
 - Swift 迁移进度见 [`swift-migration.md`](../exec-plans/active/swift-migration.md)。
 
-## Swift 实践
-
-### Swift 组织与实践
+## Swift 组织与实践
 
 - 每个 Swift 文件聚焦一个主要 class 或 struct；紧密耦合的 protocol、简单模型、私有 helper
   或直接支持主类型的 extension 可以同文件维护。
 - 将同一 protocol 的函数放在一起，并使用 `// MARK: - <ProtocolName>` 标记；较长类型使用
   `// MARK:` 区分生命周期、状态、协议和私有 helper。
-- 除非确实需要类型级语义，否则避免 `static` 函数和变量；utility type 除外。
-- 优先使用 `for ... where`，而不是循环后的行内过滤。
-- 每个 class、struct、enum、protocol 和 actor 前添加类型级文档。核心类型保持 2–4 个简洁
-  句子、约 220–320 个英文字符；简单私有 helper 控制在 180 个字符以内。
-- 为不明显的函数和推理添加英文文档注释。
+- Swift 文档注释使用简洁英文。
+
 ## 库与 API
 
-- 使用 SFSafeSymbols，不硬编码 SF Symbol 字符串；优先使用 `Image(systemSymbol:)` 和
-  `Label(systemSymbol:)`。
+- SF Symbols 使用 SFSafeSymbols 的类型安全 API，不硬编码名称。
 - SwiftUI 使用 `foregroundStyle`，不使用已弃用的 `foregroundColor`。
 - SwiftUI background 优先使用 trailing-closure 或专用 shape-style 重载。
 - 网络请求使用 Alamofire 的 async/await API。
@@ -62,6 +54,5 @@
   并更新所有受影响的 locale。
 - 在 UI 和字符串 API 中优先直接使用静态 String Catalog key。
 - 不动态构建本地化 key，也不拼接本地化片段；本地化完整句子并传入运行时参数。
-- key 使用小写、点号分隔，并按 `<scope>.<category>.<subcategory>.<element>` 使用 snake_case
-  片段。
+- key 使用小写、点号分隔，并按 `<scope>.<category>.<subcategory>.<element>` 使用 snake_case 片段。
 - 公共贡献说明位于 `docs/user-docs/en/How-to-translate-Easydict.md` 及其中文对应文档。

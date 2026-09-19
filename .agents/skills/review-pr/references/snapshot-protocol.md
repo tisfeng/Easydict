@@ -61,10 +61,12 @@ URL 必须属于 `https://github.com` 且对应同一 PR。分支名、SHA 和�
 
 问题来源按 [问题背景与功能核对](problem-review.md) 的 `--issue`/`--issue-comments` 选择。
 经过身份、内容与 expected fingerprint 校验的旧快照可恢复这两组选项；否则由调用方重新明确传入。
-`pr.reviewContext` 使用自身 `schema_version: 1`，内容属于已有 PR fingerprint，无需新增第四组
-必填参数。旧快照没有该扩展不代表需求已读；新版首次采集/刷新补齐，相关代码与准备回执仍可复用。
+`context` section 使用自身 `schema_version: 1` 和独立的 `--expected-context-fingerprint`，
+因此需求侧变化只返回该 section，不重发未变化的 PR、线程或 checks。升级前的旧快照没有该
+section 与第四组指纹，会被判为与已审查证据不一致并触发全量重读；这既不代表需求已读，也不
+需要兼容层，相关代码、准备回执和 diff 取证仍可复用。
 
-仍必须传入原有三类 expected fingerprint、expected head，以及实际审查的 expected base 名称/SHA。
+仍必须传入四类 expected fingerprint、expected head，以及实际审查的 expected base 名称/SHA。
 每次刷新使用新文件；文件保存完整当前快照，而不仅是差量，供下一次刷新复用。
 
 刷新始终完整查询远程。head 未变、旧文件实际内容与已审查的指纹/身份一致时，变化的线程可以用
@@ -72,6 +74,12 @@ URL 必须属于 `https://github.com` 且对应同一 PR。分支名、SHA 和�
 列出消失的线程；`index` 列出当前全量线程的 ID、指纹和状态。对照已审查映射复核所有变化，
 确认变更与移除后完全覆盖新索引，并沿用问题 ID；resolve、reopen、outdated、回复编辑均算变化。
 远程线程消失不代表本轮执行了 resolve，线程计数与代码问题计数继续分开。
+
+需求侧变化使用对称的 `context_delta`：`changed` 携带新增或变化来源的完整正文与已选讨论，
+`removed_ids` 列出解除关联或消失的来源，`index` 列出当前全量来源的身份、内容指纹、关系与
+读取状态，并附 `coverage`、`requested_issues`、`discussion_issues` 和 `references_complete`。
+平台无关的传输措辞与来源顺序不构成变化。按增量更新目标与验收判断；索引中仍有未读讨论或
+读取失败时继续保留覆盖限制，不把变化摘要当成需求已理解。
 
 head 变化时返回全量。旧文件丢失、损坏或与 expected 证据不一致时，`evidence_reset` 要求重新
 阅读完整 sections，不使用旧语义结论掩盖缺口。Agent 自身丢失旧正文/判定映射时，不传 previous

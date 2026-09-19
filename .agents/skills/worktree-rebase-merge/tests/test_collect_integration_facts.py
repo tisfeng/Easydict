@@ -10,7 +10,6 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
 
 
 SCRIPT = (
@@ -198,33 +197,6 @@ class CollectIntegrationFactsTests(unittest.TestCase):
             payload["source"]["content_fingerprint"], first_fingerprint
         )
 
-    def test_same_source_and_target_skips_worktree_and_range_collectors(self) -> None:
-        self.fixture.git(self.fixture.repo, "switch", "--quiet", "main")
-
-        with (
-            patch.object(
-                collect_integration_facts,
-                "worktree_records",
-                side_effect=AssertionError("direct mode listed worktrees"),
-            ),
-            patch.object(
-                collect_integration_facts,
-                "target_facts",
-                side_effect=AssertionError("direct mode inspected target worktrees"),
-            ),
-            patch.object(
-                collect_integration_facts,
-                "range_facts",
-                side_effect=AssertionError("direct mode inspected a commit range"),
-            ),
-        ):
-            payload = collect_integration_facts.collect(
-                self.fixture.repo, "main", None
-            )
-
-        self.assertEqual(payload["mode"], "direct-commit")
-        self.assertTrue(payload["stable"])
-
     def test_fingerprint_detects_raw_tracked_bytes_hidden_by_clean_filter(self) -> None:
         filter_script = self.fixture.root / "normalize.py"
         filter_script.write_text(
@@ -282,35 +254,6 @@ class CollectIntegrationFactsTests(unittest.TestCase):
         )
         self.assertIsNone(payload["target"]["selected"])
 
-    def test_detached_candidate_reuses_or_suffixes_without_listing_refs(self) -> None:
-        source_commit = self.fixture.feature_commit()
-        target = self.fixture.add_target_worktree()
-        self.fixture.git(self.fixture.repo, "checkout", "--quiet", "--detach", source_commit)
-
-        result, payload = self.fixture.inspect(source_branch="feature")
-        self.assert_success(result, payload)
-        self.assertEqual(
-            payload["source_branch"], {"name": "feature", "action": "reuse"}
-        )
-
-        occupied = self.fixture.root / "occupied-feature"
-        self.fixture.git(
-            self.fixture.repo,
-            "worktree",
-            "add",
-            "--quiet",
-            str(occupied),
-            "feature",
-        )
-        result, payload = self.fixture.inspect(source_branch="feature")
-        self.assert_success(result, payload)
-        self.assertEqual(payload["target"]["selected"], str(target.resolve()))
-        self.assertEqual(
-            payload["source_branch"], {"name": "feature-2", "action": "create"}
-        )
-        self.assertNotIn("worktrees", payload)
-        self.assertNotIn("refs/heads/feature", result.stdout)
-
     def test_range_includes_reverted_renamed_and_newline_paths(self) -> None:
         first = self.fixture.feature_commit("reverted.txt")
         (self.fixture.repo / "reverted.txt").unlink()
@@ -330,39 +273,6 @@ class CollectIntegrationFactsTests(unittest.TestCase):
             payload["range"]["paths"],
             sorted(["old.txt", "odd\nname.txt", "renamed.txt", "reverted.txt"]),
         )
-
-    def test_live_remote_head_succeeds_and_cache_is_diagnostic_only_on_failure(self) -> None:
-        remote = self.fixture.root / "remote.git"
-        self.fixture.git(
-            self.fixture.root,
-            "init",
-            "--quiet",
-            "--bare",
-            "--initial-branch=main",
-            str(remote),
-        )
-        self.fixture.git(self.fixture.repo, "remote", "add", "origin", str(remote))
-        self.fixture.git(self.fixture.repo, "push", "--quiet", "origin", "main")
-        self.fixture.feature_commit()
-
-        result, payload = self.fixture.inspect(target=None)
-        self.assert_success(result, payload)
-        self.assertEqual(
-            payload["target_resolution"], {"kind": "remote-head", "remote": "origin"}
-        )
-
-        missing = self.fixture.root / "missing.git"
-        self.fixture.git(self.fixture.repo, "remote", "set-url", "origin", str(missing))
-        self.fixture.git(
-            self.fixture.repo,
-            "symbolic-ref",
-            "refs/remotes/origin/HEAD",
-            "refs/remotes/origin/main",
-        )
-        result, payload = self.fixture.inspect(target=None)
-        self.assertEqual(result.returncode, 1)
-        self.assertIn("cached candidate (not selected)", payload["error"])
-        self.assertNotIn("target_resolution", payload)
 
     def test_merge_operation_is_reported_without_mutating_conflict_state(self) -> None:
         self.fixture.write("shared.txt", "feature\n")

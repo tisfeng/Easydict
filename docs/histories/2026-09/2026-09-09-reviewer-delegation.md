@@ -2,7 +2,7 @@
 
 - 日期：2026-09-09
 - 状态：completed
-- 关联计划：[`2026-09-09-reviewer-delegation.md`](../../exec-plans/completed/2026-09-09-reviewer-delegation.md)
+- 关联计划：[`2026-09-09-reviewer-delegation.md`](../../exec-plans/completed/2026-09/2026-09-09-reviewer-delegation.md)
 
 ## 用户请求
 
@@ -33,7 +33,7 @@
 - `AGENTS.md`
 - `docs/agents/request-boundary.md`
 - `docs/agents/build-and-test.md`
-- `docs/exec-plans/completed/2026-09-09-reviewer-delegation.md`
+- `docs/exec-plans/completed/2026-09/2026-09-09-reviewer-delegation.md`
 
 ## 后续事项
 

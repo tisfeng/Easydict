@@ -5,4 +5,4 @@
 - 修正失效的 PR 参数与解释器规则指引，现行规则以 lock 为版本来源；同步中英文翻译指南中的 String Catalog 路径。
 - 保留每次改动写 history、现有 plan 门槛、注释长度、完整提交回执、测试验证原则和 Xcode 版本要求。
 - 静态验证：本地文件链接与保留条款对比通过；纯 Markdown 修改，未运行 Xcode 构建或测试。
-- 执行计划：[澄清 Agent 规则与文档引用](../../exec-plans/completed/2026-09-10-clarify-agent-rules.md)。
+- 执行计划：[澄清 Agent 规则与文档引用](../../exec-plans/completed/2026-09/2026-09-10-clarify-agent-rules.md)。

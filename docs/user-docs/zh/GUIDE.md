@@ -1,345 +1,199 @@
 # Easydict 完整使用指南
 
-> 本文档包含 Easydict 的详细功能说明、配置方法和使用技巧。
+Easydict 是一款 macOS 词典和翻译应用，支持输入翻译、鼠标划词、快捷键划词、OCR、朗读、
+本地词典和多个在线/AI 服务。
 
-## 目录
+## 功能概览
 
-- [Easydict 完整使用指南](#easydict-完整使用指南)
-  - [目录](#目录)
-  - [详细功能列表](#详细功能列表)
-  - [安装指南](#安装指南)
-    - [手动下载安装](#手动下载安装)
-    - [Homebrew 安装](#homebrew-安装)
-    - [开发者构建](#开发者构建)
-      - [构建环境](#构建环境)
-  - [使用说明](#使用说明)
-    - [鼠标划词](#鼠标划词)
-    - [关于权限](#关于权限)
-  - [OCR 配置](#ocr-配置)
-  - [TTS 服务](#tts-服务)
-  - [翻译服务配置](#翻译服务配置)
-    - [🍎 苹果系统词典](#-苹果系统词典)
-    - [OpenAI 翻译](#openai-翻译)
-      - [OpenAI 查询模式](#openai-查询模式)
-    - [内置 AI 翻译](#内置-ai-翻译)
-    - [Gemini 翻译](#gemini-翻译)
-    - [DeepL 翻译](#deepl-翻译)
-      - [自定义 DeepL 接口地址](#自定义-deepl-接口地址)
-      - [配置 API 调用方式](#配置-api-调用方式)
-    - [腾讯翻译](#腾讯翻译)
-    - [Bing 翻译](#bing-翻译)
-    - [小牛翻译](#小牛翻译)
-    - [彩云小译](#彩云小译)
-    - [阿里翻译](#阿里翻译)
-    - [豆包翻译](#豆包翻译)
-  - [高级功能](#高级功能)
-    - [URL Scheme](#url-scheme)
-    - [配合 PopClip 使用](#配合-popclip-使用)
-  - [设置说明](#设置说明)
-    - [通用设置](#通用设置)
-    - [服务设置](#服务设置)
-  - [应用内快捷键](#应用内快捷键)
-  - [使用技巧](#使用技巧)
-  - [类似开源项目](#类似开源项目)
-  - [初衷](#初衷)
-  - [贡献指南](#贡献指南)
-    - [分支说明](#分支说明)
-    - [PR 提交指南](#pr-提交指南)
-    - [参与 Swift 重构](#参与-swift-重构)
+- 自动识别输入语言，并提供 52 种可选翻译语言；实际可用范围因服务而异。
+- 输入、鼠标划词、快捷键划词、截图翻译和静默截图 OCR。
+- Apple Vision OCR，并可选用有道 OCR 作为失败回退。
+- Apple、百度、Bing、Google 和有道 TTS。
+- 20+ 词典、翻译、AI、本地模型和 CLI 服务，完整清单见[服务总览](./SERVICES.md)。
+- 主窗口、悬浮窗口和迷你窗口可分别选择服务。
+- 查询历史、收藏、导出和清理；AI 结果支持 Markdown 显示。
 
----
+## 安装
 
-## 详细功能列表
+最新版本支持 macOS 13.0 及以上。macOS 11/12 用户可以使用旧版
+[2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)，但该版本不再包含最新功能。
 
-- [x] 开箱即用，便捷查询单词或翻译文本。
-- [x] 自动识别输入语言，自动查询目标偏好语言。
-- [x] 自动划词查询，划词后自动显示查询图标，鼠标悬浮即可查询。
-- [x] 支持为不同窗口配置不同的服务。
-- [x] 支持智能查询模式。
-- [x] 支持系统 OCR 截图翻译，静默截图 OCR。
-- [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
-- [x] 支持 [🍎 苹果系统词典](./How-to-use-macOS-system-dictionary-in-Easydict.md)，支持第三方词典，可手动导入 mdict 词典。
-- [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./How-to-use-macOS-system-translation-in-Easydict.md)
-- [x] 支持有道词典，OpenAI，Gemini，DeepSeek，DeepL，Google，Bing，腾讯，百度，小牛，彩云，阿里，火山和豆包翻译。
-- [x] 支持 48 种语言。
-
-## 安装指南
-
-你可以使用下面两种方式之一安装。
-
-Easydict 最新版本支持系统 macOS 13.0+，如果系统版本为 macOS 11.0+，请使用 [2.7.2](https://github.com/tisfeng/Easydict/releases/tag/2.7.2)。
-
-### 手动下载安装
-
-[下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
-
-### Homebrew 安装
-
-感谢 [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763) 提供的最初安装版本。
+### Homebrew 安装（推荐）
 
 ```bash
 brew install --cask easydict
 ```
 
+### 手动安装
+
+从 [GitHub Releases](https://github.com/tisfeng/Easydict/releases) 下载最新版本。
+
 ### 开发者构建
 
-如果你是一名开发者，或者对这个项目感兴趣，也可以尝试手动构建运行，整个过程非常简单，甚至不需懂 macOS 开发知识。
+当前源码需要 macOS 13+、Xcode 16+ 和 CocoaPods。
 
-<details> <summary> 构建步骤 </summary>
+1. 克隆仓库并切换到 `dev` 分支。
+2. 在仓库目录运行 `pod install`。
+3. 使用 Xcode 打开 `Easydict.xcworkspace`，不要打开 `Easydict.xcodeproj`。
+4. 选择 Easydict scheme，按 `Command + R` 构建运行。
 
-<p>
+经常调试取词或 OCR 时，建议使用自己的 Apple Development 证书，避免 ad-hoc 签名导致
+macOS 在重新构建后重置权限。项目脚本可以生成被 Git 忽略的本地签名配置：
 
-1. 下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件（⚠️⚠️⚠️ 注意不是 `Easydict.xcodeproj` ⚠️⚠️⚠️）。
-2. 使用 `Cmd + R` 编译运行即可。
-
-![image-20231212125308372](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231212125308372-1702356789.png)
-
-以下是可选步骤，仅面向开发协作者。
-
-如果经常需要调试权限相关的功能（如取词或 OCR），建议使用你自己的 Apple Developer 账号签名，否则每次编译都会触发系统的权限弹窗。
-
-推荐使用项目自带的 `scripts/setup-team.sh` 脚本。它会写入一份被 Git 忽略的本地 Debug 配置，让 Team ID 始终位于版本控制之外，不会干扰分支切换或合并：
 ```bash
-chmod +x scripts/setup-team.sh && ./scripts/setup-team.sh
+chmod +x scripts/setup-team.sh
+./scripts/setup-team.sh
 ```
 
-脚本默认从已安装的 Apple Development 证书中检测 Team ID。如果无法自动检测，可以显式传入 10 位 Team ID，例如：`./scripts/setup-team.sh ABC123DE45`。
+无法自动检测 Team ID 时，可运行 `./scripts/setup-team.sh ABC123DE45`。没有开发者证书时可用
+`./scripts/setup-team.sh --adhoc`；移除本地配置可用 `./scripts/setup-team.sh --uninstall`。
 
-如果你没有 Apple 开发者账号，也可以运行以配置本地 ad-hoc 签名进行免证书编译（注意：在此模式下，系统会在每次重新编译后重置取词或 OCR 等权限弹窗）：
-```bash
-./scripts/setup-team.sh --adhoc
+## 基本使用
+
+| 操作 | 默认快捷键 | 结果 |
+| --- | --- | --- |
+| 输入翻译 | `Option + A` | 打开输入窗口，输入文本后按 Return 查询。 |
+| 鼠标划词 | 无 | 选中文本后显示查询图标，悬停或点击后查询。 |
+| 快捷键划词 | `Option + D` | 查询当前选中的文本。 |
+| 截图翻译 | `Option + S` | 截取区域，识别文字后翻译。 |
+| 静默截图 OCR | `Option + Shift + S` | 截取区域并把识别文字复制到剪贴板。 |
+| 显示迷你窗口 | `Option + F` | 打开迷你查询窗口。 |
+
+还可以在“设置 → 快捷键”中为剪贴板翻译、截图 OCR、剪贴板 OCR、显示 OCR 窗口、翻译并
+替换、润色并替换等操作设置全局快捷键。这些操作默认可能没有快捷键。
+
+## 权限
+
+macOS 会根据使用方式请求权限：
+
+- **辅助功能**：读取其他应用中选中的文本，以及执行替换等操作。
+- **屏幕录制**：截图翻译、截图 OCR。
+- **自动化**：控制浏览器、快捷指令或其他应用时使用。
+
+在“系统设置 → 隐私与安全性”中授权。如果更换签名、移动 App 或重新构建，macOS 可能把它
+视为新应用，需要重新授权。
+
+## 划词与输入
+
+Easydict 会根据目标应用选择合适的取词方式。若某个应用无法读取选中文本：
+
+1. 检查辅助功能权限。
+2. 尝试用 `Command + C` 确认文本本身可以复制。
+3. 改用输入窗口或剪贴板翻译。
+4. 对图片、扫描 PDF 或不可选择内容使用 OCR。
+
+可在通用设置中启用输入时自动查询、反向翻译等行为。自动识别不准确时，请手动选择源语言。
+
+## OCR
+
+Easydict 默认使用 Apple Vision OCR；如果启用有道 OCR 回退，系统识别失败时会尝试有道。
+可用语言取决于 macOS 版本，较新的系统通常提供更多识别语言。
+
+- **截图翻译**：OCR 后立即查询已启用的服务。
+- **静默截图 OCR**：只识别并复制文字，不显示翻译结果。
+- **截图/剪贴板 OCR 与 OCR 窗口**：可从菜单使用，或自行设置全局快捷键。
+
+OCR 结果不理想时，缩小截图范围、提高文字与背景对比度，并在设置中选择正确的识别语言。
+
+## TTS 朗读
+
+Easydict 支持 Apple、百度、Bing、Google 和有道 TTS，默认使用有道。可以在 TTS 设置中调整
+服务和自动朗读行为，也可以关闭“英语单词优先使用有道”等偏好。
+
+在线 TTS 受网络和上游接口影响；系统 TTS 的声音和语言由 macOS 已安装语音决定。
+
+## 服务设置
+
+新安装默认启用有道词典、DeepL 和内置 AI。打开“设置 → 服务”可以：
+
+- 添加、移除、启用、停用和排序服务；
+- 查看服务是无需密钥、项目内置、用户密钥还是 CLI 类型；
+- 为需要凭据的服务填写 API Key、App ID 或 Secret；
+- 为主窗口、悬浮窗口和迷你窗口分别选择服务；
+- 添加多个自定义 OpenAI 兼容服务。
+
+服务清单、访问条件和配置建议见[服务总览](./SERVICES.md)。专题配置：
+
+- [Apple Dictionary](./How-to-use-macOS-system-dictionary-in-Easydict.md)
+- [MDict](./How-to-use-MDict-in-Easydict.md)
+- [Apple 翻译](./How-to-use-macOS-system-translation-in-Easydict.md)
+
+### Codex 翻译
+
+在“设置 → 服务”添加 Codex，首次使用先点击“下载 Codex 组件”，完成后点击
+“使用 ChatGPT 登录”，在官方浏览器页面完成授权。应用会按系统和芯片下载并校验官方
+组件，无需自行安装命令行工具；下载可取消或失败后重试。授权成功后会独立翻译一次固定问候语
+来检查连接，使用组件的默认模型；这次检查不会覆盖查询窗口内容。浏览器未打开时可点击
+“重新打开浏览器”，该按钮复用当前授权，不重复创建登录。
+
+所有窗口共用一个内置 ChatGPT 账户。取消登录后会重新检查实际状态；恢复默认设置也
+不会退出账户。需要移除该登录时请使用“退出登录”。使用权限和额度取决于登录账户，
+连接检查也会产生一次模型请求；内置方式不会自动使用外部 API Key。
+
+手动点击“测试连接”时，会使用当前服务选择的模型和思考程度验证翻译。验证通过状态
+只对应这组设置；修改模型、思考程度或使用方式后，需要重新测试。
+
+“高级设置”可以切换“本机 CLI”，继续使用自己安装的 Codex 和原有配置。已有 Codex
+服务升级后保留本机方式；新增服务默认使用内置方式。两种方式分别保存模型和推理强度，
+切换方式不会自动重新翻译当前文字。
+
+macOS 13/14 使用固定的 0.134.0 组件，默认模型为 `gpt-5.5`。macOS 15 及以上使用
+0.153.4 组件，默认 `gpt-5.6-luna`，可选 `gpt-6-astra`、`gpt-5.6-sol`、
+`gpt-5.6-terra`、`gpt-5.6-luna`、`gpt-5.5`。可用性仍取决于账户权限和服务端状态。
+
+已退役或不支持的模型不会作为可选项显示。如果原来保存的模型或思考程度不再支持，
+设置页会提示重新选择，应用不会自动更改该保存值或重译当前文字。本机 CLI 保持自行
+指定模型的能力。内置组件不会独立更新，模型列表随应用更新维护。
+
+如果提示 Keychain 不可用，请检查系统钥匙串是否已解锁，然后重试；应用不会改用明文
+保存登录信息。如果提示外部配置影响隔离，请检查系统级 Codex 配置或全局 skills，
+也可选择本机 CLI 按原有配置使用；Easydict 不会自动删除这些配置。
+
+## 查询记录与结果
+
+- 查询历史会记录近期内容，可重新查询、收藏、导出或清理。
+- 收藏适合保存需要长期复习或引用的词条。
+- AI 服务返回的 Markdown 会按富文本显示；复制时仍可获取文本内容。
+- 服务卡片可以重试、复制或折叠，实际操作取决于当前窗口和服务状态。
+
+## 应用内快捷键
+
+这些快捷键只在 Easydict 窗口位于前台时生效：
+
+| 快捷键 | 操作 |
+| --- | --- |
+| `Return` / `Shift + Return` | 查询 / 输入换行。 |
+| `Command + K` | 清空输入。 |
+| `Command + Shift + K` | 清空输入和结果。 |
+| `Command + Shift + C` | 复制查询文本。 |
+| `Command + Shift + J` | 复制第一个查询结果。 |
+| `Command + I` | 聚焦输入框。 |
+| `Command + S` | 朗读查询文本。 |
+| `Command + R` | 重新查询。 |
+| `Command + T` | 交换源语言和目标语言。 |
+| `Command + P` | 固定或取消固定窗口。 |
+| `Command + Y` | 隐藏窗口。 |
+| `Command + 小键盘 +` / `Command + 小键盘 -` | 放大 / 缩小结果字号。 |
+| `Command + Return` | 使用 Google 搜索输入文本。 |
+| `Command + Shift + Return` | 使用欧路词典查询输入文本。 |
+| `Command + Shift + D` | 使用 Apple Dictionary 查询输入文本。 |
+
+全局快捷键可在“设置 → 快捷键”中修改。若组合键没有响应，检查是否与其他应用或系统快捷键
+冲突。
+
+## URL Scheme
+
+使用下面的 URL 可以从其他应用发起查询，其中 `text` 必须进行 URL 编码：
+
+```text
+easydict://query?text=hello%20world
 ```
 
-卸载请运行 `./scripts/setup-team.sh --uninstall`。该命令只会删除脚本创建的本地签名配置。
-
-如果不想使用脚本，可以创建 `Easydict-debug.local.xcconfig` 并写入以下内容。该文件已经被 Git 忽略：
-
-```xcconfig
-DEVELOPMENT_TEAM = ABC123DE45
-CODE_SIGN_IDENTITY = Apple Development
-CODE_SIGN_STYLE = Automatic
-```
-
-#### 构建环境
-
-Xcode 13+, macOS Big Sur 11.3+。为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
-
->[!NOTE]
-> 由于最新代码使用了 String Catalog 功能，因此需要 Xcode 15+ 才能编译。
-> 如果你的 Xcode 版本较低，请使用 [xcode-14](https://github.com/tisfeng/Easydict/tree/xcode-14) 分支，注意这是一个固定版本分支，不受维护。
-
-如果运行遇到下面错误，请尝试升级 CocoaPods 到最新版本，然后执行 `pod install`。
-
->  [DT_TOOLCHAIN_DIR cannot be used to evaluate LD_RUNPATH_SEARCH_PATHS, use TOOLCHAIN_DIR instead](https://github.com/CocoaPods/CocoaPods/issues/12012)
-
-</p>
-
-</details>
-
-## 使用说明
-
-Easydict 启动之后，除了应用主界面（默认隐藏），还会有一个菜单图标，点击菜单选项即可触发相应的功能，如下所示：
-
-<div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/xb77fI-1684688321.png" width="50%" />
-</div>
-
-| 方式           | 描述                                                                                         | 预览                                                                                                                                           |
-| -------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 鼠标划词翻译   | 划词后自动显示查询图标，鼠标悬浮即可查询                                                     | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
-| 快捷键划词翻译 | 选中需要翻译的文本之后，按下划词翻译快捷键即可（默认 `⌥ + D`）                               | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
-| 截图翻译       | 按下截图翻译快捷键（默认 `⌥ + S`），截取需要翻译的区域                                       | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
-| 输入翻译       | 按下输入翻译快捷键（默认 `⌥ + A` 或 `⌥ + F`），输入需要翻译的文本，`Enter` 键翻译            | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
-| 静默截图 OCR   | 按下静默截图快捷键（默认 `⌥ + ⇧ + S`），截取需要 OCR 的区域，截图 OCR 结果将自动保存到剪贴板 | ![屏幕录制 2023-05-20 22 39 11](https://github.com/Jerry23011/Easydict/assets/89069957/c16f3c20-1748-411e-be04-11d8fe0e61af)                    |
-
-### 鼠标划词
-
-目前支持多种鼠标快捷划词方式：双击划词、鼠标滑动划词、三击划词（段落）和 Shift 划词（多段落），在某些应用中【鼠标滑动划词】可能会失败，此时可换其他划词方式。
-
-快捷键划词在任意应用中都可以正常工作。如遇到不能鼠标划词的应用，可提 issue 解决 https://github.com/tisfeng/Easydict/issues/84
-
-划词功能流程：Accessibility > AppleScript > 模拟快捷键，优先使用辅助功能 Accessibility 取词，在 Accessibility 取词失败（未授权或应用不支持）时，如果是浏览器应用（如 Safari, Chrome），会尝试使用 AppleScript 取词。若 AppleScript 取词还是失败，最后则进行强制取词——模拟快捷键 Cmd+C 取词。
-
-因此，建议开启浏览器中的 `允许 Apple 事件中的 JavaScript` 选项，这样可以避免某些网页的事件拦截，例如这种 [网页强制附带版权信息](https://github.com/tisfeng/Easydict/issues/85) 问题，优化取词体验。
-
-对于 Safari 用户，强烈建议开启该选项，因为 Safari 不支持 Accessibility 取词，而 AppleScript 取词体验远优于模拟快捷键取词。
-
-<div>
-    <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230708115811617-1688788691.png" width="45%">
-    <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230708115827839-1688788707.png" width="45%">
-</div>
-
-### 关于权限
-
-1. 划词翻译，需要开启 `辅助功能` 权限，鼠标划词功能仅在第一次使用时会触发申请辅助功能权限，授权后才能正常使用自动划词翻译功能。
-
-2. 截图翻译，需要开启 `屏幕录制` 权限，应用仅会在第一次使用 **截图翻译** 时会自动弹出权限申请对话框，若授权失败，后续需自己去系统设置中开启。
-
-## OCR 配置
-
-目前仅支持系统 OCR，OCR 支持语言：简体中文，繁体中文，英语，日语，韩语，法语，西班牙语，葡萄牙语，德语，意大利语，俄语，乌克兰语。
-
-## TTS 服务
-
-目前支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
-
-- 系统 TTS：最稳定可靠，但效果不是很好。通常作为备用选项，即使用其他 TTS 报错时会改用系统 TTS。
-- Bing TTS：综合效果最好，实时合成神经网络语音，但比较耗时，且文本越长，合成时间越长，目前限制最多只能合成 2000 个字符，约 10 分钟。
-- Google TTS：英文效果不错，接口稳定，但需要翻墙，且一次请求最多只能合成 200 个字符。
-- 有道 TTS：整体效果不错，接口稳定，尤其英语单词发音极好，但最多只能合成 600 个字符。
-- 百度 TTS：英文句子发音很好，口音很有特色，但最多只能合成约 1000 个字符。
-
-默认使用有道 TTS，用户可在设置中切换偏好 TTS 服务。
-
-鉴于有道 TTS 的英语单词效果很好，因此英文单词优先使用有道 TTS，其他文本则使用默认 TTS 服务。
-
-除系统 TTS 外，其他 TTS 服务都是非官方接口，可能不稳定。
-
-## 翻译服务配置
-
-### 🍎 苹果系统词典
-
-Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文-英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
-
-另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
-
-详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](./How-to-use-macOS-system-dictionary-in-Easydict.md)
-
-<table>
- 		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231225548-1695913945.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
-</table>
-
-### OpenAI 翻译
-
-1.3.0 版本开始支持 OpenAI 翻译，需要使用 OpenAI API key。
-
-如果你没有自己的 OpenAI APIKey，可以借助一些开源项目将第三方的 LLM 接口转为标准的 OpenAI 接口，这样就能直接在 `Easydict` 中使用了。
-
-例如 [one-api](https://github.com/songquanpeng/one-api)，one-api 是一个很好的 OpenAI 接口管理开源项目，支持多家 LLM 接口，包括 Azure、Anthropic Claude、Google Gemini、智谱 ChatGLM、百度文心一言、讯飞星火认知、阿里通义千问、360 智脑，腾讯混元，Moonshot AI，Groq，零一万物，阶跃星辰，DeepSeek，Cohere 等，可用于二次分发管理 key，仅单可执行文件，已打包好 Docker 镜像，一键部署，开箱即用。
-
-> [!IMPORTANT]
-> [2.6.0](https://github.com/tisfeng/Easydict/releases) 版本实现了新的 SwiftUI 设置页（支持 macOS 13+），支持 GUI 方式配置服务 API key，其他系统版本则需要在 Easydict 的输入框中使用命令方式配置。
-
-> [!TIP]
-> 如果电脑硬件支持，建议升级 macOS 系统，以享受更好的用户体验。
-
-![](https://github.com/tisfeng/Easydict/assets/25194972/5b8f2785-b0ee-4a9e-bd41-1a9dd56b0231)
-
-#### OpenAI 查询模式
-
-目前 OpenAI 支持三种查询模式：单词，句子和长翻译，默认都是开启的，其中单词和句子也可关闭。
-
-<table>
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/2KIWfp-1695612945.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/tCMiec-1695637289.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/qNk8ND-1695820293.png">
-</table>
-
-温馨提示：如果你只是偶尔不希望分析句子，可以不用关闭句子类型，只需要在【句子】后面添加一个波浪符～，这样就会变成翻译类型了。
-
-<img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
-
-### 内置 AI 翻译
-
-目前部分 LLM 服务厂商提供有限制的免费 AI 模型，例如 [Groq](https://console.groq.com)，[Google Gemini](https://aistudio.google.com/app/apikey) 等。
-
-为方便新用户尝鲜使用这些大模型 AI 翻译，我们添加了一个内置 AI 翻译服务。
-
-但请注意，内置的模型都有一定使用限制（主要是免费额度上的限制），我们不保证它们能一直稳定使用，建议用户还是使用 [AxonHub](https://github.com/looplj/axonhub) 等开源项目搭建自己的大模型服务。
-
-![](https://github.com/tisfeng/Easydict/assets/25194972/6272d9aa-ddf1-47fb-be02-646ebf244248)
-
-### Gemini 翻译
-
-[Gemini 翻译](https://gemini.google.com/) 需要 API key，可在官网[控制台](https://makersuite.google.com/app/apikey)免费获取。
-
-### DeepL 翻译
-
-DeepL 免费版网页 API 对用户单个 IP 有频率限制，频繁使用会触发 429 too many requests 报错，因此 1.3.0 版本增加了对 DeepL 官方 API 的支持，暂时还没写界面，需通过命令方式启用。
-
-如果你有 DeepL AuthKey，建议使用个人的 AuthKey，这样可以避免频率限制，用户体验会更好。如果没有，可以使用切换代理来规避 429 报错。
-
-> [!TIP]
-> 切换代理 IP，这是通用的解决方案，对其他有频率限制的服务同样有效。
-
-#### 自定义 DeepL 接口地址
-
-如果没有自己的 AuthKey，又需要大量使用 DeepL 翻译，那么可以考虑自己部署支持 DeepL 的接口服务，或者使用支持 DeepL 的第三方服务。
-
-使用自定义 DeepL 接口地址的方式，在 Easydict 程序中等同于 DeepL 官方 AuthKey API 形式。
-
-Easydict 支持 [DeepLX](https://github.com/OwO-Network/DeepLX) 接口，详情请看 [#464](https://github.com/tisfeng/Easydict/issues/464)。
-
-#### 配置 API 调用方式
-
-1. 默认优先使用网页版 API，在网页版 API 失败时会使用个人的 AuthKey（如果有）
-
-2. 优先使用个人的 AuthKey，失败时使用网页版 API。若高频率使用 DeepL，建议使用这种方式，能减少一次失败的请求，提高响应速度。
-
-3. 只使用个人的 AuthKey
-
-### 腾讯翻译
-
-[腾讯翻译](https://fanyi.qq.com/) 需要 API key，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
-
-建议使用自己的 API key，每个注册用户腾讯翻译每月赠送 500 万字符流量，足以日常使用了。
-
-### Bing 翻译
-
-目前 Bing 翻译使用的是网页接口，当触发频率限制 429 报错时，除了切换代理，还可以通过手动设置请求 cookie 来续命，具体续命多久暂时不清楚。
-
-具体步骤是，使用浏览器打开 [Bing Translator](https://www.bing.com/translator)，登录，然后在控制台执行以下代码获取 cookie
-
-```js
-cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" + result.value)));
-```
-
-最后将 cookie 填写到 Easydict
-
-> [!NOTE]
-> Bing TTS 用的也是网页接口，同样容易触发接口限制，且不会报错提示，因此如果将 Bing 设为默认的 TTS，建议设置 cookie。
-
-### 小牛翻译
-    
-[小牛翻译](https://niutrans.com/) 需要 API key，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
-
-建议使用自己的 API key，每个注册用户小牛翻译每日赠送 20 万字符流量。
-
-### 彩云小译
-
-[彩云小译](https://fanyi.caiyunapp.com/) 需要 Token，为使用方便，我们内置了一个 token，这个 token 有一定限制，不保证一直能用。
-
-建议使用自己的 Token，新用户注册会获得 100 万字的免费翻译额度。
-
-### 阿里翻译
-
-[阿里翻译](https://translate.alibaba.com/) 虽然目前支持网页版接口，但这个接口有一定限制，不保证一直能用。
-
-建议使用自己的 API key，阿里翻译每月免费额度一百万字符。
-
-### 豆包翻译
-
-[豆包翻译](https://www.volcengine.com/docs/82379/1820188) 需要 API key，可在[火山方舟平台](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey)进行申请。
-
-建议使用自己的 API key，每个注册用户赠送 50 万字符的免费翻译额度。
-
-## 高级功能
-
-### URL Scheme
-
-Easydict 支持 URL scheme 快速查询：`easydict://query?text=xxx`，如 `easydict://query?text=good`。 
-
-如果查询内容 xxx 包含特殊字符，需进行 URL encode，如 `easydict://query?text=good%20girl`。 
-
-> [!WARNING]
-> 旧版本的 easydict://xxx 在某些场景下可能会出现问题，因此建议使用完整的 URL Scheme:
-> easydict://query?text=xxx
+旧式 `easydict://文本` 形式在部分场景中可能失败，建议始终使用完整的 `query?text=` 格式。
 
 ### 配合 PopClip 使用
 
-你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后选中以下代码块，`PopClip` 会显示 "安装扩展 Easydict"，点击它即可。
+安装 [PopClip](https://www.popclip.app/) 后，可将下面的 AppleScript 动作安装为扩展：
 
 ```applescript
 -- #popclip
@@ -352,110 +206,16 @@ tell application "Easydict"
 end tell
 ```
 
-![image-20231215193536900](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231215193536900-1702640137.png)
+## 故障排查
 
-> 参考：https://www.popclip.app/dev/applescript-actions
+- **划词无效**：检查辅助功能权限，并确认目标应用允许选择或复制文本。
+- **截图无效**：检查屏幕录制权限，授权后重新启动 Easydict。
+- **只有某个服务失败**：检查该服务是否启用，以及凭据、CLI 登录、本地地址和网络状态。
+- **语言不受支持**：切换服务；不同服务、OCR 和 TTS 的语言覆盖并不相同。
+- **设置没有生效**：退出并重新打开 Easydict，再检查是否运行了多个版本。
 
-## 设置说明
+## 参与贡献
 
-设置页提供了一些设置修改，如开启查询后自动播放单词发音，修改翻译快捷键，开启、关闭服务，或调整服务顺序等。
-
-### 通用设置
-
-![](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/5IacMJ.png)
-
-### 服务设置
-
-Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
-
-- 迷你窗口：鼠标自动划词时显示。
-- 侧悬浮窗口：快捷键划词和截图翻译时显示。
-- 主窗口：默认关闭，可在设置中开启，程序启动时显示。
-
-## 应用内快捷键
-
-Easydict 有一些应用内快捷键，方便你在使用过程中更加高效。
-
-不同于前面的翻译快捷键全局生效，下面这些快捷键只在 Easydict 窗口前台显示时生效。
-
-<div style="display: flex; justify-content: space-between;">
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Mlw8ty-1681955887.png" width="50%">
-</div>
-
-- `Enter`: 输入文本后，按下 Enter 开始查询。
-- `Shift + Enter`: 输入换行。
-- `Cmd + ,`: 打开设置页。
-- `Cmd + Q`: 退出应用。
-- `Cmd + K`: 清空输入框。
-- `Cmd + Shift + K`: 清空输入框和查询结果，等同于点击输入框右下角的清空按钮。
-- `Cmd + I`: 聚集输入框。(Focus Input)
-- `Cmd + Shift + C`: 复制查询内容。
-- `Cmd + Shift + J`: 复制首个翻译结果。
-- `Cmd + S`: 播放查询文本的发音。(Play Sound)
-- `Cmd + R`: 再次查询。(Retry Query)
-- `Cmd + T`: 交换翻译语言。(Toggle Translate Language)
-- `Cmd + P`: 钉住窗口。(Pin Window，再次按下取消钉住)
-- `Cmd + W`: 关闭窗口。
-- `Cmd + Enter`: 默认打开 Google 搜索引擎，搜索内容为输入文本，效果等同手动点击右上角的浏览器搜索图标。
-- `Cmd + Shift + Enter`: 若电脑上安装了欧路词典 App，则会在 Google 图标左边显示一个 Eudic 图标，动作为打开欧路词典 App 查询。
-
-## 使用技巧
-
-只要唤醒了查询窗口，就可以通过快捷键 `Cmd + ,` 打开设置页。若不小心隐藏了菜单栏图标，可通过这种方式重新开启。
-
-<div style="display:flex;align-items:flex-start;">
-  <img src="https://user-images.githubusercontent.com/25194972/221406290-b743c5fa-75ed-4a8a-8b52-b966ac7daa68.png" style="margin-right:50px;" width="40%">
-  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/274adbc6-8391-4386-911c-241db4a1bd98" width="30%">
-</div>
-
-若发现 OCR 识别结果不对，可通过点击"识别为 xx"按钮指定识别语言来修正 OCR 结果。
-
-<div style="display:flex;align-items:flex-start;">
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114539063-1677469539.png" style="margin-right:40px;" width="45%">
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114611359-1677469571.png" width="45%">
-</div>
-
-## 类似开源项目
-
-- [immersive-translate](https://github.com/immersive-translate/immersive-translate): 一个好用的沉浸式双语网页翻译扩展。
-- [pot-desktop](https://github.com/pot-app/pot-desktop) : 一个跨平台的划词翻译和 OCR 软件。
-- [ext-saladict](https://github.com/crimx/ext-saladict): 沙拉查词，一个浏览器查词和翻译扩展。
-- [openai-translator](https://github.com/yetone/openai-translator): 基于 ChatGPT API 的划词翻译浏览器插件和跨平台桌面端应用。
-- [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict): 我的另一个开源项目，一个 Raycast 扩展版本的 Easydict。
-
-![easydict-1-1671806758](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/easydict-1-1671806758.png)
-
-## 初衷
-
-查询单词和翻译文本，是日常生活非常实用的功能，我用过很多词典翻译软件，但都不满意，直到遇见了 Bob。[`Bob`](https://bobtranslate.com/) 是一款优秀的翻译软件，但它不是开源软件，自从上架苹果商店后也不再免费提供应用更新。
-
-作为一名开发者，也是众多开源软件的受益者，我觉得，这世界上应该存在一个免费开源版本的 [Bob](https://github.com/ripperhe/Bob)，于是我开发了 [Easydict](https://github.com/tisfeng/Easydict)。现在，我每天都在大量使用 Easydict，我很喜欢它，也希望能够让更多的人了解它、使用它。
-
-开源，让世界更美好。
-
-## 贡献指南
-
-如果您对本项目感兴趣，我们非常欢迎参与到项目的贡献中，我们会尽可能地提供帮助。
-
-### 分支说明
-
-- **dev 分支**：开发分支，代码通常是最新的，可能包含一些正在开发中的功能
-- **main 分支**：主分支，代码是稳定的，会定期合并 dev 分支的代码
-
-### PR 提交指南
-
-如果您认为项目有需要改进的地方，或者有新的功能想法，欢迎提交 PR：
-
-- **Bug 修复和功能实现**：请提交到 dev 分支
-- **新功能或大型 UI 变动**：建议先开个 issue 讨论，避免功能重复或冲突
-- **分支命名规则**：请使用 `类型/简短描述` 的格式命名分支。新特性使用
-  `feat/`，Bug 修复使用 `fix/`，描述部分统一使用 kebab-case，例如
-  `feat/openai-translation`、`fix/ocr-window-focus`
-- **PR 分支**：提交 PR 时，请从对应基线分支创建任务分支。此要求适用于 PR 提交；维护者的本地提交遵循仓库 Git 工作流。
-- **关联 Issue**：请在 PR 模板的“关联 Issue”区域填写相关 Issue。可以使用 `#123`、
-  完整 Issue URL 或 `owner/repo#123`；请勿使用 GitHub 自动关闭关键字或 Development
-  侧栏的自动关闭关联，Issue 会在包含该 PR 的版本发布后统一检查、通知和关闭
-
-### 参与 Swift 重构
-
-我们正在计划将项目从 Objective-C 向 Swift 迁移，如果你对 Swift/SwiftUI 开发感兴趣，欢迎参与这个迁移工作。详见 [#194](https://github.com/tisfeng/Easydict/issues/194)。
+- 开发流程和代码贡献见[贡献指南](../../../CONTRIBUTING.md)。
+- 本地化贡献见[如何翻译 Easydict](./How-to-translate-Easydict.md)。
+- 问题和建议请提交到 [GitHub Issues](https://github.com/tisfeng/Easydict/issues)。

@@ -22,7 +22,7 @@
 
 ## 计划
 
-见[已完成执行计划](../../exec-plans/completed/2026-09-09-base-openai-stream-hooks.md)。
+见[已完成执行计划](../../exec-plans/completed/2026-09/2026-09-09-base-openai-stream-hooks.md)。
 
 ## 完成内容
 
