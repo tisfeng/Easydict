@@ -32,7 +32,7 @@ class SystemUtility: NSObject {
     /// obtained by force-get (simulated copy).
     var bundleIDAllowListForSelectableTextCheck: Set<String> = [
         AppBundleIDs.weChat,
-        "com.sublimetext.4",
+        AppBundleIDs.sublimeText,
         AppBundleIDs.zenBrowser,
     ]
 

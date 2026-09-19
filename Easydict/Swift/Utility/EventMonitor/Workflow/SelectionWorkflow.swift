@@ -365,7 +365,7 @@ final class SelectionWorkflow {
                 "com.googlecode.iterm2",
             ],
             .attributeUnsupported: [
-                "com.sublimetext.4",
+                AppBundleIDs.sublimeText,
                 "com.microsoft.Word",
                 "com.microsoft.Powerpoint",
                 AppBundleIDs.weChat,
