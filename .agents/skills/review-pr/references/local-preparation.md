@@ -10,7 +10,10 @@
 - 默认本地模式优先使用 PR head 分支名。只有该名称不可安全使用时，创建
   `review/pr-<number>-<head-short-sha>`；不改变冲突分支。
 - 同名分支只能 fast-forward 到准确 `headRefOid`，不得包含额外本地提交或与远程分叉。
-  领先、分叉、upstream 不匹配或被其他 worktree 占用时，可回退到上述 review 分支。
+  当前 GitHub 用户是 PR 作者时，允许复用 upstream remote 别名不同但实际指向准确 head
+  repository/branch 的同名分支；没有 upstream 时在安全 fast-forward 后设置准确 head upstream。
+  身份无法确认、upstream 指向其他仓库/分支、分支领先或分叉、或被其他 worktree 占用时，
+  回退到上述 review 分支。
 - 既有 review 分支只在它干净、位于准确 head 且 tracking `<owner>/<head-branch>` 时复用；
   否则停止。不 detached checkout remote-tracking ref 或直接审查 fetch ref。
 - 除非用户明确要求隔离 worktree 或 latest-base，不创建其他命名的分支。
@@ -41,7 +44,8 @@ bash "<review-pr-skill-dir>/scripts/prepare-pr-branch.sh" \
 
 只在用户明确授权 latest-base 时，为对应命令增加 `--merge-latest`。仅有
 `schema_version: 1`、`status: prepared`，且 repo/number、head、base、merge-base、
-checkout/upstream、collision 和 integration 模式均符合初始证据时才接受回执。
+checkout/upstream、collision、`self_authored_branch_reused` 和 integration 模式均符合初始证据时
+才接受回执。
 `failed` 回执保留停止阶段，不自动清理或重启写入。
 
 大 PR 中已使用快照文件时，可按
@@ -93,9 +97,11 @@ git status --short
 git for-each-ref --format='%(upstream:short)' refs/heads/<selected-branch>
 ```
 
-普通本地准备要求分支干净，分支名为 head 分支或 collision fallback，upstream 为
-`<owner>/<head-branch>`，且 HEAD 等于 `headRefOid`。latest-base 后改为要求 remote head 和
-frozen base 都是 HEAD 的 ancestor；如产生 merge commit，两个 parent 必须分别为该 head/base。
+普通本地准备要求分支干净，分支名为 head 分支或 collision fallback，且 HEAD 等于
+`headRefOid`。新建分支与 collision fallback tracking `<owner>/<head-branch>`；本人 PR 复用的
+同名分支可保留名称不同但实际指向准确 head repository/branch 的 upstream。latest-base 后改为
+要求 remote head 和 frozen base 都是 HEAD 的 ancestor；如产生 merge commit，两个 parent
+必须分别为该 head/base。
 
 worktree 模式要求回执路径干净并位于对应 SHA；普通分支 tracking contributor，latest-base
 分支保持 local-only。确认原 checkout 的分支、HEAD 和文件状态未变，后续命令以回执路径为 cwd。

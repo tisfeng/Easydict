@@ -65,7 +65,9 @@ struct OpenAIStreamTransport: Sendable {
         var query = query
         query.stream = true
 
-        var request = URLRequest(url: url, timeoutInterval: EZNetWorkTimeoutInterval)
+        var request = URLRequest(
+            url: url, timeoutInterval: SharedConstants.llmRequestTimeoutInterval
+        )
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if !apiKey.isEmpty {
