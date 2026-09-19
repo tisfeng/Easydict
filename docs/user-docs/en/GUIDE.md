@@ -102,6 +102,8 @@ systems generally offer more languages.
 - **Silent screenshot OCR**: recognizes and copies text without showing translation results.
 - **Screenshot/clipboard OCR and OCR window**: use them from the menu or assign global shortcuts.
 
+System OCR also extracts QR code payloads. When an image contains both text and QR codes, the QR code content is appended after the recognized text.
+
 For better results, capture a smaller area, improve text/background contrast, and select the correct
 recognition language in settings.
 
