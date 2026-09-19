@@ -336,7 +336,10 @@ static EZWindowManager *_instance;
      */
     queryText = [[queryText ns_removeInvisibleChar] ns_trim];
     if (queryText.length == 0) {
-        queryText = MyConfiguration.shared.keepPrevResultWhenEmpty ? nil : @"";
+        BOOL isSelectionQuery = actionType == EZActionTypeShortcutQuery || actionType == EZActionTypeAutoSelectQuery;
+        if (isSelectionQuery) {
+            queryText = MyConfiguration.shared.keepPrevResultWhenEmpty ? nil : @"";
+        }
     }
     // Remove the excerpt info of the books only when the frontmost app is Books.app
     else {
