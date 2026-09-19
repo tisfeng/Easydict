@@ -88,6 +88,27 @@ class ReleaseContentTests(unittest.TestCase):
                 "notes",
             )
 
+    def test_parse_change_entries_accepts_short_markdown_pr_links(self) -> None:
+        entries = release_content.parse_change_entries(
+            "## What's Changed\n"
+            "* fix: restore selection by @author in [#1285](https://github.com/tisfeng/Easydict/pull/1285)\n"
+        )
+        self.assertEqual(entries[0]["pr_number"], 1285)
+        self.assertEqual(
+            entries[0]["pr_url"],
+            "https://github.com/tisfeng/Easydict/pull/1285",
+        )
+
+    def test_parse_change_entries_rejects_mismatched_short_link_label(self) -> None:
+        with self.assertRaisesRegex(
+            release_content.ReleaseContentError,
+            "does not match URL",
+        ):
+            release_content.parse_change_entries(
+                "## What's Changed\n"
+                "* fix: restore selection by @author in [#1284](https://github.com/tisfeng/Easydict/pull/1285)\n"
+            )
+
     def test_bot_pr_is_excluded_by_shared_release_policy(self) -> None:
         decision = classify_release_pr(
             {

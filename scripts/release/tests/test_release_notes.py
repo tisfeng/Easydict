@@ -118,6 +118,23 @@ https://example.com/code
         )
         self.assertEqual(rendered.count("<a "), 1)
 
+    def test_renderer_uses_short_labels_for_markdown_links(self) -> None:
+        rendered = release_notes.render_markdown(
+            "* Fix by @author in [#1285](https://github.com/tisfeng/Easydict/pull/1285)\n"
+            "\n**Full Changelog**: [2.22.0...2.23.0](https://github.com/tisfeng/Easydict/compare/2.22.0...2.23.0)\n"
+        )
+        self.assertIn(
+            '<a href="https://github.com/tisfeng/Easydict/pull/1285">#1285</a>',
+            rendered,
+        )
+        self.assertIn(
+            '<a href="https://github.com/tisfeng/Easydict/compare/2.22.0...2.23.0">2.22.0...2.23.0</a>',
+            rendered,
+        )
+        self.assertNotIn(
+            ">https://github.com/tisfeng/Easydict/pull/1285</a>", rendered
+        )
+
     def test_renderer_keeps_balanced_url_parentheses(self) -> None:
         url = "https://en.wikipedia.org/wiki/Sparkle_(software)"
         rendered = release_notes.render_markdown(f"Read {url}\n")

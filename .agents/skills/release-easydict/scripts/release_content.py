@@ -44,7 +44,14 @@ ENTRY_PATTERN = re.compile(
     r"^(?P<bullet>\s*[*+-]\s+)"
     r"(?P<title>.+?)\s+by\s+"
     r"(?P<author>@\S+)\s+in\s+"
-    r"(?P<url>https://github\.com/[^/\s]+/[^/\s]+/pull/(?P<number>\d+))\s*$"
+    r"(?P<reference>.+?)\s*$"
+)
+MARKDOWN_PR_REFERENCE_PATTERN = re.compile(
+    r"^\[#(?P<label_number>\d+)\]"
+    r"\((?P<url>https://github\.com/[^/\s]+/[^/\s]+/pull/(?P<url_number>\d+))\)$"
+)
+RAW_PR_REFERENCE_PATTERN = re.compile(
+    r"^(?P<url>https://github\.com/[^/\s]+/[^/\s]+/pull/(?P<number>\d+))$"
 )
 PR_URL_PATTERN = re.compile(
     r"https://github\.com/[^/\s]+/[^/\s]+/pull/(?P<number>\d+)"
@@ -99,7 +106,22 @@ def parse_change_entries(body: str) -> list[dict[str, Any]]:
         match = ENTRY_PATTERN.match(line)
         if match is None:
             continue
-        number = int(match.group("number"))
+        reference = match.group("reference")
+        markdown_reference = MARKDOWN_PR_REFERENCE_PATTERN.fullmatch(reference)
+        raw_reference = RAW_PR_REFERENCE_PATTERN.fullmatch(reference)
+        if markdown_reference is not None:
+            label_number = int(markdown_reference.group("label_number"))
+            number = int(markdown_reference.group("url_number"))
+            if label_number != number:
+                raise ReleaseContentError(
+                    f"PR link label does not match URL: #{label_number} vs #{number}"
+                )
+            url = markdown_reference.group("url")
+        elif raw_reference is not None:
+            number = int(raw_reference.group("number"))
+            url = raw_reference.group("url")
+        else:
+            continue
         if number in seen_numbers:
             raise ReleaseContentError(f"duplicate PR entry in release notes: #{number}")
         seen_numbers.add(number)
@@ -108,7 +130,7 @@ def parse_change_entries(body: str) -> list[dict[str, Any]]:
                 "pr_number": number,
                 "source_title": match.group("title"),
                 "author": match.group("author"),
-                "pr_url": match.group("url"),
+                "pr_url": url,
                 "line_index": line_index,
                 "bullet": match.group("bullet"),
             }
