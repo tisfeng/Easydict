@@ -139,7 +139,8 @@ if version:
     if draft_refs:
         print("- Draft Git 引用：")
         print(f"  - 临时分支：{draft_refs.get('DRAFT_RELEASE_BRANCH', 'unknown')}")
-        print(f"  - 版本提交：{draft_refs.get('DRAFT_RELEASE_COMMIT', 'unknown')}")
+        print(f"  - 版本提交：{draft_refs.get('DRAFT_VERSION_COMMIT', 'unknown')}")
+        print(f"  - appcast 提交：{draft_refs.get('DRAFT_APPCAST_COMMIT', 'unknown')}")
         print("  - dev/main：Draft 阶段未修改")
     if publish_git.get("PUBLISH_INTEGRATION_HEAD"):
         print("- Publish Git 集成：")

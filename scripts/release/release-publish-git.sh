@@ -147,18 +147,24 @@ verify_dev_checkout_ready() {
 require_remote_draft_refs() {
     local remote_release remote_main tag_commit
 
+    load_draft_refs_metadata
     remote_release="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
         "$(remote_tracking_ref "$RELEASE_BRANCH")")"
     remote_main="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
         "$(remote_tracking_ref "$RELEASE_MAIN_BRANCH")")"
     tag_commit="$(remote_tag_commit)"
 
-    [[ "$remote_release" == "$RELEASE_VERSION_COMMIT" ]] \
-        || release_fail "remote $RELEASE_BRANCH does not match the version commit"
-    [[ "$tag_commit" == "$RELEASE_VERSION_COMMIT" ]] \
+    [[ "$remote_release" == "$DRAFT_APPCAST_COMMIT" ]] \
+        || release_fail "remote $RELEASE_BRANCH does not match the Draft appcast commit"
+    [[ "$tag_commit" == "$DRAFT_VERSION_COMMIT" ]] \
         || release_fail "remote Tag does not match the version commit"
+    [[ "$DRAFT_VERSION_COMMIT" == "$RELEASE_VERSION_COMMIT" ]] \
+        || release_fail "Draft version commit differs from saved release metadata"
     git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
-        "$remote_main" "$RELEASE_VERSION_COMMIT" \
+        "$DRAFT_VERSION_COMMIT" "$DRAFT_APPCAST_COMMIT" \
+        || release_fail "Draft appcast commit does not contain the version commit"
+    git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+        "$remote_main" "$DRAFT_APPCAST_COMMIT" \
         || release_fail \
             "remote main advanced outside the Draft; rebuild the Draft before publishing"
 }
@@ -199,7 +205,7 @@ prepare_publish_integration() {
 
     merge_into_integration "$local_dev" "local $RELEASE_DEV_BRANCH"
     merge_into_integration "$remote_dev" "$RELEASE_REMOTE/$RELEASE_DEV_BRANCH"
-    merge_into_integration "$RELEASE_VERSION_COMMIT" "$RELEASE_BRANCH"
+    merge_into_integration "$DRAFT_APPCAST_COMMIT" "frozen appcast commit"
     require_clean_integration_worktree
     prepared_head="$(git -C "$RELEASE_PUBLISH_INTEGRATION_WORKTREE" rev-parse HEAD)"
     write_publish_git_metadata \
@@ -252,10 +258,8 @@ push_published_refs() {
     verify_release_notes_snapshot
     load_publish_git_metadata
     require_clean_integration_worktree
-    [[ "$(git -C "$RELEASE_WORKTREE" log -1 --format=%s)" \
-        == "build(release): add $RELEASE_VERSION appcast entry" ]] \
-        || release_fail "release HEAD is not the expected appcast commit"
-    appcast_head="$(git -C "$RELEASE_WORKTREE" rev-parse HEAD)"
+    load_draft_refs_metadata
+    appcast_head="$DRAFT_APPCAST_COMMIT"
 
     fetch_publish_refs
     remote_dev="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
@@ -284,7 +288,7 @@ push_published_refs() {
     merge_into_integration "$local_dev" "current local $RELEASE_DEV_BRANCH"
     merge_into_integration "$remote_dev" \
         "current $RELEASE_REMOTE/$RELEASE_DEV_BRANCH"
-    merge_into_integration "$appcast_head" "published appcast commit"
+    merge_into_integration "$appcast_head" "frozen appcast commit"
     require_clean_integration_worktree
     integration_head="$(git -C "$RELEASE_PUBLISH_INTEGRATION_WORKTREE" rev-parse HEAD)"
 

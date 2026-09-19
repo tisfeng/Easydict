@@ -163,6 +163,23 @@ class ReleaseGitFlowTests(unittest.TestCase):
             self.assertNotEqual(missing_drifted_release.returncode, 0)
             release_notes.write_text(notes_text, encoding="utf-8")
 
+            (release_worktree / "appcast.xml").write_text(
+                "<rss/>\n", encoding="utf-8"
+            )
+            run(["git", "add", "appcast.xml"], cwd=release_worktree)
+            run(
+                [
+                    "git",
+                    "commit",
+                    "-m",
+                    f"build(release): add {version} appcast entry",
+                ],
+                cwd=release_worktree,
+            )
+            appcast_commit = run(
+                ["git", "rev-parse", "HEAD"], cwd=release_worktree
+            ).stdout.strip()
+
             run([str(BRANCH_SYNC), "push-version"], cwd=repository, env=env)
             for ref in ("refs/heads/dev", "refs/heads/main"):
                 ref_commit = run(
@@ -178,7 +195,17 @@ class ReleaseGitFlowTests(unittest.TestCase):
                     f"refs/heads/release/sync-{version}",
                 ]
             ).stdout.strip()
-            self.assertEqual(draft_commit, version_commit)
+            self.assertEqual(draft_commit, appcast_commit)
+            tag_commit = run(
+                [
+                    "git",
+                    "--git-dir",
+                    str(remote),
+                    "rev-parse",
+                    f"refs/tags/{version}^{{commit}}",
+                ]
+            ).stdout.strip()
+            self.assertEqual(tag_commit, version_commit)
 
             (repository / "local.txt").write_text("local\n", encoding="utf-8")
             run(["git", "add", "local.txt"], cwd=repository)
@@ -218,23 +245,6 @@ class ReleaseGitFlowTests(unittest.TestCase):
                     check=False,
                 )
                 self.assertEqual(result.returncode, 0)
-
-            (release_worktree / "appcast.xml").write_text(
-                "<rss/>\n", encoding="utf-8"
-            )
-            run(["git", "add", "appcast.xml"], cwd=release_worktree)
-            run(
-                [
-                    "git",
-                    "commit",
-                    "-m",
-                    f"build(release): add {version} appcast entry",
-                ],
-                cwd=release_worktree,
-            )
-            appcast_commit = run(
-                ["git", "rev-parse", "HEAD"], cwd=release_worktree
-            ).stdout.strip()
 
             run([str(PUBLISH_GIT), "push"], cwd=repository, env=env)
             local_dev = run(

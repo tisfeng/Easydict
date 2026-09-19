@@ -46,8 +46,9 @@ Release 生命周期：
 - 用户明确请求 `publish` 或 `release` 后，同一版本通过远程发布验证时，也同时授权其
   内部 `issue-followup apply` 阶段。翻译、重点内容、评论或关闭已解决 Issue 不再另行
   请求确认。
-- Draft 通过隔离 worktree 发布已提交的本地 `dev`，只推送临时
-  `release/sync-<version>` 和版本 Tag，不修改本地或远程 `dev`、`main`。
+- Draft 通过隔离 worktree 发布已提交的本地 `dev`，先冻结 appcast 提交，再只推送指向
+  appcast 提交的临时 `release/sync-<version>` 和指向版本提交的版本 Tag，不修改本地或远程
+  `dev`、`main`。
 - Publish 使用隔离 worktree 先完成 merge 预检。当前 checkout 位于其他分支时保持
   不变；当前 checkout 就是干净的 `dev` 时，发布提交验证后允许 fast-forward 更新。
   不覆盖未提交修改，也不 rebase 已发布提交。

@@ -68,8 +68,9 @@ archive_replacement_state() {
         [[ -z "$(git -C "$RELEASE_WORKTREE" status --porcelain \
             --untracked-files=all)" ]] \
             || release_fail "existing release worktree has pending changes; resume or clean it explicitly"
-        [[ "$(git -C "$RELEASE_WORKTREE" rev-parse HEAD)" \
-            == "$REPLACEMENT_OLD_VERSION_COMMIT" ]] \
+        git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+            "$REPLACEMENT_OLD_VERSION_COMMIT" \
+            "$(git -C "$RELEASE_WORKTREE" rev-parse HEAD)" \
             || release_fail "existing release worktree does not match the Draft being replaced"
         actual_branch="$(git -C "$RELEASE_WORKTREE" branch --show-current)"
         if [[ "$actual_branch" == "$RELEASE_BRANCH" ]]; then
@@ -138,7 +139,7 @@ ensure_replacement_tag() {
             "refs/tags/$RELEASE_VERSION")"
         local_tag_commit="$(git -C "$RELEASE_WORKTREE" rev-parse \
             "refs/tags/$RELEASE_VERSION^{commit}")"
-        if [[ "$local_tag_commit" == "$current_head" ]]; then
+        if [[ "$local_tag_commit" == "$RELEASE_VERSION_COMMIT" ]]; then
             return
         fi
         [[ "$local_tag_oid" == "$REPLACEMENT_OLD_TAG_OID" ]] \
@@ -146,11 +147,12 @@ ensure_replacement_tag() {
         git -C "$RELEASE_WORKTREE" tag -d "$RELEASE_VERSION" >/dev/null
     fi
     git -C "$RELEASE_WORKTREE" tag -a "$RELEASE_VERSION" \
+        "$RELEASE_VERSION_COMMIT" \
         -m "Easydict $RELEASE_VERSION"
 }
 
 push_replacement_refs() {
-    local current_head local_tag_oid remote_tag_oid remote_release_oid
+    local current_head version_commit local_tag_oid remote_tag_oid remote_release_oid
     local branch_lease
 
     require_release_worktree
@@ -158,8 +160,10 @@ push_replacement_refs() {
     verify_release_notes_snapshot
     load_replacement_metadata
     current_head="$(git -C "$RELEASE_WORKTREE" rev-parse HEAD)"
-    [[ "$current_head" == "$RELEASE_VERSION_COMMIT" ]] \
-        || release_fail "release HEAD differs from the saved version commit"
+    version_commit="$RELEASE_VERSION_COMMIT"
+    git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+        "$version_commit" "$current_head" \
+        || release_fail "appcast commit is not based on the saved version commit"
 
     ensure_replacement_tag
     local_tag_oid="$(git -C "$RELEASE_WORKTREE" rev-parse \
@@ -168,7 +172,7 @@ push_replacement_refs() {
     remote_release_oid="$(remote_release_branch_oid)"
     if [[ "$remote_tag_oid" == "$local_tag_oid" \
         && "$remote_release_oid" == "$current_head" ]]; then
-        write_draft_refs_metadata "$current_head" "$local_tag_oid"
+        write_draft_refs_metadata "$version_commit" "$current_head" "$local_tag_oid"
         mark_replacement_complete refs-replaced
         release_log "replacement refs were already updated"
         return
@@ -198,7 +202,7 @@ push_replacement_refs() {
         || release_fail "remote replacement Tag did not reach the expected object"
     [[ "$(remote_release_branch_oid)" == "$current_head" ]] \
         || release_fail "remote release branch did not reach the replacement commit"
-    write_draft_refs_metadata "$current_head" "$local_tag_oid"
+    write_draft_refs_metadata "$version_commit" "$current_head" "$local_tag_oid"
     mark_replacement_complete refs-replaced
 }
 

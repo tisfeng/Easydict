@@ -5,9 +5,11 @@
 
 ## Git 与状态边界
 
-- `draft` 只推送 `release/sync-<version>` 和版本 Tag；不得把 Draft 提交直接推送到
+- `draft` 生成、验证并提交 appcast，然后只推送指向 appcast 提交的
+  `release/sync-<version>` 和指向版本提交的版本 Tag；不得把 Draft 提交直接推送到
   `origin/dev` 或 `origin/main`。
-- `publish` 在 GitHub Release 公开前完成 merge 预检；安装 appcast 后安全更新本地
+- `publish` 在 GitHub Release 公开前完成 merge 预检；公开 Release 后使用 Draft 阶段冻结的
+  appcast 提交安全更新本地
   `dev`，再原子更新远程 `dev`、`main` 和临时发布分支。
 - 远程验证通过后删除临时发布分支。版本 Tag 停留在版本元数据提交，`main` 停留在
   appcast 提交，`dev` 停留在包含最新开发提交和 appcast 提交的集成结果。
@@ -34,7 +36,8 @@ Issue 状态只使用 `.tmp/release/<version>/state/issue-followup/` 的 schema 
    选择重点并生成英文标题，先预览标题更新，再用 `--execute` 执行；helper 不编辑正文。
 5. `draft` 报告经过验证的 Draft、changelog 路径和正文哈希后停止。
 6. `publish` 或 `release` 运行“发布 Draft”。仓库脚本会在公开 Release 前对最新本地
-   `dev`、`origin/dev` 和版本提交做 merge 预检，安装并提交 appcast，安全更新本地
+   `dev`、`origin/dev` 和版本提交做 merge 预检；Draft 阶段已经生成、验证并提交的
+   appcast 会被校验后安全更新本地
    `dev`，再使用 lease 原子更新远程引用。发布、appcast 安装和远程验证全部成功前
    不继续。
 7. 读取 [Issue 跟进](issue-followup.md) 和
@@ -115,8 +118,8 @@ python3 .agents/skills/release-easydict/scripts/release_content.py apply \
 - `--replace-draft` 构建或公证失败时，不修改旧的远程 Draft 和 Tag。后续切换失败时保留
   本地回滚数据；验证成功后删除该临时备份。未完成的替换只使用 asc run ID 恢复。
 - 发布失败时不执行 Issue 动作，并使用 asc run ID 恢复。
-- Draft 成功只表示临时发布分支、Tag 和 GitHub Draft 已就绪，不代表 `dev` 或 `main`
-  已更新。
+- Draft 成功只表示临时发布分支、版本 Tag、冻结的 appcast 提交和 GitHub Draft 已就绪，
+  不代表 `dev` 或 `main` 已更新。
 - Publish merge 冲突、本地 `dev` checkout 不干净或 lease 竞态失败时，保留集成 worktree
   和 `state/publish-git.env`；解决根因后使用 asc run ID 恢复。
 - Issue 跟进失败时不回滚已经发布的 Release、评论或 Issue 关闭操作。报告“发布成功，

@@ -469,8 +469,9 @@ load_release_metadata() {
 }
 
 write_draft_refs_metadata() {
-    local release_commit="$1"
-    local tag_oid="$2"
+    local version_commit="$1"
+    local appcast_commit="$2"
+    local tag_oid="$3"
     local temporary_path
 
     mkdir -p "$RELEASE_STATE_DIR"
@@ -478,10 +479,31 @@ write_draft_refs_metadata() {
     {
         printf 'DRAFT_REFS_VERSION=%q\n' "$RELEASE_VERSION"
         printf 'DRAFT_RELEASE_BRANCH=%q\n' "$RELEASE_BRANCH"
-        printf 'DRAFT_RELEASE_COMMIT=%q\n' "$release_commit"
+        printf 'DRAFT_VERSION_COMMIT=%q\n' "$version_commit"
+        printf 'DRAFT_APPCAST_COMMIT=%q\n' "$appcast_commit"
         printf 'DRAFT_TAG_OID=%q\n' "$tag_oid"
     } >"$temporary_path"
     mv "$temporary_path" "$RELEASE_DRAFT_REFS_PATH"
+}
+
+load_draft_refs_metadata() {
+    require_release_file "$RELEASE_DRAFT_REFS_PATH"
+    # shellcheck disable=SC1090
+    source "$RELEASE_DRAFT_REFS_PATH"
+
+    [[ "$DRAFT_REFS_VERSION" == "$RELEASE_VERSION" ]] \
+        || release_fail "Draft Git refs belong to another version"
+    [[ "$DRAFT_RELEASE_BRANCH" == "$RELEASE_BRANCH" ]] \
+        || release_fail "Draft release branch differs from configured branch"
+    for commit_name in DRAFT_VERSION_COMMIT DRAFT_APPCAST_COMMIT; do
+        [[ "${!commit_name}" =~ ^[0-9a-f]{40}$ ]] \
+            || release_fail "Draft Git refs have invalid $commit_name"
+    done
+    [[ "$DRAFT_TAG_OID" =~ ^[0-9a-f]{40}$ ]] \
+        || release_fail "Draft Tag object ID is invalid"
+    git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+        "$DRAFT_VERSION_COMMIT" "$DRAFT_APPCAST_COMMIT" \
+        || release_fail "Draft appcast commit is not based on the version commit"
 }
 
 # Loads the frozen Git refs and integration result used by publish/resume.

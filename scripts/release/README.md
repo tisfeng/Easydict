@@ -16,11 +16,12 @@ Easydict 的发布流程由 `asc workflow` 编排。该工作流将构建、公�
 5. 将同步时的 `origin/main` 提交合并到该 worktree。
 6. 验证并冻结 `changelog/<version>.md`，再基于合并后的结果构建，并从该文件生成
    Sparkle description。
-7. Draft 阶段只将 `release/sync-<version>` 和带注释的版本 Tag 原子推送到远程，
+7. Draft 阶段先完成 beta predecessor transition、写入并提交候选 `appcast.xml`，再将
+   指向 appcast 提交的 `release/sync-<version>` 与指向版本提交的带注释版本 Tag 原子推送到远程；
    不修改 `origin/dev` 或 `origin/main`。
 8. Publish 前在第二个隔离 worktree 中，将最新本地 `dev`、`origin/dev` 和版本提交
    合并起来；如果冲突，在 GitHub Release 公开前停止。
-9. GitHub Release 公开并安装 appcast 后，将 appcast 提交合并到上述集成结果，安全更新
+9. GitHub Release 公开后，将 Draft 阶段冻结的 appcast 提交合并到上述集成结果，安全更新
    本地 `dev`，再使用 lease 原子更新 `origin/dev`、`origin/main` 和临时发布分支。
 10. 远程验证 GitHub 正文、公开 appcast 和冻结 changelog 一致后，删除远程
     `release/sync-<version>`。
@@ -102,10 +103,10 @@ Release 标题不写入文件。发布开始后，工作流会冻结正文和渲
 # 构建、签名、公证、打包、生成 appcast，并在本地完成验证。
 ./scripts/release/release-easydict.sh prepare 2.22.0
 
-# 准备发布、同步发布引用，并创建经过验证的 GitHub Draft Release。
+# 准备发布、冻结并提交 appcast、同步发布引用，并创建经过验证的 GitHub Draft Release。
 ./scripts/release/release-easydict.sh draft 2.22.0
 
-# 发布已有的、经过验证的 Draft Release，安装 appcast，并执行远程验证。
+# 发布已有的、经过验证的 Draft Release，推广 Draft 阶段冻结的 appcast，并执行远程验证。
 ./scripts/release/release-easydict.sh publish 2.22.0
 ```
 
@@ -192,10 +193,11 @@ run ID：
 5. 提交 App 进行公证、写入公证票据，并验证 Gatekeeper。
 6. 生成 Sparkle ZIP 和 DMG 产物；对 DMG 进行公证并写入公证票据。
 7. 生成并严格验证候选 `appcast.xml`。
-8. 原子推送临时发布分支和带注释的版本 Tag，不修改 `dev` 或 `main`。
+8. 在 Draft 阶段提交 appcast，原子推送指向 appcast 提交的临时发布分支和指向版本提交的带注释版本 Tag，
+   不修改 `dev` 或 `main`。
 9. 创建并验证包含 ZIP、DMG 和校验和的 GitHub Draft Release。
 10. 发布前将最新本地/远程 `dev` 与版本提交进行 merge 预检。
-11. 发布新的 GitHub Release 并安装 appcast，将 appcast 提交 merge 到集成结果。
+11. 发布新的 GitHub Release，并将 Draft 阶段冻结的 appcast 提交 merge 到集成结果。
 12. 安全更新本地 `dev`，并使用 lease 原子更新远程 `dev`、`main` 和临时发布分支。
 13. 对 beta 发布，将上一 GitHub prerelease 提升为 stable。
 14. 验证两代 Release、远程引用、发布资产和公开 Sparkle feed，再删除远程临时分支和本地 worktree。

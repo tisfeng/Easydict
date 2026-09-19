@@ -138,6 +138,8 @@ print(json.dumps({
             draft,
             [
                 "revalidate_draft_replacement",
+                "prepare_channel_transition",
+                "install_appcast",
                 "push_draft_refs",
                 "delete_replaced_github_draft",
                 "create_github_draft",
@@ -149,10 +151,8 @@ print(json.dumps({
             publish.index("prepare_publish_git"),
             publish.index("publish_github_release"),
         )
-        self.assertLess(
-            publish.index("install_appcast"),
-            publish.index("push_published_refs"),
-        )
+        self.assertNotIn("install_appcast", publish)
+        self.assertNotIn("prepare_channel_transition", publish)
         self.assertLess(
             publish.index("verify_remote_release"),
             publish.index("cleanup_remote_release_branch"),
@@ -343,6 +343,15 @@ else:
                 ],
                 cwd=repository,
             )
+            (worktree / "appcast.xml").write_text("<rss/>\n", encoding="utf-8")
+            run(["git", "add", "appcast.xml"], cwd=worktree)
+            run(
+                ["git", "commit", "-m", f"build(release): add {version} appcast entry"],
+                cwd=worktree,
+            )
+            appcast_commit = run(
+                ["git", "rev-parse", "HEAD"], cwd=worktree
+            ).stdout.strip()
             state = release_dir / "state"
             replacement = release_dir / "replacement"
             state.mkdir()
@@ -412,7 +421,7 @@ else:
                     f"refs/heads/release/sync-{version}",
                 ]
             )
-            self.assertEqual(release_ref.stdout.strip(), new_commit)
+            self.assertEqual(release_ref.stdout.strip(), appcast_commit)
             peeled = run(
                 [
                     "git",
