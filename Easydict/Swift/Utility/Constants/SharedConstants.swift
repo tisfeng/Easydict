@@ -19,16 +19,16 @@ enum SharedConstants {
 
     /// Timeout for hand-built LLM chat requests, in seconds.
     ///
-    /// `URLRequest.timeoutInterval` is the maximum gap between received
-    /// bytes, not a total deadline. A non-streaming completion only sends
-    /// bytes once the whole answer is generated, which already takes longer
-    /// than the generic `EZNetWorkTimeoutInterval` (15s) for a few thousand
-    /// characters of input (measured: a 2250-character translation on
-    /// deepseek-v4-pro timed out at 15s and completed in 11s at 90s).
-    /// Streaming requests share the value so a slow first token or a model
-    /// that does not stream its reasoning cannot end the stream early with
-    /// a partial answer that would then be rendered as complete. This covers
-    /// `OpenAIStreamTransport` too, which replaced the SDK streaming session
-    /// (60s timeout) with a hand-built request.
-    static let llmRequestTimeoutInterval: TimeInterval = 90
+    /// Keep this aligned with the MacPaw/OpenAI SDK's default
+    /// `OpenAI.Configuration.timeoutInterval` of 60 seconds. The
+    /// `URLRequest.timeoutInterval` is an idle timeout, not a total deadline:
+    /// it limits how long the request may wait for additional data and resets
+    /// whenever bytes arrive.
+    ///
+    /// The generic `EZNetWorkTimeoutInterval` is 15 seconds, which is too
+    /// short for long non-streaming completions and may end streaming
+    /// requests while they wait for the next token. This value applies to
+    /// `OpenAIStreamTransport`, the non-streaming fallback, and DeepSeek's
+    /// hand-built stream; regular translation APIs remain at 15 seconds.
+    static let llmRequestTimeoutInterval: TimeInterval = 60
 }
