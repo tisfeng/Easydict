@@ -15,6 +15,9 @@ import tempfile
 import unicodedata
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "scripts" / "release"))
+from release_pr_policy import classify_release_pr  # noqa: E402
+
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(REPOSITORY_ROOT / "scripts" / "release"))
@@ -42,6 +45,9 @@ ENTRY_PATTERN = re.compile(
     r"(?P<title>.+?)\s+by\s+"
     r"(?P<author>@\S+)\s+in\s+"
     r"(?P<url>https://github\.com/[^/\s]+/[^/\s]+/pull/(?P<number>\d+))\s*$"
+)
+PR_URL_PATTERN = re.compile(
+    r"https://github\.com/[^/\s]+/[^/\s]+/pull/(?P<number>\d+)"
 )
 
 
@@ -213,6 +219,51 @@ def fetch_draft(repo: str, version: str) -> dict[str, Any]:
     )
 
 
+def fetch_pr_policy(repo: str, number: int) -> dict[str, str]:
+    result = subprocess.run(
+        [
+            "gh",
+            "pr",
+            "view",
+            str(number),
+            "--repo",
+            repo,
+            "--json",
+            "number,title,author",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        detail = result.stderr.strip() or result.stdout.strip()
+        raise ReleaseContentError(f"cannot inspect PR #{number}: {detail}")
+    try:
+        pr = json.loads(result.stdout)
+    except json.JSONDecodeError as error:
+        raise ReleaseContentError(f"PR #{number} metadata is not valid JSON") from error
+    if not isinstance(pr, dict):
+        raise ReleaseContentError(f"PR #{number} metadata is invalid")
+    return classify_release_pr(pr)
+
+
+def validate_pr_policy_command(args: argparse.Namespace) -> None:
+    notes = read_notes(args.notes, args.version)
+    entries = parse_change_entries(notes)
+    numbers = sorted({int(match.group("number")) for match in PR_URL_PATTERN.finditer(notes)})
+    ignored: list[str] = []
+    for number in numbers:
+        decision = fetch_pr_policy(args.repo, number)
+        if decision["decision"] == "ignored":
+            ignored.append(f"#{number}: {decision['reason']}")
+    if ignored:
+        raise ReleaseContentError(
+            "release notes contain ignored bot PRs; remove them:\n"
+            + "\n".join(ignored)
+        )
+    print(json.dumps({"valid": True, "entries": len(entries)}))
+
+
 def apply_command(args: argparse.Namespace) -> None:
     validate_release_title(args.version, args.title)
     notes = read_notes(args.notes, args.version)
@@ -269,6 +320,13 @@ def build_parser() -> argparse.ArgumentParser:
     apply.add_argument("--title", required=True)
     apply.add_argument("--execute", action="store_true")
     apply.set_defaults(handler=apply_command)
+    policy = subparsers.add_parser(
+        "validate-pr-policy", help="reject ignored bot PRs in release notes"
+    )
+    policy.add_argument("--repo", required=True)
+    policy.add_argument("--version", required=True)
+    policy.add_argument("--notes", type=Path, required=True)
+    policy.set_defaults(handler=validate_pr_policy_command)
     return parser
 
 

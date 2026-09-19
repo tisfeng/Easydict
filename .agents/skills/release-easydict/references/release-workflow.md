@@ -27,7 +27,7 @@ Issue 状态只使用 `.tmp/release/<version>/state/issue-followup/` 的 schema 
 1. 验证请求版本、channel、当前 GitHub Release、`.tmp/release/<version>/` 状态和相关
    asc run ID。
 2. 创建新 Draft 前，根据上一个版本以来的已合并 PR 创建或更新
-   `changelog/<version>.md`。正文使用简洁英文，保留 PR 作者、链接、New Contributors
+   `changelog/<version>.md`。正文使用简洁英文，应用统一 bot PR 过滤策略，保留有效 PR 作者、链接、New Contributors
    和 Full Changelog 范围；将文件提交到本地 `dev`，然后运行“验证 changelog”。
 3. 运行“创建 Draft”。如果 Draft 已存在，验证并复用；只有用户明确要求替换时才运行
    “替换 Draft”。现有 Release 必须是 GitHub 最新条目、保持同一 channel 的 Draft、
@@ -43,13 +43,15 @@ Issue 状态只使用 `.tmp/release/<version>/state/issue-followup/` 的 schema 
 7. 读取 [Issue 跟进](issue-followup.md) 和
    [Issue 决策策略](issue-followup-policy.md)，执行 `issue-followup apply <version>`。
    它在修改前创建新计划，不依赖此前独立运行的 `plan`。
-8. 报告 Release URL、标题、channel、notes 路径、固定三类 Issue 摘要、底层 run ID
+8. 报告 Release URL、标题、channel、notes 路径、Issue 和无关联 PR 摘要、底层 run ID
    和可恢复状态路径。
 
 ## 内容决策
 
 - changelog 只翻译每个变更条目中由人编写的 PR 标题部分，并保持英文标题简洁；作者、
   PR 链接、贡献者和比较范围保持不变。
+- Draft 阶段不评论 Issue/PR、不关闭 Issue、不推送 `main` 的 appcast；只有正式 Release
+  远程验证成功后才执行 Issue 和无关联人工 PR 通知。PR 通知只发表评论，不关闭 PR。
 - 按以下顺序选择重点：安全、数据丢失或崩溃修复；重要用户可见功能；重要用户可见修复；
   较小产品改进。只有不存在产品变更时才选择维护项。
 - 标题使用 `<version> <emoji> <type>: <concise English summary>`，通常采用 `✨ feat`、

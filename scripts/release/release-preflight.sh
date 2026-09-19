@@ -36,7 +36,7 @@ validate_synced_tooling() {
     local source_tree release_tree tooling_path
 
     load_release_source_metadata
-    for tooling_path in scripts/release changelog; do
+    for tooling_path in scripts/release changelog .agents/skills/release-easydict; do
         source_tree="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
             "$RELEASE_SOURCE_COMMIT:$tooling_path")"
         release_tree="$(git -C "$RELEASE_WORKTREE" rev-parse \
@@ -120,6 +120,11 @@ validate_release() {
     require_release_file "$RELEASE_NOTES_FILE"
     validate_synced_tooling
     snapshot_release_notes
+    python3 "$RELEASE_WORKTREE/.agents/skills/release-easydict/scripts/release_content.py" \
+        validate-pr-policy \
+        --repo "$RELEASE_REPOSITORY" \
+        --version "$RELEASE_VERSION" \
+        --notes "$RELEASE_NOTES_FILE" >/dev/null
 
     latest_version="$(xmllint --xpath \
         'string((//*[local-name()="shortVersionString"])[1])' \

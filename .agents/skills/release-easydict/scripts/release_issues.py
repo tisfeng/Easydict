@@ -16,8 +16,11 @@ import sys
 import tempfile
 from typing import Any, Callable, Iterable
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "scripts" / "release"))
+from release_pr_policy import classify_release_pr  # noqa: E402
 
-SCHEMA_VERSION = 2
+
+SCHEMA_VERSION = 3
 ASSOCIATIONS = {"fixes", "related", "rejected"}
 RESOLUTIONS = {"resolved", "not_resolved", "not_applicable"}
 OUTCOMES = {"fixed", "implemented", "not_applicable"}
@@ -274,7 +277,7 @@ def fetch_pr(repository: str, number: int) -> dict[str, Any]:
             "--repo",
             repository,
             "--json",
-            "number,title,body,mergedAt,url,closingIssuesReferences,commits,files",
+            "number,title,body,mergedAt,url,author,comments,closingIssuesReferences,commits,files",
         ]
     )
 
@@ -387,7 +390,12 @@ def build_candidates(
             raise ReleaseIssueError("PR payload is missing its number")
         if not isinstance(pr.get("mergedAt"), str):
             raise ReleaseIssueError(f"release PR #{number} is not merged")
-        references = pr_references(repository, pr)
+        classification = classify_release_pr(pr)
+        references = (
+            pr_references(repository, pr)
+            if classification["decision"] == "included"
+            else []
+        )
         normalized_prs.append(
             {
                 "number": number,
@@ -395,9 +403,13 @@ def build_candidates(
                 "body": pr.get("body") or "",
                 "merged_at": pr.get("mergedAt"),
                 "url": pr.get("url"),
+                "author": pr.get("author"),
+                "comments": pr.get("comments") or [],
                 "commits": pr.get("commits") or [],
                 "files": pr.get("files") or [],
                 "references": references,
+                "release_decision": classification["decision"],
+                "release_decision_reason": classification["reason"],
             }
         )
         for reference in references:
@@ -431,6 +443,16 @@ def build_candidates(
         "generated_at": now_iso8601(),
         "prs": normalized_prs,
         "candidates": resolved_candidates,
+        "ignored_prs": [
+            {
+                "number": pr["number"],
+                "url": pr.get("url"),
+                "title": pr.get("title"),
+                "reason": pr["release_decision_reason"],
+            }
+            for pr in normalized_prs
+            if pr["release_decision"] == "ignored"
+        ],
     }
     payload["source_sha256"] = stable_hash(payload)
     return payload
@@ -655,8 +677,29 @@ def load_published_release(
     }
 
 
-def marker_for(version: str) -> str:
-    return f"<!-- easydict-release-notification:{version} -->"
+def marker_for(
+    version: str,
+    target: str = "issue",
+    target_number: int | None = None,
+) -> str:
+    if target_number is None:
+        return f"<!-- easydict-release-notification:{version} -->"
+    return (
+        f"<!-- easydict-release-notification:{version}:"
+        f"{target}:{target_number} -->"
+    )
+
+
+def marker_present(
+    comments: list[dict[str, Any]],
+    version: str,
+    target: str,
+    target_number: int,
+) -> bool:
+    return find_marker_comment(
+        comments,
+        marker_for(version, target, target_number),
+    ) is not None or find_marker_comment(comments, marker_for(version)) is not None
 
 
 def find_marker_comment(
@@ -675,14 +718,20 @@ def release_comment(
     release_url: str,
     language: str,
     outcome: str,
+    *,
+    target: str = "issue",
+    target_number: int | None = None,
 ) -> str:
-    marker = marker_for(version)
+    marker = marker_for(version, target, target_number)
     if language == "zh-Hans":
-        opening = (
-            f"该问题已在 Easydict {version} 中修复。"
-            if outcome == "fixed"
-            else f"该功能已在 Easydict {version} 中实现。"
-        )
+        if target == "pr":
+            opening = f"该变更已在 Easydict {version} 中发布。"
+        else:
+            opening = (
+                f"该问题已在 Easydict {version} 中修复。"
+                if outcome == "fixed"
+                else f"该功能已在 Easydict {version} 中实现。"
+            )
         if channel == "beta":
             opening = opening.replace(f"{version}", f"{version} Beta 版本")
             instruction = (
@@ -692,9 +741,15 @@ def release_comment(
         else:
             instruction = "请更新至最新版本。"
     else:
-        verb = "fixed" if outcome == "fixed" else "implemented"
-        suffix = " beta" if channel == "beta" else ""
-        opening = f"This issue has been {verb} in Easydict {version}{suffix}."
+        if target == "pr":
+            opening = f"This change has been released in Easydict {version}"
+            if channel == "beta":
+                opening += " beta"
+            opening += "."
+        else:
+            verb = "fixed" if outcome == "fixed" else "implemented"
+            suffix = " beta" if channel == "beta" else ""
+            opening = f"This issue has been {verb} in Easydict {version}{suffix}."
         if channel == "beta":
             instruction = (
                 "Please update to the latest version. To receive beta updates, open "
@@ -747,6 +802,7 @@ def build_plan(
     items: list[dict[str, Any]] = []
     audit: list[dict[str, Any]] = []
     marker = marker_for(version)
+    effective_prs: set[int] = set()
 
     for issue_number in sorted(decision_map):
         decision = decision_map[issue_number]
@@ -757,6 +813,11 @@ def build_plan(
         fixing = [item for item in associations if item["relationship"] == "fixes"]
         related = [item for item in associations if item["relationship"] == "related"]
         rejected = [item for item in associations if item["relationship"] == "rejected"]
+        effective_prs.update(
+            association["pr_number"]
+            for association in associations
+            if association["relationship"] in {"fixes", "related"}
+        )
         for association in rejected:
             pr_number = association["pr_number"]
             audit.append(
@@ -792,10 +853,35 @@ def build_plan(
             "reason": decision["reason"].strip(),
             "prs": pr_links(decision, pr_map),
             "comment_needed": resolved
-            and find_marker_comment(issue.get("comments") or [], marker) is None,
+            and not marker_present(
+                issue.get("comments") or [], version, "issue", issue_number
+            ),
             "close_needed": resolved and state == "open",
         }
         items.append(item)
+
+    pr_notifications: list[dict[str, Any]] = []
+    for pr in candidates.get("prs") or []:
+        if not isinstance(pr, dict) or not isinstance(pr.get("number"), int):
+            continue
+        if pr.get("release_decision") == "ignored":
+            continue
+        number = pr["number"]
+        if number in effective_prs:
+            continue
+        comments = pr.get("comments") or []
+        pr_notifications.append(
+            {
+                "pr_number": number,
+                "pr_title": pr.get("title"),
+                "pr_url": pr.get("url"),
+                "language": "en",
+                "reason": "No valid issue association was found.",
+                "comment_needed": not marker_present(
+                    comments, version, "pr", number
+                ),
+            }
+        )
 
     plan: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
@@ -808,6 +894,7 @@ def build_plan(
         "decision_sha256": stable_hash(decisions),
         "executed": False,
         "items": items,
+        "pr_notifications": pr_notifications,
         "audit": audit,
     }
     plan["plan_sha256"] = stable_hash(plan)
@@ -863,6 +950,20 @@ def render_summary(plan: dict[str, Any]) -> str:
                 action = "未执行关闭"
             lines.append(f"- {issue} ← {prs}：{action}。{item['reason']}")
         lines.append("")
+    lines.append("## 无关联 issue 的 PR 通知")
+    lines.append("")
+    notifications = plan.get("pr_notifications") or []
+    if not notifications:
+        lines.append("- 无")
+    for item in notifications:
+        pr = f"[PR #{item['pr_number']}]({item['pr_url']})"
+        if plan.get("executed") is True and not item.get("comment_needed"):
+            action = "已有版本通知，无需重复评论"
+        elif plan.get("executed") is True:
+            action = "已发布版本通知"
+        else:
+            action = f"计划发布 {plan.get('version')} 版本通知"
+        lines.append(f"- {pr}：{action}。{item['reason']}")
     return "\n".join(lines).rstrip() + "\n"
 
 
@@ -872,12 +973,14 @@ def write_plan_outputs(plan_path: Path, summary_path: Path, plan: dict[str, Any]
 
 
 def plan_counts(plan: dict[str, Any]) -> dict[str, int]:
-    return {
+    counts = {
         category: sum(
             item.get("category") == category for item in plan.get("items") or []
         )
         for category in VISIBLE_CATEGORIES
     }
+    counts["pr_notifications"] = len(plan.get("pr_notifications") or [])
+    return counts
 
 
 def prepare_plan(args: argparse.Namespace) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -917,6 +1020,7 @@ def load_action_state(path: Path, repository: str, version: str) -> dict[str, An
             "repository": repository,
             "version": version,
             "issues": {},
+            "prs": {},
         }
     state = read_json(path)
     if state.get("schema_version") != SCHEMA_VERSION:
@@ -925,6 +1029,8 @@ def load_action_state(path: Path, repository: str, version: str) -> dict[str, An
         raise ReleaseIssueError("action state belongs to another release")
     if not isinstance(state.get("issues"), dict):
         raise ReleaseIssueError("action state has invalid issue data")
+    if not isinstance(state.get("prs"), dict):
+        state["prs"] = {}
     return state
 
 
@@ -961,8 +1067,9 @@ def apply_command(args: argparse.Namespace) -> None:
         issue_state = str(issue.get("state") or "").lower()
         if issue_state not in {"open", "closed"}:
             raise ReleaseIssueError(f"issue #{issue_number} has an invalid state")
-        marker_comment = find_marker_comment(issue.get("comments") or [], marker)
-        comment_needed = marker_comment is None
+        comment_needed = not marker_present(
+            issue.get("comments") or [], args.version, "issue", issue_number
+        )
         close_needed = issue_state == "open"
         status = action_state["issues"].setdefault(str(issue_number), {})
         result = {
@@ -981,6 +1088,8 @@ def apply_command(args: argparse.Namespace) -> None:
                 plan["release"]["url"],
                 decision["language"],
                 decision["outcome"],
+                target="issue",
+                target_number=issue_number,
             )
             run_command(
                 [
@@ -1020,6 +1129,44 @@ def apply_command(args: argparse.Namespace) -> None:
             status["already_closed"] = True
         atomic_write_json(args.state, action_state)
         item["result"] = result
+
+    for item in plan.get("pr_notifications") or []:
+        pr_number = item["pr_number"]
+        pr = fetch_pr(args.repo, pr_number)
+        comments = pr.get("comments") or []
+        comment_needed = not marker_present(
+            comments, args.version, "pr", pr_number
+        )
+        status = action_state["prs"].setdefault(str(pr_number), {})
+        item["comment_needed"] = comment_needed
+        if comment_needed:
+            comment = release_comment(
+                args.version,
+                plan["channel"],
+                plan["release"]["url"],
+                item["language"],
+                "implemented",
+                target="pr",
+                target_number=pr_number,
+            )
+            run_command(
+                [
+                    "gh",
+                    "pr",
+                    "comment",
+                    str(pr_number),
+                    "--repo",
+                    args.repo,
+                    "--body",
+                    comment,
+                ]
+            )
+            status["commented"] = True
+            status["commented_at"] = now_iso8601()
+        else:
+            status["commented"] = True
+            status["comment_already_present"] = True
+        atomic_write_json(args.state, action_state)
 
     plan["executed"] = True
     plan["executed_at"] = now_iso8601()
