@@ -9,18 +9,29 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=release-common.sh
 source "$SCRIPT_DIR/release-common.sh"
 
-release_exists() {
-    gh release view "$RELEASE_VERSION" \
+release_exists_for_version() {
+    local version="$1"
+
+    gh release view "$version" \
         --repo "$RELEASE_REPOSITORY" >/dev/null 2>&1
 }
 
-release_field() {
-    local field="$1"
+release_exists() {
+    release_exists_for_version "$RELEASE_VERSION"
+}
 
-    gh release view "$RELEASE_VERSION" \
+release_field_for_version() {
+    local version="$1"
+    local field="$2"
+
+    gh release view "$version" \
         --repo "$RELEASE_REPOSITORY" \
         --json "$field" \
         --jq ".$field"
+}
+
+release_field() {
+    release_field_for_version "$RELEASE_VERSION" "$1"
 }
 
 remote_asset_size() {
@@ -65,6 +76,14 @@ verify_assets() {
     done
 }
 
+verify_github_release_notes() {
+    verify_release_notes_snapshot
+    python3 "$SCRIPT_DIR/release_notes.py" verify-release \
+        --file "$RELEASE_NOTES_FILE" \
+        --version "$RELEASE_VERSION" \
+        --repo "$RELEASE_REPOSITORY" >/dev/null
+}
+
 verify_release_state() {
     local expected_draft="$1"
     local expected_prerelease=false
@@ -78,7 +97,81 @@ verify_release_state() {
     fi
     [[ "$(release_field isPrerelease)" == "$expected_prerelease" ]] \
         || release_fail "GitHub prerelease state does not match the channel"
+    verify_github_release_notes
     verify_assets
+}
+
+verify_previous_release_ready() {
+    load_release_channel_transition
+    if [[ -z "$RELEASE_PREVIOUS_BETA_VERSION" ]]; then
+        return
+    fi
+
+    release_exists_for_version "$RELEASE_PREVIOUS_BETA_VERSION" \
+        || release_fail \
+            "previous beta release not found: $RELEASE_PREVIOUS_BETA_VERSION"
+    [[ "$(release_field_for_version \
+        "$RELEASE_PREVIOUS_BETA_VERSION" tagName)" \
+        == "$RELEASE_PREVIOUS_BETA_VERSION" ]] \
+        || release_fail "previous beta release tag is unexpected"
+    [[ "$(release_field_for_version \
+        "$RELEASE_PREVIOUS_BETA_VERSION" isDraft)" == false ]] \
+        || release_fail "previous beta release is still a draft"
+}
+
+verify_previous_release_promoted() {
+    verify_previous_release_ready
+    if [[ -z "$RELEASE_PREVIOUS_BETA_VERSION" ]]; then
+        return
+    fi
+
+    [[ "$(release_field_for_version \
+        "$RELEASE_PREVIOUS_BETA_VERSION" isPrerelease)" == false ]] \
+        || release_fail "previous beta release is still marked as a prerelease"
+}
+
+promote_previous_release() {
+    verify_github_release_notes
+    verify_previous_release_ready
+    if [[ -z "$RELEASE_PREVIOUS_BETA_VERSION" ]]; then
+        release_log "no previous GitHub prerelease requires promotion"
+        return
+    fi
+
+    if [[ "$(release_field_for_version \
+        "$RELEASE_PREVIOUS_BETA_VERSION" isPrerelease)" == true ]]; then
+        release_log \
+            "promoting GitHub release $RELEASE_PREVIOUS_BETA_VERSION to stable"
+        gh release edit "$RELEASE_PREVIOUS_BETA_VERSION" \
+            --repo "$RELEASE_REPOSITORY" \
+            --prerelease=false
+    else
+        release_log \
+            "GitHub release $RELEASE_PREVIOUS_BETA_VERSION is already stable"
+    fi
+    verify_previous_release_promoted
+}
+
+record_replacement_draft() {
+    local draft_id temporary_path
+
+    if ! release_is_replacement; then
+        return
+    fi
+    load_replacement_metadata
+    draft_id="$(release_field databaseId)"
+    [[ "$draft_id" =~ ^[0-9]+$ ]] \
+        || release_fail "new GitHub Draft database ID is invalid"
+    [[ "$draft_id" != "$REPLACEMENT_DRAFT_ID" ]] \
+        || release_fail "GitHub returned the old Draft during replacement"
+
+    temporary_path="$(mktemp "$RELEASE_REPLACEMENT_DIR/new-draft.XXXXXX")"
+    {
+        printf 'REPLACEMENT_NEW_DRAFT_VERSION=%q\n' "$RELEASE_VERSION"
+        printf 'REPLACEMENT_NEW_DRAFT_ID=%q\n' "$draft_id"
+    } >"$temporary_path"
+    mv "$temporary_path" "$RELEASE_REPLACEMENT_NEW_DRAFT_PATH"
+    mark_replacement_complete new-draft-created
 }
 
 # Creates the immutable draft or fills only assets that are still absent.
@@ -87,6 +180,12 @@ create_draft() {
     local -a command
 
     load_release_metadata
+    verify_release_notes_snapshot
+    if release_is_replacement; then
+        load_replacement_metadata
+        replacement_is_complete draft-deleted \
+            || release_fail "old GitHub Draft must be deleted before creating its replacement"
+    fi
     require_release_file "$RELEASE_ZIP_PATH"
     require_release_file "$RELEASE_DMG_PATH"
     require_release_file "$RELEASE_CHECKSUM_PATH"
@@ -94,12 +193,19 @@ create_draft() {
     if release_exists; then
         [[ "$(release_field isDraft)" == true ]] \
             || release_fail "$RELEASE_VERSION is already published"
+        if release_is_replacement; then
+            [[ "$(release_field databaseId)" \
+                != "$REPLACEMENT_DRAFT_ID" ]] \
+                || release_fail "old GitHub Draft still occupies $RELEASE_VERSION"
+        fi
+        verify_github_release_notes
         for asset_path in \
             "$RELEASE_ZIP_PATH" \
             "$RELEASE_DMG_PATH" \
             "$RELEASE_CHECKSUM_PATH"; do
             ensure_release_asset "$asset_path"
         done
+        record_replacement_draft
         return
     fi
 
@@ -116,14 +222,11 @@ create_draft() {
     if [[ "$RELEASE_CHANNEL" == beta ]]; then
         command+=(--prerelease)
     fi
-    if [[ -n "$RELEASE_NOTES_FILE" ]]; then
-        command+=(--notes-file "$RELEASE_NOTES_FILE")
-    else
-        command+=(--generate-notes)
-    fi
+    command+=(--notes-file "$RELEASE_NOTES_FILE")
 
     release_log "creating GitHub draft release"
     "${command[@]}"
+    record_replacement_draft
 }
 
 # Publishing is idempotent so an interrupted asc step can safely resume.
@@ -154,27 +257,47 @@ main() {
     require_release_version
     case "$action" in
         draft)
+            release_set_step "create_github_draft"
             create_draft
             ;;
         verify-draft)
+            release_set_step "verify_github_draft"
             load_release_metadata
             verify_release_state true
             ;;
         verify-ready)
+            release_set_step "verify_github_release_ready"
             load_release_metadata
             verify_ready
             ;;
+        verify-previous-ready)
+            release_set_step "verify_previous_github_release_ready"
+            load_release_metadata
+            verify_previous_release_ready
+            ;;
         publish)
+            release_set_step "publish_github_release"
             load_release_metadata
             publish_release
             ;;
         verify-published)
+            release_set_step "verify_github_release"
             load_release_metadata
             verify_release_state false
             ;;
+        promote-previous)
+            release_set_step "promote_previous_github_release"
+            load_release_metadata
+            promote_previous_release
+            ;;
+        verify-previous)
+            release_set_step "verify_previous_github_release"
+            load_release_metadata
+            verify_previous_release_promoted
+            ;;
         *)
             release_fail \
-                "usage: release-github.sh draft|verify-draft|verify-ready|publish|verify-published"
+                "usage: release-github.sh draft|verify-draft|verify-ready|verify-previous-ready|publish|verify-published|promote-previous|verify-previous"
             ;;
     esac
 }

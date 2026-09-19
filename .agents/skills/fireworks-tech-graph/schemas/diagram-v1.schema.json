@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yizhiyanhua-ai.github.io/fireworks-tech-graph/schemas/diagram-v1.schema.json",
+  "title": "Fireworks Tech Graph Diagram v1",
+  "type": "object",
+  "required": ["schema_version", "mode", "nodes", "arrows"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "mode": { "type": "string", "minLength": 1 },
+    "style": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1, "maximum": 12 },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
+    "visual_theme": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1, "maximum": 12 },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
+    "diagram_type": { "type": "string", "minLength": 1 },
+    "semantic_profile": {
+      "enum": ["generic", "c4-review", "cloud-fabric", "event-transit", "ops-pulse"]
+    },
+    "c4_level": { "enum": ["context", "container", "component"] },
+    "review_state": { "type": "string", "minLength": 1 },
+    "rough_seed": { "type": "integer" },
+    "scope": { "type": "string", "minLength": 1 },
+    "platform_profile": { "enum": ["provider-neutral", "aws", "azure", "gcp", "kubernetes"] },
+    "deployment_mode": { "type": "string", "minLength": 1 },
+    "icon_manifest_version": { "type": "string", "minLength": 1 },
+    "line_code": { "type": "string", "minLength": 1 },
+    "observation_window": { "type": "string", "minLength": 1 },
+    "critical_path": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "topics": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["id", "color"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "color": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": true
+      }
+    },
+    "text_policy": { "enum": ["report", "strict"] },
+    "viewBox": { "type": "string", "description": "Four finite numbers, origin 0 0 and positive width and height; validated by the CLI." },
+    "quality_profile": { "enum": ["standard", "showcase"] },
+    "composition": {
+      "type": "object",
+      "properties": {
+        "profile": { "enum": ["standard", "showcase"] },
+        "max_bends_per_edge": { "type": "integer", "minimum": 0 },
+        "max_total_bends": { "type": "integer", "minimum": 0 },
+        "max_route_stretch": { "type": "number", "minimum": 0 },
+        "max_bridged_crossings": { "type": "integer", "minimum": 0 },
+        "min_node_gap": { "type": "number", "minimum": 0 },
+        "min_container_gutter": { "type": "number", "minimum": 0 },
+        "min_label_clearance": { "type": "number", "minimum": 0 },
+        "min_segment_length": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "legend_orientation": { "enum": ["vertical", "horizontal"] },
+    "width": { "type": "number", "exclusiveMinimum": 0 },
+    "height": { "type": "number", "exclusiveMinimum": 0 },
+    "containers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "x", "y", "width", "height"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "parent": { "type": "string", "minLength": 1 },
+          "deployment_kind": { "type": "string", "minLength": 1 },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "width": { "type": "number", "exclusiveMinimum": 0 },
+          "height": { "type": "number", "exclusiveMinimum": 0 }
+        },
+        "additionalProperties": true
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "parent": { "type": "string", "minLength": 1 },
+          "c4_type": { "enum": ["person", "software_system", "external_system", "container", "component"] },
+          "description": { "type": "string" },
+          "technology": { "type": "string" },
+          "deployment_id": { "type": "string", "minLength": 1 },
+          "deployment_kind": { "type": "string", "minLength": 1 },
+          "icon_id": { "type": "string", "minLength": 1 },
+          "transit_role": { "enum": ["producer", "station", "junction", "consumer", "dlq", "state_store"] },
+          "topic_id": { "type": "string", "minLength": 1 },
+          "station_order": { "type": "integer", "minimum": 0 },
+          "consumer_group": { "type": "string", "minLength": 1 },
+          "ops_role": { "enum": ["service", "collector", "trace_span"] },
+          "span_id": { "type": "string", "minLength": 1 },
+          "parent_span": { "type": "string", "minLength": 1 },
+          "start_ms": { "type": "number", "minimum": 0 },
+          "duration_ms": { "type": "number", "exclusiveMinimum": 0 },
+          "signals": {
+            "type": "object",
+            "required": ["latency", "traffic", "errors", "saturation"],
+            "properties": {
+              "latency": { "$ref": "#/$defs/goldenSignal" },
+              "traffic": { "$ref": "#/$defs/goldenSignal" },
+              "errors": { "$ref": "#/$defs/goldenSignal" },
+              "saturation": { "$ref": "#/$defs/goldenSignal" }
+            },
+            "additionalProperties": false
+          },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "width": { "type": "number", "exclusiveMinimum": 0 },
+          "height": { "type": "number", "exclusiveMinimum": 0 }
+        },
+        "additionalProperties": true
+      }
+    },
+    "arrows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "edge_kind": { "enum": ["business", "telemetry"] },
+          "transit_type": { "enum": ["rail", "publish", "branch", "consume", "retry", "state", "dead_letter"] },
+          "topic_id": { "type": "string", "minLength": 1 },
+          "protocol": { "type": "string", "minLength": 1 },
+          "via": { "type": "string", "minLength": 1 },
+          "route_points": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [{ "type": "number" }, { "type": "number" }],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "$defs": {
+    "goldenSignal": {
+      "type": "object",
+      "required": ["value", "unit", "window", "status"],
+      "properties": {
+        "value": { "type": ["string", "number"] },
+        "unit": { "type": "string", "minLength": 1 },
+        "window": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["ok", "warn", "critical", "unknown"] }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

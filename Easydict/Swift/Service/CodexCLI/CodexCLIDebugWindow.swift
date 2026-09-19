@@ -77,12 +77,7 @@ private final class CodexCLIDebugViewModel: ObservableObject {
     @Published var logText = ""
 
     var currentLogDirectory: URL? {
-        FileManager.default
-            .urls(for: .applicationSupportDirectory, in: .userDomainMask)
-            .first?
-            .appendingPathComponent(Bundle.main.bundleIdentifier ?? "Easydict")
-            .appendingPathComponent("logs")
-            .appendingPathComponent("codex-cli")
+        AppPathManager.current.codexCLILogDirectory
     }
 
     func clear() { logText = "" }

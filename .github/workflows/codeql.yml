@@ -3,14 +3,8 @@ name: CodeQL Advanced
 on:
   push:
     branches: [dev, main]
-    paths-ignore:
-      - "**/*.md"
-      - "docs/**"
   pull_request:
     branches: [dev, main]
-    paths-ignore:
-      - "**/*.md"
-      - "docs/**"
   schedule:
     - cron: "37 10 * * 5"
   workflow_dispatch:
@@ -20,8 +14,67 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: Check CodeQL scope
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      should_analyze: ${{ steps.scope.outputs.should_analyze }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Determine whether CodeQL should run
+        id: scope
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$EVENT_NAME" != "pull_request" && "$EVENT_NAME" != "push" ]]; then
+            echo "Scheduled and manually dispatched runs always execute CodeQL."
+            echo "should_analyze=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [[ -z "$BASE_SHA" || "$BASE_SHA" =~ ^0+$ ]]; then
+            echo "No usable base commit is available; running CodeQL as a safe fallback."
+            echo "should_analyze=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git cat-file -e "$BASE_SHA^{commit}"
+          git cat-file -e "$HEAD_SHA^{commit}"
+
+          mapfile -t changed_files < <(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          if (( ${#changed_files[@]} == 0 )); then
+            echo "No changed files were found; running CodeQL as a safe fallback."
+            echo "should_analyze=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          should_analyze=false
+          for path in "${changed_files[@]}"; do
+            if [[ "$path" == docs/* || "$path" == *.md ]]; then
+              continue
+            fi
+
+            should_analyze=true
+            break
+          done
+
+          echo "Changed files: ${#changed_files[@]}"
+          echo "should_analyze=$should_analyze" >> "$GITHUB_OUTPUT"
+
   analyze:
     name: Analyze (swift)
+    needs: changes
+    if: ${{ !cancelled() }}
     runs-on: macos-latest
     timeout-minutes: 120
     permissions:
@@ -31,10 +84,16 @@ jobs:
       contents: read
 
     steps:
+      - name: Fail when CodeQL scope detection failed
+        if: needs.changes.result != 'success'
+        run: exit 1
+
       - name: Checkout repository
+        if: needs.changes.outputs.should_analyze == 'true'
         uses: actions/checkout@v6
 
       - name: Show build environment
+        if: needs.changes.outputs.should_analyze == 'true'
         id: toolchain
         run: |
           xcodebuild -version
@@ -43,6 +102,7 @@ jobs:
           echo "xcode_version=$xcode_version" >> "$GITHUB_OUTPUT"
 
       - name: Cache Swift package sources
+        if: needs.changes.outputs.should_analyze == 'true'
         uses: actions/cache@v5
         with:
           path: ${{ runner.temp }}/swift-package-sources
@@ -51,12 +111,14 @@ jobs:
             swiftpm-${{ runner.os }}-${{ runner.arch }}-xcode-${{ steps.toolchain.outputs.xcode_version }}-
 
       - name: Initialize CodeQL
+        if: needs.changes.outputs.should_analyze == 'true'
         uses: github/codeql-action/init@v4
         with:
           languages: swift
           build-mode: manual
 
       - name: Build application
+        if: needs.changes.outputs.should_analyze == 'true'
         run: |
           xcodebuild build \
             -workspace Easydict.xcworkspace \
@@ -71,6 +133,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO
 
       - name: Perform CodeQL analysis
+        if: needs.changes.outputs.should_analyze == 'true'
         uses: github/codeql-action/analyze@v4
         with:
           category: /language:swift

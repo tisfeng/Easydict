@@ -13,7 +13,8 @@ source "$SCRIPT_DIR/release-common.sh"
 verify_app_signature() {
     local authority signature_output team_id
 
-    codesign --verify --deep --strict --verbose=2 "$RELEASE_APP_PATH"
+    release_capture "verify-app-signature" \
+        codesign --verify --deep --strict --verbose=2 "$RELEASE_APP_PATH"
     signature_output="$(codesign -dv --verbose=4 "$RELEASE_APP_PATH" 2>&1)"
     authority="$(sed -n 's/^Authority=//p' <<<"$signature_output" \
         | head -n 1)"
@@ -31,7 +32,8 @@ verify_app_signature() {
 verify_dmg_signature() {
     local signature_output
 
-    codesign --verify --strict --verbose=2 "$RELEASE_DMG_PATH"
+    release_capture "verify-dmg-signature" \
+        codesign --verify --strict --verbose=2 "$RELEASE_DMG_PATH"
     signature_output="$(codesign -dv --verbose=4 "$RELEASE_DMG_PATH" 2>&1)"
     grep -Fx "Authority=$RELEASE_SIGN_IDENTITY" \
         <<<"$signature_output" >/dev/null \
@@ -77,16 +79,20 @@ notarize_app() {
     release_log "submitting application for notarization"
     submit_notarization "$RELEASE_NOTARY_ZIP"
 
-    xcrun stapler staple "$RELEASE_APP_PATH"
-    xcrun stapler validate "$RELEASE_APP_PATH"
-    spctl --assess --type execute --verbose=4 "$RELEASE_APP_PATH"
+    release_capture "staple-app" xcrun stapler staple "$RELEASE_APP_PATH"
+    release_capture "validate-app-staple" \
+        xcrun stapler validate "$RELEASE_APP_PATH"
+    release_capture "assess-app" \
+        spctl --assess --type execute --verbose=4 "$RELEASE_APP_PATH"
+    release_log "application notarization and Gatekeeper validation passed"
 }
 
 # Archives the stapled app that Sparkle will sign and distribute.
 create_sparkle_zip() {
     load_release_metadata
     require_release_dir "$RELEASE_APP_PATH"
-    xcrun stapler validate "$RELEASE_APP_PATH"
+    release_capture "validate-app-staple" \
+        xcrun stapler validate "$RELEASE_APP_PATH"
     safe_reset_release_dir "$RELEASE_ARTIFACT_DIR"
 
     release_log "creating final Sparkle archive"
@@ -113,8 +119,9 @@ create_notarized_dmg() {
 
     release_log "submitting disk image for notarization"
     submit_notarization "$RELEASE_DMG_PATH"
-    xcrun stapler staple "$RELEASE_DMG_PATH"
-    xcrun stapler validate "$RELEASE_DMG_PATH"
+    release_capture "staple-dmg" xcrun stapler staple "$RELEASE_DMG_PATH"
+    release_capture "validate-dmg-staple" \
+        xcrun stapler validate "$RELEASE_DMG_PATH"
 
     (
         cd "$RELEASE_ARTIFACT_DIR"
@@ -129,12 +136,15 @@ main() {
     require_release_version
     case "$action" in
         notarize-app)
+            release_set_step "notarize_application"
             notarize_app
             ;;
         zip)
+            release_set_step "create_sparkle_zip"
             create_sparkle_zip
             ;;
         dmg)
+            release_set_step "create_notarized_dmg"
             create_notarized_dmg
             ;;
         *)

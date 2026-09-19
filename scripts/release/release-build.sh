@@ -24,8 +24,25 @@ read_project_value() {
 resolve_build_number() {
     local current_version="$1"
     local current_build="$2"
+    local latest_appcast_build target_build
 
-    if [[ -f "$RELEASE_METADATA_PATH" ]]; then
+    if release_is_replacement; then
+        if [[ -f "$RELEASE_REPLACEMENT_BUILD_PATH" ]]; then
+            load_replacement_build
+            printf '%s\n' "$REPLACEMENT_BUILD_NUMBER"
+            return
+        fi
+        load_replacement_metadata
+        latest_appcast_build="$(xmllint --xpath \
+            'string((//*[local-name()="version"])[1])' \
+            "$RELEASE_WORKTREE/appcast.xml")"
+        target_build="$(next_replacement_build \
+            "$REPLACEMENT_OLD_BUILD" \
+            "$current_build" \
+            "$latest_appcast_build")"
+        write_replacement_build "$target_build"
+        printf '%s\n' "$target_build"
+    elif [[ -f "$RELEASE_METADATA_PATH" ]]; then
         load_release_metadata
         printf '%s\n' "$RELEASE_SAVED_BUILD"
     elif [[ -n "$RELEASE_BUILD_OVERRIDE" ]]; then
@@ -126,7 +143,7 @@ export_application() {
     safe_reset_release_dir "$RELEASE_EXPORT_DIR"
 
     release_log "exporting Developer ID application"
-    xcodebuild -exportArchive \
+    release_capture "export-archive" xcodebuild -exportArchive \
         -archivePath "$RELEASE_ARCHIVE_PATH" \
         -exportPath "$RELEASE_EXPORT_DIR" \
         -exportOptionsPlist "$RELEASE_EXPORT_OPTIONS"
@@ -151,12 +168,15 @@ main() {
     ensure_release_layout
     case "$action" in
         version)
+            release_set_step "update_version"
             update_version
             ;;
         archive)
+            release_set_step "archive_application"
             archive_application
             ;;
         export)
+            release_set_step "export_application"
             export_application
             ;;
         *)

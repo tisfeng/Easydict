@@ -1,189 +1,73 @@
 ---
 name: git-commit
-description: >
-  Create staged-only Angular-style commits and derive Conventional task branch
-  names for calling workflows. Runs `git commit` by default, supports preview
-  modes, and writes bilingual messages for non-English users.
+description: 起草、创建或汇报 Angular-style 本地 Git 提交。用于明确的提交交付；分支集成使用 worktree-rebase-merge，不 push。
 ---
 
-# Git Commit Workflow
+# Git 提交流程
 
-Create accurate Angular-style Git commits from staged changes only.
+以经范围校验的 staged diff 创建本地提交。只读预览可使用尚未暂存的候选，
+但必须标为草稿。`<git-commit-skill-dir>` 指实际加载的本 Skill 目录。
 
-## Required Workflow
+## 任务与边界
 
-1. Collect context:
-   - `git status`
-   - staged raw patch:
-     `GIT_PAGER=cat git --no-pager diff --staged --no-ext-diff --no-textconv --unified=5`
-   - `git branch --show-current`
-   - `git log --oneline -10`
-2. If the initial staged diff is empty, run `git add .` once, then re-run
-   `git status` and the staged raw patch command before continuing.
-3. If staged changes already existed, do not run `git add`; keep the commit
-   limited to the current staged scope.
-4. Stop if the staged diff is still empty after the single allowed `git add .`.
-   Ask the user to stage files first.
-5. Analyze the staged raw patch as the only source of truth. For a single path,
-   reuse the same command shape and append `-- <path>`.
-6. Draft the English commit message, then draft a matching local-language block
-   only when `{USR_PREFERRED_LANGUAGE}` is not English.
-7. Use default mode unless the user explicitly asks to confirm first, preview
-   only, generate only a message, draft only, or avoid committing.
-8. In default mode, or after approval in confirmation mode, execute exactly:
-   - Write the full actual commit message to `commit_message.txt`
-   - Run `git commit -F commit_message.txt`
-   - Remove `commit_message.txt` after a successful commit
+| 任务 | 结果 |
+| --- | --- |
+| 起草或预览 | 根据 staged 内容或获准候选返回草稿，不改变 Git。 |
+| 创建提交 | 在有效提交授权下完成范围判断、预览、暂存、提交和校验。 |
+| 汇报已有提交 | 读取指定提交或范围的真实消息与统计，不启动新提交。 |
+| 为组合 Skill 推导分支名 | 只返回合法候选，不暂存、提交或创建分支。 |
 
-## Commit Message Contract
+本 Skill 不运行 `git push`、rebase 或 merge。调用方传入真实任务、允许范围和已有证据，
+不需要采用本 Skill 的内部字段。
 
-Resolve `{USR_PREFERRED_LANGUAGE}` from the first available source:
+## 选择模式
 
-1. Explicit language preference in the current request or conversation.
-2. Readable locale such as macOS `AppleLanguages`, POSIX `LC_ALL`,
-   `LC_MESSAGES`, `LANG`, `locale`, or Windows PowerShell culture output.
-3. The language the user is already using in the current conversation.
+- **只命名或汇报已有提交**：只完成该任务；未指定提交对象时先明确对象。
+- **仅预览、起草或只读**：不暂存、不创建消息文件、不提交。已有 staged 内容时
+  只用其起草；索引为空时使用获准范围内的候选。
+- **确认模式**：展示完整预览并等待批准。未单独获准时，确认前不暂存。
+- **默认模式**：明确调用本 Skill 或宿主已授权自动本地提交时，展示预览后直接提交。
 
-Treat English variants as English. English users get one English message block.
-Non-English users get the local-language block first, this exact 70-character
-separator, then the English block:
+用户的禁止、范围、确认和暂缓要求持续有效；“不提交”不自动授权暂存。
 
-```text
-----------------------------------------------------------------------
-```
+## 范围与 Git 状态保护
 
-Place one blank line before and after the separator. Do not add labels such as
-`Chinese:` or `English:`. The displayed message text must match
-`commit_message.txt` exactly, except for Markdown code fences.
+1. 记录调用目录，使用 `git rev-parse --show-toplevel` 定位仓库根目录；相对路径先按原调用目录解析。
+2. 读取 HEAD、分支、status、最近提交、staged/unstaged raw diff 和相关 untracked 内容，
+   区分用户已有变更与本任务候选。
+3. 准备写入时复验 HEAD、索引、候选路径和内容。发现冲突、归属不明或非预期漂移时
+   停止，不覆盖、清理或自动 amend。
+4. 获准后只执行一次选定的暂存动作，并比较 staged paths 与 raw patch 是否与候选完全一致。
+   不一致时停止，不通过第二次 `git add` 修正范围；不创建空提交。
 
-Use this structure for every language block:
+| 情况 | 暂存动作 |
+| --- | --- |
+| 已有索引 | 不运行 `git add`，只提交既有 staged 内容；超出请求范围时停止。 |
+| 显式交付、空索引、限定路径 | 一次 `git add -- <selected-paths>`。 |
+| 显式交付、空索引、未限定路径 | 未禁止暂存且非 staged-only 时，在仓库根目录一次 `git add .`。 |
+| 宿主授权自动提交 | 一次 `git add -- <expected-commit-paths>`，禁止 `git add .`。 |
 
-```text
-type(scope): subject
+宿主自动提交还必须有首次写入前的 HEAD、初始 Git 状态、允许路径和内容归属证据。
+初始索引非空、唯一暂存前出现非 Agent staged 内容、验证失败或仍有暂缓要求时，
+停止自动提交。这不反向限制用户已明确授权的 staged-only 提交。
 
-First body paragraph explaining the current context or motivation.
+## 提交主流程
 
-Second body paragraph explaining the main change.
+1. 起草提交时读取 [提交信息契约](references/commit-message.md)。在主对话以 `text` 代码围栏展示
+   完整、将要使用的消息；仅预览到此结束，确认模式等待批准。
+2. 完成唯一暂存并复验后，将与预览完全一致的内容写入本任务专用消息文件。
+   候选或消息变化时重新审核和展示；用户要求确认时不复用旧批准。
+3. 使用 Skill 内校验器检查消息，再运行 `git commit -F <message-file>`。
+4. 以新建完整 commit hash 执行提交后消息一致性校验。校验失败时保留消息文件，
+   不 amend，不声称交付完成。
+5. 校验通过后删除本任务消息文件，读取 [统计与提交回执](references/reporting.md)，根据 Git 真实结果交付。
 
-Third body paragraph explaining the result or impact.
+仅为 `submit-pr` 或 `worktree-rebase-merge` 推导分支名时，读取
+[分支命名](references/branch-naming.md)，不进入提交流程。
 
-Optional footer for breaking changes or special notes when applicable.
-```
+## 完成与停止条件
 
-- Use the narrowest accurate `type(scope): subject`.
-- Keep the title at or below 80 characters.
-- Write English subjects as imperative summaries starting with a lowercase
-  letter and no final period.
-- Write non-English subjects as concise target-language summaries without final
-  sentence punctuation.
-- Every language block must include exactly three natural body paragraphs.
-- The three body paragraphs must cover context, main change, and impact in
-  that order.
-- Keep each paragraph concise, usually 1-3 sentences.
-- Do not use labels such as `Problem:`, `Change:`, or `Summary:`.
-- Focus on behavior and intent rather than low-level implementation detail.
-- Keep non-English and English blocks aligned in meaning, paragraph count, and
-  paragraph order.
-- Use `!` and/or a `BREAKING CHANGE:` footer only for incompatible changes.
-  The footer never replaces the required three body paragraphs.
-
-## Execution Rules
-
-- Do not run `git push`.
-- Do not describe unstaged or unrelated changes.
-- Treat a `git-commit` request as authorization to commit unless confirmation
-  mode was explicitly requested.
-- In confirmation mode, do not create `commit_message.txt` or run `git commit`
-  before explicit approval.
-- Write exactly the same message text into `commit_message.txt`, without
-  Markdown code fences.
-- Do not chain `git commit` together with message-file creation or cleanup in a
-  single shell command.
-- Treat `git commit` as the only step that needs repository write access.
-- If `git commit` fails with sandbox-style permission errors such as
-  `Operation not permitted` while creating `.git/index.lock`, immediately rerun
-  `git commit -F commit_message.txt` with the required escalation.
-- When the environment is known to block writes under `.git`, request the
-  needed escalation for `git commit` directly at the commit step.
-- If commit fails, keep `commit_message.txt` unless cleanup is clearly safe and
-  intentional.
-- In default mode, commit first, then report the commit hash and the actual
-  message text. In confirmation mode, show only the actual message text and
-  wait for approval.
-
-## Type Guidance
-
-Choose the narrowest commit type that matches the staged diff:
-
-- `feat`: introduce user-facing behavior or a new capability.
-- `fix`: correct a bug, regression, or broken behavior.
-- `docs`: update documentation only.
-- `style`: apply formatting or non-functional code style changes.
-- `refactor`: improve internal structure without changing behavior.
-- `perf`: improve performance or reduce resource usage.
-- `test`: add or adjust tests without changing production behavior.
-- `build`: change dependencies, packaging, or build configuration.
-- `ci`: update CI workflows or automation pipelines.
-- `chore`: make routine maintenance changes that do not fit another type.
-- `revert`: roll back a previous change.
-
-Choose `scope` from the touched module, feature, service, or component whenever
-possible. Prefer specific scopes such as `openai`, `screenshot`, or `settings`
-over broad labels like `app` or `misc`.
-
-## Branch Name Guidance
-
-Use this guidance only when another workflow needs a task branch name before a
-commit exists:
-
-1. Inspect the task and read-only diff evidence without staging files.
-2. Use **Type Guidance** to infer the narrowest Angular `type`, then summarize
-   the primary intent in concise English.
-3. Convert the summary to lowercase kebab-case and form
-   `<type>/<kebab-case-summary>`. Omit Angular scope punctuation from the
-   branch name.
-
-This guidance derives a name only. It does not authorize staging, committing,
-or creating a branch. The calling workflow owns those Git operations, name
-collision handling, and state validation.
-
-## Examples
-
-English-only commit message:
-
-```text
-fix(screenshot): defer overlay capture until view appears
-
-Overlay capture started before the view hierarchy was stable, creating a startup race in screenshot translation. When layout was still settling, that early capture could trigger conflicts or crashes.
-
-Move screenshot capture out of the overlay initializer. Start it after the view appears and layout is ready so the capture path observes stable UI state.
-
-This restores stable screenshot translation startup. It also reduces layout timing risk without changing the user-facing capture flow.
-```
-
-Non-English bilingual commit message. Write these blocks and the separator to
-`commit_message.txt` in this order, without Markdown code fences:
-
-```text
-fix(screenshot): 推迟悬浮层截图直到视图出现后再执行
-
-悬浮层在视图层级尚未稳定时就启动截图，导致截图翻译启动阶段出现竞态。布局仍在变化时，过早截图可能触发布局冲突或崩溃。
-
-将截图操作从悬浮层初始化方法中移出。改为在视图出现且布局就绪后再开始截图，让截图流程读取稳定的 UI 状态。
-
-此修改恢复了截图翻译启动流程的稳定性。同时降低布局时序风险，并且不改变用户可见的截图流程。
-```
-
-```text
-----------------------------------------------------------------------
-```
-
-```text
-fix(screenshot): defer overlay capture until view appears
-
-Overlay capture started before the view hierarchy was stable, creating a startup race in screenshot translation. When layout was still settling, that early capture could trigger conflicts or crashes.
-
-Move screenshot capture out of the overlay initializer. Start it after the view appears and layout is ready so the capture path observes stable UI state.
-
-This restores stable screenshot translation startup. It also reduces layout timing risk without changing the user-facing capture flow.
-```
+只有范围与 staged raw patch 一致、必要验证通过、Git 真实消息与预览一致，且最终
+状态和统计已核对时，才算创建提交完成。范围无法证明、出现冲突或漂移、权限被拒、
+提交前/后校验失败、hook 改写结果或统计不一致时保留现场并报告具体阶段，
+不自动扩大暂存、重试写入、amend 或清理用户状态。

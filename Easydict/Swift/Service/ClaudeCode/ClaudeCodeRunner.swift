@@ -24,6 +24,11 @@ final class ClaudeCodeRunner: @unchecked Sendable {
 
     // MARK: Internal
 
+    /// Model passed via `--model` when the caller does not override it.
+    /// `sonnet` keeps translation on a fast, capable model instead of whatever
+    /// the CLI default happens to be.
+    static let defaultModel = "sonnet"
+
     /// Token usage populated when the subprocess terminates normally.
     /// `nil` if the process has not yet finished or the `result` event was absent.
     private(set) var tokenUsage: CLITokenUsage?
@@ -67,13 +72,15 @@ final class ClaudeCodeRunner: @unchecked Sendable {
     /// Builds the argument list for a `claude -p --print` invocation.
     ///
     /// The current Claude Code CLI requires `--verbose` when `--print` is combined
-    /// with `--output-format stream-json`. `model` defaults to `sonnet` so translation
-    /// uses a fast, capable model instead of whatever the CLI default happens to be;
-    /// pass an empty string to fall back to the CLI default.
+    /// with `--output-format stream-json`. `model` defaults to `defaultModel` so
+    /// translation uses a fast, capable model instead of whatever the CLI default
+    /// happens to be; pass an empty string to fall back to the CLI default.
+    /// `effort` maps to `--effort`; `nil` or empty keeps the CLI default.
     static func buildArguments(
         prompt: String,
         systemPrompt: String?,
-        model: String = "sonnet"
+        model: String = ClaudeCodeRunner.defaultModel,
+        effort: String? = nil
     )
         -> [String] {
         var arguments = [
@@ -90,6 +97,9 @@ final class ClaudeCodeRunner: @unchecked Sendable {
         let trimmedModel = model.trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmedModel.isEmpty {
             arguments += ["--model", trimmedModel]
+        }
+        if let effort, !effort.isEmpty {
+            arguments += ["--effort", effort]
         }
         if let systemPrompt, !systemPrompt.isEmpty {
             arguments += ["--system-prompt", systemPrompt]
@@ -123,10 +133,12 @@ final class ClaudeCodeRunner: @unchecked Sendable {
     ///
     /// Claude settings sources remain disabled, but the user's configured
     /// `env` block is injected explicitly so auth and proxy settings still
-    /// reach the subprocess.
+    /// reach the subprocess. An explicit effort selection takes precedence
+    /// over inherited and settings-file values.
     static func buildProcessEnvironment(
         settingsURL: URL? = nil,
-        inheritedEnvironment: [String: String] = ProcessInfo.processInfo.environment
+        inheritedEnvironment: [String: String] = ProcessInfo.processInfo.environment,
+        effort: String? = nil
     )
         -> [String: String] {
         var processEnvironment = inheritedEnvironment
@@ -134,6 +146,10 @@ final class ClaudeCodeRunner: @unchecked Sendable {
 
         for (key, value) in settingsEnvironment {
             processEnvironment[key] = value
+        }
+
+        if let effort, !effort.isEmpty {
+            processEnvironment["CLAUDE_CODE_EFFORT_LEVEL"] = effort
         }
 
         return processEnvironment
@@ -162,8 +178,18 @@ final class ClaudeCodeRunner: @unchecked Sendable {
     ///   - prompt: The conversation prompt (user / assistant messages only, without system message).
     ///   - systemPrompt: Passed via `--system-prompt` to replace Claude Code's default system
     ///     prompt. `nil` omits the flag and leaves Claude Code's default in place.
+    ///   - model: Passed via `--model`. Accepts an alias (`sonnet`, `opus`, `haiku`) or a full
+    ///     model name; an empty string omits the flag and falls back to the CLI default.
+    ///   - effort: Passed via `--effort` (`low`…`max`); `nil` omits the flag and keeps
+    ///     the CLI default.
     /// - Returns: A stream that yields text delta strings as they arrive from the CLI.
-    func run(prompt: String, systemPrompt: String? = nil) -> AsyncThrowingStream<String, Error> {
+    func run(
+        prompt: String,
+        systemPrompt: String? = nil,
+        model: String = ClaudeCodeRunner.defaultModel,
+        effort: String? = nil
+    )
+        -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { [weak self] continuation in
             guard let self else {
                 continuation.finish()
@@ -195,14 +221,19 @@ final class ClaudeCodeRunner: @unchecked Sendable {
                     let stderrPipe = Pipe()
 
                     process.executableURL = URL(fileURLWithPath: binaryPath)
-                    process.arguments = Self.buildArguments(prompt: prompt, systemPrompt: systemPrompt)
+                    process.arguments = Self.buildArguments(
+                        prompt: prompt,
+                        systemPrompt: systemPrompt,
+                        model: model,
+                        effort: effort
+                    )
                     process.standardOutput = stdoutPipe
                     process.standardError = stderrPipe
                     // Use a neutral working directory so claude does not scan user folders.
                     process.currentDirectoryURL = FileManager.default.temporaryDirectory
                     // Keep Claude settings sources disabled, but explicitly inject
                     // user-configured env vars such as auth and proxy settings.
-                    process.environment = Self.buildProcessEnvironment()
+                    process.environment = Self.buildProcessEnvironment(effort: effort)
 
                     let startTime = Date()
                     // Raw stderr bytes; decoded to String once in the termination handler
