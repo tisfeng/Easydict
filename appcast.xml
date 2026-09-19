@@ -3,6 +3,44 @@
     <channel>
         <title>Easydict</title>
         <item>
+            <title>2.23.0</title>
+            <pubDate>Sat, 19 Sep 2026 20:38:28 +0800</pubDate>
+            <description>&lt;h2&gt;What's Changed&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;fix(selection): allow shortcut queries without forced text capture by @hyperdai in &lt;a href="https://github.com/tisfeng/Easydict/pull/1285"&gt;https://github.com/tisfeng/Easydict/pull/1285&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(favorites): add one-click clearing for favorites and history by @mrasong in &lt;a href="https://github.com/tisfeng/Easydict/pull/1270"&gt;https://github.com/tisfeng/Easydict/pull/1270&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(selection): keep the selection icon hidden in Sublime Text and Terminal when appropriate by @hyperdai in &lt;a href="https://github.com/tisfeng/Easydict/pull/1284"&gt;https://github.com/tisfeng/Easydict/pull/1284&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(selection): skip automatic text capture when the screenshot overlay is frontmost by @hyperdai in &lt;a href="https://github.com/tisfeng/Easydict/pull/1290"&gt;https://github.com/tisfeng/Easydict/pull/1290&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(query): reverse-translate completed results by @yaobii-lab in &lt;a href="https://github.com/tisfeng/Easydict/pull/1276"&gt;https://github.com/tisfeng/Easydict/pull/1276&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(claude-code): configure Claude Code CLI models and reasoning effort by @choykarl in &lt;a href="https://github.com/tisfeng/Easydict/pull/1293"&gt;https://github.com/tisfeng/Easydict/pull/1293&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(release): inject release notes into the appcast description by @mrasong in &lt;a href="https://github.com/tisfeng/Easydict/pull/1283"&gt;https://github.com/tisfeng/Easydict/pull/1283&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;refactor(openai): migrate streaming semantics to the MacPaw SDK by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1305"&gt;https://github.com/tisfeng/Easydict/pull/1305&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;feat(codex): add ChatGPT login and on-demand component installation by @massif-01 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1303"&gt;https://github.com/tisfeng/Easydict/pull/1303&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(codex): reuse the managed translation App Server by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1317"&gt;https://github.com/tisfeng/Easydict/pull/1317&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(dictionary): handle missing Apple Dictionary resource URLs by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1320"&gt;https://github.com/tisfeng/Easydict/pull/1320&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(selection): support text selection in Zen Browser by @byueng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1289"&gt;https://github.com/tisfeng/Easydict/pull/1289&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix(service): prevent the 15-second network timeout from interrupting long LLM chats by @ricolalemon in &lt;a href="https://github.com/tisfeng/Easydict/pull/1301"&gt;https://github.com/tisfeng/Easydict/pull/1301&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;chore(star-history): update generated assets by @app/github-actions in &lt;a href="https://github.com/tisfeng/Easydict/pull/1280"&gt;https://github.com/tisfeng/Easydict/pull/1280&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;chore(star-history): update generated assets by @app/github-actions in &lt;a href="https://github.com/tisfeng/Easydict/pull/1291"&gt;https://github.com/tisfeng/Easydict/pull/1291&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;chore(star-history): update generated assets by @app/github-actions in &lt;a href="https://github.com/tisfeng/Easydict/pull/1302"&gt;https://github.com/tisfeng/Easydict/pull/1302&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;chore(star-history): update generated assets by @app/github-actions in &lt;a href="https://github.com/tisfeng/Easydict/pull/1312"&gt;https://github.com/tisfeng/Easydict/pull/1312&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;build(deps): bump Markdown from 3.6 to 3.8.1 in the release scripts by @app/dependabot in &lt;a href="https://github.com/tisfeng/Easydict/pull/1313"&gt;https://github.com/tisfeng/Easydict/pull/1313&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;New Contributors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;@massif-01 made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1303"&gt;https://github.com/tisfeng/Easydict/pull/1303&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@byueng made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1289"&gt;https://github.com/tisfeng/Easydict/pull/1289&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@ricolalemon made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1301"&gt;https://github.com/tisfeng/Easydict/pull/1301&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/tisfeng/Easydict/compare/2.22.0...2.23.0"&gt;https://github.com/tisfeng/Easydict/compare/2.22.0...2.23.0&lt;/a&gt;&lt;/p&gt;</description>
+            <sparkle:channel>beta</sparkle:channel>
+            <sparkle:version>66</sparkle:version>
+            <sparkle:shortVersionString>2.23.0</sparkle:shortVersionString>
+            <sparkle:fullReleaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.23.0</sparkle:fullReleaseNotesLink>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.23.0/Easydict.zip" length="36447420" type="application/octet-stream" sparkle:edSignature="bXIeV8kMYwYC8grLHx+zdIBoltpR9CXr7EeRyufewerH6bSmWHwJcpW/WWW4WG47sQpBqnZbSN5x8f8OCJY1Cw==" />
+        </item>
+        <item>
             <title>2.22.0</title>
             <pubDate>Sun, 23 Aug 2026 11:39:50 +0800</pubDate>
             <description>&lt;h2&gt;What's Changed&lt;/h2&gt;
@@ -50,7 +88,6 @@
 &lt;li&gt;@mrasong made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1269"&gt;https://github.com/tisfeng/Easydict/pull/1269&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/tisfeng/Easydict/compare/2.21.0...2.22.0"&gt;https://github.com/tisfeng/Easydict/compare/2.21.0...2.22.0&lt;/a&gt;&lt;/p&gt;</description>
-            <sparkle:channel>beta</sparkle:channel>
             <sparkle:version>65</sparkle:version>
             <sparkle:shortVersionString>2.22.0</sparkle:shortVersionString>
             <sparkle:fullReleaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.22.0</sparkle:fullReleaseNotesLink>
