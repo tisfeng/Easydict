@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Generates a Sparkle-signed appcast candidate and installs it only after the
-# corresponding GitHub release is publicly downloadable.
+# Generates a Sparkle-signed appcast candidate and freezes it during Draft.
+# Publish only promotes the already-verified commit to the public branches.
 
 set -euo pipefail
 
@@ -117,7 +117,7 @@ generate_candidate() {
     validate_candidate "$RELEASE_WORKTREE/appcast.xml"
 }
 
-# Commits the candidate only after the corresponding release is public.
+# Commits the candidate during Draft, before the GitHub Release becomes public.
 install_candidate() {
     local expected_subject
 

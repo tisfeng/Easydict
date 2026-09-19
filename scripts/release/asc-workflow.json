@@ -3,7 +3,8 @@
     "VERSION": "",
     "CHANNEL": "beta",
     "BUILD_NUMBER": "",
-    "DRAFT_MODE": "normal"
+    "DRAFT_MODE": "normal",
+    "FORCE_CLEAN": "0"
   },
   "before_all": "printf '[%s] [INFO] [workflow] Starting Easydict %s (%s) workflow\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" \"$VERSION\" \"$CHANNEL\" >&2",
   "after_all": "printf '[%s] [INFO] [workflow] Easydict %s workflow completed\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" \"$VERSION\" >&2",
@@ -29,7 +30,7 @@
       ]
     },
     "publish": {
-      "description": "Publish an existing draft and update the appcast",
+      "description": "Publish an existing draft and promote frozen release refs",
       "steps": [
         {
           "workflow": "publish_steps"
@@ -121,6 +122,14 @@
           "run": "./scripts/release/release-redraft.sh revalidate"
         },
         {
+          "name": "prepare_channel_transition",
+          "run": "./scripts/release/release-appcast.sh prepare-publish"
+        },
+        {
+          "name": "install_appcast",
+          "run": "./scripts/release/release-appcast.sh install"
+        },
+        {
           "name": "push_draft_refs",
           "run": "./scripts/release/release-branch-sync.sh push-version"
         },
@@ -144,12 +153,8 @@
     },
     "publish_steps": {
       "private": true,
-      "description": "Publish the GitHub release and merge it into dev",
+      "description": "Publish the GitHub release and promote frozen Git refs",
       "steps": [
-        {
-          "name": "prepare_channel_transition",
-          "run": "./scripts/release/release-appcast.sh prepare-publish"
-        },
         {
           "name": "preflight_publish",
           "run": "./scripts/release/release-preflight.sh publish"
@@ -165,10 +170,6 @@
         {
           "name": "verify_github_release",
           "run": "./scripts/release/release-github.sh verify-published"
-        },
-        {
-          "name": "install_appcast",
-          "run": "./scripts/release/release-appcast.sh install"
         },
         {
           "name": "push_published_refs",

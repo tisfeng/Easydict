@@ -18,6 +18,11 @@
   否则停止。不 detached checkout remote-tracking ref 或直接审查 fetch ref。
 - 除非用户明确要求隔离 worktree 或 latest-base，不创建其他命名的分支。
 
+多阶段 review（例如先普通准备、后按用户要求审查 latest-base）必须复用首次准备回执的
+`checkout.branch`。将该分支传给 `--reuse-branch`；helper 会重新验证冻结 head、分支是否被
+其他 worktree 占用、upstream 是否仍指向 PR，以及分支是否仍是 PR 同名分支或同一 head 的
+collision fallback。任何漂移都停止，不自动切换到新的 `review/pr-...` 分支。
+
 显式 worktree 模式使用：
 
 - 普通审查分支：`review/pr-<number>-<head-short-sha>`。
@@ -44,8 +49,10 @@ bash "<review-pr-skill-dir>/scripts/prepare-pr-branch.sh" \
 
 只在用户明确授权 latest-base 时，为对应命令增加 `--merge-latest`。仅有
 `schema_version: 1`、`status: prepared`，且 repo/number、head、base、merge-base、
-checkout/upstream、collision、`self_authored_branch_reused` 和 integration 模式均符合初始证据时
+checkout/upstream、collision、`reused_branch`、`self_authored_branch_reused` 和 integration 模式均符合初始证据时
 才接受回执。
+回执中的 `helper.path` 和 `helper.sha256` 也必须与当前实际加载的 helper 一致；不一致时先
+重新准备并重新采集证据。
 `failed` 回执保留停止阶段，不自动清理或重启写入。
 
 大 PR 中已使用快照文件时，可按

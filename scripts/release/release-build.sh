@@ -15,7 +15,7 @@ read_project_value() {
     asc xcode version view \
         --project "$RELEASE_WORKTREE/Easydict.xcodeproj" \
         --target "$RELEASE_TARGET" \
-        --configuration Release \
+        --configuration Release
         --output json \
         | python3 -c \
             "import json,sys; print(json.load(sys.stdin)['$key'])"
@@ -105,19 +105,25 @@ update_version() {
 
 # Produces the signed archive that all later artifacts derive from.
 archive_application() {
+    local archive_command
+    local build_worktree
+    local archive_mode="incremental"
+
     require_release_worktree
     load_release_metadata
     [[ "$(git -C "$RELEASE_WORKTREE" rev-parse HEAD)" \
         == "$RELEASE_VERSION_COMMIT" ]] \
         || release_fail "release worktree moved beyond the version commit"
 
-    release_log "archiving Easydict $RELEASE_VERSION ($RELEASE_SAVED_BUILD)"
-    asc xcode archive \
-        --workspace "$RELEASE_WORKTREE/$RELEASE_WORKSPACE_PATH" \
-        --scheme "$RELEASE_SCHEME" \
+    acquire_release_build_lock
+    prepare_release_build_environment "$RELEASE_VERSION_COMMIT"
+    build_worktree="$RELEASE_BUILD_WORKTREE"
+    archive_command=(
+        asc xcode archive
+        --workspace "$build_worktree/$RELEASE_WORKSPACE_PATH"
+        --scheme "$RELEASE_SCHEME"
         --configuration Release \
         --archive-path "$RELEASE_ARCHIVE_PATH" \
-        --clean \
         --overwrite \
         --xcodebuild-flag=-destination \
         --xcodebuild-flag=generic/platform=macOS \
@@ -131,6 +137,31 @@ archive_application() {
         --xcodebuild-flag=ENABLE_DEBUG_DYLIB=NO \
         --xcodebuild-flag=EASYDICT_RELEASE_PACKAGING=YES \
         --output table
+    )
+    if [[ "$RELEASE_FORCE_CLEAN" == 1 ]]; then
+        archive_command+=(--clean)
+        archive_mode="forced-clean"
+    fi
+
+    write_release_build_metadata \
+        "$RELEASE_BUILD_FINGERPRINT" "$RELEASE_VERSION_COMMIT" "$archive_mode"
+    release_log "archiving Easydict $RELEASE_VERSION ($RELEASE_SAVED_BUILD; $archive_mode)"
+    if "${archive_command[@]}"; then
+        require_release_dir "$RELEASE_ARCHIVE_PATH"
+        return
+    fi
+
+    if [[ "$RELEASE_FORCE_CLEAN" == 1 ]]; then
+        release_fail "forced clean Archive failed"
+    fi
+
+    release_log "incremental Archive failed; clearing only the release cache and retrying clean"
+    safe_reset_release_derived_data "$RELEASE_DERIVED_DATA"
+    rm -rf "$RELEASE_ARCHIVE_PATH"
+    write_release_build_metadata \
+        "$RELEASE_BUILD_FINGERPRINT" "$RELEASE_VERSION_COMMIT" "clean-fallback"
+    archive_command+=(--clean)
+    "${archive_command[@]}"
     require_release_dir "$RELEASE_ARCHIVE_PATH"
 }
 

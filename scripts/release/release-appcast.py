@@ -127,6 +127,22 @@ def set_release_notes_link(args: argparse.Namespace) -> None:
     write_appcast(tree, args.appcast)
 
 
+def set_release_notes_description(args: argparse.Namespace) -> None:
+    """Replace only one item's canonical release-notes description."""
+    tree = parse_appcast(args.appcast)
+    item = find_target(tree, args.version, args.build)
+    formatted_html = render_markdown(read_notes(args.notes_file, args.version))
+    desc_element = item.find("description")
+    if desc_element is None:
+        desc_element = ET.Element("description")
+        children = list(item)
+        pub_date = item.find("pubDate")
+        insert_index = children.index(pub_date) + 1 if pub_date is not None else 0
+        item.insert(insert_index, desc_element)
+    desc_element.text = formatted_html
+    write_appcast(tree, args.appcast)
+
+
 def find_previous_beta(args: argparse.Namespace) -> None:
     """Print the newest beta item older than the current release."""
     if args.channel != "beta":
@@ -324,6 +340,13 @@ def build_parser() -> argparse.ArgumentParser:
     set_link.add_argument("--url", required=True)
     set_link.add_argument("--notes-file", type=Path, required=True)
     set_link.set_defaults(handler=set_release_notes_link)
+
+    set_description = subparsers.add_parser("set-description")
+    set_description.add_argument("--appcast", type=Path, required=True)
+    set_description.add_argument("--version", required=True)
+    set_description.add_argument("--build", required=True)
+    set_description.add_argument("--notes-file", type=Path, required=True)
+    set_description.set_defaults(handler=set_release_notes_description)
 
     find_previous = subparsers.add_parser("find-previous-beta")
     find_previous.add_argument("--appcast", type=Path, required=True)

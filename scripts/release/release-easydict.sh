@@ -17,12 +17,19 @@ Usage:
   release-easydict.sh publish <version> [options]
   release-easydict.sh release <version> [options]
   release-easydict.sh resume <run-id>
+  release-easydict.sh sync-notes <version> [options]
 
 Options:
   --channel beta|stable   Sparkle channel (default: beta)
   --build-number <value> Override the next build number
   --replace-draft        Rebuild and safely replace the latest matching Draft
+  --force-clean          Force a clean Xcode Archive
   --dry-run               Preview the asc workflow without running it
+  --execute               Write synced notes to the published Release and main appcast
+  --repo <owner/repo>     GitHub repository for sync-notes
+  --notes-file <path>     Canonical changelog path for sync-notes
+  --appcast-branch <name> Remote appcast branch for sync-notes (default: main)
+  --state <path>          Override sync-notes state JSON path
   -h, --help              Show this help
 
 Workflow results are summarized in the terminal. Detailed stderr and result
@@ -31,6 +38,69 @@ JSON are saved under .tmp/release/<version>/logs/.
 The legacy release implementation remains available as:
   scripts/release/release-easydict-legacy.sh
 EOF
+}
+
+run_notes_sync() {
+    local version="$1"
+    shift
+    local repo="tisfeng/Easydict"
+    local notes_file=""
+    local appcast_branch="main"
+    local state_path=""
+    local execute=0
+
+    while (($# > 0)); do
+        case "$1" in
+            --execute)
+                execute=1
+                shift
+                ;;
+            --repo)
+                require_value "$1" "${2:-}"
+                repo="$2"
+                shift 2
+                ;;
+            --notes-file)
+                require_value "$1" "${2:-}"
+                notes_file="$2"
+                shift 2
+                ;;
+            --appcast-branch)
+                require_value "$1" "${2:-}"
+                appcast_branch="$2"
+                shift 2
+                ;;
+            --state)
+                require_value "$1" "${2:-}"
+                state_path="$2"
+                shift 2
+                ;;
+            -h | --help)
+                usage
+                return
+                ;;
+            *)
+                fail "unknown option for sync-notes: $1"
+                ;;
+        esac
+    done
+
+    cd "$ROOT_DIR"
+    local -a command=(
+        python3 "$SCRIPT_DIR/release-notes-sync.py" "$version"
+        --repo "$repo"
+        --appcast-branch "$appcast_branch"
+    )
+    if [[ -n "$notes_file" ]]; then
+        command+=(--notes-file "$notes_file")
+    fi
+    if [[ -n "$state_path" ]]; then
+        command+=(--state "$state_path")
+    fi
+    if ((execute == 1)); then
+        command+=(--execute)
+    fi
+    "${command[@]}"
 }
 
 fail() {
@@ -139,7 +209,8 @@ if version:
     if draft_refs:
         print("- Draft Git 引用：")
         print(f"  - 临时分支：{draft_refs.get('DRAFT_RELEASE_BRANCH', 'unknown')}")
-        print(f"  - 版本提交：{draft_refs.get('DRAFT_RELEASE_COMMIT', 'unknown')}")
+        print(f"  - 版本提交：{draft_refs.get('DRAFT_VERSION_COMMIT', 'unknown')}")
+        print(f"  - appcast 提交：{draft_refs.get('DRAFT_APPCAST_COMMIT', 'unknown')}")
         print("  - dev/main：Draft 阶段未修改")
     if publish_git.get("PUBLISH_INTEGRATION_HEAD"):
         print("- Publish Git 集成：")
@@ -148,6 +219,18 @@ if version:
         print(f"  - 版本 Tag：{publish_git.get('PUBLISH_VERSION_COMMIT', 'unknown')}")
         cleaned = state.joinpath("remote-release-branch-cleaned.complete").exists()
         print(f"  - 临时远程分支：{'已清理' if cleaned else '保留，等待验证或恢复'}")
+    timings = state / "timings.json"
+    try:
+        timing_payload = json.loads(timings.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        timing_payload = {}
+    events = timing_payload.get("events", [])
+    if events:
+        print("- 实际步骤耗时：")
+        for event in events:
+            duration = event.get("duration_ms")
+            if isinstance(duration, int):
+                print(f"  - {event.get('step', 'unknown')}: {duration / 1000:.1f}s")
 PY
 }
 
@@ -251,6 +334,15 @@ main() {
                 --resume "$run_id"
             return $?
             ;;
+        sync-notes)
+            local sync_version="${2:-}"
+            require_value sync-notes "$sync_version"
+            [[ "$sync_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] \
+                || fail "version must use x.y.z format"
+            shift 2
+            run_notes_sync "$sync_version" "$@"
+            return $?
+            ;;
         prepare | draft | publish | release)
             ;;
         *)
@@ -268,6 +360,7 @@ main() {
     local channel="beta"
     local build_number=""
     local draft_mode="normal"
+    local force_clean=0
     local dry_run=0
 
     while (($# > 0)); do
@@ -284,6 +377,12 @@ main() {
                 ;;
             --replace-draft)
                 draft_mode="replace"
+                shift
+                ;;
+            --force-clean)
+                [[ "$action" == prepare || "$action" == draft || "$action" == release ]] \
+                    || fail "--force-clean is supported only with prepare, draft, or release"
+                force_clean=1
                 shift
                 ;;
             --dry-run)
@@ -331,6 +430,7 @@ main() {
         "CHANNEL:$channel"
         "BUILD_NUMBER:$build_number"
         "DRAFT_MODE:$draft_mode"
+        "FORCE_CLEAN:$force_clean"
     )
 
     export RELEASE_RUN_MODE=new

@@ -10,6 +10,7 @@ Markdown 来源。
 - GitHub Release 标题独立维护；Release 正文必须与对应 Markdown 内容一致。
 - 可以在发布开始前直接编辑 Markdown；编辑后重新运行验证。发布状态冻结后发生的改动会
   触发哈希不一致，必须重新开始或明确重建 Draft，不能静默沿用旧 appcast。
+- GitHub PR 和比较范围链接使用简短的 Markdown 标签，例如 `[#1285](https://github.com/tisfeng/Easydict/pull/1285)`；不要在新版本正文中直接显示完整裸 URL。
 
 ## 发布关系
 

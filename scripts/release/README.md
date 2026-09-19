@@ -16,11 +16,12 @@ Easydict 的发布流程由 `asc workflow` 编排。该工作流将构建、公�
 5. 将同步时的 `origin/main` 提交合并到该 worktree。
 6. 验证并冻结 `changelog/<version>.md`，再基于合并后的结果构建，并从该文件生成
    Sparkle description。
-7. Draft 阶段只将 `release/sync-<version>` 和带注释的版本 Tag 原子推送到远程，
+7. Draft 阶段先完成 beta predecessor transition、写入并提交候选 `appcast.xml`，再将
+   指向 appcast 提交的 `release/sync-<version>` 与指向版本提交的带注释版本 Tag 原子推送到远程；
    不修改 `origin/dev` 或 `origin/main`。
 8. Publish 前在第二个隔离 worktree 中，将最新本地 `dev`、`origin/dev` 和版本提交
    合并起来；如果冲突，在 GitHub Release 公开前停止。
-9. GitHub Release 公开并安装 appcast 后，将 appcast 提交合并到上述集成结果，安全更新
+9. GitHub Release 公开后，将 Draft 阶段冻结的 appcast 提交合并到上述集成结果，安全更新
    本地 `dev`，再使用 lease 原子更新 `origin/dev`、`origin/main` 和临时发布分支。
 10. 远程验证 GitHub 正文、公开 appcast 和冻结 changelog 一致后，删除远程
     `release/sync-<version>`。
@@ -78,6 +79,25 @@ Release 标题不写入文件。发布开始后，工作流会冻结正文和渲
 ./scripts/release/release-easydict.sh release 2.22.0
 ```
 
+### 发布后修订日志并同步
+
+`changelog/<version>.md` 是 GitHub Release 正文和 Sparkle description 的 canonical 来源。
+如果版本已经发布后人工修订该文件，使用独立的 `sync-notes` 动作；不要使用 `resume`，因为
+`resume` 只恢复中断的 ASC 发布工作流：
+
+```bash
+# 默认只查询并输出差异，不修改远程状态
+./scripts/release/release-easydict.sh sync-notes 2.22.0
+
+# 检查预览后，显式同步已发布 Release 和远程 main/appcast.xml
+./scripts/release/release-easydict.sh sync-notes 2.22.0 --execute
+```
+
+它不重建 App、不重新签名、不上传附件，也不修改 Tag、版本号、构建号或渠道。执行时要求
+worktree 干净，并通过 GitHub Release ETag 和 appcast blob SHA 保护并发更新；状态写入
+`.tmp/release/<version>/state/notes-sync.json`，可安全重复执行。可用 `--repo`、
+`--notes-file`、`--appcast-branch` 和 `--state` 覆盖默认值。
+
 默认发布频道为 `beta`。如果要发布稳定版本：
 
 ```bash
@@ -94,6 +114,13 @@ Release 标题不写入文件。发布开始后，工作流会冻结正文和渲
 如果不指定 `--build-number`，工作流会自动递增 Xcode 构建号。版本号必须高于 Sparkle feed 中的最新版本，
 构建号也必须高于 feed 中的最新构建号。
 
+普通发布会优先复用 Release DerivedData；只有缓存不兼容或增量 Archive 失败时才自动 clean。
+需要显式强制全量清理时，可以在 `prepare`、`draft` 或 `release` 命令中加入：
+
+```bash
+./scripts/release/release-easydict.sh draft 2.22.0 --force-clean
+```
+
 ## 更安全的分阶段命令
 
 如果希望在各阶段之间进行人工检查，可以使用较小的工作流：
@@ -102,10 +129,10 @@ Release 标题不写入文件。发布开始后，工作流会冻结正文和渲
 # 构建、签名、公证、打包、生成 appcast，并在本地完成验证。
 ./scripts/release/release-easydict.sh prepare 2.22.0
 
-# 准备发布、同步发布引用，并创建经过验证的 GitHub Draft Release。
+# 准备发布、冻结并提交 appcast、同步发布引用，并创建经过验证的 GitHub Draft Release。
 ./scripts/release/release-easydict.sh draft 2.22.0
 
-# 发布已有的、经过验证的 Draft Release，安装 appcast，并执行远程验证。
+# 发布已有的、经过验证的 Draft Release，推广 Draft 阶段冻结的 appcast，并执行远程验证。
 ./scripts/release/release-easydict.sh publish 2.22.0
 ```
 
@@ -192,13 +219,20 @@ run ID：
 5. 提交 App 进行公证、写入公证票据，并验证 Gatekeeper。
 6. 生成 Sparkle ZIP 和 DMG 产物；对 DMG 进行公证并写入公证票据。
 7. 生成并严格验证候选 `appcast.xml`。
-8. 原子推送临时发布分支和带注释的版本 Tag，不修改 `dev` 或 `main`。
+8. 在 Draft 阶段提交 appcast，原子推送指向 appcast 提交的临时发布分支和指向版本提交的带注释版本 Tag，
+   不修改 `dev` 或 `main`。
 9. 创建并验证包含 ZIP、DMG 和校验和的 GitHub Draft Release。
 10. 发布前将最新本地/远程 `dev` 与版本提交进行 merge 预检。
-11. 发布新的 GitHub Release 并安装 appcast，将 appcast 提交 merge 到集成结果。
+11. 发布新的 GitHub Release，并将 Draft 阶段冻结的 appcast 提交 merge 到集成结果。
 12. 安全更新本地 `dev`，并使用 lease 原子更新远程 `dev`、`main` 和临时发布分支。
 13. 对 beta 发布，将上一 GitHub prerelease 提升为 stable。
 14. 验证两代 Release、远程引用、发布资产和公开 Sparkle feed，再删除远程临时分支和本地 worktree。
+
+归档使用长期的本地构建 worktree（`.tmp/release/cache/worktree`）和带 fingerprint 的
+Release DerivedData。该 worktree 只服务于本地 Archive，不替代版本 release worktree，
+不参与 appcast、Tag 或远程分支推送。普通 Archive 优先复用兼容缓存；失败时清理当前
+fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证、stapling、appcast
+或远程验证要求。
 
 公开 feed 只有在 GitHub Release 发布后才会更新，因此不会提前宣传不可下载的归档文件。在此之前发生失败时，
 流程会留下 GitHub Draft Release 和可恢复的本地状态，而不会留下一个发布了一半的 feed。
@@ -211,13 +245,16 @@ run ID：
 - `release-preflight.sh`：本地环境和发布状态检查。
 - `release-branch-sync.sh`：发布源 worktree、Draft 临时分支和 Tag 同步。
 - `release-publish-git.sh`：Publish merge 预检、本地 `dev` 更新、lease 原子推送和临时分支清理。
-- `release-build.sh`：版本更新、归档和导出阶段。
+- `release-build.sh`：版本更新、归档和导出阶段；使用长期构建 worktree 和带 fingerprint
+  的 Release DerivedData。
 - `release-package.sh`：公证、ZIP、DMG 和校验和阶段。
 - `release-appcast.sh` / `release-appcast.py`：Sparkle 生成和严格的 feed 验证。
+- `release-notes-sync.py`：预览或同步已发布 Release 正文和目标 appcast description。
 - `release_notes.py`：changelog 校验、快照、确定性 Markdown 渲染和 GitHub 正文比对。
 - `requirements.txt`：固定 Python Markdown 渲染器版本。
 - `tests/test_release_appcast.py` / `tests/test_release_notes.py`：正文渲染、beta 轮换、
   漂移检测和旧条目保护的行为测试。
+- `tests/test_release_notes_sync.py`：发布后日志同步的 preview、CAS 失败和幂等行为测试。
 - `release-github.sh`：幂等的 Draft Release/正式发布和资产验证。
 - `release-verify.sh`：本地产物和最终远程状态验证。
 - `export-options.plist`：Developer ID 导出配置。

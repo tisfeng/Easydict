@@ -29,6 +29,9 @@ description: 审查 GitHub PR 的准确 head/base diff、关联 issue、CI 和 r
 
 - 默认本地模式从 `git status --short --branch` 开始；当前 checkout 有未提交变更时，
   在切换分支前停止。显式 worktree 模式不得改变原 checkout，因此可从脏状态继续。
+- 多阶段 review 必须把首次准备回执中的 `checkout.branch` 作为后续阶段的显式输入；使用
+  helper 的 `--reuse-branch` 复验该分支、HEAD、upstream 和 worktree 占用，失败时停止，
+  不静默改选另一个分支。回执同时记录实际 helper 路径和 SHA，便于发现 Skill 版本漂移。
 - 不覆盖、删除、重命名、rebase、reset、强制更新、stash 或丢弃本地分支、worktree 或变更。
 - 普通审查必须对应 PR 元数据的准确 `headRefOid` 和真实 base/merge-base diff；
   不用 detached HEAD、已 fetch ref 或无关 `origin` 绕过身份检查。

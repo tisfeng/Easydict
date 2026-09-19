@@ -29,6 +29,55 @@ def run(command, *, cwd=None, env=None, check=True):
 
 
 class ReleaseRedraftTests(unittest.TestCase):
+    def test_sync_notes_routes_without_asc_workflow(self):
+        version = "9.98.0"
+        with tempfile.TemporaryDirectory() as directory:
+            temporary = Path(directory)
+            script_dir = temporary / "scripts" / "release"
+            script_dir.mkdir(parents=True)
+            capture = temporary / "arguments.json"
+            fake_sync = script_dir / "release-notes-sync.py"
+            fake_sync.write_text(
+                """#!/usr/bin/env python3
+import json
+import os
+import sys
+with open(os.environ[\"SYNC_CAPTURE\"], \"w\", encoding=\"utf-8\") as handle:
+    json.dump(sys.argv[1:], handle)
+""",
+                encoding="utf-8",
+            )
+            fake_sync.chmod(0o755)
+            entrypoint = script_dir / "release-easydict.sh"
+            entrypoint.write_bytes(ENTRYPOINT.read_bytes())
+            entrypoint.chmod(0o755)
+            env = os.environ.copy()
+            env["SYNC_CAPTURE"] = str(capture)
+            result = run(
+                [
+                    str(entrypoint),
+                    "sync-notes",
+                    version,
+                    "--execute",
+                    "--repo",
+                    "example/repo",
+                ],
+                cwd=temporary,
+                env=env,
+            )
+            self.assertEqual(result.returncode, 0)
+            self.assertEqual(
+                json.loads(capture.read_text(encoding="utf-8")),
+                [
+                    version,
+                    "--repo",
+                    "example/repo",
+                    "--appcast-branch",
+                    "main",
+                    "--execute",
+                ],
+            )
+
     def test_cli_passes_replace_mode_and_rejects_unsafe_combinations(self):
         version = "9.98.0"
         release_dir = ROOT / f".tmp/release/{version}"
@@ -138,6 +187,8 @@ print(json.dumps({
             draft,
             [
                 "revalidate_draft_replacement",
+                "prepare_channel_transition",
+                "install_appcast",
                 "push_draft_refs",
                 "delete_replaced_github_draft",
                 "create_github_draft",
@@ -149,10 +200,8 @@ print(json.dumps({
             publish.index("prepare_publish_git"),
             publish.index("publish_github_release"),
         )
-        self.assertLess(
-            publish.index("install_appcast"),
-            publish.index("push_published_refs"),
-        )
+        self.assertNotIn("install_appcast", publish)
+        self.assertNotIn("prepare_channel_transition", publish)
         self.assertLess(
             publish.index("verify_remote_release"),
             publish.index("cleanup_remote_release_branch"),
@@ -343,6 +392,15 @@ else:
                 ],
                 cwd=repository,
             )
+            (worktree / "appcast.xml").write_text("<rss/>\n", encoding="utf-8")
+            run(["git", "add", "appcast.xml"], cwd=worktree)
+            run(
+                ["git", "commit", "-m", f"build(release): add {version} appcast entry"],
+                cwd=worktree,
+            )
+            appcast_commit = run(
+                ["git", "rev-parse", "HEAD"], cwd=worktree
+            ).stdout.strip()
             state = release_dir / "state"
             replacement = release_dir / "replacement"
             state.mkdir()
@@ -412,7 +470,7 @@ else:
                     f"refs/heads/release/sync-{version}",
                 ]
             )
-            self.assertEqual(release_ref.stdout.strip(), new_commit)
+            self.assertEqual(release_ref.stdout.strip(), appcast_commit)
             peeled = run(
                 [
                     "git",

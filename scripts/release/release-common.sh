@@ -23,6 +23,7 @@ RELEASE_VERSION="${VERSION:-}"
 RELEASE_CHANNEL="${CHANNEL:-beta}"
 RELEASE_BUILD_OVERRIDE="${BUILD_NUMBER:-}"
 RELEASE_DRAFT_MODE="${DRAFT_MODE:-normal}"
+RELEASE_FORCE_CLEAN="${FORCE_CLEAN:-0}"
 
 RELEASE_WORKFLOW_PATH="$RELEASE_SOURCE_ROOT/scripts/release/asc-workflow.json"
 RELEASE_EXPORT_OPTIONS="$RELEASE_SCRIPT_DIR/export-options.plist"
@@ -34,12 +35,17 @@ RELEASE_TARGET="Easydict"
 if [[ -n "$RELEASE_VERSION" ]]; then
     RELEASE_DIR="$RELEASE_SOURCE_ROOT/.tmp/release/$RELEASE_VERSION"
     RELEASE_WORKTREE="$RELEASE_DIR/worktree"
+    RELEASE_BUILD_CACHE_DIR="$RELEASE_SOURCE_ROOT/.tmp/release/cache"
+    RELEASE_BUILD_WORKTREE="$RELEASE_BUILD_CACHE_DIR/worktree"
+    RELEASE_BUILD_LOCK_DIR="$RELEASE_BUILD_CACHE_DIR/build.lock"
     RELEASE_BRANCH="release/sync-$RELEASE_VERSION"
     RELEASE_STATE_DIR="$RELEASE_DIR/state"
     RELEASE_NOTES_FILE="$RELEASE_WORKTREE/changelog/$RELEASE_VERSION.md"
     RELEASE_NOTES_METADATA_PATH="$RELEASE_STATE_DIR/release-notes.json"
     RELEASE_SOURCE_METADATA_PATH="$RELEASE_STATE_DIR/source.env"
     RELEASE_METADATA_PATH="$RELEASE_STATE_DIR/release.env"
+    RELEASE_BUILD_METADATA_PATH="$RELEASE_STATE_DIR/build.env"
+    RELEASE_TIMINGS_PATH="$RELEASE_STATE_DIR/timings.json"
     RELEASE_CHANNEL_TRANSITION_PATH="$RELEASE_STATE_DIR/channel-transition.env"
     RELEASE_DRAFT_REFS_PATH="$RELEASE_STATE_DIR/draft-refs.env"
     RELEASE_PUBLISH_GIT_PATH="$RELEASE_STATE_DIR/publish-git.env"
@@ -66,13 +72,98 @@ if [[ -n "$RELEASE_VERSION" ]]; then
     RELEASE_REPLACEMENT_BACKUP_DIR="$RELEASE_REPLACEMENT_DIR/backup"
 fi
 
+RELEASE_TIMING_STEP=""
+RELEASE_TIMING_START_MS=""
+RELEASE_BUILD_LOCK_HELD=0
+
 release_timestamp() {
     date '+%Y-%m-%d %H:%M:%S'
 }
 
+release_now_ms() {
+    python3 -c 'import time; print(time.time_ns() // 1_000_000)'
+}
+
+release_timing_start() {
+    local step="${1:-${RELEASE_STEP:-release}}"
+
+    [[ -n "${RELEASE_TIMINGS_PATH:-}" ]] || return 0
+    RELEASE_TIMING_STEP="$step"
+    RELEASE_TIMING_START_MS="$(release_now_ms)"
+}
+
+release_timing_finish() {
+    local exit_status="${1:-0}"
+    local finished_ms timing_path step started_ms
+
+    [[ -n "${RELEASE_TIMING_STEP:-}" && -n "${RELEASE_TIMING_START_MS:-}" ]] \
+        || return 0
+    timing_path="$RELEASE_TIMINGS_PATH"
+    step="$RELEASE_TIMING_STEP"
+    started_ms="$RELEASE_TIMING_START_MS"
+    finished_ms="$(release_now_ms)"
+    mkdir -p "$(dirname "$timing_path")"
+    python3 - "$timing_path" "$step" "$started_ms" "$finished_ms" \
+        "$exit_status" <<'PY'
+import json
+import os
+import sys
+import tempfile
+from datetime import datetime, timezone
+from pathlib import Path
+
+path, step, started, finished, status = sys.argv[1:]
+path = Path(path)
+try:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+except (FileNotFoundError, json.JSONDecodeError):
+    payload = {"schema_version": 1, "events": []}
+
+started_ms = int(started)
+finished_ms = int(finished)
+payload.setdefault("schema_version", 1)
+payload.setdefault("events", []).append(
+    {
+        "step": step,
+        "started_at": datetime.fromtimestamp(
+            started_ms / 1000, tz=timezone.utc
+        ).isoformat(),
+        "finished_at": datetime.fromtimestamp(
+            finished_ms / 1000, tz=timezone.utc
+        ).isoformat(),
+        "duration_ms": max(0, finished_ms - started_ms),
+        "status": "ok" if status == "0" else "failed",
+        "exit_status": int(status),
+    }
+)
+path.parent.mkdir(parents=True, exist_ok=True)
+with tempfile.NamedTemporaryFile(
+    mode="w", encoding="utf-8", dir=path.parent, delete=False
+) as handle:
+    json.dump(payload, handle, indent=2)
+    handle.write("\n")
+    temporary = handle.name
+os.replace(temporary, path)
+PY
+    RELEASE_TIMING_STEP=""
+    RELEASE_TIMING_START_MS=""
+}
+
+release_release_lock_and_timing() {
+    local exit_status=$?
+
+    release_build_lock || true
+    release_timing_finish "$exit_status" || true
+    return "$exit_status"
+}
+
+trap release_release_lock_and_timing EXIT
+
 release_set_step() {
+    release_timing_finish 0
     RELEASE_STEP="$1"
     export RELEASE_STEP
+    release_timing_start "$1"
 }
 
 release_log() {
@@ -103,6 +194,174 @@ release_safe_label() {
 
     label="${label//[^[:alnum:]_.-]/-}"
     printf '%s\n' "$label"
+}
+
+release_worktree_path_is_registered() {
+    local worktree_path="$1"
+    local expected_path="$worktree_path"
+
+    if [[ -d "$worktree_path" ]]; then
+        expected_path="$(cd "$worktree_path" && pwd -P)"
+    fi
+
+    git -C "$RELEASE_SOURCE_ROOT" worktree list --porcelain \
+        | awk -v expected="$expected_path" '
+            $1 == "worktree" && substr($0, 10) == expected { found = 1 }
+            END { exit(found ? 0 : 1) }
+        '
+}
+
+acquire_release_build_lock() {
+    local lock_owner
+
+    mkdir -p "$RELEASE_BUILD_CACHE_DIR"
+    if ! mkdir "$RELEASE_BUILD_LOCK_DIR" 2>/dev/null; then
+        lock_owner="$RELEASE_BUILD_LOCK_DIR/owner"
+        if [[ -f "$lock_owner" ]]; then
+            release_fail "release build cache is locked: $(cat "$lock_owner")"
+        fi
+        release_fail "release build cache is locked: $RELEASE_BUILD_LOCK_DIR"
+    fi
+    {
+        printf 'pid=%s\n' "$$"
+        printf 'version=%s\n' "$RELEASE_VERSION"
+        printf 'started=%s\n' "$(release_timestamp)"
+    } >"$RELEASE_BUILD_LOCK_DIR/owner"
+    RELEASE_BUILD_LOCK_HELD=1
+}
+
+release_build_lock() {
+    if ((RELEASE_BUILD_LOCK_HELD == 1)); then
+        rm -rf "$RELEASE_BUILD_LOCK_DIR"
+        RELEASE_BUILD_LOCK_HELD=0
+    fi
+}
+
+release_normalized_project_hash_input() {
+    sed -E \
+        -e 's/(MARKETING_VERSION[[:space:]]*=[[:space:]]*)[0-9.]+;/\1<version>;/g' \
+        -e 's/(CURRENT_PROJECT_VERSION[[:space:]]*=[[:space:]]*)[0-9]+;/\1<build>;/g' \
+        "$RELEASE_BUILD_WORKTREE/$RELEASE_PROJECT_PATH/project.pbxproj"
+}
+
+calculate_release_build_fingerprint() {
+    local package_resolved="$RELEASE_BUILD_WORKTREE/Easydict.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+
+    require_release_file "$package_resolved"
+    require_release_file "$RELEASE_BUILD_WORKTREE/scripts/release/asc-workflow.json"
+    {
+        printf 'schema=1\n'
+        printf 'xcode='; xcodebuild -version
+        printf 'sdk='; xcrun --sdk macosx --show-sdk-version
+        printf 'scheme=%s\n' "$RELEASE_SCHEME"
+        printf 'configuration=Release\n'
+        printf 'target=macOS\n'
+        printf 'team=%s\n' "$RELEASE_TEAM_ID"
+        printf 'identity=%s\n' "$RELEASE_SIGN_IDENTITY"
+        printf 'flags=DEPLOYMENT_POSTPROCESSING=YES ENABLE_DEBUG_DYLIB=NO EASYDICT_RELEASE_PACKAGING=YES\n'
+        printf 'project.pbxproj=\n'
+        release_normalized_project_hash_input
+        printf 'Package.resolved=\n'
+        cat "$package_resolved"
+        printf 'workflow=\n'
+        cat "$RELEASE_BUILD_WORKTREE/scripts/release/asc-workflow.json"
+        printf 'build-script=\n'
+        cat "$RELEASE_BUILD_WORKTREE/scripts/release/release-build.sh"
+        printf 'common-script=\n'
+        cat "$RELEASE_BUILD_WORKTREE/scripts/release/release-common.sh"
+        printf 'export-options=\n'
+        cat "$RELEASE_BUILD_WORKTREE/scripts/release/export-options.plist"
+    } | shasum -a 256 | awk '{print $1}'
+}
+
+prepare_release_build_environment() {
+    local version_commit="$1"
+
+    require_release_worktree
+    mkdir -p "$RELEASE_BUILD_CACHE_DIR/derived-data"
+    if [[ ! -e "$RELEASE_BUILD_WORKTREE" ]]; then
+        git -C "$RELEASE_SOURCE_ROOT" worktree add --detach \
+            "$RELEASE_BUILD_WORKTREE" "$version_commit" >/dev/null \
+            || release_fail "could not create persistent release build worktree"
+    else
+        release_worktree_path_is_registered "$RELEASE_BUILD_WORKTREE" \
+            || release_fail "persistent release build worktree is not registered"
+        [[ -z "$(git -C "$RELEASE_BUILD_WORKTREE" status \
+            --porcelain --untracked-files=all)" ]] \
+            || release_fail "persistent release build worktree is dirty"
+        git -C "$RELEASE_BUILD_WORKTREE" checkout --detach "$version_commit" \
+            >/dev/null \
+            || release_fail "could not update persistent release build worktree"
+    fi
+
+    [[ "$(git -C "$RELEASE_BUILD_WORKTREE" rev-parse HEAD)" == "$version_commit" ]] \
+        || release_fail "persistent release build worktree is at an unexpected commit"
+    RELEASE_BUILD_FINGERPRINT="$(calculate_release_build_fingerprint)"
+    RELEASE_DERIVED_DATA="$RELEASE_BUILD_CACHE_DIR/derived-data/$RELEASE_BUILD_FINGERPRINT"
+    mkdir -p "$RELEASE_DERIVED_DATA"
+}
+
+write_release_build_metadata() {
+    local fingerprint="$1"
+    local version_commit="$2"
+    local mode="${3:-incremental}"
+    local temporary_path
+
+    mkdir -p "$RELEASE_STATE_DIR"
+    temporary_path="$(mktemp "$RELEASE_STATE_DIR/build.XXXXXX")"
+    {
+        printf 'RELEASE_BUILD_VERSION=%q\n' "$RELEASE_VERSION"
+        printf 'RELEASE_BUILD_VERSION_COMMIT=%q\n' "$version_commit"
+        printf 'RELEASE_BUILD_FINGERPRINT=%q\n' "$fingerprint"
+        printf 'RELEASE_BUILD_WORKTREE=%q\n' "$RELEASE_BUILD_WORKTREE"
+        printf 'RELEASE_BUILD_DERIVED_DATA=%q\n' "$RELEASE_DERIVED_DATA"
+        printf 'RELEASE_BUILD_MODE=%q\n' "$mode"
+    } >"$temporary_path"
+    mv "$temporary_path" "$RELEASE_BUILD_METADATA_PATH"
+}
+
+load_release_build_metadata() {
+    require_release_file "$RELEASE_BUILD_METADATA_PATH"
+    # shellcheck disable=SC1090
+    source "$RELEASE_BUILD_METADATA_PATH"
+    [[ "$RELEASE_BUILD_VERSION" == "$RELEASE_VERSION" ]] \
+        || release_fail "release build metadata belongs to another version"
+    [[ "$RELEASE_BUILD_VERSION_COMMIT" =~ ^[0-9a-f]{40}$ ]] \
+        || release_fail "release build version commit is invalid"
+    [[ "$RELEASE_BUILD_VERSION_COMMIT" == "$RELEASE_VERSION_COMMIT" ]] \
+        || release_fail "release build version commit differs from release metadata"
+    [[ "$RELEASE_BUILD_WORKTREE" == "$RELEASE_BUILD_CACHE_DIR/worktree" ]] \
+        || release_fail "release build worktree path is outside the release cache"
+    case "$RELEASE_BUILD_DERIVED_DATA" in
+        "$RELEASE_BUILD_CACHE_DIR/derived-data"/*)
+            ;;
+        *)
+            release_fail "release DerivedData path is outside the release cache"
+            ;;
+    esac
+    [[ -n "$RELEASE_BUILD_FINGERPRINT" && -n "$RELEASE_BUILD_WORKTREE" \
+        && -n "$RELEASE_BUILD_DERIVED_DATA" ]] \
+        || release_fail "release build metadata is incomplete"
+    release_worktree_path_is_registered "$RELEASE_BUILD_WORKTREE" \
+        || release_fail "release build worktree is no longer registered"
+    [[ "$(git -C "$RELEASE_BUILD_WORKTREE" rev-parse HEAD)" \
+        == "$RELEASE_BUILD_VERSION_COMMIT" ]] \
+        || release_fail "release build worktree commit differs from release metadata"
+    RELEASE_DERIVED_DATA="$RELEASE_BUILD_DERIVED_DATA"
+}
+
+safe_reset_release_derived_data() {
+    local directory_path="$1"
+
+    case "$directory_path" in
+        "$RELEASE_BUILD_CACHE_DIR/derived-data"/*)
+            ;;
+        *)
+            release_fail "refusing to reset derived data outside release cache: $directory_path"
+            ;;
+    esac
+    rm -rf "$directory_path"
+    mkdir -p "$directory_path"
 }
 
 release_command_log() {
@@ -173,6 +432,14 @@ require_release_version() {
             ;;
         *)
             release_fail "DRAFT_MODE must be normal or replace"
+            ;;
+    esac
+
+    case "$RELEASE_FORCE_CLEAN" in
+        0 | 1)
+            ;;
+        *)
+            release_fail "FORCE_CLEAN must be 0 or 1"
             ;;
     esac
 
@@ -469,8 +736,9 @@ load_release_metadata() {
 }
 
 write_draft_refs_metadata() {
-    local release_commit="$1"
-    local tag_oid="$2"
+    local version_commit="$1"
+    local appcast_commit="$2"
+    local tag_oid="$3"
     local temporary_path
 
     mkdir -p "$RELEASE_STATE_DIR"
@@ -478,10 +746,31 @@ write_draft_refs_metadata() {
     {
         printf 'DRAFT_REFS_VERSION=%q\n' "$RELEASE_VERSION"
         printf 'DRAFT_RELEASE_BRANCH=%q\n' "$RELEASE_BRANCH"
-        printf 'DRAFT_RELEASE_COMMIT=%q\n' "$release_commit"
+        printf 'DRAFT_VERSION_COMMIT=%q\n' "$version_commit"
+        printf 'DRAFT_APPCAST_COMMIT=%q\n' "$appcast_commit"
         printf 'DRAFT_TAG_OID=%q\n' "$tag_oid"
     } >"$temporary_path"
     mv "$temporary_path" "$RELEASE_DRAFT_REFS_PATH"
+}
+
+load_draft_refs_metadata() {
+    require_release_file "$RELEASE_DRAFT_REFS_PATH"
+    # shellcheck disable=SC1090
+    source "$RELEASE_DRAFT_REFS_PATH"
+
+    [[ "$DRAFT_REFS_VERSION" == "$RELEASE_VERSION" ]] \
+        || release_fail "Draft Git refs belong to another version"
+    [[ "$DRAFT_RELEASE_BRANCH" == "$RELEASE_BRANCH" ]] \
+        || release_fail "Draft release branch differs from configured branch"
+    for commit_name in DRAFT_VERSION_COMMIT DRAFT_APPCAST_COMMIT; do
+        [[ "${!commit_name}" =~ ^[0-9a-f]{40}$ ]] \
+            || release_fail "Draft Git refs have invalid $commit_name"
+    done
+    [[ "$DRAFT_TAG_OID" =~ ^[0-9a-f]{40}$ ]] \
+        || release_fail "Draft Tag object ID is invalid"
+    git -C "$RELEASE_SOURCE_ROOT" merge-base --is-ancestor \
+        "$DRAFT_VERSION_COMMIT" "$DRAFT_APPCAST_COMMIT" \
+        || release_fail "Draft appcast commit is not based on the version commit"
 }
 
 # Loads the frozen Git refs and integration result used by publish/resume.
@@ -515,6 +804,10 @@ load_publish_git_metadata() {
 # Locates Sparkle's generator after Xcode has resolved package artifacts.
 resolve_generate_appcast() {
     local candidate_path
+
+    if [[ -f "${RELEASE_BUILD_METADATA_PATH:-}" ]]; then
+        load_release_build_metadata
+    fi
 
     if [[ -n "${GENERATE_APPCAST:-}" ]]; then
         candidate_path="$GENERATE_APPCAST"
