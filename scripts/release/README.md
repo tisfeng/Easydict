@@ -95,6 +95,13 @@ Release 标题不写入文件。发布开始后，工作流会冻结正文和渲
 如果不指定 `--build-number`，工作流会自动递增 Xcode 构建号。版本号必须高于 Sparkle feed 中的最新版本，
 构建号也必须高于 feed 中的最新构建号。
 
+普通发布会优先复用 Release DerivedData；只有缓存不兼容或增量 Archive 失败时才自动 clean。
+需要显式强制全量清理时，可以在 `prepare`、`draft` 或 `release` 命令中加入：
+
+```bash
+./scripts/release/release-easydict.sh draft 2.22.0 --force-clean
+```
+
 ## 更安全的分阶段命令
 
 如果希望在各阶段之间进行人工检查，可以使用较小的工作流：
@@ -202,6 +209,12 @@ run ID：
 13. 对 beta 发布，将上一 GitHub prerelease 提升为 stable。
 14. 验证两代 Release、远程引用、发布资产和公开 Sparkle feed，再删除远程临时分支和本地 worktree。
 
+归档使用长期的本地构建 worktree（`.tmp/release/cache/worktree`）和带 fingerprint 的
+Release DerivedData。该 worktree 只服务于本地 Archive，不替代版本 release worktree，
+不参与 appcast、Tag 或远程分支推送。普通 Archive 优先复用兼容缓存；失败时清理当前
+fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证、stapling、appcast
+或远程验证要求。
+
 公开 feed 只有在 GitHub Release 发布后才会更新，因此不会提前宣传不可下载的归档文件。在此之前发生失败时，
 流程会留下 GitHub Draft Release 和可恢复的本地状态，而不会留下一个发布了一半的 feed。
 
@@ -213,7 +226,8 @@ run ID：
 - `release-preflight.sh`：本地环境和发布状态检查。
 - `release-branch-sync.sh`：发布源 worktree、Draft 临时分支和 Tag 同步。
 - `release-publish-git.sh`：Publish merge 预检、本地 `dev` 更新、lease 原子推送和临时分支清理。
-- `release-build.sh`：版本更新、归档和导出阶段。
+- `release-build.sh`：版本更新、归档和导出阶段；使用长期构建 worktree 和带 fingerprint
+  的 Release DerivedData。
 - `release-package.sh`：公证、ZIP、DMG 和校验和阶段。
 - `release-appcast.sh` / `release-appcast.py`：Sparkle 生成和严格的 feed 验证。
 - `release_notes.py`：changelog 校验、快照、确定性 Markdown 渲染和 GitHub 正文比对。

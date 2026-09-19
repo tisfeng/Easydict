@@ -46,6 +46,12 @@ Issue 状态只使用 `.tmp/release/<version>/state/issue-followup/` 的 schema 
 8. 报告 Release URL、标题、channel、notes 路径、Issue 和无关联 PR 摘要、底层 run ID
    和可恢复状态路径。
 
+归档使用长期的本地构建 worktree（`.tmp/release/cache/worktree`）和带 fingerprint 的
+Release DerivedData。该 worktree 只服务于本地 Archive，不替代版本 release worktree，
+不参与 appcast、Tag 或远程分支推送。普通 Archive 优先复用兼容缓存；失败时清理当前
+fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证、stapling、appcast
+或远程验证要求。
+
 ## 内容决策
 
 - changelog 只翻译每个变更条目中由人编写的 PR 标题部分，并保持英文标题简洁；作者、
@@ -72,6 +78,10 @@ python3 scripts/release/release_notes.py validate \
 ```bash
 ./scripts/release/release-easydict.sh draft <version> [--channel <channel>]
 ```
+
+普通 Draft 优先使用兼容的 Release 编译缓存；需要显式全量清理时追加
+`--force-clean`。该选项仅适用于 `prepare`、`draft` 和 `release`，不改变后续签名、公证
+和验证步骤。
 
 只有用户明确要求废弃并重建当前最新 Draft 时，才使用：
 

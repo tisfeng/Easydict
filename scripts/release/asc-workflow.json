@@ -3,7 +3,8 @@
     "VERSION": "",
     "CHANNEL": "beta",
     "BUILD_NUMBER": "",
-    "DRAFT_MODE": "normal"
+    "DRAFT_MODE": "normal",
+    "FORCE_CLEAN": "0"
   },
   "before_all": "printf '[%s] [INFO] [workflow] Starting Easydict %s (%s) workflow\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" \"$VERSION\" \"$CHANNEL\" >&2",
   "after_all": "printf '[%s] [INFO] [workflow] Easydict %s workflow completed\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" \"$VERSION\" >&2",

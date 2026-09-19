@@ -22,6 +22,7 @@ Options:
   --channel beta|stable   Sparkle channel (default: beta)
   --build-number <value> Override the next build number
   --replace-draft        Rebuild and safely replace the latest matching Draft
+  --force-clean          Force a clean Xcode Archive
   --dry-run               Preview the asc workflow without running it
   -h, --help              Show this help
 
@@ -149,6 +150,18 @@ if version:
         print(f"  - 版本 Tag：{publish_git.get('PUBLISH_VERSION_COMMIT', 'unknown')}")
         cleaned = state.joinpath("remote-release-branch-cleaned.complete").exists()
         print(f"  - 临时远程分支：{'已清理' if cleaned else '保留，等待验证或恢复'}")
+    timings = state / "timings.json"
+    try:
+        timing_payload = json.loads(timings.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        timing_payload = {}
+    events = timing_payload.get("events", [])
+    if events:
+        print("- 实际步骤耗时：")
+        for event in events:
+            duration = event.get("duration_ms")
+            if isinstance(duration, int):
+                print(f"  - {event.get('step', 'unknown')}: {duration / 1000:.1f}s")
 PY
 }
 
@@ -269,6 +282,7 @@ main() {
     local channel="beta"
     local build_number=""
     local draft_mode="normal"
+    local force_clean=0
     local dry_run=0
 
     while (($# > 0)); do
@@ -285,6 +299,12 @@ main() {
                 ;;
             --replace-draft)
                 draft_mode="replace"
+                shift
+                ;;
+            --force-clean)
+                [[ "$action" == prepare || "$action" == draft || "$action" == release ]] \
+                    || fail "--force-clean is supported only with prepare, draft, or release"
+                force_clean=1
                 shift
                 ;;
             --dry-run)
@@ -332,6 +352,7 @@ main() {
         "CHANNEL:$channel"
         "BUILD_NUMBER:$build_number"
         "DRAFT_MODE:$draft_mode"
+        "FORCE_CLEAN:$force_clean"
     )
 
     export RELEASE_RUN_MODE=new
