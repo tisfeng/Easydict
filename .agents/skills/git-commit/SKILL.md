@@ -1,219 +1,73 @@
 ---
 name: git-commit
-description: Draft Angular-style Git commit messages from staged changes and execute `git commit` safely after explicit approval. Use for commit message generation, staged-diff review for commit wording, and preferred-language previews of English commit messages for non-English users.
+description: 起草、创建或汇报 Angular-style 本地 Git 提交。用于明确的提交交付；分支集成使用 worktree-rebase-merge，不 push。
 ---
 
-# Git Commit Workflow
+# Git 提交流程
 
-Generate accurate Angular-style Git commit messages from staged changes only.
+以经范围校验的 staged diff 创建本地提交。只读预览可使用尚未暂存的候选，
+但必须标为草稿。`<git-commit-skill-dir>` 指实际加载的本 Skill 目录。
 
-## Required Workflow
+## 任务与边界
 
-Follow this sequence exactly:
+| 任务 | 结果 |
+| --- | --- |
+| 起草或预览 | 根据 staged 内容或获准候选返回草稿，不改变 Git。 |
+| 创建提交 | 在有效提交授权下完成范围判断、预览、暂存、提交和校验。 |
+| 汇报已有提交 | 读取指定提交或范围的真实消息与统计，不启动新提交。 |
+| 为组合 Skill 推导分支名 | 只返回合法候选，不暂存、提交或创建分支。 |
 
-1. Collect context with:
-   - `git status`
-   - staged raw patch command:
-     `GIT_PAGER=cat git --no-pager diff --staged --no-ext-diff --no-textconv --unified=5`
-   - `git branch --show-current`
-   - `git log --oneline -10`
-2. If there are no staged changes, run `git add .` once, then collect
-   `git status` and the staged raw patch command again before continuing.
-3. If there were already staged changes in step 1, do not run `git add`. Keep
-   the workflow limited to the current staged scope.
-4. Stop immediately if there are still no staged changes after the single
-   allowed `git add .`. Ask the user to stage files first.
-5. Analyze the staged diff precisely:
-   - Treat the raw patch command above as the only source of truth for staged
-     scope. Do not rely on external diff, textconv, or pager formatting.
-   - If you need to inspect a single staged path, reuse the same command shape
-     and append `-- <path>` instead of falling back to bare `git diff --staged`.
-   - Identify additions, deletions, and behavior impact.
-   - Infer the most accurate `type(scope): subject`.
-6. Draft the commit message in English using the format rules below.
-7. If `{USR_PREFERRED_LANGUAGE}` is not English, prepare a
-   `{USR_PREFERRED_LANGUAGE}` preview that fully matches the English message.
-8. Present the result using the output rules below and wait for explicit approval.
-9. After approval, execute the commit in three separate steps:
-   - Write only the English commit message to `commit_message.txt`
-   - Run `git commit -F commit_message.txt`
-   - Remove `commit_message.txt`
+本 Skill 不运行 `git push`、rebase 或 merge。调用方传入真实任务、允许范围和已有证据，
+不需要采用本 Skill 的内部字段。
 
-## User Preferred Language
+## 选择模式
 
-`{USR_PREFERRED_LANGUAGE}` means the first language in macOS `AppleLanguages`.
-Read it with `defaults read -g AppleLanguages` and use the first list entry. If
-the current agent environment cannot read that value, write in the language the
-user is already using in the current conversation.
+- **只命名或汇报已有提交**：只完成该任务；未指定提交对象时先明确对象。
+- **仅预览、起草或只读**：不暂存、不创建消息文件、不提交。已有 staged 内容时
+  只用其起草；索引为空时使用获准范围内的候选。
+- **确认模式**：展示完整预览并等待批准。未单独获准时，确认前不暂存。
+- **默认模式**：明确调用本 Skill 或宿主已授权自动本地提交时，展示预览后直接提交。
 
-Treat English language variants as English. For English users, do not add a
-second preview block that repeats the English commit message.
+用户的禁止、范围、确认和暂缓要求持续有效；“不提交”不自动授权暂存。
 
-## Hard Rules
+## 范围与 Git 状态保护
 
-- Run `git add .` only when the initial staged diff is empty, and only once.
-- Do not run `git add` when staged changes already exist.
-- Do not run `git push`.
-- Do not commit without explicit user authorization.
-- Do not include any non-English preview text in the actual commit message file.
-- Do not describe unstaged or unrelated changes.
-- If `{USR_PREFERRED_LANGUAGE}` is not English, keep that preview accurate and
-  complete.
-- A commit message is incomplete unless it includes a body explaining what changed and why.
-- Every commit message is incomplete unless the body uses exactly three natural
-  paragraphs.
-- The three body paragraphs must cover the current context, the main change,
-  and the resulting impact in that order.
-- Do not chain `git commit` together with file creation or cleanup in a single shell command.
+1. 记录调用目录，使用 `git rev-parse --show-toplevel` 定位仓库根目录；相对路径先按原调用目录解析。
+2. 读取 HEAD、分支、status、最近提交、staged/unstaged raw diff 和相关 untracked 内容，
+   区分用户已有变更与本任务候选。
+3. 准备写入时复验 HEAD、索引、候选路径和内容。发现冲突、归属不明或非预期漂移时
+   停止，不覆盖、清理或自动 amend。
+4. 获准后只执行一次选定的暂存动作，并比较 staged paths 与 raw patch 是否与候选完全一致。
+   不一致时停止，不通过第二次 `git add` 修正范围；不创建空提交。
 
-## Commit Execution Rules
+| 情况 | 暂存动作 |
+| --- | --- |
+| 已有索引 | 不运行 `git add`，只提交既有 staged 内容；超出请求范围时停止。 |
+| 显式交付、空索引、限定路径 | 一次 `git add -- <selected-paths>`。 |
+| 显式交付、空索引、未限定路径 | 未禁止暂存且非 staged-only 时，在仓库根目录一次 `git add .`。 |
+| 宿主授权自动提交 | 一次 `git add -- <expected-commit-paths>`，禁止 `git add .`。 |
 
-- Treat `git commit` as the only step that needs repository write access. Keep message-file creation and cleanup as separate commands.
-- If `git commit` fails with sandbox-style permission errors such as `Operation not permitted` while creating `.git/index.lock`, immediately rerun `git commit -F commit_message.txt` with the required escalation instead of retrying the same non-privileged command.
-- When the environment is known to block writes under `.git`, prefer requesting the needed escalation for `git commit` directly after the user approves the message.
-- If commit succeeds, remove `commit_message.txt` afterward. If commit fails, keep the file unless cleanup is clearly safe and intentional.
+宿主自动提交还必须有首次写入前的 HEAD、初始 Git 状态、允许路径和内容归属证据。
+初始索引非空、唯一暂存前出现非 Agent staged 内容、验证失败或仍有暂缓要求时，
+停止自动提交。这不反向限制用户已明确授权的 staged-only 提交。
 
-## Angular-Style Commit Format
+## 提交主流程
 
-Use this structure for every commit:
+1. 起草提交时读取 [提交信息契约](references/commit-message.md)。在主对话以 `text` 代码围栏展示
+   完整、将要使用的消息；仅预览到此结束，确认模式等待批准。
+2. 完成唯一暂存并复验后，将与预览完全一致的内容写入本任务专用消息文件。
+   候选或消息变化时重新审核和展示；用户要求确认时不复用旧批准。
+3. 使用 Skill 内校验器检查消息，再运行 `git commit -F <message-file>`。
+4. 以新建完整 commit hash 执行提交后消息一致性校验。校验失败时保留消息文件，
+   不 amend，不声称交付完成。
+5. 校验通过后删除本任务消息文件，读取 [统计与提交回执](references/reporting.md)，根据 Git 真实结果交付。
 
-```text
-type(scope): subject
+仅为 `submit-pr` 或 `worktree-rebase-merge` 推导分支名时，读取
+[分支命名](references/branch-naming.md)，不进入提交流程。
 
-First body paragraph explaining the current context or motivation.
+## 完成与停止条件
 
-Second body paragraph explaining the main change.
-
-Third body paragraph explaining the result or impact.
-
-Optional footer for breaking changes or special notes when applicable.
-```
-
-Apply these formatting rules:
-
-- Use the standard title form: `type(scope): subject`.
-- Write the `subject` as an imperative summary, start it with a lowercase letter, and do not end it with a period.
-- Keep the title at or below 80 characters.
-- Keep the full commit message under 600 characters.
-- The `body` is required for every commit and must use exactly three short
-  paragraphs separated by one blank line.
-- The first paragraph should explain the current issue, context, or motivation.
-- The second paragraph should explain the main change and how it responds to
-  that context.
-- The third paragraph should explain the result, impact, or risk reduction.
-- Do not use explicit labels such as `Problem:`, `Change:`, or `Summary:`.
-- Keep each paragraph concise, usually one sentence and at most two when
-  needed.
-- Focus on behavior and intent rather than low-level implementation minutiae.
-- Use the optional `footer` only for breaking changes or special considerations.
-
-### Three-Paragraph Body Structure
-
-Every commit must use three short natural paragraphs in this order:
-
-1. Describe the current background, problem, or motivation for the commit.
-2. Describe the main change and how it responds to that context.
-3. Summarize the result, user impact, compatibility effect, or reduced risk.
-
-### Breaking Changes
-
-- Mark breaking changes with `!`, with a `BREAKING CHANGE:` footer, or with
-  both when the title should signal the break immediately and the footer needs
-  to explain migration impact.
-- Use `!` after the type or scope in the title when the incompatible change
-  should be visible at a glance.
-- Use a `BREAKING CHANGE:` footer when migration work, removed behavior, or
-  compatibility impact needs explicit explanation.
-- Keep the full commit structure intact for breaking changes: title, three
-  body paragraphs, and then the optional footer. The footer explains the
-  compatibility impact, but it does not replace the required body paragraphs.
-
-## Commit Type Guidance
-
-Choose the narrowest commit `type` that matches the staged diff:
-
-- `feat`: introduce user-facing behavior or a new capability. Focus the three
-  paragraphs on the missing capability, the feature added, and the user-facing
-  benefit or rollout impact.
-- `fix`: correct a bug, regression, or broken behavior. Focus the three
-  paragraphs on the broken behavior, the fix approach, and the restored
-  outcome or reduced risk.
-- `docs`: update documentation only. Focus the three paragraphs on the reader
-  gap, the documentation update, and the clarity or maintenance benefit.
-- `style`: apply formatting or non-functional code style updates. Focus the
-  three paragraphs on the readability issue, the style cleanup, and the
-  consistency benefit.
-- `refactor`: improve internal structure without changing behavior. Focus the
-  three paragraphs on the structural pain point, the code reorganization, and
-  the maintainability gain while preserving behavior.
-- `perf`: improve performance or reduce resource usage. Focus the three
-  paragraphs on the bottleneck, the optimization, and the measured or expected
-  efficiency gain.
-- `test`: add or adjust tests without changing production behavior. Focus the
-  three paragraphs on the coverage gap, the test update, and the regression
-  protection gained.
-- `build`: change dependencies, packaging, or build configuration. Focus the
-  three paragraphs on the build or dependency context, the configuration
-  change, and the resulting build or release impact.
-- `ci`: update CI workflows or automation pipelines. Focus the three
-  paragraphs on the pipeline issue, the workflow change, and the resulting
-  reliability or maintenance improvement.
-- `chore`: make routine maintenance changes that do not fit other types. Focus
-  the three paragraphs on the maintenance need, the housekeeping change, and
-  the resulting repository health benefit.
-- `revert`: roll back a previous change. Focus the three paragraphs on why the
-  earlier change must be undone, what is being reverted, and the restored or
-  stabilized state afterward.
-
-Choose `scope` from the touched module, feature, service, or component name whenever possible. Prefer specific scopes such as `openai`, `screenshot`, or `settings` over broad labels like `app` or `misc`.
-
-## Output and Approval Rules
-
-- Present the result and wait for explicit approval.
-- If `{USR_PREFERRED_LANGUAGE}` is English, use this exact format:
-
-```
-{English commit message}
-```
-
-- If `{USR_PREFERRED_LANGUAGE}` is not English, use this exact format:
-
-```
-{English commit message}
-```
-
-```
-{{USR_PREFERRED_LANGUAGE} preview}
-```
-
-- Keep the `{USR_PREFERRED_LANGUAGE}` preview aligned with the English message
-  in paragraph count, paragraph order, and meaning for every commit type.
-- Do not create `commit_message.txt` or run `git commit` before explicit approval.
-- Write only the English message into `commit_message.txt`.
-
-## Example
-
-This example shows the required complete format for a compliant commit message.
-
-```
-fix(screenshot): defer overlay capture until view appears
-
-Overlay capture started before the view hierarchy was stable, which caused a startup race and could crash screenshot translation.
-
-Move screenshot capture out of the overlay initializer and begin it only after the view appears and layout is ready.
-
-This restores stable screenshot translation startup and prevents the layout conflicts caused by the race.
-```
-
-The second block below demonstrates a non-English preview. It is not written to
-`commit_message.txt`.
-
-```
-fix(screenshot): 推迟悬浮层截图直到视图出现后再执行
-
-悬浮层在视图层级尚未稳定时就启动截图，触发了启动阶段的竞态，并可能导致截图翻译崩溃。
-
-将截图操作从悬浮层初始化方法中移出，改为在视图出现且布局就绪后再开始执行。
-
-此修改恢复了截图翻译启动流程的稳定性，并避免了该竞态导致的布局冲突问题。
-```
+只有范围与 staged raw patch 一致、必要验证通过、Git 真实消息与预览一致，且最终
+状态和统计已核对时，才算创建提交完成。范围无法证明、出现冲突或漂移、权限被拒、
+提交前/后校验失败、hook 改写结果或统计不一致时保留现场并报告具体阶段，
+不自动扩大暂存、重试写入、amend 或清理用户状态。

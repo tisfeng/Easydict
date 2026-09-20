@@ -89,6 +89,10 @@ struct AppleLanguageDetectorTests {
         #expect(detector.detectLanguage(text: "Hola, ¿cómo estás?") == .spanish)
         #expect(detector.detectLanguage(text: "Es un día hermoso.") == .spanish)
 
+        // Catalan
+        #expect(detector.detectLanguage(text: "Bon dia, com estàs?") == .catalan)
+        #expect(detector.detectLanguage(text: "Aquesta és una prova en català.") == .catalan)
+
         // German
         #expect(detector.detectLanguage(text: "Guten Tag, wie geht es Ihnen?") == .german)
         #expect(detector.detectLanguage(text: "Das ist ein schöner Tag.") == .german)
@@ -428,6 +432,23 @@ struct AppleLanguageDetectorTests {
         // Spanish vs Portuguese (similar Romance languages)
         #expect(detector.detectLanguage(text: "Hola, ¿cómo estás hoy?") == .spanish)
         #expect(detector.detectLanguage(text: "Olá, como você está hoje?") == .portuguese)
+
+        // Catalan remains separate from nearby Romance languages.
+        #expect(detector.detectLanguage(text: "Bon dia, com estàs avui?") == .catalan)
+        #expect(detector.detectLanguage(text: "Buenos días, esta es una prueba en español.") == .spanish)
+    }
+
+    @Test("Catalan Language Code Mapping", .tags(.apple, .unit))
+    func testCatalanLanguageCodeMapping() {
+        #expect(Language.language(fromCode: "ca") == .catalan)
+        #expect(AppleLanguageMapper.shared.languageCode(for: .catalan) == "ca")
+        #expect(GoogleService().languageCode(for: .catalan) == "ca")
+        #expect(GoogleService().language(fromCode: "ca") == .catalan)
+        #expect(BingService().languageCode(forLanguage: .catalan) == "ca")
+        #expect(BaiduService().languageCode(forLanguage: .catalan) == "cat")
+        #expect(AliTranslateType.supportLanguagesDictionary[.catalan] == "ca")
+        #expect(DeepLService().languageCode(for: .catalan) == "ca")
+        #expect(NiuTransService().languageCode(forLanguage: .catalan) == "ca")
     }
 
     // MARK: - User Preference Weight Correction Tests

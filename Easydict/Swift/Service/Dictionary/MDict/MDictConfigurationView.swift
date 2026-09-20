@@ -116,10 +116,12 @@ private struct DictionaryRow: View {
                     .lineLimit(1)
             }
             Spacer()
-            Toggle("", isOn: Binding(
+            Toggle(isOn: Binding(
                 get: { record.enabled },
                 set: { manager.setEnabled($0, for: record) }
-            ))
+            )) {
+                EmptyView()
+            }
             .toggleStyle(.switch)
             .controlSize(.small)
             .labelsHidden()

@@ -97,19 +97,26 @@ public class StreamService: QueryService {
         to: Language
     ) async throws
         -> QueryResult {
+        let generation = updateResultLock.withLock { resultGeneration }
         var latestResult = result ?? QueryResult()
         do {
             for try await result in translateStream(text, from: from, to: to) {
                 latestResult = result
             }
         } catch {
-            latestResult = result ?? latestResult
-            if latestResult.error == nil {
-                latestResult.error = QueryError.queryError(from: error)
+            try updateResultLock.withLock {
+                guard resultGeneration == generation else { throw CancellationError() }
+                latestResult = result ?? latestResult
+                if latestResult.error == nil {
+                    latestResult.error = QueryError.queryError(from: error)
+                }
             }
             throw error
         }
-        return latestResult
+        return try updateResultLock.withLock {
+            guard resultGeneration == generation else { throw CancellationError() }
+            return latestResult
+        }
     }
 
     /// Translate text and return a throttled stream of results.
@@ -120,13 +127,11 @@ public class StreamService: QueryService {
         to: Language
     )
         -> AsyncThrowingStream<QueryResult, Error> {
-        let activeResult = result ?? QueryResult()
-        if result == nil {
-            result = activeResult
+        let (activeResult, activeGeneration) = updateResultLock.withLock {
+            let activeResult = result ?? QueryResult()
+            if result == nil { result = activeResult }
+            return (activeResult, resultGeneration)
         }
-        // Capture the current result generation with the result object. Later
-        // chunks are ignored if a reset starts a newer query on this service.
-        let activeGeneration = resultGeneration
         let queryResultStream = streamTranslate(
             text: text,
             from: from,
@@ -137,7 +142,7 @@ public class StreamService: QueryService {
         let textStream = queryResultStreamToTextStream(queryResultStream)
 
         return AsyncThrowingStream { [weak self] continuation in
-            Task {
+            let task = Task {
                 guard let self else {
                     continuation.finish()
                     return
@@ -160,28 +165,31 @@ public class StreamService: QueryService {
                     }
                     continuation.finish()
                 } catch is CancellationError {
-                    let cancellationResult = self.result ?? QueryResult()
-                    if self.result == nil {
-                        self.result = cancellationResult
+                    self.updateResultLock.withLock {
+                        guard self.resultGeneration == activeGeneration else { return }
+                        activeResult.isStreamFinished = true
+                        activeResult.isLoading = false
+                        activeResult.error = nil
+                        continuation.yield(activeResult)
                     }
-                    cancellationResult.isStreamFinished = true
-                    cancellationResult.error = nil
-                    continuation.yield(cancellationResult)
                     continuation.finish()
                 } catch {
-                    if !didYieldError {
-                        let errorResult = self.result ?? QueryResult()
-                        if self.result == nil {
-                            self.result = errorResult
+                    self.updateResultLock.withLock {
+                        guard self.resultGeneration == activeGeneration else {
+                            continuation.finish()
+                            return
                         }
-                        if errorResult.error == nil {
-                            errorResult.error = QueryError.queryError(from: error)
+                        if !didYieldError {
+                            if activeResult.error == nil {
+                                activeResult.error = QueryError.queryError(from: error)
+                            }
+                            continuation.yield(activeResult)
                         }
-                        continuation.yield(errorResult)
+                        continuation.finish(throwing: error)
                     }
-                    continuation.finish(throwing: error)
                 }
             }
+            continuation.onTermination = { _ in task.cancel() }
         }
     }
 
@@ -195,14 +203,18 @@ public class StreamService: QueryService {
 
     // MARK: Internal
 
-    /// A lock for synchronizing access to the 'result' object
-    let updateResultLock = NSLock()
-
     let mustOverride = "This property or method must be overridden by a subclass"
 
     var cancellables: Set<AnyCancellable> = []
 
     var hideThinkTagContent: Bool = true
+
+    /// The optional OpenAI-compatible reasoning mode for stream services.
+    /// Subclasses can override this when the selected provider supports the parameter.
+    @nonobjc
+    var reasoningEffort: ChatQuery.ReasoningEffort? {
+        nil
+    }
 
     /// Whether requests currently use streaming transport over the network.
     ///
@@ -224,11 +236,20 @@ public class StreamService: QueryService {
         true
     }
 
+    /// Whether model changes should remain synchronized with the supported-model list.
+    ///
+    /// Services with free-form model input can disable this to prevent delayed
+    /// configuration callbacks from rewriting the user's latest model value.
+    var synchronizesModelWithSupportedModels: Bool {
+        true
+    }
+
     var model: String {
         get {
             var model = Defaults[modelKey]
-            if !validModels.contains(model) || model.isEmpty {
-                model = validModels.first ?? ""
+            let currentValidModels = validModels
+            if !currentValidModels.contains(model) || model.isEmpty {
+                model = currentValidModels.first ?? ""
                 Defaults[modelKey] = model
             }
             return model
@@ -312,18 +333,19 @@ public class StreamService: QueryService {
     }
 
     var endpoint: String {
-        Defaults[endpointKey].isEmpty ? defaultEndpoint : Defaults[endpointKey]
+        let configuredEndpoint = Defaults[endpointKey]
+        return configuredEndpoint.isEmpty ? defaultEndpoint : configuredEndpoint
     }
 
     var endpointKey: Defaults.Key<String> {
         stringDefaultsKey(.endpoint, defaultValue: defaultEndpoint)
     }
 
-    var endpointPlaceholder: LocalizedStringKey {
+    var endpointPlaceholder: String {
         defaultEndpoint
             .isEmpty
-            ? "service.configuration.openai.endpoint.placeholder"
-            : LocalizedStringKey(defaultEndpoint)
+            ? String(localized: "service.configuration.openai.endpoint.placeholder")
+            : defaultEndpoint
     }
 
     var defaultEndpoint: String {
@@ -371,8 +393,8 @@ public class StreamService: QueryService {
         ]
     }
 
-    var apiKeyPlaceholder: LocalizedStringKey {
-        "\(serviceType().rawValue) API Key"
+    var apiKeyPlaceholder: String {
+        String(localized: "service.configuration.api_key.placeholder \(serviceType().rawValue)")
     }
 
     var temperatureKey: Defaults.Key<Double> {
@@ -390,6 +412,25 @@ public class StreamService: QueryService {
     var enableStreaming: Bool {
         get { Defaults[enableStreamingKey] }
         set { Defaults[enableStreamingKey] = newValue }
+    }
+
+    /// Whether this service exposes the shared reasoning effort picker and
+    /// sends the reasoning effort parameters. Defaults to `false`; services
+    /// that support reasoning override it to `true` and read `configuredReasoningEffort`
+    /// when building their request.
+    var supportsReasoningEffort: Bool {
+        false
+    }
+
+    /// Storage key for the shared `off/high/max` reasoning effort. Named
+    /// distinctly from CodexCLIService's CLI-specific `reasoningEffortKey`,
+    /// which uses a different effort type, so the two can coexist.
+    var reasoningEffortDefaultsKey: Defaults.Key<ReasoningEffort> {
+        serviceDefaultsKey(.reasoningEffort, defaultValue: .off)
+    }
+
+    var configuredReasoningEffort: ReasoningEffort {
+        Defaults[reasoningEffortDefaultsKey]
     }
 
     func validModels(from supportedModels: String) -> [String] {

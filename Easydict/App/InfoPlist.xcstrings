@@ -11,6 +11,12 @@
             "value" : "Easydict"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -24,6 +30,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Easydict"
@@ -41,6 +53,12 @@
             "value" : "Easydict"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -58,6 +76,12 @@
             "state" : "translated",
             "value" : "Easydict"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
         }
       }
     },
@@ -69,6 +93,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Easydict requires permission to execute AppleScript."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict が AppleScript を実行するには権限が必要です。"
           }
         },
         "sk" : {
@@ -88,6 +118,12 @@
             "state" : "translated",
             "value" : "Easydict 需要權限來執行 AppleScript。"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict requiere permiso para ejecutar AppleScript."
+          }
         }
       }
     },
@@ -98,6 +134,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Copyright © 2023-2025 tisfeng. All rights reserved."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Copyright © 2023-2025 tisfeng. All rights reserved."
           }
         },
@@ -117,6 +159,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copyright © 2023-2025 tisfeng. 保留一切權利。"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copyright © 2023-2025 tisfeng. Todos los derechos reservados."
           }
         }
       }

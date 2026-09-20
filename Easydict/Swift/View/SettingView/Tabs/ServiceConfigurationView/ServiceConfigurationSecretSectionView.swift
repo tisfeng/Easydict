@@ -18,9 +18,11 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
     init(
         service: QueryService,
         observeKeys: [Defaults.Key<String>],
+        showValidationButton: Bool = true,
         @ViewBuilder content: () -> Content
     ) {
         self.service = service
+        self.showValidationButton = showValidationButton
         self.content = content()
         self.viewModel = ServiceValidationViewModel(
             service: service,
@@ -32,6 +34,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     var service: QueryService
     let content: Content
+    let showValidationButton: Bool
 
     var header: some View {
         HStack(alignment: .lastTextBaseline) {
@@ -42,22 +45,6 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     var footer: some View {
         HStack {
-            if service.isDuplicatable() {
-                Button {
-                    service.duplicate()
-                } label: {
-                    Text("service.configuration.duplicate")
-                }
-
-                if service.isDeletable(service.windowType) {
-                    Button("service.configuration.delete", role: .destructive) {
-                        service.remove()
-                    }
-                }
-
-                Spacer()
-            }
-
             Spacer()
 
             Button {
@@ -83,7 +70,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         } header: {
             header
         } footer: {
-            footer
+            if showValidationButton { footer }
         }
         .alert(viewModel.alertTitle, isPresented: $viewModel.isAlertPresented) {
             Button("ok") {
@@ -170,7 +157,7 @@ private class ServiceValidationViewModel: ObservableObject {
 
     @Published var isAlertPresented = false
     @Published var isValidating = false
-    @Published var alertTitle: LocalizedStringKey = ""
+    @Published var alertTitle = LocalizedStringKey(String())
     @Published var errorMessage = ""
     @Published var isValidateBtnDisabled = false
 
@@ -187,7 +174,7 @@ private class ServiceValidationViewModel: ObservableObject {
 
     func reset() {
         isValidating = false
-        alertTitle = ""
+        alertTitle = LocalizedStringKey(String())
         errorMessage = ""
         isAlertPresented = false
     }

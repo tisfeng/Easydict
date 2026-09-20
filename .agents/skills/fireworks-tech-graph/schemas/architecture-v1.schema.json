@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yizhiyanhua-ai.github.io/fireworks-tech-graph/schemas/architecture-v1.schema.json",
+  "allOf": [
+    { "$ref": "diagram-v1.schema.json" },
+    { "properties": { "mode": { "const": "architecture" } } }
+  ]
+}

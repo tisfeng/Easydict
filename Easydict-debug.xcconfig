@@ -1,3 +1,5 @@
 DEVELOPMENT_TEAM =
 CODE_SIGN_IDENTITY = -
 CODE_SIGN_STYLE = Manual
+
+#include? "Easydict-debug.local.xcconfig"

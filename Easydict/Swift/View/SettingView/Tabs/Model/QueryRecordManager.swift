@@ -72,11 +72,30 @@ class QueryRecordManager: NSObject {
         toLanguage: Language,
         to type: RecordType
     ) {
+        addRecord(
+            queryText: queryText,
+            fromLanguage: fromLanguage,
+            toLanguage: toLanguage,
+            translatedResult: nil,
+            to: type
+        )
+    }
+
+    /// Adds a query record with an optional translated result to the specified category.
+    @objc
+    func addRecord(
+        queryText: String,
+        fromLanguage: Language,
+        toLanguage: Language,
+        translatedResult: String?,
+        to type: RecordType
+    ) {
         updateRecords(for: type) { records in
             let record = makeRecord(
                 queryText: queryText,
                 fromLanguage: fromLanguage,
-                toLanguage: toLanguage
+                toLanguage: toLanguage,
+                translatedResult: translatedResult
             )
 
             switch type.deduplicationPolicy {
@@ -94,6 +113,22 @@ class QueryRecordManager: NSObject {
                 records = Array(records.prefix(maxCount))
             }
 
+            return true
+        }
+    }
+
+    /// Updates the translated result of an existing record matched by query text.
+    @objc
+    func updateTranslatedResult(
+        _ translatedResult: String,
+        forQueryText queryText: String,
+        in type: RecordType
+    ) {
+        updateRecords(for: type) { records in
+            guard let index = records.firstIndex(where: { $0.queryText == queryText }) else {
+                return false
+            }
+            records[index].translatedResult = translatedResult
             return true
         }
     }
@@ -151,13 +186,15 @@ class QueryRecordManager: NSObject {
     private func makeRecord(
         queryText: String,
         fromLanguage: Language,
-        toLanguage: Language
+        toLanguage: Language,
+        translatedResult: String?
     )
         -> QueryRecord {
         QueryRecord(
             queryText: queryText,
             queryFromLanguage: fromLanguage,
-            queryToLanguage: toLanguage
+            queryToLanguage: toLanguage,
+            translatedResult: translatedResult
         )
     }
 }

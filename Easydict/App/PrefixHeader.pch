@@ -19,5 +19,8 @@
 
 #import "EZConst.h"
 #import "EZConstKey.h"
+#import "EZLabel.h"
+#import "EZHoverButton.h"
 
+// Keep the generated Swift header after Objective-C bases it references.
 #import "Easydict-Swift.h"

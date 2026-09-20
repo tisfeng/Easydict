@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "mode": "architecture",
+  "template_type": "architecture",
+  "style": 12,
+  "semantic_profile": "generic",
+  "quality_profile": "showcase",
+  "width": 960,
+  "height": 600,
+  "title": "Agent Runtime Architecture",
+  "subtitle": "orchestration, memory, tools, and evaluation",
+  "containers": [
+    { "id": "control-plane", "x": 40, "y": 120, "width": 880, "height": 116, "label": "Control Plane" },
+    { "id": "execution-state", "x": 40, "y": 304, "width": 880, "height": 136, "label": "Execution and State" }
+  ],
+  "nodes": [
+    { "id": "client", "kind": "rect", "x": 60, "y": 156, "width": 160, "height": 60, "label": "Client", "sublabel": "request + policy", "fill": "#f8fafc", "stroke": "#94a3b8", "flat": true },
+    { "id": "gateway", "kind": "double_rect", "x": 300, "y": 156, "width": 180, "height": 60, "label": "Gateway", "sublabel": "auth + routing", "fill": "#fffbeb", "stroke": "#f59e0b", "flat": true },
+    { "id": "agent", "kind": "double_rect", "x": 560, "y": 156, "width": 180, "height": 60, "label": "Agent Runtime", "sublabel": "plan + inference", "fill": "#faf5ff", "stroke": "#8b5cf6", "flat": true },
+    { "id": "memory", "kind": "rect", "x": 300, "y": 344, "width": 180, "height": 60, "label": "Vector Memory", "sublabel": "retrieve + persist", "fill": "#f0f9ff", "stroke": "#38bdf8", "flat": true },
+    { "id": "tools", "kind": "rect", "x": 560, "y": 344, "width": 180, "height": 60, "label": "Tool Runtime", "sublabel": "MCP + functions", "fill": "#f0fdf4", "stroke": "#22c55e", "flat": true },
+    { "id": "eval", "kind": "rect", "x": 790, "y": 344, "width": 110, "height": 60, "label": "Trace + Eval", "sublabel": "quality gate", "fill": "#fff1f2", "stroke": "#fb7185", "flat": true }
+  ],
+  "arrows": [
+    { "id": "request", "source": "client", "target": "gateway", "source_port": "right", "target_port": "left", "flow": "control", "label": "request" },
+    { "id": "dispatch", "source": "gateway", "target": "agent", "source_port": "right", "target_port": "left", "flow": "control", "label": "dispatch" },
+    { "id": "context", "source": "agent", "target": "memory", "source_port": "bottom", "target_port": "top", "flow": "read", "label": "context", "route_points": [[632, 270], [390, 270]] },
+    { "id": "tool-call", "source": "agent", "target": "tools", "source_port": "bottom", "target_port": "top", "flow": "async", "label": "tool call", "dashed": true },
+    { "id": "augment", "source": "memory", "target": "tools", "source_port": "right", "target_port": "left", "flow": "write", "label": "augment" },
+    { "id": "trace", "source": "tools", "target": "eval", "source_port": "right", "target_port": "left", "flow": "data", "label": "trace" },
+    { "id": "z-feedback", "source": "eval", "target": "agent", "source_port": "top", "target_port": "bottom", "flow": "feedback", "label": "feedback", "dashed": true, "route_points": [[845, 270], [668, 270]] }
+  ],
+  "legend_orientation": "horizontal",
+  "legend_x": 48,
+  "legend_y": 510,
+  "legend_locked": true,
+  "legend": [
+    { "flow": "control", "label": "primary" },
+    { "flow": "write", "label": "data" },
+    { "flow": "async", "label": "dependency" }
+  ],
+  "footer": "Style 12 · Ops Pulse · showcase composition contract",
+  "footer_x": 48,
+  "footer_y": 570
+}

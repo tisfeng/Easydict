@@ -20,12 +20,21 @@
 
 - (instancetype)initWithWindowType:(EZWindowType)type {
     NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
+    BOOL usesNonactivatingPanel = type != EZWindowTypeMain;
+    if (usesNonactivatingPanel) {
+        style |= NSWindowStyleMaskNonactivatingPanel;
+    }
 
     CGRect frame = [EZLayoutManager.shared windowFrameWithType:type];
 
     if (self = [super initWithContentRect:frame styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
         self.windowType = type;
 
+        self.floatingPanel = usesNonactivatingPanel;
+        self.hidesOnDeactivate = NO;
+        if (usesNonactivatingPanel) {
+            self.collectionBehavior |= NSWindowCollectionBehaviorTransient | NSWindowCollectionBehaviorIgnoresCycle;
+        }
         self.movableByWindowBackground = YES;
         self.level = NSNormalWindowLevel;
         self.titlebarAppearsTransparent = YES;
@@ -125,6 +134,10 @@
     if (self.didBecomeKeyWindowBlock) {
         self.didBecomeKeyWindowBlock();
     }
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+    [self.queryViewController cancelAutoQuery];
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification {

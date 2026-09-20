@@ -1,88 +1,50 @@
 ---
 name: worktree-rebase-merge
-description: >
-  Use when the user asks to commit a worktree branch, rebase it onto dev,
-  resolve conflicts, then merge the branch into dev from the dev checkout.
+description: 将当前 worktree 的任务提交 rebase 到本地目标分支，并从目标 worktree 合并。用于明确要求本地集成；仅创建提交使用 git-commit。
 ---
 
-# Worktree Rebase/Merge Workflow
+# Worktree Rebase/Merge 工作流
 
-Use this skill to finish a worktree feature branch by committing staged work,
-rebasing the branch onto the target branch, then merging it from the target
-branch checkout.
+将当前 checkout 视为源：必要时创建任务分支并提交，rebase 到目标分支，
+再从目标分支的 worktree 合并。源与目标相同时只提交，不 rebase 或 merge。
 
-## Defaults
+## 依赖与授权
 
-- Use `dev` as the target branch unless the user explicitly names another
-  target branch.
-- Treat the branch checked out in the current worktree as the source branch.
-- Do not fetch, pull, or push unless the user explicitly asks.
-- If the source worktree has no staged changes when entering the commit step,
-  run `git add .` once before deciding whether there is anything to commit.
-- Outside that automatic empty-staging-area pass, only stage files explicitly
-  selected by the user, files already staged for the commit workflow, or
-  resolved conflict files during rebase and merge.
+完整交付依赖 `git-commit` 的提交、分支命名和已有提交回执能力。从当前 Skill 清单
+定位实际入口，未提供位置时才检查 [同级安装位置](../git-commit/SKILL.md)。缺失时可完成
+只读预检，但在首次分支、暂存、提交、rebase 或 merge 写入前停止。
 
-## Initial Checks
+本 Skill 只在用户明确要求本地集成时执行 Git 写入。仅预览或只读请求不创建分支/
+worktree、不暂存、提交、rebase 或 merge。除非用户明确要求，不 fetch、pull 或 push。
 
-Before changing Git state:
+## Git 状态保护
 
-1. Run `git branch --show-current`, `git status --short`, and
-   `git worktree list`.
-2. Stop if the current checkout is detached, the source branch is missing, or
-   the source branch is the same as the target branch.
-3. Locate the target branch checkout from `git worktree list`. If the target
-   branch is checked out in another worktree, use that path for the final
-   merge instead of switching the current worktree to the target branch.
+- 开始前确认允许路径、提交范围、用户限制，以及源/目标的 HEAD、索引、工作树、
+  worktree 占用和进行中操作。
+- Git 写操作串行执行；每次写入前复验相关状态，写入后确认结果符合预期。
+- rebase 前冻结源提交范围与目标 OID；rebase 后核对改写结果。merge 前确认源干净、
+  目标仍为冻结 OID，且目标 worktree 没有漂移。
+- 不使用 reset、强制移动 ref、stash 或 clean，不切换用户其他 checkout 的分支。
+- 发现非预期漂移、未解冲突、范围不一致、不能安全处理的语义冲突或权限拒绝时，
+  保留现场并停止后续写入。
 
-## Commit Source Branch
+## 主流程
 
-- If staged changes exist, use the `git-commit` skill and follow its staged-only
-  approval workflow exactly.
-- If no staged changes exist, run `git add .` once, then rerun
-  `git status --short` and inspect the staged diff. If files were staged, use
-  the `git-commit` skill and follow its staged-only approval workflow exactly.
-- If `git add .` still leaves no staged changes, continue only if there is no
-  commit needed; otherwise stop and report that there is nothing to commit.
-- After any commit, rerun `git status --short`. Do not start the rebase while
-  the source worktree still has uncommitted changes unless the user explicitly
-  decides how to handle them.
+1. 读取 [集成协议](references/integration-workflow.md)，使用其只读 helper 收集稳定的源/目标事实。
+2. 用户指定目标时使用该分支；否则按集成协议实时解析远程默认分支。目标或 remote
+   有歧义、无法证明实时默认分支或本地目标不存在时，在写入前停止并请用户指定。
+3. detached HEAD 按集成协议挂接到不覆盖现有 ref 的任务分支。没有 staged、unstaged、
+   untracked 或相对目标的提交时，不创建空分支。
+4. 源与目标相同时，只使用 `git-commit` 完成提交和回执。
+5. 其他情况先用 `git-commit` 提交获准的源变更，要求源 worktree 干净；再检查完整
+   `<target>..<source>` 提交和路径范围，执行 `git rebase <target>` 并验证改写结果。
+6. 在干净的目标 worktree 执行 `git merge <source>`。没有目标 worktree 时，在仓库外创建临时
+   worktree，成功合并后删除；冲突或失败时保留供恢复。
+7. 读取 [集成回执](references/reporting.md)，报告真实分支、OID、worktree、rebase/merge、工作树和
+   Push 状态；单提交或多提交统计复用 `git-commit` 的回执契约。
 
-## Rebase Onto Target
+## 完成与停止条件
 
-From the source branch worktree, run `git rebase <target-branch>`.
-
-When conflicts occur:
-
-- Inspect `git status --short` and the conflicted files before editing.
-- Resolve conflicts semantically using the current code and docs. Do not choose
-  `--ours` or `--theirs` wholesale unless the user asked for that outcome or
-  the conflict is clearly mechanical.
-- Stage only resolved conflict files, then run `git rebase --continue`.
-- If a conflict requires a product decision or cannot be resolved safely, stop
-  and ask the user.
-
-After the rebase completes, run `git status --short` and `git diff --check`.
-Run broader validation only when the touched code or repository rules require
-it.
-
-## Merge From Target Checkout
-
-Before merging:
-
-1. Confirm the rebased source branch worktree is clean.
-2. Confirm the target branch worktree is clean.
-3. Move to the target branch checkout path found from `git worktree list`, or
-   switch to the target branch in the current worktree only if it is not already
-   checked out elsewhere.
-
-Run `git merge <source-branch>` using Git's default merge behavior. Do not force
-`--no-ff`, squash, rebase again, or push unless the user explicitly asks.
-
-If merge conflicts occur, resolve them with the same conflict rules as the
-rebase step, stage only resolved conflict files, and run `git merge --continue`.
-
-## Final Response
-
-Report the source branch, target branch, target worktree path, commit or merge
-result, and final clean status. State clearly when no push was performed.
+直接提交模式在 `git-commit` 完成时结束。普通集成只有在源已成功 rebase、目标从冻结
+OID 按预期合并、源与目标最终状态已验证且回执完整时才算完成。目标只有脏
+worktree 时，允许先完成源提交，然后在 rebase/merge 前暂停；恢复步骤见集成协议。

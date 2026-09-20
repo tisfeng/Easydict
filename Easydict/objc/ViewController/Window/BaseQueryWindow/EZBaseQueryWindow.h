@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZBaseQueryWindow : NSWindow
+@interface EZBaseQueryWindow : NSPanel
 
 @property (nonatomic, assign) EZWindowType windowType;
 @property (nonatomic, strong) EZTitlebar *titleBar;

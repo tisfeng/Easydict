@@ -8,6 +8,7 @@
 
 import AppKit
 import Defaults
+import SFSafeSymbols
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -35,20 +36,30 @@ struct FavoritesTab: View {
                 Text(headerTitleKey)
                     .font(.headline)
                 Spacer()
-                Menu {
-                    Button("favorites.export") {
-                        exportRecords(for: .favorites)
+                HStack(spacing: 8) {
+                    Button {
+                        clearAllRecords()
+                    } label: {
+                        Label("common.delete", systemSymbol: .trash)
+                            .labelStyle(.iconOnly)
                     }
-                    .disabled(favorites.isEmpty)
-                    Button("history.export") {
-                        exportRecords(for: .history)
+                    .disabled(currentRecords.isEmpty)
+
+                    Menu {
+                        Button("favorites.export") {
+                            exportRecords(for: .favorites)
+                        }
+                        .disabled(favorites.isEmpty)
+                        Button("history.export") {
+                            exportRecords(for: .history)
+                        }
+                        .disabled(history.isEmpty)
+                    } label: {
+                        Label("common.export", systemImage: "square.and.arrow.up")
+                            .labelStyle(.iconOnly)
                     }
-                    .disabled(history.isEmpty)
-                } label: {
-                    Label("common.export", systemImage: "square.and.arrow.up")
-                        .labelStyle(.iconOnly)
+                    .frame(maxWidth: 60)
                 }
-                .frame(maxWidth: 60)
             }
             .padding(.horizontal)
 
@@ -140,6 +151,29 @@ struct FavoritesTab: View {
         }
     }
 
+    /// Clears all records from the currently selected section.
+    private func clearAllRecords() {
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("clear_all", comment: "")
+        alert.informativeText = selectedSection == .favorites
+            ? NSLocalizedString("favorites.clear_confirm", comment: "")
+            : NSLocalizedString("history.clear_confirm", comment: "")
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: NSLocalizedString("ok", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("cancel", comment: ""))
+
+        let response = alert.runModal()
+        if response == .alertFirstButtonReturn {
+            switch selectedSection {
+            case .favorites:
+                QueryRecordManager.shared.clearAllRecords(for: .favorites)
+            case .history:
+                QueryRecordManager.shared.clearAllRecords(for: .history)
+            }
+            loadRecords()
+        }
+    }
+
     /// Loads the favorites and history data for display.
     private func loadRecords() {
         favorites = QueryRecordManager.shared.getAllRecords(for: .favorites)
@@ -177,7 +211,7 @@ struct FavoritesTab: View {
 
     /// Converts records to a CSV string.
     private func makeCSV(for records: [QueryRecord]) -> String {
-        var rows = ["queryText,queryFromLanguage,queryToLanguage,timestamp"]
+        var rows = ["queryText,queryFromLanguage,queryToLanguage,translatedResult,timestamp"]
         rows.reserveCapacity(records.count + 1)
         for record in records {
             let timestamp = Self.exportTimestampFormatter.string(from: record.timestamp)
@@ -185,6 +219,7 @@ struct FavoritesTab: View {
                 record.queryText,
                 record.queryFromLanguage.localizedName,
                 record.queryToLanguage.localizedName,
+                record.translatedResult ?? "",
                 timestamp,
             ]
             rows.append(values.map(csvEscaped).joined(separator: ","))
@@ -195,7 +230,10 @@ struct FavoritesTab: View {
     /// Escapes a value for CSV output.
     private func csvEscaped(_ value: String) -> String {
         let escaped = value.replacingOccurrences(of: "\"", with: "\"\"")
-        if escaped.contains(",") || escaped.contains("\n") || escaped.contains("\r") {
+        if value.contains("\"")
+            || value.contains(",")
+            || value.contains("\n")
+            || value.contains("\r") {
             return "\"\(escaped)\""
         }
         return escaped
@@ -229,8 +267,15 @@ struct QueryRecordRow: View {
                 Text(record.queryText)
                     .font(.body)
                     .lineLimit(1)
+                if let translatedResult = record.translatedResult,
+                   !translatedResult.isEmpty {
+                    Text(translatedResult)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
                 Text(Self.timestampFormatter.string(from: record.timestamp))
-                    .font(.caption)
+                    .font(.caption2)
                     .foregroundColor(.secondary)
             }
             Spacer()
@@ -272,9 +317,4 @@ struct QueryRecordRow: View {
         let windowManager = EZWindowManager.shared()
         windowManager.showFloating(windowType, queryText: record.queryText, autoQuery: true, actionType: .inputQuery)
     }
-}
-
-#Preview {
-    FavoritesTab()
-        .frame(width: 900, height: 640)
 }

@@ -440,10 +440,12 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     BOOL isFavorited = [QueryRecordManager.shared containsRecordWithQueryText:queryText
                                                                             in:RecordTypeFavorites];
     if (!isFavorited) {
+        NSString *translatedResult = [viewController firstTranslatedText];
         [QueryRecordManager.shared addRecordWithQueryText:queryText
                                              fromLanguage:queryModel.queryFromLanguage
                                                toLanguage:queryModel.queryTargetLanguage
-                                                       to:RecordTypeFavorites];
+                                         translatedResult:translatedResult
+                                                      to:RecordTypeFavorites];
     }
 }
 

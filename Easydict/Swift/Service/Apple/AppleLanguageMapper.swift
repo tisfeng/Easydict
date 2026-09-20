@@ -37,6 +37,7 @@ public class AppleLanguageMapper: NSObject {
         case .korean: return "ko"
         case .french: return "fr"
         case .spanish: return "es"
+        case .catalan: return "ca"
         case .portuguese: return "pt"
         case .italian: return "it"
         case .german: return "de"
@@ -95,6 +96,7 @@ public class AppleLanguageMapper: NSObject {
             .korean: .korean, // ko
             .french: .french, // fr
             .spanish: .spanish, // es
+            .catalan: .catalan, // ca
             .portuguese: .portuguese, // pt
             .italian: .italian, // it
             .german: .german, // de

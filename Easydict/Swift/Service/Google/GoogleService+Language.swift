@@ -36,6 +36,7 @@ extension GoogleService {
         case .korean: return "ko"
         case .french: return "fr"
         case .spanish: return "es"
+        case .catalan: return "ca"
         case .portuguese: return "pt-PT"
         case .brazilianPortuguese: return "pt"
         case .italian: return "it"
@@ -96,6 +97,7 @@ extension GoogleService {
         case "ko": return .korean
         case "fr": return .french
         case "es": return .spanish
+        case "ca": return .catalan
         case "pt-PT": return .portuguese
         case "pt": return .brazilianPortuguese
         case "it": return .italian

@@ -181,7 +181,8 @@ class YoudaoService: QueryService {
 
     // MARK: Private
 
-    /// Note: The official Youdao API supports most languages, but its web page shows that only 15 languages are supported. https://fanyi.youdao.com/index.html#/
+    /// Follows the Youdao web translation API used by this service.
+    /// Do not extend this list from the official text translation API docs.
     private var languagesDictionary: [Language: String] {
         [
             .simplifiedChinese: "zh-CHS",

@@ -18,7 +18,7 @@ struct SecureInputCell: View {
     init(
         textFieldTitleKey: LocalizedStringKey,
         key: Defaults.Key<String>,
-        placeholder: LocalizedStringKey = "service.configuration.input.placeholder",
+        placeholder: String = String(localized: "service.configuration.input.placeholder"),
         showText: Bool = false
     ) {
         self.textFieldTitleKey = textFieldTitleKey
@@ -33,7 +33,7 @@ struct SecureInputCell: View {
 
     @Default var value: String
     let textFieldTitleKey: LocalizedStringKey
-    let placeholder: LocalizedStringKey
+    let placeholder: String
 
     var body: some View {
         SecureTextField(title: textFieldTitleKey, placeholder: placeholder, text: $value, showText: showText)
@@ -67,7 +67,6 @@ struct InputCell: View {
 
     var body: some View {
         TextField(textFieldTitleKey, text: $value, prompt: Text(placeholder))
-            .padding(10.0)
             .onReceive(Just(value)) { _ in
                 limit(limitLength)
             }
@@ -105,7 +104,6 @@ struct StaticPickerCell<T: Hashable & Defaults.Serializable & EnumLocalizedStrin
                 Text(value.title)
             }
         }
-        .padding(10.0)
     }
 }
 
@@ -133,7 +131,6 @@ struct PickerCell<T: Hashable & Defaults.Serializable & EnumLocalizedStringConve
                 Text(value.title)
             }
         }
-        .padding(10.0)
     }
 }
 
@@ -178,7 +175,6 @@ struct StringToggleCell: View {
 
     var body: some View {
         Toggle(titleKey, isOn: $viewModel.isOn)
-            .padding(10.0)
     }
 
     // MARK: Private
@@ -212,7 +208,6 @@ struct ToggleCell: View {
                     .foregroundColor(.gray)
             }
         }
-        .padding(10.0)
     }
 
     // MARK: Private

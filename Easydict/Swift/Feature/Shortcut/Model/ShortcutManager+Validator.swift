@@ -7,15 +7,18 @@
 //
 
 import Carbon
+import Defaults
 import Foundation
 import KeyHolder
 import Magnet
 import Sauce
 
 extension ShortcutManager {
-    static func validateShortcut(_ keyCombo: KeyCombo) -> Bool {
-        validateShortcutConfictBySystem(keyCombo) ||
+    static func validateShortcut(_ keyCombo: KeyCombo, excluding action: ShortcutAction? = nil) -> Bool {
+        ShortcutManager.shared.confictShortcutTitle = ""
+        return validateShortcutConfictBySystem(keyCombo) ||
             validateShortcutConfictByMenuItem(keyCombo) ||
+            validateShortcutConfictBySavedShortcut(keyCombo, excluding: action) ||
             validateShortcutConfictByCustom(keyCombo)
     }
 }
@@ -53,7 +56,7 @@ extension ShortcutManager {
 extension ShortcutManager {
     static func validateShortcutConfictByMenuItem(_ keyCombo: KeyCombo) -> Bool {
         if let item = menuItemUsedShortcut(keyCombo) {
-            ShortcutManager.shared.confictMenuItem = item
+            ShortcutManager.shared.confictShortcutTitle = item.title
             return true
         } else {
             return false
@@ -82,6 +85,31 @@ extension ShortcutManager {
             }
         }
         return nil
+    }
+}
+
+// validate shortcut used by saved shortcut defaults
+extension ShortcutManager {
+    static func validateShortcutConfictBySavedShortcut(
+        _ keyCombo: KeyCombo, excluding action: ShortcutAction? = nil
+    )
+        -> Bool {
+        guard let matchedAction = ShortcutAction.allCases.first(where: { savedAction in
+            guard savedAction != action,
+                  let defaultsKey = savedAction.defaultsKey,
+                  let savedKeyCombo = Defaults[defaultsKey]
+            else {
+                return false
+            }
+            return savedKeyCombo == keyCombo
+        }) else {
+            return false
+        }
+
+        ShortcutManager.shared.confictShortcutTitle = String(
+            localized: LocalizedStringResource(stringLiteral: matchedAction.localizedStringKey())
+        )
+        return true
     }
 }
 

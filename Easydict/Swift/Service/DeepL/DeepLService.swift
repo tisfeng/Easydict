@@ -94,6 +94,7 @@ class DeepLService: QueryService {
             Language.korean, "ko",
             Language.french, "fr",
             Language.spanish, "es",
+            Language.catalan, "ca",
             Language.portuguese, "pt-PT",
             Language.brazilianPortuguese, "pt-BR",
             Language.italian, "it",
@@ -226,6 +227,7 @@ extension DeepLService {
         case .korean: return "ko"
         case .french: return "fr"
         case .spanish: return "es"
+        case .catalan: return "ca"
         case .portuguese: return "pt-PT"
         case .brazilianPortuguese: return "pt-BR"
         case .italian: return "it"

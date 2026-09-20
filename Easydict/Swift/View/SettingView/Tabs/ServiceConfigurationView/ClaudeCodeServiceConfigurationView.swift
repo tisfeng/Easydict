@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import Defaults
 import SFSafeSymbols
 import SwiftUI
 
@@ -18,7 +19,7 @@ import SwiftUI
 struct ClaudeCodeServiceConfigurationView: View {
     // MARK: Lifecycle
 
-    init(service: StreamService) {
+    init(service: ClaudeCodeService) {
         self.service = service
     }
 
@@ -30,6 +31,20 @@ struct ClaudeCodeServiceConfigurationView: View {
         // so no nested Form is needed here.
         Section {
             CLIStatusRow()
+        }
+
+        // Model + effort overrides. The model field accepts an alias (sonnet, opus,
+        // haiku) or a full model name; clearing it falls back to the CLI's own
+        // default model, and the placeholder interpolates the app default so users
+        // can see what to type to restore it. The `.default` effort omits `--effort`
+        // and keeps the CLI default.
+        Section {
+            ModelInputRow(key: service.modelKey)
+            StaticPickerCell(
+                titleKey: "service.configuration.claude_code.effort.title",
+                key: service.effortKey,
+                values: ClaudeCodeEffort.allCases
+            )
         }
         #if AGENT_CLI_DEBUG
         Section {
@@ -52,7 +67,69 @@ struct ClaudeCodeServiceConfigurationView: View {
 
     // MARK: Private
 
-    private let service: StreamService
+    private let service: ClaudeCodeService
+}
+
+// MARK: - ModelInputRow
+
+/// The model text field with an info button that explains the accepted formats.
+///
+/// The Claude CLI only accepts short aliases (`sonnet`, `opus`, `haiku`) or full
+/// model IDs (`claude-opus-4-7`); shorthand like `opus4.7` fails at query time,
+/// so the popover documents the valid formats up front.
+private struct ModelInputRow: View {
+    // MARK: Lifecycle
+
+    init(key: Defaults.Key<String>) {
+        _model = .init(key)
+    }
+
+    // MARK: Internal
+
+    var body: some View {
+        LabeledContent {
+            TextField(
+                text: $model,
+                prompt: Text(
+                    "service.configuration.claude_code.model.placeholder \(ClaudeCodeRunner.defaultModel)"
+                )
+            ) {
+                EmptyView()
+            }
+            .multilineTextAlignment(.trailing)
+        } label: {
+            HStack(spacing: 4) {
+                Text("service.configuration.claude_code.model.title")
+                Button {
+                    isShowingHelp.toggle()
+                } label: {
+                    Image(systemSymbol: .infoCircle)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .popover(isPresented: $isShowingHelp, arrowEdge: .bottom) {
+                    Text("service.configuration.claude_code.model.help")
+                        .font(.callout)
+                        .multilineTextAlignment(.leading)
+                        .frame(width: 340, alignment: .leading)
+                        .padding()
+                        // Popover content is hosted in a separate window and does not
+                        // inherit the app-language locale injected at the root view
+                        // (EasydictApp), so re-apply the surrounding locale here to keep
+                        // the help text in the in-app language instead of the system one.
+                        .environment(\.locale, locale)
+                }
+            }
+        }
+    }
+
+    // MARK: Private
+
+    @Environment(\.locale) private var locale
+
+    @State private var isShowingHelp = false
+
+    @Default private var model: String
 }
 
 // MARK: - CLIStatusRow

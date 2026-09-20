@@ -17,7 +17,9 @@ struct TranslationView: View {
 
     var body: some View {
         VStack {
-            TextField("", text: $manager.sourceText)
+            TextField(text: $manager.sourceText) {
+                EmptyView()
+            }
             Text(manager.targetText)
         }
         .padding()

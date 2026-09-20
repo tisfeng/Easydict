@@ -20,9 +20,13 @@ class OllamaService: BaseOpenAIService {
         super.init()
 
         Task {
-            let models = try await localModels()
-            self.ollamaModels = models.models.map(\.name)
-            logInfo("ollama models: \(ollamaModels)")
+            do {
+                let models = try await localModels()
+                self.ollamaModels = models.models.map(\.name)
+                logInfo("ollama models: \(ollamaModels)")
+            } catch {
+                logError("Fetch Ollama models failed: \(error.localizedDescription)")
+            }
         }
     }
 

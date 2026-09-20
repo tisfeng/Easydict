@@ -18,6 +18,7 @@
 #import "EZSchemeParser.h"
 #import "EZToast.h"
 #import "DictionaryKit.h"
+#import "EZWebViewManager.h"
 
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
@@ -269,6 +270,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     NSMutableArray *services = [NSMutableArray array];
 
     self.youdaoService = nil;
+    _defaultTTSService = nil;
     EZServiceType defaultTTSServiceType = self.config.defaultTTSServiceType;
 
     for (EZQueryService *service in allServices) {
@@ -293,7 +295,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     self.audioPlayer = [[EZAudioPlayer alloc] init];
     if (!self.youdaoService) {
-        self.youdaoService = [self serviceWithType:EZServiceTypeYoudao];
+        self.youdaoService = [EZLocalStorage.shared service:EZServiceTypeYoudao windowType:self.windowType];
     }
 }
 
@@ -379,6 +381,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (!_tableView) {
         NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
+        tableView.wantsLayer = YES;
+        tableView.layer.drawsAsynchronously = YES;
 
         [tableView executeLight:^(NSTableView *tableView) {
             tableView.backgroundColor = [NSColor ez_mainViewBgLightColor];
@@ -638,9 +642,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)focusInputTextView {
     // Fix ⚠️: ERROR: Setting <EZTextView: 0x13d82c5d0> as the first responder for window <EZFixedQueryWindow: 0x11c607800>, but it is in a different window ((null))! This would eventually crash when the view is freed. The first responder will be set to nil.
     if (self.queryView.window == self.baseQueryWindow) {
-        // Need to activate the current application first.
-        [NSApp activateIgnoringOtherApps:YES];
-
         // Delay to make textView the first responder.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
@@ -649,6 +650,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             }
         });
     }
+}
+
+- (void)cancelAutoQuery {
+    [self.queryView cancelAutoQuery];
 }
 
 - (void)clearInput {
@@ -683,7 +688,51 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 }
 
+- (nullable NSString *)firstTranslatedText {
+    if (self.firstService &&
+        [self.firstService.result.queryText isEqualToString:self.queryModel.queryText]) {
+        NSString *copiedText = self.firstService.result.copiedText;
+        if (copiedText.length > 0) {
+            return copiedText;
+        }
+        return self.firstService.result.translatedText;
+    }
+    return nil;
+}
+
 - (void)toggleTranslationLanguages {
+    BOOL canSwap = [self.selectLanguageCell canToggleTranslationLanguages];
+    BOOL bothAutomatic = [self.queryModel.userSourceLanguage isEqualToString:EZLanguageAuto] &&
+        [self.queryModel.userTargetLanguage isEqualToString:EZLanguageAuto];
+    if (canSwap || bothAutomatic) {
+        BOOL isStreamingInProgress = self.firstService.isStream && !self.firstService.result.isStreamFinished;
+        BOOL isResultReady = !self.firstService.result.isLoading && !isStreamingInProgress && !self.firstService.result.error;
+        NSString *translatedText = isResultReady ? [self firstTranslatedText] : nil;
+        if (bothAutomatic) {
+            // Re-query the translation using Auto without changing language preferences.
+            if ([translatedText ns_trim].length > 0) {
+                self.queryModel.ocrImage = nil;
+                [self startQueryText:translatedText actionType:EZActionTypeInputQuery];
+            }
+            return;
+        }
+
+        // Use the completed result's direction; shared language preferences may have changed.
+        EZLanguage fromLanguage = self.firstService.result.from;
+        EZLanguage toLanguage = self.firstService.result.to;
+        BOOL hasReverseDirection = fromLanguage.length > 0 && toLanguage.length > 0 &&
+            ![fromLanguage isEqualToString:EZLanguageAuto] &&
+            ![toLanguage isEqualToString:EZLanguageAuto] &&
+            ![fromLanguage isEqualToString:toLanguage];
+        if ([translatedText ns_trim].length > 0 && hasReverseDirection) {
+            self.queryModel.userSourceLanguage = fromLanguage;
+            self.queryModel.userTargetLanguage = toLanguage;
+            self.inputText = translatedText;
+            self.queryModel.ocrImage = nil;
+            self.queryModel.actionType = EZActionTypeInputQuery;
+        }
+    }
+
     [self.selectLanguageCell toggleTranslationLanguages];
 }
 
@@ -882,6 +931,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
+    NSString *queryText = [queryModel.queryText copy];
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
         if (error) {
             MMLogError(@"service: %@, query error: %@", service.serviceType, error);
@@ -901,6 +951,16 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
         //        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
         [self updateCellWithResult:result reloadData:YES];
+
+        // Backfill history record with the first service's translated text.
+        if (service == self.firstService) {
+            BOOL shouldRecord = !service.isStream || result.isStreamFinished;
+            if (shouldRecord && result.translatedText.length > 0) {
+                [QueryRecordManager.shared updateTranslatedResult:result.translatedText
+                                                      forQueryText:queryText
+                                                              in:RecordTypeHistory];
+            }
+        }
 
         if (service.autoCopyTranslatedTextBlock) {
             BOOL shouldAutoCopy = !service.isStream || result.isStreamFinished;
@@ -980,6 +1040,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             self.queryModel.userTargetLanguage = to;
 
             [self retryQueryWithLanguage:EZLanguageAuto];
+        }];
+        [selectLanguageCell setToggleTranslationLanguagesBlock:^{
+            mm_strongify(self);
+            [self toggleTranslationLanguages];
         }];
         return selectLanguageCell;
     }
@@ -1279,6 +1343,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             }
 
             EZQueryService *updatedService = [EZLocalStorage.shared service:serviceTypeWithUniqueIdentifier windowType:self.windowType];
+            if (!updatedService) {
+                return;
+            }
 
             // For some strange reason, the old service can not be deallocated, this will cause a memory leak, and we also need to cancel old services subscribers.
             if ([service isKindOfClass:EZStreamService.class]) {
@@ -1303,7 +1370,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 /// Get latest services from local storage.
 - (NSArray<EZQueryService *> *)latestServices {
-    return [EZLocalStorage.shared allServices:self.windowType];
+    return [EZLocalStorage.shared enabledServices:self.windowType];
 }
 
 
@@ -1324,6 +1391,20 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         [allResults addObject:result];
     }
     return allResults;
+}
+
+- (void)discardDictionaryWebViews {
+    for (EZQueryService *service in self.services) {
+        EZQueryResult *result = service.result;
+        if (!EZResultNeedsDictionaryHTMLHeight(result)) {
+            continue;
+        }
+
+        EZResultView *resultCell = [self resultCellOfResult:result];
+        [resultCell.wordResultView.webView removeFromSuperview];
+        resultCell.wordResultView.webView = nil;
+        [result.webViewManager discardReusableWebView];
+    }
 }
 
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
@@ -1546,35 +1627,44 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     WKWebView *webView = nil;
     if ([service.serviceType isEqualToString:EZServiceTypeAppleDictionary]) {
-        EZAppleDictionary *appleDictService = (EZAppleDictionary *)service;
-
         EZWebViewManager *webViewManager = result.webViewManager;
-        webView = webViewManager.webView;
-        resultCell.wordResultView.webView = webView;
+        BOOL shouldRenderHTML = EZResultShouldRenderDictionaryHTML(result);
+        BOOL htmlChanged = ![webViewManager.loadedHTMLString isEqualToString:result.htmlString];
+        BOOL needLoadHTML = shouldRenderHTML && (!webViewManager.isLoaded || htmlChanged);
+        BOOL needUpdateIframe = shouldRenderHTML && webViewManager.needUpdateIframeHeight && webViewManager.isLoaded;
+        if (needLoadHTML || needUpdateIframe) {
+            webView = webViewManager.webView;
+            resultCell.wordResultView.webView = webView;
+        }
 
-        BOOL needLoadHTML = result.isShowing && result.htmlString.length && !webViewManager.isLoaded;
         if (needLoadHTML) {
+            NSUInteger renderGeneration = [webViewManager beginRenderingHTML];
             webViewManager.isLoaded = YES;
-
-            NSURL *htmlFileURL = [NSURL fileURLWithPath:appleDictService.htmlFilePath];
-            webView.navigationDelegate = resultCell.wordResultView;
-            [webView loadFileURL:htmlFileURL allowingReadAccessToURL:TTTDictionary.userDictionaryDirectoryURL];
-        } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
+            webViewManager.loadedHTMLString = result.htmlString;
+            WKNavigation *navigation = [webView loadHTMLString:result.htmlString baseURL:nil];
+            [webViewManager trackRenderingNavigation:navigation renderGeneration:renderGeneration];
+        } else if (needUpdateIframe) {
             [webViewManager updateAllIframe];
         }
     } else if ([service.serviceType isEqualToString:EZServiceTypeMDict]) {
         EZWebViewManager *webViewManager = result.webViewManager;
-        webView = webViewManager.webView;
-        resultCell.wordResultView.webView = webView;
-
+        BOOL shouldRenderHTML = EZResultShouldRenderDictionaryHTML(result);
         BOOL htmlChanged = ![webViewManager.loadedHTMLString isEqualToString:result.htmlString];
-        BOOL needLoadHTML = result.isShowing && result.htmlString.length && (!webViewManager.isLoaded || htmlChanged);
+        BOOL needLoadHTML = shouldRenderHTML && (!webViewManager.isLoaded || htmlChanged);
+        BOOL needUpdateIframe = shouldRenderHTML && webViewManager.needUpdateIframeHeight && webViewManager.isLoaded;
+        if (needLoadHTML || needUpdateIframe) {
+            webView = webViewManager.webView;
+            webView.appearance = nil;
+            resultCell.wordResultView.webView = webView;
+        }
+
         if (needLoadHTML) {
+            NSUInteger renderGeneration = [webViewManager beginRenderingHTML];
             webViewManager.isLoaded = YES;
             webViewManager.loadedHTMLString = result.htmlString;
-            webView.navigationDelegate = resultCell.wordResultView;
-            [webView loadHTMLString:result.htmlString baseURL:nil];
-        } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
+            WKNavigation *navigation = [webView loadHTMLString:result.htmlString baseURL:nil];
+            [webViewManager trackRenderingNavigation:navigation renderGeneration:renderGeneration];
+        } else if (needUpdateIframe) {
             [webViewManager updateAllIframe];
         }
     }
@@ -1827,6 +1917,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     //    [self.window setFrame:safeFrame display:NO animate:animateFlag];
     self.isUpdatingWindowFrameInternally = YES;
     [window setFrame:safeFrame display:YES];
+    [self restoreFirstResponderIfWindowIsKey];
     dispatch_async(dispatch_get_main_queue(), ^{
         self.isUpdatingWindowFrameInternally = NO;
     });
@@ -1837,9 +1928,20 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     // Animation cost time.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZUpdateTableViewRowHeightAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.lockResizeWindow = NO;
+        [self restoreFirstResponderIfWindowIsKey];
     });
 
     //    MMLogInfo(@"window frame: %@", @(window.frame));
+}
+
+- (void)restoreFirstResponderIfWindowIsKey {
+    if (self.baseQueryWindow.isKeyWindow && self.queryView.window == self.baseQueryWindow) {
+        NSResponder *curr = self.baseQueryWindow.firstResponder;
+        BOOL isFocusEmpty = (curr == nil || curr == self.baseQueryWindow || curr == self.baseQueryWindow.contentView);
+        if (isFocusEmpty) {
+            [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
+        }
+    }
 }
 
 - (CGFloat)getRestrainedScrollViewHeight:(CGFloat)scrollViewContentHeight {

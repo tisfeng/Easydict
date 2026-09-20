@@ -1,228 +1,67 @@
 ---
 name: review-pr
-description: >
-  Prepare a GitHub pull request branch locally, add the contributor fork as a
-  remote when missing, and produce a rigorous code review based on the PR
-  description, linked issues, and actual code changes.
+description: 审查 GitHub PR 的准确 head/base diff、关联 issue、CI 和 review threads，交付前刷新。创建 PR 使用 submit-pr；本地审查使用 review。
 ---
 
-# Review PR Workflow
+# GitHub PR 审查
 
-Use this skill when the user asks to review a GitHub pull request, check out a
-PR branch locally, or prepare a review from a PR link such as
-`tisfeng/Easydict#1173` or `https://github.com/tisfeng/Easydict/pull/1173`.
+本 Skill 编排 GitHub PR 的身份、问题背景、本地准备、CI、线程和最终刷新。
+语义与正确性审查使用配套 `review`；审查本地工作树、提交、范围、文件或模块时直接使用
+`review`，不启动 PR 编排。
 
-## Required Input
+`<review-pr-skill-dir>` 指实际加载的本 Skill 目录。优先从当前 Skill 清单定位 `review`，
+未提供位置时才检查 [同级安装位置](../review/SKILL.md)。开始 Git 准备前确认依赖可读；
+缺失时可收集获准的只读证据，但不得声称完整代码审查已完成。
 
-The user must provide one PR reference:
+## 模式与授权
 
-- GitHub URL: `https://github.com/<base-owner>/<base-repo>/pull/<number>`
-- Shorthand: `<base-owner>/<base-repo>#<number>`
-- PR number only, when the current checkout belongs to the target repository
+- **默认本地审查**：明确请求审查 PR 时，包含必要的 remote 添加、fetch、安全分支创建或
+  fast-forward、upstream 设置和 checkout。
+- **隔离 worktree**：只在用户明确要求 worktree、并行或并发 review 时使用。
+- **latest-base 集成审查**：只在用户明确要求更新最新 base、解决冲突或审查集成结果时使用。
+- **不改变 Git 状态**：遵守用户的只读或不切分支限制，改用可访问的准确远程 diff、源码和评论；
+  证据不足时报告限制。
 
-If the PR reference is missing or ambiguous, ask for it before changing Git
-state.
+上述本地准备授权不包含产品修复、push、发布评论、approve、删除评论或关闭 PR。
+线程 resolve 需要单独的远程操作授权和当前远程证据。仅方案或解释不执行 Git 准备。
 
-## Hard Rules
+## 核心安全边界
 
-- Keep the local branch name exactly the same as the PR head branch name.
-- Name the contributor remote exactly as the PR head repository owner login.
-- Do not overwrite, delete, rename, rebase, reset, or force-update an existing
-  local branch.
-- Do not push anything while preparing or reviewing the PR.
-- Do not stash or discard local changes automatically. Stop and ask the user if
-  the worktree is dirty before preparing or switching branches.
-- If a remote with the intended contributor name already exists but points to a
-  different repository, stop and ask the user how to proceed.
-- Do not review from the PR description alone. Inspect the linked issues,
-  changed files, actual diff, and relevant surrounding code.
-- Follow the repository's normal review stance: lead with PR context, then
-  findings. Prioritize bugs and regressions, include file and line references,
-  then list open questions, verification, and a short summary.
+- 默认本地模式从 `git status --short --branch` 开始；当前 checkout 有未提交变更时，
+  在切换分支前停止。显式 worktree 模式不得改变原 checkout，因此可从脏状态继续。
+- 多阶段 review 必须把首次准备回执中的 `checkout.branch` 作为后续阶段的显式输入；使用
+  helper 的 `--reuse-branch` 复验该分支、HEAD、upstream 和 worktree 占用，失败时停止，
+  不静默改选另一个分支。回执同时记录实际 helper 路径和 SHA，便于发现 Skill 版本漂移。
+- 不覆盖、删除、重命名、rebase、reset、强制更新、stash 或丢弃本地分支、worktree 或变更。
+- 普通审查必须对应 PR 元数据的准确 `headRefOid` 和真实 base/merge-base diff；
+  不用 detached HEAD、已 fetch ref 或无关 `origin` 绕过身份检查。
+- 只有当前 GitHub 用户是 PR 作者，且本地同名分支可安全 fast-forward 时，才允许复用等价 remote
+  别名的 upstream 或补设缺失的 upstream；其他 upstream 不匹配仍使用 collision fallback。
+- `mergeable: CONFLICTING`、`mergeStateStatus: DIRTY` 或 base 领先不构成 latest-base 授权。
+- 除非用户明确要求，审查、准备、冲突处理和线程维护都不 push。审查后保留准备好的
+  分支或 worktree，不自动删除。
 
-## Step 1: Check Worktree and Resolve PR Metadata
+## 审查流程
 
-Check the current worktree before changing Git state:
+1. 读取 [证据收集与刷新](references/evidence-workflow.md)，收集并冻结 PR 身份、head/base、
+   [问题背景](references/problem-review.md)、checks 和完整 threads/replies。
+2. 允许 Git 准备时读取 [本地准备与 latest-base](references/local-preparation.md)；只读模式直接使用准确远程证据。
+3. 将 PR 目标、关键验收条件、冻结 base/head 和完整 raw diff 交给 `review`，检查需求满足程度、
+   实现方式与代码正确性。
+4. 评估每个开放 thread，包括 outdated、bot 和所有回复。已有评论只放在对应评论条目，
+   不重复列为独立 finding。需要 resolve 且已获授权时才读取
+   [线程维护](references/thread-resolution.md)。
+5. 结论前按证据协议立即刷新 PR、选定问题证据、checks 和完整 threads/replies，处理所有新活动。
+6. 读取 [PR 审查报告](references/reporting.md)，输出结论、有效问题、线程状态、审查范围和验证。
 
-```bash
-git status --short --branch
-```
+大 PR 或需要复用快照文件时才读取
+[快照传输协议](references/snapshot-protocol.md)；复杂复审报告可再读取 [完整示例](references/report-example.md)。
 
-If the worktree has uncommitted changes, stop and ask the user before preparing
-or switching branches.
+## 完成与停止条件
 
-Collect PR metadata with GitHub CLI before branch preparation. For a GitHub URL
-or `<owner>/<repo>#<number>` shorthand, convert it to `<number> --repo
-<owner>/<repo>` when running manual `gh` commands. For example,
-`owner/repo#123` becomes `gh pr view 123 --repo owner/repo`:
+只有准确 remote head/base 与 merge-base、完整 diff、目标/问题证据、CI 状态、全部开放 threads
+及回复均已审查，且最终刷新没有未检查活动时，才算完成。最终刷新发现 head/base、
+需求或线程变化时，根据影响更新 checkout、范围和判断，处理后再刷新一次。
 
-```bash
-gh pr view <number> [--repo <base-owner>/<base-repo>] \
-  --json number,title,url,body,baseRefName,headRefName,headRepository,headRepositoryOwner,closingIssuesReferences
-```
-
-Extract these fields:
-
-- `headRepositoryOwner.login`, for the remote name.
-- `headRepository.name`, for the fork repository name.
-- `headRefName`, for the PR branch name.
-- `baseRefName`, for the base branch used during diff review.
-- `closingIssuesReferences`, for issue context.
-
-Do not add or update the contributor remote manually in the normal path. Let the
-helper script prepare the remote, fetch, local branch, and upstream tracking.
-
-## Step 2: Prepare the PR Branch
-
-Use the bundled helper script as the default branch preparation path:
-
-```bash
-bash .agents/skills/review-pr/scripts/prepare-pr-branch.sh <pr-ref>
-```
-
-The helper script:
-
-- Parses a GitHub PR URL, `<owner>/<repo>#<number>`, or PR number.
-- Reads the PR head owner, fork repository, and branch from `gh pr view`.
-- Adds the contributor remote only when missing.
-- Fetches the exact PR head branch into `refs/remotes/<owner>/<branch>`.
-- Creates or switches to a local branch whose name exactly matches the PR head
-  branch, and skips switching when that branch is already current.
-- Sets the local branch upstream to `<owner>/<branch>`.
-- Uses fast-forward-only integration when the local branch already exists.
-
-Use manual remote, fetch, and switch commands only as a fallback when the helper
-script is unavailable or fails for a reason unrelated to PR state. In fallback
-mode, normalize URL and shorthand PR refs the same way as Step 1, add the
-contributor remote only when missing, verify any existing same-name remote points
-to the expected fork, fetch the exact head branch, create or switch to a local
-branch with the exact PR head branch name, and set upstream tracking to the
-contributor remote branch.
-
-After it finishes, verify the checkout:
-
-```bash
-git branch --show-current
-git status --short
-git branch -vv
-```
-
-If the branch is dirty, detached, missing upstream, or not named exactly like
-the PR head branch, stop and fix that state before reviewing.
-
-## Step 3: Review Context
-
-Read PR context and issue context first, using the normalized PR number and
-`--repo` arguments from Step 1 when needed:
-
-```bash
-gh pr view <number> [--repo <base-owner>/<base-repo>] \
-  --comments \
-  --json number,title,url,body,baseRefName,headRefName,files,commits,closingIssuesReferences,comments,reviews
-```
-
-For every linked issue in `closingIssuesReferences`, inspect the issue body and
-comments:
-
-```bash
-gh issue view <issue-url-or-number> --comments
-```
-
-Then inspect the code changes against the PR base branch. Use `origin` as
-`<base-remote>` only after confirming it points to the PR base repository. If it
-does not, use the correct base repository remote or stop and ask the user.
-Fetch the base branch from the base repository remote if necessary, then compare
-with three-dot diff:
-
-```bash
-git fetch <base-remote> <base-branch>
-git diff --stat <base-remote>/<base-branch>...HEAD
-git diff --name-status <base-remote>/<base-branch>...HEAD
-git diff <base-remote>/<base-branch>...HEAD
-```
-
-Read relevant surrounding source files, tests, configuration, generated files,
-and documentation before making claims. Use `rg` for fast code search.
-
-## Review Focus
-
-Check the PR against the actual problem it claims to solve:
-
-- Does the implementation fully address the PR description and linked issues?
-- Are there behavior regressions, edge cases, concurrency issues, persistence
-  mistakes, localization gaps, or platform-version problems?
-- Are public contracts, model names, defaults, migrations, and UI states still
-  coherent?
-- Are tests or manual verification sufficient for the changed behavior?
-- Does the code match local project patterns, naming, style, and architecture?
-- Are unrelated refactors, generated churn, or accidental changes present?
-
-Do not run `xcodebuild` during PR review unless the user explicitly asks for a
-local build. When validation status matters, inspect PR checks instead:
-
-```bash
-gh pr checks <number> [--repo <base-owner>/<base-repo>]
-```
-
-Always run lightweight local checks such as `git diff --check` when they are
-relevant.
-
-## Output Format
-
-Write the final review in the user's preferred system language unless the user
-asks otherwise.
-
-Preferred system language means the first language in macOS `AppleLanguages`.
-Read it with `defaults read -g AppleLanguages` and use the first list entry.
-If the current agent environment cannot read that value, write in the language
-the user is already using in the current conversation.
-
-Keep section headings, `PR Context` subheadings, and priority labels exactly as
-written. Use this structure exactly:
-
-```markdown
-## PR Context
-
-**Purpose and Scope**
-
-Describe what the PR is trying to achieve, which issue or workflow it targets,
-and the boundary of the change.
-
-**Key Changes**
-
-Describe the main implementation changes and the important code paths touched.
-
-**Review Focus**
-
-Describe the expected impact, important risks, compatibility concerns, or areas
-reviewers should inspect.
-
----
-
-## Findings
-- [P1] path:line - Describe each issue, trigger condition, risk, and suggested
-  change.
-- If there are no findings, say so clearly.
-
-## Open Questions
-- List correctness-affecting questions, or say clearly that there are no
-  meaningful open questions.
-
-## Verification
-- List commands and checks performed, or explain why validation was not run.
-
-## Summary
-Short neutral summary of the overall review result without repeating the PR
-context.
-```
-
-Build `PR Context` from the inspected PR title and body, linked issues, actual
-diff, and relevant surrounding code. Do not merely restate the PR description.
-Write one natural paragraph of 2-4 sentences under each subheading.
-
-Priority values:
-
-- `P0`: data loss, crashes, security flaws, or broken core workflows.
-- `P1`: likely user-visible regression or incorrect behavior.
-- `P2`: edge-case bug, missing compatibility, or incomplete issue coverage.
-- `P3`: maintainability, clarity, or test/documentation gap worth fixing.
+引用有歧义、准备会覆盖本地状态、依赖或必需证据不可用、身份/内容持续漂移、冲突需要产品判断，
+或最终刷新失败时，保留当前快照和本地状态，报告已审查 SHA 与未覆盖缺口；不无限重试。

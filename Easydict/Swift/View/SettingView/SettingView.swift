@@ -78,7 +78,6 @@ struct SettingView: View {
         window.standardWindowButton(.zoomButton)?.isEnabled = false
 
         // Keep the settings page Windows all the same width to avoid strange animations.
-        let maxWidth: Double = 900
         let height: Double = switch selection {
         case .disabled:
             500
@@ -89,16 +88,23 @@ struct SettingView: View {
         case .favorites:
             640
         default:
-            maxWidth * 0.8
+            defaultSettingsWindowHeight
         }
 
-        let newSize = CGSize(width: maxWidth, height: height)
+        let newSize = CGSize(width: settingsWindowWidth, height: height)
 
         let originalFrame = window.frame
         let newY = originalFrame.origin.y + originalFrame.size.height - newSize.height
         let newRect = NSRect(origin: CGPoint(x: originalFrame.origin.x, y: newY), size: newSize)
 
         window.setFrame(newRect, display: true, animate: false)
+        // macOS 27: keep the sidebar below the title bar by removing the
+        // `.fullSizeContentView` style SwiftUI keeps after resize. Older macOS
+        // versions are unaffected.
+        // Refer: https://github.com/tisfeng/Easydict/pull/1258#issuecomment-5186918247
+        if #available(macOS 27.0, *) {
+            window.styleMask.remove(.fullSizeContentView)
+        }
         window.styleMask.remove(.resizable)
     }
 
@@ -106,6 +112,9 @@ struct SettingView: View {
 
     @State private var selection = SettingTab.general
     @State private var window: NSWindow?
+
+    private let settingsWindowWidth: Double = 960
+    private let defaultSettingsWindowHeight: Double = 720
 }
 
 #Preview {

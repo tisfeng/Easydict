@@ -16,6 +16,7 @@ import SwiftUI
 @main
 enum EasydictCmpatibilityEntry {
     static func main() {
+        AppPathMigration.prepareForLaunch()
         parseArmguments()
 
         // Capturing crash logs must be placed first.
@@ -29,6 +30,16 @@ enum EasydictCmpatibilityEntry {
         // See https://github.com/electron/electron/issues/48311
         if #available(macOS 26, *) {
             EZPatchWindowServerCornerMask()
+        }
+
+        // Workaround for macOS 26 Tahoe: AppKit's AutoFill heuristics launch
+        // a per-app "AutoFill" helper process (SafariPlatformSupport.Helper)
+        // on text input. Easydict needs no system AutoFill suggestions, so
+        // disable the heuristics to keep that helper from spawning.
+        if #available(macOS 26, *) {
+            UserDefaults.standard.register(
+                defaults: ["NSAutoFillHeuristicsEnabled": false]
+            )
         }
 
         // app launch
@@ -57,8 +68,8 @@ struct EasydictApp: App {
                         )
                     ) { _ in
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                            // calling `openSettings` immediately doesn't work so wait a quick moment
-                            try? openSettings()
+                            // calling `openSettingsLegacy` immediately doesn't work so wait a quick moment
+                            try? openSettingsLegacy()
                         }
                     }
             } icon: {
@@ -87,7 +98,7 @@ struct EasydictApp: App {
 
     // MARK: Private
 
-    @Environment(\.openSettings) private var openSettings
+    @Environment(\.openSettingsLegacy) private var openSettingsLegacy
     @Environment(\.openWindow) private var openWindow
 
     @NSApplicationDelegateAdaptor private var delegate: AppDelegate

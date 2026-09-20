@@ -24,7 +24,9 @@
 
 Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译、划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果。
 
-**支持的翻译服务：** [**🍎 苹果系统词典**](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)、[🍎 **苹果系统翻译**](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)、[OpenAI](https://chat.openai.com/)、[Gemini](https://gemini.google.com/)、[DeepSeek](https://www.deepseek.com/)、[Ollama](https://ollama.com/)、[Groq](https://groq.com/)、[智谱AI](https://open.bigmodel.cn/)、[GitHub Models](https://github.com/marketplace/models)、[DeepL](https://www.deepl.com/translator)、[Google](https://translate.google.com)、[有道词典](https://www.youdao.com/)、[腾讯](https://fanyi.qq.com/)、[Bing](https://www.bing.com/translator)、[百度](https://fanyi.baidu.com/)、[小牛翻译](https://niutrans.com/)、[彩云小译](https://fanyi.caiyunapp.com/)、[阿里翻译](https://translate.alibaba.com/)、[火山翻译](https://translate.volcengine.com/translate) 和 [豆包翻译](https://www.volcengine.com/docs/82379/1820188)。
+**支持的服务：** 覆盖 Apple Dictionary、MDict、Apple 翻译、OpenAI、Gemini、Claude、
+DeepSeek、Ollama、Claude Code、Codex CLI、DeepL、Google、Bing 等 20+ 词典、翻译、AI、
+本地模型和 CLI 服务。完整清单和配置条件见[服务总览](./docs/user-docs/zh/SERVICES.md)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -41,35 +43,22 @@ Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译�
 - 🖱️ 鼠标自动划词和快捷键划词
 - 📸 OCR 截图翻译，静默截图 OCR
 - 🔊 多种 TTS 语音服务
-- 📚 支持 🍎 [苹果系统词典](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md) 和 [系统翻译](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
-- 🌐 支持 20+ 翻译服务（OpenAI、Gemini、DeepL、Google、Ollama、Groq 等）
-- 🗣️ 支持 48 种语言
+- 📚 支持 🍎 [苹果系统词典](./docs/user-docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md) 和 [系统翻译](./docs/user-docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
+- 🌐 支持 20+ 词典、翻译、AI、本地模型和 CLI 服务
+- 🗣️ 支持 52 种可选翻译语言
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
 
 ## 贡献
 
-如果你对这个项目感兴趣，欢迎提交 PR 参与贡献。我们的开发遵循以下流程：
-
-- **dev 分支**：最新的开发代码，可能包含正在开发中的功能
-- **main 分支**：稳定版本代码，会定期合并 dev 分支
-
-Bug 修复和功能实现请提交到 dev 分支；新功能或大的 UI 变动建议先开 issue 讨论。详见[完整贡献指南](./docs/zh/GUIDE.md#贡献指南)。
+欢迎通过 issue 和 Pull Request 参与 Easydict 的改进。开发流程和 PR 要求请参阅
+[贡献指南](./CONTRIBUTING.md)。
 
 ### AI 辅助编程
 
-推荐使用 `Codex` 参与 Easydict 的 AI 辅助编程工作，可用于阅读代码、定位问题、生成补丁和重构实现。
-
-- 建议优先选择最新可用的 GPT 模型，例如 `GPT-5.4`。
-- 提交 PR 前，请自行检查 AI 生成的改动，确认功能正确、风格一致，并符合本仓库的贡献流程。
-
-#### AI 提交助手
-
-这个仓库支持使用 `Codex` 和 `Claude` 自动生成提交信息。
-
-- 请先暂存变更，再使用 `/git-commit`。
-- 该命令会基于 staged diff 生成 Angular 风格的英文提交信息，并提供简体中文预览。
-- 只有在你明确批准生成结果后，才会真正执行提交。
+欢迎使用 `Codex`、`Claude` 等编程 Agent 参与 Easydict 的开发。建议选择当前最新、适合
+复杂编程任务的 GPT 或 Claude 模型，并仔细 review 和测试最终改动。Agent 开发流程和
+review 要求请参阅[贡献指南](./CONTRIBUTING.md)。
 
 ## Issue/PR 处理说明
 
@@ -106,11 +95,13 @@ brew install --cask easydict
 
 ## 文档
 
-- 📖 [完整使用指南](./docs/zh/GUIDE.md) - 详细功能说明和配置方法
-- 🔧 [开发者构建指南](./docs/zh/GUIDE.md#开发者构建) - 从源码编译运行
-- 🍎 [如何使用 macOS 系统词典](./docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)
-- 🍎 [如何使用 macOS 系统翻译](./docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
-- 🌍 [如何帮助翻译 Easydict](./docs/How-to-translate-Easydict-zh.md)
+- 📖 [完整使用指南](./docs/user-docs/zh/GUIDE.md) - 详细功能说明和配置方法
+- 🌐 [服务总览](./docs/user-docs/zh/SERVICES.md) - 完整服务清单和配置条件
+- 🔧 [开发者构建指南](./docs/user-docs/zh/GUIDE.md#开发者构建) - 从源码编译运行
+- 🍎 [如何使用 macOS 系统词典](./docs/user-docs/zh/How-to-use-macOS-system-dictionary-in-Easydict.md)
+- 📚 [如何使用 MDict](./docs/user-docs/zh/How-to-use-MDict-in-Easydict.md)
+- 🍎 [如何使用 macOS 系统翻译](./docs/user-docs/zh/How-to-use-macOS-system-translation-in-Easydict.md)
+- 🌍 [如何帮助翻译 Easydict](./docs/user-docs/zh/How-to-translate-Easydict.md)
 
 ---
 
@@ -136,16 +127,16 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
 </div>
 
-感谢所有支持者的赞助，详情请查看 [赞助列表](./docs/zh/SPONSOR_LIST.md)。
+感谢所有支持者的赞助，详情请查看 [赞助列表](./docs/user-docs/zh/SPONSOR_LIST.md)。
 
 ---
 
 ## Star History
 
-<a href="https://star-history.com/#tisfeng/easydict&Date">
+<a href="https://tisfeng.github.io/Easydict/star-history/#tisfeng/easydict&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=tisfeng/easydict&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=tisfeng/easydict&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=tisfeng/easydict&type=Date" />
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/assets/star-history/star-history-dark.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="./docs/assets/star-history/star-history-light.svg" />
+    <img alt="Star History Chart" src="./docs/assets/star-history/star-history-light.svg" />
   </picture>
 </a>

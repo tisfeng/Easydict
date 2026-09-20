@@ -176,10 +176,11 @@ private func makeJSONErrorMessage(_ error: Error, fallbackModel: String) -> Stri
     let queryError = QueryError.queryError(from: error)
     let errorMessage = queryError?.localizedDescription ?? error.localizedDescription
 
-    guard let chunkData = ChatStreamResult.create(
+    guard let chatStreamResult = try? ChatStreamResult.create(
         content: errorMessage,
         model: fallbackModel
-    ).jsonData,
+    ),
+        let chunkData = chatStreamResult.jsonData,
         var errorDict = try? JSONSerialization.jsonObject(with: chunkData) as? [String: Any]
     else {
         return nil

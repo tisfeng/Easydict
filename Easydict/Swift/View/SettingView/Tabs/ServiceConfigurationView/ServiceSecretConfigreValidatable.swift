@@ -45,45 +45,22 @@ extension QueryService: ServiceSecretConfigreValidatable {
     }
 }
 
-// MARK: - ServiceSecretConfigreDuplicatable
+// MARK: - ServiceConfigRemovable
 
-protocol ServiceSecretConfigreDuplicatable {
-    func duplicate()
+protocol ServiceConfigRemovable {
     func remove()
 }
 
-extension ServiceSecretConfigreDuplicatable {
-    func duplicate() {}
-    func remove() {}
-}
+// MARK: - QueryService + ServiceConfigRemovable
 
-// MARK: - QueryService + ServiceSecretConfigreDuplicatable
-
-extension QueryService: ServiceSecretConfigreDuplicatable {
-    func duplicate() {
-        let uuid = UUID().uuidString
-        let newServiceType = "\(serviceType().rawValue)#\(uuid)"
-        guard let newService = QueryServiceFactory.shared.service(withTypeId: newServiceType) else {
-            return
-        }
-        newService.enabled = false
-        newService.resetServiceResult()
-        for winType in [EZWindowType.fixed, EZWindowType.main, EZWindowType.mini] {
-            var allServiceTypes = LocalStorage.shared().allServiceTypes(winType)
-            allServiceTypes.append(newServiceType)
-            newService.windowType = winType
-            LocalStorage.shared().setService(newService, windowType: winType)
-            LocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: winType)
-            NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
-        }
-        GlobalContext.shared.reloadLLMServicesSubscribers()
-    }
-
+extension QueryService: ServiceConfigRemovable {
     func remove() {
         for winType in [EZWindowType.fixed, EZWindowType.main, EZWindowType.mini] {
-            let allServiceTypes = LocalStorage.shared().allServiceTypes(winType)
-                .filter { $0 != serviceTypeWithUniqueIdentifier() }
-            LocalStorage.shared().setAllServiceTypes(allServiceTypes, windowType: winType)
+            LocalStorage.shared().removeServiceType(
+                serviceTypeWithUniqueIdentifier(),
+                windowType: winType,
+                allowRemovingLast: true
+            )
             NotificationCenter.default.postServiceUpdateNotification(windowType: winType)
         }
         GlobalContext.shared.reloadLLMServicesSubscribers()

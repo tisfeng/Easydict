@@ -14,7 +14,7 @@ import Magnet
 class ShortcutManager: NSObject {
     @objc static let shared = ShortcutManager()
 
-    var confictMenuItem: NSMenuItem?
+    var confictShortcutTitle = ""
 
     @objc
     func setupShortcut() {

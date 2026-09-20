@@ -31,7 +31,8 @@ struct StreamConfigurationView: View {
         showThinkTagContent: Bool = true,
         showTemperatureSlider: Bool = true,
         temperatureMaxValue: Double = 2,
-        showStreamingToggle: Bool = false
+        showStreamingToggle: Bool = false,
+        showValidationButton: Bool = true
     ) {
         self.service = service
 
@@ -49,6 +50,7 @@ struct StreamConfigurationView: View {
         self.showTemperatureSlider = showTemperatureSlider
         self.showStreamingToggle = showStreamingToggle
         self.temperatureMaxValue = temperatureMaxValue
+        self.showValidationButton = showValidationButton
 
         // Disable user to edit built-in supported models.
         self.isEditable = service.serviceType() != .builtInAI
@@ -76,6 +78,7 @@ struct StreamConfigurationView: View {
     let showTemperatureSlider: Bool
     let temperatureMaxValue: Double
     let showStreamingToggle: Bool
+    let showValidationButton: Bool
 
     var isEditable = true
 
@@ -88,7 +91,8 @@ struct StreamConfigurationView: View {
     var body: some View {
         ServiceConfigurationSecretSectionView(
             service: service,
-            observeKeys: service.observeKeys
+            observeKeys: service.observeKeys,
+            showValidationButton: showValidationButton
         ) {
             if showCustomNameSection {
                 InputCell(
@@ -145,6 +149,14 @@ struct StreamConfigurationView: View {
                     titleKey: "service.configuration.openai.model.title",
                     selectionKey: service.modelKey,
                     valuesKey: service.validModelsKey
+                )
+            }
+
+            if service.supportsReasoningEffort {
+                StaticPickerCell(
+                    titleKey: "service.configuration.reasoning_effort.title",
+                    key: service.reasoningEffortDefaultsKey,
+                    values: ReasoningEffort.allCases
                 )
             }
 
@@ -226,6 +238,18 @@ struct StreamConfigurationView: View {
                     footnote: "service.configuration.custom_openai.enable_streaming.footnote"
                 )
             }
+
+            if !service.uuid.isEmpty {
+                LabeledContent {
+                    Text(verbatim: service.serviceTypeWithUniqueIdentifier())
+                        .font(.system(.body, design: .monospaced))
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                        .lineLimit(1)
+                } label: {
+                    Text("service.configuration.service_identifier.title")
+                }
+            }
         }
         .sheet(isPresented: $isFetchModelsPresented) {
             if service.canFetchRemoteModels {
@@ -289,6 +313,8 @@ struct StreamConfigurationView: View {
     }
 
     private func updateModels(remoteModelIDs: [String], selectedModelIDs: [String]) {
+        guard !remoteModelIDs.isEmpty else { return }
+
         var models = service.validModels(from: Defaults[service.supportedModelsKey])
         let remoteModels = Set(remoteModelIDs.map { service.remoteModelLookupID($0) })
         let selectedModels = Set(selectedModelIDs.map { service.remoteModelLookupID($0) })
@@ -352,6 +378,7 @@ private struct RemoteModelsSheet: View {
                         onSave(remoteModelIDs, selectedModelIDs)
                     }
                 }
+                .disabled(!canSave)
                 .keyboardShortcut(.defaultAction)
             }
         }
@@ -389,6 +416,10 @@ private struct RemoteModelsSheet: View {
         !selectableIDs.isEmpty && selectableIDs.allSatisfy(selectedIDs.contains)
     }
 
+    private var canSave: Bool {
+        !isLoading && errorMessage.isEmpty && !models.isEmpty
+    }
+
     private var modelGroups: [String] {
         var groups = Set<String>()
         return models.compactMap(\.groupName).filter {
@@ -403,11 +434,13 @@ private struct RemoteModelsSheet: View {
 
             HStack {
                 if !modelGroups.isEmpty {
-                    Picker("", selection: $selectedGroup) {
+                    Picker(selection: $selectedGroup) {
                         Text(verbatim: "All").tag("")
                         ForEach(modelGroups, id: \.self) { groupName in
                             Text(groupName).tag(groupName)
                         }
+                    } label: {
+                        EmptyView()
                     }
                     .labelsHidden()
                     .frame(width: 140)

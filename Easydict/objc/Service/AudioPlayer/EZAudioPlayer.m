@@ -8,6 +8,7 @@
 
 #import "EZAudioPlayer.h"
 #import <AVFoundation/AVFoundation.h>
+#import "Easydict-Swift.h"
 #import "EZEnumTypes.h"
 #import <sys/xattr.h>
 
@@ -227,7 +228,8 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
                          language:language
                            accent:accent
                          audioURL:url
-                designatedService:service];
+                designatedService:service
+                         forceURL:forceURL];
         } else {
             MMLogError(@"get audio url error: %@", error);
 
@@ -566,18 +568,9 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
 #pragma mark -
 
-// Get app cache directory
-- (NSString *)getCacheDirectory {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    return [paths objectAtIndex:0];
-}
-
 // Get audio file directory, if not exist, create it.
 - (NSString *)getAudioDirectory {
-    NSString *cachesDirectory = [self getCacheDirectory];
-    NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier];
-    NSString *audioDirectory = [cachesDirectory stringByAppendingPathComponent:bundleID];
-    audioDirectory = [audioDirectory stringByAppendingPathComponent:@"audio"];
+    NSString *audioDirectory = AppPathManager.current.audioCacheDirectory.path;
     if (![[NSFileManager defaultManager] fileExistsAtPath:audioDirectory]) {
         [[NSFileManager defaultManager] createDirectoryAtPath:audioDirectory withIntermediateDirectories:YES attributes:nil error:nil];
     }

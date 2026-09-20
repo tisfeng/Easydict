@@ -1,8 +1,8 @@
 # Icon Reference
 
-## Rules for rsvg-convert Compatibility
+## Rules for Renderer Compatibility (cairosvg / rsvg-convert)
 
-**Never use** `@import url()` for icon fonts — rsvg-convert does not fetch external resources.
+**Never use** `@import url()` for icon fonts — neither cairosvg nor rsvg-convert fetches external resources.
 **Always use** inline SVG `<path>`, `<circle>`, `<rect>`, `<text>` combinations.
 **Font fallback**: embed font-family in `<style>` using system fonts only.
 

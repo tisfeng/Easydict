@@ -8,6 +8,7 @@
 
 import Defaults
 import LaunchAtLogin
+import SFSafeSymbols
 import SwiftUI
 
 // MARK: - GeneralTab
@@ -73,6 +74,7 @@ struct GeneralTab: View {
                 Toggle("auto_query_selected_text", isOn: $autoQuerySelectedText)
                 Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
                 Toggle("auto_query_pasted_text", isOn: $autoQueryPastedText)
+                Toggle("auto_query_when_text_changed", isOn: $autoQueryWhenTextChanged)
                 Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio)
                 Picker(
                     "setting.general.voice.english_pronunciation",
@@ -102,6 +104,20 @@ struct GeneralTab: View {
                 Toggle("show_setting_quick_link", isOn: $showQuickActionButton)
             } header: {
                 Text("setting.general.quick_link.header")
+            }
+
+            Section {
+                Toggle(isOn: $enableMarkdownRendering) {
+                    Label(
+                        "setting.general.display.enable_markdown_rendering",
+                        systemSymbol: .docRichtext
+                    )
+                }
+            } header: {
+                Text("setting.general.display.header")
+            } footer: {
+                Text("setting.general.display.enable_markdown_rendering.description")
+                    .font(.footnote)
             }
 
             Section {
@@ -147,14 +163,15 @@ struct GeneralTab: View {
                     }
                     Spacer()
                     Toggle(
-                        "",
                         isOn: $includeBetaUpdates.didSet(execute: { state in
                             logSettings(["include_beta_updates": state])
                             if state {
                                 MyConfiguration.shared.updater.checkForUpdates()
                             }
                         })
-                    )
+                    ) {
+                        EmptyView()
+                    }
                     .labelsHidden()
                 }
 
@@ -185,9 +202,13 @@ struct GeneralTab: View {
                     selection: $selectedMenuBarIcon
                 ) {
                     ForEach(MenuBarIconType.allCases) { option in
-                        Image(option.rawValue)
-                            .renderingMode(.template)
-                            .foregroundStyle(.primary)
+                        Label {
+                            EmptyView()
+                        } icon: {
+                            Image(option.rawValue)
+                                .renderingMode(.template)
+                        }
+                        .labelStyle(.iconOnly)
                     }
                 }
 
@@ -268,6 +289,7 @@ struct GeneralTab: View {
     @Default(.autoQueryOCRText) private var autoQueryOCRText
     @Default(.autoQuerySelectedText) private var autoQuerySelectedText
     @Default(.autoQueryPastedText) private var autoQueryPastedText
+    @Default(.autoQueryWhenTextChanged) private var autoQueryWhenTextChanged
     @Default(.autoPlayAudio) private var autoPlayAudio
     @Default(.pronunciation) private var pronunciation
 
@@ -286,6 +308,7 @@ struct GeneralTab: View {
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
     @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
+    @Default(.enableMarkdownRendering) private var enableMarkdownRendering
 
     @Default(.includeBetaUpdates) private var includeBetaUpdates
 

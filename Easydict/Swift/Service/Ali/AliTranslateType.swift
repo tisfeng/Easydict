@@ -25,6 +25,7 @@ struct AliTranslateType: Equatable {
         .korean: "ko",
         .french: "fr",
         .spanish: "es",
+        .catalan: "ca",
         .portuguese: "pt",
         .italian: "it",
         .german: "de",

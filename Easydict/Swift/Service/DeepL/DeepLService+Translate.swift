@@ -10,78 +10,73 @@ import Alamofire
 import Defaults
 import Foundation
 
-private let kDeepLWebURL = "https://www2.deepl.com/jsonrpc"
+private let kDeepLWebURL = "https://oneshot-free.www.deepl.com/v1/translate"
+private let kDeepLWebUserAgent = "DeepL/26.42 CFNetwork/3826.600.41 Darwin/25.0.0"
+private let kDeepLWebOSVersion = "26.0"
+private let kDeepLWebAppVersion = "26.42"
+private let kDeepLWebAppBuild = "5443737"
+private let kDeepLWebInstanceID = UUID().uuidString.lowercased()
+private let kDeepLWebSessionID = UUID().uuidString.lowercased()
 
 // MARK: - DeepLService + Translate
 
 extension DeepLService {
     // MARK: - Web Translate
 
-    /// DeepL web translate.
-    /// Ref: https://github.com/akl7777777/bob-plugin-akl-deepl-free-translate/blob/9d194783b3eb8b3a82f21bcfbbaf29d6b28c2761/src/main.js
+    /// Translates text through DeepL's anonymous oneshot endpoint.
+    ///
+    /// The legacy JSON-RPC endpoint is no longer reliable. The oneshot request mirrors the
+    /// request shape used by DeepL's interactive clients and returns the same `translations`
+    /// payload as the official API.
+    /// Reference: https://github.com/OwO-Network/DLX/issues/216 and
+    /// https://github.com/OwO-Network/DLX/pull/217
     func deepLWebTranslate(
         _ text: String,
         from: Language,
         to: Language,
         completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
-        var sourceLangCode = languageCode(for: from) ?? "auto"
-        sourceLangCode = removeLanguageVariant(sourceLangCode)
-
-        let regionalVariant = languageCode(for: to) ?? ""
-        let targetLangCode = regionalVariant.components(separatedBy: "-").first ?? regionalVariant
-
-        let requestID = getRandomNumber()
-        let iCount = getICount(text)
-        let timestamp = getTimestamp(iCount: iCount)
-
-        var params: [String: Any] = [
-            "texts": [["text": text, "requestAlternatives": 3]],
-            "splitting": "newlines",
-            "lang": ["source_lang_user_selected": sourceLangCode, "target_lang": targetLangCode],
-            "timestamp": timestamp,
-        ]
-
-        if regionalVariant != targetLangCode {
-            params["commonJobParams"] = [
-                "regionalVariant": regionalVariant,
-                "mode": "translate",
-                "browserType": 1,
-                "textType": "plaintext",
-            ]
-        }
-
-        let postData: [String: Any] = [
-            "jsonrpc": "2.0",
-            "method": "LMT_handle_texts",
-            "id": requestID,
-            "params": params,
-        ]
-
-        guard var postStr = postData.toJSONString() else {
-            completion(result, QueryError(type: .api, message: "Failed to serialize request"))
+        let sourceLanguageCode = languageCode(for: from) ?? "auto"
+        guard let targetLanguageCode = languageCode(for: to),
+              targetLanguageCode != "auto"
+        else {
+            completion(result, QueryError(type: .api, message: "Invalid DeepL target language"))
             return
         }
 
-        // Special handling for method spacing based on ID
-        if (requestID + 5) % 29 == 0 || (requestID + 3) % 13 == 0 {
-            postStr = postStr.replacingOccurrences(of: "\"method\":\"", with: "\"method\" : \"")
-        } else {
-            postStr = postStr.replacingOccurrences(of: "\"method\":\"", with: "\"method\": \"")
-        }
+        let requestBody = DeepLWebTranslateRequest(
+            text: [text],
+            targetLang: oneshotLanguageCode(targetLanguageCode, isTarget: true),
+            sourceLang: sourceLanguageCode == "auto"
+                ? nil
+                : oneshotLanguageCode(sourceLanguageCode, isTarget: false),
+            usageType: "translate",
+            appInformation: DeepLAppInformation(
+                os: "iOS",
+                osVersion: kDeepLWebOSVersion,
+                appVersion: kDeepLWebAppVersion,
+                appBuild: kDeepLWebAppBuild,
+                instanceID: kDeepLWebInstanceID
+            )
+        )
 
-        guard let postDataData = postStr.data(using: .utf8),
+        guard let postData = try? JSONEncoder().encode(requestBody),
               let url = URL(string: kDeepLWebURL)
         else {
-            completion(result, QueryError(type: .api, message: "Invalid request data"))
+            completion(result, QueryError(type: .api, message: "Failed to serialize request"))
             return
         }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.httpBody = postDataData
+        request.httpBody = postData
         request.timeoutInterval = EZNetWorkTimeoutInterval
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("None", forHTTPHeaderField: "Authorization")
+        request.setValue(kDeepLWebUserAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue(kDeepLWebOSVersion, forHTTPHeaderField: "x-app-os-version")
+        request.setValue(kDeepLWebInstanceID, forHTTPHeaderField: "x-app-instance-id")
+        request.setValue(kDeepLWebSessionID, forHTTPHeaderField: "x-app-session-id")
 
         let startTime = CFAbsoluteTimeGetCurrent()
 
@@ -127,43 +122,26 @@ extension DeepLService {
             let endTime = CFAbsoluteTimeGetCurrent()
             logInfo("deepLWebTranslate cost: \(String(format: "%.1f", (endTime - startTime) * 1000)) ms")
 
-            guard let responseData = response.data else {
+            guard let responseData = response.data,
+                  let responseDict = try? JSONSerialization.jsonObject(with: responseData) as? [String: Any]
+            else {
                 completion(result, QueryError(type: .api, message: "Invalid response"))
                 return
             }
 
-            do {
-                if let responseDict = try JSONSerialization.jsonObject(with: responseData) as? [String: Any] {
-                    parseWebTranslateResponse(responseDict, completion: completion)
-                }
-            } catch {
+            guard let translatedResults = parseOfficialResponse(responseDict), !translatedResults.isEmpty else {
                 completion(result, QueryError(type: .api, message: "Failed to parse response"))
+                return
             }
+
+            result.translatedResults = translatedResults
+            result.raw = responseDict as NSDictionary
+            completion(result, nil)
         }
 
         queryModel.setStop({
             dataRequest.cancel()
         }, serviceType: serviceType().rawValue)
-    }
-
-    // MARK: - Web Translate Response Parser
-
-    private func parseWebTranslateResponse(
-        _ responseDict: [String: Any],
-        completion: @escaping (QueryResult, (any Error)?) -> ()
-    ) {
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: responseDict)
-            let response = try JSONDecoder().decode(DeepLTranslateResponse.self, from: jsonData)
-
-            if let translatedText = response.result?.texts?.first?.text?.trim(), !translatedText.isEmpty {
-                result.translatedResults = translatedText.toParagraphs()
-                result.raw = responseDict as NSDictionary
-            }
-            completion(result, nil)
-        } catch {
-            completion(result, QueryError(type: .api, message: "Failed to decode response"))
-        }
     }
 
     // MARK: - Official API Translate
@@ -267,10 +245,11 @@ extension DeepLService {
 
     // MARK: - Official API Response Parser
 
-    private func parseOfficialResponse(_ responseDict: [String: Any]) -> [String]? {
-        guard let translations = responseDict["translations"] as? [[String: Any]],
-              let firstTranslation = translations.first,
-              let translatedText = firstTranslation["text"] as? String
+    func parseOfficialResponse(_ responseDict: [String: Any]) -> [String]? {
+        guard let responseData = try? JSONSerialization.data(withJSONObject: responseDict),
+              let response = try? JSONDecoder().decode(DeepLOfficialResponse.self, from: responseData),
+              let translatedText = response.translations?.first?.text,
+              !translatedText.trim().isEmpty
         else {
             return nil
         }
@@ -279,44 +258,39 @@ extension DeepLService {
 
     private func parseDeepLErrorMessage(from data: Data?) -> String? {
         guard let data,
-              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let errorDict = json["error"] as? [String: Any],
-              let errorMessage = errorDict["message"] as? String
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
         else {
             return nil
         }
-        return errorMessage
+
+        if let message = json["message"] as? String, !message.isEmpty {
+            return message
+        }
+        if let title = json["title"] as? String, !title.isEmpty {
+            return title
+        }
+        if let error = json["error"] as? String, !error.isEmpty {
+            return error
+        }
+        if let errorDict = json["error"] as? [String: Any],
+           let message = errorDict["message"] as? String,
+           !message.isEmpty {
+            return message
+        }
+        return nil
     }
 
     // MARK: - Request Helper Methods
 
-    private func getICount(_ text: String) -> Int {
-        text.components(separatedBy: "i").count - 1
-    }
-
-    private func getRandomNumber() -> Int {
-        let rand = Int.random(in: 100000 ... 189998)
-        return rand * 1000
-    }
-
-    private func getTimestamp(iCount: Int) -> Int {
-        let ts = Int(Date().timeIntervalSince1970 * 1000)
-        if iCount != 0 {
-            let count = iCount + 1
-            return ts - (ts % count) + count
-        } else {
-            return ts
+    /// Converts Easydict's language codes to the BCP-47-like values accepted by oneshot.
+    private func oneshotLanguageCode(_ languageCode: String, isTarget: Bool) -> String {
+        switch languageCode.lowercased() {
+        case "zh-hans": return "zh-Hans"
+        case "zh-hant": return "zh-Hant"
+        case "pt-pt": return "pt-PT"
+        case "pt-br": return "pt-BR"
+        case "en" where isTarget: return "en-US"
+        default: return languageCode.lowercased()
         }
-    }
-}
-
-// MARK: - Dictionary Extension
-
-extension [String: Any] {
-    fileprivate func toJSONString() -> String? {
-        guard let data = try? JSONSerialization.data(withJSONObject: self, options: []) else {
-            return nil
-        }
-        return String(data: data, encoding: .utf8)
     }
 }

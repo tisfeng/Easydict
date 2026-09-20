@@ -20,12 +20,14 @@ struct QueryRecord: Codable, Identifiable, Hashable, Defaults.Serializable {
         queryText: String,
         queryFromLanguage: Language,
         queryToLanguage: Language,
+        translatedResult: String? = nil,
         timestamp: Date = Date()
     ) {
         self.id = id
         self.queryText = queryText
         self.queryFromLanguage = queryFromLanguage
         self.queryToLanguage = queryToLanguage
+        self.translatedResult = translatedResult
         self.timestamp = timestamp
     }
 
@@ -35,6 +37,7 @@ struct QueryRecord: Codable, Identifiable, Hashable, Defaults.Serializable {
     let queryText: String
     let queryFromLanguage: Language
     let queryToLanguage: Language
+    var translatedResult: String?
     let timestamp: Date
 
     static func == (lhs: QueryRecord, rhs: QueryRecord) -> Bool {
