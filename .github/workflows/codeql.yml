@@ -75,7 +75,7 @@ jobs:
     name: Analyze (swift)
     needs: changes
     if: ${{ !cancelled() }}
-    runs-on: macos-latest
+    runs-on: xcode-27
     timeout-minutes: 120
     permissions:
       security-events: write
@@ -98,7 +98,20 @@ jobs:
         run: |
           xcodebuild -version
           xcrun swiftc --version
+          sw_vers -productVersion
           xcode_version="$(xcodebuild -version | awk 'NR == 1 { print $2 }')"
+          macos_version="$(sw_vers -productVersion)"
+
+          [[ "$xcode_version" == 27.* ]] || {
+            echo "Expected Xcode 27, got $xcode_version"
+            exit 1
+          }
+
+          [[ "$macos_version" == 27.* ]] || {
+            echo "Expected macOS 27, got $macos_version"
+            exit 1
+          }
+
           echo "xcode_version=$xcode_version" >> "$GITHUB_OUTPUT"
 
       - name: Cache Swift package sources
