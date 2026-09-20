@@ -1,8 +1,7 @@
 # Release 生命周期执行契约
 
-执行 `draft`、`publish`、`release` 或 Release `resume` 时读取本文档。本文只约束 Agent 的
-动作选择、内容决策、外部写入和恢复行为；开发者环境配置、完整命令和实现说明见
-[`docs/releases/easydict.md`](../../../../docs/releases/easydict.md)。
+执行 `draft`、`publish`、`release` 或 Release `resume` 时读取本文档。本文件仅定义
+Agent 必须遵守的动作选择、内容决策、外部写入和恢复契约。
 
 ## Git 与状态边界
 
