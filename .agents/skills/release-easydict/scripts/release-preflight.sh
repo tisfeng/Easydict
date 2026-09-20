@@ -26,7 +26,7 @@ validate_release_tooling() {
     local tooling_status
 
     tooling_status="$(git -C "$RELEASE_SOURCE_ROOT" status --porcelain \
-        --untracked-files=all -- scripts/release)"
+        --untracked-files=all -- .agents/skills/release-easydict)"
     [[ -z "$tooling_status" ]] \
         || release_fail "release tooling has uncommitted changes"
 }
@@ -36,7 +36,7 @@ validate_synced_tooling() {
     local source_tree release_tree tooling_path
 
     load_release_source_metadata
-    for tooling_path in scripts/release changelog .agents/skills/release-easydict; do
+    for tooling_path in .agents/skills/release-easydict changelog; do
         source_tree="$(git -C "$RELEASE_SOURCE_ROOT" rev-parse \
             "$RELEASE_SOURCE_COMMIT:$tooling_path")"
         release_tree="$(git -C "$RELEASE_WORKTREE" rev-parse \

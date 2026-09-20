@@ -22,7 +22,7 @@ changelog/<version>.md
 
 发布脚本会校验文件、固定其 SHA-256，并在 Draft、publish、resume 和远程验证阶段检查
 内容没有漂移。正文比较只规范化 GitHub 的 CRLF/LF 和单个文件结尾换行，其他字符和空白
-必须一致。Markdown 渲染依赖见 `scripts/release/requirements.txt`。
+必须一致。Markdown 渲染依赖见 `.agents/skills/release-easydict/scripts/requirements.txt`。
 
 已发布版本如果需要修订，先修改并提交对应 Markdown；随后应在明确授权的维护任务中同步
 GitHub Release 和 appcast。不要只手动修改其中一个发布表面，发布校验会把这种状态视为

@@ -61,13 +61,13 @@ fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证
 先预览目标 Release 正文和 `main/appcast.xml` 的 description 差异：
 
 ```bash
-./scripts/release/release-easydict.sh sync-notes <version>
+./.agents/skills/release-easydict/scripts/release-easydict.sh sync-notes <version>
 ```
 
 确认预览内容后才执行远程同步：
 
 ```bash
-./scripts/release/release-easydict.sh sync-notes <version> --execute
+./.agents/skills/release-easydict/scripts/release-easydict.sh sync-notes <version> --execute
 ```
 
 可选参数包括 `--repo <owner/repo>`、`--notes-file <path>`、`--appcast-branch <branch>`
@@ -97,14 +97,14 @@ fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证
 ### 验证 changelog
 
 ```bash
-python3 scripts/release/release_notes.py validate \
+python3 .agents/skills/release-easydict/scripts/release_notes.py validate \
   --file changelog/<version>.md --version <version>
 ```
 
 ### 创建或替换 Draft
 
 ```bash
-./scripts/release/release-easydict.sh draft <version> [--channel <channel>]
+./.agents/skills/release-easydict/scripts/release-easydict.sh draft <version> [--channel <channel>]
 ```
 
 普通 Draft 优先使用兼容的 Release 编译缓存；需要显式全量清理时追加
@@ -114,7 +114,7 @@ python3 scripts/release/release_notes.py validate \
 只有用户明确要求废弃并重建当前最新 Draft 时，才使用：
 
 ```bash
-./scripts/release/release-easydict.sh draft <version> \
+./.agents/skills/release-easydict/scripts/release-easydict.sh draft <version> \
   --replace-draft [--channel <channel>]
 ```
 
@@ -122,7 +122,7 @@ python3 scripts/release/release_notes.py validate \
 开始新的替换，应使用结果中的运行 ID：
 
 ```bash
-./scripts/release/release-easydict.sh resume <run-id>
+./.agents/skills/release-easydict/scripts/release-easydict.sh resume <run-id>
 ```
 
 旧内容和 Issue 文件只作为回滚数据。仓库工作流临时移走完整旧状态，选择
@@ -148,7 +148,7 @@ python3 .agents/skills/release-easydict/scripts/release_content.py apply \
 ### 发布 Draft
 
 ```bash
-./scripts/release/release-easydict.sh publish <version> [--channel <channel>]
+./.agents/skills/release-easydict/scripts/release-easydict.sh publish <version> [--channel <channel>]
 ```
 
 ## 失败与恢复

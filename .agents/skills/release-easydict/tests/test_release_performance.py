@@ -10,8 +10,8 @@ import tempfile
 import unittest
 
 
-ROOT = Path(__file__).resolve().parents[3]
-COMMON = ROOT / "scripts/release/release-common.sh"
+ROOT = Path(__file__).resolve().parents[4]
+COMMON = ROOT / ".agents/skills/release-easydict/scripts/release-common.sh"
 
 
 def run(command, *, cwd=None, env=None, check=True):
@@ -41,7 +41,10 @@ class ReleasePerformanceTests(unittest.TestCase):
             ["git", "config", "user.email", "release@example.com"],
             cwd=repository,
         )
-        (repository / "scripts/release").mkdir(parents=True)
+        (repository / ".agents/skills/release-easydict/scripts").mkdir(
+            parents=True
+        )
+        (repository / ".agents/skills/release-easydict/assets").mkdir()
         (repository / "Easydict.xcodeproj").mkdir()
         (repository / "Easydict.xcworkspace/xcshareddata/swiftpm").mkdir(
             parents=True
@@ -53,8 +56,15 @@ class ReleasePerformanceTests(unittest.TestCase):
         (repository / "Easydict.xcworkspace/xcshareddata/swiftpm/Package.resolved").write_text(
             "{\"pins\": []}\n", encoding="utf-8"
         )
-        (repository / "scripts/release/asc-workflow.json").write_text(
+        (repository / ".agents/skills/release-easydict/scripts/asc-workflow.json").write_text(
             "{}\n", encoding="utf-8"
+        )
+        for name in ("release-build.sh", "release-common.sh"):
+            (repository / f".agents/skills/release-easydict/scripts/{name}").write_text(
+                f"# {name}\n", encoding="utf-8"
+            )
+        (repository / ".agents/skills/release-easydict/assets/export-options.plist").write_text(
+            "plist\n", encoding="utf-8"
         )
         run(["git", "add", "."], cwd=repository)
         run(["git", "commit", "-m", "base"], cwd=repository)

@@ -10,9 +10,9 @@ import tempfile
 import unittest
 
 
-ROOT = Path(__file__).resolve().parents[3]
-GITHUB = ROOT / "scripts/release/release-github.sh"
-NOTES = ROOT / "scripts/release/release_notes.py"
+ROOT = Path(__file__).resolve().parents[4]
+GITHUB = ROOT / ".agents/skills/release-easydict/scripts/release-github.sh"
+NOTES = ROOT / ".agents/skills/release-easydict/scripts/release_notes.py"
 
 
 class ReleaseGitHubNotesTests(unittest.TestCase):

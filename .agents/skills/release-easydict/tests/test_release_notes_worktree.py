@@ -10,8 +10,8 @@ import tempfile
 import unittest
 
 
-ROOT = Path(__file__).resolve().parents[3]
-COMMON = ROOT / "scripts/release/release-common.sh"
+ROOT = Path(__file__).resolve().parents[4]
+COMMON = ROOT / ".agents/skills/release-easydict/scripts/release-common.sh"
 
 
 def run(command, *, cwd=None, env=None, check=True):

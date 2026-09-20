@@ -9,7 +9,7 @@ import tempfile
 import unittest
 
 
-SCRIPT = Path(__file__).resolve().parents[1] / "release_notes.py"
+SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "release_notes.py"
 REQUIREMENTS = SCRIPT.with_name("requirements.txt")
 SPEC = importlib.util.spec_from_file_location("release_notes", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None

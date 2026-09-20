@@ -6,7 +6,9 @@
 set -euo pipefail
 
 RELEASE_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-RELEASE_SOURCE_ROOT="${RELEASE_SOURCE_ROOT:-$(cd "$RELEASE_SCRIPT_DIR/../.." && pwd)}"
+RELEASE_SKILL_ROOT="$(cd "$RELEASE_SCRIPT_DIR/.." && pwd)"
+RELEASE_SOURCE_ROOT="${RELEASE_SOURCE_ROOT:-$(cd "$RELEASE_SKILL_ROOT/../../.." && pwd)}"
+RELEASE_SKILL_RELATIVE_DIR=".agents/skills/release-easydict"
 
 RELEASE_REMOTE="${RELEASE_REMOTE:-origin}"
 RELEASE_REPOSITORY="${RELEASE_REPOSITORY:-tisfeng/Easydict}"
@@ -25,8 +27,8 @@ RELEASE_BUILD_OVERRIDE="${BUILD_NUMBER:-}"
 RELEASE_DRAFT_MODE="${DRAFT_MODE:-normal}"
 RELEASE_FORCE_CLEAN="${FORCE_CLEAN:-0}"
 
-RELEASE_WORKFLOW_PATH="$RELEASE_SOURCE_ROOT/scripts/release/asc-workflow.json"
-RELEASE_EXPORT_OPTIONS="$RELEASE_SCRIPT_DIR/export-options.plist"
+RELEASE_WORKFLOW_PATH="$RELEASE_SOURCE_ROOT/$RELEASE_SKILL_RELATIVE_DIR/scripts/asc-workflow.json"
+RELEASE_EXPORT_OPTIONS="$RELEASE_SKILL_ROOT/assets/export-options.plist"
 RELEASE_PROJECT_PATH="Easydict.xcodeproj"
 RELEASE_WORKSPACE_PATH="Easydict.xcworkspace"
 RELEASE_SCHEME="Easydict"
@@ -246,9 +248,10 @@ release_normalized_project_hash_input() {
 
 calculate_release_build_fingerprint() {
     local package_resolved="$RELEASE_BUILD_WORKTREE/Easydict.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+    local build_skill_root="$RELEASE_BUILD_WORKTREE/$RELEASE_SKILL_RELATIVE_DIR"
 
     require_release_file "$package_resolved"
-    require_release_file "$RELEASE_BUILD_WORKTREE/scripts/release/asc-workflow.json"
+    require_release_file "$build_skill_root/scripts/asc-workflow.json"
     {
         printf 'schema=1\n'
         printf 'xcode='; xcodebuild -version
@@ -264,13 +267,13 @@ calculate_release_build_fingerprint() {
         printf 'Package.resolved=\n'
         cat "$package_resolved"
         printf 'workflow=\n'
-        cat "$RELEASE_BUILD_WORKTREE/scripts/release/asc-workflow.json"
+        cat "$build_skill_root/scripts/asc-workflow.json"
         printf 'build-script=\n'
-        cat "$RELEASE_BUILD_WORKTREE/scripts/release/release-build.sh"
+        cat "$build_skill_root/scripts/release-build.sh"
         printf 'common-script=\n'
-        cat "$RELEASE_BUILD_WORKTREE/scripts/release/release-common.sh"
+        cat "$build_skill_root/scripts/release-common.sh"
         printf 'export-options=\n'
-        cat "$RELEASE_BUILD_WORKTREE/scripts/release/export-options.plist"
+        cat "$build_skill_root/assets/export-options.plist"
     } | shasum -a 256 | awk '{print $1}'
 }
 

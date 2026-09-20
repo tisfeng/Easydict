@@ -5,10 +5,10 @@ import tempfile
 import unittest
 
 
-ROOT = Path(__file__).resolve().parents[3]
-BRANCH_SYNC = ROOT / "scripts/release/release-branch-sync.sh"
-PUBLISH_GIT = ROOT / "scripts/release/release-publish-git.sh"
-RELEASE_NOTES = ROOT / "scripts/release/release_notes.py"
+ROOT = Path(__file__).resolve().parents[4]
+BRANCH_SYNC = ROOT / ".agents/skills/release-easydict/scripts/release-branch-sync.sh"
+PUBLISH_GIT = ROOT / ".agents/skills/release-easydict/scripts/release-publish-git.sh"
+RELEASE_NOTES = ROOT / ".agents/skills/release-easydict/scripts/release_notes.py"
 
 
 def run(command, *, cwd=None, env=None, check=True):

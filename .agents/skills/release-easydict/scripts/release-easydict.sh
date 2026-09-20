@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
 # Public entry point for preparing, drafting, and publishing Easydict releases.
-# The actual stages are declared in scripts/release/asc-workflow.json and can be resumed.
+# The actual stages are declared in .agents/skills/release-easydict/scripts/asc-workflow.json and can be resumed.
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
-WORKFLOW_PATH="$ROOT_DIR/scripts/release/asc-workflow.json"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
+WORKFLOW_SOURCE_PATH="$SCRIPT_DIR/asc-workflow.json"
+WORKFLOW_RUNTIME_DIR="$ROOT_DIR/.tmp/release/asc"
+WORKFLOW_PATH="$WORKFLOW_RUNTIME_DIR/asc-workflow.json"
+WORKFLOW_RUNS_DIR="$WORKFLOW_RUNTIME_DIR/runs"
 
 usage() {
     cat <<'EOF'
@@ -34,10 +37,16 @@ Options:
 
 Workflow results are summarized in the terminal. Detailed stderr and result
 JSON are saved under .tmp/release/<version>/logs/.
-
-The legacy release implementation remains available as:
-  scripts/release/release-easydict-legacy.sh
 EOF
+}
+
+prepare_workflow_runtime() {
+    local temporary_path
+
+    mkdir -p "$WORKFLOW_RUNTIME_DIR"
+    temporary_path="$(mktemp "$WORKFLOW_RUNTIME_DIR/asc-workflow.XXXXXX")"
+    cp "$WORKFLOW_SOURCE_PATH" "$temporary_path"
+    mv "$temporary_path" "$WORKFLOW_PATH"
 }
 
 run_notes_sync() {
@@ -117,7 +126,7 @@ require_value() {
 
 resolve_resume_version() {
     local run_id="$1"
-    local run_file="$ROOT_DIR/scripts/release/runs/$run_id.json"
+    local run_file="$WORKFLOW_RUNS_DIR/$run_id.json"
 
     [[ -f "$run_file" ]] || return 1
     python3 - "$run_file" <<'PY'
@@ -325,6 +334,7 @@ main() {
                 || fail "cannot determine version from run file: $run_id"
 
             cd "$ROOT_DIR"
+            prepare_workflow_runtime
             asc workflow validate --file "$WORKFLOW_PATH" >/dev/null
             export RELEASE_RUN_MODE=resume
             run_workflow "$resume_version" asc workflow run \
@@ -414,6 +424,7 @@ main() {
             || fail "build number must be greater than zero"
     fi
     cd "$ROOT_DIR"
+    prepare_workflow_runtime
     asc workflow validate --file "$WORKFLOW_PATH" >/dev/null
 
     local -a command=(

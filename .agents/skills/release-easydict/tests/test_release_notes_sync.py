@@ -13,8 +13,8 @@ from unittest import mock
 import xml.etree.ElementTree as ET
 
 
-ROOT = Path(__file__).resolve().parents[3]
-SCRIPT = ROOT / "scripts/release/release-notes-sync.py"
+ROOT = Path(__file__).resolve().parents[4]
+SCRIPT = ROOT / ".agents/skills/release-easydict/scripts/release-notes-sync.py"
 APPCAST = ROOT / "appcast.xml"
 
 

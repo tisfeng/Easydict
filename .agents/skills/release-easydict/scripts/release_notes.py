@@ -89,7 +89,7 @@ def require_renderer() -> None:
     """Require the pinned renderer so HTML is stable across release machines."""
     if markdown is None:
         raise ReleaseNotesError(
-            "Python-Markdown is required; install scripts/release/requirements.txt"
+            "Python-Markdown is required; install .agents/skills/release-easydict/scripts/requirements.txt"
         )
     installed = getattr(markdown, "__version__", "unknown")
     if installed != EXPECTED_MARKDOWN_VERSION:

@@ -6,9 +6,9 @@ import tempfile
 import unittest
 
 
-ROOT = Path(__file__).resolve().parents[3]
-REDRAFT = ROOT / "scripts/release/release-redraft.sh"
-RELEASE_NOTES = ROOT / "scripts/release/release_notes.py"
+ROOT = Path(__file__).resolve().parents[4]
+REDRAFT = ROOT / ".agents/skills/release-easydict/scripts/release-redraft.sh"
+RELEASE_NOTES = ROOT / ".agents/skills/release-easydict/scripts/release_notes.py"
 
 
 def run(command, *, cwd=None, env=None):

@@ -7,13 +7,13 @@ import tempfile
 import unittest
 
 
-ROOT = Path(__file__).resolve().parents[3]
-ENTRYPOINT = ROOT / "scripts/release/release-easydict.sh"
-COMMON = ROOT / "scripts/release/release-common.sh"
-REDRAFT_GIT = ROOT / "scripts/release/release-redraft-git.sh"
-REDRAFT = ROOT / "scripts/release/release-redraft.sh"
-RELEASE_NOTES = ROOT / "scripts/release/release_notes.py"
-WORKFLOW = ROOT / "scripts/release/asc-workflow.json"
+ROOT = Path(__file__).resolve().parents[4]
+ENTRYPOINT = ROOT / ".agents/skills/release-easydict/scripts/release-easydict.sh"
+COMMON = ROOT / ".agents/skills/release-easydict/scripts/release-common.sh"
+REDRAFT_GIT = ROOT / ".agents/skills/release-easydict/scripts/release-redraft-git.sh"
+REDRAFT = ROOT / ".agents/skills/release-easydict/scripts/release-redraft.sh"
+RELEASE_NOTES = ROOT / ".agents/skills/release-easydict/scripts/release_notes.py"
+WORKFLOW = ROOT / ".agents/skills/release-easydict/scripts/asc-workflow.json"
 
 
 def run(command, *, cwd=None, env=None, check=True):
@@ -33,7 +33,9 @@ class ReleaseRedraftTests(unittest.TestCase):
         version = "9.98.0"
         with tempfile.TemporaryDirectory() as directory:
             temporary = Path(directory)
-            script_dir = temporary / "scripts" / "release"
+            script_dir = (
+                temporary / ".agents" / "skills" / "release-easydict" / "scripts"
+            )
             script_dir.mkdir(parents=True)
             capture = temporary / "arguments.json"
             fake_sync = script_dir / "release-notes-sync.py"
@@ -111,16 +113,33 @@ print(json.dumps({
 
             result = run(
                 [str(ENTRYPOINT), "draft", version, "--replace-draft"],
-                cwd=ROOT,
+                cwd=tool_dir,
                 env=env,
             )
             self.assertEqual(result.returncode, 0)
             arguments = json.loads(capture.read_text(encoding="utf-8"))
             self.assertIn("DRAFT_MODE:replace", arguments)
+            workflow_index = arguments.index("--file") + 1
+            self.assertEqual(
+                Path(arguments[workflow_index]),
+                ROOT / ".tmp/release/asc/asc-workflow.json",
+            )
+            self.assertEqual(
+                (ROOT / ".tmp/release/asc/asc-workflow.json").read_bytes(),
+                WORKFLOW.read_bytes(),
+            )
 
             run([str(ENTRYPOINT), "draft", version], cwd=ROOT, env=env)
             arguments = json.loads(capture.read_text(encoding="utf-8"))
             self.assertIn("DRAFT_MODE:normal", arguments)
+
+            run(
+                [str(ENTRYPOINT), "release", version, "--dry-run"],
+                cwd=tool_dir,
+                env=env,
+            )
+            arguments = json.loads(capture.read_text(encoding="utf-8"))
+            self.assertIn("--dry-run", arguments)
 
             result = run(
                 [str(ENTRYPOINT), "publish", version, "--replace-draft"],

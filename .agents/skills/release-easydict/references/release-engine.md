@@ -4,10 +4,8 @@ Easydict 的发布流程由 `asc workflow` 编排。该工作流将构建、公�
 和 Sparkle 等阶段拆分为多个小步骤，支持断点恢复，同时提供一条命令执行完整的发布流程。
 
 首次设置和发布维护者视角的总览（包括 Apple 账号、Keychain 和主要命令）见
-[`docs/releases/easydict.md`](../../docs/releases/easydict.md)。本文保留完整的
+[`docs/releases/easydict.md`](../../../../docs/releases/easydict.md)。本文保留完整的
 脚本阶段、状态和失败行为说明。
-
-旧版单体脚本保留为 `release-easydict-legacy.sh`，可作为临时备用方案使用，但新版工作流不会调用它。
 
 ## 发布模型
 
@@ -49,14 +47,14 @@ Easydict 的发布流程由 `asc workflow` 编排。该工作流将构建、公�
 - [`create-dmg`](https://github.com/sindresorhus/create-dmg)。
 - GitHub CLI（`gh`）。
 - Sparkle 的 `generate_appcast` 工具，以及保存在 Keychain 中的 `ed25519` 密钥。
-- `scripts/release/requirements.txt` 中固定版本的 Python Markdown 渲染器。
+- `.agents/skills/release-easydict/scripts/requirements.txt` 中固定版本的 Python Markdown 渲染器。
 
 工作流要求为 `asc` 配置 App Store Connect API 认证，并通过以下命令验证：
 
 ```bash
 asc auth status --validate
 gh auth status
-python3 -m pip install -r scripts/release/requirements.txt
+python3 -m pip install -r .agents/skills/release-easydict/scripts/requirements.txt
 ```
 
 默认情况下，工作流会先从 `PATH` 中查找 `generate_appcast`，然后查找 Sparkle 的 Xcode 包产物。
@@ -68,7 +66,7 @@ Keychain 或工具自身的凭据存储中，不会写入仓库或发布元数�
 先在仓库根目录创建或编辑 `changelog/<version>.md`，检查内容后将其提交到本地 `dev`：
 
 ```bash
-python3 scripts/release/release_notes.py validate \
+python3 .agents/skills/release-easydict/scripts/release_notes.py validate \
   --file changelog/2.22.0.md \
   --version 2.22.0
 ```
@@ -80,7 +78,7 @@ Release 标题不写入文件。发布开始后，工作流会冻结正文和渲
 准备好 changelog 后执行：
 
 ```bash
-./scripts/release/release-easydict.sh release 2.22.0
+./.agents/skills/release-easydict/scripts/release-easydict.sh release 2.22.0
 ```
 
 ### 发布后修订日志并同步
@@ -91,10 +89,10 @@ Release 标题不写入文件。发布开始后，工作流会冻结正文和渲
 
 ```bash
 # 默认只查询并输出差异，不修改远程状态
-./scripts/release/release-easydict.sh sync-notes 2.22.0
+./.agents/skills/release-easydict/scripts/release-easydict.sh sync-notes 2.22.0
 
 # 检查预览后，显式同步已发布 Release 和远程 main/appcast.xml
-./scripts/release/release-easydict.sh sync-notes 2.22.0 --execute
+./.agents/skills/release-easydict/scripts/release-easydict.sh sync-notes 2.22.0 --execute
 ```
 
 它不重建 App、不重新签名、不上传附件，也不修改 Tag、版本号、构建号或渠道。执行时要求
@@ -105,13 +103,13 @@ worktree 干净，并通过 GitHub Release ETag 和 appcast blob SHA 保护并�
 默认发布频道为 `beta`。如果要发布稳定版本：
 
 ```bash
-./scripts/release/release-easydict.sh release 2.22.0 --channel stable
+./.agents/skills/release-easydict/scripts/release-easydict.sh release 2.22.0 --channel stable
 ```
 
 可以指定构建号：
 
 ```bash
-./scripts/release/release-easydict.sh release 2.22.0 \
+./.agents/skills/release-easydict/scripts/release-easydict.sh release 2.22.0 \
     --build-number 64
 ```
 
@@ -122,7 +120,7 @@ worktree 干净，并通过 GitHub Release ETag 和 appcast blob SHA 保护并�
 需要显式强制全量清理时，可以在 `prepare`、`draft` 或 `release` 命令中加入：
 
 ```bash
-./scripts/release/release-easydict.sh draft 2.22.0 --force-clean
+./.agents/skills/release-easydict/scripts/release-easydict.sh draft 2.22.0 --force-clean
 ```
 
 ## 更安全的分阶段命令
@@ -131,13 +129,13 @@ worktree 干净，并通过 GitHub Release ETag 和 appcast blob SHA 保护并�
 
 ```bash
 # 构建、签名、公证、打包、生成 appcast，并在本地完成验证。
-./scripts/release/release-easydict.sh prepare 2.22.0
+./.agents/skills/release-easydict/scripts/release-easydict.sh prepare 2.22.0
 
 # 准备发布、冻结并提交 appcast、同步发布引用，并创建经过验证的 GitHub Draft Release。
-./scripts/release/release-easydict.sh draft 2.22.0
+./.agents/skills/release-easydict/scripts/release-easydict.sh draft 2.22.0
 
 # 发布已有的、经过验证的 Draft Release，推广 Draft 阶段冻结的 appcast，并执行远程验证。
-./scripts/release/release-easydict.sh publish 2.22.0
+./.agents/skills/release-easydict/scripts/release-easydict.sh publish 2.22.0
 ```
 
 如果准备发布的是稳定版本，需要在单独执行 `publish` 命令时传入相同的 `--channel stable` 参数。
@@ -148,7 +146,7 @@ worktree 干净，并通过 GitHub Release ETag 和 appcast blob SHA 保护并�
 `appcast.xml`，可以显式废弃旧 Draft 并从最新本地 `dev` 重建：
 
 ```bash
-./scripts/release/release-easydict.sh draft 2.22.0 --replace-draft
+./.agents/skills/release-easydict/scripts/release-easydict.sh draft 2.22.0 --replace-draft
 ```
 
 该参数只适用于 `draft`，不能与 `--build-number` 同时使用。工作流会冻结旧 Draft
@@ -178,16 +176,16 @@ worktree 干净，并通过 GitHub Release ETag 和 appcast blob SHA 保护并�
 只预览确切的 `asc` 执行计划而不执行发布步骤：
 
 ```bash
-./scripts/release/release-easydict.sh release 2.22.0 --dry-run
+./.agents/skills/release-easydict/scripts/release-easydict.sh release 2.22.0 --dry-run
 ```
 
 ## 失败后恢复
 
-`asc` 会将运行状态记录在 Git 忽略的 `scripts/release/runs/` 目录下。修复临时问题后，使用 `asc` 输出的运行 ID
-继续执行：
+入口脚本会把 workflow 的运行时副本和 `asc` 原始运行状态写入 Git 忽略的
+`.tmp/release/asc/`。修复临时问题后，使用 `asc` 输出的运行 ID 继续执行：
 
 ```bash
-./scripts/release/release-easydict.sh resume <run-id>
+./.agents/skills/release-easydict/scripts/release-easydict.sh resume <run-id>
 ```
 
 发布状态和产物会保存在 `.tmp/release/<version>/` 中，用于审计和恢复。成功发布后只会移除隔离的 Git worktree；
@@ -205,11 +203,11 @@ worktree 干净，并通过 GitHub Release ETag 和 appcast blob SHA 保护并�
 
 详细日志保存在同一目录的 `workflow-<run-id>.log`，以及各个高噪声命令对应的步骤日志中。
 签名、公证票据、Gatekeeper、DMG 校验和 `xcodebuild export` 等命令成功时只显示摘要；失败时会显示
-日志路径和最后 40 行，便于快速定位。`scripts/release/runs/` 仍然保存 `asc` 的原始运行状态，继续恢复时使用其中的
-run ID：
+日志路径和最后 40 行，便于快速定位。`.tmp/release/asc/runs/` 保存 `asc` 的原始运行状态，
+继续恢复时使用其中的 run ID：
 
 ```bash
-./scripts/release/release-easydict.sh resume <run-id>
+./.agents/skills/release-easydict/scripts/release-easydict.sh resume <run-id>
 ```
 
 ## 完整工作流的执行内容
@@ -261,7 +259,7 @@ fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证
 - `tests/test_release_notes_sync.py`：发布后日志同步的 preview、CAS 失败和幂等行为测试。
 - `release-github.sh`：幂等的 Draft Release/正式发布和资产验证。
 - `release-verify.sh`：本地产物和最终远程状态验证。
-- `export-options.plist`：Developer ID 导出配置。
+- `assets/export-options.plist`：Developer ID 导出配置。
 
 仓库和团队默认值可以通过 `release-common.sh` 中的环境变量覆盖，但正常的 Easydict 发布除了版本号和频道外，
 通常不需要其他参数。

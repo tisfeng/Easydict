@@ -11,7 +11,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 
-SCRIPT = Path(__file__).resolve().parents[1] / "release-appcast.py"
+SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "release-appcast.py"
 SPARKLE_NS = "http://www.andymatuschak.org/xml-namespaces/sparkle"
 
 

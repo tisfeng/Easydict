@@ -4,7 +4,8 @@
 以及执行 beta/stable 发布。本文不保存任何真实密钥，也不替代发布脚本中的安全检查。
 
 推荐通过 `release-easydict` Skill 发起发布；需要人工诊断或单独运行某个阶段时，再使用仓库
-脚本。脚本实现细节见 [`scripts/release/README.md`](../../scripts/release/README.md)。
+脚本。脚本实现细节见
+[`release-engine.md`](../../.agents/skills/release-easydict/references/release-engine.md)。
 
 ## 使用发布 Skill
 
@@ -29,7 +30,7 @@
 Easydict 当前主流程由 `asc workflow` 编排，仓库脚本入口是：
 
 ```bash
-./scripts/release/release-easydict.sh <action> <version> [options]
+./.agents/skills/release-easydict/scripts/release-easydict.sh <action> <version> [options]
 ```
 
 常规发布顺序是：准备并验证本地产物 → 创建 GitHub Draft → 人工检查 → 发布 Draft →
@@ -37,12 +38,12 @@ Easydict 当前主流程由 `asc workflow` 编排，仓库脚本入口是：
 
 | 目的 | 命令 | 是否产生外部写入 |
 | --- | --- | --- |
-| 只预览工作流 | `./scripts/release/release-easydict.sh release <version> --dry-run` | 否 |
-| 只准备本地产物 | `./scripts/release/release-easydict.sh prepare <version>` | 本地 worktree、Archive 和临时状态 |
-| 创建 Draft 并停止 | `./scripts/release/release-easydict.sh draft <version>` | 临时发布分支、版本 Tag、GitHub Draft |
-| 发布已验证 Draft | `./scripts/release/release-easydict.sh publish <version>` | GitHub Release、appcast、远程分支 |
-| 一次完成 Draft + Publish | `./scripts/release/release-easydict.sh release <version>` | 同时包含以上写入 |
-| 恢复中断的工作流 | `./scripts/release/release-easydict.sh resume <run-id>` | 继续原运行，不能替代新的 Draft/Publish |
+| 只预览工作流 | `./.agents/skills/release-easydict/scripts/release-easydict.sh release <version> --dry-run` | 否 |
+| 只准备本地产物 | `./.agents/skills/release-easydict/scripts/release-easydict.sh prepare <version>` | 本地 worktree、Archive 和临时状态 |
+| 创建 Draft 并停止 | `./.agents/skills/release-easydict/scripts/release-easydict.sh draft <version>` | 临时发布分支、版本 Tag、GitHub Draft |
+| 发布已验证 Draft | `./.agents/skills/release-easydict/scripts/release-easydict.sh publish <version>` | GitHub Release、appcast、远程分支 |
+| 一次完成 Draft + Publish | `./.agents/skills/release-easydict/scripts/release-easydict.sh release <version>` | 同时包含以上写入 |
+| 恢复中断的工作流 | `./.agents/skills/release-easydict/scripts/release-easydict.sh resume <run-id>` | 继续原运行，不能替代新的 Draft/Publish |
 
 默认 channel 是 `beta`。稳定版必须在同一阶段显式传入 `--channel stable`；`publish` 时要
 使用与创建 Draft 相同的 channel。
@@ -67,7 +68,7 @@ Easydict 当前主流程由 `asc workflow` 编排，仓库脚本入口是：
 Python 依赖使用仓库固定版本：
 
 ```bash
-python3 -m pip install -r scripts/release/requirements.txt
+python3 -m pip install -r .agents/skills/release-easydict/scripts/requirements.txt
 ```
 
 GitHub CLI 和 `asc` 都必须先完成登录，然后用以下命令做最小验证：
@@ -115,30 +116,30 @@ asc auth login \
 
 ### Developer ID 签名证书与 Team ID
 
-当前默认值定义在 `scripts/release/release-common.sh`：
+当前默认值定义在 `.agents/skills/release-easydict/scripts/release-common.sh`：
 
 ```text
 RELEASE_TEAM_ID=45Z6V4YD5U
 RELEASE_SIGN_IDENTITY=Developer ID Application: Canglong Dai (45Z6V4YD5U)
 ```
 
-`RELEASE_TEAM_ID` 必须与 `scripts/release/export-options.plist` 的 `teamID` 相同；导出的
-App 和 DMG 的 `TeamIdentifier`、签名 `Authority` 和安全时间戳都会被检查。证书及其私钥应
-安装在当前 macOS 用户的 Keychain 中，检查命令是：
+`RELEASE_TEAM_ID` 必须与
+`.agents/skills/release-easydict/assets/export-options.plist` 的 `teamID` 相同；导出的 App 和
+DMG 的 `TeamIdentifier`、签名 `Authority` 和安全时间戳都会被检查。证书及其私钥应安装在
+当前 macOS 用户的 Keychain 中，检查命令是：
 
 ```bash
 security find-identity -v -p codesigning
 ```
 
 正常发布不需要覆盖这些默认值。确实切换团队或证书时，必须让环境变量、证书、构建签名
-以及 `scripts/release/export-options.plist` 的 `teamID` 一起变更；preflight 会拒绝只改其中
-一个值的配置。不要把团队切换临时值写进共享 shell 配置或提交私密证书。
+以及 `.agents/skills/release-easydict/assets/export-options.plist` 的 `teamID` 一起变更；
+preflight 会拒绝只改其中一个值的配置。不要把团队切换临时值写进共享 shell 配置或提交
+私密证书。
 
 ### 公证与 Sparkle Ed25519 密钥
 
-新版主流程使用 `asc notarization submit`，不要求单独设置 `xcrun notarytool` profile。
-`release-easydict-legacy.sh` 仍保留旧流程；只有明确运行 legacy 脚本时才需要它提示的
-`notarytool` Keychain profile 配置，不要把 legacy 配置混入新版工作流。
+主流程统一使用 `asc notarization submit`，不要求单独设置 `xcrun notarytool` profile。
 
 Sparkle 的 Ed25519 私钥用于生成签名 appcast，不是 Apple API key。主流程默认从 macOS
 Keychain 查找：
@@ -152,7 +153,7 @@ account: ed25519
 
 ```bash
 SPARKLE_PRIVATE_KEY_FILE="/secure/path/sparkle_private_key" \
-./scripts/release/release-easydict.sh prepare <version>
+./.agents/skills/release-easydict/scripts/release-easydict.sh prepare <version>
 ```
 
 脚本会把该文件传给 `generate_appcast --ed-key-file`；不要把私钥放在 Git 工作树或日志中。
@@ -177,7 +178,7 @@ Tag、临时发布分支和 appcast/分支推送则使用 Git remote 自己配�
 先校验，再提交到本地 `dev`：
 
 ```bash
-python3 scripts/release/release_notes.py validate \
+python3 .agents/skills/release-easydict/scripts/release_notes.py validate \
   --file changelog/<version>.md \
   --version <version>
 ```
@@ -189,13 +190,13 @@ python3 scripts/release/release_notes.py validate \
 先看准确的工作流步骤而不执行：
 
 ```bash
-./scripts/release/release-easydict.sh release <version> --dry-run
+./.agents/skills/release-easydict/scripts/release-easydict.sh release <version> --dry-run
 ```
 
 只构建、签名、公证、打包、生成候选 appcast 并做本地验证：
 
 ```bash
-./scripts/release/release-easydict.sh prepare <version>
+./.agents/skills/release-easydict/scripts/release-easydict.sh prepare <version>
 ```
 
 `prepare` 会使用隔离 release worktree 和长期 build cache，不修改远程 `dev`/`main`。
@@ -203,7 +204,7 @@ python3 scripts/release/release_notes.py validate \
 ### 3. 创建 Draft
 
 ```bash
-./scripts/release/release-easydict.sh draft <version> \
+./.agents/skills/release-easydict/scripts/release-easydict.sh draft <version> \
   --channel beta
 ```
 
@@ -213,7 +214,7 @@ GitHub Draft；不会公开 Release，也不会执行 Issue 关闭或评论。
 只有明确要废弃并重建当前最新 Draft 时才使用：
 
 ```bash
-./scripts/release/release-easydict.sh draft <version> --replace-draft
+./.agents/skills/release-easydict/scripts/release-easydict.sh draft <version> --replace-draft
 ```
 
 `--replace-draft` 不能与 `--build-number` 同用；失败后使用输出的 run ID `resume`，不要
@@ -224,7 +225,7 @@ GitHub Draft；不会公开 Release，也不会执行 Issue 关闭或评论。
 确认 Draft 标题、正文、附件、channel 和 changelog 后：
 
 ```bash
-./scripts/release/release-easydict.sh publish <version> \
+./.agents/skills/release-easydict/scripts/release-easydict.sh publish <version> \
   --channel beta
 ```
 
@@ -247,8 +248,8 @@ Publish 会先做 merge 预检，再公开 GitHub Release，推广冻结的 appc
 发布后如果只改了 changelog，不要重新跑 `resume`、`draft` 或 `publish`：
 
 ```bash
-./scripts/release/release-easydict.sh sync-notes <version>
-./scripts/release/release-easydict.sh sync-notes <version> --execute
+./.agents/skills/release-easydict/scripts/release-easydict.sh sync-notes <version>
+./.agents/skills/release-easydict/scripts/release-easydict.sh sync-notes <version> --execute
 ```
 
 第一条命令只预览差异；第二条命令才写入已发布 Release 正文和远程 `main/appcast.xml`。
@@ -260,14 +261,14 @@ Publish 会先做 merge 预检，再公开 GitHub Release，推广冻结的 appc
 失败时先记录终端输出中的 run ID 和路径，不要手工 rebase、强推或删除现场。常用恢复入口：
 
 ```bash
-./scripts/release/release-easydict.sh resume <run-id>
+./.agents/skills/release-easydict/scripts/release-easydict.sh resume <run-id>
 ```
 
 主要状态位置：
 
 - `.tmp/release/<version>/state/`：版本、正文、构建、Draft、Publish 和恢复状态；
 - `.tmp/release/<version>/logs/`：工作流 JSON、详细日志和高噪声步骤日志；
-- `scripts/release/runs/`：`asc` 原始运行状态，Git 已忽略；
+- `.tmp/release/asc/runs/`：`asc` 原始运行状态，Git 已忽略；
 - `.tmp/release/<version>/state/issue-followup/`：Issue 跟进的冻结候选、决策、计划、汇总和动作状态。
 
 以下情况应停止并修复根因后恢复：凭据或证书校验失败、changelog 或渲染结果漂移、合并冲突、
@@ -282,7 +283,7 @@ Issue 后续失败时不回滚 Release，使用 `issue-followup resume <version>
 python3 -m unittest discover \
   -s .agents/skills/release-easydict/tests \
   -p 'test_*.py'
-bash -n scripts/release/*.sh
+bash -n .agents/skills/release-easydict/scripts/*.sh
 git diff --check
 ```
 
