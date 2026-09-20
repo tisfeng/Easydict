@@ -28,9 +28,8 @@ Release 生命周期：
 - `sync-notes` 默认只预览；执行时要求目标 Release 已发布、工作树干净，并使用 Release
   ETag 与 appcast blob SHA 做乐观并发校验。失败后可用同一命令重试，已一致的目标会跳过写入。
 
-执行这些动作时读取 [发布引擎](references/release-engine.md) 和
-[Release 生命周期](references/release-workflow.md)。`release` 始终表示由本 Skill 编排
-`draft` 和 `publish`，不直接调用仓库脚本的一次性 `release` 动作。
+执行这些动作时读取 [Release 生命周期](references/release-workflow.md)。`release` 始终表示
+由本 Skill 编排 `draft` 和 `publish`，不直接调用仓库脚本的一次性 `release` 动作。
 
 `resume` 只恢复 ASC 发布工作流；它不会把新的 changelog 自动传播到已发布 Release。
 

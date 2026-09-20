@@ -1,7 +1,8 @@
-# Release 生命周期
+# Release 生命周期执行契约
 
-执行 `draft`、`publish`、`release` 或 Release `resume` 时读取本文档。以下命令均从仓库
-根目录执行；将 `<version>` 替换为目标版本。
+执行 `draft`、`publish`、`release` 或 Release `resume` 时读取本文档。本文只约束 Agent 的
+动作选择、内容决策、外部写入和恢复行为；开发者环境配置、完整命令和实现说明见
+[`docs/releases/easydict.md`](../../../../docs/releases/easydict.md)。
 
 ## Git 与状态边界
 
@@ -92,64 +93,18 @@ fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证
   `🐞 fix`、`🔒 security`、`🚀 perf` 或 `🔧 chore`。
 - 存在用户可见功能或修复时，不选择文档、生成资源、依赖升级或内部重构作为重点。
 
-## Helper 命令
+## 命令选择规则
 
-### 验证 changelog
-
-```bash
-python3 .agents/skills/release-easydict/scripts/release_notes.py validate \
-  --file changelog/<version>.md --version <version>
-```
-
-### 创建或替换 Draft
-
-```bash
-./.agents/skills/release-easydict/scripts/release-easydict.sh draft <version> [--channel <channel>]
-```
-
-普通 Draft 优先使用兼容的 Release 编译缓存；需要显式全量清理时追加
-`--force-clean`。该选项仅适用于 `prepare`、`draft` 和 `release`，不改变后续签名、公证
-和验证步骤。
-
-只有用户明确要求废弃并重建当前最新 Draft 时，才使用：
-
-```bash
-./.agents/skills/release-easydict/scripts/release-easydict.sh draft <version> \
-  --replace-draft [--channel <channel>]
-```
-
-`--replace-draft` 自动递增并冻结构建号，绝不与 `--build-number` 同时使用。失败后不要
-开始新的替换，应使用结果中的运行 ID：
-
-```bash
-./.agents/skills/release-easydict/scripts/release-easydict.sh resume <run-id>
-```
-
-旧内容和 Issue 文件只作为回滚数据。仓库工作流临时移走完整旧状态，选择
-`max(old Draft build, current project build, public appcast build) + 1`，再从已同步并提交的
-本地 `dev` 重建。新 Draft 从该提交中的 changelog 创建，不复制旧 Draft 正文或 Issue
-状态。
-
-### 更新 Draft 标题
-
-先预览：
-
-```bash
-python3 .agents/skills/release-easydict/scripts/release_content.py apply \
-  --repo tisfeng/Easydict \
-  --version <version> \
-  --notes changelog/<version>.md \
-  --title '<version> <emoji> <type>: <concise English summary>'
-```
-
-检查 JSON 计划后，在相同命令末尾追加 `--execute`。只有目标 Release 仍为相同 Draft 且
-正文与 changelog 一致时才允许写入。
-
-### 发布 Draft
-
-```bash
-./.agents/skills/release-easydict/scripts/release-easydict.sh publish <version> [--channel <channel>]
-```
+- 验证 changelog 后才能创建 Draft；Draft 标题 helper 必须先 preview，再在目标仍为相同
+  Draft 且正文与 changelog 一致时执行。
+- 普通 Draft 可以复用兼容的 Release 编译缓存；只有用户明确要求 clean build 时才传
+  `--force-clean`。它只适用于 `prepare`、`draft` 和 `release`，不降低后续验证要求。
+- 只有用户明确要求废弃并重建当前最新 Draft 时才传 `--replace-draft`；不得同时传
+  `--build-number`。新 Draft 必须从已同步并提交的本地 `dev` 及其中的 changelog 创建，
+  不复制旧 Draft 正文或 Issue 状态。
+- 替换 Draft 失败后，只能使用输出的 run ID 执行 Release `resume`，不得启动新的替换。
+- `publish` 必须使用 Draft 创建时的 channel。Skill 的 `release` 依次编排 `draft` 和
+  `publish`，不得绕过两阶段的检查与人工边界。
 
 ## 失败与恢复
 
