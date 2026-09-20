@@ -20,9 +20,18 @@ Release 生命周期：
 - `resume <version-or-run-id>`：使用现有 skill 和 asc 状态，只继续未完成的 Release
   生命周期阶段。
 
-执行这些动作时读取 `scripts/release/README.md` 和
-[Release 生命周期](references/release-workflow.md)。`release` 始终表示由本 Skill 编排
-`draft` 和 `publish`，不直接调用仓库脚本的一次性 `release` 动作。
+已发布版本的日志修订：
+
+- `sync-notes <version>`：读取人工修改后的 `changelog/<version>.md`，预览并（仅在显式
+  `--execute` 时）同步已发布 GitHub Release 正文和远程 `main/appcast.xml` 的目标
+  `description`。该动作不重建产物、不改 Tag/附件/版本号，也不替代 `resume`。
+- `sync-notes` 默认只预览；执行时要求目标 Release 已发布、工作树干净，并使用 Release
+  ETag 与 appcast blob SHA 做乐观并发校验。失败后可用同一命令重试，已一致的目标会跳过写入。
+
+执行这些动作时读取 [Release 生命周期](references/release-workflow.md)。`release` 始终表示
+由本 Skill 编排 `draft` 和 `publish`，不直接调用仓库脚本的一次性 `release` 动作。
+
+`resume` 只恢复 ASC 发布工作流；它不会把新的 changelog 自动传播到已发布 Release。
 
 发布后的 Issue 跟进：
 
@@ -42,12 +51,14 @@ Release 生命周期：
   这属于获准的本地准备动作，不等于无副作用的 planning。用户禁止写文件时仅查询和
   分析，不运行该命令；必要时说明缺少可持久化的计划状态。
 - 只有当用户针对具体版本或运行明确请求 `draft`、`publish`、`release`、Release
-  `resume`、`issue-followup apply` 或 `issue-followup resume` 时，才执行远程修改。
+  `resume`、`sync-notes <version> --execute`、`issue-followup apply` 或 `issue-followup
+  resume` 时，才执行远程修改。`sync-notes` 不带 `--execute` 始终保持 preview。
 - 用户明确请求 `publish` 或 `release` 后，同一版本通过远程发布验证时，也同时授权其
   内部 `issue-followup apply` 阶段。翻译、重点内容、评论或关闭已解决 Issue 不再另行
   请求确认。
-- Draft 通过隔离 worktree 发布已提交的本地 `dev`，只推送临时
-  `release/sync-<version>` 和版本 Tag，不修改本地或远程 `dev`、`main`。
+- Draft 通过隔离 worktree 发布已提交的本地 `dev`，先冻结 appcast 提交，再只推送指向
+  appcast 提交的临时 `release/sync-<version>` 和指向版本提交的版本 Tag，不修改本地或远程
+  `dev`、`main`。
 - Publish 使用隔离 worktree 先完成 merge 预检。当前 checkout 位于其他分支时保持
   不变；当前 checkout 就是干净的 `dev` 时，发布提交验证后允许 fast-forward 更新。
   不覆盖未提交修改，也不 rebase 已发布提交。

@@ -15,9 +15,11 @@ import tempfile
 import unicodedata
 from typing import Any
 
-
+SCRIPT_DIR = Path(__file__).resolve().parent
 REPOSITORY_ROOT = Path(__file__).resolve().parents[4]
-sys.path.insert(0, str(REPOSITORY_ROOT / "scripts" / "release"))
+sys.path.insert(0, str(SCRIPT_DIR))
+
+from release_pr_policy import classify_release_pr  # noqa: E402
 
 from release_notes import (  # noqa: E402
     ReleaseNotesError,
@@ -41,7 +43,17 @@ ENTRY_PATTERN = re.compile(
     r"^(?P<bullet>\s*[*+-]\s+)"
     r"(?P<title>.+?)\s+by\s+"
     r"(?P<author>@\S+)\s+in\s+"
-    r"(?P<url>https://github\.com/[^/\s]+/[^/\s]+/pull/(?P<number>\d+))\s*$"
+    r"(?P<reference>.+?)\s*$"
+)
+MARKDOWN_PR_REFERENCE_PATTERN = re.compile(
+    r"^\[#(?P<label_number>\d+)\]"
+    r"\((?P<url>https://github\.com/[^/\s]+/[^/\s]+/pull/(?P<url_number>\d+))\)$"
+)
+RAW_PR_REFERENCE_PATTERN = re.compile(
+    r"^(?P<url>https://github\.com/[^/\s]+/[^/\s]+/pull/(?P<number>\d+))$"
+)
+PR_URL_PATTERN = re.compile(
+    r"https://github\.com/[^/\s]+/[^/\s]+/pull/(?P<number>\d+)"
 )
 
 
@@ -93,7 +105,22 @@ def parse_change_entries(body: str) -> list[dict[str, Any]]:
         match = ENTRY_PATTERN.match(line)
         if match is None:
             continue
-        number = int(match.group("number"))
+        reference = match.group("reference")
+        markdown_reference = MARKDOWN_PR_REFERENCE_PATTERN.fullmatch(reference)
+        raw_reference = RAW_PR_REFERENCE_PATTERN.fullmatch(reference)
+        if markdown_reference is not None:
+            label_number = int(markdown_reference.group("label_number"))
+            number = int(markdown_reference.group("url_number"))
+            if label_number != number:
+                raise ReleaseContentError(
+                    f"PR link label does not match URL: #{label_number} vs #{number}"
+                )
+            url = markdown_reference.group("url")
+        elif raw_reference is not None:
+            number = int(raw_reference.group("number"))
+            url = raw_reference.group("url")
+        else:
+            continue
         if number in seen_numbers:
             raise ReleaseContentError(f"duplicate PR entry in release notes: #{number}")
         seen_numbers.add(number)
@@ -102,7 +129,7 @@ def parse_change_entries(body: str) -> list[dict[str, Any]]:
                 "pr_number": number,
                 "source_title": match.group("title"),
                 "author": match.group("author"),
-                "pr_url": match.group("url"),
+                "pr_url": url,
                 "line_index": line_index,
                 "bullet": match.group("bullet"),
             }
@@ -213,6 +240,51 @@ def fetch_draft(repo: str, version: str) -> dict[str, Any]:
     )
 
 
+def fetch_pr_policy(repo: str, number: int) -> dict[str, str]:
+    result = subprocess.run(
+        [
+            "gh",
+            "pr",
+            "view",
+            str(number),
+            "--repo",
+            repo,
+            "--json",
+            "number,title,author",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        detail = result.stderr.strip() or result.stdout.strip()
+        raise ReleaseContentError(f"cannot inspect PR #{number}: {detail}")
+    try:
+        pr = json.loads(result.stdout)
+    except json.JSONDecodeError as error:
+        raise ReleaseContentError(f"PR #{number} metadata is not valid JSON") from error
+    if not isinstance(pr, dict):
+        raise ReleaseContentError(f"PR #{number} metadata is invalid")
+    return classify_release_pr(pr)
+
+
+def validate_pr_policy_command(args: argparse.Namespace) -> None:
+    notes = read_notes(args.notes, args.version)
+    entries = parse_change_entries(notes)
+    numbers = sorted({int(match.group("number")) for match in PR_URL_PATTERN.finditer(notes)})
+    ignored: list[str] = []
+    for number in numbers:
+        decision = fetch_pr_policy(args.repo, number)
+        if decision["decision"] == "ignored":
+            ignored.append(f"#{number}: {decision['reason']}")
+    if ignored:
+        raise ReleaseContentError(
+            "release notes contain ignored bot PRs; remove them:\n"
+            + "\n".join(ignored)
+        )
+    print(json.dumps({"valid": True, "entries": len(entries)}))
+
+
 def apply_command(args: argparse.Namespace) -> None:
     validate_release_title(args.version, args.title)
     notes = read_notes(args.notes, args.version)
@@ -269,6 +341,13 @@ def build_parser() -> argparse.ArgumentParser:
     apply.add_argument("--title", required=True)
     apply.add_argument("--execute", action="store_true")
     apply.set_defaults(handler=apply_command)
+    policy = subparsers.add_parser(
+        "validate-pr-policy", help="reject ignored bot PRs in release notes"
+    )
+    policy.add_argument("--repo", required=True)
+    policy.add_argument("--version", required=True)
+    policy.add_argument("--notes", type=Path, required=True)
+    policy.set_defaults(handler=validate_pr_policy_command)
     return parser
 
 
