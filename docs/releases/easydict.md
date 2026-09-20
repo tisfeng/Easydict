@@ -96,6 +96,19 @@ asc auth status --validate
 asc auth doctor
 ```
 
+### `asc` CLI
+
+[`asc`](https://github.com/rorkai/App-Store-Connect-CLI) 是 App Store Connect 的第三方命令行工具。Easydict 使用它完成认证检查、Xcode 版本和归档、公证，以及 `asc workflow` 发布工作流：
+
+```bash
+brew install asc
+asc version
+asc auth status --validate
+asc auth doctor
+```
+
+日常发布仍从 `release-easydict` Skill 进入；`--output json` 供脚本解析，`--output table` 供人工查看。
+
 ### App Store Connect API 账号
 
 发布脚本不读取仓库内受 Git 跟踪的 Apple API key，而是使用 `asc` 已配置的 profile。推荐
@@ -105,7 +118,7 @@ asc auth doctor
 - `Key ID`；
 - 团队 API key 的 `Issuer ID`，个人 API key 没有该字段；
 - 只能下载一次的 `.p8` 私钥；
-- 对应团队的访问权限。
+- API Key 访问职能选择 **App 管理（App Manager）**。
 
 团队 API key 的典型配置命令如下，私钥路径应指向仓库外的安全临时位置：
 
