@@ -23,10 +23,11 @@ Release 生命周期：
 已发布版本的日志修订：
 
 - `sync-notes <version>`：读取人工修改后的 `changelog/<version>.md`，预览并（仅在显式
-  `--execute` 时）同步已发布 GitHub Release 正文和远程 `main/appcast.xml` 的目标
-  `description`。该动作不重建产物、不改 Tag/附件/版本号，也不替代 `resume`。
+  `--execute` 时）同步已发布 GitHub Release 正文、远程 `main`/`dev` 的 appcast 以及
+  本地分支。该动作不重建产物、不改 Tag/附件/版本号，也不替代 `resume`。
 - `sync-notes` 默认只预览；执行时要求目标 Release 已发布、工作树干净，并使用 Release
-  ETag 与 appcast blob SHA 做乐观并发校验。失败后可用同一命令重试，已一致的目标会跳过写入。
+  ETag、两个分支 head 和 Git push lease 做乐观并发校验。失败后可用同一命令重试，已
+  一致的目标会跳过写入。
 
 执行这些动作时读取 [Release 生命周期](references/release-workflow.md)。`release` 始终表示
 由本 Skill 编排 `draft` 和 `publish`，不直接调用仓库脚本的一次性 `release` 动作。

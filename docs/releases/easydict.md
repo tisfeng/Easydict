@@ -18,8 +18,8 @@ Git/GitHub 配置、发布模型、主要命令、恢复和发布工具维护。
 | 发布已有 Draft | `publish <version>` | 公开 Release、推广 appcast、验证远程状态并处理 Issue 跟进 |
 | 完成整个发布 | `release <version>` | 依次执行 Skill 的 `draft` 和 `publish` |
 | 恢复发布流程 | `resume <version-or-run-id>` | 只继续已有发布运行，不开始新的 Draft 或替换 |
-| 预览已发布日志同步 | `sync-notes <version>` | 比较 changelog、Release 正文和 appcast，不写远程 |
-| 执行已发布日志同步 | `sync-notes <version> --execute` | 只同步 Release 正文和 appcast description |
+| 预览已发布日志同步 | `sync-notes <version>` | 比较 changelog、Release 正文、`main`/`dev` appcast 和本地分支，不写远程 |
+| 执行已发布日志同步 | `sync-notes <version> --execute` | 同步 Release 正文、远程 `main`/`dev` appcast 和本地分支 |
 | 规划发布后 Issue 动作 | `issue-followup plan <version>` | 生成本地计划，不评论或关闭 Issue |
 | 执行/恢复 Issue 动作 | `issue-followup apply\|resume <version>` | 通知并关闭符合策略的 Issue；PR 只评论、不关闭 |
 
@@ -268,10 +268,11 @@ Release 远程验证成功后，Skill 执行：
 ./.agents/skills/release-easydict/scripts/release-easydict.sh sync-notes <version> --execute
 ```
 
-第一条只预览；第二条同步已发布 Release 正文和远程 `main/appcast.xml` 的目标 description。
-它不重建、不签名、不上传附件，也不修改 Tag、版本号、构建号或 channel。执行要求工作树
-干净，并以 Release ETag 和 appcast blob SHA 防止覆盖并发修改；状态保存在
-`.tmp/release/<version>/state/notes-sync.json`，可以安全重试。
+第一条只预览；第二条使用临时 worktree 创建 appcast 提交，原子同步已发布 Release 正文、
+远程 `main`/`dev` 的目标 description，再安全 fast-forward 本地 `main`/`dev`。它不重建、
+不签名、不上传附件，也不修改 Tag、版本号、构建号或 channel。执行要求工作树干净，并以
+Release ETag、远程 branch head 和 Git push lease 防止覆盖并发修改；状态保存在
+`.tmp/release/<version>/state/notes-sync.json`，部分成功后可以安全重试。
 
 ## 状态、日志与恢复
 
@@ -340,7 +341,7 @@ Archive 失败时，只清理当前 fingerprint 并自动回退一次 clean Arch
 - `scripts/release-package.sh`：公证、ZIP、DMG 和校验和。
 - `scripts/release-appcast.sh` / `scripts/release-appcast.py`：Sparkle 生成和严格校验。
 - `scripts/release_notes.py`：changelog 校验、快照、确定性渲染和正文比对。
-- `scripts/release-notes-sync.py`：预览或同步已发布正文和 appcast description。
+- `scripts/release-notes-sync.py`：预览或同步已发布正文、`main`/`dev` appcast 和本地分支。
 - `scripts/release_content.py`：验证并更新 Draft 标题，不编辑正文。
 - `scripts/release_issues.py` / `scripts/release_pr_policy.py`：Issue 跟进和统一 PR 过滤策略。
 - `scripts/release-github.sh`：幂等 Draft/正式发布和资产验证。

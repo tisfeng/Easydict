@@ -52,6 +52,18 @@ class ReleaseNotesSyncTests(unittest.TestCase):
             "html_url": "https://github.com/tisfeng/Easydict/releases/tag/2.23.0",
         }
         self.payload = {"sha": "blob-sha"}
+        self.snapshots = {
+            branch: {
+                "branch": branch,
+                "head": f"{branch}-head",
+                "appcast_sha": f"{branch}-blob-sha",
+                "appcast_content": self.appcast,
+                "appcast_content_sha256": self.module.hashlib.sha256(
+                    self.appcast
+                ).hexdigest(),
+            }
+            for branch in self.module.SYNC_BRANCHES
+        }
 
     def tearDown(self) -> None:
         self.directory.cleanup()
@@ -109,21 +121,28 @@ class ReleaseNotesSyncTests(unittest.TestCase):
             ),
             mock.patch.object(
                 self.module,
-                "fetch_appcast",
-                return_value=(self.payload, self.appcast),
+                "fetch_branch_snapshot",
+                side_effect=lambda _repo, branch: self.snapshots[branch],
             ),
+            mock.patch.object(
+                self.module,
+                "local_branch_heads",
+                return_value={"main": "main-local", "dev": "dev-head"},
+            ),
+            mock.patch.object(self.module, "fetch_git_branches"),
+            mock.patch.object(self.module, "verify_fetched_heads"),
+            mock.patch.object(self.module, "validate_local_update_ready"),
             mock.patch.object(self.module, "update_release_body") as update_release,
-            mock.patch.object(self.module, "update_appcast") as update_appcast,
+            mock.patch.object(self.module, "update_local_branch"),
         ):
             with mock.patch("sys.stdout", new=io.StringIO()):
                 self.module.sync_notes(args)
         self.assertFalse(update_release.called)
-        self.assertFalse(update_appcast.called)
         preview = json.loads(state.read_text(encoding="UTF-8"))["preview"]
         self.assertTrue(preview["release_update_required"])
-        self.assertTrue(preview["appcast_update_required"])
+        self.assertTrue(preview["targets"]["main"]["appcast_update_required"])
 
-    def test_execute_records_failed_stage_for_cas_error(self) -> None:
+    def test_execute_records_failed_stage_for_git_preparation_error(self) -> None:
         state = self.temporary / "state.json"
         args = self.module.build_parser().parse_args(
             [
@@ -148,24 +167,27 @@ class ReleaseNotesSyncTests(unittest.TestCase):
             ),
             mock.patch.object(
                 self.module,
-                "fetch_appcast",
-                return_value=(self.payload, self.appcast),
+                "fetch_branch_snapshot",
+                side_effect=lambda _repo, branch: self.snapshots[branch],
             ),
             mock.patch.object(
                 self.module,
-                "update_release_body",
-                side_effect=self.module.NotesSyncError(
-                    "412 Precondition Failed"
-                ),
+                "local_branch_heads",
+                return_value={"main": "main-local", "dev": "dev-head"},
+            ),
+            mock.patch.object(
+                self.module,
+                "prepare_git_sync",
+                side_effect=self.module.NotesSyncError("remote branch changed"),
             ),
         ):
             with self.assertRaises(self.module.NotesSyncError):
                 self.module.sync_notes(args)
         saved = json.loads(state.read_text(encoding="UTF-8"))
         self.assertEqual(saved["status"], "failed")
-        self.assertEqual(saved["failed_stage"], "release")
+        self.assertEqual(saved["failed_stage"], "git-preparation")
 
-    def test_execute_stops_when_appcast_sha_changes_after_preview(self) -> None:
+    def test_execute_stops_when_remote_branch_changes_after_preview(self) -> None:
         state = self.temporary / "state.json"
         args = self.module.build_parser().parse_args(
             [
@@ -177,7 +199,6 @@ class ReleaseNotesSyncTests(unittest.TestCase):
                 "--execute",
             ]
         )
-        changed_payload = {"sha": "different-blob-sha"}
         with (
             mock.patch.object(
                 self.module,
@@ -191,19 +212,25 @@ class ReleaseNotesSyncTests(unittest.TestCase):
             ),
             mock.patch.object(
                 self.module,
-                "fetch_appcast",
-                side_effect=[
-                    (self.payload, self.appcast),
-                    (changed_payload, self.appcast),
-                ],
+                "fetch_branch_snapshot",
+                side_effect=lambda _repo, branch: self.snapshots[branch],
             ),
-            mock.patch.object(self.module, "update_release_body"),
+            mock.patch.object(
+                self.module,
+                "local_branch_heads",
+                return_value={"main": "main-local", "dev": "dev-head"},
+            ),
+            mock.patch.object(
+                self.module,
+                "prepare_git_sync",
+                side_effect=self.module.NotesSyncError("remote branch changed"),
+            ),
         ):
             with self.assertRaises(self.module.NotesSyncError):
                 self.module.sync_notes(args)
         saved = json.loads(state.read_text(encoding="UTF-8"))
         self.assertEqual(saved["status"], "failed")
-        self.assertEqual(saved["failed_stage"], "appcast")
+        self.assertEqual(saved["failed_stage"], "git-preparation")
 
     def test_execute_is_idempotent_when_both_targets_are_already_equal(self) -> None:
         state = self.temporary / "state.json"
@@ -234,20 +261,44 @@ class ReleaseNotesSyncTests(unittest.TestCase):
             ),
             mock.patch.object(
                 self.module,
-                "fetch_appcast",
-                return_value=(payload, self.appcast),
+                "fetch_branch_snapshot",
+                side_effect=lambda _repo, branch: self.snapshots[branch],
             ),
+            mock.patch.object(
+                self.module,
+                "local_branch_heads",
+                return_value={"main": "main-local", "dev": "dev-head"},
+            ),
+            mock.patch.object(self.module, "fetch_git_branches"),
+            mock.patch.object(self.module, "verify_fetched_heads"),
+            mock.patch.object(self.module, "validate_local_update_ready"),
             mock.patch.object(self.module, "update_release_body") as update_release,
-            mock.patch.object(self.module, "update_appcast") as update_appcast,
+            mock.patch.object(
+                self.module,
+                "prepare_git_sync",
+                return_value={
+                    "temporary_worktrees": [],
+                    "new_heads": {"main": "main-local", "dev": "dev-head"},
+                    "remote_main_updated": False,
+                    "remote_dev_updated": False,
+                    "local_main_updated": False,
+                    "local_dev_updated": False,
+                },
+            ),
+            mock.patch.object(
+                self.module,
+                "push_branches",
+            ),
+            mock.patch.object(self.module, "verify_remote", return_value={}),
         ):
             with mock.patch("sys.stdout", new=io.StringIO()):
                 self.module.sync_notes(args)
         self.assertFalse(update_release.called)
-        self.assertFalse(update_appcast.called)
         saved = json.loads(state.read_text(encoding="UTF-8"))
         self.assertEqual(saved["status"], "completed")
         self.assertFalse(saved["release_updated"])
-        self.assertFalse(saved["appcast_updated"])
+        self.assertFalse(saved["remote_main_updated"])
+        self.assertFalse(saved["remote_dev_updated"])
 
 
 if __name__ == "__main__":

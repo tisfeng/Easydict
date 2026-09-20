@@ -58,7 +58,7 @@ fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证
 `publish`。这些动作分别用于恢复中断的 ASC 工作流、重建 Draft 和发布 Draft；它们不会
 把发布后的日志修订当作新的构建发布。
 
-先预览目标 Release 正文和 `main/appcast.xml` 的 description 差异：
+先预览目标 Release 正文、`main`/`dev` 的 `appcast.xml` description 差异和本地分支状态：
 
 ```bash
 ./.agents/skills/release-easydict/scripts/release-easydict.sh sync-notes <version>
@@ -70,13 +70,14 @@ fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证
 ./.agents/skills/release-easydict/scripts/release-easydict.sh sync-notes <version> --execute
 ```
 
-可选参数包括 `--repo <owner/repo>`、`--notes-file <path>`、`--appcast-branch <branch>`
-和 `--state <path>`。默认读取 `changelog/<version>.md`，默认更新远程 `main`。
+可选参数包括 `--repo <owner/repo>`、`--notes-file <path>` 和 `--state <path>`。工具固定
+同步远程 `main`、远程 `dev` 以及本地 `main`/`dev`；默认读取 `changelog/<version>.md`。
 
 该动作要求 Release 已公开且 Tag 与版本一致；不会修改 Draft、Tag、安装包、构建号、签名
-或渠道。`--execute` 要求当前 worktree 干净，更新 Release 时使用 ETag，更新 appcast
-时使用 Contents API 返回的 blob SHA；任一并发校验失败都会停止，避免覆盖他人修改。它
-只允许改变目标版本 item 的 `<description>`。状态摘要保存在
+或渠道。`--execute` 要求当前 worktree 干净，更新 Release 时使用 ETag，更新分支时使用
+branch head 和 Git push lease；任一并发校验失败都会停止，避免覆盖他人修改。工具使用
+临时 worktree 创建 appcast 提交，原子更新远程 `main`/`dev`，再安全 fast-forward 本地
+分支。它只允许改变目标版本 item 的 `<description>`。状态摘要保存在
 `.tmp/release/<version>/state/notes-sync.json`，部分成功后再次执行会重新读取远程状态并
 跳过已经一致的目标。
 

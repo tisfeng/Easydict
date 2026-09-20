@@ -28,10 +28,9 @@ Options:
   --replace-draft        Rebuild and safely replace the latest matching Draft
   --force-clean          Force a clean Xcode Archive
   --dry-run               Preview the asc workflow without running it
-  --execute               Write synced notes to the published Release and main appcast
+  --execute               Write synced notes to the published Release and main/dev appcasts
   --repo <owner/repo>     GitHub repository for sync-notes
   --notes-file <path>     Canonical changelog path for sync-notes
-  --appcast-branch <name> Remote appcast branch for sync-notes (default: main)
   --state <path>          Override sync-notes state JSON path
   -h, --help              Show this help
 
@@ -54,7 +53,6 @@ run_notes_sync() {
     shift
     local repo="tisfeng/Easydict"
     local notes_file=""
-    local appcast_branch="main"
     local state_path=""
     local execute=0
 
@@ -72,11 +70,6 @@ run_notes_sync() {
             --notes-file)
                 require_value "$1" "${2:-}"
                 notes_file="$2"
-                shift 2
-                ;;
-            --appcast-branch)
-                require_value "$1" "${2:-}"
-                appcast_branch="$2"
                 shift 2
                 ;;
             --state)
@@ -98,7 +91,6 @@ run_notes_sync() {
     local -a command=(
         python3 "$SCRIPT_DIR/release-notes-sync.py" "$version"
         --repo "$repo"
-        --appcast-branch "$appcast_branch"
     )
     if [[ -n "$notes_file" ]]; then
         command+=(--notes-file "$notes_file")

@@ -74,8 +74,6 @@ with open(os.environ[\"SYNC_CAPTURE\"], \"w\", encoding=\"utf-8\") as handle:
                     version,
                     "--repo",
                     "example/repo",
-                    "--appcast-branch",
-                    "main",
                     "--execute",
                 ],
             )
