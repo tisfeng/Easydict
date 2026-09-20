@@ -25,12 +25,6 @@ Easydict 直接从仓库运行共享 Skills，安装内容需要可离线审查�
 - 同步后核对来源 tree、目录 hash、lock、项目专属 Skill 和符号链接，并运行风险匹配的静态
   检查与 Skill 测试。
 
-## 项目专属发布 Skill
-
-`release-easydict` 不进入受管 Skill lock；它编排 Easydict 的 Draft、Publish、Release
-恢复、发布后日志同步和 Issue 跟进。首次设置 Apple/App Store Connect、证书、Keychain、
-Sparkle 和 GitHub 凭据，以及主要发布命令，见 [`release-easydict.md`](release-easydict.md)。
-
 ## 来源基线：tisfeng/skills
 
 - 核对日期：2026-09-20；来源：`https://github.com/tisfeng/skills`；安装器 `skills@1.5.25`。

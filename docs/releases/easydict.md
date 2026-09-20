@@ -1,15 +1,32 @@
-# Easydict 技能发布流程
+# Easydict 发布指南
 
-本文是 `release-easydict` 项目的执行者总览：说明首次设置、Apple 账号和密钥的存放方式、
-主要命令、发布阶段、恢复入口以及发布后的 Issue 跟进。它不保存任何真实密钥，也不替代
-脚本中的安全检查。
+本文面向 Easydict 发布维护者，介绍如何准备本地发布环境、配置 Apple 账号与签名凭据，
+以及执行 beta/stable 发布。本文不保存任何真实密钥，也不替代发布脚本中的安全检查。
 
-更详细的脚本行为见 [`scripts/release/README.md`](../../scripts/release/README.md)；Skill 的
-路由和授权边界见 [`.agents/skills/release-easydict/SKILL.md`](../../.agents/skills/release-easydict/SKILL.md)。
+推荐通过 `release-easydict` Skill 发起发布；需要人工诊断或单独运行某个阶段时，再使用仓库
+脚本。脚本实现细节见 [`scripts/release/README.md`](../../scripts/release/README.md)。
 
-## 先看结论
+## 使用发布 Skill
 
-Easydict 当前的主流程由 `asc workflow` 编排，入口是：
+在支持 Skills 的 Agent 中调用 `release-easydict`，并提供动作和版本号：
+
+| 目的 | Skill 动作 | 结果 |
+| --- | --- | --- |
+| 创建 Draft 并停下检查 | `draft <version>` | 准备产物、创建并验证 GitHub Draft，不公开发布 |
+| 发布已有 Draft | `publish <version>` | 公开 Release、推广 appcast、验证远程状态并处理 Issue 跟进 |
+| 完成整个发布 | `release <version>` | 依次执行 `draft` 和 `publish` |
+| 恢复发布流程 | `resume <version-or-run-id>` | 只继续已有发布运行，不开始新的 Draft 或替换 |
+| 预览已发布日志同步 | `sync-notes <version>` | 比较 changelog、Release 正文和 appcast，不写远程 |
+| 执行已发布日志同步 | `sync-notes <version> --execute` | 只同步 Release 正文和 appcast description |
+| 规划发布后 Issue 动作 | `issue-followup plan <version>` | 生成本地计划，不评论或关闭 Issue |
+| 执行/恢复 Issue 动作 | `issue-followup apply|resume <version>` | 通知并关闭符合策略的 Issue；PR 不会被关闭 |
+
+除非明确指定 `stable`，发布默认使用 `beta` channel。`draft`、`publish`、`release`、恢复、
+日志同步和 Issue 跟进都有不同的外部写入边界；执行前应明确动作和目标版本。
+
+## 手动运行底层脚本
+
+Easydict 当前主流程由 `asc workflow` 编排，仓库脚本入口是：
 
 ```bash
 ./scripts/release/release-easydict.sh <action> <version> [options]
@@ -25,7 +42,7 @@ Easydict 当前的主流程由 `asc workflow` 编排，入口是：
 | 创建 Draft 并停止 | `./scripts/release/release-easydict.sh draft <version>` | 临时发布分支、版本 Tag、GitHub Draft |
 | 发布已验证 Draft | `./scripts/release/release-easydict.sh publish <version>` | GitHub Release、appcast、远程分支 |
 | 一次完成 Draft + Publish | `./scripts/release/release-easydict.sh release <version>` | 同时包含以上写入 |
-| 恢复中断的 ASC 工作流 | `./scripts/release/release-easydict.sh resume <run-id>` | 继续原运行，不能替代新的 Draft/Publish |
+| 恢复中断的工作流 | `./scripts/release/release-easydict.sh resume <run-id>` | 继续原运行，不能替代新的 Draft/Publish |
 
 默认 channel 是 `beta`。稳定版必须在同一阶段显式传入 `--channel stable`；`publish` 时要
 使用与创建 Draft 相同的 channel。
@@ -64,8 +81,8 @@ asc auth doctor
 ### Apple / App Store Connect API 账号
 
 当前脚本不会从仓库读取受 Git 跟踪的 Apple API key；它使用 `asc` 已配置的 profile。推荐使用
-`asc` 的 Keychain 凭据配置。需要在
-App Store Connect 的 **Users and Access → Integrations → API** 创建 API key，并准备：
+`asc` 的 Keychain 凭据配置。需要在 App Store Connect 的 **Users and Access → Integrations →
+API** 创建 API key，并准备：
 
 - `Key ID`：API key 标识；
 - `Issuer ID`：团队 API key 的 issuer，个人 API key 没有该字段；
@@ -121,7 +138,7 @@ security find-identity -v -p codesigning
 
 新版主流程使用 `asc notarization submit`，不要求单独设置 `xcrun notarytool` profile。
 `release-easydict-legacy.sh` 仍保留旧流程；只有明确运行 legacy 脚本时才需要它提示的
-`NOTARIZATION`/Keychain profile 配置，不要把 legacy 配置混入新版工作流。
+`notarytool` Keychain profile 配置，不要把 legacy 配置混入新版工作流。
 
 Sparkle 的 Ed25519 私钥用于生成签名 appcast，不是 Apple API key。主流程默认从 macOS
 Keychain 查找：
@@ -149,8 +166,8 @@ gh auth status
 ```
 
 Tag、临时发布分支和 appcast/分支推送则使用 Git remote 自己配置的 SSH 或 HTTPS 凭据；它
-与 Apple API 账号、`gh` 会话都是独立的。Release 目标默认是 `tisfeng/Easydict`，可由脚本
-配置覆盖，但正常发布不需要修改仓库文件。
+与 Apple API 账号、`gh` 会话都是独立的。Release 目标默认是 `tisfeng/Easydict`，正常发布
+不需要修改仓库配置。
 
 ## 一次发布怎么走
 
@@ -183,9 +200,6 @@ python3 scripts/release/release_notes.py validate \
 
 `prepare` 会使用隔离 release worktree 和长期 build cache，不修改远程 `dev`/`main`。
 
-如果只想重复检查 changelog，而不启动发布工作流，也可以直接运行 `release_notes.py
-validate`；它不会修改 GitHub 或构建产物。
-
 ### 3. 创建 Draft
 
 ```bash
@@ -194,7 +208,7 @@ validate`；它不会修改 GitHub 或构建产物。
 ```
 
 Draft 阶段会安装并冻结 appcast，推送临时 `release/sync-<version>` 和版本 Tag，然后创建
-GitHub Draft；不会公开 Release，也不会执行 Issue 关闭/评论。
+GitHub Draft；不会公开 Release，也不会执行 Issue 关闭或评论。
 
 只有明确要废弃并重建当前最新 Draft 时才使用：
 
@@ -219,34 +233,16 @@ Publish 会先做 merge 预检，再公开 GitHub Release，推广冻结的 appc
 
 ### 5. 发布后的 Issue 跟进
 
-`release-easydict` Skill 在发布验证成功后可以编排 Issue 跟进；也可以单独执行：
+发布验证成功后，`release-easydict` Skill 可以继续处理发布后的 Issue 跟进：
 
-```bash
-# 只收集证据并生成本地计划，不评论或关闭 Issue
-issue-followup plan <version>
+- `issue-followup plan <version>`：收集 GitHub 证据并生成本地计划，不评论或关闭 Issue；
+- `issue-followup apply <version>`：重新生成计划并执行通知、评论和符合策略的 Issue 关闭；
+- `issue-followup resume <version>`：恢复中断的 Issue 动作。
 
-# 重新 plan 后预览并执行通知/关闭动作
-issue-followup apply <version>
+这些动作只作用于已经公开的 Release；PR 不会被关闭。详细 helper 参数和固定汇总格式见
+[`issue-followup.md`](../../.agents/skills/release-easydict/references/issue-followup.md)。
 
-# 恢复中断的 Issue 动作
-issue-followup resume <version>
-```
-
-上面三项是 `release-easydict` Skill 的动作名（不是仓库根目录下的独立 shell 命令）。详细
-helper 参数和固定汇总格式见 [`references/issue-followup.md`](../../.agents/skills/release-easydict/references/issue-followup.md)。
-`apply`/`resume` 只作用于已经公开的 Release；PR 不会被关闭。
-
-## Skill 入口与发布后修订
-
-对 Codex 的自然语言路由由 [`.agents/skills/release-easydict/SKILL.md`](../../.agents/skills/release-easydict/SKILL.md) 定义：
-
-- `draft <version>`：创建或恢复 Draft 后停止；
-- `publish <version>`：发布已有 Draft，并在验证成功后进入 Issue 跟进；
-- `release <version>`：依次执行 Draft 和 Publish；
-- `resume <version-or-run-id>`：Skill 动作只恢复 ASC 发布工作流；直接运行仓库脚本时使用
-  `./scripts/release/release-easydict.sh resume <run-id>`；
-- `sync-notes <version>`：预览发布后 changelog 修订；加 `--execute` 才会写入已发布
-  Release 正文和远程 `main/appcast.xml`。
+## 发布后修订日志
 
 发布后如果只改了 changelog，不要重新跑 `resume`、`draft` 或 `publish`：
 
@@ -255,6 +251,7 @@ helper 参数和固定汇总格式见 [`references/issue-followup.md`](../../.ag
 ./scripts/release/release-easydict.sh sync-notes <version> --execute
 ```
 
+第一条命令只预览差异；第二条命令才写入已发布 Release 正文和远程 `main/appcast.xml`。
 `sync-notes` 不重建、不重新签名、不上传附件、不改 Tag 或版本号；`--execute` 要求当前
 工作树干净，并使用 ETag/blob SHA 防止覆盖并发修改。
 
@@ -273,13 +270,13 @@ helper 参数和固定汇总格式见 [`references/issue-followup.md`](../../.ag
 - `scripts/release/runs/`：`asc` 原始运行状态，Git 已忽略；
 - `.tmp/release/<version>/state/issue-followup/`：Issue 跟进的冻结候选、决策、计划、汇总和动作状态。
 
-以下情况应停止并修复根因后恢复：凭据/证书校验失败、changelog 或渲染结果漂移、合并冲突、
+以下情况应停止并修复根因后恢复：凭据或证书校验失败、changelog 或渲染结果漂移、合并冲突、
 本地 `dev` 不干净、远程 lease 竞态、Tag 指向不一致、附件或 appcast 校验失败。发布成功但
 Issue 后续失败时不回滚 Release，使用 `issue-followup resume <version>` 继续。
 
-## 检查 Skill 本身
+## 检查发布工具
 
-本次文档不要求运行真实发布。修改发布 Skill 或 helper 后，优先运行：
+修改发布 Skill 或 helper 后，优先运行：
 
 ```bash
 python3 -m unittest discover \
