@@ -3,6 +3,10 @@
 Easydict 的发布流程由 `asc workflow` 编排。该工作流将构建、公证、打包、GitHub
 和 Sparkle 等阶段拆分为多个小步骤，支持断点恢复，同时提供一条命令执行完整的发布流程。
 
+首次设置和执行者视角的总览（包括 Apple 账号、Keychain 和主要命令）见
+[`docs/agents/release-easydict.md`](../../docs/agents/release-easydict.md)。本文保留完整的
+脚本阶段、状态和失败行为说明。
+
 旧版单体脚本保留为 `release-easydict-legacy.sh`，可作为临时备用方案使用，但新版工作流不会调用它。
 
 ## 发布模型
