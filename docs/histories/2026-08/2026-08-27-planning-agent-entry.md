@@ -1,7 +1,7 @@
 # 2026-08-27 | 任务：迁移 Planning 子代理启动入口
 
 **Links:** Scoco reference commit `2b6ff71a1350dd5d731ac360754271a65d5ca1c9`；执行计划：
-[`2026-08-27-planning-agent-entry.md`](../../exec-plans/completed/2026-08-27-planning-agent-entry.md)
+[`2026-08-27-planning-agent-entry.md`](../../exec-plans/completed/2026-08/2026-08-27-planning-agent-entry.md)
 
 ## 用户请求
 

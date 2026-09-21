@@ -2,7 +2,7 @@
 
 - 日期：2026-08-29
 - 状态：completed
-- 关联计划：[`2026-08-29-review-pr-branch-selection.md`](../../exec-plans/completed/2026-08-29-review-pr-branch-selection.md)
+- 关联计划：[`2026-08-29-review-pr-branch-selection.md`](../../exec-plans/completed/2026-08/2026-08-29-review-pr-branch-selection.md)
 - 关联背景：PR #1246 的 `feat/wordbook` 分支准备
 
 ## 用户请求

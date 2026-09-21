@@ -11,6 +11,10 @@ import Foundation
 
 extension StreamService {
     func setupSubscribers() {
+        if let codex = self as? CodexCLIService {
+            codex.setupCodexSubscribers()
+            return
+        }
         logInfo("setup subscribers: \(self), windowType: \(windowType.rawValue)")
 
         Defaults.publisher(nameKey, options: [])
@@ -45,17 +49,19 @@ extension StreamService {
     }
 
     func modelDidChanged(_ newModel: String) {
-        model = newModel
+        if synchronizesModelWithSupportedModels {
+            model = newModel
 
-        // Handle some special cases
-        if !validModels.contains(newModel) {
-            if newModel.isEmpty {
-                supportedModels = ""
-            } else {
-                if supportedModels.isEmpty {
-                    supportedModels = newModel
+            // Handle some special cases
+            if !validModels.contains(newModel) {
+                if newModel.isEmpty {
+                    supportedModels = ""
                 } else {
-                    supportedModels = "\(newModel), " + supportedModels
+                    if supportedModels.isEmpty {
+                        supportedModels = newModel
+                    } else {
+                        supportedModels = "\(newModel), " + supportedModels
+                    }
                 }
             }
         }
@@ -63,6 +69,8 @@ extension StreamService {
     }
 
     func supportedModelsTextDidChanged(_ newSupportedModels: String) {
+        guard synchronizesModelWithSupportedModels else { return }
+
         supportedModels = newSupportedModels
 
         if validModels.isEmpty {

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Simplifier"
+  short_description: "保持功能不变地简化近期代码，提高可读性、一致性与可维护性"
+  default_prompt: "使用 $code-simplifier 简化近期代码，同时保持功能和公开行为不变。"

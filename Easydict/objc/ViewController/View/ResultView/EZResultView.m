@@ -80,7 +80,8 @@
         label.backgroundColor = NSColor.clearColor;
         label.alignment = NSTextAlignmentCenter;
         label.maximumNumberOfLines = 1;
-        label.lineBreakMode = NSLineBreakByClipping;
+        label.lineBreakMode = NSLineBreakByTruncatingTail;
+        label.cell.truncatesLastVisibleLine = YES;
         
         [label executeLight:^(NSTextField *label) {
             label.textColor = [NSColor ez_resultTextLightColor];
@@ -158,6 +159,7 @@
         mm_strongify(self);
         [self.result.queryModel stopServiceRequest:self.result.serviceTypeWithUniqueIdentifier];
         self.result.isStreamFinished = YES;
+        [self updateLoadingAnimation];
         button.hidden = YES;
     }];
     
@@ -275,6 +277,7 @@
     
     NSString *serviceName = service.name ?: result.serviceTypeWithUniqueIdentifier;
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:serviceName font:[NSFont systemFontOfSize:13]];
+    self.serviceNameLabel.toolTip = serviceName;
     
     mm_weakify(self);
     

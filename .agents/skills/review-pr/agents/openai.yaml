@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review GitHub PR"
+  short_description: "准备并审查 GitHub Pull Request，核对代码、线程与 CI 状态"
+  default_prompt: "使用 $review-pr 审查这个 GitHub Pull Request，并报告未解决线程和新发现。"
