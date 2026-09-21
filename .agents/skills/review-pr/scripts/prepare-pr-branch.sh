@@ -29,6 +29,10 @@ Options:
       --worktree, use the isolated review/pr-<number>-merge-<head-sha> branch
       instead. Use only after the user explicitly asks for latest-base
       integration or conflict resolution. Never push the result.
+  --reuse-branch BRANCH
+      In local mode, require a previously selected PR branch and keep using
+      it. The branch must still point at the frozen head and have a compatible
+      upstream; preparation fails instead of silently selecting a fallback.
 USAGE
 }
 
@@ -273,6 +277,57 @@ prepare_collision_review_branch() {
   printf 'Branch collision: %s. Falling back to a review branch.\n' "$reason"
 }
 
+# Validate a branch selected by an earlier preparation receipt. This is an
+# explicit hand-off between review phases: a stale or incompatible branch must
+# stop the workflow rather than silently changing the review identity.
+validate_reused_branch() {
+  local branch=$1
+  local actual_head actual_upstream
+  local expected_fallback="review/pr-${pr_number}-${head_oid:0:10}"
+
+  [[ $checkout_mode == local ]] || \
+    fail "--reuse-branch is only supported in local checkout mode."
+  git check-ref-format "refs/heads/${branch}" >/dev/null || \
+    fail "Invalid reused review branch '${branch}'."
+  case "$branch" in
+    dev | main | master | develop | trunk)
+      fail "Protected branch '${branch}' cannot be reused for PR review."
+      ;;
+  esac
+  [[ $branch != "$base_branch" ]] || \
+    fail "Base branch '${branch}' cannot be reused for PR review."
+  git show-ref --verify --quiet "refs/heads/${branch}" || \
+    fail "Reused review branch '${branch}' does not exist."
+  if branch_checked_out_elsewhere "$branch"; then
+    fail "Reused review branch '${branch}' is checked out in another worktree."
+  fi
+
+  actual_head=$(git rev-parse "refs/heads/${branch}")
+  [[ $actual_head == "$head_oid" ]] || \
+    fail "Reused review branch '${branch}' is at '${actual_head}', not PR head '${head_oid}'."
+
+  actual_upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/${branch}")
+  [[ -n $actual_upstream ]] || \
+    fail "Reused review branch '${branch}' has no upstream. Re-run preparation to select it safely."
+
+  if [[ $branch == "$head_branch" ]]; then
+    if [[ $actual_upstream != "${head_owner}/${head_branch}" ]] && \
+      ! upstream_targets_pr_head "$branch"; then
+      fail "Reused PR branch '${branch}' has incompatible upstream '${actual_upstream}'."
+    fi
+  elif [[ $branch == "$expected_fallback" ]]; then
+    [[ $actual_upstream == "${head_owner}/${head_branch}" ]] || \
+      fail "Reused fallback branch '${branch}' has upstream '${actual_upstream}', not '${head_owner}/${head_branch}'."
+  else
+    fail "Reused branch '${branch}' is neither PR head '${head_branch}' nor the expected collision fallback '${expected_fallback}'."
+  fi
+
+  selected_upstream_ref=$actual_upstream
+  expected_checkout_upstream=$actual_upstream
+  receipt_self_authored_branch=false
+  [[ $branch == "$head_branch" ]] && receipt_self_authored_branch=true
+}
+
 require_expected_upstream() {
   local branch=$1
   local expected_upstream=$2
@@ -425,6 +480,35 @@ prepare_pr_branch() {
     fi
 
     fail "Worktree has uncommitted changes on branch '${current_branch:-detached HEAD}'. Commit, stash, or clean them before switching to PR branch '${head_branch}'."
+  fi
+
+  if [[ -n $reuse_branch ]]; then
+    prepare_head_ref
+    fetched_head=$(git rev-parse "$remote_ref")
+    [[ $fetched_head == "$head_oid" ]] || \
+      fail "PR head moved from '${head_oid}' to '${fetched_head}'. Rerun preparation."
+    validate_reused_branch "$reuse_branch"
+    if [[ $current_branch != "$reuse_branch" ]]; then
+      git switch "$reuse_branch"
+    fi
+    current_branch=$(git branch --show-current || true)
+    [[ $current_branch == "$reuse_branch" ]] || \
+      fail "Prepared checkout is not on reused review branch '${reuse_branch}'."
+    actual_head=$(git rev-parse HEAD)
+    [[ $actual_head == "$head_oid" ]] || \
+      fail "Prepared reused branch '${reuse_branch}' is at '${actual_head}', not PR head '${head_oid}'."
+
+    if [[ $mode == merge ]]; then
+      merge_latest_base_into_current_branch "$reuse_branch" "$selected_upstream_ref"
+      return 0
+    fi
+
+    printf '\nPrepared PR #%s: %s\n' "$pr_number" "$pr_url"
+    printf 'Remote: %s (%s)\n' "$remote_name" "https://github.com/${head_owner}/${head_repo}.git"
+    printf 'Branch: %s (reused from prior preparation)\n' "$reuse_branch"
+    printf 'Upstream: %s\n' "$selected_upstream_ref"
+    printf 'Head SHA: %s\n' "$head_oid"
+    return 0
   fi
 
   inspect_head_branch "$head_branch" "$upstream_ref" "$base_branch"
@@ -681,6 +765,14 @@ prepare_review_worktree() {
   print_worktree_summary
 }
 
+compute_script_sha256() {
+  if command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$1" | awk '{print $1}'
+  else
+    sha256sum "$1" | awk '{print $1}'
+  fi
+}
+
 finalize_preparation() {
   prepare_merge_refs
   phase=verify
@@ -720,12 +812,12 @@ emit_receipt() {
     "${head_oid:-}" "${base_oid:-}" "${base_branch:-}" "${receipt_merge_base:-}" \
     "${receipt_path:-}" "${receipt_branch:-}" "${receipt_head:-}" "${receipt_upstream:-}" \
     "$receipt_collision" "$receipt_self_authored_branch" "$checkout_mode" "$mode" \
-    "$head_fetches" "$base_fetches" >&3 <<'PY'
+    "$head_fetches" "$base_fetches" "$script_file" "$script_sha256" "$reuse_branch" >&3 <<'PY'
 import json
 import sys
 (code, phase, repo, number, head, base, base_branch, merge_base, path, branch,
  checkout_head, upstream, collision, self_branch, checkout_mode, mode,
- head_fetches, base_fetches) = sys.argv[1:]
+ head_fetches, base_fetches, script_file, script_sha256, reused_branch) = sys.argv[1:]
 success = code == "0" and phase == "complete"
 print(json.dumps({
     "schema_version": 1, "status": "prepared" if success else "failed",
@@ -735,7 +827,9 @@ print(json.dumps({
     "checkout": {"path": path, "branch": branch, "head_sha": checkout_head,
                  "upstream": upstream or None, "dirty": False if success else None},
     "collision_reason": collision or None,
+    "reused_branch": reused_branch or None,
     "self_authored_branch_reused": self_branch == "true" if success else None,
+    "helper": {"path": script_file, "sha256": script_sha256},
     "source_unchanged": True if success and checkout_mode == "worktree" else None,
     "integration": mode == "merge",
     "actions": {"head_fetches": int(head_fetches), "base_fetches": int(base_fetches)},
@@ -750,12 +844,15 @@ snapshot_file=""
 snapshot_sha256=""
 json_output=false
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+script_file="${script_dir}/$(basename -- "${BASH_SOURCE[0]}")"
+script_sha256=$(compute_script_sha256 "$script_file")
 phase=arguments
 head_fetches=0
 base_fetches=0
 receipt_collision=""
 receipt_self_authored_branch=false
 expected_checkout_upstream=""
+reuse_branch=""
 head_remote=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -768,6 +865,11 @@ while [[ $# -gt 0 ]]; do
       ;;
     --merge-latest)
       mode=merge
+      ;;
+    --reuse-branch)
+      [[ $# -ge 2 && -n $2 && $2 != --* ]] || fail "--reuse-branch requires a branch name."
+      reuse_branch=$2
+      shift
       ;;
     --expected-head)
       [[ $# -ge 2 && -n $2 && $2 != --* ]] || fail "--expected-head requires a SHA."
@@ -803,6 +905,14 @@ done
 if [[ $# -ne 1 ]]; then
   usage
   exit 64
+fi
+
+if [[ $checkout_mode == worktree && -n $reuse_branch ]]; then
+  fail "--reuse-branch cannot be combined with --worktree."
+fi
+if [[ -n $reuse_branch ]]; then
+  git check-ref-format "refs/heads/${reuse_branch}" >/dev/null || \
+    fail "Invalid reused review branch '${reuse_branch}'."
 fi
 
 command -v gh >/dev/null 2>&1 || fail "GitHub CLI 'gh' is required."

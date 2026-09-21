@@ -7,7 +7,7 @@ import argparse
 import re
 import subprocess
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -46,6 +46,8 @@ HEADER_PATTERN = re.compile(
     r"^(?P<type>[a-z]+)(?:\((?P<scope>[^()\s]+)\))?(?P<breaking>!)?: "
     r"(?P<subject>\S(?:.*\S)?)$"
 )
+HAN_CHARACTER_PATTERN = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
+ASCII_LETTER_PATTERN = re.compile(r"[A-Za-z]")
 
 
 class ValidationError(RuntimeError):
@@ -54,12 +56,14 @@ class ValidationError(RuntimeError):
 
 @dataclass(frozen=True)
 class Header:
-    """Store the comparable Angular header fields for one language block."""
+    """Store comparable Angular fields and language-specific subject metadata."""
 
     commit_type: str
     scope: str | None
     breaking: bool
     has_breaking_footer: bool = False
+    subject: str = field(default="", compare=False)
+    body_labels: tuple[str, str, str] = field(default=(), compare=False)
 
 
 def normalize_message(text: str) -> str:
@@ -196,6 +200,7 @@ def validate_header(text: str, block_name: str) -> Header:
         commit_type=commit_type,
         scope=match.group("scope"),
         breaking=match.group("breaking") == "!",
+        subject=match.group("subject"),
     )
 
 
@@ -203,7 +208,7 @@ def validate_body_labels(
     body: list[str],
     block_name: str,
     allowed_label_sets: tuple[tuple[str, str, str], ...],
-) -> None:
+) -> tuple[str, str, str]:
     """Require one complete, ordered body-label set with non-empty content."""
 
     selected_labels = next(
@@ -231,6 +236,7 @@ def validate_body_labels(
                 f"{block_name}: body paragraph {index} must include content "
                 f"immediately after {label!r}"
             )
+    return selected_labels
 
 
 def validate_block(
@@ -268,13 +274,42 @@ def validate_block(
         raise ValidationError(
             f"{block_name}: expected exactly 3 body paragraphs, found {len(body)}"
         )
-    validate_body_labels(body, block_name, allowed_label_sets)
+    body_labels = validate_body_labels(body, block_name, allowed_label_sets)
     return Header(
         commit_type=header.commit_type,
         scope=header.scope,
         breaking=header.breaking,
         has_breaking_footer=has_breaking_footer,
+        subject=header.subject,
+        body_labels=body_labels,
     )
+
+
+def validate_bilingual_subject_languages(
+    local_header: Header,
+    english_header: Header,
+) -> None:
+    """Keep local and English subjects distinct and language-appropriate."""
+
+    if local_header.subject == english_header.subject:
+        raise ValidationError(
+            "language blocks must use distinct local-language and English subjects"
+        )
+    if HAN_CHARACTER_PATTERN.search(english_header.subject):
+        raise ValidationError(
+            "English block: subject must not contain Han characters"
+        )
+    if ASCII_LETTER_PATTERN.search(english_header.subject) is None:
+        raise ValidationError(
+            "English block: subject must contain English text"
+        )
+    if (
+        local_header.body_labels == CHINESE_BODY_LABELS
+        and HAN_CHARACTER_PATTERN.search(local_header.subject) is None
+    ):
+        raise ValidationError(
+            "Local-language block: Chinese subject must contain Han characters"
+        )
 
 
 def split_bilingual_message(message: str) -> list[str]:
@@ -357,6 +392,7 @@ def validate_message(message: str, mode: str) -> None:
             "language blocks must use matching type, scope, breaking marker, "
             "and BREAKING CHANGE footer presence"
         )
+    validate_bilingual_subject_languages(local_header, english_header)
 
 
 def parse_arguments() -> argparse.Namespace:

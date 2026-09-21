@@ -23,26 +23,26 @@
 ## `plan`
 
 1. 捕获精确版本的已发布 GitHub Release 及其 PR 条目。
-2. 收集每个 merged PR 在模板区域声明的关联 Issue 和兼容弱引用，解析 GitHub 实体并
-   排除 PR 编号碰撞。
+2. 获取每个 merged PR 的作者和 bot 标记，先按统一发布策略排除机器人 PR；对其余 PR
+   收集模板区域声明的关联 Issue 和兼容弱引用，解析 GitHub 实体并排除 PR 编号碰撞。
 3. 逐个检查候选 Issue 与全部 source PR，按照
-   [issue-followup-policy.md](issue-followup-policy.md) 生成且只生成一条 schema-v2 决策。
+   [issue-followup-policy.md](issue-followup-policy.md) 生成且只生成一条 schema-v3 决策。
 4. 验证候选来源哈希和全部决策，再生成 `plan.json` 与 `summary.md`。
-5. 输出固定三类汇总后停止，不执行任何 GitHub 写入。
+5. 输出 Issue 三类汇总和“无关联 issue 的 PR 通知”汇总后停止，不执行任何 GitHub 写入。
 
 ## `apply`
 
 1. 重新执行完整 `plan` 流程，替换更早但尚未执行的计划。
 2. 将候选、决策和计划冻结为同一个执行批次。
 3. 先运行不带 `--execute` 的本地预览；通过后再以相同输入追加 `--execute`。
-4. 每个版本最多发布一次带隐藏标记的通知；所有当前开放且被判为已解决的 Issue 都应
-   关闭，包括曾经关闭后重新打开的 Issue。
+4. 每个版本最多发布一次带隐藏标记的通知；有有效 Issue 关联的 PR 不重复评论；没有
+   有效 Issue 关联的人工 PR 发布同一套版本通知。所有当前开放且被判为已解决的 Issue
+   都应关闭，包括曾经关闭后重新打开的 Issue；PR 永不关闭。
 5. 刷新并核对最终 Issue 状态，返回 helper 生成的固定 Markdown 汇总。
 
 ## `resume`
 
-1. 要求状态目录中存在 schema-v2 冻结批次；不得导入或覆盖直接存放在 `state/` 下的
-   schema-v1 旧状态。
+1. 要求状态目录中存在 schema-v3 冻结批次；不得导入或覆盖旧 schema 状态。
 2. 验证冻结的候选、决策和来源哈希，然后重新运行 `apply --execute`。
 3. 版本通知标记用于防止重复评论；是否关闭只取决于当前 Issue 是否开放以及冻结决策
    是否已解决，不取决于 reopen 历史或旧的本地关闭标记。
@@ -52,11 +52,11 @@
 只使用 `.tmp/release/<version>/state/issue-followup/`：
 
 - `release-content.json`：已发布 Release 和精确 PR 条目。
-- `candidates.json`：PR、引用、Issue 和评论快照。
-- `decisions.json`：逐 Issue 的关联和解决决策。
+- `candidates.json`：PR 作者、bot 分类、引用、Issue 和评论快照。
+- `decisions.json`：逐 Issue 的关联和解决决策；无 Issue PR 不伪造 Issue 决策。
 - `plan.json`：确定性执行批次。
-- `summary.md`：固定三类 Markdown 汇总。
-- `actions.json`：逐 Issue 的远程动作进度。
+- `summary.md`：Issue 三类和无关联 PR 通知汇总。
+- `actions.json`：逐 Issue 和 PR 的远程动作进度。
 
 schema-v1 文件是审计数据，不自动复用、迁移或删除。
 
@@ -67,9 +67,10 @@ schema-v1 文件是审计数据，不自动复用、迁移或删除。
 1. `关闭 issue 并已通知`
 2. `仅发通知`
 3. `未关闭的相关 issue`
+4. `无关联 issue 的 PR 通知`
 
 每个可见 Issue 和 PR 都必须使用 Markdown 链接。第三组必须提供来自已验证决策的具体
-原因。编号碰撞和无关引用只保留在 `plan.json` 的机器审计中，不新增用户可见分类。
+原因。机器人 PR、编号碰撞和无关引用只保留在机器审计中；人工无 Issue PR 进入第四组。
 
 ## Helper 命令
 
@@ -100,7 +101,7 @@ python3 .agents/skills/release-easydict/scripts/release_content.py capture \
 
 ```json
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "source_sha256": "copy from candidates.json",
   "decisions": []
 }
