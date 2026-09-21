@@ -63,14 +63,18 @@ Release 生命周期：
 - Publish 使用隔离 worktree 先完成 merge 预检。当前 checkout 位于其他分支时保持
   不变；当前 checkout 就是干净的 `dev` 时，发布提交验证后允许 fast-forward 更新。
   不覆盖未提交修改，也不 rebase 已发布提交。
+- GitHub Release 公开后，先验证 API 中唯一且已上传的 ZIP、DMG、checksum 的大小、类型和
+  SHA-256 digest，再验证匿名下载端点的状态、长度、类型、ZIP/DMG Range 和 checksum 内容；
+  这些检查通过前不得推进公开 appcast 所在的远程引用。
 
 ## 默认值与完成条件
 
 - 除非用户明确要求 `stable`，默认使用 `beta` channel，所有底层命令沿用同一 channel。
 - `draft` 只有在 Draft、Tag、临时发布分支、changelog 和正文哈希全部验证后才完成；随后
   停止，不发布也不处理 Issue。
-- `publish` 和 `release` 只有在 Release、appcast、Git 引用和 Issue 跟进都得到最终核验后
-  才完成；Issue 阶段失败时不回滚已经发布的 Release 或已完成动作，而是报告可恢复状态。
+- `publish` 和 `release` 只有在 Release 公开资产、完整目标 appcast 条目、Git 引用和 Issue
+  跟进都得到最终核验后才完成；Issue 阶段失败时不回滚已经发布的 Release 或已完成动作，
+  而是报告可恢复状态。
 - `resume` 只恢复现有运行的未完成阶段，不启动新的替换或发布。
 - 最终报告 Release URL、标题、channel、notes 路径、Issue 摘要、底层 run ID 和可恢复
   状态路径；失败时说明准确阶段和已经发生的外部变更。
