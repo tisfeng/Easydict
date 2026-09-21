@@ -83,7 +83,7 @@ def resolve_range(revision_range: str) -> str:
 
 
 def read_numstat(revision: str, is_range: bool) -> bytes:
-    """Read rename-aware, NUL-delimited numstat data."""
+    """Read rename-aware, NUL-delimited numstat data for a commit or range."""
 
     if is_range:
         return run_git(["diff", "--numstat", "-z", "--find-renames", revision])
@@ -93,7 +93,7 @@ def read_numstat(revision: str, is_range: bool) -> bytes:
 
 
 def parse_numstat(data: bytes) -> list[tuple[str, str, str]]:
-    """Parse NUL-delimited numstat records and preserve destination paths."""
+    """Parse NUL-delimited numstat records and preserve each destination path."""
 
     tokens = data.split(b"\0")
     if tokens and tokens[-1] == b"":

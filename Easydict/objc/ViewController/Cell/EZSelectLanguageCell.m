@@ -74,7 +74,11 @@
     mm_weakify(self);
     [self.transformButton setClickBlock:^(EZButton *button) {
         mm_strongify(self);
-        [self toggleTranslationLanguages];
+        if (self.toggleTranslationLanguagesBlock) {
+            self.toggleTranslationLanguagesBlock();
+        } else {
+            [self toggleTranslationLanguages];
+        }
     }];
     transformButton.mas_key = @"transformButton";
     
@@ -159,19 +163,30 @@
     }
 }
 
-- (void)toggleTranslationLanguages {
+- (BOOL)canToggleTranslationLanguages {
     EZLanguage fromLang = self.queryModel.userSourceLanguage;
     EZLanguage toLang = self.queryModel.userTargetLanguage;
-    
-    if (![fromLang isEqualToString:toLang]) {
-        MyConfiguration.shared.fromLanguage = toLang;
-        MyConfiguration.shared.toLanguage = fromLang;
-        
-        [self.fromLanguageButton setSelectedLanguage:toLang];
-        [self.toLanguageButton setSelectedLanguage:fromLang];
-        
-        [self enterAction];
+    if (fromLang.length == 0 || toLang.length == 0) {
+        return NO;
     }
+    return ![fromLang isEqualToString:toLang];
+}
+
+- (void)toggleTranslationLanguages {
+    if (![self canToggleTranslationLanguages]) {
+        return;
+    }
+
+    EZLanguage fromLang = self.queryModel.userSourceLanguage;
+    EZLanguage toLang = self.queryModel.userTargetLanguage;
+
+    MyConfiguration.shared.fromLanguage = toLang;
+    MyConfiguration.shared.toLanguage = fromLang;
+
+    [self.fromLanguageButton setSelectedLanguage:toLang];
+    [self.toLanguageButton setSelectedLanguage:fromLang];
+
+    [self enterAction];
 }
 
 // TODO: need to optimize. This should not use EZConfiguration directly.

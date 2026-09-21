@@ -1,6 +1,6 @@
 ## 2026-08-15 | 任务：迁移 DeepL Web oneshot 接口
 
-**Links:** [DLX issue #216](https://github.com/OwO-Network/DLX/issues/216)、[DLX PR #217](https://github.com/OwO-Network/DLX/pull/217)、[执行计划](../../exec-plans/completed/2026-08-15-deepl-oneshot-migration.md)
+**Links:** [DLX issue #216](https://github.com/OwO-Network/DLX/issues/216)、[DLX PR #217](https://github.com/OwO-Network/DLX/pull/217)、[执行计划](../../exec-plans/completed/2026-08/2026-08-15-deepl-oneshot-migration.md)
 
 ### 用户请求
 
@@ -30,7 +30,7 @@
 - `Easydict/Swift/Service/DeepL/DeepLTranslateResponse.swift`
 - `EasydictTests/Service/DeepLServiceTests.swift`
 - `Easydict.xcodeproj/project.pbxproj`
-- `docs/exec-plans/completed/2026-08-15-deepl-oneshot-migration.md`
+- `docs/exec-plans/completed/2026-08/2026-08-15-deepl-oneshot-migration.md`
 
 ### 后续事项
 
