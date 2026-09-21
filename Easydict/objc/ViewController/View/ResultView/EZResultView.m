@@ -310,10 +310,7 @@
         [self updateWordResultViewHeight:wordResultViewHeight];
     }];
     
-    [self updateAllButtonStatus];
-    
-    CGFloat wordResultViewHeight = self.wordResultView.viewHeight ?: result.webViewManager.wordResultViewHeight;
-    [self updateWordResultViewHeight:wordResultViewHeight];
+    [self updateExpandedState];
     
     // animation need right frame, but result may change, so have to layout frame.
     [self updateLoadingAnimation];
@@ -371,6 +368,12 @@
 }
 
 #pragma mark - Update UI
+
+- (void)updateExpandedState {
+    [self updateAllButtonStatus];
+    CGFloat contentHeight = self.wordResultView.viewHeight ?: self.result.webViewManager.wordResultViewHeight;
+    [self updateWordResultViewHeight:contentHeight];
+}
 
 - (void)updateWordResultViewHeight:(CGFloat)wordResultViewHeight {
     if (self.result.htmlString.length) {
