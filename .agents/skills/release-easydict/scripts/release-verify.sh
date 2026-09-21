@@ -151,31 +151,138 @@ validate_remote_appcast() {
 verify_remote_appcast() {
     local attempt
     local appcast_url
+    local appcast_headers
 
     mkdir -p "$RELEASE_VERIFY_DIR"
     appcast_url="$(release_appcast_url)?release=$RELEASE_VERSION"
-    for attempt in 1 2 3 4 5 6; do
-        curl --fail --silent --show-error --location \
-            "$appcast_url&attempt=$attempt" \
-            --output "$RELEASE_VERIFY_DIR/remote-appcast.xml"
-        if validate_remote_appcast; then
+    appcast_headers="$RELEASE_VERIFY_DIR/remote-appcast-headers"
+    for ((attempt = 1; attempt <= RELEASE_PUBLIC_VERIFY_ATTEMPTS; attempt++)); do
+        if curl --fail --silent --show-error --location --head \
+            --max-time "$RELEASE_PUBLIC_VERIFY_TIMEOUT" \
+            "$appcast_url&attempt=$attempt" >"$appcast_headers" \
+            && python3 "$SCRIPT_DIR/release-public.py" validate-headers \
+                --headers "$appcast_headers" \
+                --length "$(release_file_size "$RELEASE_APPCAST_PATH")" \
+                --content-type 'text/plain; charset=utf-8' \
+                --label 'public appcast' \
+            && curl --fail --silent --show-error --location \
+                --max-time "$RELEASE_PUBLIC_VERIFY_TIMEOUT" \
+                "$appcast_url&attempt=$attempt" \
+                --output "$RELEASE_VERIFY_DIR/remote-appcast.xml"; then
+            :
+        else
+            if ((attempt < RELEASE_PUBLIC_VERIFY_ATTEMPTS)); then
+                release_log "public appcast headers are not current yet; retrying"
+                sleep "$RELEASE_PUBLIC_VERIFY_INTERVAL"
+            fi
+            continue
+        fi
+        if validate_remote_appcast \
+            && python3 "$SCRIPT_DIR/release-public.py" compare-appcast \
+                --expected "$RELEASE_APPCAST_PATH" \
+                --actual "$RELEASE_VERIFY_DIR/remote-appcast.xml" \
+                --version "$RELEASE_SAVED_VERSION" \
+                --build "$RELEASE_SAVED_BUILD"; then
             return
         fi
-        if ((attempt < 6)); then
+        if ((attempt < RELEASE_PUBLIC_VERIFY_ATTEMPTS)); then
             release_log "remote appcast is not current yet; retrying"
-            sleep 5
+            sleep "$RELEASE_PUBLIC_VERIFY_INTERVAL"
         fi
     done
 
     release_fail "published appcast did not converge"
 }
 
-verify_asset_urls() {
-    local asset_name
+verify_public_asset_url() {
+    local asset_name="$1"
+    local expected_size="$2"
+    local range_total="${3:-}"
+    local expected_content_path="${4:-}"
+    local headers_path="$RELEASE_VERIFY_DIR/public-$asset_name-headers"
+    local public_url="$(release_download_prefix)$asset_name"
+    local public_content_path="$RELEASE_VERIFY_DIR/public-$asset_name"
+    local attempt
 
-    for asset_name in Easydict.zip Easydict.dmg SHA256SUMS.txt; do
-        curl --fail --silent --show-error --location --head \
-            "$(release_download_prefix)$asset_name" >/dev/null
+    for ((attempt = 1; attempt <= RELEASE_PUBLIC_VERIFY_ATTEMPTS; attempt++)); do
+        if curl --fail --silent --show-error --location --head \
+            --max-time "$RELEASE_PUBLIC_VERIFY_TIMEOUT" \
+            "$public_url" >"$headers_path" \
+            && python3 "$SCRIPT_DIR/release-public.py" validate-headers \
+                --headers "$headers_path" \
+                --length "$expected_size" \
+                --content-type 'application/octet-stream' \
+                --label "public $asset_name"; then
+            if [[ -z "$range_total" ]]; then
+                if [[ -z "$expected_content_path" ]]; then
+                    return
+                fi
+                if curl --fail --silent --show-error --location \
+                    --max-time "$RELEASE_PUBLIC_VERIFY_TIMEOUT" \
+                    "$public_url" \
+                    --output "$public_content_path" \
+                    && python3 "$SCRIPT_DIR/release-public.py" compare-file \
+                        --expected "$expected_content_path" \
+                        --actual "$public_content_path"; then
+                    return
+                fi
+            fi
+            if [[ -n "$range_total" ]] \
+                && curl --fail --silent --show-error --location \
+                --max-time "$RELEASE_PUBLIC_VERIFY_TIMEOUT" \
+                -H 'Range: bytes=0-0' \
+                -D "$headers_path" \
+                -o /dev/null \
+                "$public_url" \
+                && python3 "$SCRIPT_DIR/release-public.py" validate-headers \
+                    --headers "$headers_path" \
+                    --status 206 \
+                    --length 1 \
+                    --content-type 'application/octet-stream' \
+                    --range-total "$range_total" \
+                    --label "public $asset_name Range"; then
+                return
+            fi
+        fi
+        if ((attempt < RELEASE_PUBLIC_VERIFY_ATTEMPTS)); then
+            release_log "public $asset_name is not current yet; retrying"
+            sleep "$RELEASE_PUBLIC_VERIFY_INTERVAL"
+        fi
+    done
+
+    release_fail "public asset verification failed: $public_url"
+}
+
+verify_public_assets() {
+    local release_json="$RELEASE_VERIFY_DIR/github-release.json"
+    local asset_path asset_name expected_content_path expected_size range_total
+
+    mkdir -p "$RELEASE_VERIFY_DIR"
+    gh release view "$RELEASE_VERSION" \
+        --repo "$RELEASE_REPOSITORY" \
+        --json assets >"$release_json"
+    python3 "$SCRIPT_DIR/release-public.py" validate-assets \
+        --release-json "$release_json" \
+        --artifact-dir "$RELEASE_ARTIFACT_DIR"
+
+    for asset_path in \
+        "$RELEASE_ZIP_PATH" \
+        "$RELEASE_DMG_PATH" \
+        "$RELEASE_CHECKSUM_PATH"; do
+        asset_name="$(basename "$asset_path")"
+        expected_size="$(release_file_size "$asset_path")"
+        expected_content_path=""
+        range_total=""
+        if [[ "$asset_name" == Easydict.zip || "$asset_name" == Easydict.dmg ]]; then
+            range_total="$expected_size"
+        elif [[ "$asset_name" == SHA256SUMS.txt ]]; then
+            expected_content_path="$RELEASE_CHECKSUM_PATH"
+        fi
+        verify_public_asset_url \
+            "$asset_name" \
+            "$expected_size" \
+            "$range_total" \
+            "$expected_content_path"
     done
 }
 
@@ -203,12 +310,11 @@ verify_remote() {
     verify_published_refs
     verify_remote_appcast
     verify_remote_checksum
-    verify_asset_urls
     release_log "published release, refs, assets, and appcast verified"
 }
 
 usage() {
-    printf 'Usage: %s <local|remote>\n' "$(basename "$0")"
+    printf 'Usage: %s <local|public-assets|remote>\n' "$(basename "$0")"
 }
 
 case "${1:-}" in
@@ -219,6 +325,18 @@ case "${1:-}" in
     remote)
         release_set_step "verify_remote_release"
         verify_remote
+        ;;
+    public-assets)
+        release_set_step "verify_public_release_assets"
+        require_release_version
+        load_release_metadata
+        verify_release_notes_snapshot
+        require_release_worktree
+        require_release_file "$RELEASE_ZIP_PATH"
+        require_release_file "$RELEASE_DMG_PATH"
+        require_release_file "$RELEASE_CHECKSUM_PATH"
+        verify_public_assets
+        release_log "public GitHub Release assets verified"
         ;;
     *)
         usage >&2

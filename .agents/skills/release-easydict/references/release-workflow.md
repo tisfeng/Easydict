@@ -8,9 +8,10 @@ Agent 必须遵守的动作选择、内容决策、外部写入和恢复契约�
 - `draft` 生成、验证并提交 appcast，然后只推送指向 appcast 提交的
   `release/sync-<version>` 和指向版本提交的版本 Tag；不得把 Draft 提交直接推送到
   `origin/dev` 或 `origin/main`。
-- `publish` 在 GitHub Release 公开前完成 merge 预检；公开 Release 后使用 Draft 阶段冻结的
-  appcast 提交安全更新本地
-  `dev`，再原子更新远程 `dev`、`main` 和临时发布分支。
+- `publish` 在 GitHub Release 公开前完成 merge 预检；公开 Release 后先验证 GitHub API
+  资产元数据与 digest，以及匿名公开 ZIP、DMG、checksum 的 HTTP 和内容契约。通过后才使用
+  Draft 阶段冻结的 appcast 提交安全更新本地 `dev`，再原子更新远程 `dev`、`main` 和临时
+  发布分支。
 - 远程验证通过后删除临时发布分支。版本 Tag 停留在版本元数据提交，`main` 停留在
   appcast 提交，`dev` 停留在包含最新开发提交和 appcast 提交的集成结果。
 - Publish 失败时使用 asc run ID 恢复，不手工 rebase 或强推这些引用。
@@ -36,10 +37,11 @@ Issue 状态只使用 `.tmp/release/<version>/state/issue-followup/` 的 schema 
    选择重点并生成英文标题，先预览标题更新，再用 `--execute` 执行；helper 不编辑正文。
 5. `draft` 报告经过验证的 Draft、changelog 路径和正文哈希后停止。
 6. `publish` 或 `release` 运行“发布 Draft”。仓库脚本会在公开 Release 前对最新本地
-   `dev`、`origin/dev` 和版本提交做 merge 预检；Draft 阶段已经生成、验证并提交的
-   appcast 会被校验后安全更新本地
-   `dev`，再使用 lease 原子更新远程引用。发布、appcast 安装和远程验证全部成功前
-   不继续。
+   `dev`、`origin/dev` 和版本提交做 merge 预检；公开 Release 后验证 API 中资产名称、
+   上传状态、大小、类型和 digest，并验证匿名下载端点的状态、长度、类型、ZIP/DMG Range
+   和 checksum 内容。全部通过后，Draft 阶段已经生成、验证并提交的 appcast 才会安全更新
+   本地 `dev`，再使用 lease 原子更新远程引用。最终公开 appcast 的目标版本、构建、channel、
+   release notes、description、下载 URL、长度和签名必须与冻结候选一致。
 7. 读取 [Issue 跟进](issue-followup.md) 和
    [Issue 决策策略](issue-followup-policy.md)，执行 `issue-followup apply <version>`。
    它在修改前创建新计划，不依赖此前独立运行的 `plan`。
@@ -112,7 +114,9 @@ branch head 和 Git push lease；任一并发校验失败都会停止，避免�
   创建的 GitHub Release 保持 Draft 状态。
 - `--replace-draft` 构建或公证失败时，不修改旧的远程 Draft 和 Tag。后续切换失败时保留
   本地回滚数据；验证成功后删除该临时备份。未完成的替换只使用 asc run ID 恢复。
-- 发布失败时不执行 Issue 动作，并使用 asc run ID 恢复。
+- 发布失败时不执行 Issue 动作，并使用 asc run ID 恢复。若 GitHub Release 已公开但公开资产
+  验收失败，保留旧的公开 appcast 与远程 `dev`/`main`，修复或等待 GitHub/CDN 收敛后恢复
+  同一运行，不重新开始发布。
 - Draft 成功只表示临时发布分支、版本 Tag、冻结的 appcast 提交和 GitHub Draft 已就绪，
   不代表 `dev` 或 `main` 已更新。
 - Publish merge 冲突、本地 `dev` checkout 不干净或 lease 竞态失败时，保留集成 worktree
