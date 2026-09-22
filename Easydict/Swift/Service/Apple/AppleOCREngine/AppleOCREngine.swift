@@ -261,7 +261,7 @@ public class AppleOCREngine: NSObject {
         let result = EZOCRResult()
         result.from = language
         result.texts = payloads
-        result.mergedText = payloads.joined(separator: "\n")
+        result.mergedText = payloads.joined(separator: OCRConstants.paragraphSeparator)
         result.raw = payloads
         return result
     }
@@ -276,7 +276,7 @@ public class AppleOCREngine: NSObject {
         guard !newPayloads.isEmpty else { return }
 
         result.texts = result.texts + newPayloads
-        result.mergedText = result.texts.joined(separator: "\n")
+        result.mergedText = result.texts.joined(separator: OCRConstants.paragraphSeparator)
     }
 
     /// Normalizes payloads for comparison without altering the returned QR code content.
