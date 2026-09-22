@@ -55,6 +55,64 @@ public class AppleOCREngine: NSObject {
         )
     }
 
+    func pasteboardOCR() {
+        logInfo("Pasteboard OCR")
+        if let image = NSPasteboard.general.image {
+            Task {
+                do {
+                    try await showOCRWindow(image: image)
+                } catch {
+                    logError("Pasteboard OCR failed: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    @objc
+    func showOCRWindow(image: NSImage, language: Language = .auto) async throws {
+        let result = try await recognizeText(image: image, language: language)
+        let mergedText = result.mergedText
+
+        Task { @MainActor in
+            OCRWindowManager.shared.showWindow(
+                image: image,
+                bands: textProcessor.bands,
+                mergedText: mergedText
+            )
+        }
+    }
+
+    /// Callback-based text recognition api
+    func recognizeText(
+        image: NSImage,
+        language: Language = .auto,
+        completion: @escaping (EZOCRResult?, Error?) -> ()
+    ) {
+        Task {
+            do {
+                let result = try await recognizeText(image: image, language: language)
+                await MainActor.run {
+                    completion(result, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    completion(nil, error)
+                }
+            }
+        }
+    }
+
+    // MARK: Private
+
+    /// The text processor responsible for sorting, merging, and normalizing the OCR results.
+    private let textProcessor = OCRTextProcessor()
+
+    /// A mapper to convert between Easydict's `Language` enum and Apple's language identifiers.
+    private let languageMapper = AppleLanguageMapper.shared
+
+    /// Language detector used for tie-breaking when confidences are equal.
+    private let languageDetector = AppleLanguageDetector()
+
     /// Runs OCR while allowing internal retries to skip duplicate QR code detection.
     private func recognizeText(
         image: NSImage,
@@ -153,6 +211,7 @@ public class AppleOCREngine: NSObject {
             from: image,
             candidates: rawProbabilities
         )
+
         appendQRCodePayloads(qrCodePayloads, to: mostConfidentResult)
 
         logInfo("Get most confident OCR cost time: \(startSelectTime.elapsedTimeString) seconds")
@@ -160,64 +219,6 @@ public class AppleOCREngine: NSObject {
 
         return mostConfidentResult
     }
-
-    func pasteboardOCR() {
-        logInfo("Pasteboard OCR")
-        if let image = NSPasteboard.general.image {
-            Task {
-                do {
-                    try await showOCRWindow(image: image)
-                } catch {
-                    logError("Pasteboard OCR failed: \(error.localizedDescription)")
-                }
-            }
-        }
-    }
-
-    @objc
-    func showOCRWindow(image: NSImage, language: Language = .auto) async throws {
-        let result = try await recognizeText(image: image, language: language)
-        let mergedText = result.mergedText
-
-        Task { @MainActor in
-            OCRWindowManager.shared.showWindow(
-                image: image,
-                bands: textProcessor.bands,
-                mergedText: mergedText
-            )
-        }
-    }
-
-    /// Callback-based text recognition api
-    func recognizeText(
-        image: NSImage,
-        language: Language = .auto,
-        completion: @escaping (EZOCRResult?, Error?) -> ()
-    ) {
-        Task {
-            do {
-                let result = try await recognizeText(image: image, language: language)
-                await MainActor.run {
-                    completion(result, nil)
-                }
-            } catch {
-                await MainActor.run {
-                    completion(nil, error)
-                }
-            }
-        }
-    }
-
-    // MARK: Private
-
-    /// The text processor responsible for sorting, merging, and normalizing the OCR results.
-    private let textProcessor = OCRTextProcessor()
-
-    /// A mapper to convert between Easydict's `Language` enum and Apple's language identifiers.
-    private let languageMapper = AppleLanguageMapper.shared
-
-    /// Language detector used for tie-breaking when confidences are equal.
-    private let languageDetector = AppleLanguageDetector()
 
     /// Detects QR code payloads without affecting the primary text-recognition path.
     private func detectQRCodePayloads(on cgImage: CGImage) async -> [String] {
