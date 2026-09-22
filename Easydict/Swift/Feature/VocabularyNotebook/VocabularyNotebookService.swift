@@ -41,7 +41,10 @@ final class VocabularyNotebookService: NSObject {
             return
         }
 
-        let text = queryModel.queryText
+        // `result.queryText` is captured during query preprocessing. `queryModel` is
+        // shared with the UI and its text can change while this result is still
+        // completing, which would pair a newer input with the current result.
+        let text = result.queryText
         guard !text.isEmpty else {
             return
         }
@@ -116,9 +119,20 @@ final class VocabularyNotebookService: NSObject {
         var line = data
         line.append(0x0A)
 
-        let handle = try FileHandle(forWritingTo: fileURL)
+        let handle = try FileHandle(forUpdating: fileURL)
         defer { try? handle.close() }
-        try handle.seekToEnd()
+        let endOffset = try handle.seekToEnd()
+        // A file written by another tool may not end with a newline; insert one so the
+        // appended record stays on its own JSONL line instead of concatenating with the
+        // previous one.
+        if endOffset > 0 {
+            try handle.seek(toOffset: endOffset - 1)
+            let lastByte = try handle.read(upToCount: 1)
+            try handle.seekToEnd()
+            if lastByte != Data([0x0A]) {
+                try handle.write(contentsOf: Data([0x0A]))
+            }
+        }
         try handle.write(contentsOf: line)
         try handle.synchronize()
     }

@@ -56,14 +56,7 @@ func routes(_ app: Application) throws {
             response.HTMLStrings = result.htmlStrings
         }
 
-        let queryModel = result.queryModel
-        let text = queryModel.queryText
-        let shouldRecord = !service.isStream() || result.isStreamFinished
-        let hasContent = !text.isEmpty
-            && (result.wordResult != nil || !(result.translatedText ?? "").isEmpty)
-        if shouldRecord, hasContent, result.error == nil {
-            VocabularyNotebookService.shared.append(queryModel: queryModel, result: result)
-        }
+        recordVocabularyEntry(service: service, result: result)
 
         return response
     }
@@ -116,23 +109,9 @@ func routes(_ app: Application) throws {
                 }
             }
 
-            // Record the vocabulary entry after the stream finishes. The HTTP stream
-            // path never populates `streamService.result.translatedResults`, so backfill
-            // it from the accumulated chunks before appending. A stream error leaves
-            // `result.error` unset, so it must be gated separately to avoid recording an
-            // incomplete translation.
+            // `streamError == nil` after the loop proves normal completion.
             if streamError == nil, let result = streamService.result {
-                let shouldRecord = !streamService.isStream() || result.isStreamFinished
-                let hasContent = !accumulatedText.isEmpty
-                if shouldRecord, hasContent, result.error == nil {
-                    result.translatedResults = accumulatedText
-                        .split(separator: "\n", omittingEmptySubsequences: false)
-                        .map(String.init)
-                    VocabularyNotebookService.shared.append(
-                        queryModel: result.queryModel,
-                        result: result
-                    )
-                }
+                recordStreamedVocabularyEntry(result: result, accumulatedText: accumulatedText)
             }
 
             try await writer.write(.end)
@@ -179,6 +158,39 @@ func routes(_ app: Application) throws {
         let selectedText = try await SelectedTextManager.shared.getSelectedText(strategy: .auto)
         return GetSelectedTextResponse(selectedText: selectedText)
     }
+}
+
+/// Appends a completed non-streaming query to the vocabulary notebook when it has
+/// content. HTML-only dictionary results (Apple Dictionary, MDict) carry neither a word
+/// result nor translated text, so a non-empty `htmlString` counts as content too.
+private func recordVocabularyEntry(service: QueryService, result: QueryResult) {
+    guard result.error == nil else {
+        return
+    }
+    let text = result.queryText
+    let shouldRecord = !service.isStream() || result.isStreamFinished
+    let hasContent = !text.isEmpty
+        && (result.wordResult != nil
+            || !(result.translatedText ?? "").isEmpty
+            || !(result.htmlString ?? "").isEmpty)
+    guard shouldRecord, hasContent else {
+        return
+    }
+    VocabularyNotebookService.shared.append(queryModel: result.queryModel, result: result)
+}
+
+/// Appends a completed HTTP stream to the vocabulary notebook. The SSE route consumes
+/// `ChatStreamResult` directly, so it never restores `result.isStreamFinished` (left
+/// false by the raw `contentStream`) nor fills `result.translatedResults`; the caller
+/// supplies the accumulated text after proving normal completion.
+private func recordStreamedVocabularyEntry(result: QueryResult, accumulatedText: String) {
+    guard result.error == nil, !accumulatedText.isEmpty else {
+        return
+    }
+    result.translatedResults = accumulatedText
+        .split(separator: "\n", omittingEmptySubsequences: false)
+        .map(String.init)
+    VocabularyNotebookService.shared.append(queryModel: result.queryModel, result: result)
 }
 
 private func makeJSONErrorMessage(_ error: Error, fallbackModel: String) -> String? {
