@@ -12,6 +12,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[4]
 COMMON = ROOT / ".agents/skills/release-easydict/scripts/release-common.sh"
+BUILD_SCRIPT = ROOT / ".agents/skills/release-easydict/scripts/release-build.sh"
 
 
 def run(command, *, cwd=None, env=None, check=True):
@@ -116,6 +117,77 @@ class ReleasePerformanceTests(unittest.TestCase):
             )
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("release build cache is locked", result.stderr)
+
+    def test_read_project_value_passes_json_flag_to_asc(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            temporary = Path(directory)
+            asc_dir = temporary / "bin"
+            asc_dir.mkdir()
+            args_log = temporary / "asc-args.log"
+            asc = asc_dir / "asc"
+            asc.write_text(
+                "#!/usr/bin/env bash\n"
+                "printf '%s\\n' \"$@\" >> \"$ASC_ARGS_LOG\"\n"
+                "printf '%s\\n' '' >> \"$ASC_ARGS_LOG\"\n"
+                "printf '%s\\n' '{\"version\":\"1.2.3\",\"buildNumber\":\"42\"}'\n",
+                encoding="utf-8",
+            )
+            asc.chmod(0o755)
+            worktree = temporary / "release-worktree"
+            worktree.mkdir()
+            env = os.environ.copy()
+            env.update(
+                {
+                    "PATH": f"{asc_dir}:{env['PATH']}",
+                    "ASC_ARGS_LOG": str(args_log),
+                    "RELEASE_SOURCE_ROOT": str(temporary),
+                    "VERSION": "1.2.3",
+                    "CHANNEL": "beta",
+                }
+            )
+            result = run(
+                [
+                    "bash",
+                    "-c",
+                    'source "$1"; source "$2"; '
+                    'RELEASE_WORKTREE="$3"; '
+                    'printf "%s %s\\n" "$(read_project_value version)" '
+                    '"$(read_project_value buildNumber)"',
+                    "bash",
+                    str(COMMON),
+                    str(BUILD_SCRIPT),
+                    str(worktree),
+                ],
+                cwd=temporary,
+                env=env,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stdout, "1.2.3 42\n")
+
+            calls = [
+                line
+                for line in args_log.read_text(encoding="utf-8").splitlines()
+                if line
+            ]
+            self.assertEqual(len(calls), 22)
+            for offset in (0, 11):
+                self.assertEqual(
+                    calls[offset : offset + 11],
+                    [
+                        "xcode",
+                        "version",
+                        "view",
+                        "--project",
+                        str(worktree / "Easydict.xcodeproj"),
+                        "--target",
+                        "Easydict",
+                        "--configuration",
+                        "Release",
+                        "--output",
+                        "json",
+                    ],
+                )
 
     def test_derived_data_reset_rejects_untrusted_path(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

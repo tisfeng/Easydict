@@ -18,8 +18,8 @@ Git/GitHub 配置、发布模型、主要命令、恢复和发布工具维护。
 | 发布已有 Draft | `publish <version>` | 公开 Release、推广 appcast、验证远程状态并处理 Issue 跟进 |
 | 完成整个发布 | `release <version>` | 依次执行 Skill 的 `draft` 和 `publish` |
 | 恢复发布流程 | `resume <version-or-run-id>` | 只继续已有发布运行，不开始新的 Draft 或替换 |
-| 预览已发布日志同步 | `sync-notes <version>` | 比较 changelog、Release 正文和 appcast，不写远程 |
-| 执行已发布日志同步 | `sync-notes <version> --execute` | 只同步 Release 正文和 appcast description |
+| 预览已发布日志同步 | `sync-notes <version>` | 比较 changelog、Release 正文、`main`/`dev` appcast 和本地分支，不写远程 |
+| 执行已发布日志同步 | `sync-notes <version> --execute` | 同步 Release 正文、远程 `main`/`dev` appcast 和本地分支 |
 | 规划发布后 Issue 动作 | `issue-followup plan <version>` | 生成本地计划，不评论或关闭 Issue |
 | 执行/恢复 Issue 动作 | `issue-followup apply\|resume <version>` | 通知并关闭符合策略的 Issue；PR 只评论、不关闭 |
 
@@ -64,9 +64,11 @@ Git/GitHub 配置、发布模型、主要命令、恢复和发布工具维护。
    `release/sync-<version>` 与带注释版本 Tag，不修改 `origin/dev` 或 `origin/main`。
 7. Publish 前在另一个隔离 worktree 中合并最新本地 `dev`、`origin/dev` 和版本提交；冲突
    必须在 GitHub Release 公开前解决。
-8. Release 公开后，把冻结的 appcast 提交合入集成结果，安全更新本地 `dev`，再使用 lease
+8. Release 公开后，先验证 GitHub API 资产的唯一性、上传状态、大小、类型和 digest，再验证
+   匿名下载端点的状态、长度、类型、ZIP/DMG Range 和 checksum 内容。
+9. 公开资产通过后，把冻结的 appcast 提交合入集成结果，安全更新本地 `dev`，再使用 lease
    原子更新 `origin/dev`、`origin/main` 和临时发布分支。
-9. 远程验证 GitHub 正文、公开 appcast、资产、引用和冻结 changelog 后，删除远程
+10. 远程验证 GitHub 正文、公开 appcast 完整目标条目、资产、引用和冻结 changelog 后，删除远程
    `release/sync-<version>`。
 
 这个模型保留本地 `dev` 上尚未推送的提交，同时吸收远程 `dev`，也能带回误合入 `main`
@@ -96,6 +98,19 @@ asc auth status --validate
 asc auth doctor
 ```
 
+### `asc` CLI
+
+[`asc`](https://github.com/rorkai/App-Store-Connect-CLI) 是 App Store Connect 的第三方命令行工具。Easydict 使用它完成认证检查、Xcode 版本和归档、公证，以及 `asc workflow` 发布工作流：
+
+```bash
+brew install asc
+asc version
+asc auth status --validate
+asc auth doctor
+```
+
+日常发布仍从 `release-easydict` Skill 进入；`--output json` 供脚本解析，`--output table` 供人工查看。
+
 ### App Store Connect API 账号
 
 发布脚本不读取仓库内受 Git 跟踪的 Apple API key，而是使用 `asc` 已配置的 profile。推荐
@@ -105,7 +120,7 @@ asc auth doctor
 - `Key ID`；
 - 团队 API key 的 `Issuer ID`，个人 API key 没有该字段；
 - 只能下载一次的 `.p8` 私钥；
-- 对应团队的访问权限。
+- API Key 访问职能选择 **App 管理（App Manager）**。
 
 团队 API key 的典型配置命令如下，私钥路径应指向仓库外的安全临时位置：
 
@@ -233,9 +248,10 @@ Draft 阶段冻结并提交候选 appcast，推送临时分支和版本 Tag，�
   --channel beta
 ```
 
-Publish 先做 merge 预检，再公开 GitHub Release，推广 Draft 阶段冻结的 appcast，更新本地和
-远程 `dev`/`main`，验证远程状态并清理临时分支。稳定版必须在创建和发布 Draft 时都传入
-`--channel stable`。
+Publish 先做 merge 预检，再公开 GitHub Release。ZIP、DMG 和 checksum 的 GitHub API 元数据、
+digest 与匿名下载契约全部通过后，才推广 Draft 阶段冻结的 appcast 并更新本地和远程
+`dev`/`main`；随后完整比对公开 appcast 目标条目并清理临时分支。稳定版必须在创建和发布
+Draft 时都传入 `--channel stable`。
 
 ### 5. beta 轮换
 
@@ -268,10 +284,11 @@ Release 远程验证成功后，Skill 执行：
 ./.agents/skills/release-easydict/scripts/release-easydict.sh sync-notes <version> --execute
 ```
 
-第一条只预览；第二条同步已发布 Release 正文和远程 `main/appcast.xml` 的目标 description。
-它不重建、不签名、不上传附件，也不修改 Tag、版本号、构建号或 channel。执行要求工作树
-干净，并以 Release ETag 和 appcast blob SHA 防止覆盖并发修改；状态保存在
-`.tmp/release/<version>/state/notes-sync.json`，可以安全重试。
+第一条只预览；第二条使用临时 worktree 创建 appcast 提交，原子同步已发布 Release 正文、
+远程 `main`/`dev` 的目标 description，再安全 fast-forward 本地 `main`/`dev`。它不重建、
+不签名、不上传附件，也不修改 Tag、版本号、构建号或 channel。执行要求工作树干净，并以
+Release ETag、远程 branch head 和 Git push lease 防止覆盖并发修改；状态保存在
+`.tmp/release/<version>/state/notes-sync.json`，部分成功后可以安全重试。
 
 ## 状态、日志与恢复
 
@@ -314,10 +331,13 @@ Archive 失败时，只清理当前 fingerprint 并自动回退一次 clean Arch
 8. 在 Draft 阶段提交 appcast，原子推送临时分支和带注释版本 Tag，不修改 `dev` 或 `main`。
 9. 创建并验证包含 ZIP、DMG 和校验和的 GitHub Draft Release。
 10. 发布前合并检查最新本地/远程 `dev` 与版本提交。
-11. 公开 GitHub Release，并把冻结的 appcast 提交合入集成结果。
-12. 安全更新本地 `dev`，并用 lease 原子更新远程 `dev`、`main` 和临时发布分支。
+11. 公开 GitHub Release，验证 API 资产元数据、digest 和匿名下载端点的状态、长度、类型、
+    ZIP/DMG Range 与 checksum 内容。
+12. 公开资产通过后，把冻结的 appcast 提交合入集成结果，安全更新本地 `dev`，并用 lease
+    原子更新远程 `dev`、`main` 和临时发布分支。
 13. 对 beta 发布，把上一 GitHub prerelease 提升为 stable。
-14. 验证两代 Release、远程引用、资产和公开 Sparkle feed，再删除临时分支和 worktree。
+14. 验证两代 Release、远程引用、资产和公开 Sparkle feed 的完整目标条目，再删除临时分支
+    和 worktree。
 
 公开 feed 只在 GitHub Release 发布后更新，因此不会提前宣传不可下载的产物。此前失败会留下
 可检查的 Draft 和本地状态，而不是发布一半的 feed。
@@ -340,11 +360,12 @@ Archive 失败时，只清理当前 fingerprint 并自动回退一次 clean Arch
 - `scripts/release-package.sh`：公证、ZIP、DMG 和校验和。
 - `scripts/release-appcast.sh` / `scripts/release-appcast.py`：Sparkle 生成和严格校验。
 - `scripts/release_notes.py`：changelog 校验、快照、确定性渲染和正文比对。
-- `scripts/release-notes-sync.py`：预览或同步已发布正文和 appcast description。
+- `scripts/release-notes-sync.py`：预览或同步已发布正文、`main`/`dev` appcast 和本地分支。
 - `scripts/release_content.py`：验证并更新 Draft 标题，不编辑正文。
 - `scripts/release_issues.py` / `scripts/release_pr_policy.py`：Issue 跟进和统一 PR 过滤策略。
 - `scripts/release-github.sh`：幂等 Draft/正式发布和资产验证。
-- `scripts/release-verify.sh`：本地产物和最终远程状态验证。
+- `scripts/release-verify.sh`：本地产物、公开 Release 资产和最终远程状态验证。
+- `scripts/release-public.py`：公开 HTTP 头、GitHub 资产 digest、appcast 条目和 checksum 校验。
 - `scripts/requirements.txt`：固定 Markdown 渲染器依赖。
 - `assets/export-options.plist`：Developer ID 导出配置。
 - `tests/`：正文、appcast、Git 流程、Draft 替换、Issue、日志同步和缓存等行为测试。
@@ -363,7 +384,9 @@ Archive 失败时，只清理当前 fingerprint 并自动回退一次 clean Arch
 - 签名、公证、stapling 或 Gatekeeper 验证失败；
 - 旧 appcast 条目发生非预期变化；beta 轮换只允许上一条 beta 移除 channel；
 - 上一 beta Release 缺失、仍为 Draft 或 promotion 失败；
-- GitHub 正文、资产、引用或公开 appcast 的最终远程验证失败。
+- GitHub 资产名称、上传状态、大小、类型或 digest 不一致；
+- 匿名 ZIP、DMG、checksum 的状态、长度、类型、Range 或 checksum 内容不一致；
+- GitHub 正文、引用或公开 appcast 完整目标条目的最终远程验证失败。
 
 发布失败时不执行 Issue 动作。Release 已发布而 Issue 后续失败时，不回滚 Release，使用
 `issue-followup resume <version>` 继续。
@@ -376,7 +399,10 @@ Archive 失败时，只清理当前 fingerprint 并自动回退一次 clean Arch
 python3 -m unittest discover \
   -s .agents/skills/release-easydict/tests \
   -p 'test_*.py'
+python3 -m py_compile .agents/skills/release-easydict/scripts/*.py
 bash -n .agents/skills/release-easydict/scripts/*.sh
+python3 -m json.tool \
+  .agents/skills/release-easydict/scripts/asc-workflow.json >/dev/null
 git diff --check
 ```
 

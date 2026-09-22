@@ -15,6 +15,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+from urllib.parse import urlsplit
 import xml.etree.ElementTree as ET
 from typing import Any
 
@@ -34,6 +35,11 @@ SPARKLE_VERSION = f"{{{SPARKLE_NS}}}version"
 SPARKLE_SHORT_VERSION = f"{{{SPARKLE_NS}}}shortVersionString"
 ET.register_namespace("sparkle", SPARKLE_NS)
 
+REMOTE_NAME = "origin"
+MAIN_BRANCH = "main"
+DEV_BRANCH = "dev"
+SYNC_BRANCHES = (MAIN_BRANCH, DEV_BRANCH)
+
 
 class NotesSyncError(RuntimeError):
     """Raised when release-notes synchronization cannot proceed safely."""
@@ -45,22 +51,6 @@ def sha256_text(value: str) -> str:
 
 def now_utc() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-
-
-def run_command(
-    command: list[str], input_text: str | None = None
-) -> subprocess.CompletedProcess[str]:
-    result = subprocess.run(
-        command,
-        check=False,
-        input=input_text,
-        capture_output=True,
-        text=True,
-    )
-    if result.returncode != 0:
-        detail = result.stderr.strip() or result.stdout.strip()
-        raise NotesSyncError(f"command failed: {' '.join(command)}\n{detail}")
-    return result
 
 
 def parse_json_output(result: subprocess.CompletedProcess[str]) -> dict[str, Any]:
@@ -136,6 +126,41 @@ def fetch_appcast(repo: str, branch: str) -> tuple[dict[str, Any], bytes]:
     except (ValueError, TypeError) as error:
         raise NotesSyncError("remote appcast content is not valid base64") from error
     return payload, content
+
+
+def fetch_branch_head(repo: str, branch: str) -> str:
+    payload = parse_json_output(
+        run_command(
+            [
+                "gh",
+                "api",
+                "-H",
+                "Accept: application/vnd.github+json",
+                f"repos/{repo}/git/ref/heads/{branch}",
+            ]
+        )
+    )
+    object_payload = payload.get("object")
+    if not isinstance(object_payload, dict) or not isinstance(
+        object_payload.get("sha"), str
+    ):
+        raise NotesSyncError(f"remote {branch} branch head is missing")
+    return object_payload["sha"]
+
+
+def fetch_branch_snapshot(repo: str, branch: str) -> dict[str, Any]:
+    head_before = fetch_branch_head(repo, branch)
+    payload, content = fetch_appcast(repo, branch)
+    head_after = fetch_branch_head(repo, branch)
+    if head_before != head_after:
+        raise NotesSyncError(f"remote {branch} changed while reading appcast")
+    return {
+        "branch": branch,
+        "head": head_after,
+        "appcast_sha": payload["sha"],
+        "appcast_content": content,
+        "appcast_content_sha256": hashlib.sha256(content).hexdigest(),
+    }
 
 
 def parse_appcast(content: bytes) -> ET.ElementTree:
@@ -277,19 +302,40 @@ def release_body_matches(current: str, notes: str) -> bool:
     return normalize_body(current) == normalize_body(notes)
 
 
-def build_preview(
-    repo: str,
+def build_branch_preview(
     version: str,
-    appcast_branch: str,
-    release: dict[str, Any],
-    appcast_payload: dict[str, Any],
-    appcast_content: bytes,
-    notes: str,
+    snapshot: dict[str, Any],
     rendered: str,
 ) -> dict[str, Any]:
     candidate, build = build_appcast_candidate(
-        appcast_content, version, rendered
+        snapshot["appcast_content"], version, rendered
     )
+    current_description = (
+        target_item(parse_appcast(snapshot["appcast_content"]), version).findtext(
+            "description"
+        )
+        or ""
+    )
+    return {
+        "branch": snapshot["branch"],
+        "head": snapshot["head"],
+        "appcast_sha": snapshot["appcast_sha"],
+        "appcast_build": build,
+        "appcast_update_required": current_description != rendered,
+        "appcast_before_sha256": snapshot["appcast_content_sha256"],
+        "appcast_candidate_sha256": hashlib.sha256(candidate).hexdigest(),
+    }
+
+
+def build_preview(
+    repo: str,
+    version: str,
+    release: dict[str, Any],
+    snapshots: dict[str, dict[str, Any]],
+    local_branches: dict[str, str],
+    notes: str,
+    rendered: str,
+) -> dict[str, Any]:
     release_body = normalize_body(notes)
     current_body = release.get("body") or ""
     diff = list(
@@ -312,16 +358,17 @@ def build_preview(
         "release_notes_sha256": notes_sha256(notes),
         "release_update_required": not release_body_matches(current_body, notes),
         "release_diff": diff,
-        "appcast_branch": appcast_branch,
-        "appcast_sha": appcast_payload["sha"],
-        "appcast_build": build,
-        "appcast_update_required": (
-            target_item(parse_appcast(appcast_content), version).findtext("description")
-            or ""
-        )
-        != rendered,
-        "appcast_before_sha256": hashlib.sha256(appcast_content).hexdigest(),
-        "appcast_candidate_sha256": hashlib.sha256(candidate).hexdigest(),
+        "targets": {
+            branch: build_branch_preview(version, snapshot, rendered)
+            for branch, snapshot in snapshots.items()
+        },
+        "local": {
+            "branches": local_branches,
+            "dev_update_required": local_branches[DEV_BRANCH]
+            != snapshots[DEV_BRANCH]["head"],
+            "main_update_required": local_branches[MAIN_BRANCH]
+            != snapshots[MAIN_BRANCH]["head"],
+        },
         "state": "preview",
     }
     return preview
@@ -346,52 +393,315 @@ def update_release_body(repo: str, release: dict[str, Any], etag: str, body: str
     )
 
 
-def update_appcast(repo: str, branch: str, sha: str, content: bytes, version: str) -> None:
-    payload = json.dumps(
-        {
-            "message": f"chore(release): sync {version} release notes",
-            "content": base64.b64encode(content).decode("ascii"),
-            "sha": sha,
-            "branch": branch,
-        }
+def run_command(
+    command: list[str],
+    input_text: str | None = None,
+) -> subprocess.CompletedProcess[str]:
+    result = subprocess.run(
+        command,
+        check=False,
+        input=input_text,
+        capture_output=True,
+        text=True,
     )
-    run_command(
+    if result.returncode != 0:
+        detail = result.stderr.strip() or result.stdout.strip()
+        raise NotesSyncError(f"command failed: {' '.join(command)}\n{detail}")
+    return result
+
+
+def git_command(root: Path, arguments: list[str]) -> subprocess.CompletedProcess[str]:
+    return run_command(["git", "-C", str(root), *arguments])
+
+
+def git_probe(root: Path, arguments: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", "-C", str(root), *arguments],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+
+def git_output(root: Path, arguments: list[str]) -> str:
+    return git_command(root, arguments).stdout.strip()
+
+
+def local_branch_heads(root: Path) -> dict[str, str]:
+    return {
+        branch: git_output(root, ["rev-parse", f"refs/heads/{branch}"])
+        for branch in SYNC_BRANCHES
+    }
+
+
+def fetch_git_branches(root: Path) -> None:
+    git_command(
+        root,
         [
-            "gh",
-            "api",
-            "--method",
-            "PUT",
-            "-H",
-            "Accept: application/vnd.github+json",
-            "--input",
-            "-",
-            f"repos/{repo}/contents/appcast.xml",
+            "fetch",
+            "--quiet",
+            REMOTE_NAME,
+            "+refs/heads/main:refs/remotes/origin/main",
+            "+refs/heads/dev:refs/remotes/origin/dev",
         ],
-        payload,
     )
+
+
+def validate_origin_repository(root: Path, repo: str) -> None:
+    remote_url = git_output(root, ["remote", "get-url", REMOTE_NAME])
+    if remote_url.startswith("git@"):
+        authority, separator, remote_path = remote_url.partition(":")
+        remote_host = authority.rsplit("@", 1)[-1]
+        if not separator:
+            remote_path = ""
+    else:
+        parsed = urlsplit(remote_url)
+        remote_host = parsed.hostname or ""
+        remote_path = parsed.path
+    if remote_host.lower() != "github.com":
+        raise NotesSyncError(
+            f"origin remote is not a GitHub repository; cannot sync {repo} safely"
+        )
+    remote_repo = remote_path.strip("/").removesuffix(".git")
+    if remote_repo.lower() != repo.lower():
+        raise NotesSyncError(
+            f"origin remote {remote_repo} does not match requested repository {repo}"
+        )
+
+
+def verify_fetched_heads(root: Path, snapshots: dict[str, dict[str, Any]]) -> None:
+    for branch, snapshot in snapshots.items():
+        fetched = git_output(root, ["rev-parse", f"refs/remotes/{REMOTE_NAME}/{branch}"])
+        if fetched != snapshot["head"]:
+            raise NotesSyncError(
+                f"remote {branch} changed while preparing sync; rerun sync-notes"
+            )
+
+
+def branch_worktree(root: Path, branch: str) -> Path | None:
+    output = git_output(root, ["worktree", "list", "--porcelain"])
+    for block in output.split("\n\n"):
+        lines = block.splitlines()
+        if f"branch refs/heads/{branch}" in lines:
+            for line in lines:
+                if line.startswith("worktree "):
+                    return Path(line.removeprefix("worktree "))
+    return None
+
+
+def ensure_clean_worktree(path: Path, label: str) -> None:
+    status = run_command(
+        ["git", "-C", str(path), "status", "--porcelain", "--untracked-files=all"]
+    )
+    if status.stdout.strip():
+        raise NotesSyncError(f"local {label} worktree must be clean: {path}")
+
+
+def validate_local_update_ready(root: Path, branch: str, old_head: str) -> None:
+    path = branch_worktree(root, branch)
+    if path is None:
+        return
+    current = git_output(path, ["rev-parse", "HEAD"])
+    if current != old_head:
+        raise NotesSyncError(f"local {branch} changed while preparing sync")
+    ensure_clean_worktree(path, branch)
+
+
+def create_sync_worktree(root: Path, version: str, base: str) -> Path:
+    parent = root / ".tmp" / "release" / version / "state"
+    parent.mkdir(parents=True, exist_ok=True)
+    path = Path(tempfile.mkdtemp(prefix="notes-sync-", dir=parent))
+    path.rmdir()
+    try:
+        git_command(root, ["worktree", "add", "--detach", str(path), base])
+    except Exception:
+        path.exists() and path.rmdir()
+        raise
+    return path
+
+
+def remove_sync_worktree(root: Path, path: Path) -> None:
+    git_command(root, ["worktree", "remove", "--force", str(path)])
+
+
+def make_main_commit(
+    worktree: Path, base: str, candidate: bytes, version: str
+) -> tuple[str, bool]:
+    appcast_path = worktree / "appcast.xml"
+    if not appcast_path.is_file():
+        raise NotesSyncError("main branch does not contain appcast.xml")
+    if appcast_path.read_bytes() == candidate:
+        return base, False
+    appcast_path.write_bytes(candidate)
+    git_command(worktree, ["add", "--", "appcast.xml"])
+    git_command(worktree, ["commit", "-m", f"chore(release): sync {version} release notes"])
+    return git_output(worktree, ["rev-parse", "HEAD"]), True
+
+
+def merge_commit(worktree: Path, commit: str, label: str) -> str:
+    current = git_output(worktree, ["rev-parse", "HEAD"])
+    if git_probe(worktree, ["merge-base", "--is-ancestor", commit, current]).returncode == 0:
+        return current
+    if git_probe(worktree, ["merge-base", "--is-ancestor", current, commit]).returncode == 0:
+        git_command(worktree, ["merge", "--ff-only", commit])
+        return commit
+    try:
+        git_command(worktree, ["merge", "--no-edit", "--no-ff", commit])
+    except NotesSyncError as error:
+        raise NotesSyncError(f"merge conflict while integrating {label}: {error}") from error
+    return git_output(worktree, ["rev-parse", "HEAD"])
+
+
+def push_branches(
+    root: Path,
+    old_heads: dict[str, str],
+    new_heads: dict[str, str],
+) -> None:
+    if all(old_heads[branch] == new_heads[branch] for branch in SYNC_BRANCHES):
+        return
+    arguments = ["push", "--atomic"]
+    for branch in SYNC_BRANCHES:
+        arguments.append(
+            f"--force-with-lease=refs/heads/{branch}:{old_heads[branch]}"
+        )
+    arguments.extend(
+        [
+            REMOTE_NAME,
+            f"{new_heads[MAIN_BRANCH]}:refs/heads/{MAIN_BRANCH}",
+            f"{new_heads[DEV_BRANCH]}:refs/heads/{DEV_BRANCH}",
+        ]
+    )
+    git_command(root, arguments)
+
+
+def update_local_branch(root: Path, branch: str, old_head: str, new_head: str) -> None:
+    if old_head == new_head:
+        return
+    if git_probe(root, ["merge-base", "--is-ancestor", old_head, new_head]).returncode != 0:
+        raise NotesSyncError(f"local {branch} cannot fast-forward to synchronized commit")
+    path = branch_worktree(root, branch)
+    if path is not None:
+        current_head = git_output(path, ["rev-parse", "HEAD"])
+        if current_head != old_head:
+            raise NotesSyncError(f"local {branch} changed before fast-forward")
+        ensure_clean_worktree(path, branch)
+        git_command(path, ["merge", "--ff-only", new_head])
+    else:
+        git_command(root, ["update-ref", f"refs/heads/{branch}", new_head, old_head])
+
+
+def validate_local_fast_forward(
+    root: Path, branch: str, old_head: str, new_head: str
+) -> None:
+    if old_head == new_head:
+        return
+    if git_probe(root, ["merge-base", "--is-ancestor", old_head, new_head]).returncode != 0:
+        raise NotesSyncError(
+            f"local {branch} cannot fast-forward to synchronized commit; resolve it before syncing"
+        )
 
 
 def verify_remote(
     repo: str,
     version: str,
-    appcast_branch: str,
     notes: str,
     rendered: str,
+    expected_heads: dict[str, str],
 ) -> dict[str, Any]:
     release, _ = fetch_release(repo, version)
     if not release_body_matches(release.get("body") or "", notes):
         raise NotesSyncError("GitHub Release body does not match canonical changelog")
-    appcast_payload, appcast_content = fetch_appcast(repo, appcast_branch)
-    tree = parse_appcast(appcast_content)
-    item = target_item(tree, version)
-    description = item.findtext("description") or ""
-    if description != rendered:
-        raise NotesSyncError("remote appcast description does not match rendered changelog")
+    branches: dict[str, Any] = {}
+    for branch in SYNC_BRANCHES:
+        snapshot = fetch_branch_snapshot(repo, branch)
+        if snapshot["head"] != expected_heads[branch]:
+            raise NotesSyncError(f"remote {branch} did not reach synchronized commit")
+        item = target_item(parse_appcast(snapshot["appcast_content"]), version)
+        if (item.findtext("description") or "") != rendered:
+            raise NotesSyncError(
+                f"remote {branch} appcast description does not match rendered changelog"
+            )
+        branches[branch] = {
+            "head": snapshot["head"],
+            "appcast_sha": snapshot["appcast_sha"],
+            "appcast_sha256": snapshot["appcast_content_sha256"],
+        }
     return {
         "release_body_sha256": sha256_text(normalize_body(release.get("body") or "")),
-        "appcast_sha": appcast_payload["sha"],
-        "appcast_sha256": hashlib.sha256(appcast_content).hexdigest(),
+        "branches": branches,
     }
+
+
+def prepare_git_sync(
+    root: Path,
+    version: str,
+    snapshots: dict[str, dict[str, Any]],
+    local_branches: dict[str, str],
+    rendered: str,
+) -> dict[str, Any]:
+    fetch_git_branches(root)
+    verify_fetched_heads(root, snapshots)
+    for branch in SYNC_BRANCHES:
+        validate_local_update_ready(root, branch, local_branches[branch])
+
+    temporary_worktrees: list[Path] = []
+    try:
+        main_worktree = create_sync_worktree(
+            root, version, f"refs/remotes/{REMOTE_NAME}/{MAIN_BRANCH}"
+        )
+        temporary_worktrees.append(main_worktree)
+        if (main_worktree / "appcast.xml").read_bytes() != snapshots[MAIN_BRANCH]["appcast_content"]:
+            raise NotesSyncError(
+                "Git main appcast differs from GitHub Contents; rerun sync-notes"
+            )
+        main_candidate, _ = build_appcast_candidate(
+            snapshots[MAIN_BRANCH]["appcast_content"], version, rendered
+        )
+        main_commit, _ = make_main_commit(
+            main_worktree,
+            snapshots[MAIN_BRANCH]["head"],
+            main_candidate,
+            version,
+        )
+
+        dev_worktree = create_sync_worktree(root, version, local_branches[DEV_BRANCH])
+        temporary_worktrees.append(dev_worktree)
+        merge_commit(
+            dev_worktree,
+            git_output(root, ["rev-parse", f"refs/remotes/{REMOTE_NAME}/{DEV_BRANCH}"]),
+            f"remote {DEV_BRANCH}",
+        )
+        merge_commit(dev_worktree, main_commit, f"{MAIN_BRANCH} appcast")
+        merged_appcast = (dev_worktree / "appcast.xml").read_bytes()
+        dev_candidate, _ = build_appcast_candidate(merged_appcast, version, rendered)
+        if dev_candidate != main_candidate:
+            raise NotesSyncError(
+                "integrated dev appcast differs from main candidate; reconcile the feeds before syncing"
+            )
+        if merged_appcast != dev_candidate:
+            (dev_worktree / "appcast.xml").write_bytes(dev_candidate)
+            git_command(dev_worktree, ["add", "--", "appcast.xml"])
+            git_command(
+                dev_worktree,
+                ["commit", "-m", f"chore(release): sync {version} release notes"],
+            )
+        dev_commit = git_output(dev_worktree, ["rev-parse", "HEAD"])
+        return {
+            "temporary_worktrees": temporary_worktrees,
+            "new_heads": {MAIN_BRANCH: main_commit, DEV_BRANCH: dev_commit},
+            "remote_main_updated": main_commit != snapshots[MAIN_BRANCH]["head"],
+            "remote_dev_updated": dev_commit != snapshots[DEV_BRANCH]["head"],
+            "local_main_updated": main_commit != local_branches[MAIN_BRANCH],
+            "local_dev_updated": dev_commit != local_branches[DEV_BRANCH],
+        }
+    except Exception:
+        for worktree in reversed(temporary_worktrees):
+            if worktree.exists():
+                try:
+                    remove_sync_worktree(root, worktree)
+                except NotesSyncError:
+                    pass
+        raise
 
 
 def sync_notes(args: argparse.Namespace) -> None:
@@ -402,20 +712,22 @@ def sync_notes(args: argparse.Namespace) -> None:
     notes = read_notes(notes_file, args.version)
     rendered = render_markdown(notes)
     release, etag = fetch_release(args.repo, args.version)
-    appcast_payload, appcast_content = fetch_appcast(args.repo, args.appcast_branch)
+    snapshots = {
+        branch: fetch_branch_snapshot(args.repo, branch) for branch in SYNC_BRANCHES
+    }
+    local_branches = local_branch_heads(root)
     preview = build_preview(
         args.repo,
         args.version,
-        args.appcast_branch,
         release,
-        appcast_payload,
-        appcast_content,
+        snapshots,
+        local_branches,
         notes,
         rendered,
     )
     state_path = sync_state_path(root, args.version, args.state)
     state = {
-        "schema_version": 1,
+        "schema_version": 2,
         "updated_at": now_utc(),
         "notes_file": str(notes_file.relative_to(root)),
         "notes_sha256": notes_sha256(notes),
@@ -428,39 +740,68 @@ def sync_notes(args: argparse.Namespace) -> None:
         return
 
     body = normalize_body(notes)
-    stage = "release"
+    stage = "git-preparation"
+    temporary_worktrees: list[Path] = []
     try:
+        validate_origin_repository(root, args.repo)
+        git_plan = prepare_git_sync(
+            root, args.version, snapshots, local_branches, rendered
+        )
+        temporary_worktrees = git_plan["temporary_worktrees"]
+        new_heads = git_plan["new_heads"]
+        remote_main_updated = git_plan["remote_main_updated"]
+        remote_dev_updated = git_plan["remote_dev_updated"]
+        local_main_updated = git_plan["local_main_updated"]
+        local_dev_updated = git_plan["local_dev_updated"]
+        state.update(
+            {
+                "updated_at": now_utc(),
+                "status": "prepared",
+                "prepared_heads": new_heads,
+            }
+        )
+        atomic_write_json(state_path, state)
+
+        for branch in SYNC_BRANCHES:
+            validate_local_fast_forward(
+                root,
+                branch,
+                local_branches[branch],
+                new_heads[branch],
+            )
+
+        stage = "git-push"
+        fetch_git_branches(root)
+        verify_fetched_heads(root, snapshots)
+        push_branches(
+            root,
+            {branch: snapshots[branch]["head"] for branch in SYNC_BRANCHES},
+            new_heads,
+        )
+        state.update(
+            {
+                "updated_at": now_utc(),
+                "status": "remote-git-updated",
+                "remote_heads": new_heads,
+            }
+        )
+        atomic_write_json(state_path, state)
+
+        stage = "local-update"
+        update_local_branch(
+            root, MAIN_BRANCH, local_branches[MAIN_BRANCH], new_heads[MAIN_BRANCH]
+        )
+        update_local_branch(
+            root, DEV_BRANCH, local_branches[DEV_BRANCH], new_heads[DEV_BRANCH]
+        )
+
+        stage = "release"
         if preview["release_update_required"]:
             update_release_body(args.repo, release, etag, body)
 
-        stage = "appcast"
-        current_appcast_payload, current_appcast = fetch_appcast(
-            args.repo, args.appcast_branch
-        )
-        if current_appcast_payload["sha"] != preview["appcast_sha"]:
-            raise NotesSyncError(
-                "remote appcast changed after preview; rerun sync-notes to refresh the SHA"
-            )
-        current_tree = parse_appcast(current_appcast)
-        current_description = target_item(current_tree, args.version).findtext(
-            "description"
-        ) or ""
-        appcast_updated = current_description != rendered
-        if appcast_updated:
-            current_candidate, _ = build_appcast_candidate(
-                current_appcast, args.version, rendered
-            )
-            update_appcast(
-                args.repo,
-                args.appcast_branch,
-                current_appcast_payload["sha"],
-                current_candidate,
-                args.version,
-            )
-
         stage = "verification"
         verification = verify_remote(
-            args.repo, args.version, args.appcast_branch, notes, rendered
+            args.repo, args.version, notes, rendered, new_heads
         )
     except NotesSyncError as error:
         state.update(
@@ -473,6 +814,16 @@ def sync_notes(args: argparse.Namespace) -> None:
         )
         atomic_write_json(state_path, state)
         raise
+    finally:
+        for worktree in reversed(temporary_worktrees):
+            if worktree.exists():
+                try:
+                    remove_sync_worktree(root, worktree)
+                except NotesSyncError as cleanup_error:
+                    print(
+                        f"warning: failed to remove temporary worktree {worktree}: {cleanup_error}",
+                        file=sys.stderr,
+                    )
 
     state.update(
         {
@@ -480,7 +831,11 @@ def sync_notes(args: argparse.Namespace) -> None:
             "status": "completed",
             "verification": verification,
             "release_updated": preview["release_update_required"],
-            "appcast_updated": appcast_updated,
+            "remote_main_updated": remote_main_updated,
+            "remote_dev_updated": remote_dev_updated,
+            "local_main_updated": local_main_updated,
+            "local_dev_updated": local_dev_updated,
+            "remote_heads": new_heads,
         }
     )
     atomic_write_json(state_path, state)
@@ -492,12 +847,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("version")
     parser.add_argument("--repo", default="tisfeng/Easydict")
     parser.add_argument("--notes-file", type=Path)
-    parser.add_argument("--appcast-branch", default="main")
     parser.add_argument("--state", type=Path)
     parser.add_argument(
         "--execute",
         action="store_true",
-        help="write the GitHub Release body and remote appcast",
+        help="write the GitHub Release body, remote main/dev appcasts, and local branches",
     )
     return parser
 

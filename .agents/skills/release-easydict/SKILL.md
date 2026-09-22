@@ -23,10 +23,11 @@ Release 生命周期：
 已发布版本的日志修订：
 
 - `sync-notes <version>`：读取人工修改后的 `changelog/<version>.md`，预览并（仅在显式
-  `--execute` 时）同步已发布 GitHub Release 正文和远程 `main/appcast.xml` 的目标
-  `description`。该动作不重建产物、不改 Tag/附件/版本号，也不替代 `resume`。
+  `--execute` 时）同步已发布 GitHub Release 正文、远程 `main`/`dev` 的 appcast 以及
+  本地分支。该动作不重建产物、不改 Tag/附件/版本号，也不替代 `resume`。
 - `sync-notes` 默认只预览；执行时要求目标 Release 已发布、工作树干净，并使用 Release
-  ETag 与 appcast blob SHA 做乐观并发校验。失败后可用同一命令重试，已一致的目标会跳过写入。
+  ETag、两个分支 head 和 Git push lease 做乐观并发校验。失败后可用同一命令重试，已
+  一致的目标会跳过写入。
 
 执行这些动作时读取 [Release 生命周期](references/release-workflow.md)。`release` 始终表示
 由本 Skill 编排 `draft` 和 `publish`，不直接调用仓库脚本的一次性 `release` 动作。
@@ -62,14 +63,18 @@ Release 生命周期：
 - Publish 使用隔离 worktree 先完成 merge 预检。当前 checkout 位于其他分支时保持
   不变；当前 checkout 就是干净的 `dev` 时，发布提交验证后允许 fast-forward 更新。
   不覆盖未提交修改，也不 rebase 已发布提交。
+- GitHub Release 公开后，先验证 API 中唯一且已上传的 ZIP、DMG、checksum 的大小、类型和
+  SHA-256 digest，再验证匿名下载端点的状态、长度、类型、ZIP/DMG Range 和 checksum 内容；
+  这些检查通过前不得推进公开 appcast 所在的远程引用。
 
 ## 默认值与完成条件
 
 - 除非用户明确要求 `stable`，默认使用 `beta` channel，所有底层命令沿用同一 channel。
 - `draft` 只有在 Draft、Tag、临时发布分支、changelog 和正文哈希全部验证后才完成；随后
   停止，不发布也不处理 Issue。
-- `publish` 和 `release` 只有在 Release、appcast、Git 引用和 Issue 跟进都得到最终核验后
-  才完成；Issue 阶段失败时不回滚已经发布的 Release 或已完成动作，而是报告可恢复状态。
+- `publish` 和 `release` 只有在 Release 公开资产、完整目标 appcast 条目、Git 引用和 Issue
+  跟进都得到最终核验后才完成；Issue 阶段失败时不回滚已经发布的 Release 或已完成动作，
+  而是报告可恢复状态。
 - `resume` 只恢复现有运行的未完成阶段，不启动新的替换或发布。
 - 最终报告 Release URL、标题、channel、notes 路径、Issue 摘要、底层 run ID 和可恢复
   状态路径；失败时说明准确阶段和已经发生的外部变更。

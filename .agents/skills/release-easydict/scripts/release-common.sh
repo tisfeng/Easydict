@@ -26,6 +26,9 @@ RELEASE_CHANNEL="${CHANNEL:-beta}"
 RELEASE_BUILD_OVERRIDE="${BUILD_NUMBER:-}"
 RELEASE_DRAFT_MODE="${DRAFT_MODE:-normal}"
 RELEASE_FORCE_CLEAN="${FORCE_CLEAN:-0}"
+RELEASE_PUBLIC_VERIFY_ATTEMPTS="${PUBLIC_VERIFY_ATTEMPTS:-6}"
+RELEASE_PUBLIC_VERIFY_INTERVAL="${PUBLIC_VERIFY_INTERVAL:-5}"
+RELEASE_PUBLIC_VERIFY_TIMEOUT="${PUBLIC_VERIFY_TIMEOUT:-30}"
 
 RELEASE_WORKFLOW_PATH="$RELEASE_SOURCE_ROOT/$RELEASE_SKILL_RELATIVE_DIR/scripts/asc-workflow.json"
 RELEASE_EXPORT_OPTIONS="$RELEASE_SKILL_ROOT/assets/export-options.plist"
@@ -437,6 +440,13 @@ require_release_version() {
             release_fail "DRAFT_MODE must be normal or replace"
             ;;
     esac
+
+    [[ "$RELEASE_PUBLIC_VERIFY_ATTEMPTS" =~ ^[1-9][0-9]*$ ]] \
+        || release_fail "PUBLIC_VERIFY_ATTEMPTS must be a positive integer"
+    [[ "$RELEASE_PUBLIC_VERIFY_INTERVAL" =~ ^[0-9]+$ ]] \
+        || release_fail "PUBLIC_VERIFY_INTERVAL must be a non-negative integer"
+    [[ "$RELEASE_PUBLIC_VERIFY_TIMEOUT" =~ ^[1-9][0-9]*$ ]] \
+        || release_fail "PUBLIC_VERIFY_TIMEOUT must be a positive integer"
 
     case "$RELEASE_FORCE_CLEAN" in
         0 | 1)

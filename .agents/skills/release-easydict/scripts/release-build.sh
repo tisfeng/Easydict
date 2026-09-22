@@ -15,7 +15,7 @@ read_project_value() {
     asc xcode version view \
         --project "$RELEASE_WORKTREE/Easydict.xcodeproj" \
         --target "$RELEASE_TARGET" \
-        --configuration Release
+        --configuration Release \
         --output json \
         | python3 -c \
             "import json,sys; print(json.load(sys.stdin)['$key'])"
@@ -216,4 +216,6 @@ main() {
     esac
 }
 
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    main "$@"
+fi

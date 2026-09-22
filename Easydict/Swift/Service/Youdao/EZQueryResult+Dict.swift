@@ -56,9 +56,38 @@ extension QueryResult {
                 phonetics.append(phonetic)
             }
 
-            if !phonetics.isEmpty {
-                wordResult.phonetics = phonetics
+            // Rare words and proper nouns come back without usphone/ukphone
+            // even though Youdao TTS can pronounce them; synthesize a
+            // speaker-only entry so a word lookup always offers pronunciation.
+            if phonetics.isEmpty {
+                let phonetic = EZWordPhonetic()
+                // The phonetic row is laid out around the name label, so an
+                // empty name collapses the row under the 23pt audio button.
+                phonetic.name = NSLocalizedString("us_phonetic", comment: "")
+                phonetic.language = language
+                phonetic.word = queryText
+                phonetic.accent = "us"
+                // `queryItems` percent-encodes `&` and `=` in values, so words
+                // such as "rock & roll" stay a single `audio` value. It leaves
+                // `+` as is, which servers read as a space, so escape it too.
+                // `type=2` selects the US voice.
+                var components = URLComponents(string: audioURL)
+                components?.queryItems = [
+                    URLQueryItem(name: "audio", value: queryText),
+                    URLQueryItem(name: "type", value: "2"),
+                ]
+                if let query = components?.percentEncodedQuery {
+                    components?.percentEncodedQuery = query
+                        .replacingOccurrences(of: "+", with: "%2B")
+                }
+                if let speechURL = components?.url?.absoluteString {
+                    phonetic.speakURL = speechURL
+                    fromSpeakURL = speechURL
+                    queryModel.audioURL = speechURL
+                    phonetics.append(phonetic)
+                }
             }
+            wordResult.phonetics = phonetics
 
             // Parse word translations
             var parts: [EZTranslatePart] = []

@@ -168,6 +168,10 @@
           "run": "./.agents/skills/release-easydict/scripts/release-github.sh publish"
         },
         {
+          "name": "verify_public_release_assets",
+          "run": "./.agents/skills/release-easydict/scripts/release-verify.sh public-assets"
+        },
+        {
           "name": "verify_github_release",
           "run": "./.agents/skills/release-easydict/scripts/release-github.sh verify-published"
         },
