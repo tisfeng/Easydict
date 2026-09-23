@@ -45,55 +45,63 @@
   已覆盖编译时不重复运行 build；测试未覆盖的 Release、Archive、签名或其他配置另行验证。
 - 重复运行兼容的测试时，可先使用 `build-for-testing`，再使用 `test-without-building`；前者本身
   不构成测试通过证据。
-- 不要对同一 workspace 和 DerivedData 并发运行 `xcodebuild`。
-- 默认使用 Xcode 的 DerivedData。只有失败证据指向权限、缓存损坏或 runner 状态时，才使用显式
-  临时 DerivedData 重试；报告 fallback，并只删除本任务创建且未被使用的临时目录。
+- 并发判据是构建目录，不是构建入口：同一 workspace 与同一 DerivedData 的并发构建，无论来自
+  Xcode IDE 还是 `xcodebuild`，都会互相破坏增量状态和 build database；DerivedData 不同就可以
+  同时构建。
+- agent 运行 `xcodebuild` 时始终显式指定 `-derivedDataPath`，指向与 Xcode 默认目录不相交的
+  agent 专用目录，因此 agent 与本地 Xcode 可以在同一个 checkout 上同时编译而互不干扰。
+- 专用目录按 checkout 派生，默认位置为
+  `~/Library/Developer/Xcode/DerivedData/Easydict-Agent/<checkout-id>`；同一 checkout 复用固定
+  路径的增量产物，不同 checkout 互不相交。权限或缓存损坏时删除该目录重建，不切换到 Xcode
+  默认 DerivedData。
+- `xcodebuild test` 会启动 `Easydict-debug.app` 测试宿主，同 bundle id 的进程共享 UserDefaults、
+  沙盒容器和全局注册；不要与 Xcode 的 Run/Test 同时运行，构建与 Archive 不受此限制。
 
 ## 常用命令
 
 ```bash
-# Build
+# 每个 checkout 一个 agent 专用 DerivedData，与 Xcode 默认目录互不相交
 set -o pipefail
+checkout_id="$(git rev-parse --show-toplevel \
+  | sed -e "s|^$HOME/||" -e 's|^\.||' -e 's|/|_|g')"
+agent_dd="$HOME/Library/Developer/Xcode/DerivedData/Easydict-Agent/$checkout_id"
+
+# Build
 xcodebuild build \
   -workspace Easydict.xcworkspace \
-  -scheme Easydict | xcbeautify
+  -scheme Easydict \
+  -derivedDataPath "$agent_dd" | xcbeautify
 
 # Test all tests
 xcodebuild test \
   -workspace Easydict.xcworkspace \
-  -scheme Easydict | xcbeautify
+  -scheme Easydict \
+  -derivedDataPath "$agent_dd" | xcbeautify
 
 # Build for repeated test runs
 xcodebuild build-for-testing \
   -workspace Easydict.xcworkspace \
-  -scheme Easydict | xcbeautify
+  -scheme Easydict \
+  -derivedDataPath "$agent_dd" | xcbeautify
 
 # Run a test suite after a compatible build-for-testing
 xcodebuild test-without-building \
   -workspace Easydict.xcworkspace \
   -scheme Easydict \
+  -derivedDataPath "$agent_dd" \
   -only-testing:EasydictTests/UtilityFunctionsTests | xcbeautify
 
 # Run one test method after a compatible build-for-testing
 xcodebuild test-without-building \
   -workspace Easydict.xcworkspace \
   -scheme Easydict \
+  -derivedDataPath "$agent_dd" \
   -only-testing:EasydictTests/UtilityFunctionsTests/testAES | xcbeautify
 ```
 
-使用 `xcbeautify` 时启用 `pipefail`，保留 `xcodebuild` 的真实退出状态。默认命令不指定
-DerivedData；仅在上节规定的 fallback 条件成立时，才改用以下形式：
-
-```bash
-# Fallback only when the default DerivedData is proven unusable
-xcodebuild build \
-  -workspace Easydict.xcworkspace \
-  -scheme Easydict \
-  -derivedDataPath ~/Library/Developer/Xcode/DerivedData/Easydict-Temporary | xcbeautify
-```
-
-测试命令需要 fallback 时，在对应命令中添加相同的 `-derivedDataPath` 参数，不重复维护另一套
-命令矩阵。
+使用 `xcbeautify` 时启用 `pipefail`，保留 `xcodebuild` 的真实退出状态。所有命令使用同一个 agent
+专用 DerivedData；需要重建时只删除该目录，不切换到 Xcode 默认目录，也不删除其他 checkout 或
+Xcode 自己的 DerivedData。
 
 ## 非 Xcode 检查
 
