@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 from pathlib import Path
 import shutil
@@ -403,6 +404,13 @@ class PreparePRBranchTests(unittest.TestCase):
         )
         self.assertEqual(receipt["collision_reason"], None)
         self.assertFalse(receipt["self_authored_branch_reused"])
+        helper = receipt["helper"]
+        self.assertIsInstance(helper, dict)
+        self.assertEqual(Path(helper["path"]).resolve(), SCRIPT_PATH.resolve())
+        self.assertEqual(
+            helper["sha256"],
+            hashlib.sha256(SCRIPT_PATH.read_bytes()).hexdigest(),
+        )
         self.assertEqual(receipt["source_unchanged"], None)
         self.assertFalse(receipt["integration"])
         self.assertEqual(receipt["actions"], {"head_fetches": 1, "base_fetches": 1})
@@ -420,6 +428,90 @@ class PreparePRBranchTests(unittest.TestCase):
             },
         )
         self._assert_fetches_once_per_remote()
+        self._assert_clean_status()
+
+    def test_reuse_branch_keeps_selected_name_for_latest_base(self) -> None:
+        initial = self._prepare("--json", "--expected-head", self.head_sha)
+        initial_receipt = self._json_receipt(initial)
+        checkout = initial_receipt["checkout"]
+        self.assertIsInstance(checkout, dict)
+        selected_branch = checkout["branch"]
+
+        merged = self._prepare(
+            "--json",
+            "--merge-latest",
+            "--reuse-branch",
+            selected_branch,
+            "--expected-head",
+            self.head_sha,
+        )
+        merged_receipt = self._json_receipt(merged)
+        merged_checkout = merged_receipt["checkout"]
+        self.assertIsInstance(merged_checkout, dict)
+        self.assertEqual(merged_checkout["branch"], selected_branch)
+        self.assertTrue(merged_receipt["integration"])
+        self.assertIsNone(merged_receipt["collision_reason"])
+        self.assertEqual(merged_receipt["reused_branch"], selected_branch)
+        self.assertNotIn("review/pr-42-merge-", str(merged_checkout["branch"]))
+        self.assertEqual(
+            self._git("branch", "--show-current").stdout.strip(),
+            selected_branch,
+        )
+        self._assert_clean_status()
+
+    def test_reuse_branch_rejects_head_drift_without_fallback(self) -> None:
+        initial = self._prepare("--json", "--expected-head", self.head_sha)
+        initial_receipt = self._json_receipt(initial)
+        checkout = initial_receipt["checkout"]
+        self.assertIsInstance(checkout, dict)
+        selected_branch = checkout["branch"]
+
+        self._git("switch", selected_branch)
+        (self.checkout / "local-only.txt").write_text("local\n", encoding="utf-8")
+        self._commit(self.checkout, "test: drift selected review branch")
+        self._git("switch", "dev")
+
+        result = self._prepare(
+            "--json",
+            "--merge-latest",
+            "--reuse-branch",
+            selected_branch,
+            "--expected-head",
+            self.head_sha,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("not PR head", result.stderr)
+        self.assertNotRegex(result.stderr, r"review/pr-42-merge-")
+        self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "dev")
+        self._assert_clean_status()
+
+    def test_reuse_branch_rejects_invalid_ref_before_fetch(self) -> None:
+        result = self._prepare(
+            "--json",
+            "--reuse-branch",
+            "not a branch",
+            "--expected-head",
+            self.head_sha,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Invalid reused review branch", result.stderr)
+        self.assertEqual(self._fetch_calls(), [])
+        self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "dev")
+        self._assert_clean_status()
+
+    def test_reuse_branch_rejects_worktree_mode(self) -> None:
+        result = self._prepare(
+            "--json",
+            "--worktree",
+            "--reuse-branch",
+            "feat/review-fixture",
+            "--expected-head",
+            self.head_sha,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("cannot be combined", result.stderr)
+        self.assertEqual(self._fetch_calls(), [])
+        self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "dev")
         self._assert_clean_status()
 
     def test_self_authored_pr_reuses_same_name_branch_with_equivalent_remote_alias(self) -> None:
