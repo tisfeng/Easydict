@@ -2,12 +2,14 @@
 """Remove one completed release's local artifacts after Issue follow-up."""
 
 import argparse
+import errno
 import json
 import os
 import re
 import shutil
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -162,7 +164,16 @@ def remove_path(path):
     if path.is_symlink():
         raise CleanupError(f"refusing symlink: {path}")
     if path.is_dir():
-        shutil.rmtree(path)
+        for attempt in range(5):
+            try:
+                shutil.rmtree(path)
+                break
+            except OSError as error:
+                if error.errno != errno.ENOTEMPTY or attempt == 4:
+                    raise
+                if not path.exists():
+                    break
+                time.sleep(0.1)
     elif path.exists():
         path.unlink()
 
@@ -230,7 +241,7 @@ def execute_cleanup(root, release_root, version_dir, marker, version, run_id):
                     remove_path(entry)
             for name in ("logs", "state"):
                 remove_path(version_dir / name)
-            version_dir.rmdir()
+            remove_path(version_dir)
         for path, _ in matches:
             path.unlink()
         marker.unlink()
