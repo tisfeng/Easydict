@@ -958,7 +958,18 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             if (shouldRecord && result.translatedText.length > 0) {
                 [QueryRecordManager.shared updateTranslatedResult:result.translatedText
                                                       forQueryText:queryText
-                                                              in:RecordTypeHistory];
+                                                                in:RecordTypeHistory];
+            }
+
+            // Append the query to the vocabulary notebook when it has content.
+            // HTML-only dictionary results (Apple Dictionary, MDict) carry neither a
+            // word result nor translated text, so htmlString must count as content too.
+            BOOL hasContent = queryText.length > 0
+                && (result.wordResult != nil
+                    || result.translatedText.length > 0
+                    || result.htmlString.length > 0);
+            if (shouldRecord && hasContent && result.error == nil) {
+                [VocabularyNotebookService.shared appendWithQueryModel:queryModel result:result];
             }
         }
 
