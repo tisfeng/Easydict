@@ -132,6 +132,12 @@ jobs:
 
       - name: Build application
         if: needs.changes.outputs.should_analyze == 'true'
+        # The CodeQL tracer is injected into every build subprocess through DYLD_INSERT_LIBRARIES.
+        # On the macOS 27 runner images (> 20260912.0186) that makes SwiftPM's nested
+        # `sandbox-exec` manifest evaluation fail with `posix_spawn error: Bad CPU type in
+        # executable (86)`, so xcodebuild aborts with "Could not resolve package dependencies"
+        # before compiling anything. Resolving manifests without the nested sandbox keeps the
+        # traced build working; see docs/histories/2026-09/2026-09-25-codeql-swiftpm-manifest-sandbox.md.
         run: |
           xcodebuild build \
             -workspace Easydict.xcworkspace \
@@ -139,6 +145,7 @@ jobs:
             -configuration Debug \
             -destination "generic/platform=macOS" \
             -clonedSourcePackagesDirPath "$RUNNER_TEMP/swift-package-sources" \
+            -IDEPackageSupportDisableManifestSandbox=1 \
             ARCHS=arm64 \
             ONLY_ACTIVE_ARCH=YES \
             EASYDICT_RELEASE_PACKAGING=YES \
