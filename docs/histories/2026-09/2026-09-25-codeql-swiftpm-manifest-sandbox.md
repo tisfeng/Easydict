@@ -1,6 +1,6 @@
 ## 2026-09-25 | 任务：修复 macOS 27 runner 上 CodeQL tracer 无法 spawn arm64e-only 平台二进制导致的 CI 失败
 
-**Links:** [失败的 CI run 36018866459](https://github.com/tisfeng/Easydict/actions/runs/36018866459)、[同因公开案例 cbusillo/context-panel#699](https://github.com/cbusillo/context-panel/issues/699)
+**Links:** [失败的 CI run 36018866459](https://github.com/tisfeng/Easydict/actions/runs/36018866459)、[通过的验证 run 36048711146](https://github.com/tisfeng/Easydict/actions/runs/36048711146)、[同因公开案例 cbusillo/context-panel#699](https://github.com/cbusillo/context-panel/issues/699)
 
 ### 执行上下文
 
@@ -127,10 +127,17 @@ CodeQL 版本同样不是原因：使用 2.27.0 的 run 35817016752 落在新镜
     exit 65；4 次全部来自 `swift-plugin-server` → 第 2 层。
   - run 36039193930（第 1+2 层）：宏插件错误归零、Swift 编译与链接全部成功（耗时 45 分钟，此前
     26 分钟），仅剩 4 次 `tiffutil` 失败 → 第 3 层。
+  - run 36048711146（三层修复，镜像 `20260921.0210`、CodeQL 2.27.1）：**全部通过**，耗时 48 分钟；
+    `Bad CPU type`、`Could not resolve package dependencies`、`could not be loaded`、
+    `unable to spawn process '/usr/bin/tiffutil'` 全部为 0 次。`Build application` 与
+    `Perform CodeQL analysis` 均为 success，`Analysis upload status is complete`、
+    `Successfully uploaded results`，code-scanning analysis 的 rules 从失败时的 0 变为 27。
+    该轮 `actool`/`ibtool` 各执行 5 次（符合预期，它们带 x86_64 切片），`tiffutil` 0 次。
 - 本地实验限制：无 tracer 注入时失败路径不会出现（各轮 `exit=0`），因此本地只能证明"这些 spawn
   确实发生且可被对应设置抑制"，端到端结论以 CI 运行为准。SwiftPM 硬编码绝对路径
   `/usr/bin/sandbox-exec`（`Sandbox.swift`），PATH 上的 shim 无法用于本地拦截。
-- CI 端验证：加入第 3 层修复后的 `Analyze (swift)` 运行为端到端验证（单次约 26–45 分钟）。
+- CI 端验证：`workflow_dispatch` 触发 `Analyze (swift)` 完成端到端验证（run 36048711146 通过）。
+  该运行与 `push`/`pull_request` 走相同的构建路径，差异仅在 `changes` 作业的范围判断。
 
 ### 受影响文件
 
