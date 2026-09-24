@@ -310,8 +310,14 @@ Release ETag、远程 branch head 和 Git push lease 防止覆盖并发修改；
 - `.tmp/release/cache/worktree`：只用于本地 Archive 的长期构建 worktree。
 
 终端只展示人类可读进度、摘要和错误。高噪声命令失败时会给出日志路径和末尾内容。成功发布
-只清理隔离的 release worktree；远程临时分支仅在完整远程验证后删除。替换 Draft 成功后还会
+会清理隔离的 release worktree；远程临时分支仅在完整远程验证后删除。替换 Draft 成功后还会
 清理旧 Draft 的本地备份，失败则保留用于诊断和恢复。
+
+Release 发布和 Issue 跟进全部成功、且已保存最终报告后，使用
+`./.agents/skills/release-easydict/scripts/release-easydict.sh cleanup <version>` 预览，
+再加 `--execute` 移除该版本的归档、产物、DerivedData、状态、日志和相应 ASC run JSON。
+命令会检查完成记录与 Git worktree 状态；清理失败可重复执行。`.tmp/release/cache/`
+是跨版本缓存，保留供后续版本复用。清理完成后旧 run ID 不再可用于 `resume`。
 
 长期构建 worktree 使用带 fingerprint 的 Release DerivedData。兼容缓存会被复用；增量
 Archive 失败时，只清理当前 fingerprint 并自动回退一次 clean Archive。缓存命中不降低
