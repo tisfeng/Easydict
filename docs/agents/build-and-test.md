@@ -45,6 +45,10 @@
   删除该目录重建，不切换到 Xcode 默认 DerivedData。
 - `xcodebuild test` 会启动同 bundle id 的 `Easydict-debug.app` 测试宿主，不要与 Xcode 的 Run/Test
   同时运行；构建与 Archive 不受此限制。
+- `.tags(.integration)` 用例（如 `ServiceTests.testAllServicesValidateTranslation`）会真实调用每个
+  已注册服务并要求全部成功，因此本机结果取决于词典、密钥、网络和登录状态，不是代码回归信号。
+  凭据存放在系统钥匙串的 CLI 服务（ClaudeCode、GitHub Copilot）在测试宿主中会报未登录，而使用
+  文件凭据的 CodexCLI 可正常通过；判断这类失败前先用同一二进制在普通进程上下文验证。
 
 ## 常用命令
 
