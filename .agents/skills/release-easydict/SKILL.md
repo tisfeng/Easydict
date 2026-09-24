@@ -1,6 +1,6 @@
 ---
 name: release-easydict
-description: 编排 Easydict macOS 的 draft、publish、release 和 resume，整理英文 GitHub Release 内容，并处理发布后的 Issue 跟进。不用于一般的发布流程设计讨论。
+description: 编排 Easydict macOS 的 draft、publish、release 和 resume，整理英文 GitHub Release 内容，并处理发布后的 Issue 跟进及本地清理。不用于一般的发布流程设计讨论。
 ---
 
 # 发布 Easydict
@@ -39,6 +39,7 @@ Release 生命周期：
 - `issue-followup plan <version>`
 - `issue-followup apply <version>`
 - `issue-followup resume <version>`
+- `cleanup <version>`：预览已完成版本的本地清理；`--execute` 才删除。
 
 执行这些动作时阅读 [references/issue-followup.md](references/issue-followup.md)
 和 [references/issue-followup-policy.md](references/issue-followup-policy.md)。
@@ -75,6 +76,10 @@ Release 生命周期：
 - `publish` 和 `release` 只有在 Release 公开资产、完整目标 appcast 条目、Git 引用和 Issue
   跟进都得到最终核验后才完成；Issue 阶段失败时不回滚已经发布的 Release 或已完成动作，
   而是报告可恢复状态。
+- 记录 Release URL、run ID 和 Issue 汇总后，执行 `cleanup <version>` 预览，再运行
+  `cleanup <version> --execute`。`issue-followup resume` 最终成功时也执行相同步骤。
+  清理仅在成功的 Publish/Release 运行和已执行的 Issue 计划同时存在时允许；失败时
+  报告“发布成功，本地清理未完成”及可重试的 `cleanup` 命令，不重做远程发布或 Issue 动作。
 - `resume` 只恢复现有运行的未完成阶段，不启动新的替换或发布。
-- 最终报告 Release URL、标题、channel、notes 路径、Issue 摘要、底层 run ID 和可恢复
-  状态路径；失败时说明准确阶段和已经发生的外部变更。
+- 最终报告 Release URL、标题、channel、notes 路径、Issue 摘要、底层 run ID 和本地清理
+  结果；未完成时给出可恢复状态路径及准确阶段。

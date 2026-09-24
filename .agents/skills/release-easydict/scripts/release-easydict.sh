@@ -21,6 +21,7 @@ Usage:
   release-easydict.sh release <version> [options]
   release-easydict.sh resume <run-id>
   release-easydict.sh sync-notes <version> [options]
+  release-easydict.sh cleanup <version> [--execute]
 
 Options:
   --channel beta|stable   Sparkle channel (default: beta)
@@ -28,7 +29,7 @@ Options:
   --replace-draft        Rebuild and safely replace the latest matching Draft
   --force-clean          Force a clean Xcode Archive
   --dry-run               Preview the asc workflow without running it
-  --execute               Write synced notes to the published Release and main/dev appcasts
+  --execute               Apply sync-notes changes or remove completed local release files
   --repo <owner/repo>     GitHub repository for sync-notes
   --notes-file <path>     Canonical changelog path for sync-notes
   --state <path>          Override sync-notes state JSON path
@@ -343,6 +344,18 @@ main() {
                 || fail "version must use x.y.z format"
             shift 2
             run_notes_sync "$sync_version" "$@"
+            return $?
+            ;;
+        cleanup)
+            local cleanup_version="${2:-}"
+            require_value cleanup "$cleanup_version"
+            [[ "$cleanup_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] \
+                || fail "version must use x.y.z format"
+            shift 2
+            [[ $# -eq 0 || ( $# -eq 1 && "$1" == --execute ) ]] \
+                || fail "cleanup accepts only --execute"
+            RELEASE_SOURCE_ROOT="$ROOT_DIR" \
+                python3 "$SCRIPT_DIR/release-cleanup.py" "$cleanup_version" "$@"
             return $?
             ;;
         prepare | draft | publish | release)
