@@ -343,6 +343,8 @@ private struct FirstAndSecondLanguageSettingView: View {
                 }
             }
             Picker("setting.general.language.second_language", selection: $secondLanguage) {
+                Text("setting.general.language.second_language.none")
+                    .tag(Language.auto)
                 ForEach(Language.allAvailableOptions, id: \.rawValue) { option in
                     Text(verbatim: "\(option.flagEmoji) \(option.localizedName)")
                         .tag(option)

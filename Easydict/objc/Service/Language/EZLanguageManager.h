@@ -34,7 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nullable EZLanguageModel *)languageModelFromLanguage:(EZLanguage)language;
 
-/// Get target language with source language
+/// Get target language with source language.
+/// If the second language is empty (Auto), the first language is always the target.
 - (EZLanguage)userTargetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage;
 
 - (BOOL)containsEnglishInPreferredTwoLanguages;
