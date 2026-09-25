@@ -38,6 +38,7 @@ extension ShortcutManager {
         Defaults[.retryShortcut] = KeyCombo(key: .r, cocoaModifiers: .command)
         Defaults[.toggleShortcut] = KeyCombo(key: .t, cocoaModifiers: .command)
         Defaults[.pinShortcut] = KeyCombo(key: .p, cocoaModifiers: .command)
+        Defaults[.toggleAppendModeShortcut] = KeyCombo(key: .a, cocoaModifiers: [.command, .shift])
         Defaults[.hideShortcut] = KeyCombo(key: .y, cocoaModifiers: .command)
         Defaults[.increaseFontSize] = KeyCombo(key: .keypadPlus, cocoaModifiers: .command)
         Defaults[.decreaseFontSize] = KeyCombo(key: .keypadMinus, cocoaModifiers: .command)

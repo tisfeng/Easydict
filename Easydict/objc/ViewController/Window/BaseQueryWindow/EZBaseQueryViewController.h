@@ -40,6 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)startQueryText:(nullable NSString *)text actionType:(EZActionType)actionType;
 - (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType autoQuery:(BOOL)autoQuery;
+- (NSString *)combinePreviousText:(NSString *)oldText withNewText:(NSString *)newText;
 
 - (void)retryQueryWithLanguage:(EZLanguage)language;
 
