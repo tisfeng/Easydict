@@ -548,7 +548,6 @@
 		9643D94C2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D94B2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift */; };
 		967712EA2B5B913600105E0F /* KeyHolder in Frameworks */ = {isa = PBXBuildFile; productRef = 967712E92B5B913600105E0F /* KeyHolder */; };
 		96B2F1C52C07782400AD3126 /* RepoInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */; };
-		96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */; };
 		A0CCFCC574EE46559C7C6E39 /* ClaudeCodeDebugWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD19E15F95144B0B2CAF66F /* ClaudeCodeDebugWindow.swift */; };
 		A12760012026090500000001 /* ReverseTranslationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12760012026090500000002 /* ReverseTranslationTests.swift */; };
 		A13180022026091600000001 /* AppleDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13180012026091600000001 /* AppleDictionaryTests.swift */; };
@@ -1316,8 +1315,6 @@
 		9643D9492B71EABE000FBEA6 /* KeyHolderAlterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHolderAlterView.swift; sourceTree = "<group>"; };
 		9643D94B2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuShortcutCommandItem.swift; sourceTree = "<group>"; };
 		96B2F1C42C07782400AD3126 /* RepoInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoInfoHelper.swift; sourceTree = "<group>"; };
-		96DFEB812B82588000F5C7EF /* EZTableTipsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableTipsCell.h; sourceTree = "<group>"; };
-		96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableTipsCell.m; sourceTree = "<group>"; };
 		983925DCBA81465EAE22415B /* MDictService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictService.swift; sourceTree = "<group>"; };
 		A12760012026090500000002 /* ReverseTranslationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseTranslationTests.swift; sourceTree = "<group>"; };
 		A13180012026091600000001 /* AppleDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionaryTests.swift; sourceTree = "<group>"; };
@@ -2429,8 +2426,6 @@
 			children = (
 				0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */,
 				0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */,
-				96DFEB812B82588000F5C7EF /* EZTableTipsCell.h */,
-				96DFEB822B82588000F5C7EF /* EZTableTipsCell.m */,
 				037852B7295D49F900D0E2CF /* EZTableRowView.h */,
 				037852B8295D49F900D0E2CF /* EZTableRowView.m */,
 			);
@@ -4678,7 +4673,6 @@
 				0365B0672D3BE26000865F46 /* StreamService+UpdateResult.swift in Sources */,
 				0337D3CC2E66ABB000B08437 /* SystemUtility+Shortcut.swift in Sources */,
 				03F19D802E0938D70046C6F2 /* OCRSectionMerger.swift in Sources */,
-				96DFEB832B82588000F5C7EF /* EZTableTipsCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				03715A2A2E6D253E0067259C /* FocusedElementInfo.swift in Sources */,
 				9643D9462B71D103000FBEA6 /* KeyHolderRowView.swift in Sources */,

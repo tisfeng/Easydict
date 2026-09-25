@@ -23,7 +23,6 @@
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
-static NSString *const EZTableTipsCellId = @"EZTableTipsCellId";
 static NSString *const EZResultViewId = @"EZResultViewId";
 
 static NSString *const EZColumnId = @"EZColumnId";
@@ -55,7 +54,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) EZSelectLanguageCell *selectLanguageCell;
-@property (nonatomic, strong) EZTableTipsCell *tipsCell;
 
 // queryText is self.queryModel.queryText;
 @property (nonatomic, copy, readonly) NSString *queryText;
@@ -75,17 +73,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 @property (nonatomic, assign) BOOL lockResizeWindow;
 @property (nonatomic, assign) BOOL isUpdatingWindowFrameInternally;
 
-@property (nonatomic, assign) EZTipsCellType tipsCellType;
-
-@property (nonatomic, copy) NSString *tipsCellContent;
-
 @property (nonatomic, assign) BOOL isInputFieldCellVisible;
 @property (nonatomic, assign) BOOL isSelectLanguageCellVisible;
-@property (nonatomic, assign) BOOL isTipsViewVisible;
 
 @property (nonatomic, assign) NSInteger inputFieldCellIndex;     // always 0
 @property (nonatomic, assign) NSInteger selectLanguageCellIndex; // 0 or 1
-@property (nonatomic, assign) NSInteger tipsCellIndex;           // 0 or 1 or 2
 
 @property (nonatomic, strong) MyConfiguration *config;
 @property (nonatomic, strong) id fontSizeObserver;
@@ -241,22 +233,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
                                                                    windowType:self.windowType];
 
     self.inputFieldCellIndex = 0;
-
-    if (self.isInputFieldCellVisible) {
-        if (self.isSelectLanguageCellVisible) {
-            self.selectLanguageCellIndex = 1;
-            self.tipsCellIndex = 2;
-        } else {
-            self.tipsCellIndex = 1;
-        }
-    } else {
-        if (self.isSelectLanguageCellVisible) {
-            self.selectLanguageCellIndex = 0;
-            self.tipsCellIndex = 1;
-        } else {
-            self.tipsCellIndex = 0;
-        }
-    }
+    self.selectLanguageCellIndex = self.isInputFieldCellVisible ? 1 : 0;
 
     [self reloadTableViewData:nil];
 }
@@ -551,9 +528,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     self.queryView.isTypingChinese = NO;
     [self.queryView startLoadingAnimation:YES];
 
-    // Hide previous tips view first.
-    [self showTipsView:NO completion:nil];
-
     mm_weakify(self);
     [self.detectManager ocrAndDetectTextWithCompletion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
@@ -591,7 +565,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
             if (error) {
                 NSString *errorMsg = [error localizedDescription];
-                [self showTipsView:YES content:errorMsg type:EZTipsCellTypeErrorTips];
+                dispatch_block_on_main_safely(^{
+                    [EZToast showToast:errorMsg];
+                });
                 return;
             }
 
@@ -793,50 +769,13 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     self.queryModel.actionType = queryType;
 
     if (text) {
-        /**
-         If user disabled auto query when getting selected text, we should close tips view after updating query text.
-         But reloadTableViewData will lost focus, we need to recover input focus.
-         */
-        [self showTipsView:NO completion:^{
-            [self focusInputTextView];
-        }];
+        // Updating query text programmatically loses input focus, we need to recover it.
+        [self focusInputTextView];
     }
 }
 
 - (void)updateActionType:(EZActionType)actionType {
     self.queryModel.actionType = actionType;
-}
-
-- (void)showTipsView:(BOOL)isVisible {
-    [self showTipsView:isVisible content:@"" type:EZTipsCellTypeTextEmpty];
-}
-
-- (void)showTipsView:(BOOL)isVisible
-             content:(NSString *)content
-                type:(EZTipsCellType)type {
-    self.tipsCellType = type;
-    self.tipsCellContent = content;
-    [self.tipsCell updateTipsContent:content type:type];
-    [self showTipsView:isVisible completion:nil];
-}
-
-- (void)showTipsView:(BOOL)isVisible completion:(void (^)(void))completion {
-    // when queryModel.queryText is Empty show tips
-
-    if (!isVisible && !self.isTipsViewVisible) {
-        if (completion) {
-            completion();
-        }
-        return;
-    }
-
-    self.isTipsViewVisible = isVisible;
-
-    if (isVisible) {
-        [self resetQueryAndResults];
-    }
-
-    [self reloadTableViewData:completion];
 }
 
 - (void)scrollToEndOfTextView {
@@ -1059,19 +998,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return selectLanguageCell;
     }
 
-    // show tips view
-    if ([self isTipsViewAtRow:row]) {
-        EZTableTipsCell *tipsCell = [self.tableView makeViewWithIdentifier:EZTableTipsCellId owner:self];
-        if (!tipsCell) {
-            tipsCell = [[EZTableTipsCell alloc] initWithFrame:[self tableViewContentBounds]
-                                                         type:self.tipsCellType
-                                                      content:self.tipsCellContent];
-            tipsCell.identifier = EZTableTipsCellId;
-        }
-        self.tipsCell = tipsCell;
-        return tipsCell;
-    }
-
     EZResultView *resultCell = [self resultCellAtRow:row];
     resultCell.associatedWindowType = self.windowType;
 
@@ -1089,17 +1015,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         height = self.queryModel.queryViewHeight;
     } else if ([self isSelectLanguageCellAtRow:row]) {
         height = 35;
-    } else if ([self isTipsViewAtRow:row]) {
-        if (!self.tipsCell) {
-            // mini cell height
-            if ([self isCustomTipsType]) {
-                height = 80;
-            } else {
-                height = 104;
-            }
-        } else {
-            height = [self.tipsCell cellHeight];
-        }
     } else {
         EZQueryResult *result = [self serviceAtRow:row].result;
         if (result.isShowing) {
@@ -1570,8 +1485,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     [queryView setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
-        // tips view hidden once user tap entry
-        self.isTipsViewVisible = NO;
         [self startQueryText:text];
     }];
 
@@ -1594,10 +1507,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     [queryView setClearBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
-
-        // Close tips view  when user clicking clear button.
-        self.isTipsViewVisible = NO;
-
         [self clearAll];
     }];
 
@@ -1828,9 +1737,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (self.isSelectLanguageCellVisible) {
         offset += 1;
     }
-    if (self.isTipsViewVisible) {
-        offset += 1;
-    }
 
     return offset;
 }
@@ -2039,22 +1945,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }];
 }
 
-- (BOOL)isCustomTipsType {
-    return self.tipsCellType == EZTipsCellTypeErrorTips ||
-        self.tipsCellType == EZTipsCellTypeInfoTips ||
-        self.tipsCellType == EZTipsCellTypeWarnTips;
-}
-
 - (BOOL)isInputFieldCellAtRow:(NSInteger)row {
     return row == self.inputFieldCellIndex && self.isInputFieldCellVisible;
 }
 
 - (BOOL)isSelectLanguageCellAtRow:(NSInteger)row {
     return row == self.selectLanguageCellIndex && self.isSelectLanguageCellVisible;
-}
-
-- (BOOL)isTipsViewAtRow:(NSInteger)row {
-    return row == self.tipsCellIndex && self.isTipsViewVisible;
 }
 
 @end

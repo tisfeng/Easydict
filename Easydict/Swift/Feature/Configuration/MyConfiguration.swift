@@ -101,7 +101,6 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.enableMarkdownRendering) var enableMarkdownRendering: Bool
 
     // Advanced Tab
-    @DefaultsWrapper(.disableTipsView) var disableTipsView: Bool
     @DefaultsWrapper(.enableBetaFeature) private(set) var beta: Bool
     @DefaultsWrapper(.enableYoudaoOCR) var enableYoudaoOCR: Bool
     @DefaultsWrapper(.enableCompatibilityReplace) var enableCompatibilityReplace: Bool

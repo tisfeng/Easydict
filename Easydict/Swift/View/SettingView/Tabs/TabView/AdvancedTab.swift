@@ -55,14 +55,6 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.prefer_youdao_tts_for_english_word_desc"
                     )
                 }
-                Toggle(isOn: $disableTipsView) {
-                    AdvancedTabItemView(
-                        color: .green,
-                        icon: .lightbulbFill,
-                        labelText: "setting.advance.disable_tips_view"
-                    )
-                }
-
                 // Require macOS 15+
                 if #available(macOS 15.0, *) {
                     Toggle(isOn: $enableLocalAppleTranslation) {
@@ -476,7 +468,6 @@ struct AdvancedTab: View {
 
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.preferYoudaoTTSForEnglishWord) private var preferYoudaoTTSForEnglishWord
-    @Default(.disableTipsView) private var disableTipsView
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
     @Default(.enableCompatibilityReplace) private var enableCompatibilityReplace
     @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
