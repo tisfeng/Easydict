@@ -243,7 +243,9 @@ public class AppleOCREngine: NSObject {
             request.symbologies = [.qr]
 
             let requestHandler = VNImageRequestHandler(cgImage: cgImage)
-            DispatchQueue.global().async {
+            // Vision may synchronously wait for a utility-priority CIContext worker.
+            // Match that QoS explicitly instead of propagating the caller's priority.
+            DispatchQueue.global(qos: .utility).async(qos: .utility, flags: .enforceQoS) {
                 do {
                     try requestHandler.perform([request])
                 } catch {
