@@ -215,6 +215,31 @@ struct MarkdownRendererTests {
         #expect(elapsed < 1.0)
     }
 
+    @MainActor
+    @Test("Leading terminal symbols do not replace the font of the entire label", arguments: [false, true])
+    func terminalSymbolFont(markdown: Bool) throws {
+        let label: EZLabel = markdown ? MarkdownLabel(frame: .zero) : EZLabel(frame: .zero)
+        let font = NSFont.systemFont(ofSize: 18)
+        label.font = font
+        let source = "\u{E0B6} Hello 翻译内容\nSecond line 第二行"
+        label.text = source
+        let storage = try #require(label.textStorage)
+
+        for _ in 0 ..< 3 {
+            storage.fixAttributes(in: NSRange(location: 0, length: storage.length))
+            label.updateDisplayedText()
+        }
+
+        #expect(label.font?.fontName == font.fontName)
+        for text in ["Hello", "翻译内容"] {
+            let range = (storage.string as NSString).range(of: text)
+            let textFont = try #require(storage.attribute(.font, at: range.location, effectiveRange: nil) as? NSFont)
+            #expect(textFont.fontName != "LastResort")
+            #expect(textFont.pointSize == 18)
+        }
+        #expect(storage.string == source)
+    }
+
     // MARK: Private
 
     private let baseSize: CGFloat = 14
