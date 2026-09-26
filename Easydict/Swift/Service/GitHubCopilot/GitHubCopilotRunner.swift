@@ -132,8 +132,8 @@ final class GitHubCopilotRunner: @unchecked Sendable {
     /// `COPILOT_HOME` is redirected to a disposable per-request directory for two reasons:
     /// the CLI persists every session (including prompt text) under
     /// `<COPILOT_HOME>/session-state/` indefinitely, and translation input is user text that
-    /// must not accumulate in the user's own CLI state. Credentials are unaffected because the
-    /// CLI keeps its token in the system keychain.
+    /// must not accumulate in the user's own CLI state. Account identifiers are copied separately
+    /// into this directory so the CLI can locate its existing system-keychain credentials.
     ///
     /// The trade-off is that the user's own `~/.copilot/settings.json` does not apply, so their
     /// configured default model is not picked up; the model is chosen in Easydict instead.
@@ -150,6 +150,43 @@ final class GitHubCopilotRunner: @unchecked Sendable {
         environment["COPILOT_HOME"] = homeDirectoryPath
         environment.removeValue(forKey: "COPILOT_ALLOW_ALL")
         return environment
+    }
+
+    /// Runs a command via the user's login shell, returning trimmed stdout or nil on failure.
+    ///
+    /// stderr is redirected to /dev/null rather than an unread `Pipe()`: login profile scripts can
+    /// emit large amounts of output, and an unread pipe fills at ~64 KB and blocks the child
+    /// forever, hanging `waitUntilExit()`.
+    static func runViaLoginShell(_ command: String) -> String? {
+        let shell = resolveLoginShellPath(environmentShell: ProcessInfo.processInfo.environment["SHELL"])
+        let process = Process()
+        let pipe = Pipe()
+        process.executableURL = URL(fileURLWithPath: shell)
+        process.arguments = ["-l", "-c", command]
+        process.standardOutput = pipe
+        let devNullHandle = try? FileHandle(forWritingTo: URL(fileURLWithPath: "/dev/null"))
+        process.standardError = devNullHandle ?? Pipe()
+        do {
+            try process.run()
+            // Drain stdout concurrently so a large write cannot fill the pipe buffer and block.
+            var outputData = Data()
+            let readGroup = DispatchGroup()
+            readGroup.enter()
+            DispatchQueue.global(qos: .userInitiated).async {
+                outputData = pipe.fileHandleForReading.readDataToEndOfFile()
+                readGroup.leave()
+            }
+            process.waitUntilExit()
+            try? devNullHandle?.close()
+            readGroup.wait()
+            guard process.terminationStatus == 0 else { return nil }
+            let path = String(data: outputData, encoding: .utf8)?
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return path?.isEmpty == false ? path : nil
+        } catch {
+            try? devNullHandle?.close()
+            return nil
+        }
     }
 
     /// Runs `copilot -p` with the isolation flags above and streams text deltas as they arrive.
@@ -187,6 +224,10 @@ final class GitHubCopilotRunner: @unchecked Sendable {
                     // and cleaning up the root removes sessions, logs, and caches together.
                     let sandbox = try Self.makeSandboxDirectory()
                     createdSandbox = sandbox
+                    let environment = GitHubCopilotEnvironment.resolve()
+                    try GitHubCopilotEnvironment.prepareAuthentication(
+                        in: sandbox.homeDirectory, environment: environment
+                    )
 
                     #if AGENT_CLI_DEBUG
                     self?.logger = GitHubCopilotLogger(
@@ -209,7 +250,8 @@ final class GitHubCopilotRunner: @unchecked Sendable {
                     process.standardError = stderrPipe
                     process.currentDirectoryURL = sandbox.workingDirectory
                     process.environment = Self.buildProcessEnvironment(
-                        homeDirectoryPath: sandbox.homeDirectory.path
+                        homeDirectoryPath: sandbox.homeDirectory.path,
+                        inheritedEnvironment: environment
                     )
 
                     let startTime = Date()
@@ -313,8 +355,11 @@ final class GitHubCopilotRunner: @unchecked Sendable {
         let working = root.appendingPathComponent("work", isDirectory: true)
         let logs = root.appendingPathComponent("logs", isDirectory: true)
         do {
-            for directory in [home, working, logs] {
-                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            for directory in [root, home, working, logs] {
+                try FileManager.default.createDirectory(
+                    at: directory, withIntermediateDirectories: true,
+                    attributes: [.posixPermissions: 0o700]
+                )
             }
         } catch {
             try? FileManager.default.removeItem(at: root)
@@ -573,43 +618,6 @@ final class GitHubCopilotRunner: @unchecked Sendable {
             return path
         }
         throw GitHubCopilotError.notInstalled
-    }
-
-    /// Runs a command via the user's login shell, returning trimmed stdout or nil on failure.
-    ///
-    /// stderr is redirected to /dev/null rather than an unread `Pipe()`: login profile scripts can
-    /// emit large amounts of output, and an unread pipe fills at ~64 KB and blocks the child
-    /// forever, hanging `waitUntilExit()`.
-    private static func runViaLoginShell(_ command: String) -> String? {
-        let shell = resolveLoginShellPath(environmentShell: ProcessInfo.processInfo.environment["SHELL"])
-        let process = Process()
-        let pipe = Pipe()
-        process.executableURL = URL(fileURLWithPath: shell)
-        process.arguments = ["-l", "-c", command]
-        process.standardOutput = pipe
-        let devNullHandle = try? FileHandle(forWritingTo: URL(fileURLWithPath: "/dev/null"))
-        process.standardError = devNullHandle ?? Pipe()
-        do {
-            try process.run()
-            // Drain stdout concurrently so a large write cannot fill the pipe buffer and block.
-            var outputData = Data()
-            let readGroup = DispatchGroup()
-            readGroup.enter()
-            DispatchQueue.global(qos: .userInitiated).async {
-                outputData = pipe.fileHandleForReading.readDataToEndOfFile()
-                readGroup.leave()
-            }
-            process.waitUntilExit()
-            try? devNullHandle?.close()
-            readGroup.wait()
-            guard process.terminationStatus == 0 else { return nil }
-            let path = String(data: outputData, encoding: .utf8)?
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-            return path?.isEmpty == false ? path : nil
-        } catch {
-            try? devNullHandle?.close()
-            return nil
-        }
     }
 
     /// Reads `isCancelled` thread-safely.

@@ -2,6 +2,11 @@
 
 **Links:** [`docs/exec-plans/completed/2026-09/2026-09-24-github-copilot-service.md`](../../exec-plans/completed/2026-09/2026-09-24-github-copilot-service.md)
 
+> 2026-09-26 更正：下文关于“空 `COPILOT_HOME` 不影响认证”及“失败由测试宿主钥匙串权限
+> 引起”的结论证据不足。真实应用同样失败；空目录会丢失账户元数据，GUI PATH 还可能阻断
+> `gh` 认证回退。修复与重新验证见
+> [后续记录](2026-09-26-fix-copilot-auth-and-icon.md)。其余内容保留为当时的实现和验证记录。
+
 ### 执行上下文
 
 - **Agent Name:** `Mavis`
