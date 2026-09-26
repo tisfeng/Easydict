@@ -27,6 +27,7 @@ public class StreamService: QueryService {
 
         Defaults.publisher(thinkTagKey)
             .removeDuplicates()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 self?.hideThinkTagContent = $0.newValue
             }
