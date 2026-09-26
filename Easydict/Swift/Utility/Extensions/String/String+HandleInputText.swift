@@ -141,14 +141,22 @@ extension NSString {
     private func extractBooksExcerptContent() -> String? {
         let text = self as String
 
-        // English format: “...” Excerpt From ... This material may be protected by copyright.
+        // Books wraps the excerpt in curly quotes and appends a copyright notice.
+        // The Chinese notice wording has changed over time, so only the wording
+        // shared by both simplified and traditional Chinese is required.
+        // Captures are lazy so the shortest excerpt is kept when the text holds
+        // more than one quoted block; the notice is anchored to the end of the
+        // text so that the lazy match cannot stop early.
+        //
+        // English: “...” Excerpt From <book> This material may be protected by copyright.
+        // Chinese: “...” 摘录来自 <book> 此内容可能受版权保护。
+        //          (older) “...” 摘 <book> 此材料受版权保护。
         let enRegex =
-            #/^“(.+?)”\s+Excerpt From.+This material may be protected by copyright\.$/#
+            #/^“(.+?)”\s+Excerpt From.+?This material may be protected by copyright\.\s*$/#
                 .dotMatchesNewlines()
 
-        // Chinese format: “...” 摘 ... 此材料受版权保护。
         let zhRegex =
-            #/^“(.+?)”\s+摘.+此材料受版权保护。$/#
+            #/^“(.+?)”\s+摘.+?版[权權]保[护護]。\s*$/#
                 .dotMatchesNewlines()
 
         let regexes: [Regex<(Substring, Substring)>] = [
