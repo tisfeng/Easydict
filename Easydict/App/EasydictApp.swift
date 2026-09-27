@@ -86,11 +86,11 @@ struct EasydictApp: App {
             } icon: {
                 Image(menuBarIcon.rawValue)
                     .resizable()
-                    #if DEBUG
+                #if DEBUG
                     .renderingMode(.original)
-                    #else
+                #else
                     .renderingMode(.template)
-                    #endif
+                #endif
                     .scaledToFit()
             }
             .help("Easydict 🍃")
