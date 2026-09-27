@@ -154,9 +154,12 @@ in the session records under `~/.copilot`. That directory holds only this reques
 and is deleted once the process exits.
 
 Use the refresh button in GitHub Copilot service settings to retrieve and save the available models
-and their reasoning levels. Settings and query windows use this local list immediately, including
-after restarting Easydict; opening a menu or starting a translation does not refresh it. Refresh
-manually after upgrading the CLI or changing accounts. A failed refresh keeps the previous list.
+and their reasoning levels. When Copilot is enabled in any query window, Easydict also refreshes
+in the background about five seconds after launch, then every 24 hours while the app is running.
+Settings and query windows use the saved list immediately, including after restarting Easydict;
+opening a menu or starting a translation does not refresh it. You can refresh manually after
+upgrading the CLI or changing accounts. A failed refresh keeps the previous list until the next
+scheduled or manual refresh. Quitting the app stops the timer; the next launch schedules it again.
 
 Selecting "CLI default model" uses the model saved in the CLI's current local settings. The reasoning
 picker offers the levels saved for the selected model; "Default" leaves the choice to the CLI.

@@ -9,7 +9,7 @@ import Combine
 import Defaults
 import Foundation
 
-/// Serves the saved catalog to all windows. Only settings explicitly refreshes it through the CLI.
+/// Serves the saved catalog to all windows, with scheduled and manual CLI refreshes.
 @MainActor
 final class GitHubCopilotModelStore: ObservableObject {
     // MARK: Lifecycle
@@ -50,6 +50,27 @@ final class GitHubCopilotModelStore: ObservableObject {
         return snapshot?.models.first { $0.id == identifier }?.name ?? identifier
     }
 
+    /// Register once at launch; menu and translation paths never start a refresh.
+    func startAutomaticRefresh() {
+        guard automaticRefreshTimer == nil else { return }
+        let timer = Timer(
+            fire: Date(timeIntervalSinceNow: 5), interval: 24 * 60 * 60, repeats: true
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                await self?.refreshAutomaticallyIfEnabled()
+            }
+        }
+        automaticRefreshTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
+    }
+
+    /// Stop scheduling and cancel any remaining catalog request when the app terminates.
+    func stopAutomaticRefresh() {
+        automaticRefreshTimer?.invalidate()
+        automaticRefreshTimer = nil
+        loadingTask?.cancel()
+    }
+
     /// A closing consumer does not cancel the bounded request needed by other consumers.
     func refresh() async {
         if let loadingTask {
@@ -61,6 +82,7 @@ final class GitHubCopilotModelStore: ObservableObject {
         let task = Task {
             do {
                 let refreshed = try await GitHubCopilotModelCatalog.load()
+                try Task.checkCancellation()
                 try GitHubCopilotModelCache.save(refreshed)
                 snapshot = refreshed
                 revision += 1
@@ -91,4 +113,16 @@ final class GitHubCopilotModelStore: ObservableObject {
     // MARK: Private
 
     private var loadingTask: Task<(), Never>?
+    private var automaticRefreshTimer: Timer?
+
+    private func refreshAutomaticallyIfEnabled() async {
+        // A queued timer callback must not start work after the scheduler was stopped.
+        guard automaticRefreshTimer != nil else { return }
+        let windowTypes: [EZWindowType] = [.main, .mini, .fixed]
+        let isEnabled = windowTypes.contains {
+            LocalStorage.shared().enabledServiceTypeIDs($0).contains(ServiceType.gitHubCopilot.rawValue)
+        }
+        guard isEnabled else { return }
+        await refresh()
+    }
 }

@@ -189,6 +189,19 @@ final class GitHubCopilotService: StreamService {
         GitHubCopilotModelStore.shared.selectModel(identifier, modelKey: modelKey, effortKey: effortKey)
     }
 
+    /// Bridges the AppKit application lifecycle to the shared model catalog scheduler.
+    @MainActor
+    @objc
+    static func startAutomaticModelUpdates() {
+        GitHubCopilotModelStore.shared.startAutomaticRefresh()
+    }
+
+    @MainActor
+    @objc
+    static func stopAutomaticModelUpdates() {
+        GitHubCopilotModelStore.shared.stopAutomaticRefresh()
+    }
+
     // MARK: Private
 
     private var runner: GitHubCopilotRunner?

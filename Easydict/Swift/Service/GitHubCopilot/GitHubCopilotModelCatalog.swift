@@ -8,7 +8,7 @@
 import Foundation
 
 /// Queries the installed CLI without creating a conversation or making an inference request.
-/// Called only by a manual refresh in settings; selection and translation use the saved catalog.
+/// Called by scheduled or manual refreshes; selection and translation use the saved catalog.
 enum GitHubCopilotModelCatalog {
     struct Snapshot: Codable, Sendable {
         let models: [GitHubCopilotModel]
