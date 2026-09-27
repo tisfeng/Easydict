@@ -123,7 +123,7 @@ struct EasydictApp: App {
             .first()
             .sink { _ in
                 MainActor.assumeIsolated {
-                    GitHubCopilotModelStore.shared.stopAutomaticRefresh()
+                    performTerminationTasks()
                 }
             },
     ]
@@ -145,6 +145,13 @@ struct EasydictApp: App {
     @MainActor
     private static func performPostLaunchTasks() {
         GitHubCopilotModelStore.shared.startAutomaticRefresh()
+    }
+
+    /// Persist queued writes synchronously; an asynchronous task may not run before exit.
+    @MainActor
+    private static func performTerminationTasks() {
+        GitHubCopilotModelStore.shared.stopAutomaticRefresh()
+        VocabularyNotebookService.shared.flush()
     }
 }
 

@@ -10,13 +10,14 @@
 
 ### 用户请求
 
-将启动后工作集中到 EasydictApp.swift，移除 Copilot 新增的 @objc 桥接，通过 Swift 处理退出取消并保留词汇本 flush。
+将启动后工作集中到 EasydictApp.swift，移除 Copilot 新增的 @objc 桥接，通过 Swift 处理退出取消，并将词汇本 flush 一起迁入统一退出处理。
 
 ### 变更
 
 - EasydictApp 初始化时访问静态 Combine 订阅，启动和退出通知各处理一次，与视图显示及重建无关。
-- 新增 `performPostLaunchTasks()`，直接启动共享模型 Store 的自动刷新；退出通知同步调用取消入口。
-- 删除 GitHubCopilotService 的两个生命周期桥接方法和 AppDelegate 对应调用；词汇本 flush 原样保留。
+- 新增 `performPostLaunchTasks()`，直接启动共享模型 Store 的自动刷新。
+- 新增 `performTerminationTasks()`，在退出通知中同步取消 Copilot 刷新并执行词汇本 flush，等待此前排队写入完成。
+- 删除 GitHubCopilotService 的两个生命周期桥接方法，以及 AppDelegate 对应调用和整个退出回调；更新词汇本 flush 的调用说明。
 
 ### 设计意图
 
@@ -34,12 +35,14 @@ Objective-C 暴露薄包装。AppKit 主线程通知通过 MainActor.assumeIsola
 - 生成的 Swift Objective-C 头不再包含 `startAutomaticModelUpdates` / `stopAutomaticModelUpdates`；AppDelegate 编译成功。
 - review：基线 `49e75459d25a94bd7197cc9c1248c444fdce2ca6`，初始工作树和索引干净；冻结任务内容并复验，检查订阅生命周期、主线程同步交付、桥接删除和保留的 flush，未发现有效 finding。现有静态订阅方案足够。
 - 没有覆盖该启动路径的现有测试，未新增测试。Xcode 正运行同 bundle ID 调试实例，未另起应用或 app-hosted tests。
+- 词汇本补迁基线为 `8d8224cd08e3cd131b70699f22516e8848c3a446`，初始工作树和索引干净；补迁后重新通过 Debug 构建、两个变更 Swift 文件的格式/lint 与差异检查。review 冻结并复验本轮内容，确认单次同步 flush 的调用路径和写入队列无主线程互等，未发现有效 finding。继续复用本记录，运行验证限制不变。
 
 ### 受影响文件
 
 - `Easydict/App/EasydictApp.swift`
 - `Easydict/App/AppDelegate.m`
 - `Easydict/Swift/Service/GitHubCopilot/GitHubCopilotService.swift`
+- `Easydict/Swift/Feature/VocabularyNotebook/VocabularyNotebookService.swift`
 - `docs/exec-plans/completed/2026-09/2026-09-27-swift-app-lifecycle.md`
 - `docs/histories/2026-09/2026-09-27-swift-app-lifecycle.md`
 
