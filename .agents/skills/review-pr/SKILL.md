@@ -55,9 +55,11 @@ description: 审查 GitHub PR 的准确 head/base diff、关联 issue、CI 和 r
 4. 评估每个开放 thread，包括 outdated、bot 和所有回复。已有评论只放在对应评论条目，
    不重复列为独立 finding。需要 resolve 且已获授权时才读取
    [线程维护](references/thread-resolution.md)。
-5. 结论前按证据协议立即刷新 PR、选定问题证据、checks 和完整 threads/replies，处理所有新活动。
-6. 读取 [PR 审查报告](references/reporting.md)，输出结论、PR 内容介绍、有效问题、线程状态、
-   审查范围和验证；按报告协议分隔模块和问题卡片。
+5. 如任务包含冲突处理、验证或本地提交，先完成这些获准操作；结论前按证据协议立即刷新 PR、
+   选定问题证据、checks 和完整 threads/replies，处理所有新活动。
+6. 生成最终回复前重新读取 [PR 审查报告](references/reporting.md)；此前已读过或上下文摘要中
+   提及过，均不替代此次读取。按该协议组织报告与必要的提交回执，并对实际回复草稿完成
+   [交付检查](references/reporting.md#交付检查) 后再输出。
 
 大 PR 或需要复用快照文件时才读取
 [快照传输协议](references/snapshot-protocol.md)；复杂复审报告可再读取 [完整示例](references/report-example.md)。
@@ -65,8 +67,10 @@ description: 审查 GitHub PR 的准确 head/base diff、关联 issue、CI 和 r
 ## 完成与停止条件
 
 只有准确 remote head/base 与 merge-base、完整 diff、目标/问题证据、CI 状态、全部开放 threads
-及回复均已审查，且最终刷新没有未检查活动时，才算完成。最终刷新发现 head/base、
+及回复均已审查，最终刷新没有未检查活动，且最终报告通过交付检查时，才算完成。最终刷新发现 head/base、
 需求或线程变化时，根据影响更新 checkout、范围和判断，处理后再刷新一次。
 
 引用有歧义、准备会覆盖本地状态、依赖或必需证据不可用、身份/内容持续漂移、冲突需要产品判断，
 或最终刷新失败时，保留当前快照和本地状态，报告已审查 SHA 与未覆盖缺口；不无限重试。
+受阻或未完成报告仍遵循报告协议，保留内容介绍及验证限制；证据不足的字段明确标注缺失，
+不为满足格式编造内容，也不将报告格式完整视为审查已完成。
