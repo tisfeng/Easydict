@@ -6,8 +6,11 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import Alamofire
+import CoreFoundation
 import Defaults
 import Foundation
+import SFSafeSymbols
 
 // MARK: - AnkiEasydictField
 
@@ -30,8 +33,29 @@ enum AnkiEasydictField: String, CaseIterable, Codable, Defaults.Serializable, Id
 
     var id: String { rawValue }
 
-    var titleKey: String {
-        "anki.easydict_field.\(rawValue)"
+    var localizedTitle: LocalizedStringResource {
+        switch self {
+        case .word:
+            "anki.easydict_field.word"
+        case .fullResult:
+            "anki.easydict_field.full_result"
+        case .phonetic:
+            "anki.easydict_field.phonetic"
+        case .definition:
+            "anki.easydict_field.definition"
+        case .translation:
+            "anki.easydict_field.translation"
+        case .dictionaryText:
+            "anki.easydict_field.dictionary_text"
+        case .dictionaryHTML:
+            "anki.easydict_field.dictionary_html"
+        case .exchange:
+            "anki.easydict_field.exchange"
+        case .related:
+            "anki.easydict_field.related"
+        case .etymology:
+            "anki.easydict_field.etymology"
+        }
     }
 
     var tokenName: String {
@@ -210,10 +234,11 @@ enum AnkiTemplateRenderer {
     )
         -> [String: String] {
         let values = fieldValues(from: result)
+        let htmlFields = htmlFields(for: result)
         var fields: [String: String] = [:]
 
         for mapping in mappings {
-            fields[mapping.ankiField.trimmed] = render(mapping.template, values: values)
+            fields[mapping.ankiField.trimmed] = render(mapping.template, values: values, htmlFields: htmlFields)
         }
 
         return fields
@@ -225,30 +250,46 @@ enum AnkiTemplateRenderer {
     )
         -> [AnkiRenderedFieldPreview] {
         let values = fieldValues(from: result)
+        let htmlFields = htmlFields(for: result)
         return mappings.map { mapping in
             AnkiRenderedFieldPreview(
                 id: mapping.id,
                 ankiField: mapping.ankiField.trimmed,
                 template: mapping.template,
-                value: render(mapping.template, values: values)
+                value: render(mapping.template, values: values, htmlFields: htmlFields)
             )
         }
     }
 
     static func render(
         _ template: String,
-        values: [AnkiEasydictField: String]
+        values: [AnkiEasydictField: String],
+        htmlFields: Set<AnkiEasydictField> = [.dictionaryHTML]
     )
         -> String {
-        var rendered = template
-        for field in AnkiEasydictField.allCases {
+        let source = template as NSString
+        let regex = try! NSRegularExpression(pattern: "\\{([^{}]+)\\}")
+        let matches = regex.matches(in: template, range: NSRange(location: 0, length: source.length))
+        var rendered = ""
+        var cursor = 0
+
+        for match in matches {
+            rendered += source.substring(with: NSRange(location: cursor, length: match.range.location - cursor))
+            let tokenName = source.substring(with: match.range(at: 1))
+            guard let field = AnkiEasydictField.allCases.first(where: {
+                $0.tokenName.caseInsensitiveCompare(tokenName) == .orderedSame
+            }) else {
+                rendered += source.substring(with: match.range)
+                cursor = NSMaxRange(match.range)
+                continue
+            }
+
             let value = values[field] ?? ""
-            rendered = rendered.replacingOccurrences(
-                of: field.templateToken,
-                with: value,
-                options: [.caseInsensitive]
-            )
+            rendered += htmlFields.contains(field) ? value : escapeHTML(value)
+            cursor = NSMaxRange(match.range)
         }
+
+        rendered += source.substring(from: cursor)
         return rendered.trimmed
     }
 
@@ -259,6 +300,14 @@ enum AnkiTemplateRenderer {
     }
 
     private static func backText(from result: QueryResult) -> String {
+        if prefersRenderedDictionaryHTML(result) {
+            let textContent = wordResultText(from: result.wordResult)
+                .map(escapeHTML)
+            return ([textContent, dictionaryHTML(from: result)]
+                .compactMap { $0?.trimmed.nonEmpty })
+                .joined(separator: "<br><br>")
+        }
+
         let candidates = [
             wordResultText(from: result.wordResult),
             result.translatedText,
@@ -270,6 +319,10 @@ enum AnkiTemplateRenderer {
     }
 
     private static func dictionaryText(from result: QueryResult) -> String? {
+        if result.serviceTypeWithUniqueIdentifier == ServiceType.mDict.rawValue {
+            return result.copiedText?.trimmed.nonEmpty
+        }
+
         let innerText = result.innerTexts?.joined(separator: "\n\n")
         let entryHTML = result.htmlStrings?.joined(separator: "\n\n")
         let renderedHTML = result.htmlString
@@ -337,7 +390,7 @@ enum AnkiTemplateRenderer {
         if let simpleWords = wordResult.simpleWords {
             lines.append(contentsOf: simpleWords.compactMap { simpleWord in
                 let word = simpleWord.word.trimmed
-                let means = simpleWord.meansText.trimmed
+                let means = simpleWord.means?.joined(separator: "; ").trimmed ?? ""
                 guard !word.isEmpty || !means.isEmpty else { return nil }
 
                 let part = simpleWord.part?.trimmed ?? ""
@@ -369,9 +422,9 @@ enum AnkiTemplateRenderer {
     private static func relatedText(from wordResult: EZTranslateWordResult?) -> String? {
         guard let wordResult else { return nil }
 
-        let lines = partLines(from: wordResult.synonyms, title: "Synonyms")
-            + partLines(from: wordResult.antonyms, title: "Antonyms")
-            + partLines(from: wordResult.collocation, title: "Collocation")
+        let lines = partLines(from: wordResult.synonyms, title: String(localized: "synonyms"))
+            + partLines(from: wordResult.antonyms, title: String(localized: "antonyms"))
+            + partLines(from: wordResult.collocation, title: String(localized: "collocation"))
         return joinedText(lines)
     }
 
@@ -422,6 +475,27 @@ enum AnkiTemplateRenderer {
 
         return values
     }
+
+    private static func htmlFields(for result: QueryResult) -> Set<AnkiEasydictField> {
+        var fields: Set<AnkiEasydictField> = [.dictionaryHTML]
+        if prefersRenderedDictionaryHTML(result) {
+            fields.insert(.fullResult)
+        }
+        return fields
+    }
+
+    private static func escapeHTML(_ text: String) -> String {
+        let escaped = text
+            .replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "<", with: "&lt;")
+            .replacingOccurrences(of: ">", with: "&gt;")
+            .replacingOccurrences(of: "\"", with: "&quot;")
+            .replacingOccurrences(of: "'", with: "&#39;")
+        return escaped
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
+            .replacingOccurrences(of: "\n", with: "<br>")
+    }
 }
 
 // MARK: - AnkiConnectClient
@@ -439,6 +513,10 @@ final class AnkiConnectClient: NSObject {
     // MARK: Internal
 
     static let shared = AnkiConnectClient()
+
+    static var addNoteButtonSymbolName: String {
+        SFSymbol.plusRectangleOnRectangle.rawValue
+    }
 
     func addNote(with result: QueryResult, completion: @escaping (Bool, String) -> ()) {
         guard Defaults[.enableAnkiConnect] else {
@@ -483,7 +561,7 @@ final class AnkiConnectClient: NSObject {
                 + "fields=\(fields)"
         )
 
-        performRequest(endpoint: endpoint, body: requestBody) { success, object, message in
+        performRequest(endpoint: endpoint, body: requestBody, action: .addNote) { success, object, message in
             if success {
                 logInfo("AnkiConnect addNote success result=\(String(describing: object?["result"]))")
             } else {
@@ -516,7 +594,7 @@ final class AnkiConnectClient: NSObject {
 
         logInfo("AnkiConnect modelFieldNames request model=\(modelName)")
 
-        performRequest(endpoint: endpoint, body: requestBody) { success, object, message in
+        performRequest(endpoint: endpoint, body: requestBody, action: .modelFieldNames) { success, object, message in
             guard success else {
                 logError("AnkiConnect modelFieldNames failed: \(message)")
                 completion(false, [], message)
@@ -537,13 +615,41 @@ final class AnkiConnectClient: NSObject {
 
     // MARK: Private
 
-    private static func parseResponse(_ data: Data) -> (Bool, [String: Any]?, String) {
+    private enum Action {
+        case addNote
+        case modelFieldNames
+    }
+
+    private static func parseResponse(_ data: Data, action: Action) -> (Bool, [String: Any]?, String) {
         guard let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             return (false, nil, NSLocalizedString("anki.connect.invalid_response", comment: ""))
         }
 
-        if let error = object["error"], !(error is NSNull) {
+        guard let error = object["error"] else {
+            return (false, object, NSLocalizedString("anki.connect.invalid_response", comment: ""))
+        }
+        if !(error is NSNull) {
             return (false, object, "\(error)")
+        }
+
+        guard let result = object["result"], !(result is NSNull) else {
+            return (false, object, NSLocalizedString("anki.connect.invalid_response", comment: ""))
+        }
+
+        switch action {
+        case .addNote:
+            guard let noteID = result as? NSNumber,
+                  CFGetTypeID(noteID) != CFBooleanGetTypeID(),
+                  noteID.doubleValue.isFinite,
+                  noteID.doubleValue > 0,
+                  noteID.doubleValue.rounded(.towardZero) == noteID.doubleValue
+            else {
+                return (false, object, NSLocalizedString("anki.connect.invalid_response", comment: ""))
+            }
+        case .modelFieldNames:
+            guard result is [String] else {
+                return (false, object, NSLocalizedString("anki.connect.invalid_response", comment: ""))
+            }
         }
 
         return (true, object, NSLocalizedString("anki.connect.added", comment: ""))
@@ -561,6 +667,7 @@ final class AnkiConnectClient: NSObject {
     private func performRequest(
         endpoint: URL,
         body: [String: Any],
+        action: Action,
         completion: @escaping (Bool, [String: Any]?, String) -> ()
     ) {
         var request = URLRequest(url: endpoint)
@@ -575,22 +682,22 @@ final class AnkiConnectClient: NSObject {
             return
         }
 
-        URLSession.shared.dataTask(with: request) { data, _, error in
-            DispatchQueue.main.async {
-                if let error {
+        Task {
+            do {
+                let data = try await AF.request(request)
+                    .validate()
+                    .serializingData(automaticallyCancelling: true)
+                    .value
+                let response = Self.parseResponse(data, action: action)
+                DispatchQueue.main.async {
+                    completion(response.0, response.1, response.2)
+                }
+            } catch {
+                DispatchQueue.main.async {
                     completion(false, nil, error.localizedDescription)
-                    return
                 }
-
-                guard let data else {
-                    completion(false, nil, NSLocalizedString("anki.connect.empty_response", comment: ""))
-                    return
-                }
-
-                let response = Self.parseResponse(data)
-                completion(response.0, response.1, response.2)
             }
-        }.resume()
+        }
     }
 
     private func configuredMappings() -> [AnkiFieldMapping] {

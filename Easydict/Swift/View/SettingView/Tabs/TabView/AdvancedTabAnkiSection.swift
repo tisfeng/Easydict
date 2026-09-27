@@ -50,6 +50,7 @@ struct AdvancedTabAnkiSection: View {
     @State private var previewError: String?
     @State private var previewValues: [AnkiFieldPreviewValue] = []
     @State private var previewFields: [AnkiRenderedFieldPreview] = []
+    @State private var previewRequestID = UUID()
 
     @Default(.enableAnkiConnect) private var enableAnkiConnect
     @Default(.ankiConnectEndpoint) private var ankiConnectEndpoint
@@ -217,6 +218,12 @@ extension AdvancedTabAnkiSection {
                 subtitleText: "setting.advance.anki_preview_desc"
             )
         }
+        .onChange(of: previewTextInput) { _ in
+            clearPreviewResults()
+        }
+        .onChange(of: previewServiceID) { _ in
+            clearPreviewResults()
+        }
     }
 
     @ViewBuilder
@@ -304,7 +311,7 @@ extension AdvancedTabAnkiSection {
                     } label: {
                         HStack {
                             Text(verbatim: field.templateToken)
-                            Text(LocalizedStringKey(field.titleKey))
+                            Text(field.localizedTitle)
                         }
                     }
                 }
@@ -332,7 +339,7 @@ extension AdvancedTabAnkiSection {
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: value.field.templateToken)
                     .font(.caption)
-                Text(LocalizedStringKey(value.field.titleKey))
+                Text(value.field.localizedTitle)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -367,9 +374,11 @@ extension AdvancedTabAnkiSection {
     }
 
     private func fetchAnkiFields() {
+        let requestedModel = cleanField(ankiConnectModel)
         isFetchingFields = true
         AnkiConnectClient.shared.fetchModelFieldNames { success, fields, message in
             isFetchingFields = false
+            guard requestedModel == cleanField(ankiConnectModel) else { return }
 
             guard success else {
                 EZToast.showText(message)
@@ -519,25 +528,33 @@ extension AdvancedTabAnkiSection {
             return
         }
 
+        let requestID = UUID()
+        previewRequestID = requestID
         isLoadingPreview = true
-        previewError = nil
+        clearPreviewResults()
+        let serviceID = normalizedPreviewServiceID()
+        previewServiceID = serviceID
 
         do {
-            let serviceID = normalizedPreviewServiceID()
-            previewServiceID = serviceID
             let result = try await queryAnkiPreview(text: text, serviceID: serviceID)
+            guard previewRequestID == requestID else { return }
+            isLoadingPreview = false
+            guard text == cleanField(previewTextInput), serviceID == normalizedPreviewServiceID() else { return }
+
             previewValues = AnkiTemplateRenderer.previewValues(from: result)
             previewFields = AnkiTemplateRenderer.renderedPreviewFields(
                 from: result,
                 mappings: effectiveAnkiMappings()
             )
         } catch {
+            guard previewRequestID == requestID else { return }
+            isLoadingPreview = false
+            guard text == cleanField(previewTextInput), serviceID == normalizedPreviewServiceID() else { return }
+
             previewError = error.localizedDescription
             previewValues = []
             previewFields = []
         }
-
-        isLoadingPreview = false
     }
 
     private func queryAnkiPreview(text: String, serviceID: String) async throws -> QueryResult {
@@ -586,5 +603,11 @@ extension AdvancedTabAnkiSection {
 
     private func cleanField(_ field: String) -> String {
         field.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func clearPreviewResults() {
+        previewError = nil
+        previewValues = []
+        previewFields = []
     }
 }

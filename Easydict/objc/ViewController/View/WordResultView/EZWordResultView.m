@@ -1013,7 +1013,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
                                 EZResultHasAnkiContent(result) &&
                                 (result.wordResult || EZResultNeedsDictionaryHTMLHeight(result));
     if (shouldShowAnkiButton) {
-        EZSymbolImageButton *ankiButton = [EZSymbolImageButton buttonWithSybolImageName:@"plus.rectangle.on.rectangle"];
+        EZSymbolImageButton *ankiButton = [EZSymbolImageButton buttonWithSybolImageName:AnkiConnectClient.addNoteButtonSymbolName];
         [self addSubview:ankiButton];
         ankiButton.enabled = YES;
         ankiButton.toolTip = NSLocalizedString(@"anki.connect.add_button", nil);
