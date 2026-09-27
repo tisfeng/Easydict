@@ -43,7 +43,8 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "03022F2D2B370B7100B63209"
@@ -51,14 +52,11 @@
                BlueprintName = "EasydictTests"
                ReferencedContainer = "container:Easydict.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test Identifier = "GitHubCopilotServiceTests/validatesLocalCopilotTranslation()"/>
+            </SkippedTests>
          </TestableReference>
       </Testables>
-      <TestPlans>
-         <TestPlanReference
-            reference = "container:Easydict.xcodeproj/xcshareddata/xctestplans/GitHubCopilotLocalValidation.xctestplan"
-            default = "NO">
-         </TestPlanReference>
-      </TestPlans>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"

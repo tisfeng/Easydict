@@ -14,9 +14,10 @@
 
 ### 变更
 
-- 在 `build-and-test.md` 说明新增服务必须有独立验证测试；本机环境相关用例通过显式 opt-in 或非默认 test plan 运行，不要求所有开发者或 CI 持续执行。
+- 在 `build-and-test.md` 说明新增服务必须有独立验证测试；本机环境相关用例通过非默认 test plan 或 Xcode 精确测试选择运行，不要求所有开发者或 CI 持续执行。
 - 删除用户指定的 `.tags(.integration)` 本机环境诊断段落。
-- 增加 Copilot 专属测试，覆盖服务契约、工厂注册，以及通过真实服务路径调用本机 Copilot CLI 的翻译验证；加入非默认 Xcode test plan。
+- 增加 Copilot 专属测试，覆盖服务契约、工厂注册，以及通过真实服务路径调用本机 Copilot CLI 的翻译验证；默认 scheme 跳过该真实调用，可通过精确测试方法路径主动运行。
+- 按用户反馈删除 `EASYDICT_RUN_COPILOT_LOCAL_VALIDATION` 环境变量门控；本机验证直接运行真实测试，不需要设置环境变量。
 
 ### 设计意图
 
@@ -25,11 +26,12 @@
 ### 验证
 
 - `plutil -lint Easydict.xcodeproj/project.pbxproj`：通过。
-- `xmllint --noout Easydict.xcodeproj/xcshareddata/xcschemes/Easydict.xcscheme`、`jq -e . Easydict.xcodeproj/xcshareddata/xctestplans/GitHubCopilotLocalValidation.xctestplan`：通过。
-- `xcodebuild test -testPlan GitHubCopilotLocalValidation -only-testing:EasydictTests/GitHubCopilotServiceTests`：服务契约、工厂注册及真实本机 CLI 翻译验证均通过。
-- 首次未指定 test plan 的 `xcodebuild test -only-testing:EasydictTests/GitHubCopilotServiceTests`：2 项离线测试通过，本机 CLI 用例按预期禁用。
-- 后续 `test-without-building` 复用了显式本机验证计划生成的运行配置，因此仍执行本机用例；该次运行不作为默认计划验证依据。
-- `swiftformat --lint EasydictTests/Service/GitHubCopilot/GitHubCopilotServiceTests.swift`、`git diff --check`：通过。
+- `xmllint --noout Easydict.xcodeproj/xcshareddata/xcschemes/Easydict.xcscheme`：通过。
+- `xcodebuild test -scheme Easydict -only-testing:EasydictTests/GitHubCopilotServiceTests/validatesLocalCopilotTranslation()`：真实本机 CLI 翻译用例通过。
+- 默认 scheme 下显式跳过真实方法后运行服务 suite：2 项契约与注册测试通过。
+- 试验发现 `-only-testing:EasydictTests/GitHubCopilotServiceTests` 会覆盖 scheme 的单项跳过配置并运行整个 suite；最终将本机验证固定为精确方法路径，不把该 suite 运行误报为默认隔离验证。
+- `rg EASYDICT_RUN_COPILOT_LOCAL_VALIDATION EasydictTests Easydict.xcodeproj`：无结果。
+- 构建阶段的 Format 与 Lint 脚本、`git diff --check`：通过。
 - 手动检查：确认 `EasydictApp.swift` 的构建格式副作用已恢复，提交范围不包含该文件。
 
 ### 受影响文件
@@ -38,7 +40,7 @@
 - `EasydictTests/Service/GitHubCopilot/GitHubCopilotServiceTests.swift`
 - `Easydict.xcodeproj/project.pbxproj`
 - `Easydict.xcodeproj/xcshareddata/xcschemes/Easydict.xcscheme`
-- `Easydict.xcodeproj/xcshareddata/xctestplans/GitHubCopilotLocalValidation.xctestplan`
+- `Easydict.xcodeproj/xcshareddata/xctestplans/GitHubCopilotLocalValidation.xctestplan`（删除）
 - [执行计划](../../exec-plans/completed/2026-09/2026-09-27-copilot-service-validation-tests.md)
 
 ### 后续事项

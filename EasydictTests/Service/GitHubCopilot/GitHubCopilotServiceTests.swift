@@ -36,14 +36,7 @@ struct GitHubCopilotServiceTests {
         #expect(service is GitHubCopilotService)
     }
 
-    /// The non-default `GitHubCopilotLocalValidation` test plan enables this real CLI call.
-    @Test(
-        "local Copilot CLI translates through the real service path",
-        .enabled(
-            if: ProcessInfo.processInfo.environment["EASYDICT_RUN_COPILOT_LOCAL_VALIDATION"] == "1",
-            "Set EASYDICT_RUN_COPILOT_LOCAL_VALIDATION=1 to run with the local Copilot CLI and login."
-        )
-    )
+    @Test("local Copilot CLI translates through the real service path")
     func validatesLocalCopilotTranslation() async {
         let service = GitHubCopilotService()
         let result = await service.validate()
