@@ -134,7 +134,7 @@ class DeepSeekService: OpenAIService {
     private var currentTask: Task<(), Never>?
 
     private func makeChatRequest(url: URL, messages: [ChatMessage]) throws -> URLRequest {
-        let effort = reasoningEffort
+        let effort = configuredReasoningEffort
         let requestBody = DeepSeekChatRequest(
             messages: messages.map(DeepSeekChatMessage.init),
             model: model,
@@ -144,7 +144,9 @@ class DeepSeekService: OpenAIService {
             reasoningEffort: effort.requestValue
         )
 
-        var request = URLRequest(url: url, timeoutInterval: EZNetWorkTimeoutInterval)
+        var request = URLRequest(
+            url: url, timeoutInterval: SharedConstants.llmRequestTimeoutInterval
+        )
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")

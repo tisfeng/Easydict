@@ -1,6 +1,6 @@
 ## 2026-08-24 | 任务：泛化 submit-pr 技能
 
-**Links:** `../../exec-plans/completed/2026-08-24-generic-submit-pr-skill.md`
+**Links:** `../../exec-plans/completed/2026-08/2026-08-24-generic-submit-pr-skill.md`
 
 ### 用户请求
 
@@ -43,7 +43,7 @@
 
 - `.agents/skills/submit-pr/`
 - `docs/agents/skills.md`
-- `docs/exec-plans/completed/2026-08-24-generic-submit-pr-skill.md`
+- `docs/exec-plans/completed/2026-08/2026-08-24-generic-submit-pr-skill.md`
 
 ### 后续事项
 

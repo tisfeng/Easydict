@@ -1,6 +1,6 @@
 ## 2026-08-23 | 任务：新增 submit-pr 技能
 
-**Links:** `../../exec-plans/completed/2026-08-23-submit-pr-skill.md`
+**Links:** `../../exec-plans/completed/2026-08/2026-08-23-submit-pr-skill.md`
 
 ### 用户请求
 
@@ -44,4 +44,4 @@
 - `.agents/skills/submit-pr/`
 - `AGENTS.md`
 - `docs/agents/skills.md`
-- `docs/exec-plans/completed/2026-08-23-submit-pr-skill.md`
+- `docs/exec-plans/completed/2026-08/2026-08-23-submit-pr-skill.md`

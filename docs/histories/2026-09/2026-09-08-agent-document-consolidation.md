@@ -1,6 +1,6 @@
 ## 2026-09-08 | 任务：收敛 Agent 文档结构
 
-**Links:** [执行计划](../../exec-plans/completed/2026-09-08-agent-document-consolidation.md)
+**Links:** [执行计划](../../exec-plans/completed/2026-09/2026-09-08-agent-document-consolidation.md)
 
 ### 用户请求
 
@@ -43,7 +43,7 @@ Git 交付、验证和外部受管资产边界不变。
 - `docs/agents/`
 - `docs/design-docs/agent-documentation-structure.md`
 - `docs/design-docs/external-agent-assets-management.md`
-- `docs/exec-plans/completed/2026-09-08-agent-document-consolidation.md`
+- `docs/exec-plans/completed/2026-09/2026-09-08-agent-document-consolidation.md`
 
 ### 后续事项
 

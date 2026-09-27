@@ -77,12 +77,7 @@ private final class ClaudeCodeDebugViewModel: ObservableObject {
     @Published var logText = ""
 
     var currentLogDirectory: URL? {
-        FileManager.default
-            .urls(for: .applicationSupportDirectory, in: .userDomainMask)
-            .first?
-            .appendingPathComponent(Bundle.main.bundleIdentifier ?? "Easydict")
-            .appendingPathComponent("logs")
-            .appendingPathComponent("claude-code")
+        AppPathManager.current.claudeCodeLogDirectory
     }
 
     func clear() { logText = "" }

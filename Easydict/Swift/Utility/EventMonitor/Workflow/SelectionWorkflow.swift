@@ -177,8 +177,10 @@ final class SelectionWorkflow {
         }
 
         // 显式快捷键查询是用户主动动作，不受强制取词开关限制
+        let isZenBrowser = contextProvider?.frontmostApplication?.bundleIdentifier == AppBundleIDs.zenBrowser
         let allowForce = EventMonitor.shared.actionType == .shortcutQuery
             || MyConfiguration.shared.enableForceGetSelectedText
+            || isZenBrowser
         logInfo("Allow force get selected text: \(allowForce ? "YES" : "NO")")
         guard allowForce else {
             completion(nil)
@@ -338,6 +340,11 @@ final class SelectionWorkflow {
             return true
         }
 
+        if bundleID == AppBundleIDs.zenBrowser {
+            logInfo("Zen Browser Accessibility text unavailable, allow force get selected text")
+            return true
+        }
+
         guard enableForce else { return false }
 
         if axError == .noValue {
@@ -358,7 +365,7 @@ final class SelectionWorkflow {
                 "com.googlecode.iterm2",
             ],
             .attributeUnsupported: [
-                "com.sublimetext.4",
+                AppBundleIDs.sublimeText,
                 "com.microsoft.Word",
                 "com.microsoft.Powerpoint",
                 AppBundleIDs.weChat,

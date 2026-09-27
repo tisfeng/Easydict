@@ -59,7 +59,7 @@ class AppleDictionary: QueryService, @unchecked Sendable {
             appleDictionaries.map { $0.name }
         }
         set {
-            appleDictionaries = newValue.map { TTTDictionary(named: $0) }
+            appleDictionaries = newValue.compactMap { TTTDictionary(named: $0) }
         }
     }
 
@@ -222,7 +222,10 @@ extension AppleDictionary {
         -> String? {
         var dicts: [TTTDictionary] = []
         for name in dictNames {
-            let dict = TTTDictionary(named: name)
+            guard let dict = TTTDictionary(named: name) else {
+                logWarn("Apple dictionary is unavailable: name=\(name)")
+                continue
+            }
             if !dicts.contains(dict) {
                 dicts.append(dict)
             }
@@ -258,7 +261,13 @@ extension AppleDictionary {
             var wordHtmlString = ""
 
             // ~/Library/Dictionaries/Apple.dictionary/Contents/
-            let contentsURL = dictionary.dictionaryURL.appendingPathComponent("Contents")
+            let contentsURL = dictionary.dictionaryURL?.appendingPathComponent("Contents")
+            if contentsURL == nil {
+                logWarn(
+                    "Apple dictionary has no resource URL: "
+                        + "name=\(dictionary.name), identifier=\(dictionary.identifier ?? "<missing>")"
+                )
+            }
 
             let entries = queryEntries(
                 ofWord: word, inDictionary: dictionary, language: fromLanguage
@@ -268,12 +277,15 @@ extension AppleDictionary {
             allInnerTexts.append(contentsOf: entries.texts)
 
             for html in entryHTMLs {
-                let resolvedHTML = embedAudioResources(
-                    ofHTML: html,
-                    in: contentsURL,
-                    state: &audioEmbeddingState
-                )
-                wordHtmlString += resolvedHTML
+                if let contentsURL {
+                    wordHtmlString += embedAudioResources(
+                        ofHTML: html,
+                        in: contentsURL,
+                        state: &audioEmbeddingState
+                    )
+                } else {
+                    wordHtmlString += html
+                }
             }
 
             if !wordHtmlString.isEmpty {
@@ -302,7 +314,10 @@ extension AppleDictionary {
         language: Language?
     )
         -> [String] {
-        let dictionary = TTTDictionary(named: name)
+        guard let dictionary = TTTDictionary(named: name) else {
+            logWarn("Apple dictionary is unavailable: name=\(name)")
+            return []
+        }
         return queryEntryHTMLs(ofWord: word, inDictionary: dictionary, language: language)
     }
 

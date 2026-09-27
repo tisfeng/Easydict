@@ -1,6 +1,6 @@
 ## 2026-08-15 | 任务：将 Star History 改为仓库自有产物
 
-**Links:** `docs/exec-plans/completed/2026-08-15-repository-owned-star-history.md`
+**Links:** `docs/exec-plans/completed/2026-08/2026-08-15-repository-owned-star-history.md`
 
 ### 用户请求
 

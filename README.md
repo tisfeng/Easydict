@@ -24,7 +24,10 @@
 
 Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time.
 
-**Supported translation services:** [**🍎 Apple Dictionary**](./docs/user-docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md), [🍎 **Apple Translate**](./docs/user-docs/en/How-to-use-macOS-system-translation-in-Easydict.md), [OpenAI](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [DeepSeek](https://www.deepseek.com/), [Ollama](https://ollama.com/), [Groq](https://groq.com/), [Zhipu AI](https://open.bigmodel.cn/), [GitHub Models](https://github.com/marketplace/models), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com), [Youdao](https://www.youdao.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Caiyun](https://fanyi.caiyunapp.com/), [Alibaba](https://translate.alibaba.com/), [Volcano](https://translate.volcengine.com/translate) and [Doubao](https://www.volcengine.com/docs/82379/1820188).
+**Supported services:** 20+ dictionary, translation, AI, local-model, and CLI services, including
+Apple Dictionary, MDict, Apple Translate, OpenAI, Gemini, Claude, DeepSeek, Ollama, Claude Code,
+Codex CLI, DeepL, Google, and Bing. See the [services overview](./docs/user-docs/en/SERVICES.md) for
+the complete list and access requirements.
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -39,11 +42,11 @@ Easydict is ready to use out of the box, can automatically recognize the languag
 
 - 🚀 Out of the box, automatic language recognition
 - 🖱️ Auto select with mouse and shortcut key
-- 📸 OCR screenshot translation and slient screenshot OCR
+- 📸 OCR screenshot translation and silent screenshot OCR
 - 🔊 Multiple TTS voice services
-- 📚 Support 🍎 [Apple System Dictionary](./docs/user-docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md) and [System Translation](./docs/user-docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
-- 🌐 Support 20+ translation services (OpenAI, Gemini, DeepL, Google, Ollama, Groq, etc.)
-- 🗣️ Support for 48 languages
+- 📚 Support 🍎 [Apple Dictionary](./docs/user-docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md) and [Apple Translate](./docs/user-docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
+- 🌐 Support 20+ dictionary, translation, AI, local-model, and CLI services
+- 🗣️ Support 52 selectable translation languages
 
 **If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
 
@@ -96,11 +99,12 @@ brew install --cask easydict
 
 ## Documentation
 
-- 📚 [Public Documentation Index](./docs/user-docs/README.md) - English and Chinese guides
 - 📖 [Complete Usage Guide](./docs/user-docs/en/GUIDE.md) - Detailed features, configuration and tips
+- 🌐 [Services Overview](./docs/user-docs/en/SERVICES.md) - Complete service list and access requirements
 - 🔧 [Developer Build Guide](./docs/user-docs/en/GUIDE.md#developer-build) - Build and run from source code
-- 🍎 [How to use macOS System Dictionary](./docs/user-docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md)
-- 🍎 [How to use macOS System Translation](./docs/user-docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
+- 🍎 [How to use Apple Dictionary](./docs/user-docs/en/How-to-use-macOS-system-dictionary-in-Easydict.md)
+- 📚 [How to use MDict](./docs/user-docs/en/How-to-use-MDict-in-Easydict.md)
+- 🍎 [How to use Apple Translate](./docs/user-docs/en/How-to-use-macOS-system-translation-in-Easydict.md)
 - 🌍 [How to translate Easydict](./docs/user-docs/en/How-to-translate-Easydict.md)
 
 ---

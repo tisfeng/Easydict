@@ -1,6 +1,6 @@
 ## 2026-08-23 | 任务：强制校验 Git 提交信息结构
 
-**Links:** `../../exec-plans/completed/2026-08-23-validate-git-commit-message.md`
+**Links:** `../../exec-plans/completed/2026-08/2026-08-23-validate-git-commit-message.md`
 
 ### 用户请求
 
@@ -44,4 +44,4 @@
 ### 受影响文件
 
 - `.agents/skills/git-commit/`
-- `docs/exec-plans/completed/2026-08-23-validate-git-commit-message.md`
+- `docs/exec-plans/completed/2026-08/2026-08-23-validate-git-commit-message.md`

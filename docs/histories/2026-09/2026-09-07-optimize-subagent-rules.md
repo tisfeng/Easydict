@@ -1,6 +1,6 @@
 ## 2026-09-07 | 任务：优化子代理配置与规则
 
-**Links:** [执行计划](../../exec-plans/completed/2026-09-07-optimize-subagent-rules.md)
+**Links:** [执行计划](../../exec-plans/completed/2026-09/2026-09-07-optimize-subagent-rules.md)
 
 ### 用户请求
 
@@ -40,7 +40,7 @@
 - `docs/agents/request-boundary.md`
 - `docs/agents/build-and-test.md`
 - `docs/references/astra-agent-guidance.md`
-- `docs/exec-plans/completed/2026-09-07-optimize-subagent-rules.md`
+- `docs/exec-plans/completed/2026-09/2026-09-07-optimize-subagent-rules.md`
 - `docs/histories/2026-09/2026-09-07-optimize-subagent-rules.md`
 
 ### 后续事项

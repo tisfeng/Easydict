@@ -2,7 +2,7 @@
 
 - 日期：2026-08-21
 - 状态：completed
-- 执行计划：`../../exec-plans/completed/2026-08-21-agent-task-modes-auto-commit.md`
+- 执行计划：`../../exec-plans/completed/2026-08/2026-08-21-agent-task-modes-auto-commit.md`
 
 ## 用户请求
 

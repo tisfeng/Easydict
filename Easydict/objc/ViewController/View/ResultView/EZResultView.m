@@ -39,6 +39,10 @@
 }
 
 - (void)setup {
+    [NSNotificationCenter.defaultCenter addObserver:self
+                                          selector:@selector(copilotModelsDidChange:)
+                                              name:NSNotification.githubCopilotModelsDidChange
+                                            object:nil];
     self.wantsLayer = YES;
     self.layer.cornerRadius = EZCornerRadius_8;
     [self.layer executeLight:^(CALayer *layer) {
@@ -80,7 +84,8 @@
         label.backgroundColor = NSColor.clearColor;
         label.alignment = NSTextAlignmentCenter;
         label.maximumNumberOfLines = 1;
-        label.lineBreakMode = NSLineBreakByClipping;
+        label.lineBreakMode = NSLineBreakByTruncatingTail;
+        label.cell.truncatesLastVisibleLine = YES;
         
         [label executeLight:^(NSTextField *label) {
             label.textColor = [NSColor ez_resultTextLightColor];
@@ -158,6 +163,7 @@
         mm_strongify(self);
         [self.result.queryModel stopServiceRequest:self.result.serviceTypeWithUniqueIdentifier];
         self.result.isStreamFinished = YES;
+        [self updateLoadingAnimation];
         button.hidden = YES;
     }];
     
@@ -275,17 +281,12 @@
     
     NSString *serviceName = service.name ?: result.serviceTypeWithUniqueIdentifier;
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:serviceName font:[NSFont systemFontOfSize:13]];
+    self.serviceNameLabel.toolTip = serviceName;
     
     mm_weakify(self);
     
     if ([self isLLLStreamService:service]) {
-        EZStreamService *streamService = (EZStreamService *)service;
-        NSString *model = streamService.model;
-        self.serviceModelButton.title = model;
-        // hoverTitle may be different from normalTitle, fix https://github.com/tisfeng/Easydict/pull/516#issuecomment-2064164503
-        self.serviceModelButton.hoverTitle = model;
-        self.serviceModelButton.highlightTitle = model;
-        self.serviceModelButton.toolTip = model;
+        [self updateServiceModelButton];
 
         [self.serviceModelButton setClickBlock:^(EZButton *_Nonnull button) {
             mm_strongify(self);
@@ -456,25 +457,53 @@
     }
 
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
-    for (NSString *model in service.validModels) {
-        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
+    for (NSString *model in service.selectableModels) {
+        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:[service modelSelectionTitleFor:model]
+                                                   action:@selector(modelDidSelected:) keyEquivalent:@""];
         item.target = self;
+        item.representedObject = @{ @"model": model, @"service": service };
+        item.state = [model isEqualToString:service.model] ? NSControlStateValueOn : NSControlStateValueOff;
+        item.toolTip = model.length ? model : item.title;
         [menu addItem:item];
+    }
+    NSString *hint = service.modelSelectionHint;
+    if (hint.length) {
+        [menu addItem:NSMenuItem.separatorItem];
+        [menu addItem:[[NSMenuItem alloc] initWithTitle:hint action:nil keyEquivalent:@""]];
     }
     [menu popUpBelowView:sender];
 }
 
 - (void)modelDidSelected:(NSMenuItem *)sender {
     EZStreamService *service = (EZStreamService *)self.service;
-    if (![self isLLLStreamService:service]) {
+    NSDictionary *selection = sender.representedObject;
+    if (![self isLLLStreamService:service] || ![selection isKindOfClass:NSDictionary.class] || selection[@"service"] != service) {
         return;
     }
 
-    if (![service.model isEqualToString:sender.title]) {
-        service.model = sender.title;
-        self.serviceModelButton.title = service.model;
-        self.serviceModelButton.hoverTitle = service.model;
-        self.serviceModelButton.highlightTitle = service.model;
+    NSString *model = selection[@"model"];
+    if ([model isKindOfClass:NSString.class]) {
+        [service selectModel:model];
+        [self updateServiceModelButton];
+    }
+}
+
+- (void)updateServiceModelButton {
+    if (![self isLLLStreamService:self.service]) {
+        return;
+    }
+    EZStreamService *service = (EZStreamService *)self.service;
+    NSString *title = service.modelDisplayName;
+    self.serviceModelButton.title = title;
+    self.serviceModelButton.hoverTitle = title;
+    self.serviceModelButton.highlightTitle = title;
+    self.serviceModelButton.toolTip = [service modelSelectionTitleFor:service.model];
+    [self setNeedsUpdateConstraints:YES];
+}
+
+- (void)copilotModelsDidChange:(NSNotification *)notification {
+    if ([self.service isKindOfClass:EZGitHubCopilotService.class]) {
+        [self updateServiceModelButton];
     }
 }
 

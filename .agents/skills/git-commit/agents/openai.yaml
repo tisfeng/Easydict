@@ -1,0 +1,4 @@
+interface:
+  display_name: "Git Commit"
+  short_description: "安全检查暂存内容并创建经过验证的 Angular-style 本地提交"
+  default_prompt: "使用 $git-commit 检查已暂存内容并创建一个经过验证的本地提交。"

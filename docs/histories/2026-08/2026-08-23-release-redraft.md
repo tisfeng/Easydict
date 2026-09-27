@@ -1,6 +1,6 @@
 ## 2026-08-23 | 任务：支持安全重建同版本 Draft
 
-**Links:** `docs/exec-plans/completed/2026-08-23-release-redraft.md`
+**Links:** `docs/exec-plans/completed/2026-08/2026-08-23-release-redraft.md`
 
 ### 用户请求
 
@@ -32,7 +32,7 @@
 
 - `scripts/release/`
 - `.agents/skills/release-easydict/`
-- `docs/exec-plans/completed/2026-08-23-release-redraft.md`
+- `docs/exec-plans/completed/2026-08/2026-08-23-release-redraft.md`
 - `docs/histories/2026-08/2026-08-23-release-redraft.md`
 
 ### 后续事项

@@ -1,6 +1,6 @@
 ## 2026-09-08 | 任务：统一外部 Skills 与 Codex 子代理资产
 
-**Links:** [执行计划](../../exec-plans/completed/2026-09-08-external-agent-assets-governance.md)
+**Links:** [执行计划](../../exec-plans/completed/2026-09/2026-09-08-external-agent-assets-governance.md)
 
 ### 用户请求
 
@@ -43,7 +43,7 @@
 - `.agents/skills/` 中七个外部受管 Skill
 - `.codex/agents/`、`.codex/agents-lock.json`、`skills-lock.json`
 - `AGENTS.md`、`docs/agents/`、`docs/design-docs/`、`docs/references/`
-- `docs/exec-plans/completed/2026-09-08-external-agent-assets-governance.md`
+- `docs/exec-plans/completed/2026-09/2026-09-08-external-agent-assets-governance.md`
 
 ### 后续事项
 

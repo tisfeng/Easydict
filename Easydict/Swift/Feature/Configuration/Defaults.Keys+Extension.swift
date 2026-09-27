@@ -148,7 +148,6 @@ extension Defaults.Keys {
     )
 
     static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
-    static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
     static var enableYoudaoOCR = Key<Bool>("enableYoudaoOCR", default: false)
     static var enableCompatibilityReplace = Key<Bool>(
         "replaceWithTranslationInCompatibilityMode",
@@ -171,6 +170,8 @@ extension Defaults.Keys {
         "ankiConnectFieldMappings",
         default: []
     )
+    static var enableVocabularyNotebook = Key<Bool>("enableVocabularyNotebook", default: false)
+    static var vocabularyNotebookDirectory = Key<String>("vocabularyNotebookDirectory", default: "")
 
     static var enableAppleOfflineTranslation = Key<Bool>(
         "enableAppleOfflineTranslation", default: false

@@ -93,9 +93,32 @@ private func isFailureEvent(_ line: CodexCLIStreamLine) -> Bool {
     return false
 }
 
-/// Parses a `CodexCLIError` by inspecting JSONL events on stdout first, then
-/// falling back to stderr for plaintext failures (e.g. binary crashes).
+// MARK: - CodexFailure
+
+/// Retains authentication diagnostics until the access mode chooses recovery guidance.
+enum CodexFailure {
+    case authentication(String)
+    case quota(String?)
+    case other(String)
+
+    // MARK: Internal
+
+    var localError: CodexCLIError {
+        switch self {
+        case .authentication: .notLoggedIn
+        case let .quota(message): .quotaExceeded(message: message)
+        case let .other(message): .cliError(message: message)
+        }
+    }
+}
+
+/// Local CLI recovery keeps its existing compatibility behavior.
 func parseCodexError(fromStdout stdout: String, stderr: String) -> CodexCLIError {
+    parseCodexFailure(fromStdout: stdout, stderr: stderr).localError
+}
+
+/// Parses failure events first, then stderr for plaintext failures (e.g. binary crashes).
+func parseCodexFailure(fromStdout stdout: String, stderr: String) -> CodexFailure {
     var stdoutAuthMessage: String?
     var stdoutQuotaMessage: String?
     var stdoutGenericMessage: String?
@@ -128,11 +151,11 @@ func parseCodexError(fromStdout stdout: String, stderr: String) -> CodexCLIError
         }
     }
 
-    if stdoutAuthMessage != nil {
-        return .notLoggedIn
+    if let stdoutAuthMessage {
+        return .authentication(stdoutAuthMessage)
     }
     if let stdoutQuotaMessage {
-        return .quotaExceeded(message: stdoutQuotaMessage)
+        return .quota(stdoutQuotaMessage)
     }
 
     let cleaned = stderr
@@ -144,19 +167,19 @@ func parseCodexError(fromStdout stdout: String, stderr: String) -> CodexCLIError
         .trimmingCharacters(in: .whitespacesAndNewlines)
 
     if isCodexAuthenticationMessage(cleaned) {
-        return .notLoggedIn
+        return .authentication(cleaned)
     }
     if isCodexQuotaMessage(cleaned) {
-        return .quotaExceeded(message: nil)
+        return .quota(nil)
     }
     if let stdoutGenericMessage, !stdoutGenericMessage.isEmpty {
-        return .cliError(message: stdoutGenericMessage)
+        return .other(stdoutGenericMessage)
     }
 
     let message = cleaned.isEmpty
         ? String(localized: "service.codex_cli.cli_error.unknown")
         : cleaned
-    return .cliError(message: message)
+    return .other(message)
 }
 
 /// Scans stdout for the `turn.completed` event and extracts token usage.

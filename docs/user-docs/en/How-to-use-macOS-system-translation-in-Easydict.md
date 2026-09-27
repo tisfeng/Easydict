@@ -1,45 +1,49 @@
-## macOS System Translation
+# Use Apple Translate in Easydict
 
-> This feature is experimental and may not be stable or even available.
+The Apple Translate service has two execution paths:
 
-> Alternatively, if you have used [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict) before and have enabled mac0S system translation, you can enable the service directly from the settings page, as they share the same translation shortcut.
+- **macOS 15 and later**: optionally use Apple's Translation framework for offline translation
+  between languages supported by the system.
+- **Shortcut fallback**: when offline translation is disabled, unsupported, or unavailable,
+  Easydict calls system translation through a specific macOS Shortcut.
 
-> If you have problems using it, please see [macOS 系统翻译失败常见问题](https://bobtranslate.com/faq/apple-translate-error.html#%E9%97%AE%E9%A2%98-2)
+## macOS 15 and later: offline translation
 
-![iShot_2023-01-08_10.07.00-1673143647](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-08_10.07.00-1673143647.png)
+1. Download the languages you need in the relevant macOS language and translation settings.
+2. Open Easydict Settings → Advanced and enable Apple offline translation.
+3. Open Settings → Services, then add or enable Apple Translate.
+4. Test with a source and target language supported by the system.
 
+Apple offline translation is disabled by default. Language coverage and downloaded language packs
+are managed by the current macOS version. The system may ask for a language download or return an
+error when a pack is missing.
 
-## System Requirements
+## macOS 13/14 or fallback path: install the Shortcut
 
-If you want to use Apple 🍎 system translation in `Easydict`, your system needs to be **macOS 12.3.1** or higher.
+Open and install
+[Easydict-Translate-V1.2.0](https://www.icloud.com/shortcuts/776f8a1d8e43471885e8a505eb9a9deb)
+with Safari:
 
-## Install Shortcut
+1. Choose Get Shortcut.
+2. Allow Safari to open the Shortcuts app.
+3. Choose Add Shortcut.
+4. Confirm that its name is `Easydict-Translate-V1.2.0`.
 
-You also need to install a shortcut command (`Easydict-Translate-V1.2.0`), please open the link below with **Safari browser**.
+Do not rename the Shortcut or change its actions. Easydict invokes it by its expected name. On the
+first run, macOS may ask for Automation permission to let Easydict control Shortcuts; allow it.
 
-```
-https://www.icloud.com/shortcuts/776f8a1d8e43471885e8a505eb9a9deb
-```
+## Enable the service
 
-![Easydict-Translate-V1.2.0](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20220703232313073.png)
+Open Easydict Settings → Services, then add or enable Apple Translate. On macOS 15+, Easydict uses
+the Translation framework when offline translation is enabled; otherwise it uses the Shortcut
+path automatically.
 
-- Click on "Get Shortcuts
-- Click on "Allow"
-- Click on "Add Shortcut"
+## Troubleshooting
 
-![](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20220703232555275.png)
-
-If there is `Easydict-Translate-V1.2.0' in the Shortcuts app, the shortcut will be installed successfully.
-
-> Warning⚠️: After installation, **Do not modify the name of the shortcut**, and do not modify any operation in it, otherwise it is likely that the service call will fail!
-
-## Turn on the Feature
-
-Next, in the preferences of `Easydict`, just turn on the System Translation option.
-
-![iShot_2023-01-08_10.14.54-1673144099](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-08_10.14.54-1673144099.png)
-
-## Reference
-
-- [如何使用 macOS 系统翻译？](https://ripperhe.gitee.io/bob/#/faq/use-apple-translate?id=如何在-bob-中使用-macos-系统翻译？)
-
+- **The Shortcut cannot be found**: verify the exact name `Easydict-Translate-V1.2.0` and run it
+  once in the Shortcuts app.
+- **Offline translation returns no result**: verify that you use macOS 15+, enabled the Easydict
+  setting, and downloaded the required languages.
+- **The call is denied**: check Easydict under System Settings → Privacy & Security → Automation.
+- **A language is unavailable**: Apple controls the system language coverage; use another Easydict
+  service when necessary.

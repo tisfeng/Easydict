@@ -1,6 +1,6 @@
 ## 2026-09-06 | 任务：通用 Review 与并行任务收尾
 
-**Links:** [执行计划](../../exec-plans/completed/2026-09-06-shared-review-workflow.md)
+**Links:** [执行计划](../../exec-plans/completed/2026-09/2026-09-06-shared-review-workflow.md)
 
 ### 用户请求
 

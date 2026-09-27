@@ -57,14 +57,6 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.prefer_youdao_tts_for_english_word_desc"
                     )
                 }
-                Toggle(isOn: $disableTipsView) {
-                    AdvancedTabItemView(
-                        color: .green,
-                        icon: .lightbulbFill,
-                        labelText: "setting.advance.disable_tips_view"
-                    )
-                }
-
                 // Require macOS 15+
                 if #available(macOS 15.0, *) {
                     Toggle(isOn: $enableLocalAppleTranslation) {
@@ -434,6 +426,41 @@ struct AdvancedTab: View {
             }
 
             AdvancedTabAnkiSection()
+            // Vocabulary notebook
+            Section {
+                Toggle(isOn: $enableVocabularyNotebook) {
+                    AdvancedTabItemView(
+                        color: .brown,
+                        icon: .bookClosed,
+                        labelText: "setting.advance.vocabulary_notebook",
+                        subtitleText: "setting.advance.vocabulary_notebook_desc"
+                    )
+                }
+
+                LabeledContent {
+                    HStack(spacing: 8) {
+                        Text(displayedVocabularyNotebookDirectory)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+
+                        Button {
+                            chooseVocabularyNotebookDirectory()
+                        } label: {
+                            Text("setting.advance.vocabulary_notebook_choose_directory")
+                        }
+                    }
+                } label: {
+                    AdvancedTabItemView(
+                        color: .brown,
+                        icon: .folderFill,
+                        labelText: "setting.advance.vocabulary_notebook_directory"
+                    )
+                }
+                .disabled(!enableVocabularyNotebook)
+            } header: {
+                Text("setting.advance.header.vocabulary_notebook")
+            }
         }
         .formStyle(.grouped)
     }
@@ -444,7 +471,6 @@ struct AdvancedTab: View {
 
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.preferYoudaoTTSForEnglishWord) private var preferYoudaoTTSForEnglishWord
-    @Default(.disableTipsView) private var disableTipsView
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
     @Default(.enableCompatibilityReplace) private var enableCompatibilityReplace
     @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
@@ -479,11 +505,48 @@ struct AdvancedTab: View {
     @Default(.enableHTTPServer) private var enableHTTPServer
     @Default(.httpPort) private var httpPort
 
+    @Default(.enableVocabularyNotebook) private var enableVocabularyNotebook
+    @Default(.vocabularyNotebookDirectory) private var vocabularyNotebookDirectory
+
     @Default(.maxWindowHeightPercentage) private var maxWindowHeightPercentageValue
+
+    /// The directory path shown in the picker row, or a placeholder when unset.
+    private var displayedVocabularyNotebookDirectory: String {
+        vocabularyNotebookDirectory.isEmpty
+            ? String(localized: "setting.advance.vocabulary_notebook_directory_placeholder")
+            : vocabularyNotebookDirectory
+    }
 
     /// Returns Color.green if `enableHTTPServer` is true, returns Color.red otherwise.
     private func getHttpIconColor() -> Color {
         enableHTTPServer ? .green : .red
+    }
+
+    /// Presents an `NSOpenPanel` for choosing the vocabulary notebook directory.
+    private func chooseVocabularyNotebookDirectory() {
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.allowsMultipleSelection = false
+        panel.canCreateDirectories = true
+        panel.prompt = String(localized: "setting.advance.vocabulary_notebook_choose_directory")
+
+        guard panel.runModal() == .OK, let url = panel.url else {
+            return
+        }
+
+        let directory = url.path
+        guard FileManager.default.isWritableFile(atPath: directory) else {
+            let alert = NSAlert()
+            alert.messageText = String(
+                localized: "setting.advance.vocabulary_notebook_directory_not_writable"
+            )
+            alert.addButton(withTitle: String(localized: "ok"))
+            alert.runModal()
+            return
+        }
+
+        vocabularyNotebookDirectory = directory
     }
 }
 

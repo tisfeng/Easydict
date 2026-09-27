@@ -34,10 +34,7 @@
 }
 
 + (NSString *)crashDirectory {
-    // NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
-    // NSString *directory = [cachePath stringByAppendingPathComponent:@"MMCrash"];
-
-    // 统一放到 MMLogs 文件夹，方便管理
+    // Keep crash reports under the app log root so they are included when exporting logs.
     NSString *directory = [MMManagerForLog logDirectoryWithName:@"Crash"];
 
     NSFileManager *manager = [NSFileManager defaultManager];

@@ -11,6 +11,7 @@ import Foundation
 /// Swift Notification.Name extensions
 extension Notification.Name {
     static let serviceHasUpdated = Notification.Name("serviceHasUpdated")
+    static let githubCopilotModelsDidChange = Notification.Name("githubCopilotModelsDidChange")
     static let openSettings = Notification.Name(EZOpenSettingsNotification)
     static let languagePreferenceChanged = Notification.Name(
         I18nHelper.languagePreferenceChangedNotification
@@ -20,6 +21,8 @@ extension Notification.Name {
     static let didChangeWindowConfiguration = Notification.Name("didChangeWindowConfiguration")
 
     static let maxWindowHeightSettingsChanged = Notification.Name("maxWindowHeightSettingsChanged")
+
+    static let vocabularyNotebookWriteFailed = Notification.Name("vocabularyNotebookWriteFailed")
 
     // System dark mode change notification
     static let appleInterfaceThemeChanged = Notification.Name("AppleInterfaceThemeChangedNotification")
@@ -32,12 +35,14 @@ extension Notification.Name {
 @objc
 extension NSNotification {
     static let serviceHasUpdated = Notification.Name.serviceHasUpdated
+    static let githubCopilotModelsDidChange = Notification.Name.githubCopilotModelsDidChange
     static let openSettings = Notification.Name.openSettings
     static let languagePreferenceChanged = Notification.Name.languagePreferenceChanged
     static let linkButtonUpdated = Notification.Name.linkButtonUpdated
     static let didChangeFontSize = Notification.Name.didChangeFontSize
     static let didChangeWindowConfiguration = Notification.Name.didChangeWindowConfiguration
     static let maxWindowHeightSettingsChanged = Notification.Name.maxWindowHeightSettingsChanged
+    static let vocabularyNotebookWriteFailed = Notification.Name.vocabularyNotebookWriteFailed
     static let appDarkModeDidChange = Notification.Name.appDarkModeDidChange
 }
 
@@ -51,6 +56,8 @@ class UserInfoKey: NSObject {
     static let windowType = "windowType"
     static let serviceType = "serviceType"
     static let autoQuery = "autoQuery"
+
+    static let vocabularyNotebookDirectory = "vocabularyNotebookDirectory"
 }
 
 @objc

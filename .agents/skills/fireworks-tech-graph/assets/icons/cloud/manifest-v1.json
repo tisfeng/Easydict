@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "version": "2026.07-neutral.1",
+  "policy": "Built-in provider-neutral glyphs. Official vendor packs remain external, versioned adapters.",
+  "official_sources": {
+    "aws": "https://aws.amazon.com/architecture/icons/",
+    "azure": "https://learn.microsoft.com/azure/architecture/icons/",
+    "gcp": "https://cloud.google.com/icons"
+  },
+  "icons": [
+    {
+      "id": "generic:traffic",
+      "aliases": ["global traffic", "dns", "cdn"],
+      "badge": "EDGE",
+      "category": "edge",
+      "color": "#2563eb",
+      "glyph": "globe"
+    },
+    {
+      "id": "generic:gateway",
+      "aliases": ["load balancer", "api gateway"],
+      "badge": "GW",
+      "category": "network",
+      "color": "#7c3aed",
+      "glyph": "gateway"
+    },
+    {
+      "id": "generic:compute",
+      "aliases": ["service", "container", "kubernetes workload"],
+      "badge": "APP",
+      "category": "compute",
+      "color": "#059669",
+      "glyph": "compute"
+    },
+    {
+      "id": "generic:database",
+      "aliases": ["relational database", "managed database"],
+      "badge": "DB",
+      "category": "data",
+      "color": "#ea580c",
+      "glyph": "database"
+    },
+    {
+      "id": "generic:stream",
+      "aliases": ["event stream", "message bus"],
+      "badge": "BUS",
+      "category": "integration",
+      "color": "#db2777",
+      "glyph": "stream"
+    },
+    {
+      "id": "generic:observability",
+      "aliases": ["metrics", "telemetry"],
+      "badge": "OBS",
+      "category": "operations",
+      "color": "#0891b2",
+      "glyph": "observe"
+    }
+  ]
+}
