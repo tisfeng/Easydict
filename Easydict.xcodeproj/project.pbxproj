@@ -18,11 +18,6 @@
 		43D9DD6610A34B56B85C8813 /* GitHubCopilot-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 43D9DD6610A34B56B85C8814 /* GitHubCopilot-LICENSE.txt */; };
 		C0FFEEBF2026092400000007 /* GitHubCopilotService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000007 /* GitHubCopilotService.swift */; };
 		C0FFEEBF2026092400000008 /* GitHubCopilotServiceConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000008 /* GitHubCopilotServiceConfigurationView.swift */; };
-		BFC431E797E945B795B81589 /* AppPathManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED70C029AC2438A8EBE25F1 /* AppPathManager.swift */; };
-		44476FC198C54239B507098E /* AppPathManager+Codex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD3C7A500554103B1723150 /* AppPathManager+Codex.swift */; };
-		78F5EB4FCA084046AD550B98 /* AppPathManager+Logs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D3CBE03FBC94E69A460538F /* AppPathManager+Logs.swift */; };
-		B11F773A639D431BB1D320F3 /* AppPathManager+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE8364C45FA492183DC4477 /* AppPathManager+Cache.swift */; };
-		A77009152026000000000001 /* AppPathMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A77009152026000000000002 /* AppPathMigration.swift */; };
 		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
 		02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000003 /* MarkdownLabel.swift */; };
 		02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000004 /* MarkdownToggleButton.swift */; };
@@ -699,11 +694,6 @@
 		43D9DD6610A34B56B85C8814 /* GitHubCopilot-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "GitHubCopilot-LICENSE.txt"; sourceTree = "<group>"; };
 		C0FFEEFD2026092400000007 /* GitHubCopilotService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotService.swift; sourceTree = "<group>"; };
 		C0FFEEFD2026092400000008 /* GitHubCopilotServiceConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotServiceConfigurationView.swift; sourceTree = "<group>"; };
-		FED70C029AC2438A8EBE25F1 /* AppPathManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathManager.swift; sourceTree = "<group>"; };
-		0DD3C7A500554103B1723150 /* AppPathManager+Codex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+Codex.swift"; sourceTree = "<group>"; };
-		8D3CBE03FBC94E69A460538F /* AppPathManager+Logs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+Logs.swift"; sourceTree = "<group>"; };
-		3BE8364C45FA492183DC4477 /* AppPathManager+Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+Cache.swift"; sourceTree = "<group>"; };
-		A77009152026000000000002 /* AppPathMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathMigration.swift; sourceTree = "<group>"; };
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
