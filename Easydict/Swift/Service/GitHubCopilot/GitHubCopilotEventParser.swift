@@ -80,7 +80,8 @@ func parseGitHubCopilotError(fromStdout stdout: String, stderr: String) -> GitHu
 
     for line in stdout.components(separatedBy: "\n") where !line.isEmpty {
         guard let data = line.data(using: .utf8),
-              let event = try? decoder.decode(GitHubCopilotJSONLine.self, from: data)
+              let event = try? decoder.decode(GitHubCopilotJSONLine.self, from: data),
+              event.type == "session.error"
         else { continue }
         guard stdoutMessage == nil else { break }
 

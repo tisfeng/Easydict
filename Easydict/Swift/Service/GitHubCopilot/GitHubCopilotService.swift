@@ -48,6 +48,8 @@ final class GitHubCopilotService: StreamService {
     }
 
     public override func cancelStream() {
+        translationTask?.cancel()
+        translationTask = nil
         runner?.cancel()
         runner = nil
     }
@@ -81,18 +83,30 @@ final class GitHubCopilotService: StreamService {
 
         // Cancel any in-flight runner before replacing it so the previous subprocess does not
         // keep consuming the user's Copilot quota after a new request starts.
-        runner?.cancel()
+        cancelStream()
         let currentRunner = GitHubCopilotRunner()
         runner = currentRunner
-        let baseStream = currentRunner.run(
-            prompt: combinedPrompt,
-            model: model,
-            effort: Defaults[effortKey].cliValue
-        )
+        let selectedModel = model
+        let selectedEffort = Defaults[effortKey]
 
         return AsyncThrowingStream { [weak self] continuation in
             let task = Task {
                 do {
+                    var resolvedModel = selectedModel
+                    var resolvedEffort: String?
+                    // Default needs no capability lookup. Explicit effort is checked against a
+                    // fresh account catalog before any inference can consume quota.
+                    if !selectedEffort.isEmpty {
+                        let catalog = try await GitHubCopilotModelCatalog.load()
+                        if selectedModel.isEmpty { resolvedModel = catalog.defaultModelID }
+                        if catalog.model(for: selectedModel)?.reasoningEfforts.contains(selectedEffort) == true {
+                            resolvedEffort = selectedEffort
+                        }
+                    }
+                    try Task.checkCancellation()
+                    let baseStream = currentRunner.run(
+                        prompt: combinedPrompt, model: resolvedModel, effort: resolvedEffort
+                    )
                     for try await chunk in baseStream {
                         continuation.yield(chunk)
                     }
@@ -124,6 +138,7 @@ final class GitHubCopilotService: StreamService {
                     continuation.finish(throwing: queryError)
                 }
             }
+            self?.translationTask = task
             // Cancelling the task propagates into the for-await loop, which fires the runner's
             // own onTermination handler and stops the subprocess.
             continuation.onTermination = { _ in
@@ -135,37 +150,29 @@ final class GitHubCopilotService: StreamService {
 
     // MARK: Internal
 
-    /// Default for the inherited `modelKey`, which holds the model override edited in the
-    /// configuration view. Empty means "omit `--model`" and keeps the CLI's own default.
+    /// Empty selects the saved CLI model, or its runtime default if none is configured.
     override var defaultModels: [String] {
         [""]
     }
 
-    /// Copilot accepts any model identifier its account exposes as free-form input, so it must
-    /// not participate in the base class's model-list synchronization.
+    /// Copilot's account catalog owns selection; the base class's static list must not reset it.
     override var synchronizesModelWithSupportedModels: Bool {
         false
     }
 
-    /// Free-form model override without the base class's valid-model coercion.
-    ///
-    /// The configuration view accepts any identifier, so the base getter — which resets values
-    /// missing from `validModels` back to the default — would silently discard a custom model
-    /// the first time anything reads `model`.
+    /// Preserve the selected ID even while the asynchronous catalog is unavailable.
     override var model: String {
         get { Defaults[modelKey] }
         set { Defaults[modelKey] = newValue }
     }
 
-    /// Stored reasoning-effort override. `.default` means "do not pass `--reasoning-effort`".
-    ///
-    /// Uses the `cliEffort` slot rather than `reasoningEffort`, whose storage the base class
-    /// already claims with the incompatible `ReasoningEffort` enum.
-    var effortKey: Defaults.Key<GitHubCopilotEffort> {
-        serviceDefaultsKey(.cliEffort, defaultValue: .default)
+    /// Empty omits `--reasoning-effort`; nonempty values come from the CLI catalog.
+    var effortKey: Defaults.Key<String> {
+        serviceDefaultsKey(.cliEffort, defaultValue: "")
     }
 
     // MARK: Private
 
     private var runner: GitHubCopilotRunner?
+    private var translationTask: Task<(), Never>?
 }

@@ -30,12 +30,8 @@ struct GitHubCopilotServiceConfigurationView: View {
         }
 
         Section {
-            ModelInputRow(key: service.modelKey)
-            StaticPickerCell(
-                titleKey: "service.configuration.github_copilot.effort.title",
-                key: service.effortKey,
-                values: GitHubCopilotEffort.allCases
-            )
+            CopilotModelSelection(modelKey: service.modelKey, effortKey: service.effortKey)
+                .id(service.uuid)
         }
         #if AGENT_CLI_DEBUG
         Section {
@@ -60,52 +56,75 @@ struct GitHubCopilotServiceConfigurationView: View {
     private let service: GitHubCopilotService
 }
 
-// MARK: - ModelInputRow
+// MARK: - CopilotModelSelection
 
-/// The model text field with an info button describing the accepted values.
-///
-/// The CLI resolves its model catalog from the signed-in account, so which models work depends on
-/// that account's plan. A free-form field avoids pinning a list that would go stale, and clearing
-/// the field falls back to the CLI's own default model.
-private struct ModelInputRow: View {
+/// Owns loading and picker state locally so catalog updates do not invalidate the service list.
+private struct CopilotModelSelection: View {
     // MARK: Lifecycle
 
-    init(key: Defaults.Key<String>) {
-        _model = .init(key)
+    init(modelKey: Defaults.Key<String>, effortKey: Defaults.Key<String>) {
+        _model = .init(modelKey)
+        _effort = .init(effortKey)
     }
 
     // MARK: Internal
 
     var body: some View {
-        LabeledContent {
-            TextField(
-                text: $model,
-                prompt: Text("service.configuration.github_copilot.model.placeholder")
-            ) {
-                EmptyView()
-            }
-            .multilineTextAlignment(.trailing)
-        } label: {
-            HStack(spacing: 4) {
-                Text("service.configuration.github_copilot.model.title")
+        LabeledContent("service.configuration.github_copilot.model.title") {
+            HStack {
                 Button {
-                    isShowingHelp.toggle()
+                    search = ""
+                    showingModels = true
                 } label: {
-                    Image(systemSymbol: .infoCircle)
-                        .foregroundStyle(.secondary)
+                    HStack {
+                        Text(selectionTitle)
+                        Image(systemSymbol: .chevronUpChevronDown)
+                    }
                 }
-                .buttonStyle(.plain)
-                .popover(isPresented: $isShowingHelp, arrowEdge: .bottom) {
-                    Text(
-                        "service.configuration.github_copilot.model.help \(GitHubCopilotModel.knownModelIDsText)"
-                    )
-                    .font(.callout)
-                    .multilineTextAlignment(.leading)
-                    .frame(width: 340, alignment: .leading)
-                    .padding()
-                    // Popover content is hosted in a separate window and does not inherit the
-                    // app-language locale, so re-apply the surrounding locale here.
-                    .environment(\.locale, locale)
+                .buttonStyle(.borderless)
+                .popover(isPresented: $showingModels) {
+                    modelPicker.environment(\.locale, locale)
+                }
+                Button {
+                    refreshID = UUID()
+                } label: {
+                    Image(systemSymbol: .arrowClockwise)
+                }
+                .buttonStyle(.borderless)
+                .disabled(isLoading)
+                .help("service.github_copilot.catalog.refresh")
+                .accessibilityLabel("service.github_copilot.catalog.refresh")
+            }
+        }
+        .task(id: refreshID) { await reload() }
+        .onChange(of: scenePhase) { phase in
+            if phase == .active { refreshID = UUID() }
+        }
+        if isLoading {
+            HStack {
+                ProgressView().controlSize(.small)
+                Text("service.github_copilot.catalog.loading")
+                    .foregroundStyle(.secondary)
+            }
+        }
+        if let failure {
+            HStack {
+                Text(failure).font(.caption).foregroundStyle(.orange)
+                Spacer()
+                Button("retry") { refreshID = UUID() }
+                    .disabled(isLoading)
+            }
+        }
+        if let catalog, !model.isEmpty || !catalog.defaultModelID.isEmpty, catalog.model(for: model) == nil {
+            Text("service.github_copilot.catalog.selection_unavailable")
+                .font(.caption)
+                .foregroundStyle(.orange)
+        }
+        if !efforts.isEmpty {
+            Picker("service.configuration.github_copilot.effort.title", selection: effortSelection) {
+                Text(defaultEffortTitle).tag("")
+                ForEach(efforts, id: \.self) { value in
+                    Text(GitHubCopilotEffort.title(for: value)).tag(value)
                 }
             }
         }
@@ -113,11 +132,116 @@ private struct ModelInputRow: View {
 
     // MARK: Private
 
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.locale) private var locale
-
-    @State private var isShowingHelp = false
+    @State private var catalog: GitHubCopilotModelCatalog.Snapshot?
+    @State private var isLoading = false
+    @State private var failure: String?
+    @State private var refreshID = UUID()
+    @State private var activeLoad: UUID?
+    @State private var search = ""
+    @State private var showingModels = false
 
     @Default private var model: String
+    @Default private var effort: String
+
+    private var efforts: [String] { catalog?.model(for: model)?.reasoningEfforts ?? [] }
+
+    private var effortSelection: Binding<String> {
+        Binding(get: { efforts.contains(effort) ? effort : "" }, set: { effort = $0 })
+    }
+
+    private var defaultEffortTitle: String {
+        if let value = catalog?.model(for: model)?.defaultReasoningEffort, efforts.contains(value) {
+            return String(
+                format: String(localized: "service.github_copilot.effort.default_value %@"),
+                GitHubCopilotEffort.title(for: value)
+            )
+        }
+        return GitHubCopilotEffort.title(for: "")
+    }
+
+    private var defaultModelTitle: String {
+        guard let catalog, !catalog.defaultModelID.isEmpty else {
+            return String(localized: "service.github_copilot.catalog.default_model")
+        }
+        let name = catalog.models.first { $0.id == catalog.defaultModelID }?.name ?? catalog.defaultModelID
+        return String(format: String(localized: "service.github_copilot.catalog.default_model_value %@"), name)
+    }
+
+    private var selectionTitle: String {
+        model.isEmpty ? defaultModelTitle : catalog?.models.first { $0.id == model }?.name ?? model
+    }
+
+    private var matchingModels: [GitHubCopilotModel] {
+        (catalog?.models ?? []).filter {
+            $0.isAvailable && (search.isEmpty || $0.name.localizedCaseInsensitiveContains(search)
+                || $0.id.localizedCaseInsensitiveContains(search))
+        }
+    }
+
+    private var modelPicker: some View {
+        VStack(alignment: .leading) {
+            TextField("service.github_copilot.catalog.search", text: $search)
+                .textFieldStyle(.roundedBorder)
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    modelButton(id: "", title: defaultModelTitle)
+                    Divider()
+                    ForEach(matchingModels) { option in
+                        modelButton(id: option.id, title: option.name)
+                    }
+                    if matchingModels.isEmpty {
+                        Text(isLoading ? "service.github_copilot.catalog.loading"
+                            : "service.github_copilot.catalog.no_models")
+                            .foregroundStyle(.secondary)
+                            .padding(.vertical, 8)
+                    }
+                }
+            }
+            .frame(maxHeight: 300)
+        }
+        .padding()
+        .frame(width: 320)
+    }
+
+    private func modelButton(id: String, title: String) -> some View {
+        Button {
+            model = id
+            if !efforts.contains(effort) { effort = "" }
+            showingModels = false
+        } label: {
+            HStack {
+                Text(verbatim: title)
+                Spacer()
+                if model == id { Image(systemSymbol: .checkmark) }
+            }
+            .contentShape(Rectangle())
+            .padding(.vertical, 6)
+        }
+        .buttonStyle(.plain)
+    }
+
+    @MainActor
+    private func reload() async {
+        let identifier = UUID()
+        activeLoad = identifier
+        isLoading = true
+        failure = nil
+        defer { if activeLoad == identifier { isLoading = false } }
+        do {
+            let result = try await GitHubCopilotModelCatalog.load()
+            try Task.checkCancellation()
+            guard activeLoad == identifier else { return }
+            catalog = result
+            if !efforts.contains(effort) { effort = "" }
+        } catch is CancellationError {
+            // Switching services or leaving settings cancels the metadata subprocess.
+        } catch {
+            guard activeLoad == identifier else { return }
+            failure = error.localizedDescription
+        }
+    }
 }
 
 // MARK: - CLIStatusRow

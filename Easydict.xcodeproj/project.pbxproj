@@ -659,6 +659,8 @@
 		F955D7120AD72EFC6429A79A /* CodexComponentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB3E639236DC6875625F110 /* CodexComponentStoreTests.swift */; };
 		FA0D2894537C47E1AF63D495 /* QueryServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */; };
 		FBA62739BEA249C9BC0DFBA3 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F35C93D0925433FA0AD6066 /* ClaudeService.swift */; };
+		7F78F6CC528545E58216E75F /* GitHubCopilotModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C482B465C164A73BA9F6B56 /* GitHubCopilotModelCatalog.swift */; };
+		13A893BFBE2B4FD695223394 /* GitHubCopilotCatalogClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1438,6 +1440,8 @@
 		F17239571D44D3BCC9D24831 /* CodexManagedProcessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedProcessTests.swift; sourceTree = "<group>"; };
 		FA76B47A0150434485FCBBAD /* MDictReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictReaderTests.swift; sourceTree = "<group>"; };
 		FED70C029AC2438A8EBE25F1 /* AppPathManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathManager.swift; sourceTree = "<group>"; };
+		2C482B465C164A73BA9F6B56 /* GitHubCopilotModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelCatalog.swift; sourceTree = "<group>"; };
+		3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotCatalogClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3907,6 +3911,8 @@
 				C0FFEEFD2026092400000003 /* GitHubCopilotEventParser.swift */,
 				C0FFEEFD2026092400000004 /* GitHubCopilotLogger.swift */,
 				C0FFEEFD2026092400000005 /* GitHubCopilotModel.swift */,
+				3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */,
+				2C482B465C164A73BA9F6B56 /* GitHubCopilotModelCatalog.swift */,
 				C0FFEEFD2026092400000006 /* GitHubCopilotRunner.swift */,
 				43D9DD6610A34B56B85C8812 /* GitHubCopilotEnvironment.swift */,
 				43D9DD6610A34B56B85C8814 /* GitHubCopilot-LICENSE.txt */,
@@ -4691,6 +4697,8 @@
 				C0FFEEBF2026092400000003 /* GitHubCopilotEventParser.swift in Sources */,
 				C0FFEEBF2026092400000004 /* GitHubCopilotLogger.swift in Sources */,
 				C0FFEEBF2026092400000005 /* GitHubCopilotModel.swift in Sources */,
+				13A893BFBE2B4FD695223394 /* GitHubCopilotCatalogClient.swift in Sources */,
+				7F78F6CC528545E58216E75F /* GitHubCopilotModelCatalog.swift in Sources */,
 				C0FFEEBF2026092400000006 /* GitHubCopilotRunner.swift in Sources */,
 				43D9DD6610A34B56B85C8811 /* GitHubCopilotEnvironment.swift in Sources */,
 				C0FFEEBF2026092400000007 /* GitHubCopilotService.swift in Sources */,

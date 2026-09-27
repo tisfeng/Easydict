@@ -135,8 +135,8 @@ final class GitHubCopilotRunner: @unchecked Sendable {
     /// must not accumulate in the user's own CLI state. Account identifiers are copied separately
     /// into this directory so the CLI can locate its existing system-keychain credentials.
     ///
-    /// The trade-off is that the user's own `~/.copilot/settings.json` does not apply, so their
-    /// configured default model is not picked up; the model is chosen in Easydict instead.
+    /// The user's own settings do not apply wholesale. Only the saved model selection is read
+    /// separately and passed explicitly when Easydict is configured to follow the CLI default.
     ///
     /// `COPILOT_ALLOW_ALL` is removed unconditionally: the value `true` makes the CLI trust the
     /// working directory and load its skills, plugins, MCP servers, and hooks — including hooks
@@ -189,6 +189,43 @@ final class GitHubCopilotRunner: @unchecked Sendable {
         }
     }
 
+    /// Creates the disposable sandbox for one invocation.
+    ///
+    /// Cleans up after itself if any directory creation fails, so a partial root cannot be
+    /// left behind for the caller to miss.
+    static func makeSandboxDirectory() throws -> Sandbox {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("easydict-copilot-\(UUID().uuidString)", isDirectory: true)
+        let home = root.appendingPathComponent("home", isDirectory: true)
+        let working = root.appendingPathComponent("work", isDirectory: true)
+        let logs = root.appendingPathComponent("logs", isDirectory: true)
+        do {
+            for directory in [root, home, working, logs] {
+                try FileManager.default.createDirectory(
+                    at: directory, withIntermediateDirectories: true,
+                    attributes: [.posixPermissions: 0o700]
+                )
+            }
+        } catch {
+            try? FileManager.default.removeItem(at: root)
+            throw error
+        }
+        return Sandbox(root: root, homeDirectory: home, workingDirectory: working, logDirectory: logs)
+    }
+
+    /// Removes the sandbox, discarding sessions, logs, and caches written during the run.
+    ///
+    /// The sandbox can contain prompt text, so a failure is reported rather than swallowed.
+    static func removeSandbox(_ sandbox: Sandbox) {
+        do {
+            try FileManager.default.removeItem(at: sandbox.root)
+        } catch let error as NSError where error.code == NSFileNoSuchFileError {
+            // Already gone; nothing to clean up.
+        } catch {
+            logError("Failed to remove GitHub Copilot sandbox at \(sandbox.root.path): \(error)")
+        }
+    }
+
     /// Runs `copilot -p` with the isolation flags above and streams text deltas as they arrive.
     ///
     /// - Returns: A stream that yields text deltas, and throws `GitHubCopilotError.unexpectedToolUse`
@@ -225,6 +262,8 @@ final class GitHubCopilotRunner: @unchecked Sendable {
                     let sandbox = try Self.makeSandboxDirectory()
                     createdSandbox = sandbox
                     let environment = GitHubCopilotEnvironment.resolve()
+                    let resolvedModel = model.isEmpty
+                        ? try GitHubCopilotEnvironment.defaultModel(environment: environment) : model
                     try GitHubCopilotEnvironment.prepareAuthentication(
                         in: sandbox.homeDirectory, environment: environment
                     )
@@ -242,7 +281,7 @@ final class GitHubCopilotRunner: @unchecked Sendable {
                     process.executableURL = URL(fileURLWithPath: binaryPath)
                     process.arguments = Self.buildArguments(
                         prompt: prompt,
-                        model: model,
+                        model: resolvedModel,
                         effort: effort,
                         logDirectoryPath: sandbox.logDirectory.path
                     )
@@ -343,43 +382,6 @@ final class GitHubCopilotRunner: @unchecked Sendable {
     /// Set by `cancel()` so the termination handler can tell a user stop from a real failure.
     private var isCancelled = false
     private let stateLock = NSLock()
-
-    /// Creates the disposable sandbox for one invocation.
-    ///
-    /// Cleans up after itself if any directory creation fails, so a partial root cannot be
-    /// left behind for the caller to miss.
-    private static func makeSandboxDirectory() throws -> Sandbox {
-        let root = FileManager.default.temporaryDirectory
-            .appendingPathComponent("easydict-copilot-\(UUID().uuidString)", isDirectory: true)
-        let home = root.appendingPathComponent("home", isDirectory: true)
-        let working = root.appendingPathComponent("work", isDirectory: true)
-        let logs = root.appendingPathComponent("logs", isDirectory: true)
-        do {
-            for directory in [root, home, working, logs] {
-                try FileManager.default.createDirectory(
-                    at: directory, withIntermediateDirectories: true,
-                    attributes: [.posixPermissions: 0o700]
-                )
-            }
-        } catch {
-            try? FileManager.default.removeItem(at: root)
-            throw error
-        }
-        return Sandbox(root: root, homeDirectory: home, workingDirectory: working, logDirectory: logs)
-    }
-
-    /// Removes the sandbox, discarding sessions, logs, and caches written during the run.
-    ///
-    /// The sandbox can contain prompt text, so a failure is reported rather than swallowed.
-    private static func removeSandbox(_ sandbox: Sandbox) {
-        do {
-            try FileManager.default.removeItem(at: sandbox.root)
-        } catch let error as NSError where error.code == NSFileNoSuchFileError {
-            // Already gone; nothing to clean up.
-        } catch {
-            logError("Failed to remove GitHub Copilot sandbox at \(sandbox.root.path): \(error)")
-        }
-    }
 
     /// Reads stderr asynchronously into a capped raw-byte buffer.
     ///

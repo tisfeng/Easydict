@@ -27,6 +27,8 @@ enum GitHubCopilotError: Error, LocalizedError, Equatable {
     case quotaExceeded(message: String?)
     /// The CLI reported a tool request despite running with no available tools.
     case unexpectedToolUse
+    /// The CLI model catalog could not be retrieved or used within the time limit.
+    case catalogUnavailable
     /// The CLI exited with a non-zero code for an unrecognised reason,
     /// including process failures and unexpected termination.
     case cliError(message: String)
@@ -47,6 +49,8 @@ enum GitHubCopilotError: Error, LocalizedError, Equatable {
             return base
         case .unexpectedToolUse:
             return String(localized: "service.github_copilot.unexpected_tool_use")
+        case .catalogUnavailable:
+            return String(localized: "service.github_copilot.catalog.unavailable")
         case let .cliError(message):
             return String(format: String(localized: "service.github_copilot.cli_error %@"), message)
         }

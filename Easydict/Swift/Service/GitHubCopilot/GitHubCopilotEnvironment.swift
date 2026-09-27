@@ -56,6 +56,20 @@ enum GitHubCopilotEnvironment {
         try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: destination.path)
     }
 
+    /// Reads only the saved model preference; hooks, permissions and tools remain isolated.
+    /// A session-only `/model` selection is intentionally not imported.
+    static func defaultModel(environment: [String: String]) throws -> String {
+        let home = environment["COPILOT_HOME"].flatMap { $0.isEmpty ? nil : $0 }
+            ?? ((environment["HOME"] ?? NSHomeDirectory()) as NSString).appendingPathComponent(".copilot")
+        let source = URL(fileURLWithPath: (home as NSString).expandingTildeInPath)
+            .appendingPathComponent("settings.json")
+        guard FileManager.default.fileExists(atPath: source.path) else { return "" }
+        let decoder = JSONDecoder()
+        decoder.allowsJSON5 = true
+        return try decoder.decode(ModelPreference.self, from: Data(contentsOf: source))
+            .model?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    }
+
     // MARK: Private
 
     private struct Account: Codable {
@@ -66,6 +80,10 @@ enum GitHubCopilotEnvironment {
     private struct AccountState: Codable {
         let lastLoggedInUser: Account?
         let loggedInUsers: [Account]?
+    }
+
+    private struct ModelPreference: Decodable {
+        let model: String?
     }
 
     private static let shellKeys = [
