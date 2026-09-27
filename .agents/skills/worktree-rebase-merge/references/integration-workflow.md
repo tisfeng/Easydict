@@ -63,8 +63,8 @@ fetch、pull 或 push。
   用户限定的提交范围与实际不一致时停止，不用 reset、交互式 rebase 或 cherry-pick 静默改写。
 - 从源 worktree 运行 `git rebase <target>`。冲突时只处理位于允许路径且不需要产品判断的
   机械冲突，只暂存已解决文件并运行 `git rebase --continue`；其他冲突保留现场并停止。
-- rebase 后要求源 worktree 干净，运行 `git diff --check <target>...HEAD`；只在仓库规则、
-  用户请求或变更风险要求时扩大验证。
+- rebase 后要求源 worktree 干净，运行 `git diff --check <target>...HEAD`。构建、测试等超出
+  该检查的验证，按仓库规则、用户授权或变更风险执行；未运行时在回执中记录未验证部分。
 
 ## Merge 与临时 worktree
 

@@ -13,8 +13,10 @@
 - 源/目标 worktree 的最终状态。
 - 临时 worktree 路径与清理结果（如适用）。
 - 原始 detached commit、源分支是创建还是复用（如适用）。
+- 超出 `git diff --check` 的验证：实际运行的命令与结果；未运行时写“未执行（本次仅运行
+  git diff --check）”。
 
-直接提交时，Rebase、Merge 和 Push 都明确写“未执行”。
+直接提交时，Rebase、Merge 和 Push 都明确写“未执行”，验证项写“未执行（直接提交模式）”。
 
 ## 提交回执
 

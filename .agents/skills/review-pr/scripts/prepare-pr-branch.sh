@@ -12,6 +12,9 @@ Accepted PR references:
   https://github.com/<base-owner>/<base-repo>/pull/<number>
   <base-owner>/<base-repo>#<number>
   <number>
+Ordinary review preserves local-only commits on a verified self-authored PR
+branch and reviews the frozen remote Git objects. An existing clean checkout
+of that branch is reused automatically; no new review branch is needed.
 Options:
   --expected-head SHA
       Require metadata and fetched head to match the caller's frozen snapshot.
@@ -31,8 +34,9 @@ Options:
       integration or conflict resolution. Never push the result.
   --reuse-branch BRANCH
       In local mode, require a previously selected PR branch and keep using
-      it. The branch must still point at the frozen head and have a compatible
-      upstream; preparation fails instead of silently selecting a fallback.
+      it. A self-authored branch may contain the frozen head plus local commits
+      in ordinary review; latest-base still requires the exact PR head.
+      Incompatible state fails instead of silently selecting a fallback.
 USAGE
 }
 
@@ -195,8 +199,8 @@ upstream_targets_pr_head() {
 }
 
 # Classify whether the PR head branch can be prepared under its exact local
-# name. Only a self-authored PR may reuse an equivalent upstream alias or add a
-# missing upstream; all other mismatches retain the collision fallback.
+# name. A self-authored PR may reuse an equivalent upstream alias or add a
+# missing upstream; incompatible self-authored state must stop without fallback.
 inspect_head_branch() {
   local branch=$1
   local expected_upstream=$2
@@ -227,10 +231,11 @@ inspect_head_branch() {
 
     actual_upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/${branch}")
     if [[ $actual_upstream == "$expected_upstream" ]]; then
+      receipt_self_authored_branch=$self_authored_pr
       return 0
     fi
 
-    if current_user_owns_pr; then
+    if [[ $self_authored_pr == true ]]; then
       if [[ -z $actual_upstream ]]; then
         set_selected_upstream=true
         receipt_self_authored_branch=true
@@ -303,8 +308,15 @@ validate_reused_branch() {
   fi
 
   actual_head=$(git rev-parse "refs/heads/${branch}")
-  [[ $actual_head == "$head_oid" ]] || \
-    fail "Reused review branch '${branch}' is at '${actual_head}', not PR head '${head_oid}'."
+  if [[ $actual_head != "$head_oid" ]]; then
+    if [[ $branch == "$head_branch" && $self_authored_pr == true && $mode == prepare ]] && \
+      git merge-base --is-ancestor "$head_oid" "$actual_head"; then
+      review_mode=git_objects
+    else
+      fail "Reused review branch '${branch}' is at '${actual_head}', not PR head '${head_oid}'."
+    fi
+  fi
+  expected_local_head=$actual_head
 
   actual_upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/${branch}")
   [[ -n $actual_upstream ]] || \
@@ -325,7 +337,9 @@ validate_reused_branch() {
   selected_upstream_ref=$actual_upstream
   expected_checkout_upstream=$actual_upstream
   receipt_self_authored_branch=false
-  [[ $branch == "$head_branch" ]] && receipt_self_authored_branch=true
+  if [[ $branch == "$head_branch" ]]; then
+    receipt_self_authored_branch=$self_authored_pr
+  fi
 }
 
 require_expected_upstream() {
@@ -346,6 +360,7 @@ require_expected_upstream() {
 
 # Capture the caller checkout so worktree mode can prove it stayed untouched.
 capture_source_checkout() {
+  source_path=$(git rev-parse --show-toplevel)
   source_branch=$(git branch --show-current || true)
   source_head=$(git rev-parse HEAD)
   source_status=$(git status --porcelain=v1)
@@ -354,9 +369,9 @@ capture_source_checkout() {
 # Fail if worktree preparation changed the checkout that invoked the helper.
 verify_source_checkout() {
   local actual_branch actual_head actual_status
-  actual_branch=$(git branch --show-current || true)
-  actual_head=$(git rev-parse HEAD)
-  actual_status=$(git status --porcelain=v1)
+  actual_branch=$(git -C "$source_path" branch --show-current || true)
+  actual_head=$(git -C "$source_path" rev-parse HEAD)
+  actual_status=$(git -C "$source_path" status --porcelain=v1)
 
   [[ $actual_branch == "$source_branch" ]] || \
     fail "Source checkout branch changed during worktree preparation."
@@ -408,6 +423,25 @@ find_branch_worktree() {
   done < <(git worktree list --porcelain)
 
   return 1
+}
+
+# Follow a verified self-authored branch to its existing checkout. Never force
+# a checkout in the caller or treat a dirty/missing target as a branch collision.
+select_existing_pr_worktree() {
+  local existing_path
+  [[ $self_authored_pr == true ]] || return 0
+  [[ -z $reuse_branch || $reuse_branch == "$head_branch" ]] || return 0
+  branch_checked_out_elsewhere "$head_branch" || return 0
+  existing_path=$(find_branch_worktree "$head_branch")
+  [[ -d $existing_path ]] || fail "PR checkout '${existing_path}' is unavailable."
+  [[ $(git -C "$existing_path" branch --show-current) == "$head_branch" ]] || \
+    fail "PR checkout '${existing_path}' no longer owns '${head_branch}'."
+  [[ -z $(git -C "$existing_path" status --porcelain=v1) ]] || \
+    fail "PR checkout '${existing_path}' has uncommitted changes; preserve it and resolve before preparation."
+  capture_source_checkout
+  cd -- "$existing_path"
+  reused_worktree=true
+  printf 'Reusing existing PR checkout: %s\n' "$existing_path"
 }
 
 # Reuse only an exact, clean worktree snapshot; never repair or overwrite it.
@@ -495,8 +529,8 @@ prepare_pr_branch() {
     [[ $current_branch == "$reuse_branch" ]] || \
       fail "Prepared checkout is not on reused review branch '${reuse_branch}'."
     actual_head=$(git rev-parse HEAD)
-    [[ $actual_head == "$head_oid" ]] || \
-      fail "Prepared reused branch '${reuse_branch}' is at '${actual_head}', not PR head '${head_oid}'."
+    [[ $actual_head == "$expected_local_head" ]] || \
+      fail "Prepared reused branch '${reuse_branch}' changed during preparation."
 
     if [[ $mode == merge ]]; then
       merge_latest_base_into_current_branch "$reuse_branch" "$selected_upstream_ref"
@@ -506,12 +540,19 @@ prepare_pr_branch() {
     printf '\nPrepared PR #%s: %s\n' "$pr_number" "$pr_url"
     printf 'Remote: %s (%s)\n' "$remote_name" "https://github.com/${head_owner}/${head_repo}.git"
     printf 'Branch: %s (reused from prior preparation)\n' "$reuse_branch"
+    if [[ $review_mode == git_objects ]]; then
+      printf 'Checkout SHA: %s (local commits preserved; review frozen Git objects)\n' "$actual_head"
+    fi
     printf 'Upstream: %s\n' "$selected_upstream_ref"
     printf 'Head SHA: %s\n' "$head_oid"
     return 0
   fi
 
   inspect_head_branch "$head_branch" "$upstream_ref" "$base_branch"
+  if [[ -n $collision_reason && $self_authored_pr == true ]]; then
+    receipt_collision=$collision_reason
+    fail "Cannot reuse self-authored PR branch: ${collision_reason}. Inspect its identity/state before retrying; no fallback branch was selected."
+  fi
 
   prepare_head_ref
   fetched_head=$(git rev-parse "$remote_ref")
@@ -527,7 +568,16 @@ prepare_pr_branch() {
         git rev-list --left-right --count \
           "refs/heads/${head_branch}...${remote_ref}"
       )
-      collision_reason="local branch '${head_branch}' does not safely fast-forward to PR head '${head_oid}' (ahead ${ahead_count}, behind ${behind_count})"
+      if [[ $self_authored_pr == true ]]; then
+        if [[ $behind_count == 0 && $mode == prepare ]]; then
+          review_mode=git_objects
+          expected_local_head=$local_head
+        else
+          fail "Self-authored PR branch '${head_branch}' is not PR head '${head_oid}' (ahead ${ahead_count}, behind ${behind_count}). Preserve local commits; divergence or latest-base integration requires a separate decision."
+        fi
+      else
+        collision_reason="local branch '${head_branch}' does not safely fast-forward to PR head '${head_oid}' (ahead ${ahead_count}, behind ${behind_count})"
+      fi
     fi
   fi
 
@@ -563,7 +613,9 @@ prepare_pr_branch() {
     else
       git switch "$head_branch"
     fi
-    git merge --ff-only "$upstream_ref"
+    if [[ $review_mode != git_objects ]]; then
+      git merge --ff-only "$head_oid"
+    fi
     if [[ $set_selected_upstream == true ]]; then
       git branch --set-upstream-to="$upstream_ref" "$head_branch"
       selected_upstream_ref=$upstream_ref
@@ -579,8 +631,9 @@ prepare_pr_branch() {
     fail "Prepared checkout is not on PR branch '${head_branch}'."
   require_expected_upstream "$head_branch" "$selected_upstream_ref"
   actual_head=$(git rev-parse HEAD)
-  [[ $actual_head == "$head_oid" ]] || \
-    fail "Prepared branch '${head_branch}' is at '${actual_head}', not PR head '${head_oid}'."
+  [[ $actual_head == "${expected_local_head:-$head_oid}" ]] || \
+    fail "Prepared branch '${head_branch}' changed from the selected snapshot."
+  expected_local_head=$actual_head
 
   if [[ $mode == "merge" ]]; then
     merge_latest_base_into_current_branch "$current_branch" "$selected_upstream_ref"
@@ -593,6 +646,9 @@ prepare_pr_branch() {
   printf 'Upstream: %s\n' "$selected_upstream_ref"
   if [[ $receipt_self_authored_branch == true ]]; then
     printf 'Local branch: reused for self-authored PR\n'
+  fi
+  if [[ $review_mode == git_objects ]]; then
+    printf 'Checkout SHA: %s (local commits preserved; review frozen Git objects)\n' "$actual_head"
   fi
   printf 'Head SHA: %s\n' "$head_oid"
 }
@@ -765,12 +821,8 @@ prepare_review_worktree() {
   print_worktree_summary
 }
 
-compute_script_sha256() {
-  if command -v shasum >/dev/null 2>&1; then
-    shasum -a 256 "$1" | awk '{print $1}'
-  else
-    sha256sum "$1" | awk '{print $1}'
-  fi
+compute_helper_fingerprint() {
+  python3 "${script_dir}/prepare_helper_fingerprint.py"
 }
 
 finalize_preparation() {
@@ -781,12 +833,21 @@ finalize_preparation() {
     receipt_path=$worktree_path
     verify_source_checkout
   fi
+  if [[ $reused_worktree == true ]]; then
+    verify_source_checkout
+  fi
   receipt_branch=$(git -C "$receipt_path" branch --show-current)
   receipt_head=$(git -C "$receipt_path" rev-parse HEAD)
   receipt_upstream=$(git -C "$receipt_path" for-each-ref --format='%(upstream:short)' "refs/heads/${receipt_branch}")
   [[ -z $(git -C "$receipt_path" status --porcelain=v1) ]] || fail "Prepared checkout is no longer clean."
   if [[ $mode == prepare ]]; then
-    [[ $receipt_head == "$head_oid" ]] || fail "Prepared checkout no longer matches PR head."
+    if [[ $review_mode == git_objects ]]; then
+      [[ $receipt_self_authored_branch == true && $receipt_branch == "$head_branch" && \
+        $receipt_head == "$expected_local_head" ]] || fail "Preserved PR branch changed during preparation."
+      git merge-base --is-ancestor "$head_oid" "$receipt_head" || fail "Preserved branch lost PR head."
+    else
+      [[ $receipt_head == "$head_oid" ]] || fail "Prepared checkout no longer matches PR head."
+    fi
     [[ -n $expected_checkout_upstream && $receipt_upstream == "$expected_checkout_upstream" ]] || \
       fail "Prepared upstream changed."
     if [[ $receipt_self_authored_branch == true ]]; then
@@ -801,8 +862,12 @@ finalize_preparation() {
         fail "Integration is not the frozen head/base merge."
     fi
   fi
+  read -r receipt_ahead receipt_behind < <(git rev-list --left-right --count "$receipt_head...$head_oid")
+  if [[ $mode == merge ]]; then review_mode=integration; fi
   receipt_merge_base=$(git merge-base --all "$base_oid" "$head_oid")
   [[ -n $receipt_merge_base && $receipt_merge_base != *$'\n'* ]] || fail "Review needs an explicit unique merge-base."
+  [[ $(compute_helper_fingerprint) == "$helper_fingerprint" ]] || \
+    fail "Preparation assets changed during execution. Rerun preparation with a stable skill installation."
   phase=complete
 }
 
@@ -812,25 +877,37 @@ emit_receipt() {
     "${head_oid:-}" "${base_oid:-}" "${base_branch:-}" "${receipt_merge_base:-}" \
     "${receipt_path:-}" "${receipt_branch:-}" "${receipt_head:-}" "${receipt_upstream:-}" \
     "$receipt_collision" "$receipt_self_authored_branch" "$checkout_mode" "$mode" \
-    "$head_fetches" "$base_fetches" "$script_file" "$script_sha256" "$reuse_branch" >&3 <<'PY'
+    "$head_fetches" "$base_fetches" "$helper_fingerprint" "$reuse_branch" \
+    "$review_mode" "$reused_worktree" "${receipt_ahead:-}" "${receipt_behind:-}" >&3 <<'PY'
 import json
 import sys
 (code, phase, repo, number, head, base, base_branch, merge_base, path, branch,
  checkout_head, upstream, collision, self_branch, checkout_mode, mode,
- head_fetches, base_fetches, script_file, script_sha256, reused_branch) = sys.argv[1:]
+ head_fetches, base_fetches, helper_fingerprint, reused_branch,
+ review_mode, reused_worktree, ahead, behind) = sys.argv[1:]
 success = code == "0" and phase == "complete"
 print(json.dumps({
-    "schema_version": 1, "status": "prepared" if success else "failed",
+    "schema_version": 2, "status": "prepared" if success else "failed",
     "exit_code": int(code), "phase": phase, "repo": repo, "number": int(number),
     "head_sha": head, "base_sha": base, "base_branch": base_branch,
     "merge_base_sha": merge_base,
     "checkout": {"path": path, "branch": branch, "head_sha": checkout_head,
                  "upstream": upstream or None, "dirty": False if success else None},
+    "review": {"head_sha": head, "mode": review_mode if success else None,
+               "ahead": int(ahead) if success else None,
+               "behind": int(behind) if success else None},
+    "selection_reason": ("self_authored_local_commits" if review_mode == "git_objects"
+                         else "isolated_worktree" if checkout_mode == "worktree"
+                         else "existing_worktree" if reused_worktree == "true"
+                         else "collision_fallback" if collision
+                         else "self_authored_branch" if self_branch == "true"
+                         else "pr_head_branch") if success else None,
+    "reused_worktree": reused_worktree == "true",
     "collision_reason": collision or None,
     "reused_branch": reused_branch or None,
     "self_authored_branch_reused": self_branch == "true" if success else None,
-    "helper": {"path": script_file, "sha256": script_sha256},
-    "source_unchanged": True if success and checkout_mode == "worktree" else None,
+    "helper": json.loads(helper_fingerprint),
+    "source_unchanged": True if success and (checkout_mode == "worktree" or reused_worktree == "true") else None,
     "integration": mode == "merge",
     "actions": {"head_fetches": int(head_fetches), "base_fetches": int(base_fetches)},
 }, ensure_ascii=False))
@@ -844,13 +921,16 @@ snapshot_file=""
 snapshot_sha256=""
 json_output=false
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-script_file="${script_dir}/$(basename -- "${BASH_SOURCE[0]}")"
-script_sha256=$(compute_script_sha256 "$script_file")
+helper_fingerprint=$(compute_helper_fingerprint)
 phase=arguments
 head_fetches=0
 base_fetches=0
 receipt_collision=""
 receipt_self_authored_branch=false
+self_authored_pr=false
+review_mode=checkout
+reused_worktree=false
+expected_local_head=""
 expected_checkout_upstream=""
 reuse_branch=""
 head_remote=""
@@ -928,6 +1008,10 @@ read_pr_metadata
 if [[ $checkout_mode == "worktree" ]]; then
   prepare_review_worktree
 else
+  if git show-ref --verify --quiet "refs/heads/${head_branch}" && current_user_owns_pr; then
+    self_authored_pr=true
+  fi
+  select_existing_pr_worktree
   prepare_pr_branch
 fi
 finalize_preparation

@@ -89,6 +89,18 @@ python3 "<review-skill-dir>/scripts/collect_review_snapshot.py" \
 `git diff --name-status` 和完整 `git diff` 收集。不用本地 latest-base merge HEAD 替代 remote head；
 集成结果另行取证并标明归属。
 
+准备回执的 `review.mode: git_objects` 表示本地功能分支包含未推送提交。必须使用
+`review.head_sha` 与冻结 base/merge-base 收集 diff；所有补读的源码、测试、配置和调用链
+上下文使用 `git show <review-head-sha>:<path>`（基线使用 merge-base SHA），文件枚举使用
+`git ls-tree -r --name-only <review-head-sha>`。不以当前工作区的 `cat`、`rg` 或编辑器内容
+解释远程代码；报告位置链接到准确远程 SHA，而非内容不同的本地文件。远程 snapshot 和
+完整 threads/checks 的收集、最终刷新仍照常执行。
+
+该模式不能把当前 checkout 的构建或测试结果归属给远程 PR。优先使用绑定准确 head 的 CI；
+必须实际运行该版本时，使用用户明确授权的隔离 checkout，并复验其 SHA。未经授权不为测试
+自动新建分支或 worktree，不自动推送本地提交。收尾时复验本地分支/HEAD 与回执一致；漂移
+时重新准备并明确当前本地状态，不能将旧回执当作最新状态。
+
 根据仓库规则、变更风险和用户授权执行针对性验证。准确同一 `headRefOid` 的已完成且
 全部通过 checks 可作为证据，不默认重跑同范围的本地全量 CI；真实 finding、用户要求、
 仓库强制检查或远程未覆盖的变更仍需验证。checks 失败或 pending 是审查状态；除非
