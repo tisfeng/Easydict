@@ -22,6 +22,11 @@ extension AppPathManager {
         cacheDirectory.appendingPathComponent("mdict-metadata", isDirectory: true)
     }
 
+    var githubCopilotModelCatalogURL: URL {
+        cacheDirectory.appendingPathComponent("github-copilot", isDirectory: true)
+            .appendingPathComponent("models.json")
+    }
+
     /// The previous downloaded pronunciation audio location.
     var legacyAudioCacheDirectory: URL {
         cachesDirectory.appendingPathComponent("audio", isDirectory: true)

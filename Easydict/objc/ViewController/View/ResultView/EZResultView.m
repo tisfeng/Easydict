@@ -25,7 +25,6 @@
 @property (nonatomic, strong) EZHoverButton *arrowButton;
 @property (nonatomic, strong) EZHoverButton *stopButton;
 @property (nonatomic, strong) EZHoverButton *retryButton;
-@property (nonatomic, strong, nullable) NSUUID *modelSelectionRequest;
 
 @end
 
@@ -273,23 +272,6 @@
 
 #pragma mark - Setter
 
-- (void)setService:(EZQueryService *)service {
-    if (_service != service) {
-        self.modelSelectionRequest = nil;
-        self.serviceModelButton.enabled = YES;
-    }
-    _service = service;
-}
-
-- (void)viewDidMoveToWindow {
-    [super viewDidMoveToWindow];
-    if (!self.window) {
-        self.modelSelectionRequest = nil;
-        self.serviceModelButton.enabled = YES;
-        [self updateServiceModelButton];
-    }
-}
-
 - (void)setResult:(EZQueryResult *)result {
     _result = result;
     
@@ -470,38 +452,10 @@
 
 - (void)showModelSelectionMenu:(EZButton *)sender {
     EZStreamService *service = (EZStreamService *)self.service;
-    if (![self isLLLStreamService:service] || self.modelSelectionRequest) {
+    if (![self isLLLStreamService:service]) {
         return;
     }
 
-    NSUUID *request = NSUUID.UUID;
-    self.modelSelectionRequest = request;
-    __weak NSWindow *originWindow = self.window;
-    sender.enabled = NO;
-    NSString *loadingTitle = NSLocalizedString(@"service.github_copilot.catalog.loading", nil);
-    sender.title = loadingTitle;
-    sender.hoverTitle = loadingTitle;
-    sender.highlightTitle = loadingTitle;
-    [self setNeedsUpdateConstraints:YES];
-
-    mm_weakify(self);
-    [service loadModelsForSelectionWithCompletion:^(NSString *errorMessage) {
-        mm_strongify(self);
-        if (!self || ![self.modelSelectionRequest isEqual:request] || self.service != service) {
-            return;
-        }
-        self.modelSelectionRequest = nil;
-        sender.enabled = YES;
-        [self updateServiceModelButton];
-        if (!originWindow || self.window != originWindow || !originWindow.isVisible || originWindow.isMiniaturized || self.isHiddenOrHasHiddenAncestor) {
-            return;
-        }
-        [self presentModelSelectionMenu:sender errorMessage:errorMessage];
-    }];
-}
-
-- (void)presentModelSelectionMenu:(EZButton *)sender errorMessage:(nullable NSString *)errorMessage {
-    EZStreamService *service = (EZStreamService *)self.service;
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
     for (NSString *model in service.selectableModels) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:[service modelSelectionTitleFor:model]
@@ -512,30 +466,12 @@
         item.toolTip = model.length ? model : item.title;
         [menu addItem:item];
     }
-    if (errorMessage) {
+    NSString *hint = service.modelSelectionHint;
+    if (hint.length) {
         [menu addItem:NSMenuItem.separatorItem];
-        NSMenuItem *errorItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"service.github_copilot.catalog.unavailable", nil)
-                                                        action:nil keyEquivalent:@""];
-        errorItem.toolTip = errorMessage;
-        [menu addItem:errorItem];
-        NSMenuItem *retryItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"retry", nil)
-                                                        action:@selector(retryModelSelection:) keyEquivalent:@""];
-        retryItem.target = self;
-        retryItem.representedObject = service;
-        [menu addItem:retryItem];
+        [menu addItem:[[NSMenuItem alloc] initWithTitle:hint action:nil keyEquivalent:@""]];
     }
     [menu popUpBelowView:sender];
-}
-
-- (void)retryModelSelection:(NSMenuItem *)sender {
-    EZQueryService *service = sender.representedObject;
-    __weak NSWindow *originWindow = self.window;
-    // Reopen after the current menu has left its tracking loop.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (service && self.service == service && originWindow && self.window == originWindow && originWindow.isVisible) {
-            [self showModelSelectionMenu:self.serviceModelButton];
-        }
-    });
 }
 
 - (void)modelDidSelected:(NSMenuItem *)sender {
@@ -553,7 +489,7 @@
 }
 
 - (void)updateServiceModelButton {
-    if (self.modelSelectionRequest || ![self isLLLStreamService:self.service]) {
+    if (![self isLLLStreamService:self.service]) {
         return;
     }
     EZStreamService *service = (EZStreamService *)self.service;

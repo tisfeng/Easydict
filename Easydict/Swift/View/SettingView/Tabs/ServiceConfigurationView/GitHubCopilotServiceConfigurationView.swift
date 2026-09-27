@@ -77,7 +77,6 @@ private struct CopilotModelSelection: View {
                 Button {
                     search = ""
                     showingModels = true
-                    refreshID = UUID()
                 } label: {
                     HStack {
                         Text(selectionTitle)
@@ -89,7 +88,7 @@ private struct CopilotModelSelection: View {
                     modelPicker.environment(\.locale, locale)
                 }
                 Button {
-                    refreshID = UUID()
+                    Task { await store.refresh() }
                 } label: {
                     Image(systemSymbol: .arrowClockwise)
                 }
@@ -99,13 +98,20 @@ private struct CopilotModelSelection: View {
                 .accessibilityLabel("service.github_copilot.catalog.refresh")
             }
         }
-        .task(id: refreshID) { await store.refresh() }
         .onChange(of: store.revision) { _ in
             store.normalizeEffort(for: model, effortKey: service.effortKey)
         }
-        .onChange(of: scenePhase) { phase in
-            if phase == .active { refreshID = UUID() }
+        if let updatedAt = catalog?.updatedAt {
+            Text(String(
+                format: String(localized: "service.github_copilot.catalog.updated_at %@"),
+                updatedAt.formatted(date: .abbreviated, time: .shortened)
+            ))
+            .font(.caption)
+            .foregroundStyle(.secondary)
         }
+        Text("service.github_copilot.catalog.refresh_in_settings")
+            .font(.caption)
+            .foregroundStyle(.secondary)
         if isLoading {
             HStack {
                 ProgressView().controlSize(.small)
@@ -117,7 +123,7 @@ private struct CopilotModelSelection: View {
             HStack {
                 Text(failure).font(.caption).foregroundStyle(.orange)
                 Spacer()
-                Button("retry") { refreshID = UUID() }
+                Button("retry") { Task { await store.refresh() } }
                     .disabled(isLoading)
             }
         }
@@ -138,10 +144,8 @@ private struct CopilotModelSelection: View {
 
     // MARK: Private
 
-    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.locale) private var locale
     @ObservedObject private var store: GitHubCopilotModelStore
-    @State private var refreshID = UUID()
     @State private var search = ""
     @State private var showingModels = false
 
@@ -189,6 +193,10 @@ private struct CopilotModelSelection: View {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     modelButton(id: "", title: defaultModelTitle)
                     Divider()
+                    if !model.isEmpty, catalog?.model(for: model) == nil,
+                       search.isEmpty || model.localizedCaseInsensitiveContains(search) {
+                        modelButton(id: model, title: store.title(for: model))
+                    }
                     ForEach(matchingModels) { option in
                         modelButton(id: option.id, title: option.name)
                     }

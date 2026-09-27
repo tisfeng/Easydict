@@ -19622,37 +19622,37 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CLI error: %@"
+            "value" : "CLI error: %@\nIf the model or reasoning level is unavailable, refresh the model list in GitHub Copilot service settings."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Error de CLI: %@"
+            "value" : "Error del CLI: %@\nSi el modelo o el nivel de razonamiento no está disponible, actualiza la lista de modelos en los ajustes del servicio GitHub Copilot."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CLI エラー: %@"
+            "value" : "CLI エラー：%@\nモデルや推論レベルが利用できない場合は、GitHub Copilot のサービス設定でモデル一覧を更新してください。"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chyba CLI: %@"
+            "value" : "Chyba CLI: %@\nAk model alebo úroveň uvažovania nie je dostupná, obnovte zoznam modelov v nastaveniach služby GitHub Copilot."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CLI 错误：%@"
+            "value" : "CLI 错误：%@\n若模型或推理程度不可用，请在 GitHub Copilot 服务设置中刷新模型列表。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CLI 錯誤：%@"
+            "value" : "CLI 錯誤：%@\n若模型或推理程度無法使用，請在 GitHub Copilot 服務設定中重新整理模型列表。"
           }
         }
       }
@@ -19977,6 +19977,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重新整理模型列表"
+          }
+        }
+      }
+    },
+    "service.github_copilot.catalog.refresh_in_settings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update the model list in GitHub Copilot service settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualiza la lista de modelos en los ajustes del servicio GitHub Copilot."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Copilot のサービス設定でモデル一覧を更新してください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoznam modelov aktualizujte v nastaveniach služby GitHub Copilot."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在 GitHub Copilot 服务设置中更新模型列表。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請在 GitHub Copilot 服務設定中更新模型列表。"
+          }
+        }
+      }
+    },
+    "service.github_copilot.catalog.updated_at %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last updated: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última actualización: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最終更新：%@"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posledná aktualizácia: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次更新：%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次更新：%@"
           }
         }
       }

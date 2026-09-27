@@ -92,20 +92,10 @@ final class GitHubCopilotService: StreamService {
         return AsyncThrowingStream { [weak self] continuation in
             let task = Task {
                 do {
-                    var resolvedModel = selectedModel
-                    var resolvedEffort: String?
-                    // Default needs no capability lookup. Explicit effort is checked against a
-                    // fresh account catalog before any inference can consume quota.
-                    if !selectedEffort.isEmpty {
-                        let catalog = try await GitHubCopilotModelCatalog.load()
-                        if selectedModel.isEmpty { resolvedModel = catalog.defaultModelID }
-                        if catalog.model(for: selectedModel)?.reasoningEfforts.contains(selectedEffort) == true {
-                            resolvedEffort = selectedEffort
-                        }
-                    }
+                    let models = await MainActor.run { GitHubCopilotModelStore.shared.snapshot?.models ?? [] }
                     try Task.checkCancellation()
                     let baseStream = currentRunner.run(
-                        prompt: combinedPrompt, model: resolvedModel, effort: resolvedEffort
+                        prompt: combinedPrompt, model: selectedModel, effort: selectedEffort, models: models
                     )
                     for try await chunk in baseStream {
                         continuation.yield(chunk)
@@ -172,7 +162,16 @@ final class GitHubCopilotService: StreamService {
     }
 
     @MainActor override var selectableModels: [String] {
-        GitHubCopilotModelStore.shared.selectableModels
+        var models = GitHubCopilotModelStore.shared.selectableModels
+        if !model.isEmpty, !models.contains(model) { models.append(model) }
+        return models
+    }
+
+    @MainActor override var modelSelectionHint: String? {
+        guard GitHubCopilotModelStore.shared.snapshot?.models.contains(where: \.isAvailable) != true else {
+            return nil
+        }
+        return String(localized: "service.github_copilot.catalog.refresh_in_settings")
     }
 
     /// Empty omits `--reasoning-effort`; nonempty values come from the CLI catalog.
@@ -183,15 +182,6 @@ final class GitHubCopilotService: StreamService {
     @MainActor
     override func modelSelectionTitle(for identifier: String) -> String {
         GitHubCopilotModelStore.shared.title(for: identifier)
-    }
-
-    @MainActor
-    override func loadModelsForSelection(completion: @escaping (String?) -> ()) {
-        Task {
-            let store = GitHubCopilotModelStore.shared
-            await store.refresh()
-            completion(store.failure)
-        }
     }
 
     @MainActor

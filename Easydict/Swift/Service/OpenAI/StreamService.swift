@@ -439,14 +439,12 @@ public class StreamService: QueryService {
         Defaults[reasoningEffortDefaultsKey]
     }
 
+    /// Optional guidance displayed below the locally available model choices.
+    @MainActor
+    var modelSelectionHint: String? { nil }
+
     @MainActor
     func modelSelectionTitle(for identifier: String) -> String { identifier }
-
-    /// Static providers complete immediately; CLI providers may refresh account metadata.
-    @MainActor
-    func loadModelsForSelection(completion: @escaping (String?) -> ()) {
-        completion(nil)
-    }
 
     @MainActor
     func selectModel(_ identifier: String) {

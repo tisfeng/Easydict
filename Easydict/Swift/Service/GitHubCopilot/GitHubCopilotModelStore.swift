@@ -9,9 +9,19 @@ import Combine
 import Defaults
 import Foundation
 
-/// Shares account metadata between settings and query windows without persisting a model list.
+/// Serves the saved catalog to all windows. Only settings explicitly refreshes it through the CLI.
 @MainActor
 final class GitHubCopilotModelStore: ObservableObject {
+    // MARK: Lifecycle
+
+    private init() {
+        do {
+            self.snapshot = try GitHubCopilotModelCache.load()
+        } catch {
+            self.failure = error.localizedDescription
+        }
+    }
+
     // MARK: Internal
 
     static let shared = GitHubCopilotModelStore()
@@ -50,7 +60,9 @@ final class GitHubCopilotModelStore: ObservableObject {
         failure = nil
         let task = Task {
             do {
-                snapshot = try await GitHubCopilotModelCatalog.load()
+                let refreshed = try await GitHubCopilotModelCatalog.load()
+                try GitHubCopilotModelCache.save(refreshed)
+                snapshot = refreshed
                 revision += 1
                 NotificationCenter.default.post(name: .githubCopilotModelsDidChange, object: nil)
             } catch {

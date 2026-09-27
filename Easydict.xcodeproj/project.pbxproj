@@ -662,6 +662,7 @@
 		7F78F6CC528545E58216E75F /* GitHubCopilotModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C482B465C164A73BA9F6B56 /* GitHubCopilotModelCatalog.swift */; };
 		13A893BFBE2B4FD695223394 /* GitHubCopilotCatalogClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */; };
 		8FA639CB01DB48FFB856FAF6 /* GitHubCopilotModelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D62DA53787E49EC9011BB14 /* GitHubCopilotModelStore.swift */; };
+		49DAA0A4B12B418BA7791B8F /* GitHubCopilotModelCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBAB49A71BBA4870A9C4FF0C /* GitHubCopilotModelCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1444,6 +1445,7 @@
 		2C482B465C164A73BA9F6B56 /* GitHubCopilotModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelCatalog.swift; sourceTree = "<group>"; };
 		3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotCatalogClient.swift; sourceTree = "<group>"; };
 		9D62DA53787E49EC9011BB14 /* GitHubCopilotModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelStore.swift; sourceTree = "<group>"; };
+		FBAB49A71BBA4870A9C4FF0C /* GitHubCopilotModelCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3916,6 +3918,7 @@
 				3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */,
 				2C482B465C164A73BA9F6B56 /* GitHubCopilotModelCatalog.swift */,
 				9D62DA53787E49EC9011BB14 /* GitHubCopilotModelStore.swift */,
+				FBAB49A71BBA4870A9C4FF0C /* GitHubCopilotModelCache.swift */,
 				C0FFEEFD2026092400000006 /* GitHubCopilotRunner.swift */,
 				43D9DD6610A34B56B85C8812 /* GitHubCopilotEnvironment.swift */,
 				43D9DD6610A34B56B85C8814 /* GitHubCopilot-LICENSE.txt */,
@@ -4703,6 +4706,7 @@
 				13A893BFBE2B4FD695223394 /* GitHubCopilotCatalogClient.swift in Sources */,
 				7F78F6CC528545E58216E75F /* GitHubCopilotModelCatalog.swift in Sources */,
 				8FA639CB01DB48FFB856FAF6 /* GitHubCopilotModelStore.swift in Sources */,
+				49DAA0A4B12B418BA7791B8F /* GitHubCopilotModelCache.swift in Sources */,
 				C0FFEEBF2026092400000006 /* GitHubCopilotRunner.swift in Sources */,
 				43D9DD6610A34B56B85C8811 /* GitHubCopilotEnvironment.swift in Sources */,
 				C0FFEEBF2026092400000007 /* GitHubCopilotService.swift in Sources */,

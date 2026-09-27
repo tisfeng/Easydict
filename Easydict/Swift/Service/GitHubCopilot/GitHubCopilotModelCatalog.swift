@@ -8,11 +8,12 @@
 import Foundation
 
 /// Queries the installed CLI without creating a conversation or making an inference request.
-/// Each load starts a fresh server, so CLI upgrades and account changes need no cache migration.
+/// Called only by a manual refresh in settings; selection and translation use the saved catalog.
 enum GitHubCopilotModelCatalog {
-    struct Snapshot: Sendable {
+    struct Snapshot: Codable, Sendable {
         let models: [GitHubCopilotModel]
         let defaultModelID: String
+        let updatedAt: Date
 
         func model(for selection: String) -> GitHubCopilotModel? {
             let identifier = selection.isEmpty ? defaultModelID : selection
@@ -39,7 +40,7 @@ enum GitHubCopilotModelCatalog {
                 )
             )
             let defaultModelID = try GitHubCopilotEnvironment.defaultModel(environment: environment)
-            return Snapshot(models: models, defaultModelID: defaultModelID)
+            return Snapshot(models: models, defaultModelID: defaultModelID, updatedAt: Date())
         }
         return try await withTaskCancellationHandler {
             try await task.value

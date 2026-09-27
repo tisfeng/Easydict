@@ -233,7 +233,8 @@ final class GitHubCopilotRunner: @unchecked Sendable {
     func run(
         prompt: String,
         model: String,
-        effort: String?
+        effort: String?,
+        models: [GitHubCopilotModel]
     )
         -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { [weak self] continuation in
@@ -264,6 +265,11 @@ final class GitHubCopilotRunner: @unchecked Sendable {
                     let environment = GitHubCopilotEnvironment.resolve()
                     let resolvedModel = model.isEmpty
                         ? try GitHubCopilotEnvironment.defaultModel(environment: environment) : model
+                    // Resolve CLI defaults from local settings before checking saved capabilities.
+                    // Unknown models omit the override; translation never refreshes the catalog.
+                    let supportedEfforts = models.first { $0.id == resolvedModel && $0.isAvailable }?
+                        .reasoningEfforts ?? []
+                    let resolvedEffort = effort.flatMap { supportedEfforts.contains($0) ? $0 : nil }
                     try GitHubCopilotEnvironment.prepareAuthentication(
                         in: sandbox.homeDirectory, environment: environment
                     )
@@ -282,7 +288,7 @@ final class GitHubCopilotRunner: @unchecked Sendable {
                     process.arguments = Self.buildArguments(
                         prompt: prompt,
                         model: resolvedModel,
-                        effort: effort,
+                        effort: resolvedEffort,
                         logDirectoryPath: sandbox.logDirectory.path
                     )
                     process.standardOutput = stdoutPipe

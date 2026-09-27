@@ -153,10 +153,15 @@ disabled. It also runs with a disposable configuration directory, so translated 
 in the session records under `~/.copilot`. That directory holds only this request's temporary data
 and is deleted once the process exits.
 
-Leaving "Model" empty uses the CLI's own default model. Which models actually work depends on your
-plan and GitHub's current rollout, and you can type a model identifier directly. Leaving "Reasoning
-effort" empty keeps the CLI default. A model your account cannot use makes translation fail. If the
-service reports that the CLI is missing or not signed in, complete the install and login steps above.
+Use the refresh button in GitHub Copilot service settings to retrieve and save the available models
+and their reasoning levels. Settings and query windows use this local list immediately, including
+after restarting Easydict; opening a menu or starting a translation does not refresh it. Refresh
+manually after upgrading the CLI or changing accounts. A failed refresh keeps the previous list.
+
+Selecting "CLI default model" uses the model saved in the CLI's current local settings. The reasoning
+picker offers the levels saved for the selected model; "Default" leaves the choice to the CLI.
+If a model or reasoning level is no longer available, refresh the list in settings. If the service
+reports that the CLI is missing or not signed in, complete the install and login steps above.
 
 If the CLI requests a tool during a translation, Easydict aborts that request immediately and reports
 an error. That indicates the isolation guarantee no longer holds, which usually means the CLI changed

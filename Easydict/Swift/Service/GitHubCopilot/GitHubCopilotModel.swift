@@ -8,16 +8,16 @@
 import Foundation
 
 /// Account-scoped metadata returned by the CLI's `models.list` RPC.
-struct GitHubCopilotModel: Decodable, Identifiable, Sendable {
-    struct Capabilities: Decodable, Sendable {
-        struct Supports: Decodable, Sendable {
+struct GitHubCopilotModel: Codable, Identifiable, Sendable {
+    struct Capabilities: Codable, Sendable {
+        struct Supports: Codable, Sendable {
             let reasoningEffort: Bool?
         }
 
         let supports: Supports?
     }
 
-    struct Policy: Decodable, Sendable {
+    struct Policy: Codable, Sendable {
         let state: String
     }
 
