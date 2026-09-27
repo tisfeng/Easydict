@@ -28,15 +28,15 @@ Easydict 直接从仓库运行共享 Skills，安装内容需要可离线审查�
 ## 来源基线：tisfeng/skills
 
 - 核对日期：2026-09-27；来源：`https://github.com/tisfeng/skills`；安装器 `skills@1.5.25`。
-- 采用版本：`v0.7.0`；annotated tag `26b7fdf9b684c6fa821c71ed050e3d186e7b1622`（unsigned），
-  peeled commit `83788402d3ab36fa7f6900b978dc3bb288d26f28`；核验时同时固定 tag 和 peeled
+- 采用版本：`v0.7.2`；annotated tag `4040ed8b87a26c8c89530362f285270fd0912b73`（unsigned），
+  peeled commit `f979c5ddc4e9eab6ae04bad912ed95c7ecdde344`；核验时同时固定 tag 和 peeled
   commit。
 - 采用范围：`code-simplifier`、`git-commit`、`review`、`review-pr`、`submit-pr`、
   `worktree-rebase-merge` 六个完整 Skill 目录，不采用其他上游内容。
 
 ```bash
 npx -y skills@1.5.25 add \
-  https://github.com/tisfeng/skills/tree/v0.7.0 \
+  https://github.com/tisfeng/skills/tree/v0.7.2 \
   --skill code-simplifier git-commit review review-pr submit-pr worktree-rebase-merge \
   --agent codex --yes --copy --full-depth
 ```
