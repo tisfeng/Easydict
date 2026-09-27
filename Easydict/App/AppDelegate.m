@@ -27,8 +27,6 @@
     
     [DarkModeManager.shared updateDarkMode:MyConfiguration.shared.appearance];
 
-    [EZGitHubCopilotService startAutomaticModelUpdates];
-
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(vocabularyNotebookWriteFailed:)
                                                  name:NSNotification.vocabularyNotebookWriteFailed
@@ -49,7 +47,6 @@
 #pragma mark - NSApplicationDelegate
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-    [EZGitHubCopilotService stopAutomaticModelUpdates];
     // Flush any pending vocabulary notebook writes before the process exits.
     [VocabularyNotebookService.shared flush];
 }
