@@ -5,6 +5,7 @@
 //  Created by tisfeng on 2026/09/24.
 //
 
+import Darwin
 import Foundation
 
 // MARK: - GitHubCopilotRunner
@@ -250,7 +251,7 @@ final class GitHubCopilotRunner: @unchecked Sendable {
             // Detached so the call chain, which starts on the main thread, cannot block the UI
             // while the first invocation spawns a login shell to resolve the binary.
             Task.detached(priority: .userInitiated) { [weak self] in
-                // One decoder per invocation, shared across readabilityHandler calls.
+                // One decoder per invocation, accessed only on its output queue.
                 let decoder = JSONDecoder()
                 // Tracked outside the `do` block so the failure path can still clean up.
                 var createdSandbox: Sandbox?
@@ -299,54 +300,49 @@ final class GitHubCopilotRunner: @unchecked Sendable {
                         inheritedEnvironment: environment
                     )
 
-                    let startTime = Date()
-                    // All output state is mutated only on `ioQueue`, which is serial, so a shared
-                    // reference type is safe here and avoids threading `inout` through closures.
-                    let buffers = GitHubCopilotOutputBuffers()
-
-                    Self.attachStdoutReader(
-                        to: stdoutPipe,
-                        decoder: decoder,
-                        buffers: buffers,
-                        loggerProvider: { [weak self] in self?.logger },
-                        continuation: continuation
-                    )
-                    Self.attachStderrReader(to: stderrPipe, buffers: buffers)
-
-                    process.terminationHandler = { [weak self] terminatedProcess in
-                        Self.handleTermination(
-                            terminatedProcess: terminatedProcess,
-                            context: GitHubCopilotTerminationContext(
-                                stdoutPipe: stdoutPipe,
-                                stderrPipe: stderrPipe,
-                                sandbox: sandbox,
-                                startTime: startTime,
-                                wasCancelled: self?.checkIsCancelled() ?? false,
-                                logger: self?.logger,
-                                buffers: buffers,
-                                decoder: decoder,
-                                continuation: continuation,
-                                usageSink: { [weak self] usage in self?.tokenUsage = usage }
-                            )
-                        )
+                    var launched = false
+                    defer {
+                        // Parent copies must close so the readers can observe EOF after child exit.
+                        try? stdoutPipe.fileHandleForWriting.close()
+                        try? stderrPipe.fileHandleForWriting.close()
+                        if !launched {
+                            process.terminationHandler = nil
+                            try? stdoutPipe.fileHandleForReading.close()
+                            try? stderrPipe.fileHandleForReading.close()
+                        }
                     }
 
-                    // Check cancellation and assign the process atomically so cancel() cannot run
-                    // between the check and the assignment.
+                    let context = GitHubCopilotInvocationContext(
+                        sandbox: sandbox,
+                        startTime: Date(),
+                        logger: self?.logger,
+                        decoder: decoder,
+                        continuation: continuation,
+                        isCancelled: { [weak self] in self?.checkIsCancelled() ?? true },
+                        stopProcess: { [weak process] in Self.terminateProcess(process) },
+                        usageSink: { [weak self] usage in self?.tokenUsage = usage }
+                    )
+                    process.terminationHandler = { terminatedProcess in
+                        let exitCode = Int(terminatedProcess.terminationStatus)
+                        context.ioQueue.async {
+                            context.buffers.exitCode = exitCode
+                            Self.finishIfReady(context)
+                        }
+                    }
+
+                    // Assign atomically with cancellation, then re-check after launch.
                     guard self?.setProcessIfNotCancelled(process) == true else {
-                        stdoutPipe.fileHandleForReading.readabilityHandler = nil
-                        stderrPipe.fileHandleForReading.readabilityHandler = nil
-                        // The process never launched, so nothing will call the termination handler.
                         Self.removeSandbox(sandbox)
                         continuation.finish()
                         return
                     }
                     try process.run()
-                    self?.logger?.start()
-                    // cancel() skips terminate() when the process was not yet running, so re-check
-                    // after launch and terminate if cancellation arrived in between.
-                    if self?.checkIsCancelled() == true, process.isRunning {
-                        process.terminate()
+                    launched = true
+                    context.ioQueue.sync { context.logger?.start() }
+                    Self.startReader(stdoutPipe.fileHandleForReading, isStandardOutput: true, context: context)
+                    Self.startReader(stderrPipe.fileHandleForReading, isStandardOutput: false, context: context)
+                    if self?.checkIsCancelled() == true {
+                        Self.terminateProcess(process)
                     }
                 } catch {
                     // Launch or setup failed before a process owned cleanup; do it here so a
@@ -366,9 +362,7 @@ final class GitHubCopilotRunner: @unchecked Sendable {
             process = nil
             return current
         }
-        if processToTerminate?.isRunning == true {
-            processToTerminate?.terminate()
-        }
+        Self.terminateProcess(processToTerminate)
     }
 
     // MARK: Private
@@ -377,132 +371,126 @@ final class GitHubCopilotRunner: @unchecked Sendable {
     private static var cachedBinaryPath: String?
     private static let cacheLock = NSLock()
 
-    /// Shared serial queue for I/O handler dispatches, reused across invocations.
-    private static let ioQueue = DispatchQueue(
-        label: "com.easydict.github-copilot-runner-io",
-        qos: .userInitiated
-    )
-
     private var process: Process?
     private var logger: GitHubCopilotLogger?
     /// Set by `cancel()` so the termination handler can tell a user stop from a real failure.
     private var isCancelled = false
     private let stateLock = NSLock()
 
-    /// Reads stderr asynchronously into a capped raw-byte buffer.
-    ///
-    /// Decoding is deferred to the termination handler so a multi-byte UTF-8 sequence split
-    /// across reads is never silently dropped.
-    private static func attachStderrReader(to pipe: Pipe, buffers: GitHubCopilotOutputBuffers) {
-        pipe.fileHandleForReading.readabilityHandler = { handle in
-            let data = handle.availableData
-            guard !data.isEmpty else { return }
-            ioQueue.async {
-                appendCapped(data, to: &buffers.stderrData)
+    /// Stops a cancelled or unreadable invocation, including a child that ignores SIGTERM.
+    private static func terminateProcess(_ process: Process?) {
+        guard let process, process.isRunning else { return }
+        process.terminate()
+        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 2) {
+            if process.isRunning {
+                kill(process.processIdentifier, SIGKILL)
             }
         }
     }
 
-    /// Reads stdout line by line, yielding text deltas and retaining control events.
-    private static func attachStdoutReader(
-        to pipe: Pipe,
-        decoder: JSONDecoder,
-        buffers: GitHubCopilotOutputBuffers,
-        loggerProvider: @escaping () -> GitHubCopilotLogger?,
-        continuation: AsyncThrowingStream<String, Error>.Continuation
+    /// Each pipe has exactly one blocking reader, running outside the Swift concurrency executor.
+    /// Data is processed before this reader publishes completion, so exit cannot overtake a chunk.
+    private static func startReader(
+        _ handle: FileHandle,
+        isStandardOutput: Bool,
+        context: GitHubCopilotInvocationContext
     ) {
-        pipe.fileHandleForReading.readabilityHandler = { handle in
-            let data = handle.availableData
-            guard !data.isEmpty else { return }
-            let capturedLogger = loggerProvider()
-            ioQueue.async {
-                capturedLogger?.appendStdout(String(data: data, encoding: .utf8) ?? "")
-                buffers.stdoutData.append(data)
-                flushLines(
-                    buffers: buffers,
-                    decoder: decoder,
-                    continuation: continuation
-                )
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                var bytes = [UInt8](repeating: 0, count: 65_536)
+                while true {
+                    // One POSIX read returns available bytes without waiting to fill the buffer.
+                    let count = bytes.withUnsafeMutableBytes {
+                        Darwin.read(handle.fileDescriptor, $0.baseAddress, $0.count)
+                    }
+                    if count < 0 {
+                        let readErrno = errno
+                        if readErrno == EINTR { continue }
+                        throw NSError(domain: NSPOSIXErrorDomain, code: Int(readErrno))
+                    }
+                    guard count > 0 else { break }
+                    let data = Data(bytes.prefix(count))
+                    // Synchronous delivery also bounds queued chunks when the producer is faster.
+                    context.ioQueue.sync {
+                        if isStandardOutput {
+                            context.logger?.appendStdout(String(data: data, encoding: .utf8) ?? "")
+                            context.buffers.stdoutData.append(data)
+                            let previouslySawToolRequest = context.buffers.sawToolRequest
+                            flushLines(
+                                buffers: context.buffers,
+                                decoder: context.decoder,
+                                continuation: context.continuation
+                            )
+                            if !previouslySawToolRequest, context.buffers.sawToolRequest {
+                                context.stopProcess()
+                            }
+                        } else {
+                            appendCapped(data, to: &context.buffers.stderrData)
+                        }
+                    }
+                }
+            } catch {
+                context.ioQueue.async {
+                    if context.buffers.readError == nil {
+                        context.buffers.readError = error
+                    }
+                    context.stopProcess()
+                }
+            }
+            try? handle.close()
+            context.ioQueue.async {
+                if isStandardOutput {
+                    context.buffers.stdoutFinished = true
+                } else {
+                    context.buffers.stderrFinished = true
+                }
+                finishIfReady(context)
             }
         }
     }
 
-    /// Finalizes one invocation: drains the pipes, records usage, and closes the stream.
-    ///
-    /// Runs on `ioQueue` after a synchronous barrier, so data still held by in-flight
-    /// readability handlers cannot be delivered after the stream has finished.
-    private static func handleTermination(
-        terminatedProcess: Process,
-        context: GitHubCopilotTerminationContext
-    ) {
-        let stdoutPipe = context.stdoutPipe
-        let stderrPipe = context.stderrPipe
-        let logger = context.logger
+    /// Finalizes once, only after exit and both readers have processed all available bytes.
+    /// Must run on this invocation's serial output queue; it never reads either pipe itself.
+    private static func finishIfReady(_ context: GitHubCopilotInvocationContext) {
         let buffers = context.buffers
+        guard let exitCode = buffers.exitCode,
+              buffers.stdoutFinished, buffers.stderrFinished, !buffers.didFinalize
+        else { return }
+        buffers.didFinalize = true
+        defer { removeSandbox(context.sandbox) }
 
-        stdoutPipe.fileHandleForReading.readabilityHandler = nil
-        stderrPipe.fileHandleForReading.readabilityHandler = nil
+        flushLines(
+            buffers: buffers,
+            includeRemainder: true,
+            decoder: context.decoder,
+            continuation: context.continuation
+        )
+        let stderrBuffer = String(data: buffers.stderrData, encoding: .utf8) ?? ""
+        let duration = Date().timeIntervalSince(context.startTime)
+        context.logger?.finish(stderr: stderrBuffer, exitCode: exitCode, duration: duration)
 
-        // Drain handlers already queued on ioQueue before reading the remaining pipe data, so
-        // queued work is not overtaken by the finish block.
-        //
-        // Residual window: `readabilityHandler = nil` cannot interrupt a handler that is already
-        // executing, and `availableData` may have consumed bytes that are not yet on ioQueue.
-        // The barrier cannot recall those bytes, so they can be processed after the stream has
-        // finished — losing a trailing delta, or a usage/error line, in a very short race. This
-        // matches the existing Claude Code runner; a trailing loss degrades diagnostics for that
-        // request without affecting the result already delivered.
-        ioQueue.sync {}
+        let controlBuffer = buffers.controlLines.joined(separator: "\n")
+        context.usageSink(parseGitHubCopilotUsage(from: controlBuffer))
 
-        let remainingStdoutData = stdoutPipe.fileHandleForReading.readDataToEndOfFile()
-        let remainingStderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
-        let exitCode = Int(terminatedProcess.terminationStatus)
+        #if AGENT_CLI_DEBUG
+        GitHubCopilotDebugLogger.shared.post(
+            "[EXIT] code=\(exitCode)  duration=\(String(format: "%.1f", duration))s"
+        )
+        #endif
 
-        ioQueue.async {
-            // The process has exited and its pipes are drained, so nothing can still be reading
-            // the sandbox and it is safe to remove.
-            removeSandbox(context.sandbox)
-
-            if !remainingStdoutData.isEmpty {
-                logger?.appendStdout(String(data: remainingStdoutData, encoding: .utf8) ?? "")
-                buffers.stdoutData.append(remainingStdoutData)
-            }
-            flushLines(
-                buffers: buffers,
-                includeRemainder: true,
-                decoder: context.decoder,
-                continuation: context.continuation
+        if buffers.sawToolRequest {
+            context.continuation.finish(throwing: GitHubCopilotError.unexpectedToolUse)
+        } else if context.isCancelled() {
+            context.continuation.finish()
+        } else if let error = buffers.readError {
+            context.continuation.finish(throwing: error)
+        } else if exitCode != 0 {
+            context.continuation.finish(
+                throwing: parseGitHubCopilotError(fromStdout: controlBuffer, stderr: stderrBuffer)
             )
-
-            if !remainingStderrData.isEmpty {
-                appendCapped(remainingStderrData, to: &buffers.stderrData)
-            }
-            let stderrBuffer = String(data: buffers.stderrData, encoding: .utf8) ?? ""
-
-            let duration = Date().timeIntervalSince(context.startTime)
-            logger?.finish(stderr: stderrBuffer, exitCode: exitCode, duration: duration)
-
-            let controlBuffer = buffers.controlLines.joined(separator: "\n")
-            context.usageSink(parseGitHubCopilotUsage(from: controlBuffer))
-
-            #if AGENT_CLI_DEBUG
-            GitHubCopilotDebugLogger.shared.post(
-                "[EXIT] code=\(exitCode)  duration=\(String(format: "%.1f", duration))s"
-            )
-            #endif
-
-            if buffers.sawToolRequest {
-                // Already finished with `unexpectedToolUse` at detection time; this keeps the
-                // reason visible in the debug log and is a no-op on the continuation.
-                context.continuation.finish(throwing: GitHubCopilotError.unexpectedToolUse)
-            } else if exitCode != 0, !context.wasCancelled {
-                context.continuation.finish(
-                    throwing: parseGitHubCopilotError(fromStdout: controlBuffer, stderr: stderrBuffer)
-                )
-            } else if !buffers.didYieldText, !context.wasCancelled {
-                // No delta arrived, so this CLI build no longer streams incrementally. Fall back
-                // to the complete message text instead of returning an empty success, which would
-                // surface as an unrelated "no result" error.
+        } else {
+            if !buffers.didYieldText {
+                // Some CLI versions only emit a complete message instead of incremental deltas.
                 let fallback = buffers.controlLines
                     .lazy
                     .compactMap { extractMessageContent(from: $0, decoder: context.decoder) }
@@ -510,22 +498,16 @@ final class GitHubCopilotRunner: @unchecked Sendable {
                 if let fallback {
                     context.continuation.yield(fallback)
                 }
-                context.continuation.finish()
-            } else {
-                // Success, or a user-initiated cancellation: finish cleanly.
-                context.continuation.finish()
             }
+            context.continuation.finish()
         }
     }
 
     /// Drains newline-terminated lines from `buffers.stdoutData`, yielding text deltas to
     /// `continuation` and retaining non-delta lines in `buffers.controlLines`.
     ///
-    /// A tool request ends the stream immediately: the isolation flags should make one
-    /// impossible, so the safest response is to stop forwarding model output at once rather
-    /// than let a possibly agentic run continue. Text already forwarded cannot be retracted —
-    /// the base class accumulates what it received — so the caller surfaces the error instead
-    /// of presenting the response as a valid translation.
+    /// A tool request stops further text delivery and asks the reader to terminate the process.
+    /// The error is delivered after the readers and process finish, through the common finalizer.
     ///
     /// Splits on the 0x0A byte, which is safe because newline is a single byte in UTF-8.
     private static func flushLines(
@@ -540,7 +522,6 @@ final class GitHubCopilotRunner: @unchecked Sendable {
             if toolRequestCount(from: line) > 0 {
                 buffers.sawToolRequest = true
                 buffers.controlLines.append(line)
-                continuation.finish(throwing: GitHubCopilotError.unexpectedToolUse)
                 return
             }
             if let delta = extractMessageDelta(from: line, decoder: decoder) {
@@ -653,32 +634,34 @@ extension GitHubCopilotRunner {
     }
 }
 
-// MARK: - GitHubCopilotTerminationContext
+// MARK: - GitHubCopilotInvocationContext
 
-/// Everything the termination handler needs to finalize one invocation.
-///
-/// Grouped into a type because the handler needs more values than a lint-friendly parameter list
-/// allows, and the group is only ever constructed and consumed as a unit.
-private struct GitHubCopilotTerminationContext {
-    let stdoutPipe: Pipe
-    let stderrPipe: Pipe
+/// Immutable invocation dependencies; decoder, logger and mutable buffers use only `ioQueue`.
+private struct GitHubCopilotInvocationContext: @unchecked Sendable {
     let sandbox: GitHubCopilotRunner.Sandbox
     let startTime: Date
-    let wasCancelled: Bool
     let logger: GitHubCopilotLogger?
-    let buffers: GitHubCopilotOutputBuffers
     let decoder: JSONDecoder
     let continuation: AsyncThrowingStream<String, Error>.Continuation
+    let isCancelled: () -> Bool
+    let stopProcess: () -> ()
     let usageSink: (GitHubCopilotUsage?) -> ()
+    let buffers = GitHubCopilotOutputBuffers()
+    let ioQueue = DispatchQueue(label: "com.easydict.github-copilot-output", qos: .userInitiated)
 }
 
 // MARK: - GitHubCopilotOutputBuffers
 
 /// Mutable stdout/stderr accumulation for one invocation.
 ///
-/// Shared between the readability handlers and the termination handler. Every access happens on
-/// `GitHubCopilotRunner.ioQueue`, which is serial, so no additional locking is required.
+/// Every access happens on the invocation's serial output queue, including reader completion
+/// and process exit. A completed reader has delivered all its chunks before setting its flag.
 private final class GitHubCopilotOutputBuffers: @unchecked Sendable {
+    var stdoutFinished = false
+    var stderrFinished = false
+    var exitCode: Int?
+    var readError: Error?
+    var didFinalize = false
     /// Non-delta stdout lines retained for post-exit usage and error parsing.
     var controlLines: [String] = []
     /// Incomplete stdout bytes carried between reads; buffered as `Data` so a multi-byte UTF-8
