@@ -6,6 +6,7 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+import Combine
 import Defaults
 import SettingsAccess
 import Sparkle
@@ -54,6 +55,12 @@ enum EasydictCmpatibilityEntry {
 // MARK: - EasydictApp
 
 struct EasydictApp: App {
+    // MARK: Lifecycle
+
+    init() {
+        _ = Self.applicationLifecycleSubscriptions
+    }
+
     // MARK: Internal
 
     var body: some Scene {
@@ -79,11 +86,11 @@ struct EasydictApp: App {
             } icon: {
                 Image(menuBarIcon.rawValue)
                     .resizable()
-                #if DEBUG
+                    #if DEBUG
                     .renderingMode(.original)
-                #else
+                    #else
                     .renderingMode(.template)
-                #endif
+                    #endif
                     .scaledToFit()
             }
             .help("Easydict 🍃")
@@ -102,6 +109,25 @@ struct EasydictApp: App {
 
     // MARK: Private
 
+    /// Register once per process, independently of view visibility or App reconstruction.
+    /// AppKit posts these notifications on the main thread; keep termination delivery synchronous.
+    private static let applicationLifecycleSubscriptions: [AnyCancellable] = [
+        NotificationCenter.default.publisher(for: NSApplication.didFinishLaunchingNotification)
+            .first()
+            .sink { _ in
+                MainActor.assumeIsolated {
+                    performPostLaunchTasks()
+                }
+            },
+        NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)
+            .first()
+            .sink { _ in
+                MainActor.assumeIsolated {
+                    performTerminationTasks()
+                }
+            },
+    ]
+
     @Environment(\.openSettingsLegacy) private var openSettingsLegacy
     @Environment(\.openWindow) private var openWindow
 
@@ -115,6 +141,18 @@ struct EasydictApp: App {
     @StateObject private var languageState = LanguageState()
 
     @Default(.selectedMenuBarIcon) private var menuBarIcon
+
+    @MainActor
+    private static func performPostLaunchTasks() {
+        GitHubCopilotModelStore.shared.startAutomaticRefresh()
+    }
+
+    /// Persist queued writes synchronously; an asynchronous task may not run before exit.
+    @MainActor
+    private static func performTerminationTasks() {
+        GitHubCopilotModelStore.shared.stopAutomaticRefresh()
+        VocabularyNotebookService.shared.flush()
+    }
 }
 
 extension Bool {

@@ -46,11 +46,6 @@
 
 #pragma mark - NSApplicationDelegate
 
-- (void)applicationWillTerminate:(NSNotification *)aNotification {
-    // Flush any pending vocabulary notebook writes before the process exits.
-    [VocabularyNotebookService.shared flush];
-}
-
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)application {
     return NO;
 }

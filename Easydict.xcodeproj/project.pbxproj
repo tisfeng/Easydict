@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C0FFEEBF2026092400000000 /* GitHubCopilotDebugWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000000 /* GitHubCopilotDebugWindow.swift */; };
+		C0FFEEBF2026092400000001 /* GitHubCopilotEffort.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000001 /* GitHubCopilotEffort.swift */; };
+		C0FFEEBF2026092400000002 /* GitHubCopilotError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000002 /* GitHubCopilotError.swift */; };
+		C0FFEEBF2026092400000003 /* GitHubCopilotEventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000003 /* GitHubCopilotEventParser.swift */; };
+		C0FFEEBF2026092400000004 /* GitHubCopilotLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000004 /* GitHubCopilotLogger.swift */; };
+		C0FFEEBF2026092400000005 /* GitHubCopilotModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000005 /* GitHubCopilotModel.swift */; };
+		C0FFEEBF2026092400000006 /* GitHubCopilotRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000006 /* GitHubCopilotRunner.swift */; };
+		43D9DD6610A34B56B85C8811 /* GitHubCopilotEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D9DD6610A34B56B85C8812 /* GitHubCopilotEnvironment.swift */; };
+		43D9DD6610A34B56B85C8813 /* GitHubCopilot-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 43D9DD6610A34B56B85C8814 /* GitHubCopilot-LICENSE.txt */; };
+		C0FFEEBF2026092400000007 /* GitHubCopilotService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000007 /* GitHubCopilotService.swift */; };
+		C0FFEEBF2026092400000008 /* GitHubCopilotServiceConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000008 /* GitHubCopilotServiceConfigurationView.swift */; };
 		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
 		02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000003 /* MarkdownLabel.swift */; };
 		02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000004 /* MarkdownToggleButton.swift */; };
@@ -643,6 +654,10 @@
 		F955D7120AD72EFC6429A79A /* CodexComponentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB3E639236DC6875625F110 /* CodexComponentStoreTests.swift */; };
 		FA0D2894537C47E1AF63D495 /* QueryServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */; };
 		FBA62739BEA249C9BC0DFBA3 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F35C93D0925433FA0AD6066 /* ClaudeService.swift */; };
+		7F78F6CC528545E58216E75F /* GitHubCopilotModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C482B465C164A73BA9F6B56 /* GitHubCopilotModelCatalog.swift */; };
+		13A893BFBE2B4FD695223394 /* GitHubCopilotCatalogClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */; };
+		8FA639CB01DB48FFB856FAF6 /* GitHubCopilotModelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D62DA53787E49EC9011BB14 /* GitHubCopilotModelStore.swift */; };
+		49DAA0A4B12B418BA7791B8F /* GitHubCopilotModelCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBAB49A71BBA4870A9C4FF0C /* GitHubCopilotModelCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -668,6 +683,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C0FFEEFD2026092400000000 /* GitHubCopilotDebugWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotDebugWindow.swift; sourceTree = "<group>"; };
+		C0FFEEFD2026092400000001 /* GitHubCopilotEffort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotEffort.swift; sourceTree = "<group>"; };
+		C0FFEEFD2026092400000002 /* GitHubCopilotError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotError.swift; sourceTree = "<group>"; };
+		C0FFEEFD2026092400000003 /* GitHubCopilotEventParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotEventParser.swift; sourceTree = "<group>"; };
+		C0FFEEFD2026092400000004 /* GitHubCopilotLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotLogger.swift; sourceTree = "<group>"; };
+		C0FFEEFD2026092400000005 /* GitHubCopilotModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModel.swift; sourceTree = "<group>"; };
+		C0FFEEFD2026092400000006 /* GitHubCopilotRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotRunner.swift; sourceTree = "<group>"; };
+		43D9DD6610A34B56B85C8812 /* GitHubCopilotEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotEnvironment.swift; sourceTree = "<group>"; };
+		43D9DD6610A34B56B85C8814 /* GitHubCopilot-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "GitHubCopilot-LICENSE.txt"; sourceTree = "<group>"; };
+		C0FFEEFD2026092400000007 /* GitHubCopilotService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotService.swift; sourceTree = "<group>"; };
+		C0FFEEFD2026092400000008 /* GitHubCopilotServiceConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotServiceConfigurationView.swift; sourceTree = "<group>"; };
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
@@ -1406,6 +1432,10 @@
 		F17239571D44D3BCC9D24831 /* CodexManagedProcessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedProcessTests.swift; sourceTree = "<group>"; };
 		FA76B47A0150434485FCBBAD /* MDictReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictReaderTests.swift; sourceTree = "<group>"; };
 		FED70C029AC2438A8EBE25F1 /* AppPathManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathManager.swift; sourceTree = "<group>"; };
+		2C482B465C164A73BA9F6B56 /* GitHubCopilotModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelCatalog.swift; sourceTree = "<group>"; };
+		3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotCatalogClient.swift; sourceTree = "<group>"; };
+		9D62DA53787E49EC9011BB14 /* GitHubCopilotModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelStore.swift; sourceTree = "<group>"; };
+		FBAB49A71BBA4870A9C4FF0C /* GitHubCopilotModelCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2091,6 +2121,7 @@
 				0A9AFBA92B7F8D6A0064C9A8 /* CustomOpenAI */,
 				C415C0AB2B450C4500A9D231 /* Gemini */,
 				ED3EC55898A147C8B7CAFBD5 /* ClaudeCode */,
+				C0FFEE6A2026092400000001 /* GitHubCopilot */,
 				C0DEC11E0003000000000001 /* CodexCLI */,
 				03792EA02C3830E60074A145 /* Ollama */,
 				C4D1ADE12C3F340500A19D02 /* AITool */,
@@ -3858,10 +3889,32 @@
 				035F9CCE2C529A04005D1C9A /* ServiceAPIType.swift */,
 				03F086F12DB1F5F000268DF0 /* SliderCell.swift */,
 				5F42ADC9AAB3494D9E85B5D8 /* ClaudeCodeServiceConfigurationView.swift */,
+				C0FFEEFD2026092400000008 /* GitHubCopilotServiceConfigurationView.swift */,
 				C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */,
 				6F6403A348529CBE1CFB24A1 /* CodexManagedAccountView.swift */,
 			);
 			path = ServiceConfigurationView;
+			sourceTree = "<group>";
+		};
+		C0FFEE6A2026092400000001 /* GitHubCopilot */ = {
+			isa = PBXGroup;
+			children = (
+				C0FFEEFD2026092400000000 /* GitHubCopilotDebugWindow.swift */,
+				C0FFEEFD2026092400000001 /* GitHubCopilotEffort.swift */,
+				C0FFEEFD2026092400000002 /* GitHubCopilotError.swift */,
+				C0FFEEFD2026092400000003 /* GitHubCopilotEventParser.swift */,
+				C0FFEEFD2026092400000004 /* GitHubCopilotLogger.swift */,
+				C0FFEEFD2026092400000005 /* GitHubCopilotModel.swift */,
+				3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */,
+				2C482B465C164A73BA9F6B56 /* GitHubCopilotModelCatalog.swift */,
+				9D62DA53787E49EC9011BB14 /* GitHubCopilotModelStore.swift */,
+				FBAB49A71BBA4870A9C4FF0C /* GitHubCopilotModelCache.swift */,
+				C0FFEEFD2026092400000006 /* GitHubCopilotRunner.swift */,
+				43D9DD6610A34B56B85C8812 /* GitHubCopilotEnvironment.swift */,
+				43D9DD6610A34B56B85C8814 /* GitHubCopilot-LICENSE.txt */,
+				C0FFEEFD2026092400000007 /* GitHubCopilotService.swift */,
+			);
+			path = GitHubCopilot;
 			sourceTree = "<group>";
 		};
 		ED3EC55898A147C8B7CAFBD5 /* ClaudeCode */ = {
@@ -4132,6 +4185,7 @@
 				4D4D6D6F0000000000000003 /* MDictStyleScript.js in Resources */,
 				4D4D6D6F0000000000000004 /* darkreader.min.js in Resources */,
 				4D4D6D6F0000000000000005 /* DarkReader-LICENSE.txt in Resources */,
+				43D9DD6610A34B56B85C8813 /* GitHubCopilot-LICENSE.txt in Resources */,
 				03779F142BB256B5008D3C42 /* EncryptedSecretKeys.plist in Resources */,
 				E34250B62E681A3100CEC295 /* Easydict-26.icon in Resources */,
 				03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */,
@@ -4633,6 +4687,20 @@
 				EDE0A51A08BB4905843AAD48 /* ClaudeCodeEffort.swift in Sources */,
 				F02EB0F1EC964084A816E36F /* ClaudeCodeRunner.swift in Sources */,
 				2A2FFF4289154137B673F7FA /* ClaudeCodeService.swift in Sources */,
+				C0FFEEBF2026092400000000 /* GitHubCopilotDebugWindow.swift in Sources */,
+				C0FFEEBF2026092400000001 /* GitHubCopilotEffort.swift in Sources */,
+				C0FFEEBF2026092400000002 /* GitHubCopilotError.swift in Sources */,
+				C0FFEEBF2026092400000003 /* GitHubCopilotEventParser.swift in Sources */,
+				C0FFEEBF2026092400000004 /* GitHubCopilotLogger.swift in Sources */,
+				C0FFEEBF2026092400000005 /* GitHubCopilotModel.swift in Sources */,
+				13A893BFBE2B4FD695223394 /* GitHubCopilotCatalogClient.swift in Sources */,
+				7F78F6CC528545E58216E75F /* GitHubCopilotModelCatalog.swift in Sources */,
+				8FA639CB01DB48FFB856FAF6 /* GitHubCopilotModelStore.swift in Sources */,
+				49DAA0A4B12B418BA7791B8F /* GitHubCopilotModelCache.swift in Sources */,
+				C0FFEEBF2026092400000006 /* GitHubCopilotRunner.swift in Sources */,
+				43D9DD6610A34B56B85C8811 /* GitHubCopilotEnvironment.swift in Sources */,
+				C0FFEEBF2026092400000007 /* GitHubCopilotService.swift in Sources */,
+				C0FFEEBF2026092400000008 /* GitHubCopilotServiceConfigurationView.swift in Sources */,
 				A0CCFCC574EE46559C7C6E39 /* ClaudeCodeDebugWindow.swift in Sources */,
 				24D3321DBBE84C798A32C595 /* ClaudeCodeServiceConfigurationView.swift in Sources */,
 				C0DEC11E0001000000000003 /* CodexCLIError.swift in Sources */,

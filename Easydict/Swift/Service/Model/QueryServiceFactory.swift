@@ -124,6 +124,7 @@ final class QueryServiceFactory: NSObject {
         .init(.builtInAI, BuiltInAIService.self, "built_in_ai", apiKeyRequirement: .builtIn),
         .init(.claudeCode, ClaudeCodeService.self, "service.claude_code.name", apiKeyRequirement: .agentCLI),
         .init(.codexCLI, CodexCLIService.self, "service.codex_cli.name", apiKeyRequirement: .agentCLI),
+        .init(.gitHubCopilot, GitHubCopilotService.self, "service.github_copilot.name", apiKeyRequirement: .agentCLI),
         .init(.gemini, GeminiService.self, "gemini_translate"),
         .init(.claude, ClaudeService.self, "claude_translate"),
         .init(.ollama, OllamaService.self, "ollama_translate", apiKeyRequirement: .none),

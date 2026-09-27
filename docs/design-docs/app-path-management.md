@@ -2,7 +2,7 @@
 
 - 状态：adopted
 - 初次记录：2026-09-15
-- 最近更新：2026-09-17
+- 最近更新：2026-09-27
 
 ## 背景
 
@@ -39,11 +39,18 @@ Easydict 自主管理的持久文件统一位于：
 │   └── claude-code/         # Claude Code 调用日志
 └── cache/
     ├── audio/               # 可重新获取的发音音频
-    └── mdict-metadata/      # 可重新生成的 MDict 元数据
+    ├── mdict-metadata/      # 可重新生成的 MDict 元数据
+    └── github-copilot/      # 模型与推理能力目录
 ```
 
 正式版本使用 `com.izual.Easydict`，Debug 版本使用 `com.izual.Easydict-debug`。第三方 SDK
 自行管理的目录不属于 `AppPathManager` 的所有权范围。
+
+Copilot 的 `cache/github-copilot/models.json` 保存模型 ID、名称、可用状态、推理能力、
+刷新时的 CLI 默认模型和更新时间，不包含凭据或翻译内容。应用启动约 5 秒后以及后续每
+24 小时，在任一查询窗口启用 Copilot 时后台刷新；设置页也可手动刷新。成功后原子替换，
+读取失败或刷新失败不会立即重试，已有成功目录继续供选择使用。实际翻译的 CLI 默认模型
+仍读取当前本地配置，不由缓存固定。退出应用时停止调度，下次启动重新安排。
 
 `~/Library/Caches/<bundle-id>/` 目前只作为旧版应用日志和音频缓存的迁移来源，不再作为上述
 Easydict 自主管理文件的新写入位置。系统临时目录只用于生命周期短、使用后即可删除的中转文件。
