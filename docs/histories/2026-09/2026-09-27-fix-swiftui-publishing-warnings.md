@@ -17,6 +17,7 @@
 - 将 `ServiceTab` 的 `List` selection setter 改为在当前 SwiftUI 更新事务之后提交，并用 generation 丢弃过时的排队 selection；服务更新通知固定在主线程接收。
 - 为 `FavoritesTab`、`MyConfiguration` 和 `StreamService` 的 Defaults publisher 增加主线程交付，避免偏好设置写入线程直接触发 UI 或配置状态更新。
 - 未新增或扩写测试。
+- 后续格式收尾：提交 `scheduleSelectionUpdate` 中移除两处冗余 `self.` 的已有改动，保持弱引用解包和 generation 检查不变。
 
 ### 设计意图
 
@@ -29,6 +30,7 @@
 - 本地 review：通过。复核了执行前 HEAD `d7de3c8811d42bb2b6624b2c5e634c6d3a003063` 到最终工作树的任务差异；未发现需要修复的 finding。
 - `xcodebuild test`：未形成可靠的整套通过结果。测试中出现 Task Timeout、AppleScript、OCR/语言检测、服务集成和 Codex 登录等环境敏感失败/超时，进程随后被安全停止；这些失败不涉及本次改动的编译错误。
 - 手动检查：Defaults publisher 调用链和 `ServiceTab` selection 调用链已核对；未在本轮启动应用进行 UI 手动复现。
+- 后续格式提交：`swiftformat --lint ServiceTab.swift` 与 `git diff --check` 通过；仅删除冗余限定符，无实质行为变化，未重复构建或测试。
 
 ### 受影响文件
 

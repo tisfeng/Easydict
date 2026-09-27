@@ -199,8 +199,8 @@ class ServiceTabViewModel: ObservableObject {
         selectionUpdateGeneration += 1
         let generation = selectionUpdateGeneration
         DispatchQueue.main.async { [weak self] in
-            guard let self, self.selectionUpdateGeneration == generation else { return }
-            self.selectItems(items)
+            guard let self, selectionUpdateGeneration == generation else { return }
+            selectItems(items)
         }
     }
 
