@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "9F9A7B2C-7D36-42EF-9979-2B7D6BD0B9B8",
+      "name" : "GitHub Copilot Local Validation",
+      "options" : {
+        "environmentVariableEntries" : [
+          {
+            "key" : "EASYDICT_RUN_COPILOT_LOCAL_VALIDATION",
+            "value" : "1",
+            "isEnabled" : true
+          }
+        ]
+      }
+    }
+  ],
+  "defaultOptions" : {},
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Easydict.xcodeproj",
+        "identifier" : "03022F2D2B370B7100B63209",
+        "name" : "EasydictTests"
+      }
+    }
+  ],
+  "version" : 1
+}
