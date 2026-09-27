@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>AITool 目录概览</title>
+  <style>
+    :root {
+      --background: #f7f7f4;
+      --surface: #ffffff;
+      --text: #202124;
+      --muted: #5f6368;
+      --border: #d7d8d2;
+      --accent: #0f766e;
+      --code: #f1f3f4;
+      --shadow: 0 18px 42px rgba(32, 33, 36, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #171918;
+        --surface: #222523;
+        --text: #f1f3f2;
+        --muted: #b7bcb8;
+        --border: #3a3f3b;
+        --accent: #5eead4;
+        --code: #303431;
+        --shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+        "Hiragino Sans GB", "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.68;
+    }
+
+    main {
+      width: min(960px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 48px 0 64px;
+    }
+
+    header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1,
+    h2 {
+      line-height: 1.25;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: 34px;
+      font-weight: 760;
+    }
+
+    h2 {
+      margin: 40px 0 16px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0 0 14px;
+    }
+
+    ul,
+    ol {
+      margin: 0 0 14px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    code {
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--code);
+      font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+
+    table {
+      width: 100%;
+      margin: 0 0 14px;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--code);
+      font-weight: 640;
+    }
+
+    .meta {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .diagram {
+      display: block;
+      width: 100%;
+      margin: 16px 0 4px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .note {
+      padding: 14px 18px;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      background: var(--code);
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>AITool 目录概览</h1>
+      <p class="meta">内置 AI 工具型查询服务家族：总结（Summary）· 润色（Polishing）· 这是什么（Explain）</p>
+    </header>
+
+    <h2>模块职责</h2>
+    <p>
+      AITool 是建立在内置 AI（BuiltInAI）之上的一组「工具型」查询服务，面向
+      <strong>选中文本后的一键文本处理</strong>场景，而不是常规的翻译。家族内的每个服务只做两件事：
+      用 <code>chatMessageDicts(_:)</code> 把用户文本组装成专属 Prompt 消息序列，其余链路
+      （请求、流式输出、结果回填、设置 UI）全部复用父类能力。服务默认使用状态为
+      <code>alwaysOff</code>，不会跟随划词自动查询，只在用户点击结果窗口中对应服务 Tab 时手动触发，
+      避免消耗内置共享免费额度。
+    </p>
+
+    <h2>文件清单</h2>
+    <table>
+      <tr>
+        <th>文件</th>
+        <th>职责</th>
+      </tr>
+      <tr>
+        <td><code>AIToolService.swift</code></td>
+        <td>家族基类，继承 <code>BuiltInAIService</code>；定制设置页（隐藏 API Key / 端点 / 模型等配置，仅保留使用状态），并把默认使用状态固定为 <code>alwaysOff</code>。</td>
+      </tr>
+      <tr>
+        <td><code>SummaryService.swift</code></td>
+        <td>总结服务（服务类型 <code>.summary</code>）：把长文本压缩成保留要点的连贯摘要，回答语言取用户第一语言。</td>
+      </tr>
+      <tr>
+        <td><code>PolishingService.swift</code></td>
+        <td>润色服务（<code>.polishing</code>）：改进清晰度、语法与可读性，只返回润色后的文本。同时被「润色替换」全局动作（ActionManager）复用。</td>
+      </tr>
+      <tr>
+        <td><code>ExplainService.swift</code></td>
+        <td>「这是什么」服务（<code>.explain</code>）：识别输入指向什么（术语、报错、代码、缩写、物品等）并给出介绍，按输入自适应详略，回答语言取用户第一语言。</td>
+      </tr>
+      <tr>
+        <td><code>aitool-overview.html</code> / <code>aitool-architecture.svg</code></td>
+        <td>本目录的中文概览文档与配套架构图。</td>
+      </tr>
+    </table>
+
+    <h2>继承与能力来源</h2>
+    <p>
+      <code>SummaryService / PolishingService / ExplainService → AIToolService → BuiltInAIService →
+      BaseOpenAIService → StreamService → QueryService</code>。经由这条继承链，工具服务开箱即得：
+    </p>
+    <ul>
+      <li><strong>免配置密钥</strong>：内置 API Key 与端点（<code>APIKey.builtInAIAPIKey</code>），免费模型 GLM-4-Flash / Llama3.1-8B；模型列表随 App 版本固化，不拉取远端模型。</li>
+      <li><strong>流式输出</strong>：<code>StreamService</code> 的 SSE 流式请求与节流结果流，结果逐段回填 <code>QueryResult</code>。</li>
+      <li><strong>全语言支持</strong>：语言表直接继承内置 AI 的全量语言。</li>
+      <li><strong>设置 UI</strong>：<code>StreamConfigurationView</code> 按需裁剪，工具服务仅展示「使用状态」选择器。</li>
+    </ul>
+
+    <h2>查询流程</h2>
+    <img class="diagram" src="aitool-architecture.svg" alt="AITool 模块架构图">
+    <ol>
+      <li>设置 → 服务列表开启工具服务（<code>QueryServiceFactory</code> 注册后自动出现在各窗口服务列表）。</li>
+      <li>划词 / 输入触发查询时，因使用状态为 <code>alwaysOff</code>，服务不会自动执行；用户点击结果窗口中的服务 Tab 手动查询。</li>
+      <li><code>chatMessageDicts(_:)</code> 组装 system prompt + 双语 few-shot + <code>"""用户文本"""</code> 的消息序列。</li>
+      <li>基类把消息转换为 OpenAI 兼容请求，经内置端点调用免费模型，流式回填结果。</li>
+    </ol>
+
+    <h2>边界与约束</h2>
+    <ul>
+      <li>工具服务不承担翻译语义：查询类型虽走 <code>.translation</code> 通道，但 Prompt 完全由各子类自定义。</li>
+      <li>回答语言固定为 <code>MyConfiguration.shared.firstLanguage</code>，与用户第一语言设置联动。</li>
+      <li>不支持用户自选模型与远端模型拉取（<code>canFetchRemoteModels = false</code>），模型集合随 App 升级更新。</li>
+      <li>每个服务的 Prompt 都是「system 定角色 + few-shot 定格式 + 用户文本定内容」三段式，few-shot 覆盖中英两种语言方向以稳定输出风格。</li>
+    </ul>
+
+    <h2>失败与调试入口</h2>
+    <ul>
+      <li>设置页开启服务时会执行 <code>validate()</code>（翻译探针请求），可验证内置 Key 与网络连通性。</li>
+      <li>请求错误经 <code>QueryError</code> 归一后在结果卡片展示，流式中断由 <code>StreamService</code> 统一收尾。</li>
+      <li>集成测试 <code>EasydictTests/Service/ServiceTests.swift</code> 会遍历 <code>QueryServiceFactory</code> 全部注册服务（含本家族），走真实网络验证。</li>
+      <li>离线单测 <code>EasydictTests/Service/ExplainServiceTests.swift</code> 覆盖 Explain 服务的注册与 Prompt 组装。</li>
+    </ul>
+
+    <p class="note">
+      相关阅读：<code>Easydict/Swift/Service/Model/QueryServiceFactory.swift</code>（服务注册表）、
+      <code>Easydict/Swift/Service/BuiltInAI/BuiltInAIService.swift</code>（内置 AI 服务）、
+      <code>Easydict/Swift/Service/OpenAI/StreamService+Prompt.swift</code>（翻译类 Prompt，供对比）。
+    </p>
+  </main>
+</body>
+</html>

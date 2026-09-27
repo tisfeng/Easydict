@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 780" font-family="-apple-system, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrowBlue" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 3.5 L 0 7 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowGray" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 3.5 L 0 7 Z" fill="#6b7280"/>
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 3.5 L 0 7 Z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="780" fill="#ffffff"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">AITool 模块架构</text>
+  <text x="480" y="56" text-anchor="middle" font-size="12" fill="#64748b">内置 AI 工具服务：总结 / 润色 / 这是什么（Explain）</text>
+
+  <rect x="80" y="84" width="800" height="100" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" stroke-dasharray="6 4"/>
+  <text x="100" y="108" font-size="13" font-weight="600" fill="#475569">查询入口层</text>
+  <rect x="160" y="124" width="240" height="44" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="280" y="151" text-anchor="middle" font-size="13" fill="#1e293b">设置 · 开启服务</text>
+  <rect x="560" y="124" width="240" height="44" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="680" y="151" text-anchor="middle" font-size="13" fill="#1e293b">结果窗口 · 服务 Tab</text>
+  <line x1="400" y1="146" x2="556" y2="146" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrowGray)"/>
+  <rect x="426" y="150" width="108" height="20" fill="#ffffff" opacity="0.95"/>
+  <text x="480" y="164" text-anchor="middle" font-size="12" fill="#64748b">服务加入窗口</text>
+
+  <line x1="480" y1="184" x2="480" y2="230" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <rect x="436" y="197" width="88" height="22" fill="#ffffff" opacity="0.95"/>
+  <text x="480" y="212" text-anchor="middle" font-size="12" fill="#2563eb">手动查询</text>
+
+  <rect x="80" y="234" width="800" height="220" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" stroke-dasharray="6 4"/>
+  <text x="100" y="258" font-size="13" font-weight="600" fill="#475569">AITool 服务层</text>
+  <rect x="120" y="264" width="720" height="40" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="480" y="289" text-anchor="middle" font-size="13" fill="#1e293b">AIToolService —— AI 工具基类（默认 alwaysOff · 使用状态配置）</text>
+  <line x1="228" y1="304" x2="228" y2="348" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrowGray)"/>
+  <line x1="480" y1="304" x2="480" y2="348" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrowGray)"/>
+  <line x1="732" y1="304" x2="732" y2="348" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrowGray)"/>
+  <rect x="120" y="352" width="216" height="60" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="228" y="377" text-anchor="middle" font-size="14" font-weight="600" fill="#1e293b">SummaryService</text>
+  <text x="228" y="398" text-anchor="middle" font-size="11" fill="#64748b">总结：长文摘要</text>
+  <rect x="372" y="352" width="216" height="60" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="480" y="377" text-anchor="middle" font-size="14" font-weight="600" fill="#1e293b">PolishingService</text>
+  <text x="480" y="398" text-anchor="middle" font-size="11" fill="#64748b">润色：优化表达</text>
+  <rect x="624" y="352" width="216" height="60" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="732" y="377" text-anchor="middle" font-size="14" font-weight="600" fill="#1e293b">ExplainService</text>
+  <text x="732" y="398" text-anchor="middle" font-size="11" fill="#64748b">这是什么：识别并介绍</text>
+
+  <line x1="480" y1="454" x2="480" y2="500" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <rect x="405" y="465" width="150" height="24" fill="#ffffff" opacity="0.95"/>
+  <text x="480" y="481" text-anchor="middle" font-size="12" fill="#2563eb">chatMessageDicts</text>
+
+  <rect x="80" y="504" width="800" height="120" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" stroke-dasharray="6 4"/>
+  <text x="100" y="528" font-size="13" font-weight="600" fill="#475569">能力基类链（继承）</text>
+  <rect x="120" y="544" width="200" height="44" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="220" y="562" text-anchor="middle" font-size="13" font-weight="600" fill="#1e293b">BuiltInAIService</text>
+  <text x="220" y="580" text-anchor="middle" font-size="11" fill="#64748b">内置 Key · 免费模型</text>
+  <rect x="380" y="544" width="200" height="44" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="480" y="562" text-anchor="middle" font-size="13" font-weight="600" fill="#1e293b">StreamService</text>
+  <text x="480" y="580" text-anchor="middle" font-size="11" fill="#64748b">SSE 流式输出</text>
+  <rect x="640" y="544" width="200" height="44" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="740" y="562" text-anchor="middle" font-size="13" font-weight="600" fill="#1e293b">QueryService</text>
+  <text x="740" y="580" text-anchor="middle" font-size="11" fill="#64748b">查询服务基类</text>
+  <line x1="320" y1="566" x2="376" y2="566" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrowGray)"/>
+  <line x1="580" y1="566" x2="636" y2="566" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrowGray)"/>
+
+  <line x1="480" y1="588" x2="480" y2="670" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <rect x="432" y="637" width="96" height="22" fill="#ffffff" opacity="0.95"/>
+  <text x="480" y="652" text-anchor="middle" font-size="12" fill="#2563eb">SSE 请求</text>
+
+  <rect x="280" y="674" width="400" height="56" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="480" y="697" text-anchor="middle" font-size="14" font-weight="600" fill="#1e293b">OpenAI 兼容 Chat API</text>
+  <text x="480" y="717" text-anchor="middle" font-size="11" fill="#64748b">智谱 GLM-4-Flash · Groq Llama3.1</text>
+
+  <path d="M 680 702 L 904 702 Q 912 702 912 694 L 912 338 Q 912 330 904 330 L 884 330" fill="none" stroke="#7c3aed" stroke-width="2" marker-end="url(#arrowPurple)"/>
+  <rect x="760" y="466" width="136" height="24" fill="#ffffff" opacity="0.95"/>
+  <text x="888" y="483" text-anchor="end" font-size="12" fill="#7c3aed">流式回填结果</text>
+
+  <line x1="84" y1="694" x2="124" y2="694" stroke="#2563eb" stroke-width="2"/>
+  <text x="130" y="698" font-size="12" fill="#475569">查询流</text>
+  <line x1="84" y1="716" x2="124" y2="716" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="130" y="720" font-size="12" fill="#475569">继承</text>
+  <line x1="84" y1="738" x2="124" y2="738" stroke="#7c3aed" stroke-width="2"/>
+  <text x="130" y="742" font-size="12" fill="#475569">结果流</text>
+
+</svg>
