@@ -268,6 +268,11 @@ public class StreamService: QueryService {
         defaultModels.first ?? ""
     }
 
+    /// Query-window presentation is separate from the ID passed to the provider.
+    @MainActor var modelDisplayName: String { model }
+
+    @MainActor var selectableModels: [String] { validModels }
+
     var unsupportedLanguages: [Language] {
         []
     }
@@ -432,6 +437,20 @@ public class StreamService: QueryService {
 
     var configuredReasoningEffort: ReasoningEffort {
         Defaults[reasoningEffortDefaultsKey]
+    }
+
+    @MainActor
+    func modelSelectionTitle(for identifier: String) -> String { identifier }
+
+    /// Static providers complete immediately; CLI providers may refresh account metadata.
+    @MainActor
+    func loadModelsForSelection(completion: @escaping (String?) -> ()) {
+        completion(nil)
+    }
+
+    @MainActor
+    func selectModel(_ identifier: String) {
+        if model != identifier { model = identifier }
     }
 
     func validModels(from supportedModels: String) -> [String] {

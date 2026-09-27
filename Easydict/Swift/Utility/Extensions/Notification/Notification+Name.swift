@@ -11,6 +11,7 @@ import Foundation
 /// Swift Notification.Name extensions
 extension Notification.Name {
     static let serviceHasUpdated = Notification.Name("serviceHasUpdated")
+    static let githubCopilotModelsDidChange = Notification.Name("githubCopilotModelsDidChange")
     static let openSettings = Notification.Name(EZOpenSettingsNotification)
     static let languagePreferenceChanged = Notification.Name(
         I18nHelper.languagePreferenceChangedNotification
@@ -34,6 +35,7 @@ extension Notification.Name {
 @objc
 extension NSNotification {
     static let serviceHasUpdated = Notification.Name.serviceHasUpdated
+    static let githubCopilotModelsDidChange = Notification.Name.githubCopilotModelsDidChange
     static let openSettings = Notification.Name.openSettings
     static let languagePreferenceChanged = Notification.Name.languagePreferenceChanged
     static let linkButtonUpdated = Notification.Name.linkButtonUpdated

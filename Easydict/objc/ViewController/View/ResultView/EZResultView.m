@@ -25,6 +25,7 @@
 @property (nonatomic, strong) EZHoverButton *arrowButton;
 @property (nonatomic, strong) EZHoverButton *stopButton;
 @property (nonatomic, strong) EZHoverButton *retryButton;
+@property (nonatomic, strong, nullable) NSUUID *modelSelectionRequest;
 
 @end
 
@@ -39,6 +40,10 @@
 }
 
 - (void)setup {
+    [NSNotificationCenter.defaultCenter addObserver:self
+                                          selector:@selector(copilotModelsDidChange:)
+                                              name:NSNotification.githubCopilotModelsDidChange
+                                            object:nil];
     self.wantsLayer = YES;
     self.layer.cornerRadius = EZCornerRadius_8;
     [self.layer executeLight:^(CALayer *layer) {
@@ -268,6 +273,23 @@
 
 #pragma mark - Setter
 
+- (void)setService:(EZQueryService *)service {
+    if (_service != service) {
+        self.modelSelectionRequest = nil;
+        self.serviceModelButton.enabled = YES;
+    }
+    _service = service;
+}
+
+- (void)viewDidMoveToWindow {
+    [super viewDidMoveToWindow];
+    if (!self.window) {
+        self.modelSelectionRequest = nil;
+        self.serviceModelButton.enabled = YES;
+        [self updateServiceModelButton];
+    }
+}
+
 - (void)setResult:(EZQueryResult *)result {
     _result = result;
     
@@ -282,13 +304,7 @@
     mm_weakify(self);
     
     if ([self isLLLStreamService:service]) {
-        EZStreamService *streamService = (EZStreamService *)service;
-        NSString *model = streamService.model;
-        self.serviceModelButton.title = model;
-        // hoverTitle may be different from normalTitle, fix https://github.com/tisfeng/Easydict/pull/516#issuecomment-2064164503
-        self.serviceModelButton.hoverTitle = model;
-        self.serviceModelButton.highlightTitle = model;
-        self.serviceModelButton.toolTip = model;
+        [self updateServiceModelButton];
 
         [self.serviceModelButton setClickBlock:^(EZButton *_Nonnull button) {
             mm_strongify(self);
@@ -454,30 +470,104 @@
 
 - (void)showModelSelectionMenu:(EZButton *)sender {
     EZStreamService *service = (EZStreamService *)self.service;
-    if (![self isLLLStreamService:service]) {
+    if (![self isLLLStreamService:service] || self.modelSelectionRequest) {
         return;
     }
 
+    NSUUID *request = NSUUID.UUID;
+    self.modelSelectionRequest = request;
+    __weak NSWindow *originWindow = self.window;
+    sender.enabled = NO;
+    NSString *loadingTitle = NSLocalizedString(@"service.github_copilot.catalog.loading", nil);
+    sender.title = loadingTitle;
+    sender.hoverTitle = loadingTitle;
+    sender.highlightTitle = loadingTitle;
+    [self setNeedsUpdateConstraints:YES];
+
+    mm_weakify(self);
+    [service loadModelsForSelectionWithCompletion:^(NSString *errorMessage) {
+        mm_strongify(self);
+        if (!self || ![self.modelSelectionRequest isEqual:request] || self.service != service) {
+            return;
+        }
+        self.modelSelectionRequest = nil;
+        sender.enabled = YES;
+        [self updateServiceModelButton];
+        if (!originWindow || self.window != originWindow || !originWindow.isVisible || originWindow.isMiniaturized || self.isHiddenOrHasHiddenAncestor) {
+            return;
+        }
+        [self presentModelSelectionMenu:sender errorMessage:errorMessage];
+    }];
+}
+
+- (void)presentModelSelectionMenu:(EZButton *)sender errorMessage:(nullable NSString *)errorMessage {
+    EZStreamService *service = (EZStreamService *)self.service;
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
-    for (NSString *model in service.validModels) {
-        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:model action:@selector(modelDidSelected:) keyEquivalent:@""];
+    for (NSString *model in service.selectableModels) {
+        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:[service modelSelectionTitleFor:model]
+                                                   action:@selector(modelDidSelected:) keyEquivalent:@""];
         item.target = self;
+        item.representedObject = @{ @"model": model, @"service": service };
+        item.state = [model isEqualToString:service.model] ? NSControlStateValueOn : NSControlStateValueOff;
+        item.toolTip = model.length ? model : item.title;
         [menu addItem:item];
+    }
+    if (errorMessage) {
+        [menu addItem:NSMenuItem.separatorItem];
+        NSMenuItem *errorItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"service.github_copilot.catalog.unavailable", nil)
+                                                        action:nil keyEquivalent:@""];
+        errorItem.toolTip = errorMessage;
+        [menu addItem:errorItem];
+        NSMenuItem *retryItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"retry", nil)
+                                                        action:@selector(retryModelSelection:) keyEquivalent:@""];
+        retryItem.target = self;
+        retryItem.representedObject = service;
+        [menu addItem:retryItem];
     }
     [menu popUpBelowView:sender];
 }
 
+- (void)retryModelSelection:(NSMenuItem *)sender {
+    EZQueryService *service = sender.representedObject;
+    __weak NSWindow *originWindow = self.window;
+    // Reopen after the current menu has left its tracking loop.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (service && self.service == service && originWindow && self.window == originWindow && originWindow.isVisible) {
+            [self showModelSelectionMenu:self.serviceModelButton];
+        }
+    });
+}
+
 - (void)modelDidSelected:(NSMenuItem *)sender {
     EZStreamService *service = (EZStreamService *)self.service;
-    if (![self isLLLStreamService:service]) {
+    NSDictionary *selection = sender.representedObject;
+    if (![self isLLLStreamService:service] || ![selection isKindOfClass:NSDictionary.class] || selection[@"service"] != service) {
         return;
     }
 
-    if (![service.model isEqualToString:sender.title]) {
-        service.model = sender.title;
-        self.serviceModelButton.title = service.model;
-        self.serviceModelButton.hoverTitle = service.model;
-        self.serviceModelButton.highlightTitle = service.model;
+    NSString *model = selection[@"model"];
+    if ([model isKindOfClass:NSString.class]) {
+        [service selectModel:model];
+        [self updateServiceModelButton];
+    }
+}
+
+- (void)updateServiceModelButton {
+    if (self.modelSelectionRequest || ![self isLLLStreamService:self.service]) {
+        return;
+    }
+    EZStreamService *service = (EZStreamService *)self.service;
+    NSString *title = service.modelDisplayName;
+    self.serviceModelButton.title = title;
+    self.serviceModelButton.hoverTitle = title;
+    self.serviceModelButton.highlightTitle = title;
+    self.serviceModelButton.toolTip = [service modelSelectionTitleFor:service.model];
+    [self setNeedsUpdateConstraints:YES];
+}
+
+- (void)copilotModelsDidChange:(NSNotification *)notification {
+    if ([self.service isKindOfClass:EZGitHubCopilotService.class]) {
+        [self updateServiceModelButton];
     }
 }
 

@@ -30,7 +30,7 @@ struct GitHubCopilotServiceConfigurationView: View {
         }
 
         Section {
-            CopilotModelSelection(modelKey: service.modelKey, effortKey: service.effortKey)
+            CopilotModelSelection(service: service, store: .shared)
                 .id(service.uuid)
         }
         #if AGENT_CLI_DEBUG
@@ -58,13 +58,15 @@ struct GitHubCopilotServiceConfigurationView: View {
 
 // MARK: - CopilotModelSelection
 
-/// Owns loading and picker state locally so catalog updates do not invalidate the service list.
+/// Observes shared metadata only in the model section, keeping service-list updates local.
 private struct CopilotModelSelection: View {
     // MARK: Lifecycle
 
-    init(modelKey: Defaults.Key<String>, effortKey: Defaults.Key<String>) {
-        _model = .init(modelKey)
-        _effort = .init(effortKey)
+    init(service: GitHubCopilotService, store: GitHubCopilotModelStore) {
+        self.service = service
+        self.store = store
+        _model = .init(service.modelKey)
+        _effort = .init(service.effortKey)
     }
 
     // MARK: Internal
@@ -75,6 +77,7 @@ private struct CopilotModelSelection: View {
                 Button {
                     search = ""
                     showingModels = true
+                    refreshID = UUID()
                 } label: {
                     HStack {
                         Text(selectionTitle)
@@ -96,7 +99,10 @@ private struct CopilotModelSelection: View {
                 .accessibilityLabel("service.github_copilot.catalog.refresh")
             }
         }
-        .task(id: refreshID) { await reload() }
+        .task(id: refreshID) { await store.refresh() }
+        .onChange(of: store.revision) { _ in
+            store.normalizeEffort(for: model, effortKey: service.effortKey)
+        }
         .onChange(of: scenePhase) { phase in
             if phase == .active { refreshID = UUID() }
         }
@@ -134,16 +140,19 @@ private struct CopilotModelSelection: View {
 
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.locale) private var locale
-    @State private var catalog: GitHubCopilotModelCatalog.Snapshot?
-    @State private var isLoading = false
-    @State private var failure: String?
+    @ObservedObject private var store: GitHubCopilotModelStore
     @State private var refreshID = UUID()
-    @State private var activeLoad: UUID?
     @State private var search = ""
     @State private var showingModels = false
 
+    private let service: GitHubCopilotService
+
     @Default private var model: String
     @Default private var effort: String
+
+    private var catalog: GitHubCopilotModelCatalog.Snapshot? { store.snapshot }
+    private var isLoading: Bool { store.isLoading }
+    private var failure: String? { store.failure }
 
     private var efforts: [String] { catalog?.model(for: model)?.reasoningEfforts ?? [] }
 
@@ -161,17 +170,9 @@ private struct CopilotModelSelection: View {
         return GitHubCopilotEffort.title(for: "")
     }
 
-    private var defaultModelTitle: String {
-        guard let catalog, !catalog.defaultModelID.isEmpty else {
-            return String(localized: "service.github_copilot.catalog.default_model")
-        }
-        let name = catalog.models.first { $0.id == catalog.defaultModelID }?.name ?? catalog.defaultModelID
-        return String(format: String(localized: "service.github_copilot.catalog.default_model_value %@"), name)
-    }
+    private var defaultModelTitle: String { store.defaultModelTitle }
 
-    private var selectionTitle: String {
-        model.isEmpty ? defaultModelTitle : catalog?.models.first { $0.id == model }?.name ?? model
-    }
+    private var selectionTitle: String { store.title(for: model) }
 
     private var matchingModels: [GitHubCopilotModel] {
         (catalog?.models ?? []).filter {
@@ -207,8 +208,7 @@ private struct CopilotModelSelection: View {
 
     private func modelButton(id: String, title: String) -> some View {
         Button {
-            model = id
-            if !efforts.contains(effort) { effort = "" }
+            service.selectModel(id)
             showingModels = false
         } label: {
             HStack {
@@ -220,27 +220,6 @@ private struct CopilotModelSelection: View {
             .padding(.vertical, 6)
         }
         .buttonStyle(.plain)
-    }
-
-    @MainActor
-    private func reload() async {
-        let identifier = UUID()
-        activeLoad = identifier
-        isLoading = true
-        failure = nil
-        defer { if activeLoad == identifier { isLoading = false } }
-        do {
-            let result = try await GitHubCopilotModelCatalog.load()
-            try Task.checkCancellation()
-            guard activeLoad == identifier else { return }
-            catalog = result
-            if !efforts.contains(effort) { effort = "" }
-        } catch is CancellationError {
-            // Switching services or leaving settings cancels the metadata subprocess.
-        } catch {
-            guard activeLoad == identifier else { return }
-            failure = error.localizedDescription
-        }
     }
 }
 

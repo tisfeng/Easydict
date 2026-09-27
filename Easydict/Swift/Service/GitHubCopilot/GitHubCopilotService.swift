@@ -166,9 +166,37 @@ final class GitHubCopilotService: StreamService {
         set { Defaults[modelKey] = newValue }
     }
 
+    @MainActor override var modelDisplayName: String {
+        model.isEmpty ? String(localized: "service.github_copilot.catalog.default_model")
+            : GitHubCopilotModelStore.shared.title(for: model)
+    }
+
+    @MainActor override var selectableModels: [String] {
+        GitHubCopilotModelStore.shared.selectableModels
+    }
+
     /// Empty omits `--reasoning-effort`; nonempty values come from the CLI catalog.
     var effortKey: Defaults.Key<String> {
         serviceDefaultsKey(.cliEffort, defaultValue: "")
+    }
+
+    @MainActor
+    override func modelSelectionTitle(for identifier: String) -> String {
+        GitHubCopilotModelStore.shared.title(for: identifier)
+    }
+
+    @MainActor
+    override func loadModelsForSelection(completion: @escaping (String?) -> ()) {
+        Task {
+            let store = GitHubCopilotModelStore.shared
+            await store.refresh()
+            completion(store.failure)
+        }
+    }
+
+    @MainActor
+    override func selectModel(_ identifier: String) {
+        GitHubCopilotModelStore.shared.selectModel(identifier, modelKey: modelKey, effortKey: effortKey)
     }
 
     // MARK: Private
