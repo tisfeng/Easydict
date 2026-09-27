@@ -480,8 +480,8 @@ private struct ServiceGroup: Identifiable {
 extension ServiceAPIKeyRequirement {
     fileprivate static let addSheetOrder: [ServiceAPIKeyRequirement] = [
         .builtIn,
-        .userProvided,
-        .agentCLI,
         .none,
+        .agentCLI,
+        .userProvided,
     ]
 }
