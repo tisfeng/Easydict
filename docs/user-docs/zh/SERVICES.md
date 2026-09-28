@@ -29,6 +29,7 @@ macOS 版本、网络环境、账号权限和上游接口状态。
 | 服务 | 使用条件 | 说明 |
 | --- | --- | --- |
 | OpenAI (`OpenAI`) | 用户密钥 | 使用 OpenAI 兼容配置中的官方 OpenAI 服务。 |
+| 百度千帆 (`Qianfan`) | 用户密钥 | 使用百度千帆 Chat V2 API 和账号可用的对话模型。 |
 | DeepSeek (`DeepSeek`) | 用户密钥 | 使用 DeepSeek API。 |
 | Groq (`Groq`) | 用户密钥 | 使用 Groq API。 |
 | 智谱 AI (`Zhipu`) | 用户密钥 | 使用智谱开放平台 API。 |

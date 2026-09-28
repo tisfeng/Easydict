@@ -32,6 +32,7 @@ The Services settings use these access types:
 | Service | Access | Notes |
 | --- | --- | --- |
 | OpenAI (`OpenAI`) | User key | Uses the official OpenAI service through OpenAI-compatible settings. |
+| Baidu Qianfan (`Qianfan`) | User key | Uses Baidu Qianfan's Chat V2 API and available chat models. |
 | DeepSeek (`DeepSeek`) | User key | Uses the DeepSeek API. |
 | Groq (`Groq`) | User key | Uses the Groq API. |
 | Zhipu AI (`Zhipu`) | User key | Uses the Zhipu open platform API. |
