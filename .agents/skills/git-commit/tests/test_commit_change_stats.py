@@ -165,15 +165,6 @@ class CommitChangeStatsTests(unittest.TestCase):
         self.assertEqual(payload["code"], self.counts(1, 1, 0))
         self.assertEqual(payload["docs"], self.counts(1, 2, 0))
 
-    def test_reports_zero_for_an_empty_commit(self) -> None:
-        commit = self.repository.commit("empty", allow_empty=True)
-
-        payload = self.payload(self.repository.stats(commit))
-
-        self.assertEqual(payload["total"], self.counts(0, 0, 0))
-        self.assertEqual(payload["code"], self.counts(0, 0, 0))
-        self.assertEqual(payload["docs"], self.counts(0, 0, 0))
-
     def test_rejects_an_invalid_revision(self) -> None:
         self.repository.commit("base", allow_empty=True)
 

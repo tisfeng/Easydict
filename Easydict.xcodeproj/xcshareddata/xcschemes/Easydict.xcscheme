@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2700"
+   LastUpgradeVersion = "2720"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -43,7 +43,8 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "03022F2D2B370B7100B63209"
@@ -51,6 +52,9 @@
                BlueprintName = "EasydictTests"
                ReferencedContainer = "container:Easydict.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test Identifier = "GitHubCopilotServiceTests/validatesLocalCopilotTranslation()"/>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

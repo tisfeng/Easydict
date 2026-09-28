@@ -269,6 +269,7 @@ final class CodexCLIRunner: @unchecked Sendable {
             // block the UI if scheduled on the main actor.
             Task.detached(priority: .userInitiated) { [weak self] in
                 do {
+                    try CodexReasoningEffort.validateLocalOverride(reasoningEffort)
                     let binaryPath = try Self.detectCodexBinary()
                     #if AGENT_CLI_DEBUG
                     self?.logger = CodexCLILogger(command: "\(binaryPath) exec --json", prompt: prompt)

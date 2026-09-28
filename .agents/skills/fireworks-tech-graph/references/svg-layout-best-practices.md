@@ -12,7 +12,7 @@
 
 #### Connection Point Rules
 - **Never connect arrows to component corners** - use midpoints of edges
-- **Entry/exit points**: 
+- **Entry/exit points**:
   - Top edge: `cx ± offset` where offset = 0 for single arrow, ±30px for multiple
   - Bottom edge: same rule
   - Left/right edges: `cy ± offset`
@@ -20,7 +20,7 @@
 
 #### Arrow Path Routing
 - **Avoid diagonal lines crossing components** - use orthogonal routing (L-shaped paths)
-- **For curved arrows**: 
+- **For curved arrows**:
   - Control point should be at least 40px away from any component edge
   - Use intermediate waypoints for complex routing: `M x1,y1 L x2,y2 Q cx,cy x3,y3`
 - **Multiple arrows between same layers**: stagger Y-coordinates by 15-20px to avoid overlap
@@ -40,26 +40,27 @@
 
 ### 3. Arrow Label Placement
 - **Position**: midpoint of arrow path, offset by 5-10px perpendicular to arrow direction
-- **Background rect**: ALWAYS include, with:
+- **Offset first**: move the label 5-10px perpendicular to the arrow so it does not sit on the stroke
+- **Background rect fallback**: include only when offsetting cannot avoid another visual element, with:
   - Padding: 4px horizontal, 2px vertical
-  - Fill: match ckground color
+  - Fill: match background color
   - Opacity: 0.9-0.95
 - **Safety distance**: 15px minimum from any component edge
 - **Multiple converging arrows**: stagger label positions vertically by 20px
 
 ### 4. Component Overlap Detection
 Before finalizing SVG, check:
-- No component bounding boxes overlap px safety margin)
+- No component bounding boxes overlap (8px safety margin)
 - No arrow paths pass through component interiors (except intentional tunneling with dashed style)
 - No text labels overlap with components or other labels
 
 ### 5. Z-Index Layering (SVG render order)
 ```svg
-<!-- Render order (top to bot back to front): -->
+<!-- Render order (top to bottom = back to front): -->
 1. Background rect
-2. Grouping coners (dashed rects)
+2. Grouping containers (dashed rects)
 3. Arrow paths
-4. Arrow label background rects
+4. Arrow label background rects when collision fallback is needed
 5. Components (boxes, cylinders, etc.)
 6. Component text
 7. Arrow label text
@@ -68,7 +69,8 @@ Before finalizing SVG, check:
 
 ## Style-Specific Enhancements
 
-### Style-1: Flat Icon Clean- **Perfect alignment**: snap all coordinates to 8px grid
+### Style-1: Flat Icon Clean
+- **Perfect alignment**: snap all coordinates to 8px grid
 - **Sharp corners**: rx="8" ry="8" for rounded rects (consistent)
 - **Arrows**: thin (1.5-2px), filled polygon markers
 - **No shadows**: flat design principle
@@ -82,19 +84,20 @@ Before finalizing SVG, check:
 
 Before exporting PNG, verify:
 - [ ] No arrow-component overlaps (visual inspection)
-- [ ] All arrow labels have background rects
+- [ ] Arrow labels are offset from lines; fallback background rects are used only where needed
 - [ ] Minimum 60px clearance for all arrow paths
 - [ ] Component spacing ≥ 80px
 - [ ] Arrow connection points avoid corners (≥20px from corner)
 - [ ] Multiple arrows between layers are staggered
 - [ ] Legend is readable and doesn't overlap content
-- [ ] SVG validates with `rsvg-convert`
+- [ ] SVG renders cleanly via `cairosvg` (or `rsvg-convert` as fallback)
 
 ## Common Anti-Patterns to Avoid
 
 | Anti-Pattern | Fix |
 |--------------|-----|
-| Arrow crosses component | Use orthogonal routingase control point distancelabel overlaps component | Add background rect + increase offset |
+| Arrow crosses component | Use orthogonal routing, increase control point distance |
+| Label overlaps component | Increase offset; add a matching-background rect if the collision remains |
 | Components too close | Increase spacing to 80px minimum |
 | Arrow connects to corner | Move connection point to edge midpoint offset |
 | No z-index planning | Follow render order: arrows -> components -> text |

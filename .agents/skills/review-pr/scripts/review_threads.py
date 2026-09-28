@@ -91,6 +91,64 @@ def fingerprint(thread):
     return hashlib.sha256(json.dumps(content, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
+def collect_thread(repo, number, thread_id):
+    """Read one PR-bound thread, all replies, and a closing identity/count guard."""
+    owner, name = repo.split("/")
+    identity_fields = "id url headRefOid state"
+    query_template = """query($owner:String!,$name:String!,$number:Int!,$id:ID!,$cursor:String){
+      repository(owner:$owner,name:$name){pullRequest(number:$number){%s}}
+      node(id:$id){... on PullRequestReviewThread {
+        %s pullRequest { id } comments(first:100,after:$cursor){nodes{%s} %s}
+      }}
+    }""" % (identity_fields, THREAD_FIELDS, COMMENT_FIELDS, PAGE)
+    final_query = """query($owner:String!,$name:String!,$number:Int!,$id:ID!){
+      repository(owner:$owner,name:$name){pullRequest(number:$number){%s}}
+      node(id:$id){... on PullRequestReviewThread {
+        %s pullRequest { id } comments { totalCount }
+      }}
+    }""" % (identity_fields, THREAD_FIELDS)
+    variables = dict(owner=owner, name=name, number=number, id=thread_id)
+    identity, header, cursor, seen, comments = None, None, None, set(), []
+
+    def unpack(data):
+        pr = data["repository"]["pullRequest"]
+        current = {key: pr[key] for key in ("id", "url", "headRefOid", "state")}
+        node = data["node"]
+        if node is not None:
+            if node["id"] != thread_id or node["pullRequest"]["id"] != current["id"]:
+                raise ValueError("Target thread does not belong to the requested PR")
+        return current, node
+
+    while True:
+        current, node = unpack(graphql(query_template, **variables, cursor=cursor))
+        if identity is not None and current != identity:
+            raise ValueError("PR changed during target thread collection; collect again")
+        identity = current
+        if node is None:
+            if header is not None:
+                raise ValueError("Target thread disappeared during pagination")
+            return {"repo": repo, "number": number, **identity, "threads": []}
+        current_header = {key: node[key] for key in THREAD_FIELDS.split()}
+        if header is not None and current_header != header:
+            raise ValueError("Target thread changed during pagination; collect again")
+        header = current_header
+        connection = node["comments"]
+        comments.extend(connection["nodes"])
+        cursor = next_cursor(connection, seen)
+        if cursor is None:
+            break
+    if len({item["id"] for item in comments}) != len(comments):
+        raise ValueError("Duplicate comments during target thread collection")
+    current, node = unpack(graphql(final_query, **variables))
+    if current != identity or node is None:
+        raise ValueError("PR or target thread changed after pagination; collect again")
+    if ({key: node[key] for key in THREAD_FIELDS.split()} != header
+            or node["comments"]["totalCount"] != len(comments)):
+        raise ValueError("Target thread changed after pagination; collect again")
+    return {"repo": repo, "number": number, **identity,
+            "threads": [dict(header, comments=comments)]}
+
+
 def validate_plan(plan):
     if plan.get("version") != 1:
         raise ValueError("Unsupported plan version")
@@ -119,7 +177,7 @@ def apply_plan(plan):
         results.append(record)
         attempted = False
         try:
-            before = collect(plan["repo"], plan["number"])
+            before = collect_thread(plan["repo"], plan["number"], decision["thread_id"])
             if before["id"] != plan["id"] or before["headRefOid"] != plan["headRefOid"] or before["state"] != "OPEN":
                 record["status"] = "stale_pr"
                 break
@@ -138,7 +196,7 @@ def apply_plan(plan):
                 continue
             attempted = True
             graphql("mutation($id:ID!){resolveReviewThread(input:{threadId:$id}){thread{id isResolved}}}", id=thread["id"])
-            after = collect(plan["repo"], plan["number"])
+            after = collect_thread(plan["repo"], plan["number"], thread["id"])
             actual = next((t for t in after["threads"] if t["id"] == thread["id"]), None)
             record["observed_head"] = after["headRefOid"]
             if actual is None:

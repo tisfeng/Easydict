@@ -2,7 +2,7 @@
 
 - 日期：2026-09-02
 - 状态：completed
-- 关联计划：[`2026-09-02-easydict-contributing-guide-port.md`](../../exec-plans/completed/2026-09-02-easydict-contributing-guide-port.md)
+- 关联计划：[`2026-09-02-easydict-contributing-guide-port.md`](../../exec-plans/completed/2026-09/2026-09-02-easydict-contributing-guide-port.md)
 - 来源：Scoco `ae0ecdf46`、`7d74c756a`、`ae7fa25f4`
 
 ## 用户请求

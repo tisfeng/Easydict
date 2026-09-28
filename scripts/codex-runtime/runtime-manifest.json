@@ -1,0 +1,100 @@
+{
+  "versions": {
+    "0.134.0": {
+      "minimumOS": 13,
+      "packages": {
+        "aarch64": {
+          "target": "aarch64-apple-darwin",
+          "archiveSHA256": "1230acc88c9b984a2a554d13ecefd67ce13c9d6888ce229589ffe6cd1f120fec",
+          "archiveSize": 81293577,
+          "files": {
+            "bin/codex": "9c412eba7f46728e971eb8c25cf44b37b918b470848f509474eb91f8ff19b98f",
+            "codex-package.json": "b3ecdfc99866ad2a17e8884aa6710b1098a751a7a8bee315672c070bd1e38e7b",
+            "codex-path/rg": "4fdf1d8365af224bc70e3c1490d8461d859c37cc70e739a11e987af0215f3e94"
+          },
+          "signatureRequirements": {
+            "bin/codex": "anchor apple generic and certificate leaf[subject.OU] = \"2DC432GLL2\""
+          },
+          "directories": [
+            "bin",
+            "codex-path",
+            "codex-resources"
+          ]
+        },
+        "x86_64": {
+          "target": "x86_64-apple-darwin",
+          "archiveSHA256": "a97e6a6d7c5e83691a12da28182f0992e753517a8e558b86cb9dad015ed34cea",
+          "archiveSize": 91368845,
+          "files": {
+            "bin/codex": "4adcc6b0af2bb55ada2e9d8d7ab8e019e3ae134db29c0761d40c7ba3c5f380b0",
+            "codex-package.json": "634c2fa3f5db4f3f13af1e30c2c4d7da3ea97019ab2e0fe807c619337bb27142",
+            "codex-path/rg": "3bafa7e6ee51ba3ac4ed065883484a309be09b26ea6dad561ae4049bfe049c50"
+          },
+          "signatureRequirements": {
+            "bin/codex": "anchor apple generic and certificate leaf[subject.OU] = \"2DC432GLL2\""
+          },
+          "directories": [
+            "bin",
+            "codex-path",
+            "codex-resources"
+          ]
+        }
+      }
+    },
+    "0.153.4": {
+      "minimumOS": 15,
+      "packages": {
+        "aarch64": {
+          "target": "aarch64-apple-darwin",
+          "archiveSHA256": "35438da1fbf7a6db7ddb3bcec84448fa6015ba188461472a97d9d1da7d9c4353",
+          "archiveSize": 111554884,
+          "files": {
+            "bin/codex": "b973d440acac501fd2594a43e7ca9ce41e0a65b9dfb28d0d7a7837c99e1261e3",
+            "bin/codex-code-mode-host": "d8a2222e017342718d16a5dbe092921c628961f812f62f42036b8d960e1ffe56",
+            "codex-package.json": "d9ca6b160a46bf8e06748df83ccadb91418ded2d1c35045518b7305f866c9a54",
+            "codex-path/rg": "3969d598288585478bd9b2fd6c9f7e120b711cf96c5a03844d0197ea6abec346",
+            "codex-resources/zsh/bin/zsh": "712ebaa416a7505fe6719ba99440ae3125423ce46d42d0174963553d81f3f8f1"
+          },
+          "signatureRequirements": {
+            "bin/codex": "anchor apple generic and certificate leaf[subject.OU] = \"2DC432GLL2\"",
+            "bin/codex-code-mode-host": "anchor apple generic and certificate leaf[subject.OU] = \"2DC432GLL2\"",
+            "codex-path/rg": "anchor apple generic and certificate leaf[subject.OU] = \"2DC432GLL2\"",
+            "codex-resources/zsh/bin/zsh": "anchor apple generic and certificate leaf[subject.OU] = \"2DC432GLL2\""
+          },
+          "directories": [
+            "bin",
+            "codex-path",
+            "codex-resources",
+            "codex-resources/zsh",
+            "codex-resources/zsh/bin"
+          ]
+        },
+        "x86_64": {
+          "target": "x86_64-apple-darwin",
+          "archiveSHA256": "3ee638d7155c856ef31f3f4a85cb2195de1939962d3924c935b24f0514564a3d",
+          "archiveSize": 121093282,
+          "files": {
+            "bin/codex": "88ecd2cbf8044832a49e7710394d9d328f7205fa5e8c8ebbdd015e002b4f6e21",
+            "bin/codex-code-mode-host": "39d63b08ca16a9bf7b07a1549e0c288a7a1ff69b971cd31d6960c3536c1c8ccb",
+            "codex-package.json": "26d66eb80ac7646a23d070140712673e8f9c93f0714272b29732c3cbf603f7ee",
+            "codex-path/rg": "30bf3e89d7f3dab98615bb21c401e5b2928f3a312d82e1b209f7ed4d513d0521",
+            "codex-resources/zsh/bin/zsh": "3e7fe9663d251941442590b6656df301fb972088c1e17a35339428428a572926"
+          },
+          "signatureRequirements": {
+            "bin/codex": "anchor apple generic and certificate leaf[subject.OU] = \"2DC432GLL2\"",
+            "bin/codex-code-mode-host": "anchor apple generic and certificate leaf[subject.OU] = \"2DC432GLL2\"",
+            "codex-path/rg": "anchor apple generic and certificate leaf[subject.OU] = \"2DC432GLL2\"",
+            "codex-resources/zsh/bin/zsh": "anchor apple generic and certificate leaf[subject.OU] = \"2DC432GLL2\""
+          },
+          "directories": [
+            "bin",
+            "codex-path",
+            "codex-resources",
+            "codex-resources/zsh",
+            "codex-resources/zsh/bin"
+          ]
+        }
+      }
+    }
+  }
+}

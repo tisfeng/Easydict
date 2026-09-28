@@ -1,48 +1,52 @@
 {
+  "schema_version": 1,
+  "mode": "architecture",
   "template_type": "architecture",
   "style": 6,
-  "width": 1120,
+  "motion_scene": "governed-runtime",
+  "quality_profile": "showcase",
+  "width": 960,
   "height": 700,
-  "style_overrides": {
-    "title_align": "center"
-  },
   "title": "System Architecture",
-  "subtitle": "Claude official style with warm structure, restrained hierarchy, and deployment clarity",
+  "subtitle": "warm hierarchy for interface, orchestration, inference, safety, and operations",
   "containers": [
-    { "x": 44, "y": 118, "width": 1032, "height": 110, "label": "", "side_label": "Interface Layer", "side_label_x": 28, "side_label_anchor": "start", "subtitle": "", "stroke": "#ded8cf", "fill": "none" },
-    { "x": 44, "y": 262, "width": 1032, "height": 154, "label": "", "side_label": "Core Layer", "side_label_x": 28, "side_label_anchor": "start", "subtitle": "", "stroke": "#ded8cf", "fill": "none" },
-    { "x": 44, "y": 450, "width": 1032, "height": 178, "label": "", "side_label": "Foundation Layer", "side_label_x": 28, "side_label_anchor": "start", "subtitle": "", "stroke": "#ded8cf", "fill": "none" }
+    { "id": "interface", "x": 40, "y": 120, "width": 880, "height": 110, "label": "Interface", "stroke": "#ded8cf", "fill": "none" },
+    { "id": "core", "x": 40, "y": 280, "width": 880, "height": 130, "label": "Core Runtime", "stroke": "#ded8cf", "fill": "none" },
+    { "id": "foundation", "x": 40, "y": 450, "width": 880, "height": 140, "label": "Foundation", "stroke": "#ded8cf", "fill": "none" }
   ],
   "nodes": [
-    { "id": "entry", "kind": "rect", "x": 82, "y": 146, "width": 170, "height": 54, "label": "Client Surface", "type_label": "ENTRY", "fill": "#e9f1fb", "stroke": "#8c6f5a", "flat": true },
-    { "id": "gateway", "kind": "double_rect", "x": 340, "y": 142, "width": 196, "height": 62, "label": "Gateway", "type_label": "ROUTER", "fill": "#f7ecda", "stroke": "#d97757" },
-    { "id": "planner", "kind": "rect", "x": 144, "y": 306, "width": 188, "height": 60, "label": "Task Planner", "type_label": "ORCHESTRATION", "fill": "#f7ecda", "stroke": "#d0b893", "flat": true },
-    { "id": "runtime", "kind": "double_rect", "x": 430, "y": 298, "width": 244, "height": 76, "label": "Model Runtime", "type_label": "INFERENCE", "fill": "#c8e4db", "stroke": "#8c6f5a" },
-    { "id": "guard", "kind": "rect", "x": 782, "y": 306, "width": 200, "height": 60, "label": "Policy Guardrails", "type_label": "SAFETY", "fill": "#efe8de", "stroke": "#d0c3b3", "flat": true },
-    { "id": "memory", "kind": "cylinder", "x": 96, "y": 494, "width": 154, "height": 92, "label": "Memory Store", "sublabel": "context + recall", "fill": "#e5e8df", "stroke": "#7b8b5c" },
-    { "id": "tools", "kind": "rect", "x": 382, "y": 510, "width": 184, "height": 60, "label": "Tool Runtime", "type_label": "ACTION", "fill": "#f7ecda", "stroke": "#d0b893", "flat": true },
-    { "id": "obs", "kind": "rect", "x": 688, "y": 510, "width": 184, "height": 60, "label": "Observability", "type_label": "OPS", "fill": "#efe8de", "stroke": "#d0c3b3", "flat": true },
-    { "id": "registry", "kind": "rect", "x": 906, "y": 510, "width": 138, "height": 60, "label": "Registry", "type_label": "ROLL OUT", "fill": "#efe8de", "stroke": "#d0c3b3", "flat": true }
+    { "id": "client", "kind": "rect", "x": 80, "y": 156, "width": 180, "height": 54, "label": "Client Surface", "sublabel": "web + product UI", "fill": "#e9f1fb", "stroke": "#8c6f5a", "flat": true },
+    { "id": "gateway", "kind": "double_rect", "x": 340, "y": 156, "width": 200, "height": 54, "label": "Gateway", "sublabel": "auth + routing", "fill": "#f7ecda", "stroke": "#d97757" },
+    { "id": "planner", "kind": "rect", "x": 80, "y": 340, "width": 180, "height": 50, "label": "Task Planner", "sublabel": "decompose + schedule", "fill": "#f7ecda", "stroke": "#d0b893", "flat": true },
+    { "id": "runtime", "kind": "double_rect", "x": 340, "y": 340, "width": 200, "height": 50, "label": "Model Runtime", "sublabel": "inference core", "fill": "#c8e4db", "stroke": "#8c6f5a" },
+    { "id": "guardrails", "kind": "rect", "x": 740, "y": 340, "width": 160, "height": 50, "label": "Guardrails", "sublabel": "policy + safety", "fill": "#efe8de", "stroke": "#d0c3b3", "flat": true },
+    { "id": "memory", "kind": "cylinder", "x": 90, "y": 510, "width": 160, "height": 60, "label": "Memory", "sublabel": "context + recall", "fill": "#e5e8df", "stroke": "#7b8b5c" },
+    { "id": "tools", "kind": "rect", "x": 360, "y": 510, "width": 160, "height": 60, "label": "Tool Runtime", "sublabel": "actions", "fill": "#f7ecda", "stroke": "#d0b893", "flat": true },
+    { "id": "observability", "kind": "rect", "x": 580, "y": 510, "width": 120, "height": 60, "label": "Observability", "sublabel": "traces", "fill": "#efe8de", "stroke": "#d0c3b3", "flat": true },
+    { "id": "registry", "kind": "rect", "x": 760, "y": 510, "width": 120, "height": 60, "label": "Registry", "sublabel": "rollouts", "fill": "#efe8de", "stroke": "#d0c3b3", "flat": true }
   ],
   "arrows": [
-    { "source": "entry", "target": "gateway", "source_port": "right", "target_port": "left", "flow": "read" },
-    { "source": "gateway", "target": "planner", "source_port": "bottom", "target_port": "top", "flow": "control", "label": "decompose", "route_points": [[370,224], [370,336], [332,336]] },
-    { "source": "gateway", "target": "runtime", "source_port": "bottom", "target_port": "top", "flow": "read", "route_points": [[438,224], [552,224], [552,298]] },
-    { "source": "runtime", "target": "guard", "source_port": "right", "target_port": "left", "flow": "data" },
-    { "source": "runtime", "target": "memory", "source_port": "bottom", "target_port": "top", "flow": "write", "dashed": true, "route_points": [[606,432], [218,432], [218,494]] },
-    { "source": "runtime", "target": "tools", "source_port": "bottom", "target_port": "top", "flow": "read" },
-    { "source": "runtime", "target": "obs", "source_port": "bottom", "target_port": "top", "flow": "feedback", "dashed": true, "route_points": [[730,432], [780,432], [780,510]] },
-    { "source": "obs", "target": "registry", "source_port": "right", "target_port": "left", "flow": "control" }
+    { "id": "request", "source": "client", "target": "gateway", "source_port": "right", "target_port": "left", "flow": "read", "motion_role": "ingress", "motion_stage": 1, "motion_order": 0, "label": "request" },
+    { "id": "dispatch", "source": "gateway", "target": "runtime", "source_port": "bottom", "target_port": "top", "flow": "control", "motion_role": "dispatch", "motion_stage": 2, "motion_order": 0, "label": "dispatch" },
+    { "id": "plan", "source": "runtime", "target": "planner", "source_port": "left", "target_port": "right", "flow": "control", "motion_role": "runtime-branch", "motion_stage": 3, "motion_order": 0, "label": "plan" },
+    { "id": "enforce", "source": "runtime", "target": "guardrails", "source_port": "right", "target_port": "left", "flow": "control", "motion_role": "runtime-branch", "motion_stage": 3, "motion_order": 1, "label": "enforce" },
+    { "id": "remember", "source": "planner", "target": "memory", "source_port": "bottom", "target_port": "top", "flow": "write", "motion_role": "foundation", "motion_stage": 4, "motion_order": 0, "label": "remember" },
+    { "id": "act", "source": "runtime", "target": "tools", "source_port": "bottom", "target_port": "top", "flow": "read", "motion_role": "runtime-branch", "motion_stage": 3, "motion_order": 2, "label": "act" },
+    { "id": "register", "source": "guardrails", "target": "registry", "source_port": "bottom", "target_port": "top", "flow": "feedback", "motion_role": "foundation", "motion_stage": 4, "motion_order": 1, "label": "release" },
+    { "id": "trace", "source": "tools", "target": "observability", "source_port": "right", "target_port": "left", "flow": "feedback", "motion_role": "foundation", "motion_stage": 4, "motion_order": 2, "label": "trace" },
+    { "id": "promote", "source": "observability", "target": "registry", "source_port": "right", "target_port": "left", "flow": "feedback", "motion_role": "promote", "motion_stage": 5, "motion_order": 0, "label": "promote" }
   ],
+  "legend_orientation": "horizontal",
+  "legend_x": 48,
+  "legend_y": 625,
+  "legend_locked": true,
   "legend": [
-    { "flow": "read", "label": "Primary request path" },
-    { "flow": "control", "label": "Planning / rollout control" },
-    { "flow": "write", "label": "Memory writeback" },
-    { "flow": "feedback", "label": "Operational telemetry" }
+    { "flow": "read", "label": "request / action" },
+    { "flow": "control", "label": "orchestration" },
+    { "flow": "write", "label": "memory write" },
+    { "flow": "feedback", "label": "operations" }
   ],
-  "legend_position": "bottom-right",
-  "legend_box": true,
-  "legend_box_fill": "#fffaf3",
-  "legend_y": 596,
-  "footer": ""
+  "footer": "Style 6 · Claude Official · restrained system hierarchy",
+  "footer_x": 48,
+  "footer_y": 680
 }

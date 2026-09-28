@@ -11,6 +11,10 @@ import Foundation
 
 extension StreamService {
     func setupSubscribers() {
+        if let codex = self as? CodexCLIService {
+            codex.setupCodexSubscribers()
+            return
+        }
         logInfo("setup subscribers: \(self), windowType: \(windowType.rawValue)")
 
         Defaults.publisher(nameKey, options: [])

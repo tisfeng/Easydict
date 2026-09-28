@@ -1,6 +1,6 @@
 ## 2026-08-23 | 任务：拆分发布后 Issue 跟进 Skill
 
-**Links:** `../../exec-plans/completed/2026-08-23-release-issue-followup-skill.md`
+**Links:** `../../exec-plans/completed/2026-08/2026-08-23-release-issue-followup-skill.md`
 
 ### 用户请求
 
@@ -44,7 +44,7 @@
 - `.agents/skills/release-easydict-issue-followup/`
 - `.agents/skills/release-easydict/`
 - `docs/agents/skills.md`
-- `docs/exec-plans/completed/2026-08-23-release-issue-followup-skill.md`
+- `docs/exec-plans/completed/2026-08/2026-08-23-release-issue-followup-skill.md`
 
 ### 后续事项
 

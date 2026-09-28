@@ -63,7 +63,7 @@ SVG cannot do real backdrop-filter, so simulate with:
 <!-- 1. Subtle inner shadow -->
 <rect rx="12" fill="rgba(255,255,255,0.03)" stroke="none"/>
 <!-- 2. Glass body -->
-<rect rx="12" fill="rgba(255,255,255,0.06)" 
+<rect rx="12" fill="rgba(255,255,255,0.06)"
       stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
 <!-- 3. Top highlight line -->
 <line stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
@@ -72,7 +72,7 @@ SVG cannot do real backdrop-filter, so simulate with:
 ## Typography
 
 ```
-font-family: 'Inter', -apple-system, 'SF Pro Display', sans-serif
+font-family: 'Inter', -apple-system, 'SF Pro Display', 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif
 font-size:   14px labels, 12px sublabels, 20px hero title
 font-weight: 400 normal, 600 semi-bold, 700 bold titles
 ```
@@ -112,7 +112,7 @@ font-weight: 400 normal, 600 semi-bold, 700 bold titles
      width="960" height="600">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    text { font-family: 'Inter', -apple-system, sans-serif; fill: #f0f6fc; }
+    text { font-family: 'Inter', -apple-system, 'SF Pro Display', 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif; fill: #f0f6fc; }
   </style>
   <defs>
     <!-- bg gradients, glow gradients, glass filter, arrow markers -->

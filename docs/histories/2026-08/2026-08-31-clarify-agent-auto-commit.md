@@ -2,7 +2,7 @@
 
 - 日期：2026-08-31
 - 状态：completed
-- 关联计划：[`2026-08-31-clarify-agent-auto-commit.md`](../../exec-plans/completed/2026-08-31-clarify-agent-auto-commit.md)
+- 关联计划：[`2026-08-31-clarify-agent-auto-commit.md`](../../exec-plans/completed/2026-08/2026-08-31-clarify-agent-auto-commit.md)
 - 来源：boss-resume `f66d4bb33a9b2da78902ae8b83e7ff4fc16fdf79`
 
 ## 用户请求

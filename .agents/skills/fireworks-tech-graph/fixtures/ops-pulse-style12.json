@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "mode": "architecture",
+  "template_type": "architecture",
+  "style": 12,
+  "semantic_profile": "ops-pulse",
+  "diagram_type": "observability",
+  "observation_window": "5m",
+  "quality_profile": "showcase",
+  "width": 960,
+  "height": 860,
+  "title": "Checkout Reliability Pulse",
+  "subtitle": "golden signals, critical request path, and one correlated trace waterfall",
+  "critical_path_id": "checkout-request",
+  "critical_path": ["edge-gateway-api", "edge-api-checkout", "edge-checkout-payment"],
+  "containers": [
+    {
+      "id": "service-health",
+      "x": 20,
+      "y": 120,
+      "width": 920,
+      "height": 310,
+      "label": "Service Health",
+      "subtitle": "rolling 5 minute window"
+    },
+    {
+      "id": "trace-waterfall",
+      "x": 40,
+      "y": 450,
+      "width": 880,
+      "height": 330,
+      "label": "Trace 7F3A · checkout-request",
+      "subtitle": "420 ms end-to-end · sampled on elevated latency"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "edge-gateway",
+      "kind": "ops_service",
+      "ops_role": "service",
+      "x": 40,
+      "y": 170,
+      "width": 180,
+      "height": 108,
+      "label": "Edge Gateway",
+      "status": "ok",
+      "status_label": "HEALTHY",
+      "signals": {
+        "latency": { "value": "18", "unit": "ms", "window": "5m", "status": "ok" },
+        "traffic": { "value": "8.2k", "unit": "rps", "window": "5m", "status": "ok" },
+        "errors": { "value": "0.08", "unit": "%", "window": "5m", "status": "ok" },
+        "saturation": { "value": "42", "unit": "%", "window": "5m", "status": "ok" }
+      }
+    },
+    {
+      "id": "api-gateway",
+      "kind": "ops_service",
+      "ops_role": "service",
+      "x": 270,
+      "y": 170,
+      "width": 180,
+      "height": 108,
+      "label": "API Gateway",
+      "status": "warn",
+      "status_label": "WATCH",
+      "signals": {
+        "latency": { "value": "61", "unit": "ms", "window": "5m", "status": "warn" },
+        "traffic": { "value": "7.9k", "unit": "rps", "window": "5m", "status": "ok" },
+        "errors": { "value": "0.15", "unit": "%", "window": "5m", "status": "ok" },
+        "saturation": { "value": "68", "unit": "%", "window": "5m", "status": "warn" }
+      }
+    },
+    {
+      "id": "checkout-service",
+      "kind": "ops_service",
+      "ops_role": "service",
+      "x": 500,
+      "y": 170,
+      "width": 180,
+      "height": 108,
+      "label": "Checkout",
+      "status": "critical",
+      "status_label": "DEGRADED",
+      "signals": {
+        "latency": { "value": "286", "unit": "ms", "window": "5m", "status": "critical" },
+        "traffic": { "value": "3.1k", "unit": "rps", "window": "5m", "status": "ok" },
+        "errors": { "value": "2.6", "unit": "%", "window": "5m", "status": "critical" },
+        "saturation": { "value": "84", "unit": "%", "window": "5m", "status": "warn" }
+      }
+    },
+    {
+      "id": "payment-service",
+      "kind": "ops_service",
+      "ops_role": "service",
+      "x": 730,
+      "y": 170,
+      "width": 180,
+      "height": 108,
+      "label": "Payment",
+      "status": "warn",
+      "status_label": "WATCH",
+      "signals": {
+        "latency": { "value": "94", "unit": "ms", "window": "5m", "status": "warn" },
+        "traffic": { "value": "2.8k", "unit": "rps", "window": "5m", "status": "ok" },
+        "errors": { "value": "0.9", "unit": "%", "window": "5m", "status": "warn" },
+        "saturation": { "value": "57", "unit": "%", "window": "5m", "status": "ok" }
+      }
+    },
+    {
+      "id": "otel-collector",
+      "kind": "otel_collector",
+      "ops_role": "collector",
+      "x": 500,
+      "y": 350,
+      "width": 180,
+      "height": 60,
+      "label": "OTel Collector"
+    },
+    {
+      "id": "span-root",
+      "kind": "trace_span",
+      "ops_role": "trace_span",
+      "span_id": "span-root",
+      "start_ms": 0,
+      "duration_ms": 420,
+      "x": 100,
+      "y": 520,
+      "width": 760,
+      "height": 28,
+      "label": "edge-gateway / checkout-request",
+      "status": "warn"
+    },
+    {
+      "id": "span-api",
+      "kind": "trace_span",
+      "ops_role": "trace_span",
+      "span_id": "span-api",
+      "parent_span": "span-root",
+      "start_ms": 8,
+      "duration_ms": 380,
+      "x": 114.5,
+      "y": 588,
+      "width": 687.6,
+      "height": 28,
+      "label": "api-gateway / authorize",
+      "status": "ok"
+    },
+    {
+      "id": "span-checkout",
+      "kind": "trace_span",
+      "ops_role": "trace_span",
+      "span_id": "span-checkout",
+      "parent_span": "span-api",
+      "start_ms": 42,
+      "duration_ms": 286,
+      "x": 176,
+      "y": 656,
+      "width": 517.5,
+      "height": 28,
+      "label": "checkout / commit-order",
+      "status": "critical"
+    },
+    {
+      "id": "span-payment",
+      "kind": "trace_span",
+      "ops_role": "trace_span",
+      "span_id": "span-payment",
+      "parent_span": "span-checkout",
+      "start_ms": 85,
+      "duration_ms": 94,
+      "x": 253.8,
+      "y": 724,
+      "width": 170.1,
+      "height": 28,
+      "label": "payment / auth",
+      "status": "warn"
+    }
+  ],
+  "arrows": [
+    { "id": "edge-gateway-api", "source": "edge-gateway", "target": "api-gateway", "source_port": "right", "target_port": "left", "flow": "control", "edge_kind": "business", "protocol": "HTTP/2", "motion_role": "critical-request", "motion_stage": 1, "motion_order": 0 },
+    { "id": "edge-api-checkout", "source": "api-gateway", "target": "checkout-service", "source_port": "right", "target_port": "left", "flow": "control", "edge_kind": "business", "protocol": "gRPC", "motion_role": "critical-request", "motion_stage": 2, "motion_order": 0 },
+    { "id": "edge-checkout-payment", "source": "checkout-service", "target": "payment-service", "source_port": "right", "target_port": "left", "flow": "control", "edge_kind": "business", "protocol": "gRPC", "motion_role": "critical-request", "motion_stage": 3, "motion_order": 0 },
+    { "id": "export-telemetry", "source": "checkout-service", "target": "otel-collector", "source_port": "bottom", "target_port": "top", "flow": "async", "edge_kind": "telemetry", "motion_role": "telemetry-export", "motion_stage": 4, "motion_order": 0, "dashed": true }
+  ],
+  "legend_orientation": "horizontal",
+  "legend_x": 48,
+  "legend_y": 798,
+  "legend_locked": true,
+  "legend": [
+    { "flow": "control", "label": "request" },
+    { "flow": "async", "label": "telemetry" },
+    { "flow": "feedback", "label": "degraded" }
+  ],
+  "footer": "Style 12 · Ops Pulse · exact golden signals · one critical path · correlated trace",
+  "footer_x": 48,
+  "footer_y": 848
+}

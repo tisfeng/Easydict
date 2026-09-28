@@ -40,7 +40,7 @@ Arrow colors: match accent of the source node's theme
 ## Typography
 
 ```
-font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace
+font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Courier New', 'Microsoft YaHei', 'SimHei', monospace
 font-size:   13px labels, 11px sub-labels, 15px titles
 font-weight: 400 normal, 700 bold for section headers
 letter-spacing: 0.02em for labels
@@ -91,7 +91,7 @@ letter-spacing: 0.02em for labels
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600"
      width="960" height="600">
   <style>
-    text { font-family: 'SF Mono', 'Fira Code', monospace; fill: #e2e8f0; }
+    text { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Courier New', 'Microsoft YaHei', 'SimHei', monospace; fill: #e2e8f0; }
   </style>
   <defs>
     <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">

@@ -30,7 +30,7 @@ struct ThrottleGate {
     mutating func shouldAllow() -> Bool {
         let currentTime = now()
         guard let lastAllowedTime else {
-            self.lastAllowedTime = currentTime
+            lastAllowedTime = currentTime
             return true
         }
 

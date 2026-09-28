@@ -1,6 +1,6 @@
 ## 2026-09-06 | 任务：精简 Agent 文档文案
 
-**Links:** [执行计划](../../exec-plans/completed/2026-09-06-agent-document-wording-cleanup.md)
+**Links:** [执行计划](../../exec-plans/completed/2026-09/2026-09-06-agent-document-wording-cleanup.md)
 
 ### 用户请求
 
@@ -41,7 +41,7 @@
 - `.agents/skills/review-pr/SKILL.md`
 - `.agents/skills/worktree-rebase-merge/SKILL.md`
 - `.codex/agents/planner.toml`
-- `docs/exec-plans/completed/2026-09-06-agent-document-wording-cleanup.md`
+- `docs/exec-plans/completed/2026-09/2026-09-06-agent-document-wording-cleanup.md`
 - `docs/histories/2026-09/2026-09-06-agent-document-wording-cleanup.md`
 
 ### 后续事项

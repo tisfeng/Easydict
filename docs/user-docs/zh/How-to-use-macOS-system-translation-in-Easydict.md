@@ -1,45 +1,44 @@
-## macOS 系统翻译
+# 在 Easydict 中使用 Apple 翻译
 
-> 此功能为实验性功能，可能不太稳定，甚至不一定能用。
+Easydict 的 Apple 翻译服务有两条调用路径：
 
-> 另外，如果之前使用过 [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict)，并且已启用了 macOS 系统翻译，那可在设置页直接开启该服务，因为它们共用同一个翻译快捷指令。
+- **macOS 15 及以上**：可启用 Apple Translation 框架，在系统支持的语言之间进行离线翻译。
+- **快捷指令回退**：未启用离线翻译、系统版本不支持或离线翻译不可用时，通过指定的
+  macOS 快捷指令调用系统翻译。
 
-> 如果使用出现问题，请查看 [macOS 系统翻译失败常见问题](https://bobtranslate.com/faq/apple-translate-error.html#%E9%97%AE%E9%A2%98-2)
+## macOS 15 及以上：离线翻译
 
-![iShot_2023-01-08_10.07.00-1673143647](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-08_10.07.00-1673143647.png)
+1. 在 macOS 的语言与翻译相关设置中下载需要的语言。
+2. 打开 Easydict“设置 → 高级”，启用 Apple 离线翻译。
+3. 打开“设置 → 服务”，添加或启用 Apple 翻译。
+4. 选择系统支持的源语言和目标语言后进行测试。
 
-## 系统要求
+Apple 离线翻译默认关闭。语言支持和语言包由当前 macOS 版本决定；如果缺少语言包，系统
+可能会要求下载或返回错误。
 
-如果想要通过 `Easydict` 调用苹果 🍎 系统翻译，系统需要在 **macOS 12.3.1** 以上。
+## macOS 13/14 或回退路径：安装快捷指令
 
-## 安装快捷指令
+使用 Safari 打开并安装
+[Easydict-Translate-V1.2.0](https://www.icloud.com/shortcuts/776f8a1d8e43471885e8a505eb9a9deb)：
 
-此外还需要安装一个快捷指令（`Easydict-Translate-V1.2.0`），请用 **Safari 浏览器** 打开下方链接。
+1. 点击“获取快捷指令”。
+2. 允许打开“快捷指令”App。
+3. 点击“添加快捷指令”。
+4. 确认快捷指令名称是 `Easydict-Translate-V1.2.0`。
 
-```
-https://www.icloud.com/shortcuts/776f8a1d8e43471885e8a505eb9a9deb
-```
+不要重命名该快捷指令，也不要修改它的操作，否则 Easydict 无法按约定名称调用它。首次
+调用时，macOS 可能会请求自动化权限，请允许 Easydict 控制“快捷指令”。
 
-![Easydict-Translate-V1.2.0](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20220703232313073.png)
+## 启用服务
 
-- 点击「获取捷径」
-- 点击「允许」
-- 点击「添加快捷指令」
+打开 Easydict“设置 → 服务”，添加或启用 Apple 翻译。macOS 15+ 会在开启离线翻译时优先
+使用 Translation 框架；否则自动使用快捷指令路径。
 
-![](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20220703232555275.png)
+## 常见问题
 
-如果「快捷指令」App 里面有 `Easydict-Translate-V1.2.0` 这个快捷指令即为安装成功了。
-
-> 注意 ⚠️：安装之后**不要修改**快捷指令的名字，也不要修改里面任何操作，否则很可能会导致服务调用失败！
-
-## 开启服务
-
-接下来在 `Easydict` 的偏好设置中，开启系统翻译选项即可。
-
-
-![iShot_2023-01-08_10.14.54-1673144099](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-08_10.14.54-1673144099.png)
-## 参考
-
-- [如何使用 macOS 系统翻译？](https://bobtranslate.com/faq/use-apple-translate.html)
-
-  
+- **提示找不到快捷指令**：确认名称完全是 `Easydict-Translate-V1.2.0`，并在“快捷指令”App
+  中手动运行一次。
+- **没有离线翻译结果**：确认系统版本为 macOS 15+、离线翻译开关已启用，并已下载对应
+  语言。
+- **调用被拒绝**：在“系统设置 → 隐私与安全性 → 自动化”中检查 Easydict 权限。
+- **某种语言不可用**：Apple 翻译的语言覆盖由 macOS 决定，可改用 Easydict 的其他服务。
