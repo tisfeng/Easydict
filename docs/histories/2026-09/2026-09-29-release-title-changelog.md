@@ -2,7 +2,7 @@
 
 <!-- 文件名：2026-09-29-release-title-changelog.md；命名规则见 docs/histories/README.md 的“命名与 slug”。 -->
 
-**Links:** [计划](../../exec-plans/completed/2026-09/2026-09-29-release-title-changelog.md)、[2.24.0 Release](https://github.com/tisfeng/Easydict/releases/tag/2.24.0)、[技能规则提交](https://github.com/tisfeng/Easydict/commit/5a3dfc504fe7df6be51a7cbef32b3e855a831fb8)、[changelog 提交](https://github.com/tisfeng/Easydict/commit/f082ea8e82c1334da6a0a0e3b987af8f833ac874)
+**Links:** [计划](../../exec-plans/completed/2026-09/2026-09-29-release-title-changelog.md)、[2.24.0 Release](https://github.com/tisfeng/Easydict/releases/tag/2.24.0)、技能规则 commit `b111ebf7c37165cef2e571c8c929cb6447efba6e`、[changelog commit](https://github.com/tisfeng/Easydict/commit/f082ea8e82c1334da6a0a0e3b987af8f833ac874)
 
 ### 执行上下文
 
@@ -44,4 +44,4 @@ Release 名称只标识版本，重点功能在正文 changelog 中呈现。继�
 
 ### 后续事项
 
-技能改动保留在本地 `codex/release-title-changelog` 分支；没有 push 该分支。已发布 changelog/appcast 的同步按 `sync-notes` 既定流程更新远端 `main` 和 `dev`。
+技能改动保留在本地 `codex/release-title-changelog` 分支；同步后将该分支 rebase 到已更新的 `dev`，没有 push 技能分支。已发布 changelog/appcast 的同步按 `sync-notes` 既定流程更新远端 `main` 和 `dev`。
