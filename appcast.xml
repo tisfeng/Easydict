@@ -5,7 +5,8 @@
         <item>
             <title>2.24.0</title>
             <pubDate>Mon, 28 Sep 2026 01:40:47 +0800</pubDate>
-            <description>&lt;h2&gt;What's Changed&lt;/h2&gt;
+            <description>&lt;h1&gt;✨ feat: add GitHub Copilot CLI translation&lt;/h1&gt;
+&lt;h2&gt;What's Changed&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Add GitHub Copilot CLI translation with dynamic model selection by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1332"&gt;#1332&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Save queried words to a local vocabulary notebook by @crossoverJie in &lt;a href="https://github.com/tisfeng/Easydict/pull/1319"&gt;#1319&lt;/a&gt;&lt;/li&gt;
