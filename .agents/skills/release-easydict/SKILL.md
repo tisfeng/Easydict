@@ -11,7 +11,8 @@ description: 编排 Easydict macOS 的 draft、publish、release 和 resume，�
 
 Release 生命周期：
 
-- `draft <version>`：创建或恢复经过验证的 Draft，整理英文正文和重点标题，然后停止。
+- `draft <version>`：创建或恢复经过验证的 Draft，整理英文 changelog，并将重点功能写成
+  changelog 首标题；GitHub Release 标题只使用版本号，然后停止。
 - `draft <version> --replace-draft`：从已同步并提交的本地 `dev` 安全重建最新且匹配的
   未发布 Draft。
 - `publish <version>`：整理已有且经过验证的 Draft，发布并验证，然后运行内部 Issue
