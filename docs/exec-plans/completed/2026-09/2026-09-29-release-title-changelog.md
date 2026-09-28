@@ -1,6 +1,6 @@
 # Release 标题与 changelog 格式调整
 
-- 状态：active
+- 状态：completed
 - 创建日期：2026-09-29
 - 负责人：/root
 - 关联 Issue/PR：none
@@ -40,17 +40,20 @@ GitHub Release `2.24.0` 的标题含有重点功能摘要，用户希望标题�
 ## 进度
 
 - [x] 更新技能与标题 helper，验证并审查。
-- [ ] 更新并提交 2.24.0 canonical changelog。
-- [ ] 同步已发布日志与 appcast，并修改 Release 标题。
-- [ ] 验收远端状态，记录 history，归档计划。
+- [x] 更新并提交 2.24.0 canonical changelog。
+- [x] 同步已发布日志与 appcast，并修改 Release 标题。
+- [x] 验收远端状态，记录 history，归档计划。
 
 ## 验证
 
-- 现有 `test_release_content.py`（12 项）和 `test_release_github_notes.py`（1 项）：通过；未新增或修改测试。
+- `test_release_content.py`（12 项）、`test_release_github_notes.py`（1 项）：通过；未新增或修改测试。
 - `python3 -m py_compile .agents/skills/release-easydict/scripts/release_content.py`、
-  `bash -n .agents/skills/release-easydict/scripts/release-github.sh`、技能 `quick_validate.py`、
-  `git diff --check`、版本号标题手动验证：通过。
-- 待执行：`release_notes.py validate`、bot PR policy 检查、`sync-notes` preview 和最终 GitHub/appcast 状态核验。
+  `bash -n .agents/skills/release-easydict/scripts/release-github.sh`、Skill `quick_validate.py`、
+  版本号标题手动验证及 `git diff --check`：通过。
+- `release_notes.py validate --file changelog/2.24.0.md --version 2.24.0`：通过；bot PR policy 有效，6 条人工 PR；渲染结果以指定 H1 开头。
+- Review：无 finding。
+- `sync-notes --execute` 首次完成远程 `main`/`dev` appcast 更新，但 GitHub Release 正文 PATCH 返回 HTTP 400。随后 `gh release edit` 更新标题和正文；再次预览显示 Release 正文和 appcast 均无差异，`sync-notes --execute` 最终状态为 `completed` 并验证正文及两个 appcast。
+- 最终 GitHub Release 核验：标题/tag 均为 `2.24.0`，仍为已发布 beta，正文与 canonical changelog 完全一致。远程 `main`/`dev` 已核验到同步提交。
 
 ## 完成条件
 
