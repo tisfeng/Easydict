@@ -54,7 +54,7 @@ struct ScreenshotOverlayView: View {
             if let image = backgroundImage {
                 Image(nsImage: image)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .scaledToFit()
 
                 Rectangle()
                     .fill(Color.black.opacity(state.shouldHideDarkOverlay ? 0 : 0.3))
