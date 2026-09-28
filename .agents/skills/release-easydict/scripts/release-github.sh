@@ -215,7 +215,7 @@ create_draft() {
         "$RELEASE_DMG_PATH"
         "$RELEASE_CHECKSUM_PATH"
         --repo "$RELEASE_REPOSITORY"
-        --title "Easydict $RELEASE_VERSION"
+        --title "$RELEASE_VERSION"
         --draft
         --verify-tag
     )
