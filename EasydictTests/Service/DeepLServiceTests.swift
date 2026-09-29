@@ -27,6 +27,55 @@ struct DeepLServiceTests {
         #expect(result.translatedText?.isEmpty == false)
     }
 
+    /// Accepts the current DeepL app version from Apple's lookup response.
+    @Test("Parses DeepL App Store version", .tags(.unit))
+    func parsesDeepLAppStoreVersion() {
+        let data = Data(
+            """
+            {
+                "resultCount": 1,
+                "results": [{
+                    "trackId": 1552407475,
+                    "bundleId": "com.linguee.DeepLMobileTranslator",
+                    "artistName": "DeepL SE",
+                    "version": "26.52"
+                }]
+            }
+            """.utf8
+        )
+
+        #expect(DeepLAppStoreVersionParser.version(from: data) == "26.52")
+    }
+
+    /// Rejects a version response for a different App Store application.
+    @Test("Rejects unrelated App Store version", .tags(.unit))
+    func rejectsUnrelatedAppStoreVersion() {
+        let data = Data(
+            """
+            {
+                "resultCount": 1,
+                "results": [{
+                    "trackId": 1,
+                    "bundleId": "com.example.other",
+                    "artistName": "Other",
+                    "version": "26.52"
+                }]
+            }
+            """.utf8
+        )
+
+        #expect(DeepLAppStoreVersionParser.version(from: data) == nil)
+    }
+
+    /// Rejects malformed versions before placing them in request headers or bodies.
+    @Test("Rejects malformed App Store version", .tags(.unit))
+    func rejectsMalformedAppStoreVersion() {
+        #expect(DeepLAppStoreVersionParser.isValidVersion("26.52"))
+        #expect(DeepLAppStoreVersionParser.isValidVersion("26.52.1"))
+        #expect(!DeepLAppStoreVersionParser.isValidVersion("26/52"))
+        #expect(!DeepLAppStoreVersionParser.isValidVersion("26.52\r\nInjected: true"))
+    }
+
     /// Ensures the oneshot response remains compatible with the official API response shape.
     @Test("Decodes oneshot translation response", .tags(.unit))
     func decodesOneshotTranslationResponse() throws {
