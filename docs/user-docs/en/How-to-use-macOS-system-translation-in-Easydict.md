@@ -4,19 +4,21 @@ The Apple Translate service has two execution paths:
 
 - **macOS 15 and later**: optionally use Apple's Translation framework for offline translation
   between languages supported by the system.
-- **Shortcut fallback**: when offline translation is disabled, unsupported, or unavailable,
+- **Shortcut fallback**: when offline translation is disabled or macOS is earlier than 15,
   Easydict calls system translation through a specific macOS Shortcut.
 
 ## macOS 15 and later: offline translation
 
-1. Download the languages you need in the relevant macOS language and translation settings.
-2. Open Easydict Settings → Advanced and enable Apple offline translation.
-3. Open Settings → Services, then add or enable Apple Translate.
-4. Test with a source and target language supported by the system.
+1. In Easydict Settings → Services, add or enable Apple Translate, then select it in the service
+   list.
+2. Enable Apple Offline Translation in its settings. Click **System Settings** in the description
+   to open the translation language settings and download the languages you need.
+3. Test with a source and target language supported by the system.
 
 Apple offline translation is disabled by default. Language coverage and downloaded language packs
 are managed by the current macOS version. The system may ask for a language download or return an
-error when a pack is missing.
+error when a pack is missing. If the Translation framework fails while enabled, Easydict reports
+the error instead of automatically switching to the Shortcut.
 
 ## macOS 13/14 or fallback path: install the Shortcut
 
@@ -35,8 +37,8 @@ first run, macOS may ask for Automation permission to let Easydict control Short
 ## Enable the service
 
 Open Easydict Settings → Services, then add or enable Apple Translate. On macOS 15+, Easydict uses
-the Translation framework when offline translation is enabled; otherwise it uses the Shortcut
-path automatically.
+the Translation framework when offline translation is enabled; with the option disabled or on
+macOS 13/14, it uses the Shortcut path.
 
 ## Troubleshooting
 
