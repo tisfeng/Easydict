@@ -113,6 +113,13 @@ public class AppleOCREngine: NSObject {
     /// Language detector used for tie-breaking when confidences are equal.
     private let languageDetector = AppleLanguageDetector()
 
+    /// Normalizes payloads for comparison without altering the returned QR code content.
+    private static func normalizedQRCodePayload(_ payload: String) -> String {
+        payload
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     /// Runs OCR while allowing internal retries to skip duplicate QR code detection.
     private func recognizeText(
         image: NSImage,
@@ -234,7 +241,7 @@ public class AppleOCREngine: NSObject {
                     let observations = request.results ?? []
                     var seenPayloads = Set<String>()
                     payloads = observations.compactMap(\.payloadStringValue).filter { payload in
-                        let normalizedPayload = self.normalizedQRCodePayload(payload)
+                        let normalizedPayload = Self.normalizedQRCodePayload(payload)
                         return !normalizedPayload.isEmpty
                             && seenPayloads.insert(normalizedPayload).inserted
                     }
@@ -263,22 +270,15 @@ public class AppleOCREngine: NSObject {
 
     /// Appends unique QR code payloads after the recognized document text.
     private func appendQRCodePayloads(_ payloads: [String], to result: EZOCRResult) {
-        var existingTexts = Set(result.texts.map(normalizedQRCodePayload))
+        var existingTexts = Set(result.texts.map(Self.normalizedQRCodePayload))
         let newPayloads = payloads.filter { payload in
-            let normalizedPayload = normalizedQRCodePayload(payload)
+            let normalizedPayload = Self.normalizedQRCodePayload(payload)
             return !normalizedPayload.isEmpty && existingTexts.insert(normalizedPayload).inserted
         }
         guard !newPayloads.isEmpty else { return }
 
         result.texts = result.texts + newPayloads
         result.mergedText = result.texts.joined(separator: OCRConstants.paragraphSeparator)
-    }
-
-    /// Normalizes payloads for comparison without altering the returned QR code content.
-    private func normalizedQRCodePayload(_ payload: String) -> String {
-        payload
-            .replacingOccurrences(of: "\r\n", with: "\n")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     /// The core async method that executes a `VNRecognizeTextRequest` on a given `CGImage`.
