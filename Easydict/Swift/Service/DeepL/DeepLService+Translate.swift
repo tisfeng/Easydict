@@ -11,9 +11,9 @@ import Defaults
 import Foundation
 
 private let kDeepLWebURL = "https://oneshot-free.www.deepl.com/v1/translate"
-private let kDeepLWebUserAgent = "DeepL/26.42 CFNetwork/3826.600.41 Darwin/25.0.0"
+private let kDeepLWebUserAgent = "DeepL/26.52 CFNetwork/3826.600.41 Darwin/25.0.0"
 private let kDeepLWebOSVersion = "26.0"
-private let kDeepLWebAppVersion = "26.42"
+private let kDeepLWebAppVersion = "26.52"
 private let kDeepLWebAppBuild = "5443737"
 private let kDeepLWebInstanceID = UUID().uuidString.lowercased()
 private let kDeepLWebSessionID = UUID().uuidString.lowercased()
