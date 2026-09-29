@@ -63,6 +63,17 @@ final class GeminiService: OpenAIService {
             .urdu,
         ]
     }
+
+    override func normalizedRemoteModelIDs(_ ids: [String]) -> [String] {
+        let modelIDs = ids.map { id in
+            let trimmedID = id.trim()
+            let prefix = "models/"
+            return trimmedID.hasPrefix(prefix)
+                ? String(trimmedID.dropFirst(prefix.count))
+                : trimmedID
+        }
+        return super.normalizedRemoteModelIDs(modelIDs)
+    }
 }
 
 // MARK: - GeminiModel
