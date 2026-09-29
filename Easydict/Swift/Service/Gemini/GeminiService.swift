@@ -41,7 +41,7 @@ final class GeminiService: OpenAIService {
     }
 
     override var defaultModel: String {
-        GeminiModel.gemini_flash_latest.rawValue
+        GeminiModel.gemini_flash_lite_latest.rawValue
     }
 
     override var defaultEndpoint: String {
