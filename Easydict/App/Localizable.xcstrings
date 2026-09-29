@@ -8579,37 +8579,37 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Offline translation requires downloading languages on the device, which can be managed in [System Settings](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)."
+            "value" : "Offline translation requires downloading languages on the device. Use System Settings to [manage downloaded languages](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La traducción sin conexión requiere descargar idiomas en el dispositivo, que se pueden gestionar en [Configuración del Sistema](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)."
+            "value" : "La traducción sin conexión requiere descargar idiomas en el dispositivo. En Configuración del Sistema puedes [gestionar los idiomas descargados](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "オフライン翻訳にはデバイスへの言語のダウンロードが必要で、[システム設定](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)で管理できます。"
+            "value" : "オフライン翻訳にはデバイスへの言語のダウンロードが必要です。システム設定では、[ダウンロードした言語の管理](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)を行えます。"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Offline preklad vyžaduje stiahnutie jazykov do zariadenia, ktoré je možné spravovať v [Systémových nastaveniach](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)."
+            "value" : "Offline preklad vyžaduje stiahnutie jazykov do zariadenia. V Systémových nastaveniach môžete [spravovať stiahnuté jazyky](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "离线翻译需要在设备上下载语言，可通过[系统设置](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)管理下载语言。"
+            "value" : "离线翻译需要在设备上下载语言，可通过系统设置[管理下载语言](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "離線翻譯需要在設備上下載語言，可通過[系統設置](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)管理下載語言。"
+            "value" : "離線翻譯需要在設備上下載語言，可透過系統設置[管理下載語言](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)。"
           }
         }
       }

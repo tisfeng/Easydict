@@ -11,8 +11,8 @@ The Apple Translate service has two execution paths:
 
 1. In Easydict Settings → Services, add or enable Apple Translate, then select it in the service
    list.
-2. Enable Apple Offline Translation in its settings. Click **System Settings** in the description
-   to open the translation language settings and download the languages you need.
+2. Enable Apple Offline Translation in its settings. Use the **manage downloaded languages** link
+   in the description to open translation language settings and download the languages you need.
 3. Test with a source and target language supported by the system.
 
 Apple offline translation is disabled by default. Language coverage and downloaded language packs
