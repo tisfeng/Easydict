@@ -223,35 +223,28 @@ public class AppleOCREngine: NSObject {
     /// Detects QR code payloads without affecting the primary text-recognition path.
     private func detectQRCodePayloads(on cgImage: CGImage) async -> [String] {
         await withCheckedContinuation { continuation in
-            let continuationGate = ContinuationGate(continuation: continuation)
-            let request = VNDetectBarcodesRequest { request, error in
-                if let error {
-                    logError("QR code detection failed: \(error.localizedDescription)")
-                    continuationGate.resume(returning: [])
-                    return
-                }
-
-                let observations = (request.results as? [VNBarcodeObservation]) ?? []
-                var seenPayloads = Set<String>()
-                let payloads = observations.compactMap(\.payloadStringValue).filter { payload in
-                    let normalizedPayload = self.normalizedQRCodePayload(payload)
-                    return !normalizedPayload.isEmpty
-                        && seenPayloads.insert(normalizedPayload).inserted
-                }
-                continuationGate.resume(returning: payloads)
-            }
-            request.symbologies = [.qr]
-
-            let requestHandler = VNImageRequestHandler(cgImage: cgImage)
-            // Vision may synchronously wait for a utility-priority CIContext worker.
-            // Match that QoS explicitly instead of propagating the caller's priority.
-            DispatchQueue.global(qos: .utility).async(qos: .utility, flags: .enforceQoS) {
+            // QR detection is part of the user's pending OCR request.
+            DispatchQueue.global(qos: .userInitiated).async {
+                let payloads: [String]
                 do {
-                    try requestHandler.perform([request])
+                    let request = VNDetectBarcodesRequest()
+                    request.symbologies = [.qr]
+                    try VNImageRequestHandler(cgImage: cgImage).perform([request])
+
+                    let observations = request.results ?? []
+                    var seenPayloads = Set<String>()
+                    payloads = observations.compactMap(\.payloadStringValue).filter { payload in
+                        let normalizedPayload = self.normalizedQRCodePayload(payload)
+                        return !normalizedPayload.isEmpty
+                            && seenPayloads.insert(normalizedPayload).inserted
+                    }
                 } catch {
                     logError("QR code detection failed: \(error.localizedDescription)")
-                    continuationGate.resume(returning: [])
+                    payloads = []
                 }
+
+                // Vision completion handlers run before synchronous perform returns.
+                continuation.resume(returning: payloads)
             }
         }
     }
