@@ -32,7 +32,7 @@ struct DeepLServiceTests {
         let appInformation = try #require(object["app_information"] as? [String: Any])
         #expect(appInformation["os"] as? String == "iOS")
         #expect(appInformation["os_version"] as? String == "26.0")
-        #expect(appInformation["app_version"] as? String == "26.42")
+        #expect(appInformation["app_version"] as? String == "26.52")
         #expect(appInformation["app_build"] as? String == "5443737")
         #expect(appInformation["instance_id"] as? String == "test-instance")
     }
@@ -71,7 +71,7 @@ struct DeepLServiceTests {
             appInformation: DeepLAppInformation(
                 os: "iOS",
                 osVersion: "26.0",
-                appVersion: "26.42",
+                appVersion: "26.52",
                 appBuild: "5443737",
                 instanceID: "test-instance"
             )
