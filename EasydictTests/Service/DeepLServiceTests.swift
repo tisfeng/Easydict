@@ -12,33 +12,23 @@ import Testing
 
 // MARK: - DeepLServiceTests
 
-/// Verifies the request and response contracts used by DeepL's oneshot endpoint without network access.
-@Suite("DeepL Protocol", .tags(.unit))
+/// Verifies the DeepL service behavior and response contracts.
+@Suite("DeepL Service")
 struct DeepLServiceTests {
-    // MARK: Internal
+    /// Exercises the same configured DeepL service path used by service validation.
+    @Test("Validates DeepL service through a real translation", .tags(.integration))
+    func validatesDeepLService() async {
+        let result = await DeepLService().validate()
 
-    /// Ensures automatic source detection omits the unsupported `source_lang: auto` field.
-    @Test("Encodes oneshot request with automatic source detection")
-    func encodesOneshotRequestWithAutomaticSourceDetection() throws {
-        let request = makeRequest(sourceLang: nil)
-        let object = try #require(try JSONSerialization
-            .jsonObject(with: JSONEncoder().encode(request)) as? [String: Any])
-
-        #expect(object["text"] as? [String] == ["test"])
-        #expect(object["target_lang"] as? String == "zh-Hans")
-        #expect(object["source_lang"] == nil)
-        #expect(object["usage_type"] as? String == "translate")
-
-        let appInformation = try #require(object["app_information"] as? [String: Any])
-        #expect(appInformation["os"] as? String == "iOS")
-        #expect(appInformation["os_version"] as? String == "26.0")
-        #expect(appInformation["app_version"] as? String == "26.52")
-        #expect(appInformation["app_build"] as? String == "5443737")
-        #expect(appInformation["instance_id"] as? String == "test-instance")
+        #expect(
+            result.error == nil,
+            "DeepL service validation failed: \(result.error?.localizedDescription ?? "unknown error")"
+        )
+        #expect(result.translatedText?.isEmpty == false)
     }
 
     /// Ensures the oneshot response remains compatible with the official API response shape.
-    @Test("Decodes oneshot translation response")
+    @Test("Decodes oneshot translation response", .tags(.unit))
     func decodesOneshotTranslationResponse() throws {
         let data = Data(#"{"translations":[{"detected_source_language":"EN","text":"你好"}]}"#.utf8)
         let response = try JSONDecoder().decode(DeepLOfficialResponse.self, from: data)
@@ -48,7 +38,7 @@ struct DeepLServiceTests {
     }
 
     /// Ensures official API response formatting is preserved after parsing.
-    @Test("Preserves official response whitespace")
+    @Test("Preserves official response whitespace", .tags(.unit))
     func preservesOfficialResponseWhitespace() throws {
         let response: [String: Any] = [
             "translations": [["text": "\n  Hello\n"]],
@@ -57,24 +47,5 @@ struct DeepLServiceTests {
         let translatedResults = try #require(DeepLService().parseOfficialResponse(response))
 
         #expect(translatedResults == ["", "  Hello", ""])
-    }
-
-    // MARK: Private
-
-    /// Builds a deterministic request fixture matching the new DeepL protocol.
-    private func makeRequest(sourceLang: String?) -> DeepLWebTranslateRequest {
-        DeepLWebTranslateRequest(
-            text: ["test"],
-            targetLang: "zh-Hans",
-            sourceLang: sourceLang,
-            usageType: "translate",
-            appInformation: DeepLAppInformation(
-                os: "iOS",
-                osVersion: "26.0",
-                appVersion: "26.52",
-                appBuild: "5443737",
-                instanceID: "test-instance"
-            )
-        )
     }
 }
