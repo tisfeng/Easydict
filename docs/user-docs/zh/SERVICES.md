@@ -33,6 +33,7 @@ macOS 版本、网络环境、账号权限和上游接口状态。
 | Groq (`Groq`) | 用户密钥 | 使用 Groq API。 |
 | 智谱 AI (`Zhipu`) | 用户密钥 | 使用智谱开放平台 API。 |
 | MiniMax (`MiniMax`) | 用户密钥 | 使用 MiniMax API。 |
+| 腾讯 TokenHub (`TokenHub`) | 用户密钥 | 使用腾讯 TokenHub API。 |
 | GitHub Models (`GitHub`) | 用户密钥 | 使用 GitHub Models。 |
 | 内置 AI (`BuiltInAI`) | 项目内置 | 无需单独配置 API Key 的 AI 查询服务。 |
 | Claude Code (`ClaudeCode`) | CLI | 调用已安装并登录的 Claude Code CLI。 |

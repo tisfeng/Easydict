@@ -36,6 +36,7 @@ The Services settings use these access types:
 | Groq (`Groq`) | User key | Uses the Groq API. |
 | Zhipu AI (`Zhipu`) | User key | Uses the Zhipu open platform API. |
 | MiniMax (`MiniMax`) | User key | Uses the MiniMax API. |
+| Tencent TokenHub (`TokenHub`) | User key | Uses Tencent TokenHub API |
 | GitHub Models (`GitHub`) | User key | Uses GitHub Models. |
 | Built-in AI (`BuiltInAI`) | Built in | AI queries without a separately configured API key. |
 | Claude Code (`ClaudeCode`) | CLI | Calls an installed and authenticated Claude Code CLI. |
