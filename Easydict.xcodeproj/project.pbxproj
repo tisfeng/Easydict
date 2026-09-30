@@ -25,7 +25,6 @@
 		03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */; };
 		03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */; };
 		03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */; };
-		03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F182B3591AE00B63209 /* GoogleGenerativeAI */; };
 		03022F1C2B35DEBA00B63209 /* Hue in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F1B2B35DEBA00B63209 /* Hue */; };
 		03022F222B36D1A400B63209 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F212B36D1A400B63209 /* SnapKit */; };
 		0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0305E7412E1D2B3E000A23A0 /* NSImage+Test.swift */; };
@@ -1461,7 +1460,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0AC8A84F2B6DFDD4006DA5CC /* SettingsAccess in Frameworks */,
-				03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */,
 				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
 				038030952B4106800009230C /* CocoaLumberjack in Frameworks */,
 				03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */,
@@ -4025,7 +4023,6 @@
 				038EA1AC2B41282F008A6DD1 /* MJExtension */,
 				EA3B81FB2B52555C004C0E8B /* Defaults */,
 				967712E92B5B913600105E0F /* KeyHolder */,
-				03022F182B3591AE00B63209 /* GoogleGenerativeAI */,
 				0AC8A84E2B6DFDD4006DA5CC /* SettingsAccess */,
 				03779F192BB25797008D3C42 /* OpenAI */,
 				0364EC892C208EB50036B61B /* KeySender */,
@@ -4090,7 +4087,6 @@
 				038EA1AB2B41282F008A6DD1 /* XCRemoteSwiftPackageReference "MJExtension" */,
 				EA3B81FA2B52555C004C0E8B /* XCRemoteSwiftPackageReference "Defaults" */,
 				967712E82B5B913600105E0F /* XCRemoteSwiftPackageReference "KeyHolder" */,
-				03022F172B3591AE00B63209 /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
 				0AC8A84D2B6DFDD4006DA5CC /* XCRemoteSwiftPackageReference "SettingsAccess" */,
 				03779F182BB25797008D3C42 /* XCRemoteSwiftPackageReference "OpenAI" */,
 				0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */,
@@ -5261,14 +5257,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		03022F172B3591AE00B63209 /* XCRemoteSwiftPackageReference "generative-ai-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/google/generative-ai-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.3;
-			};
-		};
 		03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/zenangst/Hue";
@@ -5456,11 +5444,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		03022F182B3591AE00B63209 /* GoogleGenerativeAI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 03022F172B3591AE00B63209 /* XCRemoteSwiftPackageReference "generative-ai-swift" */;
-			productName = GoogleGenerativeAI;
-		};
 		03022F1B2B35DEBA00B63209 /* Hue */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */;
