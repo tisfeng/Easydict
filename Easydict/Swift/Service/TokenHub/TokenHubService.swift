@@ -9,6 +9,7 @@ import Foundation
 
 // MARK: - TokenHubService
 
+// https://cloud.tencent.com/document/product/1823/130078
 class TokenHubService: OpenAIService {
     // MARK: Public
 
