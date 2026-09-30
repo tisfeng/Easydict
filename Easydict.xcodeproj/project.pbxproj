@@ -140,6 +140,7 @@
 		033C6DC42ED9D6D700AC39FC /* DeepLService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC12ED9D6D700AC39FC /* DeepLService+Translate.swift */; };
 		033C6DC52ED9D6D700AC39FC /* DeepLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC02ED9D6D700AC39FC /* DeepLService.swift */; };
 		033C6DC62ED9D6D700AC39FC /* DeepLTranslateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC22ED9D6D700AC39FC /* DeepLTranslateResponse.swift */; };
+		F12CD76026B145FDBD7A3880 /* DeepLWebAppVersionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D93A5FA4FE7473C8950EA07 /* DeepLWebAppVersionProvider.swift */; };
 		033C6DCA2ED9E2E500AC39FC /* NiuTransService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC72ED9E2E500AC39FC /* NiuTransService.swift */; };
 		033C6DCB2ED9E2E500AC39FC /* NiuTransTranslateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC82ED9E2E500AC39FC /* NiuTransTranslateResponse.swift */; };
 		033E181F2C5A970A0099A7B0 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 033E181E2C5A970A0099A7B0 /* Vapor */; };
@@ -838,6 +839,7 @@
 		033C6DC02ED9D6D700AC39FC /* DeepLService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLService.swift; sourceTree = "<group>"; };
 		033C6DC12ED9D6D700AC39FC /* DeepLService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeepLService+Translate.swift"; sourceTree = "<group>"; };
 		033C6DC22ED9D6D700AC39FC /* DeepLTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLTranslateResponse.swift; sourceTree = "<group>"; };
+		7D93A5FA4FE7473C8950EA07 /* DeepLWebAppVersionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLWebAppVersionProvider.swift; sourceTree = "<group>"; };
 		033C6DC72ED9E2E500AC39FC /* NiuTransService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NiuTransService.swift; sourceTree = "<group>"; };
 		033C6DC82ED9E2E500AC39FC /* NiuTransTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NiuTransTranslateResponse.swift; sourceTree = "<group>"; };
 		033E8A0A2E4E5318008A7110 /* ocr-en-text-two-columns-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-two-columns-2.png"; sourceTree = "<group>"; };
@@ -1859,6 +1861,7 @@
 			isa = PBXGroup;
 			children = (
 				033C6DC02ED9D6D700AC39FC /* DeepLService.swift */,
+				7D93A5FA4FE7473C8950EA07 /* DeepLWebAppVersionProvider.swift */,
 				033C6DC12ED9D6D700AC39FC /* DeepLService+Translate.swift */,
 				033C6DC22ED9D6D700AC39FC /* DeepLTranslateResponse.swift */,
 			);
@@ -4525,6 +4528,7 @@
 				033C6DC42ED9D6D700AC39FC /* DeepLService+Translate.swift in Sources */,
 				03DB07162F0C2CDD00D2C68C /* DetectManager.swift in Sources */,
 				033C6DC52ED9D6D700AC39FC /* DeepLService.swift in Sources */,
+				F12CD76026B145FDBD7A3880 /* DeepLWebAppVersionProvider.swift in Sources */,
 				033C6DC62ED9D6D700AC39FC /* DeepLTranslateResponse.swift in Sources */,
 				03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */,
 				03FDAE942E1A29CB0029369E /* Regex+Common.swift in Sources */,
