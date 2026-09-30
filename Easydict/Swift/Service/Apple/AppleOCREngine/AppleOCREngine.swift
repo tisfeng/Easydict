@@ -113,6 +113,13 @@ public class AppleOCREngine: NSObject {
     /// Language detector used for tie-breaking when confidences are equal.
     private let languageDetector = AppleLanguageDetector()
 
+    /// Normalizes payloads for comparison without altering the returned QR code content.
+    private static func normalizedQRCodePayload(_ payload: String) -> String {
+        payload
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     /// Runs OCR while allowing internal retries to skip duplicate QR code detection.
     private func recognizeText(
         image: NSImage,
@@ -223,35 +230,28 @@ public class AppleOCREngine: NSObject {
     /// Detects QR code payloads without affecting the primary text-recognition path.
     private func detectQRCodePayloads(on cgImage: CGImage) async -> [String] {
         await withCheckedContinuation { continuation in
-            let continuationGate = ContinuationGate(continuation: continuation)
-            let request = VNDetectBarcodesRequest { request, error in
-                if let error {
-                    logError("QR code detection failed: \(error.localizedDescription)")
-                    continuationGate.resume(returning: [])
-                    return
-                }
-
-                let observations = (request.results as? [VNBarcodeObservation]) ?? []
-                var seenPayloads = Set<String>()
-                let payloads = observations.compactMap(\.payloadStringValue).filter { payload in
-                    let normalizedPayload = self.normalizedQRCodePayload(payload)
-                    return !normalizedPayload.isEmpty
-                        && seenPayloads.insert(normalizedPayload).inserted
-                }
-                continuationGate.resume(returning: payloads)
-            }
-            request.symbologies = [.qr]
-
-            let requestHandler = VNImageRequestHandler(cgImage: cgImage)
-            // Vision may synchronously wait for a utility-priority CIContext worker.
-            // Match that QoS explicitly instead of propagating the caller's priority.
-            DispatchQueue.global(qos: .utility).async(qos: .utility, flags: .enforceQoS) {
+            // QR detection is part of the user's pending OCR request.
+            DispatchQueue.global(qos: .userInitiated).async {
+                let payloads: [String]
                 do {
-                    try requestHandler.perform([request])
+                    let request = VNDetectBarcodesRequest()
+                    request.symbologies = [.qr]
+                    try VNImageRequestHandler(cgImage: cgImage).perform([request])
+
+                    let observations = request.results ?? []
+                    var seenPayloads = Set<String>()
+                    payloads = observations.compactMap(\.payloadStringValue).filter { payload in
+                        let normalizedPayload = Self.normalizedQRCodePayload(payload)
+                        return !normalizedPayload.isEmpty
+                            && seenPayloads.insert(normalizedPayload).inserted
+                    }
                 } catch {
                     logError("QR code detection failed: \(error.localizedDescription)")
-                    continuationGate.resume(returning: [])
+                    payloads = []
                 }
+
+                // Vision completion handlers run before synchronous perform returns.
+                continuation.resume(returning: payloads)
             }
         }
     }
@@ -270,22 +270,15 @@ public class AppleOCREngine: NSObject {
 
     /// Appends unique QR code payloads after the recognized document text.
     private func appendQRCodePayloads(_ payloads: [String], to result: EZOCRResult) {
-        var existingTexts = Set(result.texts.map(normalizedQRCodePayload))
+        var existingTexts = Set(result.texts.map(Self.normalizedQRCodePayload))
         let newPayloads = payloads.filter { payload in
-            let normalizedPayload = normalizedQRCodePayload(payload)
+            let normalizedPayload = Self.normalizedQRCodePayload(payload)
             return !normalizedPayload.isEmpty && existingTexts.insert(normalizedPayload).inserted
         }
         guard !newPayloads.isEmpty else { return }
 
         result.texts = result.texts + newPayloads
         result.mergedText = result.texts.joined(separator: OCRConstants.paragraphSeparator)
-    }
-
-    /// Normalizes payloads for comparison without altering the returned QR code content.
-    private func normalizedQRCodePayload(_ payload: String) -> String {
-        payload
-            .replacingOccurrences(of: "\r\n", with: "\n")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     /// The core async method that executes a `VNRecognizeTextRequest` on a given `CGImage`.

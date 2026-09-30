@@ -117,6 +117,7 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.allowMultipleScreenshotOverlays) var allowMultipleScreenshotOverlays: Bool
     @DefaultsWrapper(.formerFixedScreenVisibleFrame) var formerFixedScreenVisibleFrame: CGRect
     @DefaultsWrapper(.formerMiniScreenVisibleFrame) var formerMiniScreenVisibleFrame: CGRect
+    @DefaultsWrapper(.enableAnkiConnect) var enableAnkiConnect: Bool
 
     @DefaultsWrapper(.preferAppleScriptAPI) var preferAppleScriptAPI: Bool
 

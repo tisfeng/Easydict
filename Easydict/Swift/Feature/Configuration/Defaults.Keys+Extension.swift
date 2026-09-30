@@ -156,6 +156,20 @@ extension Defaults.Keys {
     static var enableHTTPServer = Key<Bool>("enableHTTPServer", default: false)
     static var httpPort = Key<String>("httpPort", default: "8080")
 
+    static var enableAnkiConnect = Key<Bool>("enableAnkiConnect", default: false)
+    static var ankiConnectEndpoint = Key<String>(
+        "ankiConnectEndpoint",
+        default: "http://127.0.0.1:8765"
+    )
+    static var ankiConnectDeck = Key<String>("ankiConnectDeck", default: "Default")
+    static var ankiConnectModel = Key<String>("ankiConnectModel", default: "Basic")
+    static var ankiConnectFrontField = Key<String>("ankiConnectFrontField", default: "Front")
+    static var ankiConnectBackField = Key<String>("ankiConnectBackField", default: "Back")
+    static var ankiConnectModelFields = Key<[String]>("ankiConnectModelFields", default: [])
+    static var ankiConnectFieldMappings = Key<[AnkiFieldMapping]>(
+        "ankiConnectFieldMappings",
+        default: []
+    )
     static var enableVocabularyNotebook = Key<Bool>("enableVocabularyNotebook", default: false)
     static var vocabularyNotebookDirectory = Key<String>("vocabularyNotebookDirectory", default: "")
 
@@ -358,6 +372,10 @@ private let EZDeepLTranslationAPIKey = "EZDeepLTranslationAPIKey"
 extension Defaults.Keys {
     // DeepL
     static let deepLAuth = Key<String>(EZDeepLAuthKey, default: "")
+    static let deepLWebAppVersionCache = Key<String>(
+        "EZDeepLWebAppVersionCacheKey",
+        default: ""
+    )
     static let deepLTranslation = Key<DeepLAPIUsagePriority>(
         EZDeepLTranslationAPIKey,
         default: DeepLAPIUsagePriority.webFirst

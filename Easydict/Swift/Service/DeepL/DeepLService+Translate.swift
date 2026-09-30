@@ -11,9 +11,7 @@ import Defaults
 import Foundation
 
 private let kDeepLWebURL = "https://oneshot-free.www.deepl.com/v1/translate"
-private let kDeepLWebUserAgent = "DeepL/26.42 CFNetwork/3826.600.41 Darwin/25.0.0"
 private let kDeepLWebOSVersion = "26.0"
-private let kDeepLWebAppVersion = "26.42"
 private let kDeepLWebAppBuild = "5443737"
 private let kDeepLWebInstanceID = UUID().uuidString.lowercased()
 private let kDeepLWebSessionID = UUID().uuidString.lowercased()
@@ -36,6 +34,48 @@ extension DeepLService {
         to: Language,
         completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
+        let cancellation = DeepLWebTranslationCancellation()
+        queryModel.setStop({
+            cancellation.cancel()
+        }, serviceType: serviceType().rawValue)
+
+        Task { [weak self] in
+            guard let self else {
+                completion(QueryResult(), CancellationError())
+                return
+            }
+
+            let appVersion = await DeepLWebAppVersionProvider.shared.currentVersion()
+            guard !cancellation.isCancelled else {
+                completion(QueryResult(), CancellationError())
+                return
+            }
+
+            performDeepLWebTranslate(
+                text,
+                from: from,
+                to: to,
+                context: DeepLWebTranslationContext(
+                    appVersion: appVersion,
+                    cancellation: cancellation
+                ),
+                completion: completion
+            )
+        }
+    }
+
+    private func performDeepLWebTranslate(
+        _ text: String,
+        from: Language,
+        to: Language,
+        context: DeepLWebTranslationContext,
+        completion: @escaping (QueryResult, (any Error)?) -> ()
+    ) {
+        guard !context.cancellation.isCancelled else {
+            completion(QueryResult(), CancellationError())
+            return
+        }
+
         let sourceLanguageCode = languageCode(for: from) ?? "auto"
         guard let targetLanguageCode = languageCode(for: to),
               targetLanguageCode != "auto"
@@ -54,7 +94,7 @@ extension DeepLService {
             appInformation: DeepLAppInformation(
                 os: "iOS",
                 osVersion: kDeepLWebOSVersion,
-                appVersion: kDeepLWebAppVersion,
+                appVersion: context.appVersion,
                 appBuild: kDeepLWebAppBuild,
                 instanceID: kDeepLWebInstanceID
             )
@@ -73,7 +113,10 @@ extension DeepLService {
         request.timeoutInterval = EZNetWorkTimeoutInterval
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("None", forHTTPHeaderField: "Authorization")
-        request.setValue(kDeepLWebUserAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue(
+            deepLWebUserAgent(appVersion: context.appVersion),
+            forHTTPHeaderField: "User-Agent"
+        )
         request.setValue(kDeepLWebOSVersion, forHTTPHeaderField: "x-app-os-version")
         request.setValue(kDeepLWebInstanceID, forHTTPHeaderField: "x-app-instance-id")
         request.setValue(kDeepLWebSessionID, forHTTPHeaderField: "x-app-session-id")
@@ -82,6 +125,11 @@ extension DeepLService {
 
         let dataRequest = AF.request(request)
             .validate(statusCode: 200 ..< 300)
+
+        guard context.cancellation.install(dataRequest) else {
+            completion(QueryResult(), CancellationError())
+            return
+        }
 
         dataRequest.responseData { [weak self] response in
             guard let self = self else {
@@ -138,10 +186,6 @@ extension DeepLService {
             result.raw = responseDict as NSDictionary
             completion(result, nil)
         }
-
-        queryModel.setStop({
-            dataRequest.cancel()
-        }, serviceType: serviceType().rawValue)
     }
 
     // MARK: - Official API Translate
@@ -293,4 +337,47 @@ extension DeepLService {
         default: return languageCode.lowercased()
         }
     }
+}
+
+private func deepLWebUserAgent(appVersion: String) -> String {
+    "DeepL/\(appVersion) CFNetwork/3826.600.41 Darwin/25.0.0"
+}
+
+// MARK: - DeepLWebTranslationContext
+
+private struct DeepLWebTranslationContext {
+    let appVersion: String
+    let cancellation: DeepLWebTranslationCancellation
+}
+
+// MARK: - DeepLWebTranslationCancellation
+
+private final class DeepLWebTranslationCancellation: @unchecked Sendable {
+    // MARK: Internal
+
+    var isCancelled: Bool { lock.withLock { cancelled } }
+
+    func cancel() {
+        let cancelRequest = lock.withLock { () -> (() -> ())? in
+            cancelled = true
+            return cancelRequestHandler
+        }
+        cancelRequest?()
+    }
+
+    func install(_ request: DataRequest) -> Bool {
+        let shouldCancel = lock.withLock {
+            if cancelled { return true }
+            cancelRequestHandler = { request.cancel() }
+            return false
+        }
+        if shouldCancel { request.cancel() }
+        return !shouldCancel
+    }
+
+    // MARK: Private
+
+    private let lock = NSLock()
+    private var cancelled = false
+    private var cancelRequestHandler: (() -> ())?
 }

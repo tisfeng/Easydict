@@ -10,6 +10,8 @@ import Defaults
 import SFSafeSymbols
 import SwiftUI
 
+// MARK: - AdvancedTab
+
 struct AdvancedTab: View {
     // MARK: Internal
 
@@ -457,6 +459,7 @@ struct AdvancedTab: View {
                 Text("setting.advance.header.http_server")
             }
 
+            AdvancedTabAnkiSection()
             // Vocabulary notebook
             Section {
                 Toggle(isOn: $enableVocabularyNotebook) {
