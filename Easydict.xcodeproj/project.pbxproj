@@ -461,7 +461,6 @@
 		03F5A1032F5B3A0100AA0001 /* NSStringEasydictBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F5A1002F5B3A0100AA0001 /* NSStringEasydictBridge.swift */; };
 		03F670452E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png in Resources */ = {isa = PBXBuildFile; fileRef = 03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */; };
 		03FA677E2C2EFB10000FEA64 /* StreamService+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */; };
-		03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */; };
 		03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03FD68BA2B1DC59600FD388E /* CryptoSwift */; };
 		03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */; };
 		03FDAE942E1A29CB0029369E /* Regex+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FDAE932E1A29CB0029369E /* Regex+Common.swift */; };
@@ -623,9 +622,6 @@
 		C4BE8E1C2C72E61B00F53204 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = C4BE8E1B2C72E61B00F53204 /* LaunchAtLogin */; };
 		C4CCDAA32C407A0D00AC88BA /* SummaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CCDAA22C407A0D00AC88BA /* SummaryService.swift */; };
 		C4CCDAA52C407A4100AC88BA /* PolishingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CCDAA42C407A4100AC88BA /* PolishingService.swift */; };
-		C4DD01E92B12B3C80025EE8E /* TencentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD01E82B12B3C80025EE8E /* TencentService.swift */; };
-		C4DD01EB2B12BA250025EE8E /* TencentResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD01EA2B12BA250025EE8E /* TencentResponse.swift */; };
-		C4DD01ED2B12BE9B0025EE8E /* TencentTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD01EC2B12BE9B0025EE8E /* TencentTranslateType.swift */; };
 		C4DE3D6D2AC00EB500C2B85D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */; };
 		CA9CF8A32D2E6CE6000C1860 /* good_v4.json in Resources */ = {isa = PBXBuildFile; fileRef = CA9CF8A22D2E6CE6000C1860 /* good_v4.json */; };
 		CA9CF8A52D2E6D13000C1860 /* 美_v4.json in Resources */ = {isa = PBXBuildFile; fileRef = CA9CF8A42D2E6D13000C1860 /* 美_v4.json */; };
@@ -1238,7 +1234,6 @@
 		03F60B4F2F4C123400123456 /* QueryServiceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceConfiguration.swift; sourceTree = "<group>"; };
 		03F670442E3A02DC00EA682B /* ocr-zh-classical-lyrics-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-zh-classical-lyrics-11.png"; sourceTree = "<group>"; };
 		03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Configuration.swift"; sourceTree = "<group>"; };
-		03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentSigning.swift; sourceTree = "<group>"; };
 		03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EncryptAES.swift"; sourceTree = "<group>"; };
 		03FDAE932E1A29CB0029369E /* Regex+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Regex+Common.swift"; sourceTree = "<group>"; };
 		03FDAE952E1A8A290029369E /* RegexTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegexTests.swift; sourceTree = "<group>"; };
@@ -1404,9 +1399,6 @@
 		C4A512BD2C414A2400F00F33 /* AIToolService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIToolService.swift; sourceTree = "<group>"; };
 		C4CCDAA22C407A0D00AC88BA /* SummaryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryService.swift; sourceTree = "<group>"; };
 		C4CCDAA42C407A4100AC88BA /* PolishingService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolishingService.swift; sourceTree = "<group>"; };
-		C4DD01E82B12B3C80025EE8E /* TencentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentService.swift; sourceTree = "<group>"; };
-		C4DD01EA2B12BA250025EE8E /* TencentResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentResponse.swift; sourceTree = "<group>"; };
-		C4DD01EC2B12BE9B0025EE8E /* TencentTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentTranslateType.swift; sourceTree = "<group>"; };
 		C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = Localizable.xcstrings; path = Easydict/App/Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
 		C59C7EA362DF42E3A968F294 /* ClaudeCodeServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeServiceTests.swift; sourceTree = "<group>"; };
 		C7C3650B1BBD12D1980FE6C6 /* CodexManagedProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedProcess.swift; sourceTree = "<group>"; };
@@ -2133,7 +2125,6 @@
 				C0DEC11E0003000000000001 /* CodexCLI */,
 				03792EA02C3830E60074A145 /* Ollama */,
 				C4D1ADE12C3F340500A19D02 /* AITool */,
-				C4DD01E72B12B3B00025EE8E /* Tencent */,
 				2746AEBF2AF95040005FE0A1 /* Caiyun */,
 				62E2BF462B4082BA00E42D38 /* Ali */,
 				C43B566A2C693F4000EF26FD /* Volcano */,
@@ -3763,17 +3754,6 @@
 			path = AITool;
 			sourceTree = "<group>";
 		};
-		C4DD01E72B12B3B00025EE8E /* Tencent */ = {
-			isa = PBXGroup;
-			children = (
-				C4DD01E82B12B3C80025EE8E /* TencentService.swift */,
-				C4DD01EA2B12BA250025EE8E /* TencentResponse.swift */,
-				C4DD01EC2B12BE9B0025EE8E /* TencentTranslateType.swift */,
-				03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */,
-			);
-			path = Tencent;
-			sourceTree = "<group>";
-		};
 		C99EEB0F2385796700FEE666 = {
 			isa = PBXGroup;
 			children = (
@@ -4513,7 +4493,6 @@
 				03BDA7C42A26DA280079D04F /* NSDictionary+RubyDescription.m in Sources */,
 				62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */,
 				C4CCDAA32C407A0D00AC88BA /* SummaryService.swift in Sources */,
-				C4DD01EB2B12BA250025EE8E /* TencentResponse.swift in Sources */,
 				03538E082D278872005E56A8 /* YoudaoKey.swift in Sources */,
 				03C408F52EF472660025A1F0 /* BaiduService+OCR.swift in Sources */,
 				039CBE872D9AFBF3009A04DC /* ChineseGenreAnalyzer.swift in Sources */,
@@ -4777,7 +4756,6 @@
 				031C66DB2EDA14E90025D190 /* String+Split.swift in Sources */,
 				0377C0F32F13FA4B00302A2C /* FavoritesTab.swift in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
-				03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */,
 				0327A5A82CCB3339002BA81B /* UpdateNotificationInfo.swift in Sources */,
 				03F2815D2D98E7DF00AE518C /* ChinseseMarker.swift in Sources */,
 				0340D39B2C93DC1B004C9910 /* SharedConstants.swift in Sources */,
@@ -4841,7 +4819,6 @@
 				9627F9392B59956800B1E999 /* KeyHolderWrapper.swift in Sources */,
 				035FB78F2ED6023900F3EB27 /* NSButton+Extension.swift in Sources */,
 				03B877562EF9A51F00B5ED68 /* QueryModel.swift in Sources */,
-				C4DD01E92B12B3C80025EE8E /* TencentService.swift in Sources */,
 				0320411C2E44989D0065A05B /* PoetryStatistics.swift in Sources */,
 				03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */,
 				0A2BA9602B49A989002872A4 /* Binding+DidSet.swift in Sources */,
@@ -4867,7 +4844,6 @@
 				03DC38C1292CC97900922CB2 /* QueryServiceConfiguration.swift in Sources */,
 				03B0232A29231FA6001C7E63 /* NSColor+MyColors.m in Sources */,
 				03A5B4BF2E0AB23900BA8F2E /* String+OCR.swift in Sources */,
-				C4DD01ED2B12BE9B0025EE8E /* TencentTranslateType.swift in Sources */,
 				0322D7402EDB606D005E67D8 /* String+QuoteHandling.swift in Sources */,
 				0322D7412EDB606D005E67D8 /* String+Detection.swift in Sources */,
 				0322D7422EDB606D005E67D8 /* String+Analysis.swift in Sources */,
