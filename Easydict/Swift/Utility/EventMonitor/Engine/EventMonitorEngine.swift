@@ -9,6 +9,14 @@
 import AppKit
 import Foundation
 
+// MARK: - EventScope
+
+/// The monitor that received the event.
+enum EventScope {
+    case local
+    case global
+}
+
 // MARK: - EventMonitorEngine
 
 /// Handles NSEvent monitor lifecycle and dispatch.
@@ -22,15 +30,12 @@ final class EventMonitorEngine {
         case both
     }
 
-    /// Receives every event delivered by the active monitors.
-    var eventHandler: ((NSEvent) -> ())?
-
     /// Configures the monitor type, mask, and event handler, then starts monitoring.
     /// - Parameters:
     ///   - type: Monitor scope to install.
     ///   - mask: Event mask to observe.
     ///   - handler: Handler invoked for each matching event.
-    func monitor(type: MonitorType, mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent) -> ()) {
+    func monitor(type: MonitorType, mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent, EventScope) -> ()) {
         self.type = type
         self.mask = mask
         self.handler = handler
@@ -45,17 +50,21 @@ final class EventMonitorEngine {
         switch type {
         case .local:
             localMonitor = NSEvent.addLocalMonitorForEvents(matching: mask) { event in
-                handler(event)
+                handler(event, .local)
                 return event
             }
         case .global:
-            globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: handler)
+            globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: mask) { event in
+                handler(event, .global)
+            }
         case .both:
             localMonitor = NSEvent.addLocalMonitorForEvents(matching: mask) { event in
-                handler(event)
+                handler(event, .local)
                 return event
             }
-            globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: handler)
+            globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: mask) { event in
+                handler(event, .global)
+            }
         }
     }
 
@@ -75,7 +84,7 @@ final class EventMonitorEngine {
 
     private var type: MonitorType = .local
     private var mask: NSEvent.EventTypeMask = []
-    private var handler: ((NSEvent) -> ())?
+    private var handler: ((NSEvent, EventScope) -> ())?
 
     private var localMonitor: Any?
     private var globalMonitor: Any?
