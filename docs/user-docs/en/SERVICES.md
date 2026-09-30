@@ -64,7 +64,6 @@ The Services settings use these access types:
 | Volcano Translate (`Volcano`) | User key | Requires Volcano translation credentials. |
 | NiuTrans (`NiuTrans`) | Built in | Uses access provided by the project. |
 | Caiyun (`Caiyun`) | Built in | Uses access provided by the project. |
-| Tencent Translate (`Tencent`) | User key | Requires Tencent translation credentials. |
 | Alibaba Translate (`Alibaba`) | User key | Requires Alibaba translation credentials. |
 | Doubao Translate (`Doubao`) | User key | Requires Doubao translation credentials. |
 
