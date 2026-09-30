@@ -403,6 +403,8 @@
 		03D0F0112F00000100ABCDEF /* QueryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0F0012F00000100ABCDEF /* QueryService.swift */; };
 		03D0F0122F00000100ABCDEF /* BaiduService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0F0022F00000100ABCDEF /* BaiduService.swift */; };
 		03D0F0132F00000200ABCDEF /* QueryResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0F0032F00000200ABCDEF /* QueryResult.swift */; };
+		A74B55A1C000000000000001 /* QianfanService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74B55A1C000000000000002 /* QianfanService.swift */; };
+		A74B55A1C000000000000004 /* QianfanServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74B55A1C000000000000005 /* QianfanServiceTests.swift */; };
 		03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
 		03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */; };
 		03D486502E3F2021009313B3 /* Regex+List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D4864F2E3F2021009313B3 /* Regex+List.swift */; };
@@ -1177,6 +1179,8 @@
 		03D0F0012F00000100ABCDEF /* QueryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryService.swift; sourceTree = "<group>"; };
 		03D0F0022F00000100ABCDEF /* BaiduService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaiduService.swift; sourceTree = "<group>"; };
 		03D0F0032F00000200ABCDEF /* QueryResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryResult.swift; sourceTree = "<group>"; };
+		A74B55A1C000000000000002 /* QianfanService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QianfanService.swift; sourceTree = "<group>"; };
+		A74B55A1C000000000000005 /* QianfanServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QianfanServiceTests.swift; sourceTree = "<group>"; };
 		03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		03D35DA82AA6C49B00B023FE /* NSString+EZRegex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZRegex.h"; sourceTree = "<group>"; };
 		03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZRegex.m"; sourceTree = "<group>"; };
@@ -2129,6 +2133,7 @@
 				03779F0D2BB256A7008D3C42 /* OpenAI */,
 				036D627F2BCAB5C6002C95C7 /* BuiltInAI */,
 				0A9AFBA92B7F8D6A0064C9A8 /* CustomOpenAI */,
+				A74B55A1C000000000000003 /* Qianfan */,
 				C415C0AB2B450C4500A9D231 /* Gemini */,
 				ED3EC55898A147C8B7CAFBD5 /* ClaudeCode */,
 				C0FFEE6A2026092400000001 /* GitHubCopilot */,
@@ -2936,6 +2941,7 @@
 				179EFB3D68574DE5817C8AB9 /* ClaudeCode */,
 				C0DEC11E0003000000000002 /* CodexCLI */,
 				B331A1873DA14AAE94B73AA0 /* GitHubCopilot */,
+				A74B55A1C000000000000006 /* Qianfan */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -3387,6 +3393,14 @@
 			path = GitHubCopilot;
 			sourceTree = "<group>";
 		};
+		A74B55A1C000000000000006 /* Qianfan */ = {
+			isa = PBXGroup;
+			children = (
+				A74B55A1C000000000000005 /* QianfanServiceTests.swift */,
+			);
+			path = Qianfan;
+			sourceTree = "<group>";
+		};
 		2746AEBF2AF95040005FE0A1 /* Caiyun */ = {
 			isa = PBXGroup;
 			children = (
@@ -3466,6 +3480,14 @@
 				40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */,
 			);
 			path = DeepSeek;
+			sourceTree = "<group>";
+		};
+		A74B55A1C000000000000003 /* Qianfan */ = {
+			isa = PBXGroup;
+			children = (
+				A74B55A1C000000000000002 /* QianfanService.swift */,
+			);
+			path = Qianfan;
 			sourceTree = "<group>";
 		};
 		4D4D6D6F0000000000000024 /* DarkReader */ = {
@@ -4455,6 +4477,7 @@
 				F955D7120AD72EFC6429A79A /* CodexComponentStoreTests.swift in Sources */,
 				C0DEC11E0001000000000010 /* CodexCLIServiceTests.swift in Sources */,
 				A3963A91D1E14EA7A29881E1 /* GitHubCopilotServiceTests.swift in Sources */,
+				A74B55A1C000000000000004 /* QianfanServiceTests.swift in Sources */,
 				030732D42F24862A0001382A /* OCRTextProcessingTests.swift in Sources */,
 				030732D52F24862A0001382A /* OCRTestSample+Chinese.swift in Sources */,
 				030732D72F24862A0001382A /* OCRQRCodeTests.swift in Sources */,
@@ -4614,6 +4637,7 @@
 				9643D9392B6F49E0000FBEA6 /* AppShortcutSettingView.swift in Sources */,
 				96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */,
 				03D0F0122F00000100ABCDEF /* BaiduService.swift in Sources */,
+				A74B55A1C000000000000001 /* QianfanService.swift in Sources */,
 				03BB2DEB29F57DC000447EDD /* NSImage+EZSymbolmage.m in Sources */,
 				03B0230629231FA6001C7E63 /* EZLabel.m in Sources */,
 				EA1013442B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift in Sources */,
