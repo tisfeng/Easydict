@@ -28,6 +28,8 @@ extension EZWindowType: CustomLocalizedStringResourceConvertible {
             "main_window"
         case .mini:
             "mini_window"
+        case .screenshotOverlay:
+            "setting.service.screenshot_overlay"
         case .none:
             "none_window"
         @unknown default:

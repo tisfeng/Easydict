@@ -18,6 +18,7 @@ typedef NS_ENUM(NSInteger, EZWindowType) {
     EZWindowTypeMain = 0,
     EZWindowTypeMini = 1,
     EZWindowTypeFixed = 2,
+    EZWindowTypeScreenshotOverlay = 3,
 };
 
 /// Show window position
