@@ -16659,13 +16659,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "腾讯 TokenHub"
+            "value" : "腾讯 TokenHub 翻译"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "騰訊 TokenHub"
+            "value" : "騰訊 TokenHub 翻譯"
           }
         }
       }
