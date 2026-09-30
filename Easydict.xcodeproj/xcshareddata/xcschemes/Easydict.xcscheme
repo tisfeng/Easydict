@@ -54,6 +54,7 @@
             </BuildableReference>
             <SkippedTests>
                <Test Identifier = "GitHubCopilotServiceTests/validatesLocalCopilotTranslation()"/>
+               <Test Identifier = "TokenHubServiceTests/validatesTokenHubTranslation()"/>
             </SkippedTests>
          </TestableReference>
       </Testables>
