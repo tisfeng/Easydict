@@ -25,7 +25,6 @@
 		03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */; };
 		03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */; };
 		03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */; };
-		03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F182B3591AE00B63209 /* GoogleGenerativeAI */; };
 		03022F1C2B35DEBA00B63209 /* Hue in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F1B2B35DEBA00B63209 /* Hue */; };
 		03022F222B36D1A400B63209 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 03022F212B36D1A400B63209 /* SnapKit */; };
 		0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0305E7412E1D2B3E000A23A0 /* NSImage+Test.swift */; };
@@ -141,6 +140,7 @@
 		033C6DC42ED9D6D700AC39FC /* DeepLService+Translate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC12ED9D6D700AC39FC /* DeepLService+Translate.swift */; };
 		033C6DC52ED9D6D700AC39FC /* DeepLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC02ED9D6D700AC39FC /* DeepLService.swift */; };
 		033C6DC62ED9D6D700AC39FC /* DeepLTranslateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC22ED9D6D700AC39FC /* DeepLTranslateResponse.swift */; };
+		F12CD76026B145FDBD7A3880 /* DeepLWebAppVersionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D93A5FA4FE7473C8950EA07 /* DeepLWebAppVersionProvider.swift */; };
 		033C6DCA2ED9E2E500AC39FC /* NiuTransService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC72ED9E2E500AC39FC /* NiuTransService.swift */; };
 		033C6DCB2ED9E2E500AC39FC /* NiuTransTranslateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033C6DC82ED9E2E500AC39FC /* NiuTransTranslateResponse.swift */; };
 		033E181F2C5A970A0099A7B0 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 033E181E2C5A970A0099A7B0 /* Vapor */; };
@@ -839,6 +839,7 @@
 		033C6DC02ED9D6D700AC39FC /* DeepLService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLService.swift; sourceTree = "<group>"; };
 		033C6DC12ED9D6D700AC39FC /* DeepLService+Translate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeepLService+Translate.swift"; sourceTree = "<group>"; };
 		033C6DC22ED9D6D700AC39FC /* DeepLTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLTranslateResponse.swift; sourceTree = "<group>"; };
+		7D93A5FA4FE7473C8950EA07 /* DeepLWebAppVersionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLWebAppVersionProvider.swift; sourceTree = "<group>"; };
 		033C6DC72ED9E2E500AC39FC /* NiuTransService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NiuTransService.swift; sourceTree = "<group>"; };
 		033C6DC82ED9E2E500AC39FC /* NiuTransTranslateResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NiuTransTranslateResponse.swift; sourceTree = "<group>"; };
 		033E8A0A2E4E5318008A7110 /* ocr-en-text-two-columns-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-two-columns-2.png"; sourceTree = "<group>"; };
@@ -1459,7 +1460,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0AC8A84F2B6DFDD4006DA5CC /* SettingsAccess in Frameworks */,
-				03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */,
 				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
 				038030952B4106800009230C /* CocoaLumberjack in Frameworks */,
 				03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */,
@@ -1861,6 +1861,7 @@
 			isa = PBXGroup;
 			children = (
 				033C6DC02ED9D6D700AC39FC /* DeepLService.swift */,
+				7D93A5FA4FE7473C8950EA07 /* DeepLWebAppVersionProvider.swift */,
 				033C6DC12ED9D6D700AC39FC /* DeepLService+Translate.swift */,
 				033C6DC22ED9D6D700AC39FC /* DeepLTranslateResponse.swift */,
 			);
@@ -4022,7 +4023,6 @@
 				038EA1AC2B41282F008A6DD1 /* MJExtension */,
 				EA3B81FB2B52555C004C0E8B /* Defaults */,
 				967712E92B5B913600105E0F /* KeyHolder */,
-				03022F182B3591AE00B63209 /* GoogleGenerativeAI */,
 				0AC8A84E2B6DFDD4006DA5CC /* SettingsAccess */,
 				03779F192BB25797008D3C42 /* OpenAI */,
 				0364EC892C208EB50036B61B /* KeySender */,
@@ -4087,7 +4087,6 @@
 				038EA1AB2B41282F008A6DD1 /* XCRemoteSwiftPackageReference "MJExtension" */,
 				EA3B81FA2B52555C004C0E8B /* XCRemoteSwiftPackageReference "Defaults" */,
 				967712E82B5B913600105E0F /* XCRemoteSwiftPackageReference "KeyHolder" */,
-				03022F172B3591AE00B63209 /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
 				0AC8A84D2B6DFDD4006DA5CC /* XCRemoteSwiftPackageReference "SettingsAccess" */,
 				03779F182BB25797008D3C42 /* XCRemoteSwiftPackageReference "OpenAI" */,
 				0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */,
@@ -4529,6 +4528,7 @@
 				033C6DC42ED9D6D700AC39FC /* DeepLService+Translate.swift in Sources */,
 				03DB07162F0C2CDD00D2C68C /* DetectManager.swift in Sources */,
 				033C6DC52ED9D6D700AC39FC /* DeepLService.swift in Sources */,
+				F12CD76026B145FDBD7A3880 /* DeepLWebAppVersionProvider.swift in Sources */,
 				033C6DC62ED9D6D700AC39FC /* DeepLTranslateResponse.swift in Sources */,
 				03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */,
 				03FDAE942E1A29CB0029369E /* Regex+Common.swift in Sources */,
@@ -5257,14 +5257,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		03022F172B3591AE00B63209 /* XCRemoteSwiftPackageReference "generative-ai-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/google/generative-ai-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.3;
-			};
-		};
 		03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/zenangst/Hue";
@@ -5452,11 +5444,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		03022F182B3591AE00B63209 /* GoogleGenerativeAI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 03022F172B3591AE00B63209 /* XCRemoteSwiftPackageReference "generative-ai-swift" */;
-			productName = GoogleGenerativeAI;
-		};
 		03022F1B2B35DEBA00B63209 /* Hue */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */;

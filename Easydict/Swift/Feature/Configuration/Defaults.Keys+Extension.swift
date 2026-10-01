@@ -361,6 +361,10 @@ private let EZDeepLTranslationAPIKey = "EZDeepLTranslationAPIKey"
 extension Defaults.Keys {
     // DeepL
     static let deepLAuth = Key<String>(EZDeepLAuthKey, default: "")
+    static let deepLWebAppVersionCache = Key<String>(
+        "EZDeepLWebAppVersionCacheKey",
+        default: ""
+    )
     static let deepLTranslation = Key<DeepLAPIUsagePriority>(
         EZDeepLTranslationAPIKey,
         default: DeepLAPIUsagePriority.webFirst
