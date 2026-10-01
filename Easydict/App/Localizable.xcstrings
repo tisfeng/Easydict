@@ -8573,6 +8573,88 @@
         }
       }
     },
+    "service.configuration.apple.offline_translation.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline translation requires downloading languages on the device. Use System Settings to [manage downloaded languages](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La traducción sin conexión requiere descargar idiomas en el dispositivo. En Configuración del Sistema puedes [gestionar los idiomas descargados](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オフライン翻訳にはデバイスへの言語のダウンロードが必要です。システム設定では、[ダウンロードした言語の管理](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)を行えます。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline preklad vyžaduje stiahnutie jazykov do zariadenia. V Systémových nastaveniach môžete [spravovať stiahnuté jazyky](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "离线翻译需要在设备上下载语言，可通过系统设置[管理下载语言](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "離線翻譯需要在設備上下載語言，可透過系統設置[管理下載語言](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)。"
+          }
+        }
+      }
+    },
+    "service.configuration.apple.offline_translation.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Offline Translation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traducción sin conexión de Apple"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple オフライン翻訳"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Offline Preklad"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "苹果离线翻译"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "蘋果離線翻譯"
+          }
+        }
+      }
+    },
     "service.configuration.api_missing.tips %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11695,86 +11777,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub"
-          }
-        }
-      }
-    },
-    "setting.advance.apple_offline_translation" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Offline Translation"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Traducción sin conexión de Apple"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple オフライン翻訳"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Offline Preklad"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "苹果离线翻译"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "蘋果離線翻譯"
-          }
-        }
-      }
-    },
-    "setting.advance.apple_offline_translation_desc" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Offline translation requires downloading languages on the device, which can be managed in \"System Settings\"."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La traducción sin conexión requiere descargar idiomas en el dispositivo, que se pueden gestionar en \"Configuración del Sistema\"."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "オフライン翻訳にはデバイスへの言語のダウンロードが必要で、「システム設定」で管理できます。"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Offline preklad vyžaduje stiahnutie jazykov do zariadenia, ktoré je možné spravovať v \"Systémových nastaveniach\"."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "离线翻译需要在设备上下载语言，可通过“系统设置”管理下载语言。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "離線翻譯需要在設備上下載語言，可通過“系統設置”管理下載語言。"
           }
         }
       }
