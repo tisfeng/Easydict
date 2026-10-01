@@ -10,6 +10,12 @@
 #import "NSTextView+Height.h"
 #import "NSObject+EZDarkMode.h"
 
+@interface EZLabel ()
+
+@property (nonatomic, strong) NSFont *configuredFont;
+
+@end
+
 @implementation EZLabel
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
@@ -57,8 +63,14 @@
 }
 
 - (void)setFont:(NSFont *)font {
+    self.configuredFont = font;
     [super setFont:font];
     [self updateDisplayedText];
+}
+
+- (NSFont *)font {
+    // A fallback font for the first glyph must not become the font of the whole label.
+    return self.configuredFont ?: [super font];
 }
 
 - (void)updateDisplayedText {
