@@ -4,6 +4,8 @@
 
 ### 执行上下文
 
+- **Agent Name:** `Unknown`
+- **Model:** `Unknown`
 - **Environment:** `macOS 26.5.2 / Xcode 26.6 (17F113)`
 
 ### 用户请求
@@ -47,5 +49,5 @@
 
 ### 后续事项
 
-- 解决本机构建工具的图标编译异常后，运行 AppleDictionaryTests；验证未完成，未创建本地提交。
+- 解决本机构建工具的图标编译异常后，运行 AppleDictionaryTests；构建验证尚未完成。
 - 在 macOS 27 上使用包含本地音频的真实词典复测发音按钮；本机没有验证该系统上的实际播放。
