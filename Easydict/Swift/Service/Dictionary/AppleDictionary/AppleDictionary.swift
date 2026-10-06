@@ -480,8 +480,7 @@ extension AppleDictionary {
     }
 
     private func localAudioURL(for audioPath: String, in contentsURL: URL) -> URL? {
-        guard !audioPath.hasPrefix("/"),
-              !audioPath.hasPrefix("//"),
+        guard !audioPath.hasPrefix("//"),
               URL(string: audioPath)?.scheme == nil
         else {
             return nil
@@ -489,12 +488,19 @@ extension AppleDictionary {
 
         let rootURL = contentsURL.standardizedFileURL.resolvingSymlinksInPath()
         let rootPath = FilePath(rootURL.path).lexicallyNormalized()
-        let resourceRoots = [
-            rootURL.appendingPathComponent("Resources", isDirectory: true),
-            rootURL,
-        ]
-        for resourceRoot in resourceRoots {
-            let audioURL = resourceRoot.appendingPathComponent(audioPath)
+        let candidates: [URL]
+        if audioPath.hasPrefix("/") {
+            // Dictionary entries may provide absolute paths within their bundle.
+            candidates = [URL(fileURLWithPath: audioPath)]
+        } else {
+            candidates = [
+                rootURL.appendingPathComponent("Resources", isDirectory: true)
+                    .appendingPathComponent(audioPath),
+                rootURL.appendingPathComponent(audioPath),
+            ]
+        }
+        for candidate in candidates {
+            let audioURL = candidate
                 .standardizedFileURL
                 .resolvingSymlinksInPath()
             let resolvedPath = FilePath(audioURL.path).lexicallyNormalized()
