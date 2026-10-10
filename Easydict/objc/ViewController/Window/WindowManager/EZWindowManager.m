@@ -367,6 +367,9 @@ static EZWindowManager *_instance;
 
     // If text is nil, means we don't need to query anything, just show the window.
     if (!queryText) {
+        // Update action type before calculating location, it may change input field collapsed state and window height.
+        [queryViewController updateActionType:self.actionType];
+
         // !!!: location is top-left point, so we need to change it to bottom-left point.
         CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
         [self showFloatingWindow:window atPoint:newPoint];
@@ -408,9 +411,11 @@ static EZWindowManager *_instance;
     if (!window.isPin) {
         // Reset tableView and window height first, avoid being affected by previous window height.
         [queryViewController resetTableView:^{
+            // Update action type first, it may change input field collapsed state and window height.
+            [queryViewController updateActionType:self.actionType];
+
             // !!!: window height has changed, so we need to update location again.
             CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
-            [queryViewController updateActionType:self.actionType];
             [self showFloatingWindow:window atPoint:newPoint];
             updateQueryTextAndStartQueryBlock(NO);
         }];
