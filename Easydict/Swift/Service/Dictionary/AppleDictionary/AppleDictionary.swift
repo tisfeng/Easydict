@@ -14,6 +14,8 @@ import UniformTypeIdentifiers
 // MARK: - Constants
 
 private let kMaxEmbeddedResourceSize = 8 * 1024 * 1024
+/// Icon fonts are a few KB; larger text fonts are left as file URLs to keep query HTML small.
+private let kMaxEmbeddedFontSize = 512 * 1024
 private let kMaxEmbeddedResourceBytesPerQuery = 16 * 1024 * 1024
 private let kLegacyHTMLDirectories = [
     "Dict HTML",
@@ -448,7 +450,8 @@ extension AppleDictionary {
                       let pathRange = Range(url.range(at: group), in: declaration),
                       let dataURL = resourceDataURL(
                           for: String(declaration[pathRange]), in: contentsURL, state: &state,
-                          allowedExtensions: ["ttf", "otf", "woff", "woff2"]
+                          allowedExtensions: ["ttf", "otf", "woff", "woff2"],
+                          maxFileSize: kMaxEmbeddedFontSize
                       )
                 else { continue }
                 declaration.replaceSubrange(pathRange, with: dataURL)
@@ -462,7 +465,8 @@ extension AppleDictionary {
         for resourcePath: String,
         in contentsURL: URL,
         state: inout ResourceEmbeddingState,
-        allowedExtensions: Set<String>? = nil
+        allowedExtensions: Set<String>? = nil,
+        maxFileSize: Int = kMaxEmbeddedResourceSize
     )
         -> String? {
         let fragment = resourcePath.firstIndex(of: "#").map {
@@ -480,22 +484,23 @@ extension AppleDictionary {
             return nil
         }
 
+        // Check the size before the cache so a caller's smaller limit also applies to cached data.
+        guard let resourceValues = try? resourceURL.resourceValues(
+            forKeys: [.fileSizeKey, .isRegularFileKey]
+        ),
+            resourceValues.isRegularFile == true,
+            let fileSize = resourceValues.fileSize,
+            fileSize <= maxFileSize
+        else {
+            return nil
+        }
+
         if let dataURL = state.dataURLs[resourceURL] {
             guard state.embeddedBytes + dataURL.utf8.count <= kMaxEmbeddedResourceBytesPerQuery else {
                 return nil
             }
             state.embeddedBytes += dataURL.utf8.count
             return dataURL + fragment
-        }
-
-        guard let resourceValues = try? resourceURL.resourceValues(
-            forKeys: [.fileSizeKey, .isRegularFileKey]
-        ),
-            resourceValues.isRegularFile == true,
-            let fileSize = resourceValues.fileSize,
-            fileSize <= kMaxEmbeddedResourceSize
-        else {
-            return nil
         }
 
         let rootURL = contentsURL.standardizedFileURL.resolvingSymlinksInPath()

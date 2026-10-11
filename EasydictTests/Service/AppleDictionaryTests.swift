@@ -92,13 +92,50 @@ struct AppleDictionaryTests {
         }
     }
 
+    @Test("Embeds only small font-face fonts")
+    func embedsSmallFontFaceFonts() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let contents = directory.appendingPathComponent("Test.dictionary/Contents")
+        let fonts = contents.appendingPathComponent("Resources/fonts")
+        try FileManager.default.createDirectory(at: fonts, withIntermediateDirectories: true)
+        let iconFont = Data("icon font".utf8)
+        try iconFont.write(to: fonts.appendingPathComponent("icon.ttf"))
+        try Data(count: 512 * 1024 + 1).write(to: fonts.appendingPathComponent("text.woff"))
+        try Data("image".utf8).write(to: fonts.appendingPathComponent("icon.png"))
+
+        let html = try render(
+            entryHTML: """
+            <style>
+            @font-face { font-family: icon; src: url('fonts/missing.ttf'), url("fonts/icon.ttf"); }
+            @font-face { font-family: text; src: url("fonts/text.woff"); }
+            @font-face { font-family: image; src: url(fonts/icon.png); }
+            .speaker { background: url("fonts/icon.ttf"); }
+            </style>
+            """,
+            contents: contents
+        )
+
+        #expect(html.contains(";base64,\(iconFont.base64EncodedString())\")"))
+        #expect(html.contains("url('fonts/missing.ttf')"))
+        #expect(html.contains("url(\"fonts/text.woff\")"))
+        #expect(html.contains("url(fonts/icon.png)"))
+        #expect(html.contains("background: url(\"fonts/icon.ttf\")"))
+    }
+
     // MARK: Private
 
     private func renderAudio(path: String, contents: URL) throws -> String {
-        let entryHTML = """
-        <a href="javascript:new Audio('\(path)').play();">Play</a>
-        <audio src="\(path)" controls></audio>
-        """
+        try render(
+            entryHTML: """
+            <a href="javascript:new Audio('\(path)').play();">Play</a>
+            <audio src="\(path)" controls></audio>
+            """,
+            contents: contents
+        )
+    }
+
+    private func render(entryHTML: String, contents: URL) throws -> String {
         let dictionary = AudioDictionary(url: contents.deletingLastPathComponent(), html: entryHTML)
         let service = AppleDictionary(dictionaryNames: [])
         let html = service.queryAllIframeHTMLResult(
