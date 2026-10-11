@@ -27,6 +27,7 @@ private let kLegacyHTMLDirectories = [
 private struct AudioEmbeddingState {
     var dataURLs: [URL: String] = [:]
     var embeddedBytes = 0
+    var loadingURLs: Set<URL> = []
 }
 
 // MARK: - AppleDictionary
@@ -278,7 +279,7 @@ extension AppleDictionary {
 
             for html in entryHTMLs {
                 if let contentsURL {
-                    wordHtmlString += embedAudioResources(
+                    wordHtmlString += embedLocalResources(
                         ofHTML: html,
                         in: contentsURL,
                         state: &audioEmbeddingState
@@ -303,6 +304,8 @@ extension AppleDictionary {
 
         result?.htmlStrings = allEntryHTMLs
         result?.innerTexts = allInnerTexts
+        result?.translatedResults = allInnerTexts
+        result?.copiedText = allInnerTexts.joined(separator: "\n\n")
         return renderResult.htmlString
     }
 
@@ -380,16 +383,19 @@ extension AppleDictionary {
 extension AppleDictionary {
     // MARK: Private
 
-    /// Embeds dictionary audio so in-memory HTML does not require file access.
-    private func embedAudioResources(
+    /// Embeds local media and styles so in-memory HTML does not require file access.
+    private func embedLocalResources(
         ofHTML html: String,
         in contentsURL: URL,
-        state: inout AudioEmbeddingState
+        state: inout AudioEmbeddingState,
+        relativeTo baseURL: URL? = nil
     )
         -> String {
         let patterns: [(pattern: String, pathGroup: Int)] = [
             (#"new\s+Audio\(\s*(?:&quot;|&apos;|["'])(.*?)(?:&quot;|&apos;|["'])\s*\)"#, 1),
-            (#"<audio\b[^>]*?\bsrc\s*=\s*(["'])(.*?)\1"#, 2),
+            (#"<(?:audio|source|img|video)\b[^>]*?\ssrc\s*=\s*(["'])(.*?)\1"#, 2),
+            (#"<link\b[^>]*?\shref\s*=\s*(["'])(.*?)\1"#, 2),
+            (#"\burl\(\s*(&quot;|&apos;|["']?)(.*?)\1\s*\)"#, 2),
         ]
         var resolvedHTML = html
 
@@ -409,7 +415,8 @@ extension AppleDictionary {
                       let dataURL = audioDataURL(
                           for: String(resolvedHTML[pathRange]),
                           in: contentsURL,
-                          state: &state
+                          state: &state,
+                          relativeTo: baseURL
                       )
                 else {
                     continue
@@ -423,7 +430,8 @@ extension AppleDictionary {
     private func audioDataURL(
         for audioPath: String,
         in contentsURL: URL,
-        state: inout AudioEmbeddingState
+        state: inout AudioEmbeddingState,
+        relativeTo baseURL: URL? = nil
     )
         -> String? {
         let fragment = audioPath.firstIndex(of: "#").map {
@@ -435,7 +443,7 @@ extension AppleDictionary {
         let escapedPath = String(pathWithoutFragment[..<queryIndex]).unescapedXMLString().trim()
         let decodedPath = escapedPath.removingPercentEncoding ?? escapedPath
         guard !decodedPath.isEmpty,
-              let audioURL = localAudioURL(for: decodedPath, in: contentsURL)
+              let audioURL = localAudioURL(for: decodedPath, in: contentsURL, relativeTo: baseURL)
         else {
             return nil
         }
@@ -463,9 +471,27 @@ extension AppleDictionary {
         let resolvedPath = FilePath(audioURL.path).lexicallyNormalized()
         guard resolvedPath.starts(with: rootPath),
               resolvedPath != rootPath,
-              let audioData = FileManager.default.contents(atPath: resolvedPath.string)
+              var audioData = FileManager.default.contents(atPath: resolvedPath.string)
         else {
             return nil
+        }
+
+        guard !state.loadingURLs.contains(audioURL), state.loadingURLs.count < 8 else {
+            return nil
+        }
+        if audioURL.pathExtension.lowercased() == "css" {
+            guard let css = String(data: audioData, encoding: .utf8) else {
+                return nil
+            }
+            state.loadingURLs.insert(audioURL)
+            let resolvedCSS = embedLocalResources(
+                ofHTML: css,
+                in: contentsURL,
+                state: &state,
+                relativeTo: audioURL.deletingLastPathComponent()
+            )
+            state.loadingURLs.remove(audioURL)
+            audioData = Data(resolvedCSS.utf8)
         }
 
         let mimeType = UTType(filenameExtension: audioURL.pathExtension)?.preferredMIMEType
@@ -479,22 +505,29 @@ extension AppleDictionary {
         return dataURL + fragment
     }
 
-    private func localAudioURL(for audioPath: String, in contentsURL: URL) -> URL? {
-        guard !audioPath.hasPrefix("/"),
-              !audioPath.hasPrefix("//"),
-              URL(string: audioPath)?.scheme == nil
+    private func localAudioURL(
+        for audioPath: String,
+        in contentsURL: URL,
+        relativeTo baseURL: URL?
+    )
+        -> URL? {
+        let url = URL(string: audioPath)
+        guard !audioPath.hasPrefix("//"),
+              url?.scheme == nil || url?.isFileURL == true,
+              url?.host == nil || url?.host == "localhost"
         else {
             return nil
         }
 
         let rootURL = contentsURL.standardizedFileURL.resolvingSymlinksInPath()
         let rootPath = FilePath(rootURL.path).lexicallyNormalized()
-        let resourceRoots = [
+        let fileURL = url?.isFileURL == true ? url : nil
+        let resourceRoots = baseURL.map { [$0] } ?? [
             rootURL.appendingPathComponent("Resources", isDirectory: true),
             rootURL,
         ]
         for resourceRoot in resourceRoots {
-            let audioURL = resourceRoot.appendingPathComponent(audioPath)
+            let audioURL = (fileURL ?? URL(fileURLWithPath: audioPath, relativeTo: resourceRoot))
                 .standardizedFileURL
                 .resolvingSymlinksInPath()
             let resolvedPath = FilePath(audioURL.path).lexicallyNormalized()
