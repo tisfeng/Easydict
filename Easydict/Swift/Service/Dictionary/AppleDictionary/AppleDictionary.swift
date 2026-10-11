@@ -13,8 +13,8 @@ import UniformTypeIdentifiers
 
 // MARK: - Constants
 
-private let kMaxEmbeddedAudioSize = 8 * 1024 * 1024
-private let kMaxEmbeddedAudioBytesPerQuery = 16 * 1024 * 1024
+private let kMaxEmbeddedResourceSize = 8 * 1024 * 1024
+private let kMaxEmbeddedResourceBytesPerQuery = 16 * 1024 * 1024
 private let kLegacyHTMLDirectories = [
     "Dict HTML",
     ".Dict HTML",
@@ -22,9 +22,9 @@ private let kLegacyHTMLDirectories = [
     ".easydict-apple-dictionary-html.noindex",
 ]
 
-// MARK: - AudioEmbeddingState
+// MARK: - ResourceEmbeddingState
 
-private struct AudioEmbeddingState {
+private struct ResourceEmbeddingState {
     var dataURLs: [URL: String] = [:]
     var embeddedBytes = 0
 }
@@ -253,7 +253,7 @@ extension AppleDictionary {
             extraCSS: ".\(customIframeContainerClass){margin-top:0;margin-bottom:0;width:100%;}"
         )
         var sections: [DictionaryHTMLSection] = []
-        var audioEmbeddingState = AudioEmbeddingState()
+        var resourceEmbeddingState = ResourceEmbeddingState()
         var allEntryHTMLs: [String] = []
         var allInnerTexts: [String] = []
 
@@ -278,10 +278,10 @@ extension AppleDictionary {
 
             for html in entryHTMLs {
                 if let contentsURL {
-                    wordHtmlString += embedAudioResources(
+                    wordHtmlString += embedDictionaryResources(
                         ofHTML: html,
                         in: contentsURL,
-                        state: &audioEmbeddingState
+                        state: &resourceEmbeddingState
                     )
                 } else {
                     wordHtmlString += html
@@ -380,11 +380,11 @@ extension AppleDictionary {
 extension AppleDictionary {
     // MARK: Private
 
-    /// Embeds dictionary audio so in-memory HTML does not require file access.
-    private func embedAudioResources(
+    /// Embeds dictionary audio and fonts so in-memory HTML does not require file access.
+    private func embedDictionaryResources(
         ofHTML html: String,
         in contentsURL: URL,
-        state: inout AudioEmbeddingState
+        state: inout ResourceEmbeddingState
     )
         -> String {
         let patterns: [(pattern: String, pathGroup: Int)] = [
@@ -406,7 +406,7 @@ extension AppleDictionary {
             )
             for match in matches.reversed() {
                 guard let pathRange = Range(match.range(at: item.pathGroup), in: resolvedHTML),
-                      let dataURL = audioDataURL(
+                      let dataURL = resourceDataURL(
                           for: String(resolvedHTML[pathRange]),
                           in: contentsURL,
                           state: &state
@@ -417,71 +417,111 @@ extension AppleDictionary {
                 resolvedHTML.replaceSubrange(pathRange, with: dataURL)
             }
         }
+        return embedFontResources(ofHTML: resolvedHTML, in: contentsURL, state: &state)
+    }
+
+    /// Resolves font URLs only within inline font-face declarations.
+    private func embedFontResources(
+        ofHTML html: String,
+        in contentsURL: URL,
+        state: inout ResourceEmbeddingState
+    )
+        -> String {
+        guard let fontFaceRegex = try? NSRegularExpression(
+            pattern: #"@font-face\s*\{[^}]*\}"#,
+            options: [.caseInsensitive, .dotMatchesLineSeparators]
+        ),
+            let urlRegex = try? NSRegularExpression(
+                pattern: #"url\(\s*(?:"([^"]*)"|'([^']*)'|([^\s)]+))\s*\)"#,
+                options: [.caseInsensitive]
+            )
+        else { return html }
+
+        var resolvedHTML = html
+        let fontFaces = fontFaceRegex.matches(in: html, range: NSRange(html.startIndex..., in: html))
+        for fontFace in fontFaces.reversed() {
+            guard let fontFaceRange = Range(fontFace.range, in: resolvedHTML) else { continue }
+            var declaration = String(resolvedHTML[fontFaceRange])
+            let urls = urlRegex.matches(in: declaration, range: NSRange(declaration.startIndex..., in: declaration))
+            for url in urls.reversed() {
+                guard let group = (1 ... 3).first(where: { url.range(at: $0).location != NSNotFound }),
+                      let pathRange = Range(url.range(at: group), in: declaration),
+                      let dataURL = resourceDataURL(
+                          for: String(declaration[pathRange]), in: contentsURL, state: &state,
+                          allowedExtensions: ["ttf", "otf", "woff", "woff2"]
+                      )
+                else { continue }
+                declaration.replaceSubrange(pathRange, with: dataURL)
+            }
+            resolvedHTML.replaceSubrange(fontFaceRange, with: declaration)
+        }
         return resolvedHTML
     }
 
-    private func audioDataURL(
-        for audioPath: String,
+    private func resourceDataURL(
+        for resourcePath: String,
         in contentsURL: URL,
-        state: inout AudioEmbeddingState
+        state: inout ResourceEmbeddingState,
+        allowedExtensions: Set<String>? = nil
     )
         -> String? {
-        let fragment = audioPath.firstIndex(of: "#").map {
-            String(audioPath[$0...])
+        let fragment = resourcePath.firstIndex(of: "#").map {
+            String(resourcePath[$0...])
         } ?? ""
-        let fragmentIndex = audioPath.firstIndex(of: "#") ?? audioPath.endIndex
-        let pathWithoutFragment = audioPath[..<fragmentIndex]
+        let fragmentIndex = resourcePath.firstIndex(of: "#") ?? resourcePath.endIndex
+        let pathWithoutFragment = resourcePath[..<fragmentIndex]
         let queryIndex = pathWithoutFragment.firstIndex(of: "?") ?? pathWithoutFragment.endIndex
         let escapedPath = String(pathWithoutFragment[..<queryIndex]).unescapedXMLString().trim()
         let decodedPath = escapedPath.removingPercentEncoding ?? escapedPath
         guard !decodedPath.isEmpty,
-              let audioURL = localAudioURL(for: decodedPath, in: contentsURL)
+              let resourceURL = localResourceURL(for: decodedPath, in: contentsURL),
+              allowedExtensions?.contains(resourceURL.pathExtension.lowercased()) != false
         else {
             return nil
         }
 
-        if let dataURL = state.dataURLs[audioURL] {
-            guard state.embeddedBytes + dataURL.utf8.count <= kMaxEmbeddedAudioBytesPerQuery else {
+        if let dataURL = state.dataURLs[resourceURL] {
+            guard state.embeddedBytes + dataURL.utf8.count <= kMaxEmbeddedResourceBytesPerQuery else {
                 return nil
             }
             state.embeddedBytes += dataURL.utf8.count
             return dataURL + fragment
         }
 
-        guard let resourceValues = try? audioURL.resourceValues(
+        guard let resourceValues = try? resourceURL.resourceValues(
             forKeys: [.fileSizeKey, .isRegularFileKey]
         ),
             resourceValues.isRegularFile == true,
             let fileSize = resourceValues.fileSize,
-            fileSize <= kMaxEmbeddedAudioSize
+            fileSize <= kMaxEmbeddedResourceSize
         else {
             return nil
         }
 
         let rootURL = contentsURL.standardizedFileURL.resolvingSymlinksInPath()
         let rootPath = FilePath(rootURL.path).lexicallyNormalized()
-        let resolvedPath = FilePath(audioURL.path).lexicallyNormalized()
+        let resolvedPath = FilePath(resourceURL.path).lexicallyNormalized()
         guard resolvedPath.starts(with: rootPath),
               resolvedPath != rootPath,
-              let audioData = FileManager.default.contents(atPath: resolvedPath.string)
+              let resourceData = FileManager.default.contents(atPath: resolvedPath.string)
         else {
             return nil
         }
 
-        let mimeType = UTType(filenameExtension: audioURL.pathExtension)?.preferredMIMEType
+        let mimeType = UTType(filenameExtension: resourceURL.pathExtension)?.preferredMIMEType
             ?? "application/octet-stream"
-        let dataURL = "data:\(mimeType);base64,\(audioData.base64EncodedString())"
-        guard state.embeddedBytes + dataURL.utf8.count <= kMaxEmbeddedAudioBytesPerQuery else {
+        let dataURL = "data:\(mimeType);base64,\(resourceData.base64EncodedString())"
+        guard state.embeddedBytes + dataURL.utf8.count <= kMaxEmbeddedResourceBytesPerQuery else {
             return nil
         }
-        state.dataURLs[audioURL] = dataURL
+        state.dataURLs[resourceURL] = dataURL
         state.embeddedBytes += dataURL.utf8.count
         return dataURL + fragment
     }
 
-    private func localAudioURL(for audioPath: String, in contentsURL: URL) -> URL? {
-        guard !audioPath.hasPrefix("//"),
-              URL(string: audioPath)?.scheme == nil
+    private func localResourceURL(for resourcePath: String, in contentsURL: URL) -> URL? {
+        guard !resourcePath.hasPrefix("//"),
+              URL(string: resourcePath)?.scheme == nil
         else {
             return nil
         }
@@ -489,25 +529,25 @@ extension AppleDictionary {
         let rootURL = contentsURL.standardizedFileURL.resolvingSymlinksInPath()
         let rootPath = FilePath(rootURL.path).lexicallyNormalized()
         let candidates: [URL]
-        if audioPath.hasPrefix("/") {
+        if resourcePath.hasPrefix("/") {
             // Dictionary entries may provide absolute paths within their bundle.
-            candidates = [URL(fileURLWithPath: audioPath)]
+            candidates = [URL(fileURLWithPath: resourcePath)]
         } else {
             candidates = [
                 rootURL.appendingPathComponent("Resources", isDirectory: true)
-                    .appendingPathComponent(audioPath),
-                rootURL.appendingPathComponent(audioPath),
+                    .appendingPathComponent(resourcePath),
+                rootURL.appendingPathComponent(resourcePath),
             ]
         }
         for candidate in candidates {
-            let audioURL = candidate
+            let resourceURL = candidate
                 .standardizedFileURL
                 .resolvingSymlinksInPath()
-            let resolvedPath = FilePath(audioURL.path).lexicallyNormalized()
+            let resolvedPath = FilePath(resourceURL.path).lexicallyNormalized()
             if resolvedPath.starts(with: rootPath),
                resolvedPath != rootPath,
-               (try? audioURL.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true {
-                return audioURL
+               (try? resourceURL.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true {
+                return resourceURL
             }
         }
         return nil
