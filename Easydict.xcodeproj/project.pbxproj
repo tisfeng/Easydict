@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D71101351011000000000003 /* EZQueryTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D71101351011000000000002 /* EZQueryTableView.m */; };
 		C0FFEEBF2026092400000000 /* GitHubCopilotDebugWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000000 /* GitHubCopilotDebugWindow.swift */; };
 		C0FFEEBF2026092400000001 /* GitHubCopilotEffort.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000001 /* GitHubCopilotEffort.swift */; };
 		C0FFEEBF2026092400000002 /* GitHubCopilotError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000002 /* GitHubCopilotError.swift */; };
@@ -686,6 +687,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D71101351011000000000001 /* EZQueryTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryTableView.h; sourceTree = "<group>"; };
+		D71101351011000000000002 /* EZQueryTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryTableView.m; sourceTree = "<group>"; };
 		C0FFEEFD2026092400000000 /* GitHubCopilotDebugWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotDebugWindow.swift; sourceTree = "<group>"; };
 		C0FFEEFD2026092400000001 /* GitHubCopilotEffort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotEffort.swift; sourceTree = "<group>"; };
 		C0FFEEFD2026092400000002 /* GitHubCopilotError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotError.swift; sourceTree = "<group>"; };
@@ -2468,6 +2471,8 @@
 			children = (
 				0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */,
 				0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */,
+				D71101351011000000000001 /* EZQueryTableView.h */,
+				D71101351011000000000002 /* EZQueryTableView.m */,
 				037852B7295D49F900D0E2CF /* EZTableRowView.h */,
 				037852B8295D49F900D0E2CF /* EZTableRowView.m */,
 			);
@@ -4637,6 +4642,7 @@
 				03E75A032ED75FB400E1741E /* UserDefaults+ObjCCompat.swift in Sources */,
 				9643D94A2B71EABE000FBEA6 /* KeyHolderAlterView.swift in Sources */,
 				03B0233429231FA6001C7E63 /* MMConsoleLogFormatter.m in Sources */,
+				D71101351011000000000003 /* EZQueryTableView.m in Sources */,
 				037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */,
 				C4CCDAA52C407A4100AC88BA /* PolishingService.swift in Sources */,
 				0340D3942C8EEF58004C9910 /* Dictionary+Extension.swift in Sources */,
