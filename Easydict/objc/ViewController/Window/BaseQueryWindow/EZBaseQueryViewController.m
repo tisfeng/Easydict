@@ -15,6 +15,7 @@
 #import "EZEnumTypes.h"
 #import "EZAudioPlayer.h"
 #import "EZTableRowView.h"
+#import "EZQueryTableView.h"
 #import "EZSchemeParser.h"
 #import "EZToast.h"
 #import "DictionaryKit.h"
@@ -356,7 +357,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (NSTableView *)tableView {
     if (!_tableView) {
-        NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
+        NSTableView *tableView = [[EZQueryTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
         tableView.wantsLayer = YES;
         tableView.layer.drawsAsynchronously = YES;
