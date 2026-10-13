@@ -61,8 +61,11 @@ struct MenuItemView: View {
 
             quitItem.keyboardShortcut(.init("q"))
         }
-        .task {
-            latestVersion = await fetchRepoLatestVersion(EZGithubRepoEasydict)
+        .task(id: includeBetaUpdates) {
+            latestVersion = await fetchRepoLatestVersion(
+                EZGithubRepoEasydict,
+                includePrerelease: includeBetaUpdates
+            )
         }
     }
 
@@ -86,6 +89,7 @@ struct MenuItemView: View {
     @Default(.showOCRMenuItems) private var showOCRMenuItems
     @Default(.mouseSelectTranslateWindowType) private var mouseSelectTranslateWindowType
     @Default(.shortcutSelectTranslateWindowType) private var shortcutSelectTranslateWindowType
+    @Default(.includeBetaUpdates) private var includeBetaUpdates
 
     private var versionString: String {
         let defaultLabel = "Easydict  \(currentVersion)"
