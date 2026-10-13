@@ -243,10 +243,7 @@ struct GeneralTab: View {
         }
         .formStyle(.grouped)
         .task(id: includeBetaUpdates) {
-            lastestVersion = await fetchRepoLatestVersion(
-                EZGithubRepoEasydict,
-                includePrerelease: includeBetaUpdates
-            )
+            lastestVersion = await GitHubReleaseFetcher.latestVersion(includePrerelease: includeBetaUpdates)
         }
         .alert("hide_menu_bar_icon", isPresented: $showRefuseAlert) {
             Button("ok") {
@@ -321,9 +318,7 @@ struct GeneralTab: View {
 
     /// Never lower than the running version.
     private var displayedLatestVersion: String {
-        guard let lastestVersion,
-              version.compare(lastestVersion, options: .numeric) == .orderedAscending
-        else {
+        guard let lastestVersion, GitHubReleaseFetcher.isNewer(lastestVersion, than: version) else {
             return version
         }
         return lastestVersion

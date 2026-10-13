@@ -62,10 +62,7 @@ struct MenuItemView: View {
             quitItem.keyboardShortcut(.init("q"))
         }
         .task(id: includeBetaUpdates) {
-            latestVersion = await fetchRepoLatestVersion(
-                EZGithubRepoEasydict,
-                includePrerelease: includeBetaUpdates
-            )
+            latestVersion = await GitHubReleaseFetcher.latestVersion(includePrerelease: includeBetaUpdates)
         }
     }
 
@@ -93,8 +90,7 @@ struct MenuItemView: View {
 
     private var versionString: String {
         let defaultLabel = "Easydict  \(currentVersion)"
-        if let latestVersion,
-           currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending {
+        if let latestVersion, GitHubReleaseFetcher.isNewer(latestVersion, than: currentVersion) {
             return defaultLabel + "  (✨\(latestVersion) )"
         } else {
             return defaultLabel
