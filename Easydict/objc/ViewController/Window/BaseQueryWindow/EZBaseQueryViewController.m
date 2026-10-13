@@ -472,7 +472,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     self.inputText = text;
-    self.queryModel.actionType = actionType;
+    [self switchActionType:actionType];
     self.queryView.isTypingChinese = NO;
 
     if ([self handleEasydictScheme:text]) {
@@ -530,6 +530,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     self.queryModel.ocrImage = image;
 
     self.queryView.isTypingChinese = NO;
+    // Keep collapsed state while OCR is loading, the loading view is shown in the button bar of collapsed input field.
     [self.queryView startLoadingAnimation:YES];
 
     mm_weakify(self);
@@ -709,7 +710,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             self.queryModel.userTargetLanguage = toLanguage;
             self.inputText = translatedText;
             self.queryModel.ocrImage = nil;
-            self.queryModel.actionType = EZActionTypeInputQuery;
+            [self switchActionType:EZActionTypeInputQuery];
         }
     }
 
@@ -784,6 +785,16 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self updateInputFieldCollapsedWithActionType:actionType];
 }
 
+/// Update action type in current window, only apply input field collapsed state when action type changes,
+/// so that re-querying with the same action type keeps the collapsed state toggled in current session.
+- (void)switchActionType:(EZActionType)actionType {
+    BOOL isChanged = ![self.queryModel.actionType isEqualToString:actionType];
+    self.queryModel.actionType = actionType;
+    if (isChanged) {
+        [self updateInputFieldCollapsedWithActionType:actionType];
+    }
+}
+
 #pragma mark - Input Field Collapsed State
 
 /// Select text translation, including invoke query from PopClip or macOS Services via URL scheme.
@@ -793,8 +804,19 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         || actionType == EZActionTypeInvokeQuery;
 }
 
-/// Restore saved collapsed state for select text translation, other actions always expand input field.
+/// OCR translation, the input text is recognized from image, so users may not need to see it.
+- (BOOL)isOCRActionType:(EZActionType)actionType {
+    return actionType == EZActionTypeOCRQuery
+        || actionType == EZActionTypeScreenshotOCR
+        || actionType == EZActionTypePasteboardOCR;
+}
+
+/// Restore saved collapsed state for select text translation, keep current state for OCR, other actions always expand input field.
 - (void)updateInputFieldCollapsedWithActionType:(EZActionType)actionType {
+    if ([self isOCRActionType:actionType]) {
+        return;
+    }
+
     BOOL collapsed = NO;
     if ([self isSelectTextActionType:actionType]) {
         collapsed = [self.config inputFieldCollapsedWithWindowType:self.windowType];

@@ -29,6 +29,26 @@
   不会覆盖已保存的划词折叠偏好。
 - 修复：新窗口带入选中文本时，`updateInputText:` 按文本高度上报行高，导致折叠的输入区块被撑高且
   按钮错位；改为上报 `heightOfQueryView`，并在折叠时不再固定滚动视图顶部，避免与按钮栏约束冲突。
+- 修复（Review 反馈）：OCR 加载动画是 `EZQueryView` 的子视图并锚定在文本视图上，折叠时不会随
+  滚动视图隐藏，其计时器还会反复将其设为可见，导致点状动画覆盖底部按钮或溢出到下一单元格。
+  `startOCRImage:actionType:autoQuery:` 在开始加载前先按动作类型展开输入框；`EZQueryView` 记录
+  加载状态，折叠时停止动画，加载仍在进行时展开则恢复动画。
+- 调整（用户反馈）：OCR 不再为显示加载动画而展开折叠的输入框。`EZQueryView` 为加载视图维护两组
+  约束：展开时锚定在文本视图左上角，折叠时位于按钮栏中清除按钮左侧并与箭头按钮垂直居中，
+  `setCollapsed:` 切换约束；不使用 `mas_remakeConstraints`，以免移除加载视图内部的宽度约束。
+  OCR 完成后仍由 `updateQueryTextAndParagraphStyle:actionType:` 按动作类型应用折叠状态。
+- 调整（用户反馈）：OCR 完成后也保持折叠。新增 `isOCRActionType:`（`EZActionTypeOCRQuery`、
+  `EZActionTypeScreenshotOCR`、`EZActionTypePasteboardOCR`），`updateInputFieldCollapsedWithActionType:`
+  对 OCR 动作不改变当前折叠状态（既不展开也不读取偏好），手动切换仍只在当前会话生效。
+- 调整（用户反馈）：折叠时加载视图改为位于按钮栏左侧按钮之后：默认紧跟复制按钮，语言检测按钮
+  可见时（`showAutoLanguage` 或检测语言非 auto）通过单独约束排在其右侧；`updateDetectButton`
+  更新检测语言后同步该约束。
+- 修复（Review 反馈）：结果区右键 “Query in App” 命中当前窗口或已固定窗口时直接调用
+  `startQueryText:actionType:`，不经过折叠状态同步，`EZActionTypeInvokeQuery` 不会恢复已保存的
+  折叠状态；互换翻译语言以 `EZActionTypeInputQuery` 重新查询时，折叠的输入框也不会展开。
+  新增 `switchActionType:`，在 `startQueryText:actionType:` 与 `toggleTranslationLanguages` 中使用，
+  仅在动作类型变化时应用折叠状态，同类型重新查询（重试、切换语言、点击结果中的单词）保留当前会话
+  中手动切换的状态。
 
 ### 设计意图
 
@@ -43,6 +63,16 @@
   后构建成功，改动文件无新增警告。
 - `git diff --check`：通过。
 - 手动检查：用户在本地构建中发现新窗口折叠区块被撑高的问题，已修复并重新构建成功，待用户复测。
+- OCR 加载动画修复：同一构建命令（附加上述图标参数）构建成功；`git diff --check` 通过；
+  未进行手动 UI 验证。
+- OCR 加载视图移至折叠按钮栏：同一构建命令（附加上述图标参数）构建成功，改动文件无新增警告；
+  `git diff --check` 通过；未进行手动 UI 验证。
+- OCR 保持折叠状态：同一构建命令（附加上述图标参数）构建成功，改动文件无新增警告；
+  `git diff --check` 通过；未进行手动 UI 验证。
+- 加载视图移至左侧按钮之后：同一构建命令（附加上述图标参数）构建成功，改动文件无新增警告；
+  `git diff --check` 通过；未进行手动 UI 验证。
+- Query in App / 互换语言修复：同一构建命令（附加上述图标参数）构建成功；`git diff --check` 通过；
+  未进行手动 UI 验证。
 
 ### 受影响文件
 
@@ -55,4 +85,4 @@
 
 ### 后续事项
 
-- 折叠状态下 OCR 加载动画仍以文本视图为锚点，位置可能与底部按钮重叠，可按需优化。
+- None

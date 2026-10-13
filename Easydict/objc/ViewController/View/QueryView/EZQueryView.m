@@ -41,6 +41,11 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 @property (nonatomic, assign) NSTimeInterval lastRecordTimestamp;
 
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
+/// Loading view is placed in the input text area when expanded, and in the button bar when collapsed.
+@property (nonatomic, copy) NSArray<MASConstraint *> *loadingViewExpandedConstraints;
+@property (nonatomic, copy) NSArray<MASConstraint *> *loadingViewCollapsedConstraints;
+/// Keep loading view right of detect button in collapsed state, only active when detect button is visible.
+@property (nonatomic, strong) MASConstraint *loadingViewAfterDetectButtonConstraint;
 @property (nonatomic, strong) id fontSizeObserver;
 
 @end
@@ -125,12 +130,6 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     EZLoadingAnimationView *loadingAnimationView = [[EZLoadingAnimationView alloc] init];
     [self addSubview:loadingAnimationView];
     self.loadingAnimationView = loadingAnimationView;
-    
-    [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(textView).offset(5);
-        make.left.equalTo(textView).offset(10);
-        make.height.mas_equalTo(30);
-    }];
     
     EZAudioButton *audioButton = [[EZAudioButton alloc] init];
     [self addSubview:audioButton];
@@ -221,6 +220,31 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         mm_strongify(self);
         [self toggleCollapsed];
     }];
+
+    [self setupLoadingAnimationViewConstraints];
+}
+
+/// Do not remake loading view constraints, it would remove the internal width constraint of loading view.
+- (void)setupLoadingAnimationViewConstraints {
+    self.loadingViewExpandedConstraints = [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.textView).offset(5);
+        make.left.equalTo(self.textView).offset(10);
+        make.height.mas_equalTo(30);
+    }];
+
+    // Place loading view right after the left buttons of button bar.
+    CGFloat leftPadding = 6;
+    self.loadingViewCollapsedConstraints = [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.greaterThanOrEqualTo(self.textCopyButton.mas_right).offset(leftPadding);
+        make.left.equalTo(self.textCopyButton.mas_right).offset(leftPadding).priorityLow();
+        make.centerY.height.equalTo(self.textCopyButton);
+    }];
+
+    [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
+        self.loadingViewAfterDetectButtonConstraint = make.left.greaterThanOrEqualTo(self.detectButton.mas_right).offset(leftPadding);
+    }];
+
+    [self updateLoadingAnimationViewConstraints];
 }
 
 - (NSTextField *)alertTextField {
@@ -375,6 +399,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 
     self.scrollView.hidden = collapsed;
     self.alertTextField.hidden = collapsed || self.alertText.length == 0;
+    [self updateLoadingAnimationViewConstraints];
     [self updateArrowButton];
     [self setNeedsUpdateConstraints:YES];
 }
@@ -675,6 +700,25 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     }
 }
 
+/// Move loading view to the button bar while collapsed, right after the left buttons, so loading progress is visible without expanding input text area.
+- (void)updateLoadingAnimationViewConstraints {
+    NSArray<MASConstraint *> *activeConstraints = self.collapsed ? self.loadingViewCollapsedConstraints : self.loadingViewExpandedConstraints;
+    NSArray<MASConstraint *> *inactiveConstraints = self.collapsed ? self.loadingViewExpandedConstraints : self.loadingViewCollapsedConstraints;
+    for (MASConstraint *constraint in inactiveConstraints) {
+        [constraint deactivate];
+    }
+    for (MASConstraint *constraint in activeConstraints) {
+        [constraint activate];
+    }
+
+    BOOL isDetectButtonVisible = self.detectButton.showAutoLanguage || ![self.detectButton.detectedLanguage isEqualToString:EZLanguageAuto];
+    if (self.collapsed && isDetectButtonVisible) {
+        [self.loadingViewAfterDetectButtonConstraint activate];
+    } else {
+        [self.loadingViewAfterDetectButtonConstraint deactivate];
+    }
+}
+
 - (void)updateArrowButton {
     self.arrowButton.toolTip = self.collapsed ? NSLocalizedString(@"show", nil) : NSLocalizedString(@"hide", nil);
 
@@ -689,6 +733,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     
     self.detectButton.showAutoLanguage = self.queryModel.showAutoLanguage;
     self.detectButton.detectedLanguage = self.queryModel.detectedLanguage;
+    [self updateLoadingAnimationViewConstraints];
     
     CGFloat height = 20;
     self.detectButton.cornerRadius = height / 2;
