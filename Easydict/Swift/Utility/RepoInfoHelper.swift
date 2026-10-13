@@ -177,10 +177,17 @@ struct RepoInfoResponseAuthor: Codable {
 }
 
 /// Get repo lastest version
-/// - Parameter repo: repo name, eg. tisfeng/easydict
+/// - Parameters:
+///   - repo: repo name, eg. tisfeng/easydict
+///   - includePrerelease: include pre-releases
 /// - Returns: repo version, eg. 2.7.2
-func fetchRepoLatestVersion(_ repo: String) async -> String? {
-    let repoInfo = try? await fetchRepoInfo(repo)
+func fetchRepoLatestVersion(_ repo: String, includePrerelease: Bool = false) async -> String? {
+    guard includePrerelease else {
+        let repoInfo = try? await fetchRepoInfo(repo)
+        return repoInfo?.tagName
+    }
+
+    let repoInfo = try? await fetchRepoNewestRelease(repo)
     return repoInfo?.tagName
 }
 
@@ -188,4 +195,10 @@ func fetchRepoInfo(_ repo: String) async throws -> RepoInfoResponse {
     let url = "https://api.github.com/repos/\(repo)/releases/latest"
     let dataTask = AF.request(url).serializingDecodable(RepoInfoResponse.self)
     return try await dataTask.value
+}
+
+func fetchRepoNewestRelease(_ repo: String) async throws -> RepoInfoResponse? {
+    let url = "https://api.github.com/repos/\(repo)/releases?per_page=1"
+    let dataTask = AF.request(url).serializingDecodable([RepoInfoResponse].self)
+    return try await dataTask.value.first
 }

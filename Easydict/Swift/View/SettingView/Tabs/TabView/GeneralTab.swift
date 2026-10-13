@@ -140,7 +140,7 @@ struct GeneralTab: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("check_for_updates")
-                        Text("lastest_version \(lastestVersion ?? version)")
+                        Text("lastest_version \(displayedLatestVersion)")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
@@ -242,8 +242,11 @@ struct GeneralTab: View {
             }
         }
         .formStyle(.grouped)
-        .task {
-            lastestVersion = await fetchRepoLatestVersion(EZGithubRepoEasydict)
+        .task(id: includeBetaUpdates) {
+            lastestVersion = await fetchRepoLatestVersion(
+                EZGithubRepoEasydict,
+                includePrerelease: includeBetaUpdates
+            )
         }
         .alert("hide_menu_bar_icon", isPresented: $showRefuseAlert) {
             Button("ok") {
@@ -314,6 +317,16 @@ struct GeneralTab: View {
 
     private var version: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    }
+
+    /// Never lower than the running version.
+    private var displayedLatestVersion: String {
+        guard let lastestVersion,
+              version.compare(lastestVersion, options: .numeric) == .orderedAscending
+        else {
+            return version
+        }
+        return lastestVersion
     }
 
     private var shortcutsHaveSetuped: Bool {
