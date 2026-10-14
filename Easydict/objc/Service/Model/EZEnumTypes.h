@@ -43,6 +43,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeBing;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeNiuTrans;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeCaiyun;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeTencent;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeTokenHub;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeAlibaba;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeGemini;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeOllama;
