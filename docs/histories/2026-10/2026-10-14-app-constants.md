@@ -22,6 +22,7 @@
 - 迁移 `EZBundleId`、`EZDebugBundleId` 为 `AppConstants.bundleID`、`debugBundleID`，`EZWindowManager.m`
   改用新常量。
 - 更新 Swift 与 Objective-C 调用方、`project.pbxproj`，并在 `coding-guidelines.md` 记录常量放置规则。
+- 后续修复：`userAgent` 字面量拆为两段拼接，消除 SwiftLint `line_length` 警告，值不变。
 
 ### 设计意图
 
@@ -33,6 +34,7 @@ Objective-C 仍可访问。模块专用常量（如 `OCRConstants`）和同类�
 
 - `xcodebuild build -workspace Easydict.xcworkspace -scheme Easydict -derivedDataPath <agent_dd>`：成功。
 - `git diff --check`：通过。
+- `swiftlint lint AppConstants.swift`（项目 SwiftLint 二进制）：无违规。
 - 手动检查：未运行 App。
 
 ### 受影响文件
