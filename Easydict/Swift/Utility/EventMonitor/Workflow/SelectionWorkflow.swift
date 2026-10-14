@@ -379,6 +379,7 @@ final class SelectionWorkflow {
                 "com.openai.chat",
                 // Warp's AXTextArea does not expose AXSelectedText (kAXErrorAttributeUnsupported)
                 "dev.warp.Warp-Stable",
+                "dev.warp.Warp-Preview",
             ],
             .failure: [
                 "com.apple.dt.Xcode",
