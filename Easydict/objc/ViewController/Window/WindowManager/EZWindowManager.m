@@ -1099,9 +1099,9 @@ static EZWindowManager *_instance;
 
 /// For easy debugging, when Easydict is running in debug mode, we don't show Easydict release App.
 - (BOOL)hasEasydictRunningInDebugMode {
-    BOOL isDebugRunning = [self isAppRunningWithBundleId:EZDebugBundleId];
+    BOOL isDebugRunning = [self isAppRunningWithBundleId:AppConstants.debugBundleID];
     NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
-    BOOL isReleasedEasydict = [bundleId isEqualToString:EZBundleId];
+    BOOL isReleasedEasydict = [bundleId isEqualToString:AppConstants.bundleID];
     if (isDebugRunning && isReleasedEasydict) {
         MMLogInfo(@"Easydict is running in debug mode, so do not show release App.");
         return YES;

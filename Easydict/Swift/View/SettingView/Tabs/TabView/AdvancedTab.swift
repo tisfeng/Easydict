@@ -72,7 +72,7 @@ struct AdvancedTab: View {
                 LabeledContent {
                     TextField(
                         text: $minClassicalChineseTextDetectLength,
-                        prompt: Text(verbatim: "\(SharedConstants.minClassicalChineseLength)")
+                        prompt: Text(verbatim: "\(AppConstants.minClassicalChineseLength)")
                     ) {
                         EmptyView()
                     }

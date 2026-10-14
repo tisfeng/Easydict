@@ -121,6 +121,8 @@ class DeepLService: QueryService {
             Language.norwegian, "nb",
             Language.arabic, "ar",
             Language.vietnamese, "vi",
+            Language.hebrew, "he",
+            Language.thai, "th",
             NSNull(),
         ]
 
@@ -255,6 +257,8 @@ extension DeepLService {
         case .norwegian: return "nb"
         case .arabic: return "ar"
         case .vietnamese: return "vi"
+        case .hebrew: return "he"
+        case .thai: return "th"
         default: return nil
         }
     }
