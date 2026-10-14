@@ -437,6 +437,7 @@ static EZWindowManager *_instance;
             window = self.miniWindow;
             break;
         }
+        case EZWindowTypeScreenshotOverlay:
         case EZWindowTypeNone: {
             break;
         }
@@ -460,6 +461,7 @@ static EZWindowManager *_instance;
             location = [self getFloatingWindowLocation:MyConfiguration.shared.miniWindowPosition];
             break;
         }
+        case EZWindowTypeScreenshotOverlay:
         case EZWindowTypeNone: {
             break;
         }
@@ -859,6 +861,12 @@ static EZWindowManager *_instance;
     [self closeFloatingWindowIfNotPinnedOrMain];
 
     [self captureWithRestorePreviousApp:NO completion:^(NSImage *_Nullable image) {
+        if ([MyConfiguration.shared screenshotTranslateDisplayMode] != ScreenshotTranslateDisplayModeQueryWindow) {
+            if (image) {
+                [ScreenshotOverlayTranslator.shared translateImage:image];
+            }
+            return;
+        }
         BOOL autoQuery = [MyConfiguration.shared autoQueryOCRText];
         [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:EZActionTypeOCRQuery];
     }];
