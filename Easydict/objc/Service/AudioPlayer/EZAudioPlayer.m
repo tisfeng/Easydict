@@ -351,7 +351,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
               serviceType:(EZServiceType)serviceType {
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
+    configuration.timeoutIntervalForRequest = AppConstants.networkTimeoutInterval;
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:request completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
