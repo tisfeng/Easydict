@@ -8609,7 +8609,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "離線翻譯需要在設備上下載語言，可透過系統設置[管理下載語言](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)。"
+            "value" : "離線翻譯需要在裝置上下載語言，可透過系統設定[管理下載語言](x-apple.systempreferences:com.apple.Localization-Settings.extension?translation)。"
           }
         }
       }
