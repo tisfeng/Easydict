@@ -142,10 +142,7 @@ struct MenuItemView: View {
     /// Version item
     @ViewBuilder private var versionItem: some View {
         Button(versionString) {
-            guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/releases") else {
-                return
-            }
-            openURL(versionURL)
+            openURL(EasydictRepo.releasesURL)
         }
     }
 
@@ -197,10 +194,7 @@ struct MenuItemView: View {
         Menu("Help") {
             Button("Feedback") {
                 logInfo("Open Feedback")
-                guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/issues") else {
-                    return
-                }
-                openURL(versionURL)
+                openURL(EasydictRepo.issuesURL)
             }
             Button("Export Log") {
                 exportLogAction()
