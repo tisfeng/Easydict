@@ -21,7 +21,7 @@ enum GitHubReleaseFetcher {
     ///   - includePrerelease: include pre-releases
     /// - Returns: release tag name, eg. 2.7.2, or nil if the request fails.
     static func latestVersion(
-        of repo: String = EasydictRepo.name,
+        of repo: String = AppConstants.repoName,
         includePrerelease: Bool
     ) async
         -> String? {

@@ -80,7 +80,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 //            if (error) {
 //                return;
 //            }
-//            [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent" : NetworkConstants.userAgent}];
+//            [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent" : AppConstants.userAgent}];
 //        }];
     }
     return _webView;
@@ -116,7 +116,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     [self loadURL:URL];
 
     // Handle timeout.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NetworkConstants.timeoutInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(AppConstants.networkTimeoutInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if ([self.urlSchemeHandler containsMonitorBaseURLString:monitorURL]) {
             [self.urlSchemeHandler removeMonitorBaseURLString:monitorURL];
             [self resetWebView];
@@ -178,10 +178,10 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 - (void)loadURL:(NSString *)URL {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:URL]];
     // !!!: Set up User-Agent to ensure that the HTML elements are consistent with the Mac side for easy parsing of UI elements
-//    [request setValue:NetworkConstants.userAgent forHTTPHeaderField:@"user-agent"];
+//    [request setValue:AppConstants.userAgent forHTTPHeaderField:@"user-agent"];
 
 //    NSDictionary *header = @{
-//        @"user-agent" : NetworkConstants.userAgent,
+//        @"user-agent" : AppConstants.userAgent,
 //        @"sec-ch-ua" : @"\" Not A;Brand\";v=\"9\", \"Chromium\";v=\"108\", \"Google Chrome\";v=\"108\"",
 //        @"sec-ch-ua-mobile" : @"?1",
 //        @"sec-fetch-dest" : @"document",
@@ -223,7 +223,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         void (^retryBlock)(void) = ^{
             // 如果页面中不存在目标元素，则延迟一段时间后再次判断
             self.retryCount++;
-            NSInteger maxRetryCount = ceil(NetworkConstants.timeoutInterval / DELAY_SECONDS);
+            NSInteger maxRetryCount = ceil(AppConstants.networkTimeoutInterval / DELAY_SECONDS);
             if (self.retryCount < maxRetryCount && self.completionHandler) {
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DELAY_SECONDS * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [self getTextContentOfElement:selector completion:completion];

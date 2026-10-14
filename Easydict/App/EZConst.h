@@ -28,9 +28,6 @@ static CGFloat const EZAudioButtonBottomMargin_4 = 4;
 static CGFloat const EZAudioButtonRightPadding_1 = 1;
 
 
-static NSString *const EZBundleId = @"com.izual.Easydict";
-static NSString *const EZDebugBundleId = @"com.izual.Easydict-debug";
-
 // ???: If value is not 0.2, it seems will block animation, because default animationResizeTime is 0.2 ?
 static NSTimeInterval const EZUpdateTableViewRowHeightAnimationDuration = 0.2;
 

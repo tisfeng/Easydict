@@ -203,7 +203,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 - (NSURLSession *)monitorSession {
     if (!_monitorSession) {
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-        config.timeoutIntervalForRequest = NetworkConstants.timeoutInterval;
+        config.timeoutIntervalForRequest = AppConstants.networkTimeoutInterval;
         _monitorSession = [NSURLSession sessionWithConfiguration:config];
     }
     return _monitorSession;
@@ -212,7 +212,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 - (NSURLSession *)session {
     if (!_session) {
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-        config.timeoutIntervalForRequest = NetworkConstants.timeoutInterval;
+        config.timeoutIntervalForRequest = AppConstants.networkTimeoutInterval;
         // !!!: The session object keeps a strong reference to the delegate.
         _session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:self.operationQueue];
     }

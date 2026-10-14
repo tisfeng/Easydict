@@ -189,7 +189,7 @@ extension NiuTransService {
             parameters: params,
             encoding: URLEncoding.httpBody,
             requestModifier: { request in
-                request.timeoutInterval = NetworkConstants.timeoutInterval
+                request.timeoutInterval = AppConstants.networkTimeoutInterval
             }
         )
         .validate(statusCode: 200 ..< 300)

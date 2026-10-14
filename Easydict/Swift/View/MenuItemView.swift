@@ -142,7 +142,7 @@ struct MenuItemView: View {
     /// Version item
     @ViewBuilder private var versionItem: some View {
         Button(versionString) {
-            openURL(EasydictRepo.releasesURL)
+            openURL(AppConstants.releasesURL)
         }
     }
 
@@ -194,7 +194,7 @@ struct MenuItemView: View {
         Menu("Help") {
             Button("Feedback") {
                 logInfo("Open Feedback")
-                openURL(EasydictRepo.issuesURL)
+                openURL(AppConstants.issuesURL)
             }
             Button("Export Log") {
                 exportLogAction()
