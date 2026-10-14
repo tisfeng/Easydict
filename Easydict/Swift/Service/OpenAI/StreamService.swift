@@ -485,7 +485,7 @@ public class StreamService: QueryService {
             url,
             method: .get,
             headers: headers,
-            requestModifier: { $0.timeoutInterval = EZNetWorkTimeoutInterval }
+            requestModifier: { $0.timeoutInterval = NetworkConstants.timeoutInterval }
         )
         .serializingData(automaticallyCancelling: true)
         .response

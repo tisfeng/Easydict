@@ -110,7 +110,7 @@ extension DeepLService {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = postData
-        request.timeoutInterval = EZNetWorkTimeoutInterval
+        request.timeoutInterval = NetworkConstants.timeoutInterval
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("None", forHTTPHeaderField: "Authorization")
         request.setValue(
@@ -232,7 +232,7 @@ extension DeepLService {
                 "Authorization": authorization,
             ]),
             requestModifier: { request in
-                request.timeoutInterval = EZNetWorkTimeoutInterval
+                request.timeoutInterval = NetworkConstants.timeoutInterval
             }
         )
         .validate(statusCode: 200 ..< 300)

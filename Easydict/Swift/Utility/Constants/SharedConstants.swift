@@ -25,7 +25,7 @@ enum SharedConstants {
     /// it limits how long the request may wait for additional data and resets
     /// whenever bytes arrive.
     ///
-    /// The generic `EZNetWorkTimeoutInterval` is 15 seconds, which is too
+    /// The generic `NetworkConstants.timeoutInterval` is 15 seconds, which is too
     /// short for long non-streaming completions and may end streaming
     /// requests while they wait for the next token. This value applies to
     /// `OpenAIStreamTransport`, the non-streaming fallback, and DeepSeek's

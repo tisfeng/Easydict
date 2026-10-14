@@ -16,7 +16,7 @@ extension Notification.Name {
     static let languagePreferenceChanged = Notification.Name(
         I18nHelper.languagePreferenceChangedNotification
     )
-    static let linkButtonUpdated = Notification.Name(EZQuickLinkButtonUpdateNotification)
+    static let linkButtonUpdated = Notification.Name("EZQuickLinkButtonUpdateNotification")
     static let didChangeFontSize = Notification.Name("didChangeFontSize")
     static let didChangeWindowConfiguration = Notification.Name("didChangeWindowConfiguration")
 

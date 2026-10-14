@@ -114,7 +114,7 @@
 		0337D3CC2E66ABB000B08437 /* SystemUtility+Shortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D3CB2E66ABB000B08437 /* SystemUtility+Shortcut.swift */; };
 		0337D3CE2E66AC3F00B08437 /* SystemUtility+AppleScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0337D3CD2E66AC3F00B08437 /* SystemUtility+AppleScript.swift */; };
 		0338210C2F0EAF490087A361 /* AppleScriptTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0340D38D2C8EEEA2004C9910 /* AppleScriptTask.swift */; };
-		033821282F0EB9560087A361 /* AppWindowID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033821272F0EB9560087A361 /* AppWindowID.swift */; };
+		033821282F0EB9560087A361 /* NetworkConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033821272F0EB9560087A361 /* NetworkConstants.swift */; };
 		B98BFFB61FA99AA27CA718E2 /* EasydictRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C89B825B3C522EC4CB23F8 /* EasydictRepo.swift */; };
 		033821292F0EB9560087A361 /* AppBundleIDs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033821262F0EB9560087A361 /* AppBundleIDs.swift */; };
 		033821312F0EBB7F0087A361 /* EZCoordinateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 033821302F0EBB7F0087A361 /* EZCoordinateUtils.m */; };
@@ -813,7 +813,7 @@
 		0337D3CB2E66ABB000B08437 /* SystemUtility+Shortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Shortcut.swift"; sourceTree = "<group>"; };
 		0337D3CD2E66AC3F00B08437 /* SystemUtility+AppleScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+AppleScript.swift"; sourceTree = "<group>"; };
 		033821262F0EB9560087A361 /* AppBundleIDs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBundleIDs.swift; sourceTree = "<group>"; };
-		033821272F0EB9560087A361 /* AppWindowID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWindowID.swift; sourceTree = "<group>"; };
+		033821272F0EB9560087A361 /* NetworkConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConstants.swift; sourceTree = "<group>"; };
 		C8C89B825B3C522EC4CB23F8 /* EasydictRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasydictRepo.swift; sourceTree = "<group>"; };
 		0338212F2F0EBB7F0087A361 /* EZCoordinateUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCoordinateUtils.h; sourceTree = "<group>"; };
 		033821302F0EBB7F0087A361 /* EZCoordinateUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCoordinateUtils.m; sourceTree = "<group>"; };
@@ -2077,7 +2077,7 @@
 			children = (
 				0340D39A2C93DC1B004C9910 /* SharedConstants.swift */,
 				033821262F0EB9560087A361 /* AppBundleIDs.swift */,
-				033821272F0EB9560087A361 /* AppWindowID.swift */,
+				033821272F0EB9560087A361 /* NetworkConstants.swift */,
 				C8C89B825B3C522EC4CB23F8 /* EasydictRepo.swift */,
 			);
 			path = Constants;
@@ -4698,7 +4698,7 @@
 				03D9D6FB2D8C0D38009E0CEC /* Screenshot+EventMonitor.swift in Sources */,
 				B4D8B2EE2F9E1D8D0088A304 /* EZWindowPatch.m in Sources */,
 				0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */,
-				033821282F0EB9560087A361 /* AppWindowID.swift in Sources */,
+				033821282F0EB9560087A361 /* NetworkConstants.swift in Sources */,
 				B98BFFB61FA99AA27CA718E2 /* EasydictRepo.swift in Sources */,
 				033821292F0EB9560087A361 /* AppBundleIDs.swift in Sources */,
 				CB8C42FF2C441B74004EC86F /* BaiduApiTranslate.swift in Sources */,

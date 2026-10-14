@@ -189,7 +189,7 @@ extension NiuTransService {
             parameters: params,
             encoding: URLEncoding.httpBody,
             requestModifier: { request in
-                request.timeoutInterval = EZNetWorkTimeoutInterval
+                request.timeoutInterval = NetworkConstants.timeoutInterval
             }
         )
         .validate(statusCode: 200 ..< 300)

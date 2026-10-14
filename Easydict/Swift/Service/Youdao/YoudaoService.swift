@@ -25,7 +25,7 @@ class YoudaoService: QueryService {
 
     var headers: HTTPHeaders {
         [
-            "User-Agent": EZUserAgent,
+            "User-Agent": NetworkConstants.userAgent,
             "Referer": kYoudaoTranslateURL,
             "Cookie": "OUTFOX_SEARCH_USER_ID=1796239350@10.110.96.157;",
         ]
