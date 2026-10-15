@@ -1,5 +1,5 @@
 {
-  "originHash" : "e6770686240e7d3ed688af1b659b3a8682f4a36630d294d50aed7e341d34b2e7",
+  "originHash" : "5b6d36d0226a819cae0ec056bceda7d92d06df5947e831763554abcae765382c",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -106,15 +106,6 @@
       "state" : {
         "revision" : "3663b1aa6c7a1bed67ee80fd09dc6d0f9c3bb660",
         "version" : "11.13.0"
-      }
-    },
-    {
-      "identity" : "generative-ai-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/google/generative-ai-swift",
-      "state" : {
-        "revision" : "54784005b57c2235a7669e0c12e8dafa68f0ca5f",
-        "version" : "0.5.4"
       }
     },
     {
@@ -545,8 +536,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
       "state" : {
-        "revision" : "ecafb5b056cb7995324f0d310a61f30661d00cad",
-        "version" : "0.62.2"
+        "revision" : "ef7d692fc6706e8f5628e26bcafaefa445c58a97",
+        "version" : "0.65.1"
       }
     },
     {

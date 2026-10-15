@@ -29,12 +29,16 @@ Issue 状态只使用 `.tmp/release/<version>/state/issue-followup/` 的 schema 
    asc run ID。
 2. 创建新 Draft 前，根据上一个版本以来的已合并 PR 创建或更新
    `changelog/<version>.md`。正文使用简洁英文，应用统一 bot PR 过滤策略，保留有效 PR 作者、链接、New Contributors
-   和 Full Changelog 范围；将文件提交到本地 `dev`，然后运行“验证 changelog”。
+   和 Full Changelog 范围。把选出的重点功能写成首个 Markdown 标题
+   `# <emoji> <type>: <concise English summary>`，后续 changelog 从 `## What's Changed`
+   开始；将文件提交到本地 `dev`，然后运行“验证 changelog”。
 3. 运行“创建 Draft”。如果 Draft 已存在，验证并复用；只有用户明确要求替换时才运行
    “替换 Draft”。现有 Release 必须是 GitHub 最新条目、保持同一 channel 的 Draft、
    匹配本地和远程 Tag identity 以及本地发布状态，并且不在公开 appcast 中。
-4. Draft 直接使用冻结的 changelog，并在创建后重新获取正文做一致性验证。根据真实 PR
-   选择重点并生成英文标题，先预览标题更新，再用 `--execute` 执行；helper 不编辑正文。
+4. Draft 直接使用冻结的 changelog，并在创建后重新获取正文做一致性验证。GitHub Release
+   标题必须恰好等于版本号，例如 `2.24.0`；不在 Release 标题中附加重点功能。复用旧
+   Draft 时，可用标题 helper 先预览将标题归一为版本号的更新，再用 `--execute` 执行；
+   helper 不编辑正文。
 5. `draft` 报告经过验证的 Draft、changelog 路径和正文哈希后停止。
 6. `publish` 或 `release` 运行“发布 Draft”。仓库脚本会在公开 Release 前对最新本地
    `dev`、`origin/dev` 和版本提交做 merge 预检；公开 Release 后验证 API 中资产名称、
@@ -45,8 +49,13 @@ Issue 状态只使用 `.tmp/release/<version>/state/issue-followup/` 的 schema 
 7. 读取 [Issue 跟进](issue-followup.md) 和
    [Issue 决策策略](issue-followup-policy.md)，执行 `issue-followup apply <version>`。
    它在修改前创建新计划，不依赖此前独立运行的 `plan`。
-8. 报告 Release URL、标题、channel、notes 路径、Issue 和无关联 PR 摘要、底层 run ID
-   和可恢复状态路径。
+8. 在终端报告中先保存 Release URL、标题、channel、notes 路径、Issue 和无关联 PR 摘要、
+   底层 run ID，再执行 `release-easydict.sh cleanup <version>` 预览并运行
+   `release-easydict.sh cleanup <version> --execute`。清理只处理该版本目录与对应 ASC
+   run JSON，保留 `.tmp/release/cache/`；版本内注册的 Git worktree 先用
+   `git worktree remove` 安全移除。未知文件、脏 worktree、活动构建或未完成状态会阻止清理。
+9. 报告本地清理结果。若清理失败，发布与 Issue 已完成，不重复执行远程动作；记录错误并
+   重试 `cleanup <version> --execute`。若 Issue 失败，在其 `resume` 成功后才清理。
 
 归档使用长期的本地构建 worktree（`.tmp/release/cache/worktree`）和带 fingerprint 的
 Release DerivedData。该 worktree 只服务于本地 Archive，不替代版本 release worktree，
@@ -91,14 +100,16 @@ branch head 和 Git push lease；任一并发校验失败都会停止，避免�
   远程验证成功后才执行 Issue 和无关联人工 PR 通知。PR 通知只发表评论，不关闭 PR。
 - 按以下顺序选择重点：安全、数据丢失或崩溃修复；重要用户可见功能；重要用户可见修复；
   较小产品改进。只有不存在产品变更时才选择维护项。
-- 标题使用 `<version> <emoji> <type>: <concise English summary>`，通常采用 `✨ feat`、
-  `🐞 fix`、`🔒 security`、`🚀 perf` 或 `🔧 chore`。
+- GitHub Release 标题只使用 `<version>`，例如 `2.24.0`。
+- changelog 首标题使用 `# <emoji> <type>: <concise English summary>`，通常采用 `✨ feat`、
+  `🐞 fix`、`🔒 security`、`🚀 perf` 或 `🔧 chore`；它是正文的一部分，Release 正文仍须与
+  canonical changelog 完全一致。
 - 存在用户可见功能或修复时，不选择文档、生成资源、依赖升级或内部重构作为重点。
 
 ## 命令选择规则
 
-- 验证 changelog 后才能创建 Draft；Draft 标题 helper 必须先 preview，再在目标仍为相同
-  Draft 且正文与 changelog 一致时执行。
+- 验证 changelog 后才能创建 Draft；新建 Release 直接使用版本号作为标题。Draft 标题
+  helper 必须先 preview，再在目标仍为相同 Draft 且正文与 changelog 一致时执行。
 - 普通 Draft 可以复用兼容的 Release 编译缓存；只有用户明确要求 clean build 时才传
   `--force-clean`。它只适用于 `prepare`、`draft` 和 `release`，不降低后续验证要求。
 - 只有用户明确要求废弃并重建当前最新 Draft 时才传 `--replace-draft`；不得同时传
@@ -127,6 +138,10 @@ branch head 和 Git push lease；任一并发校验失败都会停止，避免�
   ```text
   $release-easydict issue-followup resume <version>
   ```
+
+- 本地清理失败时保留剩余文件与清理收据；再次预览并执行同一版本的 `cleanup`。
+  清理成功后该版本的 `state/`、`logs/` 和 ASC run JSON 均不再保留，不能用旧 run ID
+  恢复已完成的发布。若需修改已发布日志，使用独立的 `sync-notes` 流程。
 
 评论幂等性、只关闭当前开放 Issue、固定报告格式和 Issue 决策验证由 Issue 跟进 reference
 定义，并由 `.agents/skills/release-easydict/scripts/release_issues.py` 强制执行。

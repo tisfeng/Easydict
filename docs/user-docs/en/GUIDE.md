@@ -102,6 +102,8 @@ systems generally offer more languages.
 - **Silent screenshot OCR**: recognizes and copies text without showing translation results.
 - **Screenshot/clipboard OCR and OCR window**: use them from the menu or assign global shortcuts.
 
+System OCR also extracts QR code payloads. When an image contains both text and QR codes, the QR code content is appended after the recognized text.
+
 For better results, capture a smaller area, improve text/background contrast, and select the correct
 recognition language in settings.
 
@@ -130,6 +132,43 @@ Focused setup guides:
 - [Apple Dictionary](./How-to-use-macOS-system-dictionary-in-Easydict.md)
 - [MDict](./How-to-use-MDict-in-Easydict.md)
 - [Apple Translate](./How-to-use-macOS-system-translation-in-Easydict.md)
+
+### GitHub Copilot translate
+
+The GitHub Copilot service uses the official `copilot` CLI installed on your machine, so install and
+sign in to it first:
+
+1. Install it via Homebrew (`brew install --cask copilot-cli`) or another official method.
+2. Run `copilot login` in a terminal to authorize GitHub.
+3. In Settings → Services, add GitHub Copilot and confirm the status row shows the detected CLI path.
+
+This service does not use OAuth, private endpoints, or proxy workarounds, and it never reads, stores,
+or logs your Copilot token. The official CLI keeps your credentials in the system keychain, and your
+available usage depends on your Copilot plan.
+
+Each translation spawns an independent CLI process, so no conversation state carries over. To reduce
+risk, Easydict runs it with isolation flags: no tools are available, built-in MCP is disabled, custom
+instructions from the working directory are not loaded, remote control is off, and CLI auto-update is
+disabled. It also runs with a disposable configuration directory, so translated text does not remain
+in the session records under `~/.copilot`. That directory holds only this request's temporary data
+and is deleted once the process exits.
+
+Use the refresh button in GitHub Copilot service settings to retrieve and save the available models
+and their reasoning levels. When Copilot is enabled in any query window, Easydict also refreshes
+in the background about five seconds after launch, then every 24 hours while the app is running.
+Settings and query windows use the saved list immediately, including after restarting Easydict;
+opening a menu or starting a translation does not refresh it. You can refresh manually after
+upgrading the CLI or changing accounts. A failed refresh keeps the previous list until the next
+scheduled or manual refresh. Quitting the app stops the timer; the next launch schedules it again.
+
+Selecting "CLI default model" uses the model saved in the CLI's current local settings. The reasoning
+picker offers the levels saved for the selected model; "Default" leaves the choice to the CLI.
+If a model or reasoning level is no longer available, refresh the list in settings. If the service
+reports that the CLI is missing or not signed in, complete the install and login steps above.
+
+If the CLI requests a tool during a translation, Easydict aborts that request immediately and reports
+an error. That indicates the isolation guarantee no longer holds, which usually means the CLI changed
+its behavior, so please report it.
 
 ## History and results
 

@@ -7,21 +7,27 @@
 
 - contributor remote 名称必须与 PR head repository owner login 完全一致。
   同名 remote 已指向其他位置时停止并请用户决定。
-- 默认本地模式优先使用 PR head 分支名。只有该名称不可安全使用时，创建
-  `review/pr-<number>-<head-short-sha>`；不改变冲突分支。
-- 同名分支只能 fast-forward 到准确 `headRefOid`，不得包含额外本地提交或与远程分叉。
-  当前 GitHub 用户是 PR 作者时，允许复用 upstream remote 别名不同但实际指向准确 head
-  repository/branch 的同名分支；没有 upstream 时在安全 fast-forward 后设置准确 head upstream。
-  身份无法确认、upstream 指向其他仓库/分支、分支领先或分叉、或被其他 worktree 占用时，
-  回退到上述 review 分支。
+- 默认本地模式优先使用 PR head 分支名。先核验 GitHub 当前用户、PR 作者、head 仓库和
+  分支身份；同名分支不是身份相同的充分证据。
+- 本人 PR 的同名分支与远程一致时直接复用，落后时仅 fast-forward；允许保留实际指向准确
+  head repository/branch 的等价 upstream remote 别名，缺少 upstream 时设置准确 head upstream。
+- 本人分支领先且包含完整远程 head 时保留本地提交，以 `git_objects` 模式准备：本地 HEAD
+  不回退，审查对象固定为远程 SHA。分叉、错误 upstream、受保护名称或与 base 同名时停止，
+  报告具体原因，不静默新建 review 分支。
+- 本人同名分支在其他 worktree 打开时，核实目标存在、分支匹配且干净后复用该 checkout；
+  保留原 checkout 的分支、HEAD 和文件状态，后续命令以回执的 `checkout.path` 为 cwd。
+  原 checkout 可有未提交变更，目标 checkout 脏或不可用时停止，不强行切换或另建分支。
+- 非本人或作者身份无法确认时，沿用准确 head 的准备规则；同名分支 upstream 不匹配、领先、
+  分叉或被其他 worktree 占用时创建 `review/pr-<number>-<head-short-sha>`，不改变冲突分支。
 - 既有 review 分支只在它干净、位于准确 head 且 tracking `<owner>/<head-branch>` 时复用；
-  否则停止。不 detached checkout remote-tracking ref 或直接审查 fetch ref。
+  否则停止。不 detached checkout remote-tracking ref 或以 fetch ref 绕过 PR 身份验证。
 - 除非用户明确要求隔离 worktree 或 latest-base，不创建其他命名的分支。
 
-多阶段 review（例如先普通准备、后按用户要求审查 latest-base）必须复用首次准备回执的
-`checkout.branch`。将该分支传给 `--reuse-branch`；helper 会重新验证冻结 head、分支是否被
-其他 worktree 占用、upstream 是否仍指向 PR，以及分支是否仍是 PR 同名分支或同一 head 的
-collision fallback。任何漂移都停止，不自动切换到新的 `review/pr-...` 分支。
+多阶段 review 必须把首次回执中的 `checkout.branch` 传给 `--reuse-branch`，在回执路径
+继续。helper 复验远程冻结 head、分支身份和 upstream；本人分支在普通审查中可以领先于
+该 head，按 `git_objects` 模式保留，其他分支必须准确匹配。分叉、身份或 upstream 漂移时
+停止，不自动切换到新分支。请求 latest-base 时仍要求分支准确位于远程 head，领先时停止，
+由用户决定额外提交的处理或授权隔离集成，不能把本地提交混入 PR head/base 集成证据。
 
 显式 worktree 模式使用：
 
@@ -48,11 +54,34 @@ bash "<review-pr-skill-dir>/scripts/prepare-pr-branch.sh" \
 ```
 
 只在用户明确授权 latest-base 时，为对应命令增加 `--merge-latest`。仅有
-`schema_version: 1`、`status: prepared`，且 repo/number、head、base、merge-base、
-checkout/upstream、collision、`reused_branch`、`self_authored_branch_reused` 和 integration 模式均符合初始证据时
-才接受回执。
-回执中的 `helper.path` 和 `helper.sha256` 也必须与当前实际加载的 helper 一致；不一致时先
-重新准备并重新采集证据。
+`schema_version: 2`、`status: prepared`，且 repo/number、head、base、merge-base、
+checkout/upstream 与初始证据和实际本地状态一致时才接受回执。准备回执升级不改变远程
+snapshot 的版本；旧回执不能证明本地领先模式已正确验证。
+
+- `head_sha` 和 `review.head_sha` 均为冻结的远程 PR head；`checkout.head_sha` 为实际本地 HEAD。
+- `review.mode` 为 `checkout`、`git_objects` 或 `integration`。前者要求本地 HEAD 等于远程；
+  `git_objects` 仅允许本人同名分支干净且领先；`integration` 单独验证 head/base 合并。
+- `review.ahead/behind` 描述最终 checkout 相对远程 head 的提交数；`git_objects` 要求 ahead
+  大于零、behind 为零。它不表示额外提交已纳入远程审查。
+- `selection_reason`、`collision_reason`、`reused_branch`、`self_authored_branch_reused`、
+  `reused_worktree` 和 `source_unchanged` 解释选择结果；已有 worktree 复用不等于新建隔离环境。
+
+回执中的 `helper` 保留 `path` 和入口文件的 `sha256`，并增加：
+
+- `files`：准备入口、指纹采集器、元数据解析器及传递依赖的相对 Skill 路径到 SHA-256 映射。
+- `bundle_sha256`：对该映射按键排序、使用紧凑 JSON（逗号和冒号无空格）、UTF-8 编码后计算
+  SHA-256；安装目录不参与组合哈希。显式依赖清单随准备入口的导入或调用变化同步维护。
+
+跨阶段使用回执前，运行只读命令重新计算当前安装的准备指纹：
+
+```bash
+python3 "<review-pr-skill-dir>/scripts/prepare_helper_fingerprint.py"
+```
+
+比较 `path`、`sha256`、`files` 和 `bundle_sha256`。任一不一致或旧回执缺少新增字段时，
+重新准备并重新采集证据。准备 helper 也在执行前及返回成功回执前比较指纹；缺少必要文件或
+执行期间版本变化时失败，不返回成功回执。这是版本一致性检查，不是安装来源或代码可信性证明。
+新增字段保持准备回执 `schema_version: 2`，不改变远程 snapshot 的字段与版本。
 `failed` 回执保留停止阶段，不自动清理或重启写入。
 
 大 PR 中已使用快照文件时，可按
@@ -61,8 +90,8 @@ checkout/upstream、collision、`reused_branch`、`self_authored_branch_reused` 
 
 ## 普通审查与 latest-base
 
-没有 latest-base 授权时，即使 GitHub 报告冲突或 base 领先，仍将 PR head checkout 到安全
-分支，按其提交时状态审查。准备回执已冻结最新 base；使用：
+没有 latest-base 授权时，即使 GitHub 报告冲突或 base 领先，仍按 PR head 的提交状态审查。
+checkout 或 Git 对象模式均使用回执冻结的远程 head，不以本地领先 HEAD 替代。使用：
 
 ```bash
 git merge-base --is-ancestor <frozen-base-sha> <remote-head-sha>
@@ -104,9 +133,11 @@ git status --short
 git for-each-ref --format='%(upstream:short)' refs/heads/<selected-branch>
 ```
 
-普通本地准备要求分支干净，分支名为 head 分支或 collision fallback，且 HEAD 等于
-`headRefOid`。新建分支与 collision fallback tracking `<owner>/<head-branch>`；本人 PR 复用的
-同名分支可保留名称不同但实际指向准确 head repository/branch 的 upstream。latest-base 后改为
+普通本地准备要求分支干净，分支名为 head 分支或 collision fallback；`checkout` 模式 HEAD
+等于 `headRefOid`，`git_objects` 模式则验证该 SHA 是本人分支 HEAD 的祖先、回执中的本地
+SHA 未漂移，并按 [证据协议](evidence-workflow.md#代码范围与语义审查) 读取冻结源码。
+新建分支与 collision fallback tracking `<owner>/<head-branch>`；本人 PR 复用的同名分支可
+保留名称不同但实际指向准确 head repository/branch 的 upstream。latest-base 后改为
 要求 remote head 和 frozen base 都是 HEAD 的 ancestor；如产生 merge commit，两个 parent
 必须分别为该 head/base。
 

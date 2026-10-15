@@ -38,6 +38,10 @@ extension AppPathManager {
         logsDirectory.appendingPathComponent("claude-code", isDirectory: true)
     }
 
+    var githubCopilotLogDirectory: URL {
+        logsDirectory.appendingPathComponent("github-copilot", isDirectory: true)
+    }
+
     /// The previous CocoaLumberjack-compatible log root.
     var legacyAppLogDirectory: URL {
         cachesDirectory.appendingPathComponent("MMLogs", isDirectory: true)

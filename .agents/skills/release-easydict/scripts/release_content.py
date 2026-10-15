@@ -198,6 +198,11 @@ def contains_non_latin_letter(value: str) -> bool:
 
 
 def validate_release_title(version: str, title: str) -> None:
+    # New releases use the version as their title. Keep accepting the previous
+    # format for existing callers; the release workflow now passes the version.
+    if title == version:
+        return
+
     pattern = re.compile(TITLE_PATTERN_TEMPLATE.format(version=re.escape(version)))
     match = pattern.match(title)
     if match is None:
