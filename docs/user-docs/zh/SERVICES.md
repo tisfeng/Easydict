@@ -41,6 +41,7 @@ macOS 版本、网络环境、账号权限和上游接口状态。
 | Claude (`Claude`) | 用户密钥 | 使用 Anthropic Claude API。 |
 | Ollama (`Ollama`) | 无需密钥 | 调用本机或自定义地址上的 Ollama 服务。 |
 | 自定义 OpenAI (`CustomOpenAI`) | 用户密钥 | 配置 OpenAI 兼容接口；支持多个实例。 |
+| 百度千帆 (`Qianfan`) | 用户密钥 | 使用百度千帆 Chat V2 API 和账号可用的对话模型。 |
 
 ## AI 工具
 
