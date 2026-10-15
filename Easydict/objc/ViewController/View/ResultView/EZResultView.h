@@ -31,6 +31,7 @@ static const CGFloat EZResultViewMiniHeight = 30;
 @property (nonatomic, copy) void (^queryTextBlock)(NSString *word);
 
 - (void)updateLoadingAnimation;
+- (void)updateExpandedState;
 
 @end
 
