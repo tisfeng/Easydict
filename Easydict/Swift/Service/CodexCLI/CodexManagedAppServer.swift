@@ -21,6 +21,7 @@ actor CodexManagedAppServer {
         let model: String
         let effort: String?
         let runtime: CodexManagedRuntime
+        let fastMode: Bool
         let isCancelled: @Sendable () -> Bool
         let deltaReceived: @Sendable (String) -> ()
     }
@@ -80,7 +81,9 @@ actor CodexManagedAppServer {
             let response = try await request(
                 session: session,
                 method: "thread/start",
-                params: threadParameters(model: translation.model, runtime: translation.runtime),
+                params: threadParameters(
+                    model: translation.model, runtime: translation.runtime, fastMode: translation.fastMode
+                ),
                 translationIdentifier: translation.identifier
             )
             guard translations[translation.identifier] === state,
@@ -677,9 +680,10 @@ extension CodexManagedAppServer {
         stopSession(error: CancellationError())
     }
 
-    private func threadParameters(model: String, runtime: CodexManagedRuntime) -> [String: Any] {
+    private func threadParameters(model: String, runtime: CodexManagedRuntime, fastMode: Bool) -> [String: Any] {
         [
             "model": model,
+            "serviceTier": fastMode ? "priority" : "default",
             "modelProvider": Self.providerID,
             "cwd": runtime.workingDirectory.path,
             "approvalPolicy": "never",

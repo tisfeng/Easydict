@@ -102,7 +102,7 @@ struct CodexManagedRuntime {
         )
     }
 
-    func translationArguments(model: String, effort: String?) throws -> [String] {
+    func translationArguments(model: String, effort: String?, fastMode: Bool = false) throws -> [String] {
         let model = model.trimmingCharacters(in: .whitespacesAndNewlines)
         let catalog = try CodexModelCatalog.load(at: catalogURL)
         try catalog.validate(model: model, effort: effort)
@@ -123,6 +123,7 @@ struct CodexManagedRuntime {
             model,
         ]
         arguments += translationConfigurationArguments(includeDeveloperInstructions: true)
+        arguments += ["-c", "service_tier=\(Self.quoted(fastMode ? "priority" : "default"))"]
         if let effort { arguments += ["-c", "model_reasoning_effort=\(Self.quoted(effort))"] }
         // Authentication overrides are appended by command(), before this stdin marker.
         return arguments

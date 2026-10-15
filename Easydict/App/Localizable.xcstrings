@@ -18851,6 +18851,86 @@
         }
       }
     },
+    "service.codex_cli.fast_mode.description" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request faster processing without changing the model or reasoning effort. Availability and usage depend on your account."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicita un procesamiento más rápido sin cambiar el modelo ni el esfuerzo de razonamiento. La disponibilidad y el uso dependen de tu cuenta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデルや推論の強度を変更せずに、より高速な処理をリクエストします。利用可否と使用量はアカウントによって異なります。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Požiada o rýchlejšie spracovanie bez zmeny modelu alebo úrovne uvažovania. Dostupnosť a využitie závisia od vášho účtu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请求更快的处理速度，不改变模型或思考程度。可用性和用量规则取决于你的账户。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要求更快的處理速度，不改變模型或思考程度。可用性和用量規則取決於你的帳戶。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.fast_mode.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fast mode"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo rápido"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fast モード"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rýchly režim"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fast 模式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fast 模式"
+          }
+        }
+      }
+    },
     "service.codex_cli.local.unsupported_effort" : {
       "localizations" : {
         "en" : {
