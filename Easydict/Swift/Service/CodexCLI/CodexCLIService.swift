@@ -157,7 +157,8 @@ final class CodexCLIService: StreamService {
                             prompt: combinedPrompt,
                             model: configuration.model,
                             effort: configuration.effort.cliValue,
-                            runtime: runtime
+                            runtime: runtime,
+                            fastMode: configuration.fastMode
                         ) { chunk in
                             do {
                                 try self.updateResultLock.withLock {
@@ -238,6 +239,10 @@ final class CodexCLIService: StreamService {
 
     var managedReasoningEffortKey: Defaults.Key<CodexReasoningEffort> {
         CodexServiceConfiguration.effortKey(uuid: uuid, mode: .managed)
+    }
+
+    var managedFastModeKey: Defaults.Key<Bool> {
+        CodexServiceConfiguration.fastModeKey(uuid: uuid)
     }
 
     /// Keeps fixed subscriptions: local model edits preserve automatic query behavior,

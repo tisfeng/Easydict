@@ -65,4 +65,5 @@ enum ServiceConfigurationKey: String {
     case codexAccessMode
     case codexManagedModel
     case codexManagedReasoningEffort
+    case codexManagedFastMode
 }

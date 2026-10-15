@@ -24,6 +24,7 @@ struct CodexCLIServiceConfigurationView: View {
         self._accessMode = .init(service.accessModeKey)
         self._managedModel = .init(service.managedModelKey)
         self._managedEffort = .init(service.managedReasoningEffortKey)
+        self._managedFastMode = .init(service.managedFastModeKey)
         self._localEffort = .init(service.reasoningEffortKey)
         CodexRequestCoordinator.shared.observe(uuid: service.uuid)
     }
@@ -79,6 +80,10 @@ struct CodexCLIServiceConfigurationView: View {
                         }
                     }
                     .disabled(!isManagedModelSupported)
+                    Toggle("service.codex_cli.fast_mode.title", isOn: $managedFastMode)
+                    Text("service.codex_cli.fast_mode.description")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 } else {
                     InputCell(
                         textFieldTitleKey: "service.configuration.codex_cli.model.title",
@@ -125,6 +130,7 @@ struct CodexCLIServiceConfigurationView: View {
     @Default private var accessMode: CodexAccessMode
     @Default private var managedModel: String
     @Default private var managedEffort: CodexReasoningEffort
+    @Default private var managedFastMode: Bool
     @Default private var localEffort: CodexReasoningEffort
 
     private var isManagedModelSupported: Bool {
