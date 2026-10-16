@@ -19,6 +19,11 @@ public class AppleLanguageMapper: NSObject {
         languageMap
     }
 
+    /// Language code passed to the Apple Translate Shortcut, which does not support `pt_PT`.
+    public func shortcutLanguageCode(for language: Language) -> String? {
+        language == .portuguese ? languageMap[.brazilianPortuguese] : languageMap[language]
+    }
+
     public func language(for appleLanguageCode: String) -> Language? {
         for (key, value) in languageMap where value == appleLanguageCode {
             return key
@@ -276,7 +281,7 @@ public class AppleLanguageMapper: NSObject {
         .korean: "ko_KR",
         .french: "fr_FR",
         .spanish: "es_ES",
-        .portuguese: "pt_BR",
+        .portuguese: "pt_PT",
         .brazilianPortuguese: "pt_BR",
         .italian: "it_IT",
         .german: "de_DE",

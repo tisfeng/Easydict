@@ -455,10 +455,14 @@ struct AppleLanguageDetectorTests {
     func testBrazilianPortugueseLanguageCodeMapping() {
         let mapper = AppleLanguageMapper.shared
         #expect(mapper.supportedLanguages[.brazilianPortuguese] == "pt_BR")
-        #expect(mapper.supportedLanguages[.portuguese] == "pt_BR")
+        #expect(mapper.supportedLanguages[.portuguese] == "pt_PT")
+        #expect(mapper.shortcutLanguageCode(for: .portuguese) == "pt_BR")
+        #expect(mapper.shortcutLanguageCode(for: .brazilianPortuguese) == "pt_BR")
+        #expect(mapper.shortcutLanguageCode(for: .english) == "en_US")
         #expect(mapper.languageCode(for: .brazilianPortuguese) == "pt-BR")
         #expect(mapper.languageCode(for: .portuguese) == "pt-PT")
-        #expect(mapper.language(for: "pt_BR") != nil)
+        #expect(mapper.language(for: "pt_BR") == .brazilianPortuguese)
+        #expect(mapper.language(for: "pt_PT") == .portuguese)
     }
 
     // MARK: - User Preference Weight Correction Tests
