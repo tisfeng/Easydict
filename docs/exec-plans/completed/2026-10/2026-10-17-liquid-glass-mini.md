@@ -35,9 +35,10 @@
 
 - 使用 macOS 26 公开玻璃 API，在更低系统禁用此模式。
 - 复用原迷你窗口管理、查询模型和服务，避免复制触发及语言检测逻辑。
+- 译文使用原生可选文本视图及 3 点宽的自动淡出滚动滑块，卡片上沿保留独立拖动区。
 - 原有多服务配置保留；特殊模式只选择一个服务，不静默切换提供商。
 - 遵循减少动态效果和降低透明度的辅助功能设置。
-- 根据用户运行截图，将固定按钮移至卡片右上方并缩小到 22 点，关闭控件焦点高亮。
+- 根据用户运行截图，将固定按钮移至卡片内部右上角并缩小到 20 点，默认淡显，悬停加深；关闭控件焦点高亮。
 - 首次依赖解析遇到 Xcode 系统框架符号不匹配，执行首次启动组件配置后恢复。
 - 本机 Xcode 26.5 无法处理上游 macOS 27 图标，仅本地构建使用现有 macOS 26 图标。
 - 临时签名随构建内容变化；本机调试需要更新旧辅助功能授权记录，固定使用 `build/Easydict-debug.app`。
@@ -54,11 +55,12 @@
 - 初始工作树干净，基线 `af5b654`。
 - 首次 `xcodebuild -resolvePackageDependencies` 在工程解析前失败：IDESimulatorFoundation 依赖的 DVTDownloads 符号缺失。
 - `xcodebuild test`：Debug arm64 构建及 ReverseTranslationTests、OpenAIStreamTaskControlTests 的 10 项测试通过。
-- SwiftLint 对五个修改的 Swift 文件检查通过；`git diff --check`、String Catalog JSON 和工程 plist 检查通过。
+- 后续内部 pin 悬停、细滚动条和顶部拖动再次通过 Debug 构建及增量 review。
+- SwiftLint 对修改的 Swift 文件检查通过；`git diff --check`、String Catalog JSON 和工程 plist 检查通过。
 - review：检查完整差异、新文件、调用链和服务取消/完成契约；修复手动翻译模型更新、警告结果可见性、关闭后加载状态及低版本设置禁用问题。最终生产源码快照无进一步有效 finding。
-- 用户截图确认原生玻璃结果窗口正常出现；右上方 pin 和蓝色焦点框修复已编译，最新外观尚待重新授权后人工确认。
+- 用户截图确认原生玻璃结果窗口正常出现；用户后续截图确认授权恢复且蓝框消失；内部 pin、悬停、细滚动条和顶部拖动的最终交互仍待人工确认。
 - 界面自动化工具超时并返回 ScreenCaptureKit -3811，未完成自动截图验证。
-- 空间：源码约 95 MB，调试 app 约 196 MB，独立 DerivedData 约 5.8 GB。
+- 空间：源码约 95 MB，最终调试 app 约 127 MB，独立 DerivedData 约 5.8 GB。
 
 ## 完成条件
 

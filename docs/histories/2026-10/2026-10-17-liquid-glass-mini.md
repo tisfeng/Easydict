@@ -10,17 +10,18 @@
 
 ### 用户请求
 
-在 Easydict 中增加可选的特殊迷你窗口，沿用划词触发，只显示一个服务的译文。加载时显示三点玻璃胶囊，完成后轻弹性展开为圆角卡片；服务名弱化，固定按钮为卡片右上方的小圆圈，不显示蓝色焦点框。
+在 Easydict 中增加可选的特殊迷你窗口，沿用划词触发，只显示一个服务的译文。加载时显示三点玻璃胶囊，完成后轻弹性展开为圆角卡片；服务名弱化，固定按钮为卡片内部右上角的小圆圈，默认淡显、悬停加深，不显示蓝色焦点框。
 
 ### 变更
 
 - 新增独立玻璃模式开关和服务单选，保留经典迷你窗口的原有配置。
-- 用 SwiftUI 原生玻璃绘制译文、低对比服务名、22 点固定按钮、加载及失败/重试状态。
+- 用 SwiftUI 原生玻璃绘制译文、低对比服务名、20 点固定按钮、加载及失败/重试状态。
 - 桥接现有 Objective-C 查询生命周期，取消旧查询并校验查询代次，完成流式输出后再展开。
 - 动画调整真实窗口边界，并限制在可见屏幕范围；长文滚动，支持减少动态效果及降低透明度。
 - 隐藏原文、语言选择和经典工具栏；新增复制、重试和关闭的上下文菜单。
 - 接入 macOS 26 及更新版本，更新六种语言的 String Catalog 和 Xcode 文件引用。
-- 未新增或扩写测试。按用户截图调整固定按钮位置、大小和焦点外观。
+- 未新增或扩写测试。按用户截图调整固定按钮位置、大小、悬停和焦点外观。
+- 新增原生可选文本视图与 3 点宽的无轨道滚动滑块，保留滑块拖动和系统淡出。上沿 16 点高区域调用系统窗口拖动，固定后仍可移动，不拦截正文选取或 pin 点击。
 
 ### 设计意图
 
@@ -41,19 +42,23 @@
   ```
 
 - 构建环境修复：`xcodebuild -runFirstLaunch` 解决初始框架符号不匹配。`ENABLE_PREVIEWS=YES` 按项目脚本跳过全库自动格式化；Xcode 26.5 的图标编译问题用命令行覆写解决，未改变工程中的默认图标。
-- 对新增四个窗口 Swift 文件及 WindowConfigurationView 运行 SwiftLint，无违规。
+- 对新增窗口 Swift 文件及 WindowConfigurationView 运行 SwiftLint，无违规；后续四个界面改动文件复检通过。
+- 用户补充的内部 pin 悬停、细滚动条及固定后拖动修改再次通过 `xcodebuild build`，使用上列相同 Debug 配置和本地图标覆写。此轮只改界面，未重复执行无关测试。
 - `git diff --check`、`jq -e . Easydict/App/Localizable.xcstrings`、工程 `plutil -lint` 均通过。
-- `codesign --verify --deep --strict build/Easydict-debug.app` 通过。产物使用临时签名，不是正式发布签名。
+- `codesign --verify --deep --strict build/Easydict-debug.app` 通过。增量覆盖曾残留旧 XCTest 组件，干净替换整个 app 后校验通过并启动。产物使用临时签名，不是正式发布签名。
 - 使用仓库 review 技能检查基线 `af5b654f2890341a48f32237118ad2a686ea8f9d` 到最终工作树，包含四个未跟踪 Swift 文件。记录内容摘要并在审查结束复验；修复隐藏输入视图不再更新模型、错误被经典视图规则隐藏、关闭中断加载以及低系统版本设置禁用等问题，最终无进一步有效 finding。
+- 增量 review：以 `8b99947dbf8c6616b643b2c7361b853b850797f7` 为基线记录七个变更/新增文件摘要，复核顶部拖动区与 pin/正文不相交、文本测量宽度、原生 scroller 绘制和事件契约、工程引用及辅助功能降级，无进一步有效 finding。最终生产文件内容摘要复验一致。
 - 方案评估：以薄桥接复用既有查询管线符合范围；无需另建窗口管理器或翻译请求管线。
-- 手动检查：用户截图确认玻璃材质和单一译文窗口可运行。pin 位置与焦点框修复后的版本编译通过，但其最终外观尚待授权恢复后确认。长文、错误重试、多屏边缘和模式往返的完整交互未逐项验证。
+- 手动检查：用户截图确认玻璃材质和单一译文窗口可运行。用户后续截图确认重新授权后可用且蓝框消失。内部 pin、悬停、细滚动条与顶部拖动的最终交互尚待人工确认。长文、错误重试、多屏边缘和模式往返的完整交互未逐项验证。
 - 界面工具超时，随后返回 ScreenCaptureKit -3811，未把自动截图验证记为通过。
-- 调试版重编译后系统仍显示开启的旧授权，但应用检查返回未授权。核查原有 `AXIsProcessTrustedWithOptions` 调用未修改；当前临时签名的 designated requirement 绑定代码哈希。已退出调试版，引导用户移除旧条目并重新添加固定的 `build/Easydict-debug.app`。
+- 调试版重编译后系统仍显示开启的旧授权，但应用检查返回未授权。核查原有 `AXIsProcessTrustedWithOptions` 调用未修改；当前临时签名的 designated requirement 绑定代码哈希。曾退出调试版，引导用户移除旧条目并重新添加固定的 `build/Easydict-debug.app`，随后用户截图确认再次可用。后续重编译仍可能需要重新授权。
 
 ### 受影响文件
 
 - `Easydict/Swift/View/Window/GlassMiniConfiguration.swift`
 - `Easydict/Swift/View/Window/GlassMiniView.swift`
+- `Easydict/Swift/View/Window/GlassMiniTextView.swift`
+- `Easydict/Swift/View/Window/GlassMiniDragArea.swift`
 - `Easydict/Swift/View/Window/GlassMiniAnimator.swift`
 - `Easydict/Swift/View/Window/GlassMiniPresentation.swift`
 - `Easydict/Swift/View/SettingView/Tabs/View/WindowConfigurationView.swift`
@@ -67,6 +72,6 @@
 
 ### 后续事项
 
-- 恢复调试版的系统授权后确认最新 pin 与焦点外观，以及其余人工交互场景。
+- 确认内部 pin 的悬停效果、细滚动条与固定后的顶部拖动，以及其余人工交互场景。
 - 若持续开发或分发，使用稳定开发者签名，以减少每次重编译后的重复授权。
-- 本机源码约 95 MB、调试 app 约 196 MB、编译缓存约 5.8 GB；产物保留在忽略的 `build/` 目录。
+- 本机源码约 95 MB、最终调试 app 约 127 MB（此前包含测试组件时为 196 MB）、编译缓存约 5.8 GB；产物保留在忽略的 `build/` 目录。

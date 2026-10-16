@@ -28,73 +28,90 @@ struct GlassMiniView: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    @State private var isHovered = false
+    @State private var isPinHovered = false
+
     var body: some View {
-        VStack(alignment: .trailing, spacing: 6) {
-            Button(action: pin) {
-                Image(systemSymbol: state.pinned ? .pinFill : .pin)
-                    .font(.system(size: 10, weight: .medium))
-                    .frame(width: 22, height: 22)
-            }
-            .buttonStyle(.plain)
-            .modifier(GlassMiniMaterial(shape: Circle()))
-            .help(state.pinned ? LocalizedStringKey("glass.mini.unpin") : LocalizedStringKey("glass.mini.pin"))
-            .accessibilityLabel(Text(
-                state.pinned ? LocalizedStringKey("glass.mini.unpin") : LocalizedStringKey("glass.mini.pin")
-            ))
-            .opacity(state.phase == .loading ? 0 : 1)
-            .allowsHitTesting(state.phase != .loading)
+        ZStack {
+            if state.phase == .loading {
+                loadingDots
+            } else {
+                VStack(alignment: .leading, spacing: 12) {
+                    GlassMiniTextView(text: state.text)
+                        .padding(.trailing, 18)
 
-            ZStack {
-                if state.phase == .loading {
-                    loadingDots
-                } else {
-                    VStack(alignment: .leading, spacing: 12) {
-                        ScrollView {
-                            Text(verbatim: state.text)
-                                .font(.system(size: 16))
-                                .lineSpacing(4)
-                                .textSelection(.enabled)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                        .scrollIndicators(.automatic)
-
-                        HStack {
-                            Text(verbatim: state.provider)
-                                .font(.system(size: 11))
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
-                            Spacer(minLength: 8)
-                            if state.phase == .failure || state.phase == .ready {
-                                Button(action: retry) {
-                                    Text(
-                                        state.phase == .ready
-                                            ? LocalizedStringKey("glass.mini.translate")
-                                            : LocalizedStringKey("glass.mini.retry")
-                                    )
-                                }
-                                .buttonStyle(.plain)
-                                .font(.system(size: 11))
+                    HStack {
+                        Text(verbatim: state.provider)
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                        Spacer(minLength: 8)
+                        if state.phase == .failure || state.phase == .ready {
+                            Button(action: retry) {
+                                Text(
+                                    state.phase == .ready
+                                        ? LocalizedStringKey("glass.mini.translate")
+                                        : LocalizedStringKey("glass.mini.retry")
+                                )
                             }
+                            .buttonStyle(.plain)
+                            .font(.system(size: 11))
                         }
                     }
-                    .padding(.horizontal, 22)
-                    .padding(.vertical, 18)
-                    .opacity(state.contentVisible ? 1 : 0)
                 }
+                .padding(.horizontal, 22)
+                .padding(.vertical, 18)
+                .opacity(state.contentVisible ? 1 : 0)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .modifier(GlassMiniMaterial(shape: RoundedRectangle(cornerRadius: 24, style: .continuous)))
-            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-            .contextMenu {
-                Button("glass.mini.copy", action: copy)
-                    .disabled(state.phase != .result)
-                Button("glass.mini.retry", action: retry)
-                Button("glass.mini.close", action: close)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .modifier(GlassMiniMaterial(shape: RoundedRectangle(cornerRadius: 24, style: .continuous)))
+        .overlay(alignment: .top) {
+            GlassMiniDragArea()
+                .frame(height: 16)
+                .padding(.leading, 24)
+                .padding(.trailing, 40)
+                .accessibilityHidden(true)
+        }
+        .overlay(alignment: .topTrailing) {
+            if state.phase != .loading {
+                pinButton.padding(10)
             }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .onHover { isHovered = $0 }
+        .contextMenu {
+            Button("glass.mini.copy", action: copy)
+                .disabled(state.phase != .result)
+            Button("glass.mini.retry", action: retry)
+            Button("glass.mini.close", action: close)
         }
         .padding(12)
         .onExitCommand(perform: close)
+    }
+
+    private var pinOpacity: Double {
+        if isPinHovered { return 1 }
+        if state.pinned { return 0.85 }
+        return isHovered ? 0.7 : 0.25
+    }
+
+    private var pinButton: some View {
+        Button(action: pin) {
+            Image(systemSymbol: state.pinned ? .pinFill : .pin)
+                .font(.system(size: 10, weight: .medium))
+                .frame(width: 20, height: 20)
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .modifier(GlassMiniMaterial(shape: Circle()))
+        .opacity(pinOpacity)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.14), value: pinOpacity)
+        .onHover { isPinHovered = $0 }
+        .help(state.pinned ? LocalizedStringKey("glass.mini.unpin") : LocalizedStringKey("glass.mini.pin"))
+        .accessibilityLabel(Text(
+            state.pinned ? LocalizedStringKey("glass.mini.unpin") : LocalizedStringKey("glass.mini.pin")
+        ))
     }
 
     private var loadingDots: some View {

@@ -665,6 +665,8 @@
 		42673964530E4E7AA2667D05 /* GlassMiniView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6334D29F077344028BA1002C /* GlassMiniView.swift */; };
 		AF725A7729A64813889846AA /* GlassMiniAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EE242504B849BE9AA6891F /* GlassMiniAnimator.swift */; };
 		AC780F5DA26141D8B242F743 /* GlassMiniPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E60C3454C2F436B89336930 /* GlassMiniPresentation.swift */; };
+		741192BE612C4CD98E7656C3 /* GlassMiniTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEC81D3645148B5BA0868AF /* GlassMiniTextView.swift */; };
+		23531D12B071478897B0957F /* GlassMiniDragArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48843F621A64AB2911F3C5E /* GlassMiniDragArea.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1452,6 +1454,8 @@
 		6334D29F077344028BA1002C /* GlassMiniView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassMiniView.swift; sourceTree = "<group>"; };
 		12EE242504B849BE9AA6891F /* GlassMiniAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassMiniAnimator.swift; sourceTree = "<group>"; };
 		0E60C3454C2F436B89336930 /* GlassMiniPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassMiniPresentation.swift; sourceTree = "<group>"; };
+		DCEC81D3645148B5BA0868AF /* GlassMiniTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassMiniTextView.swift; sourceTree = "<group>"; };
+		F48843F621A64AB2911F3C5E /* GlassMiniDragArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassMiniDragArea.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3310,6 +3314,8 @@
 			isa = PBXGroup;
 			children = (
 				C547F2271B36429C80FDB6C5 /* GlassMiniConfiguration.swift */,
+				DCEC81D3645148B5BA0868AF /* GlassMiniTextView.swift */,
+				F48843F621A64AB2911F3C5E /* GlassMiniDragArea.swift */,
 				6334D29F077344028BA1002C /* GlassMiniView.swift */,
 				12EE242504B849BE9AA6891F /* GlassMiniAnimator.swift */,
 				0E60C3454C2F436B89336930 /* GlassMiniPresentation.swift */,
@@ -4567,6 +4573,8 @@
 				03D486502E3F2021009313B3 /* Regex+List.swift in Sources */,
 				03D9D6FD2D8C0DA6009E0CEC /* Screenshot.swift in Sources */,
 				152B1DF304504C5A9E9E84DD /* GlassMiniConfiguration.swift in Sources */,
+				741192BE612C4CD98E7656C3 /* GlassMiniTextView.swift in Sources */,
+				23531D12B071478897B0957F /* GlassMiniDragArea.swift in Sources */,
 				42673964530E4E7AA2667D05 /* GlassMiniView.swift in Sources */,
 				AF725A7729A64813889846AA /* GlassMiniAnimator.swift in Sources */,
 				AC780F5DA26141D8B242F743 /* GlassMiniPresentation.swift in Sources */,

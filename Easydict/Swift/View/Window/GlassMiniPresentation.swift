@@ -89,7 +89,7 @@ final class GlassMiniPresentation: NSObject {
         state.provider = ""
         state.contentVisible = false
         guard let window else { return }
-        animator.resize(window, to: NSSize(width: 110, height: 90), animated: false) {}
+        animator.resize(window, to: NSSize(width: 110, height: 62), animated: false) {}
     }
 
     func showUnavailableService() {
@@ -148,11 +148,11 @@ final class GlassMiniPresentation: NSObject {
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineSpacing = 4
         let bounds = (state.text as NSString).boundingRect(
-            with: NSSize(width: width - 68, height: .greatestFiniteMagnitude),
+            with: NSSize(width: width - 86, height: .greatestFiniteMagnitude),
             options: [.usesLineFragmentOrigin, .usesFontLeading],
             attributes: [.font: NSFont.systemFont(ofSize: 16), .paragraphStyle: paragraph]
         )
-        let height = min(max(ceil(bounds.height) + 118, 152), screen.height * 0.65)
+        let height = min(max(ceil(bounds.height) + 90, 124), screen.height * 0.65)
         state.contentVisible = !animated
         animator.resize(window, to: NSSize(width: width, height: height), animated: animated) { [weak self] in
             guard let self else { return }
