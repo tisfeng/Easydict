@@ -58,14 +58,27 @@ private struct ServiceItemView: View {
             Button {
                 toggleEnabled()
             } label: {
-                Toggle(item.name, isOn: .constant(item.enabled))
-                    .labelsHidden()
-                    .toggleStyle(.switch)
-                    .controlSize(.mini)
-                    .allowsHitTesting(false)
+                if viewModel.usesSingleServiceSelection {
+                    Circle()
+                        .stroke(item.enabled ? Color.accentColor : Color.secondary.opacity(0.5), lineWidth: 1.5)
+                        .overlay {
+                            if item.enabled {
+                                Circle().fill(Color.accentColor).frame(width: 7, height: 7)
+                            }
+                        }
+                        .frame(width: 16, height: 16)
+                } else {
+                    Toggle(item.name, isOn: .constant(item.enabled))
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                        .controlSize(.mini)
+                        .allowsHitTesting(false)
+                }
             }
             .buttonStyle(.borderless)
             .frame(width: 40, alignment: .center)
+            .accessibilityLabel(Text(verbatim: item.name))
+            .accessibilityAddTraits(item.enabled ? .isSelected : [])
         }
         .listRowSeparator(.hidden)
         .listRowInsets(.init())

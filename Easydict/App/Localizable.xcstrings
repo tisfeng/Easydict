@@ -376,37 +376,37 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choose a translation service in Settings → Services → Mini window → Window configuration."
+            "value" : "Select a service in the sidebar under Settings → Services → Mini Window."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请在设置 → 服务 → 迷你窗口 → 窗口配置中选择翻译服务。"
+            "value" : "请在设置 → 服务 → 迷你窗口的左侧列表中选择一个服务。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "請在設定 → 服務 → 迷你視窗 → 視窗設定中選擇翻譯服務。"
+            "value" : "請在設定 → 服務 → 迷你視窗的左側列表中選擇一個服務。"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elige un servicio en Ajustes → Servicios → Miniventana → Configuración de ventana."
+            "value" : "Selecciona un servicio en la barra lateral de Ajustes → Servicios → Ventana mini."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "設定 → サービス → ミニウインドウ → ウインドウ設定で翻訳サービスを選択してください。"
+            "value" : "設定 → サービス → ミニウインドウの左側でサービスを選択してください。"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vyberte službu v Nastavenia → Služby → Mini okno → Nastavenie okna."
+            "value" : "Vyberte službu na bočnom paneli v Nastavenia → Služby → Mini okno."
           }
         }
       }
@@ -499,37 +499,37 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choose a service"
+            "value" : "Select a service in the sidebar."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选择服务"
+            "value" : "请在左侧选择一个服务。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "選擇服務"
+            "value" : "請在左側選擇一個服務。"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elegir un servicio"
+            "value" : "Selecciona un servicio en la barra lateral."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サービスを選択"
+            "value" : "左側でサービスを1つ選択してください。"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vybrať službu"
+            "value" : "Vyberte službu na bočnom paneli."
           }
         }
       }
@@ -540,37 +540,37 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shows only the translation from this service. The original text and language controls are hidden. Existing translation shortcuts still apply."
+            "value" : "Select one service in the sidebar. This mode shows only its result and preserves your classic multi-service settings when turned off."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "仅显示此服务的译文，隐藏原文和语言栏，沿用现有翻译触发方式。"
+            "value" : "在左侧单选一个服务，仅显示其结果。关闭此模式后恢复原来的多服务配置。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "僅顯示此服務的譯文，隱藏原文和語言列，沿用現有翻譯觸發方式。"
+            "value" : "在左側單選一個服務，僅顯示其結果。關閉此模式後恢復原來的多服務設定。"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Muestra solo la traducción de este servicio. Oculta el original y los controles de idioma. Conserva los atajos actuales."
+            "value" : "Selecciona un servicio en la barra lateral. Solo se muestra su resultado. Al desactivar este modo, se restaura la configuración de varios servicios."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このサービスの訳文だけを表示します。原文と言語バーを非表示にし、既存の翻訳ショートカットを使用します。"
+            "value" : "左側でサービスを1つ選択すると、その結果だけを表示します。このモードをオフにすると、元の複数サービス設定に戻ります。"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zobrazí iba preklad z tejto služby. Skryje originál a jazykové ovládanie. Existujúce skratky zostávajú."
+            "value" : "Vyberte jednu službu na bočnom paneli. Zobrazí sa len jej výsledok. Po vypnutí režimu sa obnovia pôvodné nastavenia viacerých služieb."
           }
         }
       }

@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Defaults
 import Foundation
 import SwiftUI
 
@@ -56,6 +57,9 @@ struct ServiceTab: View {
         .onChange(of: viewModel.windowType) { _ in
             viewModel.handleWindowTypeChange()
         }
+        .onReceive(NotificationCenter.default.publisher(for: .didChangeWindowConfiguration).receive(on: DispatchQueue.main)) { _ in
+            viewModel.updateServices()
+        }
     }
 
     // MARK: Private
@@ -99,6 +103,10 @@ class ServiceTabViewModel: ObservableObject {
     @Published private(set) var selectedItems: Set<ServiceTabSelection> = [
         .windowConfiguration,
     ]
+
+    var usesSingleServiceSelection: Bool {
+        windowType == .mini && GlassMiniConfiguration.enabled
+    }
 
     var canRemoveSelectedServices: Bool {
         let selectedCount = selectedServiceItems.count
@@ -205,6 +213,17 @@ class ServiceTabViewModel: ObservableObject {
     }
 
     func setServiceEnabled(_ enabled: Bool, for item: ServiceListItem) {
+        if usesSingleServiceSelection {
+            // Radio selection cannot deselect the active service. Keep classic flags untouched.
+            guard enabled, serviceItems.contains(where: { $0.id == item.id }) else { return }
+            Defaults[.liquidGlassMiniService] = item.id
+            updateServices()
+            NotificationCenter.default.post(
+                name: .didChangeWindowConfiguration,
+                object: UpdateNotificationInfo(windowType: .mini)
+            )
+            return
+        }
         if selectedService?.serviceTypeWithUniqueIdentifier() == item.id {
             selectedService?.enabled = enabled
             if let selectedService {
@@ -268,13 +287,14 @@ class ServiceTabViewModel: ObservableObject {
                 serviceId: metadata.uuid,
                 windowType: windowType
             )
+            let usesGlassSelection = !forAddition && windowType == .mini && GlassMiniConfiguration.enabled
             return ServiceListItem(
                 id: typeId,
                 type: metadata.serviceType,
                 name: createsNewInstance
                     ? NSLocalizedString("custom_openai", comment: "")
                     : metadata.title,
-                enabled: info?.enabled == true,
+                enabled: usesGlassSelection ? typeId == Defaults[.liquidGlassMiniService] : info?.enabled == true,
                 requirement: metadata.apiKeyRequirement,
                 isStream: metadata.isStream,
                 createsNewInstance: createsNewInstance
