@@ -245,11 +245,10 @@ public class BaseOpenAIService: StreamService {
             let endpoint = try validateChatStreamRequest()
             result.isStreamFinished = false
 
-            let body = makeChatQuery(messages: messages, stream: usesStreamingTransport)
             if usesStreamingTransport {
-                return contentStream(for: body, endpoint: endpoint)
+                return contentStream(messages: messages, endpoint: endpoint)
             }
-            return nonStreamingTranslate(body: body, url: endpoint)
+            return nonStreamingTranslate(messages: messages, url: endpoint)
         } catch {
             return failedContentStream(error: error)
         }
@@ -261,11 +260,13 @@ public class BaseOpenAIService: StreamService {
         }
     }
 
+    /// Streams chat deltas over the OpenAI-compatible streaming transport, which requires `stream: true`.
     private func contentStream(
-        for body: ChatQueryBody,
+        messages: [OpenAIChatMessage],
         endpoint: URL
     )
         -> AsyncThrowingStream<String, any Error> {
+        let body = makeChatQuery(messages: messages, stream: true)
         let taskControl = streamTaskControl
 
         return AsyncThrowingStream { continuation in
@@ -324,12 +325,13 @@ public class BaseOpenAIService: StreamService {
         }
     }
 
-    /// Perform a non-streaming chat completion, yielding the full response as a single chunk.
+    /// Perform a non-streaming chat completion (`stream: false`), yielding the full response as a single chunk.
     private func nonStreamingTranslate(
-        body: ChatQueryBody,
+        messages: [OpenAIChatMessage],
         url: URL
     )
         -> AsyncThrowingStream<String, Error> {
+        let body = makeChatQuery(messages: messages, stream: false)
         let apiKey = apiKey
 
         return AsyncThrowingStream(String.self) { [weak self] continuation in
