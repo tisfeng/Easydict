@@ -28,8 +28,8 @@ struct ChatQueryBody: Sendable {
     let stream: Bool
     let extraBody: ExtraBody
 
-    /// Encodes the request fields and, when configured with at least one field, nests those
-    /// fields under a top-level `extra_body` object.
+    /// Encodes the request fields and, when configured, merges the extra body fields into
+    /// the top-level request object without overriding the keys Easydict already set.
     func encoded() throws -> Data {
         let payload = Payload(
             messages: messages,
@@ -52,8 +52,7 @@ struct ChatQueryBody: Sendable {
             return payloadData
         }
 
-        // An empty object configures no fields, so keep the untouched payload instead of
-        // sending an empty `extra_body`.
+        // An empty object configures no fields, so keep the untouched payload.
         guard !fields.isEmpty else {
             return payloadData
         }
@@ -62,7 +61,12 @@ struct ChatQueryBody: Sendable {
             throw QueryError(type: .api, message: "Invalid chat request body")
         }
 
-        object[Self.extraBodyKey] = fields
+        // Fill in only the keys the assembled request does not already own, so a configured
+        // field never overrides `model`, `stream`, or an explicit temperature and reasoning
+        // effort.
+        for (key, value) in fields where object[key] == nil {
+            object[key] = value
+        }
 
         return try JSONSerialization.data(withJSONObject: object)
     }
@@ -78,15 +82,12 @@ struct ChatQueryBody: Sendable {
         let reasoningEffort: String?
         let stream: Bool
     }
-
-    /// Wire key owning the user-configured fields; a sibling of `model`, written as-is.
-    private static let extraBodyKey = "extra_body"
 }
 
 // MARK: - ExtraBody
 
-/// User-configured extra JSON fields sent as the top-level `extra_body` object of a chat
-/// request body.
+/// User-configured extra JSON fields merged into the top-level object of a chat request
+/// body, as siblings of `model`. Keys Easydict already set are kept.
 ///
 /// Only the raw JSON text is stored so the value stays `Sendable` and `Equatable`.
 struct ExtraBody: Equatable, Sendable {

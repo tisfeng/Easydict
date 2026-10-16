@@ -9264,37 +9264,37 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "JSON object sent as the top-level \"extra_body\" field of the request body, alongside \"model\"."
+            "value" : "JSON object merged into the top-level request body, alongside \"model\"; fields already set by the app take precedence."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Objeto JSON enviado como campo \"extra_body\" de nivel superior del cuerpo de la solicitud, junto a \"model\"."
+            "value" : "Objeto JSON combinado en el cuerpo de la solicitud de nivel superior, junto a \"model\"; los campos ya establecidos por la app tienen prioridad."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "リクエストボディの最上位の \"extra_body\" フィールドとして送信される JSON オブジェクト（\"model\" と同じ階層）。"
+            "value" : "リクエストボディの最上位に \"model\" と同じ階層でマージされる JSON オブジェクト。アプリが設定済みのフィールドが優先されます。"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Objekt JSON odoslaný ako pole \"extra_body\" na najvyššej úrovni tela požiadavky, vedľa \"model\"."
+            "value" : "Objekt JSON zlúčený do tela požiadavky na najvyššej úrovni, vedľa \"model\"; polia už nastavené aplikáciou majú prednosť."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "作为请求体顶层 \"extra_body\" 字段发送的 JSON 对象，与 \"model\" 同级。"
+            "value" : "合并到请求体顶层的 JSON 对象，与 \"model\" 同级；应用已设置的字段优先。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "作為請求體頂層 \"extra_body\" 欄位傳送的 JSON 物件，與 \"model\" 同級。"
+            "value" : "合併到請求體頂層的 JSON 物件，與 \"model\" 同級；應用程式已設定的欄位優先。"
           }
         }
       }
