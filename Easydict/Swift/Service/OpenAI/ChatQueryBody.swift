@@ -49,7 +49,6 @@ struct ChatQueryBody: Sendable {
         }
 
         guard let fields = extraBody.fields else {
-            logWarn("Ignore invalid extra body JSON: \(extraBody.json)")
             return payloadData
         }
 
