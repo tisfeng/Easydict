@@ -56,7 +56,12 @@ enum ServiceConfigurationKey: String {
     case userPrompt
     case thinkTag
     case enableStreaming
+    case extraBody
     case reasoningEffort = "ReasoningEffort"
+    // Free-form reasoning effort value for providers that accept arbitrary
+    // `reasoning_effort` strings. Distinct from `reasoningEffort`, whose slot
+    // the StreamService base class claims with the `ReasoningEffort` enum.
+    case reasoningEffortText = "ReasoningEffortText"
     // Effort level for agent CLI services (e.g. claude --effort). Distinct from
     // `reasoningEffort`, whose storage slot the StreamService base class already
     // claims with the incompatible `ReasoningEffort` enum.
