@@ -661,6 +661,10 @@
 		13A893BFBE2B4FD695223394 /* GitHubCopilotCatalogClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */; };
 		8FA639CB01DB48FFB856FAF6 /* GitHubCopilotModelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D62DA53787E49EC9011BB14 /* GitHubCopilotModelStore.swift */; };
 		49DAA0A4B12B418BA7791B8F /* GitHubCopilotModelCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBAB49A71BBA4870A9C4FF0C /* GitHubCopilotModelCache.swift */; };
+		152B1DF304504C5A9E9E84DD /* GlassMiniConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C547F2271B36429C80FDB6C5 /* GlassMiniConfiguration.swift */; };
+		42673964530E4E7AA2667D05 /* GlassMiniView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6334D29F077344028BA1002C /* GlassMiniView.swift */; };
+		AF725A7729A64813889846AA /* GlassMiniAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EE242504B849BE9AA6891F /* GlassMiniAnimator.swift */; };
+		AC780F5DA26141D8B242F743 /* GlassMiniPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E60C3454C2F436B89336930 /* GlassMiniPresentation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1444,6 +1448,10 @@
 		3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotCatalogClient.swift; sourceTree = "<group>"; };
 		9D62DA53787E49EC9011BB14 /* GitHubCopilotModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelStore.swift; sourceTree = "<group>"; };
 		FBAB49A71BBA4870A9C4FF0C /* GitHubCopilotModelCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelCache.swift; sourceTree = "<group>"; };
+		C547F2271B36429C80FDB6C5 /* GlassMiniConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassMiniConfiguration.swift; sourceTree = "<group>"; };
+		6334D29F077344028BA1002C /* GlassMiniView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassMiniView.swift; sourceTree = "<group>"; };
+		12EE242504B849BE9AA6891F /* GlassMiniAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassMiniAnimator.swift; sourceTree = "<group>"; };
+		0E60C3454C2F436B89336930 /* GlassMiniPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassMiniPresentation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3301,6 +3309,10 @@
 		03FEF15F2D45D06E002D5F28 /* Window */ = {
 			isa = PBXGroup;
 			children = (
+				C547F2271B36429C80FDB6C5 /* GlassMiniConfiguration.swift */,
+				6334D29F077344028BA1002C /* GlassMiniView.swift */,
+				12EE242504B849BE9AA6891F /* GlassMiniAnimator.swift */,
+				0E60C3454C2F436B89336930 /* GlassMiniPresentation.swift */,
 				03FEF1622D45D5C2002D5F28 /* HostWindowManager.swift */,
 			);
 			path = Window;
@@ -4554,6 +4566,10 @@
 				03F086F22DB1F5F000268DF0 /* SliderCell.swift in Sources */,
 				03D486502E3F2021009313B3 /* Regex+List.swift in Sources */,
 				03D9D6FD2D8C0DA6009E0CEC /* Screenshot.swift in Sources */,
+				152B1DF304504C5A9E9E84DD /* GlassMiniConfiguration.swift in Sources */,
+				42673964530E4E7AA2667D05 /* GlassMiniView.swift in Sources */,
+				AF725A7729A64813889846AA /* GlassMiniAnimator.swift in Sources */,
+				AC780F5DA26141D8B242F743 /* GlassMiniPresentation.swift in Sources */,
 				03FEF1632D45D5C2002D5F28 /* HostWindowManager.swift in Sources */,
 				033363A0293A05D200FED9C8 /* EZSelectLanguageButton.m in Sources */,
 				960835502B6791F200C6A931 /* ShortcutManager+Validator.swift in Sources */,

@@ -27,6 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updateWindowLevel:(BOOL)pin;
 
+/// Restore custom titlebar controls after changing a mini panel's style mask.
+- (void)rebuildTitlebar;
+
 @end
 
 NS_ASSUME_NONNULL_END

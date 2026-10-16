@@ -43,12 +43,13 @@
         
         // !!!: must set backgroundColor
         [self executeLight:^(NSWindow *window) {
-            window.backgroundColor = [NSColor ez_mainViewBgLightColor];
+            window.backgroundColor = [((EZBaseQueryWindow *)window).queryViewController usesGlassMiniPresentation] ? NSColor.clearColor : [NSColor ez_mainViewBgLightColor];
         } dark:^(NSWindow *window) {
-            window.backgroundColor = [NSColor ez_mainViewBgDarkColor];
+            window.backgroundColor = [((EZBaseQueryWindow *)window).queryViewController usesGlassMiniPresentation] ? NSColor.clearColor : [NSColor ez_mainViewBgDarkColor];
         }];
         
         [self setupUI];
+        [self.queryViewController updateMiniWindowPresentation];
     }
     return self;
 }
@@ -77,6 +78,17 @@
 
 #pragma mark - Setter
 
+- (void)rebuildTitlebar {
+    [self.titleBar removeFromSuperview];
+    [self setupUI];
+    self.titleBar.pin = self.pin;
+    if (self.windowType == EZWindowTypeMini) {
+        [self standardWindowButton:NSWindowCloseButton].hidden = YES;
+        [self standardWindowButton:NSWindowMiniaturizeButton].hidden = YES;
+        [self standardWindowButton:NSWindowZoomButton].hidden = YES;
+    }
+}
+
 - (void)setWindowType:(EZWindowType)windowType {
     _windowType = windowType;
     
@@ -94,6 +106,7 @@
 - (void)setPin:(BOOL)pin {
     [self updateWindowLevel:pin];
     self.titleBar.pin = pin;
+    [self.queryViewController updateMiniWindowPin];
 }
 
 - (void)updateWindowLevel:(BOOL)pin {
@@ -138,6 +151,7 @@
 
 - (void)windowWillClose:(NSNotification *)notification {
     [self.queryViewController cancelAutoQuery];
+    [self.queryViewController cancelMiniWindowQuery];
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification {
@@ -148,6 +162,9 @@
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
+    if ([self.queryViewController usesGlassMiniPresentation]) {
+        return;
+    }
         MMLog(@"windowDidResize: %@, windowType: %ld", @(self.frame), self.windowType);
     
     [[EZLayoutManager shared] updateWindowFrame:self];
@@ -162,6 +179,9 @@
 }
 
 - (void)windowDidMove:(NSNotification *)notification {
+    if ([self.queryViewController usesGlassMiniPresentation]) {
+        return;
+    }
     [[EZLayoutManager shared] updateWindowFrame:self];
 }
 

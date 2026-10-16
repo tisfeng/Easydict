@@ -34,10 +34,47 @@ struct WindowConfigurationView: View {
 
     @Default var showInputTextField: Bool
     @Default var showSelectLanguageTextField: Bool
+    @Default(.liquidGlassMini) private var liquidGlassMini
+    @Default(.liquidGlassMiniService) private var liquidGlassMiniService
+    @State private var glassServices: [QueryService] = []
     let windowType: EZWindowType
 
     var body: some View {
         Form {
+            if windowType == .mini {
+                Section {
+                    if #available(macOS 26.0, *) {
+                        NotifyingToggle(
+                            title: "glass.mini.setting.enabled",
+                            isOn: $liquidGlassMini,
+                            windowType: windowType
+                        )
+                        if liquidGlassMini {
+                            Picker("glass.mini.setting.service", selection: $liquidGlassMiniService) {
+                                ForEach(glassServices.indices, id: \.self) { index in
+                                    let service = glassServices[index]
+                                    Text(service.name()).tag(service.serviceTypeWithUniqueIdentifier())
+                                }
+                                if !glassServices.contains(where: {
+                                    $0.serviceTypeWithUniqueIdentifier() == liquidGlassMiniService
+                                }) {
+                                    Text("glass.mini.setting.choose_service").tag(liquidGlassMiniService)
+                                }
+                            }
+                            .onChange(of: liquidGlassMiniService) { _ in
+                                let info = UpdateNotificationInfo(windowType: .mini)
+                                NotificationCenter.default.post(name: .didChangeWindowConfiguration, object: info)
+                            }
+                            Text("glass.mini.setting.description")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
+                        Text("glass.mini.setting.requirement")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
             Section {
                 NotifyingToggle(
                     title: "setting.service.show_input_text_field",
@@ -51,8 +88,13 @@ struct WindowConfigurationView: View {
                     windowType: windowType
                 )
             }
+            .disabled(windowType == .mini && GlassMiniConfiguration.enabled)
         }
         .formStyle(.grouped)
+        .onAppear { glassServices = GlassMiniConfiguration.availableServices() }
+        .onReceive(NotificationCenter.default.publisher(for: .serviceHasUpdated)) { _ in
+            glassServices = GlassMiniConfiguration.availableServices()
+        }
     }
 }
 

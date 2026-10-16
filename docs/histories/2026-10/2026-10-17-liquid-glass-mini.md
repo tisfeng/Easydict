@@ -1,0 +1,72 @@
+## 2026-10-17 | 任务：增加 Liquid Glass 迷你窗口
+
+**Links:** [执行计划](../../exec-plans/completed/2026-10/2026-10-17-liquid-glass-mini.md)
+
+### 执行上下文
+
+- **Agent Name:** `Codex`
+- **Model:** `GPT-6`
+- **Environment:** `macOS 27.0.1 / Xcode 26.5 (17F42)`
+
+### 用户请求
+
+在 Easydict 中增加可选的特殊迷你窗口，沿用划词触发，只显示一个服务的译文。加载时显示三点玻璃胶囊，完成后轻弹性展开为圆角卡片；服务名弱化，固定按钮为卡片右上方的小圆圈，不显示蓝色焦点框。
+
+### 变更
+
+- 新增独立玻璃模式开关和服务单选，保留经典迷你窗口的原有配置。
+- 用 SwiftUI 原生玻璃绘制译文、低对比服务名、22 点固定按钮、加载及失败/重试状态。
+- 桥接现有 Objective-C 查询生命周期，取消旧查询并校验查询代次，完成流式输出后再展开。
+- 动画调整真实窗口边界，并限制在可见屏幕范围；长文滚动，支持减少动态效果及降低透明度。
+- 隐藏原文、语言选择和经典工具栏；新增复制、重试和关闭的上下文菜单。
+- 接入 macOS 26 及更新版本，更新六种语言的 String Catalog 和 Xcode 文件引用。
+- 未新增或扩写测试。按用户截图调整固定按钮位置、大小和焦点外观。
+
+### 设计意图
+
+继续使用原窗口管理和翻译服务，只替换迷你窗口的呈现层，避免复制划词和语言检测逻辑。特殊模式每次只构造选中的查询服务，不持久化修改经典服务的启用标记；选定服务失效时提示重新选择，不自动向其他提供商发送内容。移除经典表格的布局约束，确保加载胶囊可真正缩小。
+
+### 验证
+
+- Debug arm64 编译与 `ReverseTranslationTests`、`OpenAIStreamTaskControlTests` 共 10 项现有测试通过。实际命令如下，`agent_dd` 指向该 checkout 的独立 DerivedData：
+
+  ```sh
+  xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict \
+    -configuration Debug -destination 'platform=macOS,arch=arm64' \
+    -derivedDataPath "$agent_dd" ENABLE_PREVIEWS=YES \
+    'EXCLUDED_SOURCE_FILE_NAMES=Easydict-27.icon' \
+    ASSETCATALOG_COMPILER_APPICON_NAME=Easydict-26 \
+    -only-testing:EasydictTests/ReverseTranslationTests \
+    -only-testing:EasydictTests/OpenAIStreamTaskControlTests
+  ```
+
+- 构建环境修复：`xcodebuild -runFirstLaunch` 解决初始框架符号不匹配。`ENABLE_PREVIEWS=YES` 按项目脚本跳过全库自动格式化；Xcode 26.5 的图标编译问题用命令行覆写解决，未改变工程中的默认图标。
+- 对新增四个窗口 Swift 文件及 WindowConfigurationView 运行 SwiftLint，无违规。
+- `git diff --check`、`jq -e . Easydict/App/Localizable.xcstrings`、工程 `plutil -lint` 均通过。
+- `codesign --verify --deep --strict build/Easydict-debug.app` 通过。产物使用临时签名，不是正式发布签名。
+- 使用仓库 review 技能检查基线 `af5b654f2890341a48f32237118ad2a686ea8f9d` 到最终工作树，包含四个未跟踪 Swift 文件。记录内容摘要并在审查结束复验；修复隐藏输入视图不再更新模型、错误被经典视图规则隐藏、关闭中断加载以及低系统版本设置禁用等问题，最终无进一步有效 finding。
+- 方案评估：以薄桥接复用既有查询管线符合范围；无需另建窗口管理器或翻译请求管线。
+- 手动检查：用户截图确认玻璃材质和单一译文窗口可运行。pin 位置与焦点框修复后的版本编译通过，但其最终外观尚待授权恢复后确认。长文、错误重试、多屏边缘和模式往返的完整交互未逐项验证。
+- 界面工具超时，随后返回 ScreenCaptureKit -3811，未把自动截图验证记为通过。
+- 调试版重编译后系统仍显示开启的旧授权，但应用检查返回未授权。核查原有 `AXIsProcessTrustedWithOptions` 调用未修改；当前临时签名的 designated requirement 绑定代码哈希。已退出调试版，引导用户移除旧条目并重新添加固定的 `build/Easydict-debug.app`。
+
+### 受影响文件
+
+- `Easydict/Swift/View/Window/GlassMiniConfiguration.swift`
+- `Easydict/Swift/View/Window/GlassMiniView.swift`
+- `Easydict/Swift/View/Window/GlassMiniAnimator.swift`
+- `Easydict/Swift/View/Window/GlassMiniPresentation.swift`
+- `Easydict/Swift/View/SettingView/Tabs/View/WindowConfigurationView.swift`
+- `Easydict/objc/ViewController/Window/BaseQueryWindow/EZBaseQueryViewController.h`
+- `Easydict/objc/ViewController/Window/BaseQueryWindow/EZBaseQueryViewController.m`
+- `Easydict/objc/ViewController/Window/BaseQueryWindow/EZBaseQueryWindow.h`
+- `Easydict/objc/ViewController/Window/BaseQueryWindow/EZBaseQueryWindow.m`
+- `Easydict/App/Localizable.xcstrings`
+- `Easydict.xcodeproj/project.pbxproj`
+- 本任务计划及 history。
+
+### 后续事项
+
+- 恢复调试版的系统授权后确认最新 pin 与焦点外观，以及其余人工交互场景。
+- 若持续开发或分发，使用稳定开发者签名，以减少每次重编译后的重复授权。
+- 本机源码约 95 MB、调试 app 约 196 MB、编译缓存约 5.8 GB；产物保留在忽略的 `build/` 目录。
