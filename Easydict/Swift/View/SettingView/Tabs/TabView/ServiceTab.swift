@@ -379,7 +379,7 @@ private struct ServiceDetailView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } else {
-                WindowConfigurationView(windowType: viewModel.windowType)
+                WindowConfigurationView(windowType: viewModel.windowType, serviceItems: viewModel.serviceItems)
             }
         }
     }

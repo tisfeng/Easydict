@@ -14,8 +14,9 @@ import SwiftUI
 struct WindowConfigurationView: View {
     // MARK: Lifecycle
 
-    init(windowType: EZWindowType) {
+    init(windowType: EZWindowType, serviceItems: [ServiceListItem]) {
         self.windowType = windowType
+        self.serviceItems = serviceItems
 
         _showInputTextField = .init(
             windowConfigurationKey(
@@ -36,8 +37,8 @@ struct WindowConfigurationView: View {
     @Default var showSelectLanguageTextField: Bool
     @Default(.liquidGlassMini) private var liquidGlassMini
     @Default(.liquidGlassMiniService) private var liquidGlassMiniService
-    @State private var glassServices: [QueryService] = []
     let windowType: EZWindowType
+    let serviceItems: [ServiceListItem]
 
     var body: some View {
         Form {
@@ -51,12 +52,11 @@ struct WindowConfigurationView: View {
                         )
                         if liquidGlassMini {
                             Picker("glass.mini.setting.service", selection: $liquidGlassMiniService) {
-                                ForEach(glassServices.indices, id: \.self) { index in
-                                    let service = glassServices[index]
-                                    Text(service.name()).tag(service.serviceTypeWithUniqueIdentifier())
+                                ForEach(serviceItems) { item in
+                                    Text(item.name).tag(item.id)
                                 }
-                                if !glassServices.contains(where: {
-                                    $0.serviceTypeWithUniqueIdentifier() == liquidGlassMiniService
+                                if !serviceItems.contains(where: {
+                                    $0.id == liquidGlassMiniService
                                 }) {
                                     Text("glass.mini.setting.choose_service").tag(liquidGlassMiniService)
                                 }
@@ -91,10 +91,6 @@ struct WindowConfigurationView: View {
             .disabled(windowType == .mini && GlassMiniConfiguration.enabled)
         }
         .formStyle(.grouped)
-        .onAppear { glassServices = GlassMiniConfiguration.availableServices() }
-        .onReceive(NotificationCenter.default.publisher(for: .serviceHasUpdated)) { _ in
-            glassServices = GlassMiniConfiguration.availableServices()
-        }
     }
 }
 

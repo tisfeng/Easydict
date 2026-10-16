@@ -65,7 +65,6 @@ struct GlassMiniView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .modifier(GlassMiniMaterial(shape: RoundedRectangle(cornerRadius: 24, style: .continuous)))
         .overlay(alignment: .top) {
             GlassMiniDragArea()
                 .frame(height: 16)
@@ -78,6 +77,7 @@ struct GlassMiniView: View {
                 pinButton.padding(10)
             }
         }
+        .modifier(GlassMiniMaterial(shape: RoundedRectangle(cornerRadius: 24, style: .continuous)))
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .onHover { isHovered = $0 }
         .contextMenu {
@@ -104,7 +104,6 @@ struct GlassMiniView: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .modifier(GlassMiniMaterial(shape: Circle()))
         .opacity(pinOpacity)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.14), value: pinOpacity)
         .onHover { isPinHovered = $0 }

@@ -24,9 +24,7 @@ final class GlassMiniConfiguration: NSObject {
     }
 
     static func availableServices() -> [QueryService] {
-        LocalStorage.shared().allServices(.mini).filter {
-            $0.supportedQueryType().contains(.sentence)
-        }
+        LocalStorage.shared().allServices(.mini)
     }
 
     /// Never silently send the user's text to another provider if the selection was removed.
