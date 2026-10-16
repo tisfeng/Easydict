@@ -146,12 +146,14 @@ public class BaseOpenAIService: StreamService {
         return normalizedRemoteModelIDs(modelList.data.map(\.id))
     }
 
-    func openAIChatQuery(messages: [OpenAIChatMessage]) -> ChatQuery {
-        ChatQuery(
+    func openAIChatQuery(messages: [OpenAIChatMessage], stream: Bool) -> ChatQueryBody {
+        ChatQueryBody(
             messages: messages,
             model: model,
+            temperature: temperature,
             reasoningEffort: reasoningEffort,
-            temperature: temperature
+            stream: stream,
+            extraBody: extraBody
         )
     }
 
@@ -174,21 +176,21 @@ public class BaseOpenAIService: StreamService {
         return url
     }
 
-    /// Builds the OpenAI-compatible query used by both streaming and fallback transports.
+    /// Builds the OpenAI-compatible request body used by both streaming and fallback transports.
     @nonobjc
-    func makeChatQuery(messages: [OpenAIChatMessage]) -> ChatQuery {
-        openAIChatQuery(messages: messages)
+    func makeChatQuery(messages: [OpenAIChatMessage], stream: Bool) -> ChatQueryBody {
+        openAIChatQuery(messages: messages, stream: stream)
     }
 
     /// Sends a streaming query through the configured OpenAI-compatible transport.
     @nonobjc
     func performChatResultStream(
-        query: ChatQuery,
+        body: ChatQueryBody,
         endpoint: URL,
         onResult: @escaping @Sendable (ChatStreamResult) -> ()
     ) async throws {
         try await OpenAIStreamTransport().stream(
-            query: query,
+            body: body,
             url: endpoint,
             apiKey: apiKey,
             onResult: onResult
@@ -243,11 +245,11 @@ public class BaseOpenAIService: StreamService {
             let endpoint = try validateChatStreamRequest()
             result.isStreamFinished = false
 
-            let query = makeChatQuery(messages: messages)
+            let body = makeChatQuery(messages: messages, stream: usesStreamingTransport)
             if usesStreamingTransport {
-                return contentStream(for: query, endpoint: endpoint)
+                return contentStream(for: body, endpoint: endpoint)
             }
-            return nonStreamingTranslate(query: query, url: endpoint)
+            return nonStreamingTranslate(body: body, url: endpoint)
         } catch {
             return failedContentStream(error: error)
         }
@@ -260,7 +262,7 @@ public class BaseOpenAIService: StreamService {
     }
 
     private func contentStream(
-        for query: ChatQuery,
+        for body: ChatQueryBody,
         endpoint: URL
     )
         -> AsyncThrowingStream<String, any Error> {
@@ -274,7 +276,7 @@ public class BaseOpenAIService: StreamService {
                 defer { taskControl.finish(identifier: identifier) }
 
                 do {
-                    try await self.performChatResultStream(query: query, endpoint: endpoint) { result in
+                    try await self.performChatResultStream(body: body, endpoint: endpoint) { result in
                         if let content = result.choices.first?.delta.content {
                             continuation.yield(content)
                         }
@@ -324,7 +326,7 @@ public class BaseOpenAIService: StreamService {
 
     /// Perform a non-streaming chat completion, yielding the full response as a single chunk.
     private func nonStreamingTranslate(
-        query: ChatQuery,
+        body: ChatQueryBody,
         url: URL
     )
         -> AsyncThrowingStream<String, Error> {
@@ -341,7 +343,7 @@ public class BaseOpenAIService: StreamService {
 
                 do {
                     let request = try self.makeNonStreamingChatRequest(
-                        query: query,
+                        body: body,
                         url: url,
                         apiKey: apiKey
                     )
@@ -392,19 +394,16 @@ public class BaseOpenAIService: StreamService {
 
     /// Builds the HTTP request for a non-streaming OpenAI-compatible chat completion.
     /// - Parameters:
-    ///   - query: The chat completion query to encode.
+    ///   - body: The chat completion request body to encode.
     ///   - url: The provider endpoint URL.
     ///   - apiKey: The API token used by OpenAI-compatible providers.
     /// - Returns: A configured `URLRequest` ready for `URLSession`.
     private func makeNonStreamingChatRequest(
-        query: ChatQuery,
+        body: ChatQueryBody,
         url: URL,
         apiKey: String
     ) throws
         -> URLRequest {
-        var query = query
-        query.stream = false
-
         var request = URLRequest(
             url: url, timeoutInterval: AppConstants.llmRequestTimeoutInterval
         )
@@ -414,7 +413,7 @@ public class BaseOpenAIService: StreamService {
             request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
             request.setValue(apiKey, forHTTPHeaderField: "api-key")
         }
-        request.httpBody = try JSONEncoder().encode(query)
+        request.httpBody = try body.encoded()
         return request
     }
 

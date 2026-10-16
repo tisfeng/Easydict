@@ -24,12 +24,12 @@ struct OpenAIStreamTransport: Sendable {
     // MARK: Internal
 
     func stream(
-        query: ChatQuery,
+        body: ChatQueryBody,
         url: URL,
         apiKey: String,
         onResult: @escaping @Sendable (ChatStreamResult) -> ()
     ) async throws {
-        let request = try makeRequest(query: query, url: url, apiKey: apiKey)
+        let request = try makeRequest(body: body, url: url, apiKey: apiKey)
         let (bytes, response) = try await session.bytes(for: request)
 
         if let httpResponse = response as? HTTPURLResponse,
@@ -61,10 +61,7 @@ struct OpenAIStreamTransport: Sendable {
         }
     }
 
-    func makeRequest(query: ChatQuery, url: URL, apiKey: String) throws -> URLRequest {
-        var query = query
-        query.stream = true
-
+    func makeRequest(body: ChatQueryBody, url: URL, apiKey: String) throws -> URLRequest {
         var request = URLRequest(
             url: url, timeoutInterval: AppConstants.llmRequestTimeoutInterval
         )
@@ -74,7 +71,7 @@ struct OpenAIStreamTransport: Sendable {
             request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
             request.setValue(apiKey, forHTTPHeaderField: "api-key")
         }
-        request.httpBody = try JSONEncoder().encode(query)
+        request.httpBody = try body.encoded()
         return request
     }
 

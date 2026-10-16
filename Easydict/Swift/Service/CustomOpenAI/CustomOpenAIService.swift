@@ -28,6 +28,20 @@ class CustomOpenAIService: BaseOpenAIService {
 
     override var supportsStreamingToggle: Bool { true }
 
+    override var supportsExtraBody: Bool { true }
+
+    override var supportsReasoningEffort: Bool { true }
+
+    override var usesFreeformReasoningEffort: Bool { true }
+
+    /// Free-form value for the OpenAI-compatible `reasoning_effort` field. The
+    /// provider decides which strings it accepts, so the value is sent verbatim;
+    /// an empty value omits the field.
+    override var reasoningEffort: String? {
+        let effort = configuredReasoningEffortText
+        return effort.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : effort
+    }
+
     override func serviceTypeWithUniqueIdentifier() -> String {
         guard !uuid.isEmpty else {
             return ServiceType.customOpenAI.rawValue

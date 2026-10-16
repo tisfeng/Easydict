@@ -10,7 +10,6 @@ import Alamofire
 import Combine
 import Defaults
 import Foundation
-import OpenAI
 import SwiftUI
 
 // MARK: - StreamService
@@ -210,10 +209,10 @@ public class StreamService: QueryService {
 
     var hideThinkTagContent: Bool = true
 
-    /// The optional OpenAI-compatible reasoning mode for stream services.
+    /// Value for the OpenAI-compatible `reasoning_effort` request field; `nil` omits it.
     /// Subclasses can override this when the selected provider supports the parameter.
     @nonobjc
-    var reasoningEffort: ChatQuery.ReasoningEffort? {
+    var reasoningEffort: String? {
         nil
     }
 
@@ -420,10 +419,12 @@ public class StreamService: QueryService {
         set { Defaults[enableStreamingKey] = newValue }
     }
 
-    /// Whether this service exposes the shared reasoning effort picker and
-    /// sends the reasoning effort parameters. Defaults to `false`; services
-    /// that support reasoning override it to `true` and read `configuredReasoningEffort`
-    /// when building their request.
+    /// Whether this service exposes a reasoning effort setting and sends the
+    /// reasoning effort parameters. Defaults to `false`; services that support
+    /// reasoning override it to `true`. The base class uses the `off/high/max`
+    /// picker and `configuredReasoningEffort`; services that also override
+    /// `usesFreeformReasoningEffort` use a text field and
+    /// `configuredReasoningEffortText` instead.
     var supportsReasoningEffort: Bool {
         false
     }
@@ -437,6 +438,45 @@ public class StreamService: QueryService {
 
     var configuredReasoningEffort: ReasoningEffort {
         Defaults[reasoningEffortDefaultsKey]
+    }
+
+    /// Whether the reasoning effort setting is a free-form text field instead of
+    /// the shared `off/high/max` picker. Defaults to `false`; services whose
+    /// provider accepts arbitrary `reasoning_effort` strings override it to `true`
+    /// and read `configuredReasoningEffortText` when building their request.
+    var usesFreeformReasoningEffort: Bool {
+        false
+    }
+
+    /// Storage key for the free-form reasoning effort. Uses its own slot rather
+    /// than `reasoningEffort`, which holds the incompatible `ReasoningEffort` enum.
+    /// An empty value means the request omits `reasoning_effort`.
+    var reasoningEffortTextKey: Defaults.Key<String> {
+        stringDefaultsKey(.reasoningEffortText)
+    }
+
+    var configuredReasoningEffortText: String {
+        Defaults[reasoningEffortTextKey]
+    }
+
+    /// Whether this service exposes the extra request body JSON editor. Defaults to
+    /// `false`; services whose endpoints accept unmodeled fields override it to `true`.
+    var supportsExtraBody: Bool {
+        false
+    }
+
+    /// Storage key for the user-provided extra request body JSON.
+    var extraBodyJSONKey: Defaults.Key<String> {
+        stringDefaultsKey(.extraBody)
+    }
+
+    var extraBodyJSON: String {
+        Defaults[extraBodyJSONKey]
+    }
+
+    /// Extra body wrapper built from the stored JSON text.
+    var extraBody: ExtraBody {
+        ExtraBody(json: extraBodyJSON)
     }
 
     /// Optional guidance displayed below the locally available model choices.
