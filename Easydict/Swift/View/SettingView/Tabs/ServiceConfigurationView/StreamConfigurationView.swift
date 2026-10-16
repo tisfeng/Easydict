@@ -153,11 +153,23 @@ struct StreamConfigurationView: View {
             }
 
             if service.supportsReasoningEffort {
-                StaticPickerCell(
-                    titleKey: "service.configuration.reasoning_effort.title",
-                    key: service.reasoningEffortDefaultsKey,
-                    values: ReasoningEffort.allCases
-                )
+                if service.usesFreeformReasoningEffort {
+                    InputCell(
+                        textFieldTitleKey: "service.configuration.reasoning_effort.title",
+                        key: service.reasoningEffortTextKey,
+                        placeholder: "service.configuration.reasoning_effort.placeholder"
+                    )
+                } else {
+                    StaticPickerCell(
+                        titleKey: "service.configuration.reasoning_effort.title",
+                        key: service.reasoningEffortDefaultsKey,
+                        values: ReasoningEffort.allCases
+                    )
+                }
+            }
+
+            if service.supportsExtraBody {
+                ExtraBodyEditor(key: service.extraBodyJSONKey)
             }
 
             if showCustomPromptSection {
@@ -537,4 +549,40 @@ private struct RemoteModelRow: Identifiable {
     let id: String
     let exists: Bool
     let groupName: String?
+}
+
+// MARK: - ExtraBodyEditor
+
+/// Extra request body JSON editor with an inline validity hint.
+private struct ExtraBodyEditor: View {
+    // MARK: Lifecycle
+
+    init(key: Defaults.Key<String>) {
+        self.key = key
+        _json = .init(key)
+    }
+
+    // MARK: Internal
+
+    let key: Defaults.Key<String>
+
+    @Default var json: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            TextEditorCell(
+                titleKey: "service.configuration.custom_openai.extra_body.title",
+                storedValueKey: key,
+                placeholder: "service.configuration.custom_openai.extra_body.placeholder",
+                footnote: "service.configuration.custom_openai.extra_body.footnote",
+                minHeight: 80
+            )
+
+            if !ExtraBody(json: json).isValid {
+                Text("service.configuration.custom_openai.extra_body.invalid_json")
+                    .font(.footnote)
+                    .foregroundStyle(.red)
+            }
+        }
+    }
 }

@@ -9259,6 +9259,166 @@
         }
       }
     },
+    "service.configuration.custom_openai.extra_body.footnote" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON object merged into the top-level request body, alongside \"model\"; fields already set by the app take precedence."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objeto JSON combinado en el cuerpo de la solicitud de nivel superior, junto a \"model\"; los campos ya establecidos por la app tienen prioridad."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リクエストボディの最上位に \"model\" と同じ階層でマージされる JSON オブジェクト。アプリが設定済みのフィールドが優先されます。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objekt JSON zlúčený do tela požiadavky na najvyššej úrovni, vedľa \"model\"; polia už nastavené aplikáciou majú prednosť."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "合并到请求体顶层的 JSON 对象，与 \"model\" 同级；应用已设置的字段优先。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "合併到請求體頂層的 JSON 物件，與 \"model\" 同級；應用程式已設定的欄位優先。"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.extra_body.invalid_json" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid JSON object"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objeto JSON no válido"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON オブジェクトが無効です"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neplatný objekt JSON"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON 对象无效"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON 物件無效"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.extra_body.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{\"enable_thinking\": false}"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{\"enable_thinking\": false}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{\"enable_thinking\": false}"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{\"enable_thinking\": false}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{\"enable_thinking\": false}"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{\"enable_thinking\": false}"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.extra_body.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra Body (JSON)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuerpo adicional (JSON)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加ボディ (JSON)"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodatočné telo (JSON)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "额外请求体 (JSON)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "額外請求體 (JSON)"
+          }
+        }
+      }
+    },
     "service.configuration.custom_openai.model.placeholder" : {
       "localizations" : {
         "en" : {
@@ -10815,6 +10975,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用戶 Prompt"
+          }
+        }
+      }
+    },
+    "service.configuration.reasoning_effort.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For example: low, medium, high"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por ejemplo: low, medium, high"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "例：low、medium、high"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Napríklad: low, medium, high"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "例如：low、medium、high"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "例如：low、medium、high"
           }
         }
       }
