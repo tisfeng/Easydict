@@ -161,12 +161,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
         CGFloat width = self.scrollView.contentSize.width;
         if (fabs(width - self.lastLayoutWidth) < EZLayoutGeometryTolerance_0_5) {
-            // A height-only resize keeps the content layout, so only restore the content-fitting height.
-            NSWindow *window = self.baseQueryWindow ?: self.view.window;
-            CGRect fittingFrame = [self windowFrameFittingContentHeight:[self getScrollViewContentHeight] inWindow:window];
-            if (window && fabs(window.height - CGRectGetHeight(fittingFrame)) >= EZLayoutGeometryTolerance_0_5) {
-                [self updateWindowHeight];
-            }
             return;
         }
         self.lastLayoutWidth = width;
@@ -1823,44 +1817,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self updateTableViewHeight];
 
     CGFloat tableViewHeight = [self getScrollViewContentHeight];
-    CGRect safeFrame = [self windowFrameFittingContentHeight:tableViewHeight inWindow:window];
-
-    if (ez_frame_equal_with_tolerance(window.frame,
-                                      safeFrame,
-                                      EZLayoutGeometryTolerance_0_5)) {
-        return;
-    }
-
-    BOOL animate = window.isVisible && !window.inLiveResize &&
-        !NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion;
-    self.lastLayoutWidth = self.scrollView.contentSize.width;
-    self.isUpdatingWindowFrameInternally = YES;
-    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
-        context.duration = animate ? EZWindowHeightAnimationDuration : 0;
-        context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-        if (animate) {
-            [[window animator] setFrame:safeFrame display:NO];
-        } else {
-            [window setFrame:safeFrame display:YES];
-        }
-    } completionHandler:^{
-        // Newly visible cells can measure their content during the window animation.
-        [self updateTableViewHeight];
-        BOOL contentHeightChanged = fabs([self getScrollViewContentHeight] - tableViewHeight) >= EZLayoutGeometryTolerance_0_5;
-        self.isUpdatingWindowFrameInternally = NO;
-        [self restoreFirstResponderIfWindowIsKey];
-        if (self.resizeWindowBlock) {
-            self.resizeWindowBlock();
-        }
-        if (self.needsWindowHeightUpdate || contentHeightChanged) {
-            // Updates received during the animation have already been coalesced.
-            [self applyWindowHeight];
-        }
-    }];
-}
-
-/// Window frame that fits the table content, restrained by the window size limits and the current screen.
-- (CGRect)windowFrameFittingContentHeight:(CGFloat)tableViewHeight inWindow:(NSWindow *)window {
     CGFloat height = [self getRestrainedScrollViewHeight:tableViewHeight];
     //    MMLogInfo(@"getRestrainedScrollViewHeight: %@", @(height));
 
@@ -1890,7 +1846,57 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     // cross-screen drags better than our own first-intersect lookup.
     NSScreen *currentScreen = window.screen ?: [EZCoordinateUtils screenForRect:newFrame] ?: NSScreen.mainScreen;
     CGRect screenVisibleFrame = currentScreen.visibleFrame;
-    return [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
+    CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
+    CGFloat targetHeight = CGRectGetHeight(safeFrame);
+
+    if (ez_frame_equal_with_tolerance(window.frame,
+                                      safeFrame,
+                                      EZLayoutGeometryTolerance_0_5)) {
+        [self limitHeightOfWindow:window from:targetHeight to:targetHeight];
+        return;
+    }
+
+    // Keep both heights reachable while the frame animates between them.
+    [self limitHeightOfWindow:window
+                         from:MIN(window.height, targetHeight)
+                           to:MAX(window.height, targetHeight)];
+
+    BOOL animate = window.isVisible && !window.inLiveResize &&
+        !NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion;
+    self.lastLayoutWidth = self.scrollView.contentSize.width;
+    self.isUpdatingWindowFrameInternally = YES;
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+        context.duration = animate ? EZWindowHeightAnimationDuration : 0;
+        context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+        if (animate) {
+            [[window animator] setFrame:safeFrame display:NO];
+        } else {
+            [window setFrame:safeFrame display:YES];
+        }
+    } completionHandler:^{
+        [self limitHeightOfWindow:window from:targetHeight to:targetHeight];
+
+        // Newly visible cells can measure their content during the window animation.
+        [self updateTableViewHeight];
+        BOOL contentHeightChanged = fabs([self getScrollViewContentHeight] - tableViewHeight) >= EZLayoutGeometryTolerance_0_5;
+        self.isUpdatingWindowFrameInternally = NO;
+        [self restoreFirstResponderIfWindowIsKey];
+        if (self.resizeWindowBlock) {
+            self.resizeWindowBlock();
+        }
+        if (self.needsWindowHeightUpdate || contentHeightChanged) {
+            // Updates received during the animation have already been coalesced.
+            [self applyWindowHeight];
+        }
+    }];
+}
+
+/// Users may only resize the window width; its height follows the content and the maximum window height.
+- (void)limitHeightOfWindow:(NSWindow *)window from:(CGFloat)minHeight to:(CGFloat)maxHeight {
+    CGFloat minimumWidth = [EZLayoutManager.shared minimumWindowSize:self.windowType].width;
+    window.minSize = CGSizeMake(minimumWidth, minHeight);
+    // Keep the system's unlimited default width.
+    window.maxSize = CGSizeMake(FLT_MAX, maxHeight);
 }
 
 - (void)restoreFirstResponderIfWindowIsKey {

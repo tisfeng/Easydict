@@ -1,4 +1,4 @@
-## 2026-10-18 | 任务：恢复查询窗口仅改高度时的内容高度适配
+## 2026-10-18 | 任务：禁止手动修改查询窗口高度
 
 **Links:** [PR #1327](https://github.com/tisfeng/Easydict/pull/1327)
 
@@ -10,28 +10,31 @@
 
 ### 用户请求
 
-修复 PR #1327 审查发现的 F1：移除 scroll view 高度约束后，用户可以只拖动窗口上下边缘改变
-高度，窗口不再回到内容适配高度。
+修复 PR #1327 审查发现的 F1：移除 scroll view 高度约束后，用户可以拖动窗口上下边缘改变
+高度。首次修复（松手后恢复内容高度）体验不佳，用户要求完全禁止手动修改高度，窗口高度只由
+最大窗口高度和翻译结果内容高度决定。
 
 ### 变更
 
-- `resizeWindowBlock` 在宽度未变化时，比较窗口高度与内容适配高度；不一致时调用
-  `updateWindowHeight`，拖动中经 `inLiveResize` 分支立即恢复高度。
-- 从 `applyWindowHeight` 提取 `windowFrameFittingContentHeight:inWindow:`，让窗口动画与
-  resize 校验共用同一目标 frame 计算。
+- 撤销首次修复 `c68d112e` 中 `resizeWindowBlock` 的高度回弹逻辑和抽取的 frame 计算 helper。
+- `applyWindowHeight` 通过新增的 `limitHeightOfWindow:from:to:` 设置窗口 `minSize`/`maxSize`：
+  frame 已匹配或动画结束时将高度上下限都设为内容适配高度；动画期间临时放宽到新旧高度之间。
+- 宽度下限沿用 `minimumWindowSize` 的宽度，宽度上限保持系统默认的不限制。
 - 本次为单文件局部修复，不创建执行计划或新增测试。
 
 ### 设计意图
 
-PR 用窗口外框动画替代旧的 `DefaultHigh` 高度约束，旧约束曾阻止手动改变窗口高度。仅高度
-变化不影响内容布局，因此不重新加载表格，只在高度偏离内容适配值时走既有的高度更新流程，
-保留 PR 的宽度判断和动画合并逻辑。
+旧版靠 `DefaultHigh` 高度约束压过用户拖动的布局优先级来锁定高度，但该约束会与 PR 的窗口外框
+动画冲突。`minSize`/`maxSize` 只约束用户拖动和 zoom，程序侧的 `setFrame:display:` 与动画不受
+影响，因此能在保留动画的前提下让用户只能调整宽度；动画期间放宽区间，即使 AppKit 对中间帧
+施加限制也不会截断动画。
 
 ### 验证
 
 - `git diff --check`：通过。
 - `xcodebuild test -only-testing:EasydictTests/ReverseTranslationTests -only-testing:EasydictTests/MarkdownRendererTests`：Test Succeeded。
-- 手动检查：未执行；拖动窗口上下边缘后的回弹效果尚未在 App 中确认。
+- 手动检查：未执行；上下边缘是否完全不可拖动、光标是否只显示水平调整，以及宽度拖动和高度
+  动画是否正常，尚未在 App 中确认。
 
 ### 受影响文件
 
@@ -40,4 +43,4 @@ PR 用窗口外框动画替代旧的 `DefaultHigh` 高度约束，旧约束曾�
 
 ### 后续事项
 
-- 在 App 中手动拖动查询窗口上下边缘，确认拖动中或松手后回到内容高度，且无明显抖动。
+- 在 App 中手动确认上下边缘无法拖动、宽度可调且结果更新时高度动画正常。
