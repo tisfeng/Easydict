@@ -34,10 +34,22 @@ enum CodexReasoningEffort: String, CaseIterable, Defaults.Serializable {
     /// Specific local models may support fewer levels; default leaves that choice to CLI.
     static let localOptions: [Self] = [.default, .minimal, .low, .medium, .high, .xhigh]
 
+    /// Candidate overrides understood by the modern component, not model capabilities.
+    /// Custom models verify an override before saving it. Ultra is excluded because
+    /// the component rewrites it and may enable delegation rather than forwarding it.
+    static let customOptions: [Self] = [.default, .low, .medium, .high, .xhigh, .max]
+
     /// The CLI value to pass via `-c model_reasoning_effort=<value>`.
     /// `nil` for `.default`, which signals "do not override the user's config".
     var cliValue: String? {
         self == .default ? nil : rawValue
+    }
+
+    static func validateCustomOverride(_ value: String?) throws {
+        guard let value else { return }
+        guard let effort = Self(rawValue: value), effort != .default,
+              customOptions.contains(effort)
+        else { throw CodexCLIError.unsupportedReasoningEffort }
     }
 
     static func validateLocalOverride(_ value: String?) throws {

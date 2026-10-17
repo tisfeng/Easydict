@@ -33,6 +33,10 @@ Astra、Sol、Terra、Luna 与 gpt-5.5。组件历史目录中的存在不等于
 旧版仍存在不访问外部资源的 plan/request-input handler；新版通过对应的 tools 配置关闭。
 认证共用稳定 CODEX_HOME 与官方 Keychain，SQLite 和日志按组件版本分开。
 
+自定义模型使用独立 App Server 和明确的文本目录，沿用官方登录；不复制其他模型能力。
+模型 ID 和手动推理强度须经实际翻译验证后保存。目录声明仅用于传递请求，不代表兼容性证据。
+自定义请求结束后关闭其进程，取消不影响其他请求。新协议仍可能需要更新组件或应用。
+
 ## 无账户隔离探针
 
 `verify-isolation.py` 启动本机回环 Responses fixture，强制返回工具调用。它只使用

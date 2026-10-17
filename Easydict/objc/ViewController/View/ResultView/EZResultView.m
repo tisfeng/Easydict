@@ -471,6 +471,13 @@
         [menu addItem:NSMenuItem.separatorItem];
         [menu addItem:[[NSMenuItem alloc] initWithTitle:hint action:nil keyEquivalent:@""]];
     }
+    if ([service isKindOfClass:EZCodexCLIService.class]) {
+        NSMenuItem *fastMode = [(EZCodexCLIService *)service fastModeMenuItem];
+        if (fastMode) {
+            [menu addItem:NSMenuItem.separatorItem];
+            [menu addItem:fastMode];
+        }
+    }
     [menu popUpBelowView:sender];
 }
 

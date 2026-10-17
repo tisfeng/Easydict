@@ -53,6 +53,24 @@ If the Team ID cannot be detected, run `./scripts/setup-team.sh ABC123DE45`. Wit
 certificate, use `./scripts/setup-team.sh --adhoc`. Remove the local configuration with
 `./scripts/setup-team.sh --uninstall`.
 
+## Custom Codex models
+
+On macOS 15+, open Codex **Advanced settings** in ChatGPT sign-in mode. Enter an exact
+**Model ID** and choose **Add and Verify**. A short translation must succeed before the
+ID is saved to the model picker. Adding an entry preserves the current selection unless the list is empty.
+
+Custom models default to automatic reasoning. Other levels are verified before saving;
+failure preserves the previous value. Open **Model** and click the **×** on an entry to remove it.
+Removing an unselected entry preserves the active settings.
+Built-in entries are hidden; enter their ID and use **Add and Verify** to restore them.
+Removal selects a remaining model, preferring the last working selection. If the list is empty,
+add a model to continue. Use **Test Connection** to recheck the selected settings.
+Saved entries do not guarantee continued availability or compatibility with future protocols.
+
+Fast mode requests faster processing and can be toggled in **Advanced settings** or the
+translation result's **Model** menu. Both controls use the same setting. Availability and
+usage depend on your account.
+
 ## Basic usage
 
 | Action | Default shortcut | Result |
