@@ -293,10 +293,11 @@ struct CodexCLIServiceConfigurationView: View {
         guard canAddModel else { return }
         additionResult = nil
         let model = candidateModel
+        let selectAddedModel = !isManagedModelSupported
         account.addCustomModel(model, configuration: CodexServiceConfiguration(uuid: service.uuid)) { result in
             if case .success = result {
                 newModelID = ""
-                if managedModel.isEmpty {
+                if selectAddedModel {
                     service.model = model
                     managedEffort = .default
                 }

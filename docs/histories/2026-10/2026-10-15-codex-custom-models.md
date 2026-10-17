@@ -18,6 +18,7 @@ Add compatible model IDs and Fast controls in one PR, retaining the independent 
 - Share Fast between settings and the translation model menu, preserving model and effort.
 - Pass Fast through built-in/custom translation and account verification; invalidate stale requests for the affected service.
 - Keep the native centered input, text-only isolation and component/configuration rechecks.
+- Declare custom priority tiers and select verified additions when the previous selection is unavailable.
 - Update six locales and both user guides without replacing unrelated dev-branch behavior.
 
 ### Design
@@ -29,6 +30,8 @@ Custom requests use private App Servers and existing official login. Fast select
 - Combined build and 33 existing tests passed.
 - Four local transport cases confirmed Fast on/off for built-in/custom profiles; shared controls and scoped invalidation passed.
 - Eight model removal/restoration cases passed with Fast preserved.
+- Component 0.153.4 ignored custom Fast before the tier declaration; it accepted priority/default afterward without account access or translation requests.
+- Seven local selection checks passed, including stale IDs, hidden selections, failure and cancellation; valid selections and Fast were preserved.
 - Earlier native preview input and runtime-cache rejection checks remain applicable. Full account/runtime suites were not repeated after the fixture-copy stall.
 - SwiftFormat, six-locale coverage, JSON and diff checks passed. Validation tools remain local.
 

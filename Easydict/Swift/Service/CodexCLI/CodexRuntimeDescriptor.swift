@@ -161,6 +161,9 @@ struct CodexModelCatalog: Decodable {
             "visibility": "list",
             "supported_in_api": true,
             "priority": 0,
+            "service_tiers": [[
+                "id": "priority", "name": "Fast", "description": "Faster processing, increased usage",
+            ]],
             "support_verbosity": false,
             "truncation_policy": ["mode": "tokens", "limit": 10000],
             "experimental_supported_tools": [],

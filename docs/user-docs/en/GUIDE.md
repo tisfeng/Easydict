@@ -57,7 +57,8 @@ certificate, use `./scripts/setup-team.sh --adhoc`. Remove the local configurati
 
 On macOS 15+, open Codex **Advanced settings** in ChatGPT sign-in mode. Enter an exact
 **Model ID** and choose **Add and Verify**. A short translation must succeed before the
-ID is saved to the model picker. Adding an entry preserves the current selection unless the list is empty.
+ID is saved to the model picker. Adding an entry preserves a valid current selection;
+otherwise the verified model is selected.
 
 Custom models default to automatic reasoning. Other levels are verified before saving;
 failure preserves the previous value. Open **Model** and click the **×** on an entry to remove it.
