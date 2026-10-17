@@ -49,13 +49,15 @@ Users need to add compatible new model IDs and control Fast processing with Chat
 - [x] Verify and fix custom Fast tier admission on component 0.153.4.
 - [x] Repair automatic selection after empty-list recovery; build and review.
 
+- [x] Include reasoning compatibility in recovery selection and revalidate.
+
 ## Validation
 
 - Combined build succeeded; 33 existing tests in four suites passed.
 - Four local transport cases confirmed priority/default parameters for built-in and custom profiles, preserving model and effort.
 - Local checks confirmed shared Fast controls, scoped invalidation and no managed Fast menu in local CLI mode.
 - Eight model removal/restoration cases passed against the combined build, preserving Fast.
-- Review follow-up: 0.153.4 accepted custom priority/default tiers after the fix; seven local selection checks passed and 33 existing tests passed again.
+- Review follow-up: 0.153.4 accepted custom priority/default tiers after the fix; fourteen local selection checks passed, including unsupported saved efforts, and 33 existing tests passed again.
 - Earlier isolated cache checks rejected changed components/configuration; native preview input checks passed.
 - Full account/runtime suites were not repeated after the earlier fixture-copy stall. Validation tools remain local.
 - SwiftFormat, six-locale coverage, JSON and diff checks passed.
