@@ -130,6 +130,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)viewWillAppear {
     [super viewWillAppear];
 
+    // The window may still have the frame saved from the last session; fit it before it is on screen.
+    if (!self.isUpdatingWindowFrameInternally) {
+        [self applyWindowHeightAnimated:NO];
+    }
+
     [EZAnalyticsService logWindowAppear:self.windowType];
 }
 
@@ -1807,6 +1812,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)applyWindowHeight {
+    [self applyWindowHeightAnimated:YES];
+}
+
+- (void)applyWindowHeightAnimated:(BOOL)allowsAnimation {
     self.needsWindowHeightUpdate = NO;
     NSWindow *window = self.baseQueryWindow ?: self.view.window;
     if (!window) {
@@ -1861,7 +1870,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
                          from:MIN(window.height, targetHeight)
                            to:MAX(window.height, targetHeight)];
 
-    BOOL animate = window.isVisible && !window.inLiveResize &&
+    BOOL animate = allowsAnimation && window.isVisible && !window.inLiveResize &&
         !NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion;
     self.lastLayoutWidth = self.scrollView.contentSize.width;
     self.isUpdatingWindowFrameInternally = YES;
