@@ -1913,6 +1913,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)updateWindowHeightWithLock:(BOOL)lockFlag {
     if (self.glassMiniPresentation) {
+        [self.glassMiniPresentation updateMaximumHeight];
         return;
     }
     if (lockFlag) {
@@ -2073,7 +2074,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     [service setAutoCopyTranslatedTextBlock:^(EZQueryResult *result, NSError *error) {
-        if (!result.htmlString.length) {
+        // Glass dictionary text can be ready before this completion block runs.
+        if (!result.htmlString.length || result.copiedText.length > 0) {
             [result.copiedText copyToPasteboard];
             return;
         }

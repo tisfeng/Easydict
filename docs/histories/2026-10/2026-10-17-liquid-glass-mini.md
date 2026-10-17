@@ -75,6 +75,16 @@
 - review 核对固定/非固定、手动/自动、同文/新文、旧网络与语言检测回调代次、HTML 解析取消及 ready 按钮；源码摘要复验一致，无进一步有效 finding。
 - 未新增或扩写测试，现有测试不直接覆盖该固定窗口交互；界面工具超时，手动划词场景尚未完成视觉验收。
 
+### 2026-10-18：词典自动复制与最大高度修复
+
+- [C3 词典复制结果遗漏](https://github.com/tisfeng/Easydict/pull/1365#discussion_r4303618711)：玻璃窗口的同步 innerTexts 和异步 HTML 解析成功后，统一写回 copiedText 与 translatedResults，并完成已注册的 HTML 回调。回调调用前清空，避免布局刷新重复调用；取消的解析任务不写回结果。
+- 自动复制入口同时识别已就绪的 HTML 纯文本，解决 Apple 词典文本先就绪、自动复制稍后注册的时序。未开启自动复制时只填充结果模型，不因此写入剪贴板；手动复制入口保留。
+- [C4 忽略最大高度设置](https://github.com/tisfeng/Easydict/pull/1365#discussion_r4303618718)：使用当前窗口所在屏幕的可用高度，取用户配置上限和既有 65% 上限的较小值，并保留布局管理器的最小高度保护。现有高度设置通知转发到玻璃呈现层，立即重算内容窗口，加载胶囊不展开。
+- 达到上限后保留 NSScrollView 内部滚动；沿用 3 点宽、30% 不透明度、无轨道的圆角 overlay 滑块，支持深浅色、自动隐藏、滚轮、触控板及拖动。无需新增滚动容器或修改滚动条外观。
+- Xcode 27.1 Debug arm64 build-for-testing 成功，MDictReaderTests、ReverseTranslationTests、OpenAIStreamTaskControlTests 共 32 项既有测试通过；SwiftLint 和 git diff --check 通过。首次构建的 Swift 单例访问语法错误已修正并重新验证。
+- 使用 review 技能审查基线 `3874bc8efa6d48c98e43ff18e81cd4a8726d30a6` 到本轮生产差异：同步/异步完成顺序、回调生命周期、旧任务取消、经典模式影响、设置通知、当前屏幕和滚动布局；验证后源码摘要复验一致，无进一步有效 finding。复用既有复制与布局链路已足够，无需另建剪贴板或滚动机制。
+- 未新增或扩写测试。既有测试不直接覆盖系统剪贴板及高度设置交互，MDict 外部词典集成用例缺少路径配置会提前返回；界面读取工具仍超时，因此没有将真实词典复制与动态限高记为已完成视觉验收。
+
 ### 受影响文件
 
 - `Easydict/Swift/View/Window/GlassMiniConfiguration.swift`

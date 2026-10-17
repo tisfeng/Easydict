@@ -119,7 +119,7 @@ final class GlassMiniPresentation: NSObject {
         result.isLoading = false
         resultTask?.cancel()
         if let text = GlassMiniResultText.plainText(from: result) {
-            showResult(text)
+            showResult(text, result: result)
             return
         }
 
@@ -132,8 +132,14 @@ final class GlassMiniPresentation: NSObject {
             }.value
             // A newer query, service change, mode switch, or close invalidates this result.
             guard !Task.isCancelled else { return }
-            self?.showResult(text)
+            self?.showResult(text, result: result)
         }
+    }
+
+    /// Reapply the height preference without interrupting the loading capsule.
+    func updateMaximumHeight() {
+        guard state.phase != .loading else { return }
+        showContent(animated: false)
     }
 
     func cancelAnimation() {
@@ -155,10 +161,18 @@ final class GlassMiniPresentation: NSObject {
     private let originalMinimum: NSSize
     private let originalFrame: NSRect
 
-    private func showResult(_ text: String) {
+    private func showResult(_ text: String, result: QueryResult) {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             showError(NSLocalizedString("glass.mini.no_result", comment: ""))
             return
+        }
+        // Match the classic dictionary view's copy contract after text extraction.
+        if result.htmlString?.isEmpty == false {
+            result.copiedText = text
+            result.translatedResults = [text]
+            let completion = result.didFinishLoadingHTMLBlock
+            result.didFinishLoadingHTMLBlock = nil
+            completion?()
         }
         state.phase = .result
         state.text = text
@@ -176,7 +190,11 @@ final class GlassMiniPresentation: NSObject {
             options: [.usesLineFragmentOrigin, .usesFontLeading],
             attributes: [.font: NSFont.systemFont(ofSize: 16), .paragraphStyle: paragraph]
         )
-        let height = min(max(ceil(bounds.height) + 90, 124), screen.height * 0.65)
+        let percentage = CGFloat(MyConfiguration.shared.maxWindowHeightPercentage) / 100
+        let minimumHeight = EZLayoutManager.shared().minimumWindowSize(.mini).height
+        let configuredMaximum = max(minimumHeight, screen.height * percentage)
+        let maximumHeight = min(screen.height * 0.65, configuredMaximum)
+        let height = min(max(ceil(bounds.height) + 90, 124), maximumHeight)
         state.contentVisible = !animated
         animator.resize(window, to: NSSize(width: width, height: height), animated: animated) { [weak self] in
             guard let self else { return }
