@@ -56,7 +56,8 @@ actor CodexManagedAppServer {
         -> CodexManagedTranslation.Result {
         try Task.checkCancellation()
         guard !translation.isCancelled() else { throw CancellationError() }
-        try CodexManagedRuntime.validateSelection(model: translation.model, effort: translation.effort)
+        try CodexModelCatalog.load(at: translation.runtime.catalogURL)
+            .validate(model: translation.model, effort: translation.effort)
 
         idleTask?.cancel()
         idleTask = nil

@@ -65,4 +65,7 @@ enum ServiceConfigurationKey: String {
     case codexAccessMode
     case codexManagedModel
     case codexManagedReasoningEffort
+    case codexManagedCustomModels
+    case codexManagedHiddenModels
+    case codexManagedLastVerifiedSelection
 }

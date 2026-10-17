@@ -21,6 +21,9 @@ struct CodexServiceConfiguration: Equatable {
         self.mode = Defaults[CodexAccessMode.key(uuid: uuid)]
         self.model = Defaults[Self.modelKey(uuid: uuid, mode: mode)]
         self.effort = Defaults[Self.effortKey(uuid: uuid, mode: mode)]
+        self.isCustomModel = mode == .managed && CodexRuntimeRelease.current == .modern
+            && !CodexManagedRuntime.bundledModelNames.contains(model)
+            && Defaults[Self.customModelsKey(uuid: uuid)].contains(model)
     }
 
     // MARK: Internal
@@ -29,13 +32,46 @@ struct CodexServiceConfiguration: Equatable {
     let mode: CodexAccessMode
     let model: String
     let effort: CodexReasoningEffort
+    let isCustomModel: Bool
+
+    static func customModelsKey(uuid: String) -> Defaults.Key<[String]> {
+        serivceConfigurationKey(.codexManagedCustomModels, serviceType: .codexCLI, id: uuid, defaultValue: [])
+    }
+
+    static func hiddenModelsKey(uuid: String) -> Defaults.Key<[String]> {
+        serivceConfigurationKey(.codexManagedHiddenModels, serviceType: .codexCLI, id: uuid, defaultValue: [])
+    }
+
+    static func lastVerifiedKey(uuid: String) -> Defaults.Key<[String: String]> {
+        serivceConfigurationKey(
+            .codexManagedLastVerifiedSelection, serviceType: .codexCLI, id: uuid, defaultValue: [:]
+        )
+    }
+
+    static func models(uuid: String) -> [String] {
+        var models = CodexManagedRuntime.bundledModelNames
+        if CodexRuntimeRelease.current == .modern {
+            for model in Defaults[customModelsKey(uuid: uuid)]
+                where CodexModelCatalog.isValidModelID(model) && !models.contains(model) {
+                models.append(model)
+            }
+        }
+        if CodexRuntimeRelease.current == .modern {
+            let hidden = Set(Defaults[hiddenModelsKey(uuid: uuid)])
+            models.removeAll { hidden.contains($0) }
+        }
+        return models
+    }
 
     static func reasoningEfforts(mode: CodexAccessMode, model: String) -> [CodexReasoningEffort] {
         switch mode {
         case .localCLI: CodexReasoningEffort.localOptions
         case .managed:
-            [.default] + (CodexManagedRuntime.bundledCatalog?.models.first { $0.slug == model }?
-                .supported_reasoning_levels.compactMap { CodexReasoningEffort(rawValue: $0.effort) } ?? [])
+            if let entry = CodexManagedRuntime.bundledCatalog?.models.first(where: { $0.slug == model }) {
+                [.default] + entry.supported_reasoning_levels.compactMap { CodexReasoningEffort(rawValue: $0.effort) }
+            } else {
+                CodexRuntimeRelease.current == .modern ? CodexReasoningEffort.customOptions : [.default]
+            }
         }
     }
 
@@ -55,6 +91,40 @@ struct CodexServiceConfiguration: Equatable {
             id: uuid,
             defaultValue: .default
         )
+    }
+
+    /// Removes a visible entry without changing an unrelated selection or the runtime catalog.
+    func removeModel(_ removedModel: String) {
+        guard mode == .managed, CodexRuntimeRelease.current == .modern,
+              self == Self(uuid: uuid), Self.models(uuid: uuid).contains(removedModel) else { return }
+        let verified = Defaults[Self.lastVerifiedKey(uuid: uuid)]
+        if model == removedModel {
+            let remaining = Self.models(uuid: uuid).filter { $0 != removedModel }
+            let previous = verified["model"].flatMap { remaining.contains($0) ? $0 : nil }
+            let fallback = previous ?? (remaining.contains(CodexManagedRuntime.defaultModel)
+                ? CodexManagedRuntime.defaultModel : remaining.first ?? "")
+            let effort = previous == nil ? CodexReasoningEffort.default
+                : verified["effort"].flatMap(CodexReasoningEffort.init(rawValue:)) ?? .default
+            Defaults[Self.modelKey(uuid: uuid, mode: .managed)] = fallback
+            Defaults[Self.effortKey(uuid: uuid, mode: .managed)] = Self.reasoningEfforts(
+                mode: .managed,
+                model: fallback
+            )
+            .contains(effort) ? effort : .default
+        }
+        if CodexManagedRuntime.bundledModelNames.contains(removedModel) {
+            let key = Self.hiddenModelsKey(uuid: uuid)
+            if !Defaults[key].contains(removedModel) { Defaults[key].append(removedModel) }
+        } else {
+            Defaults[Self.customModelsKey(uuid: uuid)].removeAll { $0 == removedModel }
+        }
+        if verified["model"] == removedModel { Defaults[Self.lastVerifiedKey(uuid: uuid)] = [:] }
+    }
+
+    /// A recovery preference records success, not a permanent account entitlement.
+    func rememberSuccessfulSelection() {
+        guard mode == .managed, self == Self(uuid: uuid) else { return }
+        Defaults[Self.lastVerifiedKey(uuid: uuid)] = ["model": model, "effort": effort.rawValue]
     }
 }
 
