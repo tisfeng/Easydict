@@ -856,6 +856,13 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 /// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)queryType {
     if (self.glassMiniPresentation) {
+        if (![(self.inputText ?: @"") isEqualToString:(text ?: @"")]) {
+            // Pinned windows skip resetTableView, and manual queries may never call startQueryText.
+            // Invalidate old callbacks before replacing their input, then expose the Translate action.
+            [self cancelMiniWindowQuery];
+            [self resetAllResults];
+            [self.glassMiniPresentation showReady];
+        }
         // The detached input view no longer updates the query model through its text delegate.
         self.inputText = text;
         self.queryModel.actionType = queryType;

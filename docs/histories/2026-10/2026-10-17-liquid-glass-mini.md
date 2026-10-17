@@ -66,6 +66,15 @@
 - 新增/修改的 Swift 文件通过 SwiftLint，git diff --check 与工程 plutil 校验通过。手动运行 Foundation HTML 解析检查实体、段落与 srcdoc 保留；未新增或扩写测试。
 - 使用 review 技能检查新适配器、调用者和生命周期，验证后重新核对生产文件摘要，无进一步有效 finding。真实 Apple/MDict 的窗口视觉效果与新适配器边界仍未直接覆盖。
 
+### 2026-10-18：固定窗口手动查询状态修复
+
+- [C2 固定玻璃窗口未重置](https://github.com/tisfeng/Easydict/pull/1365#discussion_r4301904889) 成立：关闭自动查询后，固定窗口接收新选中文字时跳过 resetTableView 与 startQueryText，只更新隐藏输入，旧结果及进行中的请求仍可能保留。
+- 在玻璃输入更新入口比较新旧文本；变化时先递增查询代次、停止旧服务并取消呈现任务，再清空结果并进入 ready 状态，显示现有“翻译”按钮，然后更新输入及 actionType。
+- 重复输入保持当前结果；自动查询仍由原调用者启动；经典窗口路径不变。复用已有取消与 ready 逻辑，无新 UI、配置或本地化。
+- Xcode 27.1 (27A9275) Debug arm64 build-for-testing 成功；test-without-building 的 ReverseTranslationTests、OpenAIStreamTaskControlTests 共 10 项既有测试通过，git diff --check 通过。
+- review 核对固定/非固定、手动/自动、同文/新文、旧网络与语言检测回调代次、HTML 解析取消及 ready 按钮；源码摘要复验一致，无进一步有效 finding。
+- 未新增或扩写测试，现有测试不直接覆盖该固定窗口交互；界面工具超时，手动划词场景尚未完成视觉验收。
+
 ### 受影响文件
 
 - `Easydict/Swift/View/Window/GlassMiniConfiguration.swift`

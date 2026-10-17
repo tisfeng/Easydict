@@ -80,3 +80,12 @@
 - 记录实际空间占用和可运行产物位置。
 
 结果记录见 [history](../../../histories/2026-10/2026-10-17-liquid-glass-mini.md)。
+
+## PR #1365 C2：固定窗口手动查询（2026-10-18）
+
+- [x] 输入变化时取消旧查询、清空旧结果并将玻璃窗口重置为 ready，恢复可见的翻译按钮。
+- [x] 保留相同输入与自动查询行为，核查旧网络/语言检测/HTML 解析回调的失效保护。
+- [x] Xcode 27.1 Debug arm64 构建及 ReverseTranslationTests、OpenAIStreamTaskControlTests 的 10 项既有测试通过；增量 review 无进一步有效 finding。
+- 关联评论：https://github.com/tisfeng/Easydict/pull/1365#discussion_r4301904889
+- 初始 head 为 dae05adb283334f6d2216800212ce07ad7068a71，工作树干净。
+- 未新增或扩写测试；既有测试覆盖查询回归，不直接覆盖固定窗口的手动划词场景。界面自动化仍超时，未将该场景记为已完成视觉验收。
