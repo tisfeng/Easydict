@@ -82,6 +82,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 @property (nonatomic, strong) MyConfiguration *config;
 @property (nonatomic, strong) id fontSizeObserver;
+@property (nonatomic, strong) GlassMiniPresentation *glassMiniPresentation;
+@property (nonatomic, assign) NSUInteger glassQueryGeneration;
 
 @end
 
@@ -111,9 +113,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     self.view.layer.cornerRadius = EZCornerRadius_8;
     self.view.layer.masksToBounds = YES;
     [self.view executeLight:^(NSView *_Nonnull x) {
-        x.layer.backgroundColor = [NSColor ez_mainViewBgLightColor].CGColor;
+        BOOL glass = [x.window isKindOfClass:EZBaseQueryWindow.class] && [((EZBaseQueryWindow *)x.window).queryViewController usesGlassMiniPresentation];
+        x.layer.backgroundColor = (glass ? NSColor.clearColor : [NSColor ez_mainViewBgLightColor]).CGColor;
     } dark:^(NSView *_Nonnull x) {
-        x.layer.backgroundColor = [NSColor ez_mainViewBgDarkColor].CGColor;
+        BOOL glass = [x.window isKindOfClass:EZBaseQueryWindow.class] && [((EZBaseQueryWindow *)x.window).queryViewController usesGlassMiniPresentation];
+        x.layer.backgroundColor = (glass ? NSColor.clearColor : [NSColor ez_mainViewBgDarkColor]).CGColor;
     }];
 }
 
@@ -226,6 +230,15 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
+    [self updateMiniWindowPresentation];
+    if (self.glassMiniPresentation) {
+        [self.queryModel stopAllService];
+        self.glassQueryGeneration += 1;
+        [self setupServices:[self latestServices]];
+        [self.glassMiniPresentation showReady];
+        return;
+    }
+
     self.queryModel.queryViewHeight = [self miniQueryViewHeight];
 
     self.isInputFieldCellVisible = [self.config showInputTextFieldWithKey:WindowConfigurationKeyInputFieldCellVisible
@@ -237,6 +250,54 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     self.selectLanguageCellIndex = self.isInputFieldCellVisible ? 1 : 0;
 
     [self reloadTableViewData:nil];
+}
+
+- (BOOL)usesGlassMiniPresentation {
+    return self.windowType == EZWindowTypeMini && GlassMiniConfiguration.enabled;
+}
+
+- (void)updateMiniWindowPresentation {
+    if (!self.baseQueryWindow) {
+        return;
+    }
+    BOOL enabled = [self usesGlassMiniPresentation];
+    if (enabled && !self.glassMiniPresentation) {
+        [self.queryModel stopAllService];
+        self.scrollView.hidden = YES;
+        // Hidden views still participate in Auto Layout. Detach the classic table so
+        // its minimum width/height cannot prevent the small loading capsule.
+        [self.scrollView removeFromSuperview];
+        self.glassMiniPresentation = [[GlassMiniPresentation alloc] initWithWindow:self.baseQueryWindow parent:self];
+        self.isInputFieldCellVisible = NO;
+        self.isSelectLanguageCellVisible = NO;
+    } else if (!enabled && self.glassMiniPresentation) {
+        [self cancelMiniWindowQuery];
+        [self.glassMiniPresentation detach];
+        self.glassMiniPresentation = nil;
+        [self.baseQueryWindow rebuildTitlebar];
+        self.scrollView.hidden = NO;
+        [self.view addSubview:self.scrollView];
+        [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self.view);
+        }];
+        BOOL dark = [[self.view.effectiveAppearance bestMatchFromAppearancesWithNames:@[NSAppearanceNameAqua, NSAppearanceNameDarkAqua]] isEqualToString:NSAppearanceNameDarkAqua];
+        NSColor *background = dark ? [NSColor ez_mainViewBgDarkColor] : [NSColor ez_mainViewBgLightColor];
+        self.view.layer.backgroundColor = background.CGColor;
+        self.baseQueryWindow.backgroundColor = background;
+        [self setupServices:[self latestServices]];
+    }
+}
+
+- (void)updateMiniWindowPin {
+    [self.glassMiniPresentation updatePin];
+}
+
+- (void)cancelMiniWindowQuery {
+    if (self.glassMiniPresentation) {
+        self.glassQueryGeneration += 1;
+        [self.queryModel stopAllService];
+        [self.glassMiniPresentation cancelAnimation];
+    }
 }
 
 - (void)modifyAppLanguage:(NSNotification *)notification {
@@ -297,6 +358,15 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     EZWindowType windowType = [userInfo[UserInfoKey.windowType] integerValue];
     NSString *serviceType = userInfo[UserInfoKey.serviceType];
     BOOL autoQuery = [userInfo[UserInfoKey.autoQuery] boolValue];
+
+    if (self.glassMiniPresentation) {
+        if (!userInfo || windowType == self.windowType || windowType == EZWindowTypeNone || serviceType.length) {
+            [self cancelMiniWindowQuery];
+            [self setupServices:[self latestServices]];
+            [self.glassMiniPresentation showReady];
+        }
+        return;
+    }
 
     MMLogInfo(@"handle service update notification: %@, userInfo: %@", serviceType, userInfo);
 
@@ -479,6 +549,18 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     // Before starting new query, we should stop the previous query.
     [self.queryModel stopAllService];
 
+    if (self.glassMiniPresentation) {
+        self.glassQueryGeneration += 1;
+        [self setupServices:[self latestServices]];
+        [self.glassMiniPresentation beginLoading];
+        if (self.services.count == 0) {
+            [self.glassMiniPresentation showUnavailableService];
+            return;
+        }
+        [self queryCurrentModel];
+        return;
+    }
+
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
         self.inputText = text;
@@ -617,6 +699,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)focusInputTextView {
+    if (self.glassMiniPresentation) {
+        return;
+    }
     // Fix ⚠️: ERROR: Setting <EZTextView: 0x13d82c5d0> as the first responder for window <EZFixedQueryWindow: 0x11c607800>, but it is in a different window ((null))! This would eventually crash when the view is freed. The first responder will be set to nil.
     if (self.queryView.window == self.baseQueryWindow) {
         // Delay to make textView the first responder.
@@ -634,6 +719,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)clearInput {
+    if (self.glassMiniPresentation) {
+        [self cancelMiniWindowQuery];
+        [self.glassMiniPresentation showReady];
+    }
     // Clear query text, detect language and clear button right now;
     self.inputText = @"";
     self.queryModel.ocrImage = nil;
@@ -766,6 +855,19 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 /// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)queryType {
+    if (self.glassMiniPresentation) {
+        if (![(self.inputText ?: @"") isEqualToString:(text ?: @"")]) {
+            // Pinned windows skip resetTableView, and manual queries may never call startQueryText.
+            // Invalidate old callbacks before replacing their input, then expose the Translate action.
+            [self cancelMiniWindowQuery];
+            [self resetAllResults];
+            [self.glassMiniPresentation showReady];
+        }
+        // The detached input view no longer updates the query model through its text delegate.
+        self.inputText = text;
+        self.queryModel.actionType = queryType;
+        return;
+    }
     [self.queryView.textView updateTextAndParagraphStyle:text];
     self.queryModel.actionType = queryType;
 
@@ -830,8 +932,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     // !!!: Reset all result before new query.
     [self resetAllResults];
 
+    NSUInteger generation = self.glassQueryGeneration;
     if (self.queryModel.needDetectLanguage) {
         [self detectQueryText:^(NSString *_Nonnull language) {
+            if (generation != self.glassQueryGeneration) {
+                return;
+            }
             [self queryAllSerives:self.queryModel];
         }];
     } else {
@@ -844,7 +950,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     self.firstService = nil;
     for (EZQueryService *service in self.services) {
-        BOOL enableAutoQuery = service.enabledQuery && service.enabledAutoQuery && service.supportedQueryType != EZQueryTextTypeNone;
+        BOOL enableAutoQuery = self.glassMiniPresentation || (service.enabledQuery && service.enabledAutoQuery && service.supportedQueryType != EZQueryTextTypeNone);
         if (!enableAutoQuery) {
             MMLogInfo(@"service disabled: %@", service.serviceTypeWithUniqueIdentifier);
             continue;
@@ -872,7 +978,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
     NSString *queryText = [queryModel.queryText copy];
+    NSUInteger generation = self.glassQueryGeneration;
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
+        if (generation != self.glassQueryGeneration) {
+            return;
+        }
         if (error) {
             MMLogError(@"service: %@, query error: %@", service.serviceType, error);
         }
@@ -884,7 +994,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             [service.result convertToTraditionalChineseResult];
         }
 
-        BOOL hideResult = !result.manualShow && !result.hasTranslatedResult && result.isWarningErrorType;
+        BOOL hideResult = !self.glassMiniPresentation && !result.manualShow && !result.hasTranslatedResult && result.isWarningErrorType;
         if (hideResult) {
             result.isShowing = NO;
         }
@@ -926,7 +1036,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)queryWithModel:(EZQueryModel *)queryModel
                service:(EZQueryService *)service
             completion:(nonnull void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
-    if (!service.enabledQuery) {
+    if (!service.enabledQuery && !self.glassMiniPresentation) {
         MMLogWarn(@"service disabled: %@", service.serviceTypeWithUniqueIdentifier);
         return;
     }
@@ -1041,6 +1151,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 /// Reset tableView, reloadData
 - (void)resetTableView:(nullable void (^)(void))completion {
     [self resetQueryAndResults];
+    if (self.glassMiniPresentation) {
+        [self cancelMiniWindowQuery];
+        [self.glassMiniPresentation showReady];
+        if (completion) { completion(); }
+        return;
+    }
     [self reloadTableViewData:completion];
 }
 
@@ -1050,6 +1166,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)reloadTableViewDataWithLock:(BOOL)lockFlag completion:(nullable void (^)(void))completion {
+    if (self.glassMiniPresentation) {
+        if (completion) { completion(); }
+        return;
+    }
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
         [self updateWindowHeightWithLock:lockFlag];
@@ -1099,6 +1219,16 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)updateCellWithResults:(NSArray<EZQueryResult *> *)results reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
+    if (self.glassMiniPresentation) {
+        for (EZQueryResult *result in results) {
+            EZQueryService *service = [self serviceWithType:result.serviceTypeWithUniqueIdentifier];
+            if (service && result == service.result) {
+                [self.glassMiniPresentation updateResult:result service:service];
+            }
+        }
+        if (completionHandler) { completionHandler(); }
+        return;
+    }
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     for (EZQueryResult *result in results) {
         // !!!: Render webView html takes a little time(~0.5s), so we stop loading when webView finished loading.
@@ -1176,6 +1306,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)updateQueryCellWithAnimation:(BOOL)animateFlag completionHandler:(nullable void (^)(void))completionHandler {
+    if (self.glassMiniPresentation) {
+        if (completionHandler) { completionHandler(); }
+        return;
+    }
     if (self.isInputFieldCellVisible) {
         NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:self.inputFieldCellIndex];
         [self updateTableViewRowIndexes:firstIndexSet reloadData:NO animate:animateFlag completionHandler:completionHandler];
@@ -1297,6 +1431,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 /// Get latest services from local storage.
 - (NSArray<EZQueryService *> *)latestServices {
+    if ([self usesGlassMiniPresentation]) {
+        return [GlassMiniConfiguration selectedServices];
+    }
     return [EZLocalStorage.shared enabledServices:self.windowType];
 }
 
@@ -1775,6 +1912,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)updateWindowHeightWithLock:(BOOL)lockFlag {
+    if (self.glassMiniPresentation) {
+        return;
+    }
     if (lockFlag) {
         self.lockResizeWindow = YES;
     }
