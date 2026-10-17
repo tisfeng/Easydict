@@ -51,6 +51,8 @@ Users need to add compatible new model IDs and control Fast processing with Chat
 
 - [x] Include reasoning compatibility in recovery selection and revalidate.
 
+- [x] Remove unused runtime resolution for custom requests and retain fresh verification.
+
 ## Validation
 
 - Combined build succeeded; 33 existing tests in four suites passed.
@@ -58,6 +60,7 @@ Users need to add compatible new model IDs and control Fast processing with Chat
 - Local checks confirmed shared Fast controls, scoped invalidation and no managed Fast menu in local CLI mode.
 - Eight model removal/restoration cases passed against the combined build, preserving Fast.
 - Review follow-up: 0.153.4 accepted custom priority/default tiers after the fix; fourteen local selection checks passed, including unsupported saved efforts, and 33 existing tests passed again.
+- Runtime routing: twelve local checks avoided unused custom preloads; four compiled component/configuration rejection checks passed. Existing tests passed again.
 - Earlier isolated cache checks rejected changed components/configuration; native preview input checks passed.
 - Full account/runtime suites were not repeated after the earlier fixture-copy stall. Validation tools remain local.
 - SwiftFormat, six-locale coverage, JSON and diff checks passed.

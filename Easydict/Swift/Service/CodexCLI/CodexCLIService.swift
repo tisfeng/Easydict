@@ -154,12 +154,10 @@ final class CodexCLIService: StreamService {
                             model: configuration.model, effort: configuration.effort.cliValue,
                             customModel: configuration.isCustomModel
                         )
-                        let runtime = try await CodexManagedAppServer.shared.runtime()
                         let result = try await managed.runUsingAppServer(
                             prompt: combinedPrompt,
                             model: configuration.model,
                             effort: configuration.effort.cliValue,
-                            runtime: runtime,
                             customModel: configuration.isCustomModel,
                             fastMode: configuration.fastMode
                         ) { chunk in

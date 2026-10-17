@@ -236,13 +236,12 @@ final class CodexManagedAccount: ObservableObject {
         originUUID = configuration.uuid
         operation = Task {
             do {
-                let runtime = try await runtimeFactory()
                 try check(generation)
                 let request = CodexManagedTranslation()
                 validation = request
                 let result = try await request.runUsingAppServer(
                     prompt: Self.validationPrompt, model: configuration.model, effort: effort.cliValue,
-                    runtime: runtime, customModel: true, fastMode: configuration.fastMode, deltaReceived: { _ in }
+                    customModel: true, fastMode: configuration.fastMode, deltaReceived: { _ in }
                 )
                 try check(generation)
                 guard configuration == CodexServiceConfiguration(uuid: configuration.uuid) else {
