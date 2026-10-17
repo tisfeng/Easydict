@@ -14,8 +14,9 @@ import SwiftUI
 struct WindowConfigurationView: View {
     // MARK: Lifecycle
 
-    init(windowType: EZWindowType) {
+    init(windowType: EZWindowType, serviceItems: [ServiceListItem]) {
         self.windowType = windowType
+        self.serviceItems = serviceItems
 
         _showInputTextField = .init(
             windowConfigurationKey(
@@ -34,10 +35,36 @@ struct WindowConfigurationView: View {
 
     @Default var showInputTextField: Bool
     @Default var showSelectLanguageTextField: Bool
+    @Default(.liquidGlassMini) private var liquidGlassMini
     let windowType: EZWindowType
+    let serviceItems: [ServiceListItem]
 
     var body: some View {
         Form {
+            if windowType == .mini {
+                Section {
+                    if #available(macOS 26.0, *) {
+                        NotifyingToggle(
+                            title: "glass.mini.setting.enabled",
+                            isOn: $liquidGlassMini,
+                            windowType: windowType
+                        )
+                        if liquidGlassMini {
+                            Text("glass.mini.setting.description")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            if !serviceItems.contains(where: \.enabled) {
+                                Text("glass.mini.setting.choose_service")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    } else {
+                        Text("glass.mini.setting.requirement")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
             Section {
                 NotifyingToggle(
                     title: "setting.service.show_input_text_field",
@@ -51,6 +78,7 @@ struct WindowConfigurationView: View {
                     windowType: windowType
                 )
             }
+            .disabled(windowType == .mini && GlassMiniConfiguration.enabled)
         }
         .formStyle(.grouped)
     }

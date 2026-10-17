@@ -82,6 +82,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Discard cached dictionary WebViews when the query window has been idle.
 - (void)discardDictionaryWebViews;
 
+/// Refresh the optional mini-window presentation after attaching a window or changing settings.
+- (void)updateMiniWindowPresentation;
+- (void)updateMiniWindowPin;
+- (BOOL)usesGlassMiniPresentation;
+- (void)cancelMiniWindowQuery;
+
 @end
 
 NS_ASSUME_NONNULL_END
