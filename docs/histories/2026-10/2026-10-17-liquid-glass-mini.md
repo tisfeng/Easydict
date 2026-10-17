@@ -56,6 +56,16 @@
 - 界面工具超时，随后返回 ScreenCaptureKit -3811，未把自动截图验证记为通过。
 - 调试版重编译后系统仍显示开启的旧授权，但应用检查返回未授权。核查原有 `AXIsProcessTrustedWithOptions` 调用未修改；当前临时签名的 designated requirement 绑定代码哈希。曾退出调试版，引导用户移除旧条目并重新添加固定的 `build/Easydict-debug.app`，随后用户截图确认再次可用。后续重编译仍可能需要重新授权。
 
+### PR #1365 review 修复
+
+- [C1 词典结果格式遗漏](https://github.com/tisfeng/Easydict/pull/1365#discussion_r4301696681) 成立：原实现仅使用 translatedText 和 parts，成功的 HTML 词典或 simpleWords 查询可能显示没有结果。
+- 新增 GlassMiniResultText：优先保留非空译文，其次合并词性释义和 simpleWords，再使用 Apple Dictionary 的 innerTexts，最后解析 HTML/iframe srcdoc。空字符串不再阻断后续回退。全部服务仍可在左侧选用。
+- HTML 通过 Foundation DOM 提取纯文本，保留段落和表格单元格分隔，忽略脚本、样式及隐藏元素；不执行网页、不加载外部实体。解析放在后台，主线程接收结果前校验任务取消，防止已关闭、已切换服务或新查询后出现旧结果。
+- 使用原生文本适配而非嵌入完整网页，可保留单层玻璃、可选文本和原滚动行为，不引入 HTML 词典的背景、控件或第三方解析依赖；不呈现图片、音频及网页交互。
+- Xcode 27.1 (27A9275) Debug arm64 构建及 MDictReaderTests、ReverseTranslationTests、OpenAIStreamTaskControlTests 共 32 项既有测试通过；本次使用默认 macOS 27 图标，无需旧 SDK 图标覆写。MDict 外部词典集成用例未设置环境路径，因此提前返回；测试通过不等于真实词典 UI 验收。
+- 新增/修改的 Swift 文件通过 SwiftLint，git diff --check 与工程 plutil 校验通过。手动运行 Foundation HTML 解析检查实体、段落与 srcdoc 保留；未新增或扩写测试。
+- 使用 review 技能检查新适配器、调用者和生命周期，验证后重新核对生产文件摘要，无进一步有效 finding。真实 Apple/MDict 的窗口视觉效果与新适配器边界仍未直接覆盖。
+
 ### 受影响文件
 
 - `Easydict/Swift/View/Window/GlassMiniConfiguration.swift`
@@ -64,6 +74,7 @@
 - `Easydict/Swift/View/Window/GlassMiniDragArea.swift`
 - `Easydict/Swift/View/Window/GlassMiniAnimator.swift`
 - `Easydict/Swift/View/Window/GlassMiniPresentation.swift`
+- `Easydict/Swift/View/Window/GlassMiniResultText.swift`
 - `Easydict/Swift/View/SettingView/Tabs/View/WindowConfigurationView.swift`
 - `Easydict/Swift/View/SettingView/Tabs/TabView/ServiceTab.swift`
 - `Easydict/Swift/View/SettingView/Tabs/TabView/ServiceTabListViews.swift`

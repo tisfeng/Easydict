@@ -60,6 +60,7 @@ final class GlassMiniPresentation: NSObject {
     }
 
     func detach() {
+        resultTask?.cancel()
         animator.cancel()
         hostingView?.removeFromSuperview()
         guard let window else { return }
@@ -77,6 +78,7 @@ final class GlassMiniPresentation: NSObject {
     }
 
     func showReady() {
+        resultTask?.cancel()
         state.phase = .ready
         state.text = NSLocalizedString("glass.mini.ready", comment: "")
         state.provider = ""
@@ -84,6 +86,7 @@ final class GlassMiniPresentation: NSObject {
     }
 
     func beginLoading() {
+        resultTask?.cancel()
         state.phase = .loading
         state.text = ""
         state.provider = ""
@@ -97,6 +100,7 @@ final class GlassMiniPresentation: NSObject {
     }
 
     func showError(_ message: String) {
+        resultTask?.cancel()
         state.phase = .failure
         state.text = message
         showContent(animated: true)
@@ -113,18 +117,27 @@ final class GlassMiniPresentation: NSObject {
         // Buffer streaming services until completion, then expand only once.
         guard !service.isStream() || result.isStreamFinished else { return }
         result.isLoading = false
-        let translatedText = result.translatedText ?? result.wordResult?.parts?
-            .flatMap(\.means).joined(separator: "\n") ?? ""
-        guard !translatedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            showError(NSLocalizedString("glass.mini.no_result", comment: ""))
+        resultTask?.cancel()
+        if let text = GlassMiniResultText.plainText(from: result) {
+            showResult(text)
             return
         }
-        state.phase = .result
-        state.text = translatedText
-        showContent(animated: true)
+
+        // Pass only value snapshots across threads; QueryResult belongs to the query lifecycle.
+        let fragments = result.htmlStrings?.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } ?? []
+        let html = fragments.isEmpty ? [result.htmlString ?? ""] : fragments
+        resultTask = Task { [weak self] in
+            let text = await Task.detached(priority: .userInitiated) {
+                GlassMiniResultText.htmlText(from: html)
+            }.value
+            // A newer query, service change, mode switch, or close invalidates this result.
+            guard !Task.isCancelled else { return }
+            self?.showResult(text)
+        }
     }
 
     func cancelAnimation() {
+        resultTask?.cancel()
         animator.cancel()
         state.contentVisible = true
         if state.phase == .loading {
@@ -135,11 +148,22 @@ final class GlassMiniPresentation: NSObject {
     private weak var window: EZBaseQueryWindow?
     private weak var parent: NSViewController?
     private var hostingView: NSView?
+    private var resultTask: Task<Void, Never>?
     private let state = GlassMiniState()
     private let animator = GlassMiniAnimator()
     private let originalStyle: NSWindow.StyleMask
     private let originalMinimum: NSSize
     private let originalFrame: NSRect
+
+    private func showResult(_ text: String) {
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            showError(NSLocalizedString("glass.mini.no_result", comment: ""))
+            return
+        }
+        state.phase = .result
+        state.text = text
+        showContent(animated: true)
+    }
 
     private func showContent(animated: Bool) {
         guard let window else { return }

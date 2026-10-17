@@ -3,7 +3,7 @@
 - 状态：completed
 - 创建日期：2026-10-17
 - 负责人：Codex
-- 关联 Issue/PR：none
+- 关联 Issue/PR：https://github.com/tisfeng/Easydict/pull/1365
 
 ## 执行上下文
 
@@ -63,6 +63,16 @@
 - 用户截图确认原生玻璃结果窗口正常出现；用户后续截图确认授权恢复且蓝框消失；用户进一步确认布局、长文滚动和固定后的拖动正常，最近一次重启后翻译显示正常；后续移除 pin 玻璃底的纯外观调整待再次试用。
 - 界面自动化工具超时并返回 ScreenCaptureKit -3811，未完成自动截图验证。
 - 空间：源码约 95 MB，调试 app 约 127 MB，测试构建约 196 MB，独立 DerivedData 约 5.8 GB。
+
+## PR #1365 review 跟进
+
+- 针对 [C1 词典结果格式遗漏](https://github.com/tisfeng/Easydict/pull/1365#discussion_r4301696681)，在现有迷你窗口呈现层补齐有效结果的格式适配。
+- [x] 补齐 HTML 词典、simpleWords 及空译文回退，保留全部提供商可选。
+- [x] 解析不执行网页脚本或请求外部资源；查询切换和关闭后丢弃旧解析结果。
+- [x] 运行构建、现有相关测试及增量 review。
+- 使用 Xcode 27.1 (27A9275) 和默认 macOS 27 图标完成 Debug arm64 构建；MDictReaderTests、ReverseTranslationTests、OpenAIStreamTaskControlTests 共 32 项既有测试通过。MDict 外部词典集成用例因未设置环境路径提前返回，测试结果不等于真实词典 UI 验收。
+- review 核对结果优先级、空值回退、HTML 节点/实体/iframe、无外部加载以及关闭/新查询取消路径；源码摘要在验证后保持一致，无进一步有效 finding。
+- Foundation 解析器手动检查保留段落、实体、srcdoc；未完成真实 Apple/MDict 词典窗口的视觉验证，现有测试不直接覆盖新适配器。
 
 ## 完成条件
 
