@@ -187,17 +187,22 @@ final class CodexManagedAccount: ObservableObject {
                 guard try CodexManagedTranslation.isSignedIn(status) else { throw CodexManagedError.loginRequired }
                 let request = CodexManagedTranslation()
                 validation = request
+                let isBundled = CodexManagedRuntime.bundledModelNames.contains(model)
                 let result = try await request.runUsingAppServer(
                     prompt: Self.validationPrompt, model: model, effort: nil,
-                    runtime: runtime, customModel: true, deltaReceived: { _ in }
+                    runtime: runtime, customModel: !isBundled, deltaReceived: { _ in }
                 )
                 try check(generation)
                 guard configuration == CodexServiceConfiguration(uuid: configuration.uuid) else {
                     throw CancellationError()
                 }
                 try Self.validateGreeting(result.text)
-                let key = CodexServiceConfiguration.customModelsKey(uuid: configuration.uuid)
-                if !Defaults[key].contains(model) { Defaults[key].append(model) }
+                if !isBundled {
+                    let key = CodexServiceConfiguration.customModelsKey(uuid: configuration.uuid)
+                    if !Defaults[key].contains(model) { Defaults[key].append(model) }
+                }
+                Defaults[CodexServiceConfiguration.hiddenModelsKey(uuid: configuration.uuid)]
+                    .removeAll { $0 == model }
                 authenticationState = true
                 restorePresentation()
                 finish(generation: generation)

@@ -25,7 +25,7 @@ struct CodexCLIServiceConfigurationView: View {
         self._managedModel = .init(service.managedModelKey)
         self._managedEffort = .init(service.managedReasoningEffortKey)
         self._customModels = .init(service.managedCustomModelsKey)
-        self._lastVerified = .init(CodexServiceConfiguration.lastVerifiedKey(uuid: service.uuid))
+        self._hiddenModels = .init(service.managedHiddenModelsKey)
         self._localEffort = .init(service.reasoningEffortKey)
         CodexRequestCoordinator.shared.observe(uuid: service.uuid)
     }
@@ -36,7 +36,7 @@ struct CodexCLIServiceConfigurationView: View {
         Section {
             if accessMode == .managed {
                 CodexManagedAccountView(configuration: CodexServiceConfiguration(uuid: service.uuid))
-                if !isManagedModelSupported || !managedEfforts.contains(managedEffort) {
+                if !managedModel.isEmpty, !isManagedModelSupported || !managedEfforts.contains(managedEffort) {
                     Text("service.codex_cli.managed.unsupported_selection")
                         .font(.caption)
                         .foregroundStyle(.red)
@@ -64,9 +64,23 @@ struct CodexCLIServiceConfigurationView: View {
                     )
                     Divider()
                     if accessMode == .managed {
-                        Picker("service.configuration.codex_cli.model.title", selection: managedModelSelection) {
-                            ForEach(managedModels, id: \.self) { model in
-                                Text(verbatim: model).tag(Optional(model))
+                        if CodexRuntimeRelease.current == .modern {
+                            CodexManagedModelPicker(
+                                models: managedModels, selection: managedModelSelection, isBusy: account.isBusy
+                            ) { model in
+                                CodexServiceConfiguration(uuid: service.uuid).removeModel(model)
+                                additionResult = nil
+                                effortError = nil
+                            }
+                        } else {
+                            Picker("service.configuration.codex_cli.model.title", selection: managedModelSelection) {
+                                if managedModelSelection.wrappedValue == nil {
+                                    Text("service.codex_cli.custom_models.select_model")
+                                        .tag(nil as String?).disabled(true)
+                                }
+                                ForEach(managedModels, id: \.self) { model in
+                                    Text(verbatim: model).tag(Optional(model))
+                                }
                             }
                         }
                         Picker(
@@ -147,7 +161,6 @@ struct CodexCLIServiceConfigurationView: View {
     @ObservedObject private var component = CodexComponentManager.shared
     @State private var newModelID = ""
     @State private var additionResult: Result<(), Error>?
-    @State private var didRemoveModel = false
     @State private var effortError: String?
 
     private let service: CodexCLIService
@@ -156,14 +169,15 @@ struct CodexCLIServiceConfigurationView: View {
     @Default private var managedEffort: CodexReasoningEffort
     @Default private var localEffort: CodexReasoningEffort
     @Default private var customModels: [String]
-    @Default private var lastVerified: [String: String]
+    @Default private var hiddenModels: [String]
 
     private var managedModels: [String] {
-        // Reading the observed collection also refreshes the picker after an addition.
+        let hidden = Set(hiddenModels)
         let saved = customModels.filter { CodexModelCatalog.isValidModelID($0) }
-        return CodexManagedRuntime.bundledModelNames
+        let models = CodexManagedRuntime.bundledModelNames
             + (CodexRuntimeRelease.current == .modern
                 ? saved.filter { !CodexManagedRuntime.bundledModelNames.contains($0) } : [])
+        return CodexRuntimeRelease.current == .modern ? models.filter { !hidden.contains($0) } : models
     }
 
     private var isCustomModel: Bool {
@@ -207,31 +221,18 @@ struct CodexCLIServiceConfigurationView: View {
             && !account.isBusy && account.isSignedIn && component.isReady
     }
 
-    private var canRemoveModel: Bool {
-        customModels.contains(candidateModel)
-            && !CodexManagedRuntime.bundledModelNames.contains(candidateModel) && !account.isBusy
-    }
-
     @ViewBuilder private var customModelControls: some View {
         HStack {
-            TextField(
-                "service.codex_cli.custom_models.model_id", text: $newModelID,
-                prompt: Text("service.codex_cli.custom_models.placeholder")
-            )
-            .textFieldStyle(.roundedBorder)
-            .multilineTextAlignment(.center)
-            .disabled(account.isBusy)
-            .onSubmit { addModel() }
-            .onChange(of: newModelID) { value in
-                if !value.isEmpty {
-                    additionResult = nil
-                    didRemoveModel = false
+            Text("service.codex_cli.custom_models.model_id")
+            Spacer()
+            CodexModelIDField(text: $newModelID, isEnabled: !account.isBusy, onSubmit: addModel)
+                .frame(maxWidth: 280)
+                .frame(height: 24)
+                .onChange(of: newModelID) { value in
+                    if !value.isEmpty, additionResult != nil { additionResult = nil }
                 }
-            }
             Button("service.codex_cli.custom_models.add_and_verify") { addModel() }
                 .disabled(!canAddModel)
-            Button("service.codex_cli.custom_models.remove") { removeModel() }
-                .disabled(!canRemoveModel)
         }
         Text("service.codex_cli.custom_models.description")
             .font(.caption).foregroundStyle(.secondary)
@@ -241,10 +242,6 @@ struct CodexCLIServiceConfigurationView: View {
         } else if !candidateModel.isEmpty, !CodexModelCatalog.isValidModelID(candidateModel) {
             Text("service.codex_cli.custom_models.invalid_id")
                 .font(.caption).foregroundStyle(.red)
-        }
-        if didRemoveModel {
-            Text("service.codex_cli.custom_models.removed")
-                .font(.caption).foregroundStyle(.green)
         }
         if let additionResult {
             switch additionResult {
@@ -287,37 +284,19 @@ struct CodexCLIServiceConfigurationView: View {
 
     private func addModel() {
         guard canAddModel else { return }
-        didRemoveModel = false
         additionResult = nil
-        account.addCustomModel(candidateModel, configuration: CodexServiceConfiguration(uuid: service.uuid)) { result in
-            if case .success = result { newModelID = "" }
+        let model = candidateModel
+        account.addCustomModel(model, configuration: CodexServiceConfiguration(uuid: service.uuid)) { result in
+            if case .success = result {
+                newModelID = ""
+                if managedModel.isEmpty {
+                    service.model = model
+                    managedEffort = .default
+                }
+            }
             if case let .failure(error) = result, error is CancellationError { return }
             additionResult = result
         }
-    }
-
-    private func restoreModel(_ model: String) {
-        service.model = model
-        let effort = lastVerified["effort"].flatMap(CodexReasoningEffort.init(rawValue:)) ?? .default
-        managedEffort = managedEfforts.contains(effort) ? effort : .default
-    }
-
-    private func removeModel() {
-        guard canRemoveModel else { return }
-        let removed = candidateModel
-        if managedModel == removed {
-            if let previous = lastVerified["model"], previous != removed, managedModels.contains(previous) {
-                restoreModel(previous)
-            } else {
-                service.model = CodexManagedRuntime.defaultModel
-                managedEffort = .default
-            }
-        }
-        customModels.removeAll { $0 == removed }
-        if lastVerified["model"] == removed { lastVerified = [:] }
-        newModelID = ""
-        additionResult = nil
-        didRemoveModel = true
     }
 }
 

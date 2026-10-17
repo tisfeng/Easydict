@@ -249,6 +249,10 @@ final class CodexCLIService: StreamService {
         CodexServiceConfiguration.customModelsKey(uuid: uuid)
     }
 
+    var managedHiddenModelsKey: Defaults.Key<[String]> {
+        CodexServiceConfiguration.hiddenModelsKey(uuid: uuid)
+    }
+
     var managedReasoningEffortKey: Defaults.Key<CodexReasoningEffort> {
         CodexServiceConfiguration.effortKey(uuid: uuid, mode: .managed)
     }
@@ -257,10 +261,12 @@ final class CodexCLIService: StreamService {
     /// while mode/auth/managed model changes refresh UI without sending current text.
     func setupCodexSubscribers() {
         CodexRequestCoordinator.shared.observe(uuid: uuid)
-        Defaults.publisher(managedCustomModelsKey, options: [])
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.notifyServiceConfigurationChanged() }
-            .store(in: &cancellables)
+        for key in [managedCustomModelsKey, managedHiddenModelsKey] {
+            Defaults.publisher(key, options: [])
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] _ in self?.notifyServiceConfigurationChanged() }
+                .store(in: &cancellables)
+        }
         Defaults.publisher(nameKey, options: [])
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in self?.notifyServiceConfigurationChanged() }

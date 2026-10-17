@@ -1,6 +1,6 @@
 ## 2026-10-17 | Add verified Codex custom models
 
-**Links:** [Plan](../../exec-plans/completed/2026-10/2026-10-15-codex-custom-models.md)
+**Links:** [PR #1366](https://github.com/tisfeng/Easydict/pull/1366), [Plan](../../exec-plans/completed/2026-10/2026-10-15-codex-custom-models.md)
 
 ### Execution context
 
@@ -10,41 +10,39 @@
 
 ### Request
 
-Allow new model IDs without an app release when the account and pinned component support them.
-Provide an isolated preview and keep the feature separate from Fast PR #1360.
+Allow compatible new model IDs without an app release. Keep the feature separate from Fast PR #1360 and provide an independent preview.
 
 ### Changes
 
-- Verify and save custom IDs; remove the typed ID; keep saved models in the normal picker.
-- Verify reasoning overrides before saving; preserve the previous value on failure or cancellation.
-- Add settings dividers, centered input and small red errors; remove the recovery button and manual-status text.
-- Update six locales and user documentation. The local preview also retains Fast and its translation-menu toggle.
+- Verify custom IDs before saving; verify reasoning overrides before applying them.
+- Remove entries with an X inside the model list. Built-in entries are hidden and can be restored through Add and Verify.
+- Preserve unrelated selections; choose a remaining model when removing the active entry and recover from an empty list through addition.
+- Use a centered AppKit model ID field, settings dividers and small inline errors.
+- Reverify the installed runtime before each private custom-model process starts.
+- Update six locales and user guides. The combined local preview retains Fast and its translation-menu toggle.
 
 ### Design
 
-Custom requests use a private App Server and a text-only catalog with existing official login.
-No credential copying or inferred model capabilities. Future protocol changes may require an update.
+Private App Servers use an explicit text-only catalog and existing official login. Cached verification cannot authorize a new custom process. No credential copying or inferred tool capabilities; future protocols may require an update.
 
 ### Validation
 
-- Existing tests: 63 passed; 25 related tests passed after the final logic change. Final UI build succeeded.
-- gpt-6.1-sol: Low/Max requests succeeded; High was saved in the preview.
-- UI: invalid ID rejected without saving; typed removal and re-addition worked; same-model selection kept High.
-- Diff checks, six-locale coverage and both patches' application to 2.23.0 passed.
-- Preview build 2026101706 preserves login, service lists and gpt-6.1-sol / High / Fast on. Release app unchanged.
+- Final builds succeeded; 33 existing tests in four suites passed.
+- The full regression rerun stalled in existing fixture file copying and was interrupted. All 63 tests passed on the preceding model-list snapshot, before the final editor and runtime changes.
+- Eight final compiled-app removal/restoration cases passed, preserving Fast. A separate isolated probe rejected component/configuration changes after warming the runtime cache.
+- Preview 2026101709: repeated-letter input, backspace, paste and Return verification passed. The original physical-keyboard duplication cause was not established.
+- Earlier live gpt-6.1-sol Low/Max requests succeeded; High was verified and saved. Static checks and six-locale coverage passed.
 
 ### Affected files
 
+- `Easydict.xcodeproj/project.pbxproj`
 - `Easydict/Swift/Service/CodexCLI/`
 - `Easydict/Swift/Feature/Configuration/ServiceConfigurationKey.swift`
-- `Easydict/Swift/View/SettingView/Tabs/ServiceConfigurationView/CodexCLIServiceConfigurationView.swift`
+- `Easydict/Swift/View/SettingView/Tabs/ServiceConfigurationView/`
 - `Easydict/Swift/View/SettingView/Tabs/TabView/ServiceTabListViews.swift`
 - `Easydict/App/Localizable.xcstrings`
-- `Easydict/objc/ViewController/View/ResultView/EZResultView.m` (combined preview only)
 - `docs/user-docs/en/GUIDE.md`, `docs/user-docs/zh/GUIDE.md`, `scripts/codex-runtime/README.md`
 
 ### Follow-up
 
-User approved publication on 2026-10-17. The custom-only branch passed all 63 existing Codex tests.
-Local scripted-transport probes against its compiled app confirmed rejection/cancellation preserve model
-and effort. Validation tools remain local. Final centering compiled; visual signoff remains with the user.
+User approved updating PR #1366. Validation tools remain local. The complete test rerun remains limited by fixture copying; saved models still depend on account access and component compatibility.

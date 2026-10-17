@@ -8129,77 +8129,77 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remove"
+            "value" : "Remove %@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eliminar"
+            "value" : "Eliminar %@"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "削除"
+            "value" : "%@を削除"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Odstrániť"
+            "value" : "Odstrániť %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "移除"
+            "value" : "移除 %@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "移除"
+            "value" : "移除 %@"
           }
         }
       }
     },
-    "service.codex_cli.custom_models.removed" : {
+    "service.codex_cli.custom_models.select_model" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Model removed."
+            "value" : "Select a model"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modelo eliminado."
+            "value" : "Selecciona un modelo"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "モデルを削除しました。"
+            "value" : "モデルを選択"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Model bol odstránený."
+            "value" : "Vyberte model"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已移除模型。"
+            "value" : "选择模型"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已移除模型。"
+            "value" : "選擇模型"
           }
         }
       }

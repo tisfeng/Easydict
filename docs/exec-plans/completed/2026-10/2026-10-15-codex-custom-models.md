@@ -3,7 +3,7 @@
 - Status: completed
 - Created: 2026-10-15
 - Owner: Or1a
-- Issue: None
+- Issue/PR: [#1366](https://github.com/tisfeng/Easydict/pull/1366)
 
 ## Execution context
 
@@ -13,42 +13,50 @@
 
 ## Background
 
-The bundled catalog cannot expose new models without an app update.
+The bundled model catalog cannot expose new IDs without an application update.
 
 ## Goals and scope
 
-- Result: save verified custom IDs in the managed Codex model picker on macOS 15+.
+- Result: verify, save, select and remove managed Codex models on macOS 15+.
 - Paths: Codex service/runtime, settings, localization and related documentation.
 - History: `docs/histories/2026-10/2026-10-15-codex-custom-models.md`
-- Constraints: separate from Fast PR #1360; preserve the release app and settings; no commit or PR before approval.
-- Non-goals: component updates, token access, imported tools or model capabilities.
-- Acceptance: exact model ID, successful translation before saving, scoped cancellation and usable recovery.
+- Constraints: separate from Fast PR #1360; preserve account state and preview preferences.
+- Non-goals: component updates, credential access or imported tools and model capabilities.
+- Acceptance: exact IDs, successful translation before saving, safe cancellation and empty-list recovery.
 
 ## Work plan
 
-1. Check the pinned component and existing draft.
-2. Implement isolated requests, verification, model storage and settings.
-3. Validate and install a separate 2.23.0 preview; provide separate review patches.
+1. Verify the pinned component and existing implementation.
+2. Implement isolated requests, reasoning verification and model-list controls.
+3. Build an independent release-based preview, review changes and publish after approval.
 
 ## Risks and decisions
 
-- Use a private App Server with an explicit text-only catalog; retain official authentication.
-- Verify custom reasoning overrides before saving. Exclude Ultra because the component rewrites it.
-- Model availability and future protocol compatibility are not guaranteed by a saved entry.
+- Custom requests use a private App Server and explicit text-only catalog with existing login.
+- Reverify the installed component and configuration before each private process starts, as identified in the [runtime review](https://github.com/tisfeng/Easydict/pull/1366#discussion_r4302773518).
+- Verify reasoning overrides before saving; exclude Ultra because the component rewrites it.
+- Hide built-in entries without changing the runtime catalog; restore through Add and Verify.
+- Use an AppKit model ID field with one editing delegate and no unchanged-text rewrites.
+- Saved entries do not guarantee continued account access or future protocol compatibility.
 
 ## Progress
 
-- [x] Implementation, localization, review and local preview delivered.
-- [x] Typed-ID removal, centered input, inline errors and requested text removal completed.
+- [x] Implement model verification, reasoning selection and six-locale UI.
+- [x] Put removal controls inside the opened model list and preserve inactive selections.
+- [x] Validate and install independent preview 2026101709, retaining Fast and account state.
+- [x] Address the cached-runtime review finding and build both final checkouts.
+- [x] Review final changes; user approved the PR update on 2026-10-17.
 
 ## Validation
 
-- 63 existing Codex tests passed; 25 related tests passed after the same-model selection fix.
-- gpt-6.1-sol Low/Max requests succeeded; High was saved after in-app verification.
-- UI: rejected candidates stay unsaved, typed removal preserves another selection, reselecting keeps High.
-- Build 2026101706 preserves login, service lists and the user's model/effort/Fast settings.
-- Final centering compiled. Local probes against the compiled custom-only app confirmed rejection/cancellation preserve model and effort.
+- Final custom-only build and combined 2.23.0 preview build succeeded.
+- Final four-suite run: 33 existing tests passed. The full seven-suite rerun stalled in existing AccountFixture file copying and was interrupted; it did not pass.
+- All 63 existing tests passed on the preceding model-list snapshot before the native editor and runtime-review changes.
+- Final compiled-app probes: eight removal/restoration cases passed with Fast preserved; changed component and configuration were rejected after warming the runtime cache.
+- Native preview input: repeated letters, backspace, paste and Return verification passed. The original physical-keyboard duplication cause was not established.
+- Earlier live gpt-6.1-sol Low/Max requests succeeded; High was verified and saved in the preview.
+- SwiftFormat, six-locale coverage, catalog/project parsing and diff checks passed. Validation tools remain local.
 
 ## Completion
 
-Review patches and preview are ready. User approved publication on 2026-10-17; publish a separate custom-model PR.
+Implementation and review are complete. Publication of the update to existing PR #1366 is authorized.

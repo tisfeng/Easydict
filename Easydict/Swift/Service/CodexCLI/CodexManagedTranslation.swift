@@ -133,7 +133,10 @@ final class CodexManagedTranslation: @unchecked Sendable {
         deltaReceived: @escaping @Sendable (String) -> ()
     ) async throws
         -> Result {
-        let runtime = customModel ? try runtime.forCustomModel(model, effort: effort) : runtime
+        // A private process must not reuse the shared session's cached verification.
+        let runtime = customModel
+            ? try await CodexManagedRuntime.installed().forCustomModel(model, effort: effort)
+            : runtime
         let server = customModel ? CodexManagedAppServer() : .shared
         let requestID = try lock.withLock { () -> UUID in
             if cancelled { throw CancellationError() }

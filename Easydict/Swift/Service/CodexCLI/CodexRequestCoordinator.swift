@@ -38,6 +38,10 @@ struct CodexServiceConfiguration: Equatable {
         serivceConfigurationKey(.codexManagedCustomModels, serviceType: .codexCLI, id: uuid, defaultValue: [])
     }
 
+    static func hiddenModelsKey(uuid: String) -> Defaults.Key<[String]> {
+        serivceConfigurationKey(.codexManagedHiddenModels, serviceType: .codexCLI, id: uuid, defaultValue: [])
+    }
+
     static func lastVerifiedKey(uuid: String) -> Defaults.Key<[String: String]> {
         serivceConfigurationKey(
             .codexManagedLastVerifiedSelection, serviceType: .codexCLI, id: uuid, defaultValue: [:]
@@ -51,6 +55,10 @@ struct CodexServiceConfiguration: Equatable {
                 where CodexModelCatalog.isValidModelID(model) && !models.contains(model) {
                 models.append(model)
             }
+        }
+        if CodexRuntimeRelease.current == .modern {
+            let hidden = Set(Defaults[hiddenModelsKey(uuid: uuid)])
+            models.removeAll { hidden.contains($0) }
         }
         return models
     }
@@ -83,6 +91,34 @@ struct CodexServiceConfiguration: Equatable {
             id: uuid,
             defaultValue: .default
         )
+    }
+
+    /// Removes a visible entry without changing an unrelated selection or the runtime catalog.
+    func removeModel(_ removedModel: String) {
+        guard mode == .managed, CodexRuntimeRelease.current == .modern,
+              self == Self(uuid: uuid), Self.models(uuid: uuid).contains(removedModel) else { return }
+        let verified = Defaults[Self.lastVerifiedKey(uuid: uuid)]
+        if model == removedModel {
+            let remaining = Self.models(uuid: uuid).filter { $0 != removedModel }
+            let previous = verified["model"].flatMap { remaining.contains($0) ? $0 : nil }
+            let fallback = previous ?? (remaining.contains(CodexManagedRuntime.defaultModel)
+                ? CodexManagedRuntime.defaultModel : remaining.first ?? "")
+            let effort = previous == nil ? CodexReasoningEffort.default
+                : verified["effort"].flatMap(CodexReasoningEffort.init(rawValue:)) ?? .default
+            Defaults[Self.modelKey(uuid: uuid, mode: .managed)] = fallback
+            Defaults[Self.effortKey(uuid: uuid, mode: .managed)] = Self.reasoningEfforts(
+                mode: .managed,
+                model: fallback
+            )
+            .contains(effort) ? effort : .default
+        }
+        if CodexManagedRuntime.bundledModelNames.contains(removedModel) {
+            let key = Self.hiddenModelsKey(uuid: uuid)
+            if !Defaults[key].contains(removedModel) { Defaults[key].append(removedModel) }
+        } else {
+            Defaults[Self.customModelsKey(uuid: uuid)].removeAll { $0 == removedModel }
+        }
+        if verified["model"] == removedModel { Defaults[Self.lastVerifiedKey(uuid: uuid)] = [:] }
     }
 
     /// A recovery preference records success, not a permanent account entitlement.
