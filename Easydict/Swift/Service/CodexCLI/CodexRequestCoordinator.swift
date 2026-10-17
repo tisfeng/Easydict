@@ -21,6 +21,9 @@ struct CodexServiceConfiguration: Equatable {
         self.mode = Defaults[CodexAccessMode.key(uuid: uuid)]
         self.model = Defaults[Self.modelKey(uuid: uuid, mode: mode)]
         self.effort = Defaults[Self.effortKey(uuid: uuid, mode: mode)]
+        self.isCustomModel = mode == .managed && CodexRuntimeRelease.current == .modern
+            && !CodexManagedRuntime.bundledModelNames.contains(model)
+            && Defaults[Self.customModelsKey(uuid: uuid)].contains(model)
     }
 
     // MARK: Internal
@@ -29,13 +32,38 @@ struct CodexServiceConfiguration: Equatable {
     let mode: CodexAccessMode
     let model: String
     let effort: CodexReasoningEffort
+    let isCustomModel: Bool
+
+    static func customModelsKey(uuid: String) -> Defaults.Key<[String]> {
+        serivceConfigurationKey(.codexManagedCustomModels, serviceType: .codexCLI, id: uuid, defaultValue: [])
+    }
+
+    static func lastVerifiedKey(uuid: String) -> Defaults.Key<[String: String]> {
+        serivceConfigurationKey(
+            .codexManagedLastVerifiedSelection, serviceType: .codexCLI, id: uuid, defaultValue: [:]
+        )
+    }
+
+    static func models(uuid: String) -> [String] {
+        var models = CodexManagedRuntime.bundledModelNames
+        if CodexRuntimeRelease.current == .modern {
+            for model in Defaults[customModelsKey(uuid: uuid)]
+                where CodexModelCatalog.isValidModelID(model) && !models.contains(model) {
+                models.append(model)
+            }
+        }
+        return models
+    }
 
     static func reasoningEfforts(mode: CodexAccessMode, model: String) -> [CodexReasoningEffort] {
         switch mode {
         case .localCLI: CodexReasoningEffort.localOptions
         case .managed:
-            [.default] + (CodexManagedRuntime.bundledCatalog?.models.first { $0.slug == model }?
-                .supported_reasoning_levels.compactMap { CodexReasoningEffort(rawValue: $0.effort) } ?? [])
+            if let entry = CodexManagedRuntime.bundledCatalog?.models.first(where: { $0.slug == model }) {
+                [.default] + entry.supported_reasoning_levels.compactMap { CodexReasoningEffort(rawValue: $0.effort) }
+            } else {
+                CodexRuntimeRelease.current == .modern ? CodexReasoningEffort.customOptions : [.default]
+            }
         }
     }
 
@@ -55,6 +83,12 @@ struct CodexServiceConfiguration: Equatable {
             id: uuid,
             defaultValue: .default
         )
+    }
+
+    /// A recovery preference records success, not a permanent account entitlement.
+    func rememberSuccessfulSelection() {
+        guard mode == .managed, self == Self(uuid: uuid) else { return }
+        Defaults[Self.lastVerifiedKey(uuid: uuid)] = ["model": model, "effort": effort.rawValue]
     }
 }
 
