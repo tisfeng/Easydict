@@ -161,6 +161,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
         CGFloat width = self.scrollView.contentSize.width;
         if (fabs(width - self.lastLayoutWidth) < EZLayoutGeometryTolerance_0_5) {
+            // A height-only resize keeps the content layout, so only restore the content-fitting height.
+            NSWindow *window = self.baseQueryWindow ?: self.view.window;
+            CGRect fittingFrame = [self windowFrameFittingContentHeight:[self getScrollViewContentHeight] inWindow:window];
+            if (window && fabs(window.height - CGRectGetHeight(fittingFrame)) >= EZLayoutGeometryTolerance_0_5) {
+                [self updateWindowHeight];
+            }
             return;
         }
         self.lastLayoutWidth = width;
@@ -1817,36 +1823,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self updateTableViewHeight];
 
     CGFloat tableViewHeight = [self getScrollViewContentHeight];
-    CGFloat height = [self getRestrainedScrollViewHeight:tableViewHeight];
-    //    MMLogInfo(@"getRestrainedScrollViewHeight: %@", @(height));
-
-    CGSize maxWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
-
-    CGFloat titleBarHeight = EZTitlebarHeight_28; // system title bar height is 28
-
-    CGFloat scrollViewHeight = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
-    scrollViewHeight = MIN(scrollViewHeight, maxWindowSize.height - titleBarHeight);
-    //    MMLogInfo(@"scrollViewHeight: %@", @(scrollViewHeight));
-
-    // The scroll view follows the window edges. Its document keeps its full height
-    // while NSClipView reveals more content during the window animation.
-
-    CGFloat showingWindowHeight = scrollViewHeight + titleBarHeight;
-    showingWindowHeight = MIN(showingWindowHeight, maxWindowSize.height);
-
-    // Since changing height will cause position change, adjust y to keep top-left coordinate stable.
-    CGFloat deltaHeight = window.height - showingWindowHeight;
-    CGFloat y = window.y + deltaHeight;
-
-    CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
-
-    // Use the window's current screen. The cached one only refreshes on clicks,
-    // so on multi-monitor setups it can yank the window back to the old display.
-    // window.screen picks the display with the largest overlap, which handles
-    // cross-screen drags better than our own first-intersect lookup.
-    NSScreen *currentScreen = window.screen ?: [EZCoordinateUtils screenForRect:newFrame] ?: NSScreen.mainScreen;
-    CGRect screenVisibleFrame = currentScreen.visibleFrame;
-    CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
+    CGRect safeFrame = [self windowFrameFittingContentHeight:tableViewHeight inWindow:window];
 
     if (ez_frame_equal_with_tolerance(window.frame,
                                       safeFrame,
@@ -1880,6 +1857,40 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             [self applyWindowHeight];
         }
     }];
+}
+
+/// Window frame that fits the table content, restrained by the window size limits and the current screen.
+- (CGRect)windowFrameFittingContentHeight:(CGFloat)tableViewHeight inWindow:(NSWindow *)window {
+    CGFloat height = [self getRestrainedScrollViewHeight:tableViewHeight];
+    //    MMLogInfo(@"getRestrainedScrollViewHeight: %@", @(height));
+
+    CGSize maxWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
+
+    CGFloat titleBarHeight = EZTitlebarHeight_28; // system title bar height is 28
+
+    CGFloat scrollViewHeight = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
+    scrollViewHeight = MIN(scrollViewHeight, maxWindowSize.height - titleBarHeight);
+    //    MMLogInfo(@"scrollViewHeight: %@", @(scrollViewHeight));
+
+    // The scroll view follows the window edges. Its document keeps its full height
+    // while NSClipView reveals more content during the window animation.
+
+    CGFloat showingWindowHeight = scrollViewHeight + titleBarHeight;
+    showingWindowHeight = MIN(showingWindowHeight, maxWindowSize.height);
+
+    // Since changing height will cause position change, adjust y to keep top-left coordinate stable.
+    CGFloat deltaHeight = window.height - showingWindowHeight;
+    CGFloat y = window.y + deltaHeight;
+
+    CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
+
+    // Use the window's current screen. The cached one only refreshes on clicks,
+    // so on multi-monitor setups it can yank the window back to the old display.
+    // window.screen picks the display with the largest overlap, which handles
+    // cross-screen drags better than our own first-intersect lookup.
+    NSScreen *currentScreen = window.screen ?: [EZCoordinateUtils screenForRect:newFrame] ?: NSScreen.mainScreen;
+    CGRect screenVisibleFrame = currentScreen.visibleFrame;
+    return [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
 }
 
 - (void)restoreFirstResponderIfWindowIsKey {
