@@ -1843,18 +1843,21 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     CGFloat showingWindowHeight = scrollViewHeight + titleBarHeight;
     showingWindowHeight = MIN(showingWindowHeight, maxWindowSize.height);
 
-    // Since changing height will cause position change, adjust y to keep top-left coordinate stable.
-    CGFloat deltaHeight = window.height - showingWindowHeight;
-    CGFloat y = window.y + deltaHeight;
-
-    CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
-
     // Use the window's current screen. The cached one only refreshes on clicks,
     // so on multi-monitor setups it can yank the window back to the old display.
     // window.screen picks the display with the largest overlap, which handles
     // cross-screen drags better than our own first-intersect lookup.
-    NSScreen *currentScreen = window.screen ?: [EZCoordinateUtils screenForRect:newFrame] ?: NSScreen.mainScreen;
+    NSScreen *currentScreen = window.screen ?: [EZCoordinateUtils screenForRect:window.frame] ?: NSScreen.mainScreen;
     CGRect screenVisibleFrame = currentScreen.visibleFrame;
+
+    // Keep the window top fixed: content only extends downward, and scrolls once it reaches the screen bottom,
+    // instead of pushing the whole window up.
+    CGFloat windowTop = NSMaxY(window.frame);
+    CGFloat heightToScreenBottom = windowTop - NSMinY(screenVisibleFrame);
+    CGFloat minimumWindowHeight = [EZLayoutManager.shared minimumWindowSize:self.windowType].height;
+    showingWindowHeight = MIN(showingWindowHeight, MAX(heightToScreenBottom, minimumWindowHeight));
+
+    CGRect newFrame = CGRectMake(window.x, windowTop - showingWindowHeight, window.width, showingWindowHeight);
     CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
     CGFloat targetHeight = CGRectGetHeight(safeFrame);
 
