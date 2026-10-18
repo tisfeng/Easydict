@@ -20,6 +20,7 @@ Add compatible model IDs and Fast controls in one PR, retaining the independent 
 - Keep the native centered input, text-only isolation and component/configuration rechecks.
 - Declare custom priority tiers and select verified additions when the previous selection is unavailable.
 - Include saved reasoning compatibility when deciding whether to select a verified addition.
+- Record the verified model/default effort after automatic recovery so subsequent removal restores it.
 - Skip unused runtime preloads for custom translations and effort verification; retain fresh checks before private processes start.
 - Update six locales and both user guides without replacing unrelated dev-branch behavior.
 
@@ -35,6 +36,7 @@ Custom requests use private App Servers and existing official login. Fast select
 - Component 0.153.4 ignored custom Fast before the tier declaration; it accepted priority/default afterward without account access or translation requests.
 - Fourteen local selection checks passed, including stale IDs, hidden selections, unsupported saved efforts, failure and cancellation; valid selections and Fast were preserved.
 - Twelve local routing checks confirmed single fresh custom resolution; four compiled checks rejected changed components/configuration with supplied or omitted runtimes.
+- Fourteen local recovery-record checks passed; seven old-code cases reproduced incorrect removal fallback. Current selections, failed/canceled verification, other services and Fast were preserved.
 - Earlier native preview input and runtime-cache rejection checks remain applicable. Full account/runtime suites were not repeated after the fixture-copy stall.
 - SwiftFormat, six-locale coverage, JSON and diff checks passed. Validation tools remain local.
 

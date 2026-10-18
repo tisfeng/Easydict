@@ -300,6 +300,7 @@ struct CodexCLIServiceConfigurationView: View {
                 if selectAddedModel {
                     service.model = model
                     managedEffort = .default
+                    CodexServiceConfiguration(uuid: service.uuid).rememberSuccessfulSelection()
                 }
             }
             if case let .failure(error) = result, error is CancellationError { return }
