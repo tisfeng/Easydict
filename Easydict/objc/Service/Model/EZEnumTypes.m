@@ -40,6 +40,7 @@ NSString *const EZServiceTypeClaudeCode = @"ClaudeCode";
 NSString *const EZServiceTypeClaude = @"Claude";
 NSString *const EZServiceTypeCodexCLI = @"CodexCLI";
 NSString *const EZServiceTypeMDict = @"MDict";
+NSString *const EZServiceTypeGitHubCopilot = @"GitHubCopilot";
 
 NSString *const EZQueryTextTypeKey = @"QueryTextType";
 NSString *const EZIntelligentQueryTextTypeKey = @"IntelligentQueryTextType";

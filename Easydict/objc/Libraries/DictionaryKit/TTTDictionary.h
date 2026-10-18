@@ -78,13 +78,13 @@ typedef NS_ENUM(NSUInteger, TTTDictionarySearchType) {
 @property (readonly, nonatomic, assign) BOOL isUserDictionary;
 
 @property (readonly, nonatomic, copy, nullable) NSString *identifier;
-@property (readonly, nonatomic, strong) NSURL *dictionaryURL;
+@property (readonly, nonatomic, strong, nullable) NSURL *dictionaryURL;
 
 /// key: EZLanguage, value: language dict name
 @property (class, readonly, nonatomic, copy) MMOrderedDictionary*languageToDictionaryNameMap;
 
 /// Get dict with CFBundleDisplayName
-+ (instancetype)dictionaryNamed:(NSString *)name;
++ (nullable instancetype)dictionaryNamed:(NSString *)name;
 
 + (NSSet<TTTDictionary *> *)availableDictionaries;
 

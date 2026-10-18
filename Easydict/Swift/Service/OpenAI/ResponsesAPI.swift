@@ -251,7 +251,7 @@ extension BaseOpenAIService {
                         ),
                         encoder: JSONParameterEncoder.default,
                         headers: responsesHeaders(apiKey: apiKey),
-                        requestModifier: { $0.timeoutInterval = EZNetWorkTimeoutInterval }
+                        requestModifier: { $0.timeoutInterval = AppConstants.llmRequestTimeoutInterval }
                     )
                     .serializingData(automaticallyCancelling: true)
                     .response
@@ -321,7 +321,7 @@ extension BaseOpenAIService {
                         ),
                         encoder: JSONParameterEncoder.default,
                         headers: responsesHeaders(apiKey: apiKey),
-                        requestModifier: { $0.timeoutInterval = EZNetWorkTimeoutInterval }
+                        requestModifier: { $0.timeoutInterval = AppConstants.llmRequestTimeoutInterval }
                     )
                     let dataStream = streamRequest.streamTask()
                         .streamingData(automaticallyCancelling: true)

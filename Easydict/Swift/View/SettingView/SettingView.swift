@@ -78,7 +78,6 @@ struct SettingView: View {
         window.standardWindowButton(.zoomButton)?.isEnabled = false
 
         // Keep the settings page Windows all the same width to avoid strange animations.
-        let maxWidth: Double = 900
         let height: Double = switch selection {
         case .disabled:
             500
@@ -89,10 +88,10 @@ struct SettingView: View {
         case .favorites:
             640
         default:
-            maxWidth * 0.8
+            defaultSettingsWindowHeight
         }
 
-        let newSize = CGSize(width: maxWidth, height: height)
+        let newSize = CGSize(width: settingsWindowWidth, height: height)
 
         let originalFrame = window.frame
         let newY = originalFrame.origin.y + originalFrame.size.height - newSize.height
@@ -113,6 +112,9 @@ struct SettingView: View {
 
     @State private var selection = SettingTab.general
     @State private var window: NSWindow?
+
+    private let settingsWindowWidth: Double = 960
+    private let defaultSettingsWindowHeight: Double = 720
 }
 
 #Preview {

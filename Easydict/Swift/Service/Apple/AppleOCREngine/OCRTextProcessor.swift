@@ -29,6 +29,11 @@ public class OCRTextProcessor {
 
     private(set) var bands: [OCRBand] = []
 
+    /// Clears layout state when recognition returns non-text content only.
+    func reset() {
+        bands = []
+    }
+
     /// Processes raw OCR observations to produce a structured `EZOCRResult` (Unified API version).
     ///
     /// This is the unified entry point for the processor that works with `EZRecognizedTextObservation`.

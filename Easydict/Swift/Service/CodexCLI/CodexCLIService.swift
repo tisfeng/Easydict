@@ -14,10 +14,9 @@ import Foundation
 
 /// A translation service using either the bundled ChatGPT runtime or the local CLI.
 ///
-/// Each translation spawns a fresh `codex exec --json` subprocess, so there is no
-/// cross-query conversation state. The service overrides `contentStreamTranslate`
-/// to slot into the `StreamService` pipeline — accumulation, throttling, and
-/// result management are handled by the base class.
+/// Managed translations reuse one local App Server process but receive independent
+/// ephemeral threads, so there is no cross-query conversation state. Local CLI
+/// mode continues to spawn `codex exec --json` for each translation.
 @objc(EZCodexCLIService)
 final class CodexCLIService: StreamService {
     // MARK: Lifecycle
@@ -72,7 +71,7 @@ final class CodexCLIService: StreamService {
         CodexCLIServiceConfigurationView(service: self)
     }
 
-    /// Spawns `codex exec --json` and streams its stdout as text delta chunks.
+    /// Streams a managed App Server turn or a local `codex exec --json` request.
     ///
     /// `codex exec` does not have a separate system-prompt flag, so the system
     /// instructions and conversation turns are concatenated into a single prompt
@@ -153,16 +152,27 @@ final class CodexCLIService: StreamService {
                         try CodexManagedRuntime.validateSelection(
                             model: configuration.model, effort: configuration.effort.cliValue
                         )
-                        let result = try await managed.run(
+                        let runtime = try await CodexManagedAppServer.shared.runtime()
+                        let result = try await managed.runUsingAppServer(
                             prompt: combinedPrompt,
                             model: configuration.model,
                             effort: configuration.effort.cliValue,
-                            runtime: try await CodexManagedRuntime.installed()
-                        )
+                            runtime: runtime
+                        ) { chunk in
+                            do {
+                                try self.updateResultLock.withLock {
+                                    guard CodexRequestCoordinator.shared.isCurrent(token) else {
+                                        throw CancellationError()
+                                    }
+                                    continuation.yield(chunk)
+                                }
+                            } catch {
+                                managed.cancel()
+                            }
+                        }
                         try self.updateResultLock.withLock {
                             guard CodexRequestCoordinator.shared.isCurrent(token) else { throw CancellationError() }
                             self.tokenUsage = result.usage
-                            continuation.yield(result.text)
                         }
                     } else if let local {
                         for try await chunk in local.run(

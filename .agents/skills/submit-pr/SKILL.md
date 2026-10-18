@@ -7,6 +7,8 @@ description: 创建或复用当前 checkout 已提交变更的 GitHub PR，必�
 
 根据当前 Git checkout 的已提交变更，规划、创建或复用 GitHub Pull Request。
 `<submit-pr-skill-dir>` 指实际加载的本 Skill 目录。
+PR 正文只使用 Skill 自带的 [固定模板](assets/pull_request_template.md)；不发现、读取或合并目标
+仓库的 GitHub PR 模板。
 
 ## 模式与授权
 
@@ -24,9 +26,13 @@ description: 创建或复用当前 checkout 已提交变更的 GitHub PR，必�
 
 ## 主流程
 
-1. 读取 [工作流契约](references/workflow.md)，确定用户语言、正文、Issue 策略、repository 拓扑、
-   base/head 分支与恢复规则。
-2. 记录 HEAD 和 staged、unstaged、untracked 边界。
+1. 读取 [工作流契约](references/workflow.md)，确定用户语言、固定正文、Issue 策略、repository
+   拓扑、base/head 分支与恢复规则。
+2. 记录 HEAD、当前分支和 staged、unstaged、untracked 边界。若 checkout 处于 detached 状态：
+   - 用户明确名称或项目既有命名优先；否则根据任务与只读 diff 选择最窄 Angular type，生成
+     `<type>/<english-kebab-case-summary>`。
+   - 使用 `git check-ref-format --branch` 验证字面名称，并在本轮 `plan` 与 `apply` 都显式传入
+     `--head-branch`；调用 Agent 不在 helper 之外创建或切换分支。
 3. `plan` 模式只使用现有提交和缓存的远程事实，运行 helper `plan` 并展示完整 PR 预览。
    缺少提交或 cached base 时报告预览缺口，不为使 plan 成功而写入。
 4. 默认或 `draft` 模式要求工作树可安全交付：
@@ -34,7 +40,8 @@ description: 创建或复用当前 checkout 已提交变更的 GitHub PR，必�
    - 仅 staged 非空时，按宿主交付规则使用 `git-commit`；工作树干净时复用已有提交。
    - 精确 fetch base ref，检查完整 `<base-remote>/<base>..HEAD` 提交与文件范围。
      范围为空、来源不明或 HEAD 未包含 base 时停止，不自动修正历史。
-5. 根据真实范围起草内容，运行 helper `plan` 并展示语言来源和完整预览。
+5. 根据真实范围起草 Context、Changes 和 Verification；不读取目标仓库中的
+   `pull_request_template` 文件或目录。运行 helper `plan` 并展示语言来源和完整预览。
    默认模式继续；用户要求确认或暂缓时先停止。
 6. 使用相同内容运行 helper `apply`；`draft` 追加 `--draft`。helper 重新发现并校验本地/远程状态，
    精确 push，创建或复用 PR，然后读回验证身份、head SHA、title、body 和 Draft 状态。
@@ -45,6 +52,8 @@ description: 创建或复用当前 checkout 已提交变更的 GitHub PR，必�
 
 - 只支持 GitHub remote；拓扑有歧义时要求显式参数，不创建 fork。
 - 不 force push，不 rebase、merge、reset、stash、删除 remote/分支，不切换 checkout 或推送保护分支。
+- detached checkout 只在 helper `apply` 内从冻结 HEAD 创建或复用命名分支 ref；`plan` 不创建 ref，
+  `apply` 后 checkout 仍保持 detached。
 - 不自动添加 reviewer、label、milestone 或 project，不 merge PR、评论或关闭 Issue。
 - 只有 helper `apply` 返回成功且 `pr_verification.status == "passed"` 时才声称 PR 交付完成。
   默认不等待 CI；仅在用户或宿主规则要求时查询或等待 checks。

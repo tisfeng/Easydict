@@ -7,9 +7,9 @@
 
 import Foundation
 
-/// Performs an authenticated managed translation and validates its terminal JSONL.
-/// A request owns its status/exec subprocesses, so cancellation cannot affect other
-/// windows. Only a successful turn with final text and no tool activity is accepted.
+/// Performs an authenticated managed translation and validates its terminal output.
+/// Production translations use an isolated thread on the shared App Server; the
+/// one-shot exec path remains available for connection validation.
 final class CodexManagedTranslation: @unchecked Sendable {
     // MARK: Internal
 
@@ -122,11 +122,52 @@ final class CodexManagedTranslation: @unchecked Sendable {
         return try Self.result(output, durationMs: Int(Date().timeIntervalSince(started) * 1000))
     }
 
+    /// Streams one translation through the shared process without sharing thread state.
+    func runUsingAppServer(
+        prompt: String,
+        model: String,
+        effort: String?,
+        runtime: CodexManagedRuntime,
+        deltaReceived: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> Result {
+        let requestID = try lock.withLock { () -> UUID in
+            if cancelled { throw CancellationError() }
+            let requestID = UUID()
+            appServerRequestID = requestID
+            return requestID
+        }
+        return try await withTaskCancellationHandler {
+            do {
+                let result = try await CodexManagedAppServer.shared.translate(
+                    CodexManagedAppServer.TranslationRequest(
+                        identifier: requestID,
+                        prompt: prompt,
+                        model: model,
+                        effort: effort,
+                        runtime: runtime,
+                        isCancelled: { [weak self] in self?.isCancelled ?? true },
+                        deltaReceived: deltaReceived
+                    )
+                )
+                clearAppServerRequest(requestID)
+                return result
+            } catch {
+                clearAppServerRequest(requestID)
+                throw error
+            }
+        } onCancel: { [weak self] in
+            self?.cancelAppServerRequest(requestID)
+        }
+    }
+
     func cancel() {
-        lock.withLock {
+        let requestID = lock.withLock { () -> UUID? in
             cancelled = true
             process?.cancel()
+            return appServerRequestID
         }
+        if let requestID { Task { await CodexManagedAppServer.shared.cancel(requestID) } }
     }
 
     // MARK: Private
@@ -134,6 +175,20 @@ final class CodexManagedTranslation: @unchecked Sendable {
     private let lock = NSLock()
     private var cancelled = false
     private var process: CodexManagedProcess?
+    private var appServerRequestID: UUID?
+
+    private var isCancelled: Bool { lock.withLock { cancelled } }
+
+    private func clearAppServerRequest(_ requestID: UUID) {
+        lock.withLock {
+            if appServerRequestID == requestID { appServerRequestID = nil }
+        }
+    }
+
+    private func cancelAppServerRequest(_ requestID: UUID) {
+        let shouldCancel = lock.withLock { appServerRequestID == requestID }
+        if shouldCancel { Task { await CodexManagedAppServer.shared.cancel(requestID) } }
+    }
 
     private func nextProcess() throws -> CodexManagedProcess {
         try lock.withLock {

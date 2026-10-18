@@ -74,14 +74,9 @@ final class ClaudeCodeLogger: @unchecked Sendable {
     private let queue = DispatchQueue(label: "claude-code-logger", qos: .utility)
 
     private lazy var fileURL: URL? = {
-        guard let base = FileManager.default
-            .urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-        else { return nil }
-        let logDir = base
-            .appendingPathComponent(Bundle.main.bundleIdentifier ?? "Easydict")
-            .appendingPathComponent("logs")
-            .appendingPathComponent("claude-code")
-        try? FileManager.default.createDirectory(at: logDir, withIntermediateDirectories: true)
+        let pathManager = AppPathManager.current
+        let logDir = pathManager.claudeCodeLogDirectory
+        try? pathManager.ensureDirectoryExists(at: logDir)
         return logDir.appendingPathComponent(fileName)
     }()
 

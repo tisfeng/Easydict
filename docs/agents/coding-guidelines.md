@@ -38,6 +38,9 @@
 - 将同一 protocol 的函数放在一起，并使用 `// MARK: - <ProtocolName>` 标记；较长类型使用
   `// MARK:` 区分生命周期、状态、协议和私有 helper。
 - Swift 文档注释使用简洁英文。
+- 仅单个模块使用的常量留在该模块内（`private static let` 或模块自有常量类型，如 `OCRConstants`）；
+  跨模块的 App 级常量统一放入 `AppConstants`，按 `// MARK:` 分组并以领域前缀命名，不为一两个值
+  新建独立常量类型。同类外部标识集合（如 `AppBundleIDs`）可单独维护。
 
 ## 库与 API
 

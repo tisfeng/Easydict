@@ -1,5 +1,10 @@
 # 发布后 Issue 关联与解决策略
 
+Release PR 先应用 `.agents/skills/release-easydict/scripts/release_pr_policy.py` 的统一
+分类。GitHub API 标记为 bot、`app/github-actions` 或 `app/dependabot` 的 PR 被忽略，不进入
+changelog、New Contributors、Issue candidate 或 PR 通知。其他人工 PR 即使标题为 `chore`
+或依赖相关，也保留。
+
 本策略优先识别 PR 模板 `## 关联 Issue / Linked Issues` 区域中的明确关联，同时兼容
 现有 PR 中的 closing reference、issue URL、`owner/repo#123` 和裸 `#123`。不要依赖
 会在 PR 合并时提前关闭 Issue 的 GitHub closing keyword 或 Development 侧栏关联。
@@ -17,6 +22,9 @@
 候选编号必须通过 GitHub issue API 解析。包含 `pull_request` 字段的实体是 PR，直接
 排除。同一个 Issue 使用多种格式时只生成一个候选。模板区域外的兼容引用仍需检查
 是否只是编号碰撞；候选发现本身不代表关联成立。
+
+没有任何有效 `fixes` 或 `related` Issue 关联的人工 PR 进入独立的 PR 通知列表；PR 通知
+复用版本提示模板，但不会关闭 PR。
 
 ## 逐 PR 关联
 

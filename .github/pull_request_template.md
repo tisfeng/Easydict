@@ -1,6 +1,10 @@
-## 变更说明 / Summary
+## 背景 / Context
 
-<!-- 请简要说明本次修改及原因。 / Briefly describe the change and its purpose. -->
+<!-- 请说明为什么需要本次修改及其目标。 / Explain why this change is needed and its goal. -->
+
+## 变更内容 / Changes
+
+<!-- 请概述实际改动及其影响。 / Summarize the actual changes and their impact. -->
 
 ## 关联 Issue / Linked Issues
 

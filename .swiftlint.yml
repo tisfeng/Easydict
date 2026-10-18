@@ -69,16 +69,10 @@ trailing_comma:
   severity: warning
   mandatory_comma: true
 
-excluded:
-  - "Build/*"
-  - "Pods"
-  - "**/UNTESTED_TODO"
-  - "vendor"
-  - "fastlane"
-  - ".tmp"
-  - "**/.tmp/**" # Exclude local temporary release/build artifacts
-  - ".build"
-  - "**/.build/**" # Exclude all .build subdirectories
-  - "**/checkouts/**" # Exclude all SPM downloaded dependencies
-  - "**/DerivedData/**" # Exclude Xcode derived data
-  - "**/SherpaOnnx.swift"
+# Limit directory traversal to project sources. Top-level `excluded` entries
+# make SwiftLint 0.62.2 traverse large generated directories even with `included`.
+included:
+  - Easydict
+  - EasydictTests
+  - BuildTools/Package.swift
+  - BuildTools/Empty.swift

@@ -25,8 +25,11 @@ func serivceConfigurationKey<T: _DefaultsSerializable>(
     if let id, !id.isEmpty {
         identifier = "_\(id)_"
     }
-    let key = "EZ" + serviceType.rawValue + key.rawValue.capitalizeFirstLetter() + identifier + "Key"
-    return .init(key, default: defaultValue)
+    let keyName = "EZ" + serviceType.rawValue + key.rawValue.capitalizeFirstLetter() + identifier + "Key"
+
+    // These keys are computed properties, so registering the default on every construction
+    // would repeatedly call UserDefaults.register(defaults:) on hot service paths.
+    return .init(keyName) { defaultValue }
 }
 
 extension String {

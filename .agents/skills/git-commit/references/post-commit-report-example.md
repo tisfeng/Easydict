@@ -28,20 +28,20 @@
 ```text
 docs(git): 统一本地 Git 交付回执
 
-现有提交流程收集了完整结果，但最终回执格式分散，可能被压缩成提交标题。
+背景：现有提交流程收集了完整结果，但最终回执格式分散，可能被压缩成提交标题。
 
-统一用户可见回执并使用 Markdown 表格展示统计，保留提交信息校验和 JSON 统计数据来源。
+变更：统一用户可见回执并使用 Markdown 表格展示统计，保留提交信息校验和 JSON 统计数据来源。
 
-这让本地提交提供一致、可核验的结果，并继续保持默认不推送的边界。
+影响：这让本地提交提供一致、可核验的结果，并继续保持默认不推送的边界。
 
 ----------------------------------------------------------------------
 
 docs(git): unify local Git delivery receipts
 
-The existing commit workflow collected complete results, but its final receipt could be reduced to a commit subject.
+context: The existing commit workflow collected complete results, but its final receipt could be reduced to a commit subject.
 
-Unify the user-visible receipt and render statistics as a Markdown table while preserving message validation and the JSON statistics source.
+change: Unify the user-visible receipt and render statistics as a Markdown table while preserving message validation and the JSON statistics source.
 
-This gives local commits consistent, verifiable results while preserving the default no-push boundary.
+impact: This gives local commits consistent, verifiable results while preserving the default no-push boundary.
 ```
 ````

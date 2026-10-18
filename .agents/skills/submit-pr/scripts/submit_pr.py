@@ -18,22 +18,17 @@ import time
 from typing import Any, Iterator, Sequence
 
 
-# Default headings are used only when a repository template does not provide a
-# semantic destination for the required PR content.
-CANONICAL_HEADINGS = (
-    "## 变更说明 / Summary",
-    "## 关联 Issue / Linked Issues",
-    "## 验证 / Verification",
-    "## 截图 / Screenshots",
+PR_BODY_TEMPLATE_PATH = (
+    Path(__file__).resolve().parents[1] / "assets" / "pull_request_template.md"
 )
-# Public alias retained for callers of the first implementation.
-REQUIRED_HEADINGS = CANONICAL_HEADINGS
-SECTION_ALIASES = (
-    {"变更说明 / summary", "summary", "description", "changes"},
-    {"关联 issue / linked issues", "linked issues", "related issues", "issues"},
-    {"验证 / verification", "verification", "testing", "tests"},
-    {"截图 / screenshots", "screenshots", "screenshot"},
+PR_BODY_TEMPLATE_FIELDS = (
+    "context",
+    "changes",
+    "issues",
+    "verification",
+    "screenshots",
 )
+PR_BODY_TEMPLATE_PLACEHOLDER = re.compile(r"\{\{(?P<name>[a-z_]+)\}\}")
 UI_SCREENSHOT_NOTICE = (
     "请在 GitHub PR 页面补充截图。 / "
     "Please add screenshots on the GitHub PR page."
@@ -61,8 +56,6 @@ TITLE_PATTERN = re.compile(
 BRANCH_PATTERN = re.compile(
     rf"^(?:{CONVENTIONAL_TYPES})/[a-z0-9]+(?:-[a-z0-9]+)*$"
 )
-TEMPLATE_PARENT_DIRECTORIES = ("", "docs", ".github")
-TEMPLATE_EXTENSIONS = {".md", ".txt"}
 MINIMUM_PYTHON = (3, 10)
 
 
@@ -98,13 +91,13 @@ def measure_phase(
 @dataclass(frozen=True)
 class PRContent:
     title: str
-    summary: str
+    context: str
+    changes: str
     verification: str
     issues: tuple[str, ...]
     ui_change: bool
     draft: bool
     issue_policy: str = "neutral"
-    extra_body: str = ""
 
 
 @dataclass(frozen=True)
@@ -127,6 +120,7 @@ class RepositoryContext:
     head_repository: str
     head_remote: str
     default_branch: str
+    current_branch: str | None
 
     @property
     def cross_repository(self) -> bool:
@@ -284,11 +278,9 @@ def select_unique(candidates: Sequence[str], description: str) -> str:
     return unique[0]
 
 
-def current_branch(repo_root: Path) -> str:
+def current_branch(repo_root: Path) -> str | None:
     branch = git_output(repo_root, "branch", "--show-current")
-    if not branch:
-        raise SubmitPRError("detached HEAD is not supported")
-    return branch
+    return branch or None
 
 
 def resolve_repository_context(
@@ -345,8 +337,10 @@ def resolve_repository_context(
         )
 
     current = current_branch(repo_root)
-    upstream = config_value(repo_root, f"branch.{current}.remote")
-    push_remote = config_value(repo_root, f"branch.{current}.pushRemote")
+    upstream = config_value(repo_root, f"branch.{current}.remote") if current else None
+    push_remote = (
+        config_value(repo_root, f"branch.{current}.pushRemote") if current else None
+    )
     remote_default = config_value(repo_root, "remote.pushDefault")
     if args.head_remote:
         head_candidates = [args.head_remote]
@@ -383,7 +377,12 @@ def resolve_repository_context(
             f"{base_repository} fork network"
         )
 
-    base_branch = args.base or config_value(repo_root, f"branch.{current}.gh-merge-base")
+    configured_base = (
+        config_value(repo_root, f"branch.{current}.gh-merge-base")
+        if current
+        else None
+    )
+    base_branch = args.base or configured_base
     base_branch = base_branch or base_info.default_branch
     return RepositoryContext(
         base_repository,
@@ -392,6 +391,7 @@ def resolve_repository_context(
         head_repository.name_with_owner,
         head_remote,
         base_info.default_branch,
+        current,
     )
 
 
@@ -403,8 +403,10 @@ def validate_content(content: PRContent) -> None:
         raise SubmitPRError("PR title exceeds 256 characters")
     if TITLE_PATTERN.fullmatch(title) is None:
         raise SubmitPRError("PR title must use Angular-style type(scope): subject")
-    if not content.summary.strip():
-        raise SubmitPRError("PR summary must not be empty")
+    if not content.context.strip():
+        raise SubmitPRError("PR context must not be empty")
+    if not content.changes.strip():
+        raise SubmitPRError("PR changes must not be empty")
     if not content.verification.strip():
         raise SubmitPRError("PR verification must not be empty")
     if len(set(content.issues)) != len(content.issues):
@@ -414,156 +416,40 @@ def validate_content(content: PRContent) -> None:
             raise SubmitPRError(f"unsupported linked Issue reference: {issue!r}")
 
 
-def section_index(heading: str) -> int | None:
-    normalized = heading.strip().removeprefix("##").strip().casefold()
-    for index, aliases in enumerate(SECTION_ALIASES):
-        if normalized in aliases:
-            return index
-    return None
+def load_pr_body_template() -> str:
+    try:
+        template_text = PR_BODY_TEMPLATE_PATH.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise SubmitPRError(
+            f"cannot read bundled PR body template: {PR_BODY_TEMPLATE_PATH}"
+        ) from error
+    placeholders = PR_BODY_TEMPLATE_PLACEHOLDER.findall(template_text)
+    if sorted(placeholders) != sorted(PR_BODY_TEMPLATE_FIELDS):
+        expected = ", ".join(PR_BODY_TEMPLATE_FIELDS)
+        raise SubmitPRError(
+            "bundled PR body template must contain each required placeholder "
+            f"exactly once: {expected}"
+        )
+    return template_text
 
 
-def clean_template_body(text: str) -> str:
-    text = re.sub(r"<!--[\s\S]*?-->", "", text)
-    lines = [line.rstrip() for line in text.strip().splitlines()]
-    while lines and not lines[0].strip():
-        lines.pop(0)
-    while lines and not lines[-1].strip():
-        lines.pop()
-    if lines == ["-"]:
-        return ""
-    return "\n".join(lines).strip()
-
-
-def parse_template(template_text: str) -> tuple[list[str], list[tuple[str, str]]]:
-    sections: list[tuple[str, str]] = []
-    preamble: list[str] = []
-    current_heading: str | None = None
-    current_lines: list[str] = []
-    for line in template_text.splitlines():
-        if line.startswith("## "):
-            if current_heading is None:
-                preamble = current_lines
-            else:
-                sections.append((current_heading, "\n".join(current_lines)))
-            current_heading = line
-            current_lines = []
-        else:
-            current_lines.append(line)
-    if current_heading is None:
-        preamble = current_lines
-    else:
-        sections.append((current_heading, "\n".join(current_lines)))
-    return preamble, sections
-
-
-def render_pr_body(template_text: str, content: PRContent) -> str:
+def render_pr_body(content: PRContent) -> str:
     validate_content(content)
-    preamble, template_sections = parse_template(template_text)
-    seen: set[int] = set()
-    generated = (
-        content.summary.strip(),
-        "\n".join(f"- {issue.strip()}" for issue in content.issues),
-        content.verification.strip(),
-        UI_SCREENSHOT_NOTICE if content.ui_change else "N/A",
-    )
-    rendered: list[str] = []
-    preamble_text = clean_template_body("\n".join(preamble))
-    if preamble_text:
-        rendered.append(preamble_text)
-    for heading, body in template_sections:
-        index = section_index(heading)
-        cleaned = clean_template_body(body)
-        if index is None:
-            rendered.append(f"{heading}\n\n{cleaned}".rstrip())
-            continue
-        if index in seen:
-            raise SubmitPRError(f"PR template repeats semantic section: {heading}")
-        seen.add(index)
-        body_parts = [part for part in (generated[index], cleaned) if part]
-        rendered.append(f"{heading}\n\n" + "\n\n".join(body_parts))
-
-    for index, (heading, value) in enumerate(
-        zip(CANONICAL_HEADINGS, generated, strict=True)
-    ):
-        if index not in seen:
-            rendered.append(f"{heading}\n\n{value}")
-
-    if content.extra_body.strip():
-        for line in content.extra_body.splitlines():
-            if line.startswith("## ") and section_index(line) is not None:
-                raise SubmitPRError("extra PR body repeats a canonical section")
-        rendered.append(content.extra_body.strip())
-    body = "\n\n".join(part.rstrip() for part in rendered if part.strip()) + "\n"
+    generated = {
+        "context": content.context.strip(),
+        "changes": content.changes.strip(),
+        "issues": "\n".join(f"- {issue.strip()}" for issue in content.issues),
+        "verification": content.verification.strip(),
+        "screenshots": UI_SCREENSHOT_NOTICE if content.ui_change else "N/A",
+    }
+    template_text = load_pr_body_template()
+    body = PR_BODY_TEMPLATE_PLACEHOLDER.sub(
+        lambda match: generated[match.group("name")],
+        template_text,
+    ).rstrip() + "\n"
     if content.issue_policy == "forbid" and AUTO_CLOSE_PATTERN.search(body):
         raise SubmitPRError("PR body contains a GitHub auto-closing Issue reference")
     return body
-
-
-def discover_template(repo_root: Path, requested: str | None) -> tuple[str, str | None]:
-    if requested:
-        path = Path(requested)
-        path = path if path.is_absolute() else repo_root / path
-        try:
-            return path.read_text(encoding="utf-8"), str(path)
-        except OSError as error:
-            raise SubmitPRError(f"cannot read PR template: {path}") from error
-    candidates: list[Path] = []
-    for relative in TEMPLATE_PARENT_DIRECTORIES:
-        parent = repo_root / relative
-        if not parent.is_dir():
-            continue
-        for path in sorted(parent.iterdir(), key=lambda item: item.name.casefold()):
-            name = path.stem.casefold()
-            extension = path.suffix.casefold()
-            if (
-                path.is_file()
-                and name == "pull_request_template"
-                and extension in TEMPLATE_EXTENSIONS
-            ):
-                candidates.append(path)
-            elif path.is_dir() and path.name.casefold() == "pull_request_template":
-                candidates.extend(
-                    sorted(
-                        (
-                            child
-                            for child in path.iterdir()
-                            if child.is_file()
-                            and child.suffix.casefold() in TEMPLATE_EXTENSIONS
-                        ),
-                        key=lambda item: item.name.casefold(),
-                    )
-                )
-    existing: list[Path] = []
-    seen_files: set[tuple[int, int]] = set()
-    for path in candidates:
-        if not path.is_file():
-            continue
-        stat = path.stat()
-        identity = (stat.st_dev, stat.st_ino)
-        if identity not in seen_files:
-            existing.append(path)
-            seen_files.add(identity)
-    if len(existing) > 1:
-        raise SubmitPRError(
-            "multiple PR templates found; select one with --template: "
-            + ", ".join(str(path.relative_to(repo_root)) for path in existing)
-        )
-    if existing:
-        return existing[0].read_text(encoding="utf-8"), str(existing[0])
-    return "\n\n".join(CANONICAL_HEADINGS) + "\n", None
-
-
-def read_extra_body(repo_root: Path, requested: str | None) -> str:
-    if not requested:
-        return ""
-    if requested == "-":
-        return sys.stdin.read()
-    path = Path(requested)
-    path = path if path.is_absolute() else repo_root / path
-    try:
-        return path.read_text(encoding="utf-8")
-    except OSError as error:
-        raise SubmitPRError(f"cannot read extra PR body: {path}") from error
 
 
 def parse_status(status_text: str) -> dict[str, list[str]]:
@@ -608,6 +494,33 @@ def local_branch_sha(repo_root: Path, branch: str) -> str | None:
         detail = result.stderr.strip() or result.stdout.strip()
         raise SubmitPRError(f"cannot inspect local branch {branch}: {detail}")
     return result.stdout.strip()
+
+
+def local_branch_action(
+    repo_root: Path,
+    current: str | None,
+    branch: str,
+    head_sha: str,
+) -> str:
+    if current == branch:
+        return "current"
+    existing_sha = local_branch_sha(repo_root, branch)
+    if existing_sha is None:
+        return "created"
+    if existing_sha == head_sha:
+        return "reused"
+    ancestry = git_result(
+        repo_root,
+        "merge-base",
+        "--is-ancestor",
+        existing_sha,
+        head_sha,
+    )
+    if ancestry.returncode == 0:
+        return "updated"
+    raise SubmitPRError(
+        f"local branch {branch} changed while planning: {existing_sha}"
+    )
 
 
 def remote_branch_sha(
@@ -745,16 +658,16 @@ def ensure_commit_range(
     return head_sha, commits, files_output.splitlines() if files_output else []
 
 
-def prepare_content(args: argparse.Namespace, repo_root: Path) -> PRContent:
+def prepare_content(args: argparse.Namespace) -> PRContent:
     return PRContent(
         title=args.title,
-        summary=args.summary,
+        context=args.context,
+        changes=args.changes,
         verification=args.verification,
         issues=tuple(issue.strip() for issue in args.issue),
         ui_change=args.ui_change,
         draft=args.draft,
         issue_policy=args.issue_policy,
-        extra_body=read_extra_body(repo_root, args.extra_body_file),
     )
 
 
@@ -771,7 +684,7 @@ def protected_branches(
 
 def resolve_head_branch(
     repo_root: Path,
-    current: str,
+    current: str | None,
     protected: set[str],
     requested: str | None,
     head_sha: str,
@@ -784,8 +697,8 @@ def resolve_head_branch(
         validate_branch_name(repo_root, requested)
         if requested in protected:
             raise SubmitPRError(f"head branch is protected: {requested!r}")
-    current_is_task = current not in protected and (
-        BRANCH_PATTERN.fullmatch(current) or requested == current
+    current_is_task = current is not None and current not in protected and (
+        BRANCH_PATTERN.fullmatch(current) is not None or requested == current
     )
     if current_is_task:
         if requested and requested != current:
@@ -795,9 +708,12 @@ def resolve_head_branch(
         validate_branch_name(repo_root, current)
         return current, "current"
     if not requested:
-        raise SubmitPRError(
-            "--head-branch is required on a protected or non-Conventional branch"
+        reason = (
+            "when HEAD is detached"
+            if current is None
+            else "on a protected or non-Conventional branch"
         )
+        raise SubmitPRError(f"--head-branch is required {reason}")
     selected = choose_branch_name(
         repo_root,
         remote,
@@ -807,7 +723,7 @@ def resolve_head_branch(
         push_url=push_url,
         protected=protected,
     )
-    action = "created" if local_branch_sha(repo_root, selected) is None else "reused"
+    action = local_branch_action(repo_root, current, selected, head_sha)
     return selected, action
 
 
@@ -819,10 +735,14 @@ def build_plan(
     include_remote_branch_check: bool,
     push_url: str | None = None,
 ) -> tuple[dict[str, Any], str]:
-    content = prepare_content(args, repo_root)
-    template_text, template_path = discover_template(repo_root, args.template)
-    body = render_pr_body(template_text, content)
+    content = prepare_content(args)
+    body = render_pr_body(content)
     branch = current_branch(repo_root)
+    if branch != context.current_branch:
+        raise SubmitPRError(
+            "checkout branch changed during planning: "
+            f"expected {context.current_branch!r}, got {branch!r}"
+        )
     status = parse_status(git_status_output(repo_root))
     head_sha, commits, files = ensure_commit_range(
         repo_root,
@@ -863,7 +783,6 @@ def build_plan(
         "issue_policy": content.issue_policy,
         "title": content.title.strip(),
         "body": body,
-        "template": template_path,
         "commits": commits,
         "files": files,
         "working_tree": status,
@@ -902,10 +821,18 @@ def check_github_auth(repo_root: Path) -> None:
 
 def ensure_local_branch(
     repo_root: Path,
-    current: str,
+    current: str | None,
     head_branch: str,
     head_sha: str,
 ) -> str:
+    actual_current = current_branch(repo_root)
+    actual_head = git_output(repo_root, "rev-parse", "HEAD")
+    if actual_current != current or actual_head != head_sha:
+        raise SubmitPRError(
+            "checkout changed after planning: "
+            f"expected branch {current!r} at {head_sha}, "
+            f"got {actual_current!r} at {actual_head}"
+        )
     if current == head_branch:
         return "current"
     existing_sha = local_branch_sha(repo_root, head_branch)
@@ -1164,6 +1091,7 @@ def plan_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
     branch_action = plan.pop("branch_action")
     plan["planned_branch_action"] = {
         "created": "would-create",
+        "updated": "would-update",
         "reused": "would-reuse",
         "current": "current",
     }[branch_action]
@@ -1272,10 +1200,9 @@ def build_parser() -> argparse.ArgumentParser:
         subparser.add_argument("--head-remote")
         subparser.add_argument("--head-branch")
         subparser.add_argument("--protected-branch", action="append", default=[])
-        subparser.add_argument("--template")
-        subparser.add_argument("--extra-body-file")
         subparser.add_argument("--title", required=True)
-        subparser.add_argument("--summary", required=True)
+        subparser.add_argument("--context", required=True)
+        subparser.add_argument("--changes", required=True)
         subparser.add_argument("--verification", required=True)
         subparser.add_argument("--issue", action="append", default=[])
         subparser.add_argument(
