@@ -15,12 +15,11 @@ import tempfile
 import unicodedata
 from typing import Any
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "scripts" / "release"))
-from release_pr_policy import classify_release_pr  # noqa: E402
-
-
+SCRIPT_DIR = Path(__file__).resolve().parent
 REPOSITORY_ROOT = Path(__file__).resolve().parents[4]
-sys.path.insert(0, str(REPOSITORY_ROOT / "scripts" / "release"))
+sys.path.insert(0, str(SCRIPT_DIR))
+
+from release_pr_policy import classify_release_pr  # noqa: E402
 
 from release_notes import (  # noqa: E402
     ReleaseNotesError,
@@ -199,6 +198,11 @@ def contains_non_latin_letter(value: str) -> bool:
 
 
 def validate_release_title(version: str, title: str) -> None:
+    # New releases use the version as their title. Keep accepting the previous
+    # format for existing callers; the release workflow now passes the version.
+    if title == version:
+        return
+
     pattern = re.compile(TITLE_PATTERN_TEMPLATE.format(version=re.escape(version)))
     match = pattern.match(title)
     if match is None:

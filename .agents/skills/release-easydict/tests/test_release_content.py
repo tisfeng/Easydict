@@ -10,7 +10,7 @@ from unittest.mock import patch
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT_PATH = SKILL_ROOT / "scripts" / "release_content.py"
 import sys
-sys.path.insert(0, str(SKILL_ROOT.parents[2] / "scripts" / "release"))
+sys.path.insert(0, str(SKILL_ROOT / "scripts"))
 from release_pr_policy import classify_release_pr  # noqa: E402
 
 SPEC = importlib.util.spec_from_file_location("release_content", SCRIPT_PATH)

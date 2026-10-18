@@ -26,6 +26,7 @@ permissions:
 
 jobs:
   update:
+    if: github.repository == 'tisfeng/Easydict'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

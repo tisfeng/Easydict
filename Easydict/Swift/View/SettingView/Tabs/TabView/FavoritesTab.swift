@@ -94,10 +94,16 @@ struct FavoritesTab: View {
         }
         .borderedCard()
         .padding(20)
-        .onReceive(Defaults.publisher(.favorites)) { change in
+        .onReceive(
+            Defaults.publisher(.favorites)
+                .receive(on: DispatchQueue.main)
+        ) { change in
             favorites = change.newValue
         }
-        .onReceive(Defaults.publisher(.queryHistory)) { change in
+        .onReceive(
+            Defaults.publisher(.queryHistory)
+                .receive(on: DispatchQueue.main)
+        ) { change in
             history = change.newValue
         }
         .onAppear {

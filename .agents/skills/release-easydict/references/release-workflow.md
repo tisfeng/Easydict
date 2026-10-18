@@ -1,16 +1,24 @@
-# Release 生命周期
+# Release 生命周期执行契约
 
-执行 `draft`、`publish`、`release` 或 Release `resume` 时读取本文档。以下命令均从仓库
-根目录执行；将 `<version>` 替换为目标版本。
+执行 `draft`、`publish`、`release` 或 Release `resume` 时读取本文档。本文件仅定义
+Agent 必须遵守的动作选择、内容决策、外部写入和恢复契约。
+
+## 本机 ASC 认证
+
+运行生命周期前，按[维护指南的 App Store Connect API 账号配置](../../../../docs/releases/easydict.md#app-store-connect-api-账号)
+准备仓库外的专用文件凭据，并使用其中的子 Shell 命令验证。路径、profile、权限要求和
+环境隔离说明统一维护在该指南，认证由 `scripts/release-auth.sh` 校验；配置无效时停止，
+不改用交互式钥匙串认证。不要为诊断或配置认证而自动开始或恢复 Draft。
 
 ## Git 与状态边界
 
 - `draft` 生成、验证并提交 appcast，然后只推送指向 appcast 提交的
   `release/sync-<version>` 和指向版本提交的版本 Tag；不得把 Draft 提交直接推送到
   `origin/dev` 或 `origin/main`。
-- `publish` 在 GitHub Release 公开前完成 merge 预检；公开 Release 后使用 Draft 阶段冻结的
-  appcast 提交安全更新本地
-  `dev`，再原子更新远程 `dev`、`main` 和临时发布分支。
+- `publish` 在 GitHub Release 公开前完成 merge 预检；公开 Release 后先验证 GitHub API
+  资产元数据与 digest，以及匿名公开 ZIP、DMG、checksum 的 HTTP 和内容契约。通过后才使用
+  Draft 阶段冻结的 appcast 提交安全更新本地 `dev`，再原子更新远程 `dev`、`main` 和临时
+  发布分支。
 - 远程验证通过后删除临时发布分支。版本 Tag 停留在版本元数据提交，`main` 停留在
   appcast 提交，`dev` 停留在包含最新开发提交和 appcast 提交的集成结果。
 - Publish 失败时使用 asc run ID 恢复，不手工 rebase 或强推这些引用。
@@ -28,23 +36,33 @@ Issue 状态只使用 `.tmp/release/<version>/state/issue-followup/` 的 schema 
    asc run ID。
 2. 创建新 Draft 前，根据上一个版本以来的已合并 PR 创建或更新
    `changelog/<version>.md`。正文使用简洁英文，应用统一 bot PR 过滤策略，保留有效 PR 作者、链接、New Contributors
-   和 Full Changelog 范围；将文件提交到本地 `dev`，然后运行“验证 changelog”。
+   和 Full Changelog 范围。把选出的重点功能写成首个 Markdown 标题
+   `# <emoji> <type>: <concise English summary>`，后续 changelog 从 `## What's Changed`
+   开始；将文件提交到本地 `dev`，然后运行“验证 changelog”。
 3. 运行“创建 Draft”。如果 Draft 已存在，验证并复用；只有用户明确要求替换时才运行
    “替换 Draft”。现有 Release 必须是 GitHub 最新条目、保持同一 channel 的 Draft、
    匹配本地和远程 Tag identity 以及本地发布状态，并且不在公开 appcast 中。
-4. Draft 直接使用冻结的 changelog，并在创建后重新获取正文做一致性验证。根据真实 PR
-   选择重点并生成英文标题，先预览标题更新，再用 `--execute` 执行；helper 不编辑正文。
+4. Draft 直接使用冻结的 changelog，并在创建后重新获取正文做一致性验证。GitHub Release
+   标题必须恰好等于版本号，例如 `2.24.0`；不在 Release 标题中附加重点功能。复用旧
+   Draft 时，可用标题 helper 先预览将标题归一为版本号的更新，再用 `--execute` 执行；
+   helper 不编辑正文。
 5. `draft` 报告经过验证的 Draft、changelog 路径和正文哈希后停止。
 6. `publish` 或 `release` 运行“发布 Draft”。仓库脚本会在公开 Release 前对最新本地
-   `dev`、`origin/dev` 和版本提交做 merge 预检；Draft 阶段已经生成、验证并提交的
-   appcast 会被校验后安全更新本地
-   `dev`，再使用 lease 原子更新远程引用。发布、appcast 安装和远程验证全部成功前
-   不继续。
+   `dev`、`origin/dev` 和版本提交做 merge 预检；公开 Release 后验证 API 中资产名称、
+   上传状态、大小、类型和 digest，并验证匿名下载端点的状态、长度、类型、ZIP/DMG Range
+   和 checksum 内容。全部通过后，Draft 阶段已经生成、验证并提交的 appcast 才会安全更新
+   本地 `dev`，再使用 lease 原子更新远程引用。最终公开 appcast 的目标版本、构建、channel、
+   release notes、description、下载 URL、长度和签名必须与冻结候选一致。
 7. 读取 [Issue 跟进](issue-followup.md) 和
    [Issue 决策策略](issue-followup-policy.md)，执行 `issue-followup apply <version>`。
    它在修改前创建新计划，不依赖此前独立运行的 `plan`。
-8. 报告 Release URL、标题、channel、notes 路径、Issue 和无关联 PR 摘要、底层 run ID
-   和可恢复状态路径。
+8. 在终端报告中先保存 Release URL、标题、channel、notes 路径、Issue 和无关联 PR 摘要、
+   底层 run ID，再执行 `release-easydict.sh cleanup <version>` 预览并运行
+   `release-easydict.sh cleanup <version> --execute`。清理只处理该版本目录与对应 ASC
+   run JSON，保留 `.tmp/release/cache/`；版本内注册的 Git worktree 先用
+   `git worktree remove` 安全移除。未知文件、脏 worktree、活动构建或未完成状态会阻止清理。
+9. 报告本地清理结果。若清理失败，发布与 Issue 已完成，不重复执行远程动作；记录错误并
+   重试 `cleanup <version> --execute`。若 Issue 失败，在其 `resume` 成功后才清理。
 
 归档使用长期的本地构建 worktree（`.tmp/release/cache/worktree`）和带 fingerprint 的
 Release DerivedData。该 worktree 只服务于本地 Archive，不替代版本 release worktree，
@@ -58,25 +76,26 @@ fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证
 `publish`。这些动作分别用于恢复中断的 ASC 工作流、重建 Draft 和发布 Draft；它们不会
 把发布后的日志修订当作新的构建发布。
 
-先预览目标 Release 正文和 `main/appcast.xml` 的 description 差异：
+先预览目标 Release 正文、`main`/`dev` 的 `appcast.xml` description 差异和本地分支状态：
 
 ```bash
-./scripts/release/release-easydict.sh sync-notes <version>
+./.agents/skills/release-easydict/scripts/release-easydict.sh sync-notes <version>
 ```
 
 确认预览内容后才执行远程同步：
 
 ```bash
-./scripts/release/release-easydict.sh sync-notes <version> --execute
+./.agents/skills/release-easydict/scripts/release-easydict.sh sync-notes <version> --execute
 ```
 
-可选参数包括 `--repo <owner/repo>`、`--notes-file <path>`、`--appcast-branch <branch>`
-和 `--state <path>`。默认读取 `changelog/<version>.md`，默认更新远程 `main`。
+可选参数包括 `--repo <owner/repo>`、`--notes-file <path>` 和 `--state <path>`。工具固定
+同步远程 `main`、远程 `dev` 以及本地 `main`/`dev`；默认读取 `changelog/<version>.md`。
 
 该动作要求 Release 已公开且 Tag 与版本一致；不会修改 Draft、Tag、安装包、构建号、签名
-或渠道。`--execute` 要求当前 worktree 干净，更新 Release 时使用 ETag，更新 appcast
-时使用 Contents API 返回的 blob SHA；任一并发校验失败都会停止，避免覆盖他人修改。它
-只允许改变目标版本 item 的 `<description>`。状态摘要保存在
+或渠道。`--execute` 要求当前 worktree 干净，更新 Release 时使用 ETag，更新分支时使用
+branch head 和 Git push lease；任一并发校验失败都会停止，避免覆盖他人修改。工具使用
+临时 worktree 创建 appcast 提交，原子更新远程 `main`/`dev`，再安全 fast-forward 本地
+分支。它只允许改变目标版本 item 的 `<description>`。状态摘要保存在
 `.tmp/release/<version>/state/notes-sync.json`，部分成功后再次执行会重新读取远程状态并
 跳过已经一致的目标。
 
@@ -88,68 +107,24 @@ fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证
   远程验证成功后才执行 Issue 和无关联人工 PR 通知。PR 通知只发表评论，不关闭 PR。
 - 按以下顺序选择重点：安全、数据丢失或崩溃修复；重要用户可见功能；重要用户可见修复；
   较小产品改进。只有不存在产品变更时才选择维护项。
-- 标题使用 `<version> <emoji> <type>: <concise English summary>`，通常采用 `✨ feat`、
-  `🐞 fix`、`🔒 security`、`🚀 perf` 或 `🔧 chore`。
+- GitHub Release 标题只使用 `<version>`，例如 `2.24.0`。
+- changelog 首标题使用 `# <emoji> <type>: <concise English summary>`，通常采用 `✨ feat`、
+  `🐞 fix`、`🔒 security`、`🚀 perf` 或 `🔧 chore`；它是正文的一部分，Release 正文仍须与
+  canonical changelog 完全一致。
 - 存在用户可见功能或修复时，不选择文档、生成资源、依赖升级或内部重构作为重点。
 
-## Helper 命令
+## 命令选择规则
 
-### 验证 changelog
-
-```bash
-python3 scripts/release/release_notes.py validate \
-  --file changelog/<version>.md --version <version>
-```
-
-### 创建或替换 Draft
-
-```bash
-./scripts/release/release-easydict.sh draft <version> [--channel <channel>]
-```
-
-普通 Draft 优先使用兼容的 Release 编译缓存；需要显式全量清理时追加
-`--force-clean`。该选项仅适用于 `prepare`、`draft` 和 `release`，不改变后续签名、公证
-和验证步骤。
-
-只有用户明确要求废弃并重建当前最新 Draft 时，才使用：
-
-```bash
-./scripts/release/release-easydict.sh draft <version> \
-  --replace-draft [--channel <channel>]
-```
-
-`--replace-draft` 自动递增并冻结构建号，绝不与 `--build-number` 同时使用。失败后不要
-开始新的替换，应使用结果中的运行 ID：
-
-```bash
-./scripts/release/release-easydict.sh resume <run-id>
-```
-
-旧内容和 Issue 文件只作为回滚数据。仓库工作流临时移走完整旧状态，选择
-`max(old Draft build, current project build, public appcast build) + 1`，再从已同步并提交的
-本地 `dev` 重建。新 Draft 从该提交中的 changelog 创建，不复制旧 Draft 正文或 Issue
-状态。
-
-### 更新 Draft 标题
-
-先预览：
-
-```bash
-python3 .agents/skills/release-easydict/scripts/release_content.py apply \
-  --repo tisfeng/Easydict \
-  --version <version> \
-  --notes changelog/<version>.md \
-  --title '<version> <emoji> <type>: <concise English summary>'
-```
-
-检查 JSON 计划后，在相同命令末尾追加 `--execute`。只有目标 Release 仍为相同 Draft 且
-正文与 changelog 一致时才允许写入。
-
-### 发布 Draft
-
-```bash
-./scripts/release/release-easydict.sh publish <version> [--channel <channel>]
-```
+- 验证 changelog 后才能创建 Draft；新建 Release 直接使用版本号作为标题。Draft 标题
+  helper 必须先 preview，再在目标仍为相同 Draft 且正文与 changelog 一致时执行。
+- 普通 Draft 可以复用兼容的 Release 编译缓存；只有用户明确要求 clean build 时才传
+  `--force-clean`。它只适用于 `prepare`、`draft` 和 `release`，不降低后续验证要求。
+- 只有用户明确要求废弃并重建当前最新 Draft 时才传 `--replace-draft`；不得同时传
+  `--build-number`。新 Draft 必须从已同步并提交的本地 `dev` 及其中的 changelog 创建，
+  不复制旧 Draft 正文或 Issue 状态。
+- 替换 Draft 失败后，只能使用输出的 run ID 执行 Release `resume`，不得启动新的替换。
+- `publish` 必须使用 Draft 创建时的 channel。Skill 的 `release` 依次编排 `draft` 和
+  `publish`，不得绕过两阶段的检查与人工边界。
 
 ## 失败与恢复
 
@@ -157,7 +132,9 @@ python3 .agents/skills/release-easydict/scripts/release_content.py apply \
   创建的 GitHub Release 保持 Draft 状态。
 - `--replace-draft` 构建或公证失败时，不修改旧的远程 Draft 和 Tag。后续切换失败时保留
   本地回滚数据；验证成功后删除该临时备份。未完成的替换只使用 asc run ID 恢复。
-- 发布失败时不执行 Issue 动作，并使用 asc run ID 恢复。
+- 发布失败时不执行 Issue 动作，并使用 asc run ID 恢复。若 GitHub Release 已公开但公开资产
+  验收失败，保留旧的公开 appcast 与远程 `dev`/`main`，修复或等待 GitHub/CDN 收敛后恢复
+  同一运行，不重新开始发布。
 - Draft 成功只表示临时发布分支、版本 Tag、冻结的 appcast 提交和 GitHub Draft 已就绪，
   不代表 `dev` 或 `main` 已更新。
 - Publish merge 冲突、本地 `dev` checkout 不干净或 lease 竞态失败时，保留集成 worktree
@@ -168,6 +145,10 @@ python3 .agents/skills/release-easydict/scripts/release_content.py apply \
   ```text
   $release-easydict issue-followup resume <version>
   ```
+
+- 本地清理失败时保留剩余文件与清理收据；再次预览并执行同一版本的 `cleanup`。
+  清理成功后该版本的 `state/`、`logs/` 和 ASC run JSON 均不再保留，不能用旧 run ID
+  恢复已完成的发布。若需修改已发布日志，使用独立的 `sync-notes` 流程。
 
 评论幂等性、只关闭当前开放 Issue、固定报告格式和 Issue 决策验证由 Issue 跟进 reference
 定义，并由 `.agents/skills/release-easydict/scripts/release_issues.py` 强制执行。

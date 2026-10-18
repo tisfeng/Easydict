@@ -27,6 +27,7 @@ public class StreamService: QueryService {
 
         Defaults.publisher(thinkTagKey)
             .removeDuplicates()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 self?.hideThinkTagContent = $0.newValue
             }
@@ -267,6 +268,11 @@ public class StreamService: QueryService {
         defaultModels.first ?? ""
     }
 
+    /// Query-window presentation is separate from the ID passed to the provider.
+    @MainActor var modelDisplayName: String { model }
+
+    @MainActor var selectableModels: [String] { validModels }
+
     var unsupportedLanguages: [Language] {
         []
     }
@@ -433,6 +439,18 @@ public class StreamService: QueryService {
         Defaults[reasoningEffortDefaultsKey]
     }
 
+    /// Optional guidance displayed below the locally available model choices.
+    @MainActor
+    var modelSelectionHint: String? { nil }
+
+    @MainActor
+    func modelSelectionTitle(for identifier: String) -> String { identifier }
+
+    @MainActor
+    func selectModel(_ identifier: String) {
+        if model != identifier { model = identifier }
+    }
+
     func validModels(from supportedModels: String) -> [String] {
         supportedModels.components(separatedBy: ",")
             .map { $0.trim() }.filter { !$0.isEmpty }
@@ -467,7 +485,7 @@ public class StreamService: QueryService {
             url,
             method: .get,
             headers: headers,
-            requestModifier: { $0.timeoutInterval = EZNetWorkTimeoutInterval }
+            requestModifier: { $0.timeoutInterval = AppConstants.networkTimeoutInterval }
         )
         .serializingData(automaticallyCancelling: true)
         .response

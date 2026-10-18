@@ -51,6 +51,9 @@ Optional BREAKING CHANGE: footer when applicable.
 整个提交还可以在所有语言区块之后使用一次可选的 `References:` 尾段；它不属于任一语言区块。
 
 - 使用范围最窄且准确的 Angular `type(scope): subject`，标题不超过 80 个字符。
+- `type`、`scope` 和 `!` 在两个区块保持一致；冒号后的 subject 分别使用该区块的语言。
+  中文任务的第一个 subject 必须包含中文，第二个 subject 必须使用英文；不得把同一个英文
+  subject 同时用于两个区块。其他非英语任务同样先写本地语言 subject，再写英文镜像。
 - 英文 subject 使用祈使式小写摘要，结尾无句号；非英文 subject 简洁且无句末标点。
 - 每个语言区块恰好三个自然正文段，依次说明背景、变更和影响，通常每段 1–3 句。
 - 中文区块依次使用 `背景：`、`变更：`、`影响：`，标记后直接接非空正文；英文标记依次使用

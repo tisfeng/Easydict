@@ -391,7 +391,10 @@ class PreparePRBranchTests(unittest.TestCase):
         result = self._prepare("--json", "--expected-head", self.head_sha)
         receipt = self._json_receipt(result)
 
-        self.assertEqual(receipt["schema_version"], 1)
+        self.assertEqual(receipt["schema_version"], 2)
+        self.assertEqual(receipt["review"], {
+            "head_sha": self.head_sha, "mode": "checkout", "ahead": 0, "behind": 0,
+        })
         self.assertEqual(receipt["status"], "prepared")
         self.assertEqual(receipt["repo"], "iftechio/Scoco")
         self.assertEqual(receipt["number"], 42)
@@ -446,6 +449,8 @@ class PreparePRBranchTests(unittest.TestCase):
             self.head_sha,
         )
         merged_receipt = self._json_receipt(merged)
+        self.assertEqual(merged_receipt["review"]["mode"], "integration")
+        self.assertEqual(merged_receipt["review"]["head_sha"], self.head_sha)
         merged_checkout = merged_receipt["checkout"]
         self.assertIsInstance(merged_checkout, dict)
         self.assertEqual(merged_checkout["branch"], selected_branch)
@@ -622,20 +627,20 @@ class PreparePRBranchTests(unittest.TestCase):
         )
         self._assert_clean_status()
 
-    def test_self_authored_pr_keeps_collision_fallback_for_wrong_upstream_repository(self) -> None:
+    def test_self_authored_pr_stops_for_wrong_upstream_repository(self) -> None:
         branch = "feat/review-fixture"
         self._git("fetch", str(self.fork_remote), branch)
         self._git("update-ref", f"refs/remotes/origin/{branch}", self.head_sha)
         self._git("branch", "--track", branch, f"origin/{branch}")
+        before = self._git("show-ref", "--heads").stdout
 
         result = self._prepare("--json")
-        receipt = self._json_receipt(result)
 
-        self._assert_collision_fallback(receipt)
-        self.assertIn(
-            "origin/feat/review-fixture",
-            str(receipt["collision_reason"]),
-        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("origin/feat/review-fixture", result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "failed")
+        self.assertEqual(self._git("show-ref", "--heads").stdout, before)
+        self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "dev")
         self._assert_clean_status()
 
     def test_self_authored_pr_keeps_collision_fallback_when_identity_lookup_fails(self) -> None:
@@ -650,25 +655,115 @@ class PreparePRBranchTests(unittest.TestCase):
         self._assert_collision_fallback(receipt)
         self._assert_clean_status()
 
-    def test_self_authored_pr_keeps_collision_fallback_for_ahead_same_name_branch(self) -> None:
+    def _create_ahead_branch(self, remote_name: str = "personal") -> str:
         self._create_same_name_branch_with_upstream(
-            remote_name="personal",
+            remote_name=remote_name,
             remote_url="https://github.com/contributor/Scoco.git",
         )
         self._git("switch", "feat/review-fixture")
-        (self.checkout / "local-only.txt").write_text("local\n", encoding="utf-8")
+        (self.checkout / "feature.txt").write_text("local-only implementation\n", encoding="utf-8")
         self._commit(self.checkout, "test: add local-only commit")
-        self._git("switch", "dev")
+        return self._git("rev-parse", "HEAD").stdout.strip()
 
-        result = self._prepare("--json")
-        receipt = self._json_receipt(result)
+    def test_self_authored_ahead_branch_preserves_checkout_and_reviews_remote_objects(self) -> None:
+        local_head = self._create_ahead_branch()
+        before = self._git("show-ref", "--heads").stdout
+        index_before = self._git("ls-files", "--stage").stdout
+        snapshot_path, snapshot_hash = self._write_saved_snapshot()
+        receipt = self._json_receipt(self._prepare(
+            "--json", "--expected-head", self.head_sha,
+            "--snapshot-file", str(snapshot_path), "--snapshot-sha256", snapshot_hash,
+            pr_ref="iftechio/Scoco#42", reject_pr_view=True,
+        ))
 
-        self._assert_collision_fallback(receipt)
-        self.assertIn(
-            "does not safely fast-forward",
-            str(receipt["collision_reason"]),
-        )
+        self.assertTrue(receipt["self_authored_branch_reused"])
+        self.assertEqual(receipt["selection_reason"], "self_authored_local_commits")
+        self.assertIsNone(receipt["collision_reason"])
+        self.assertEqual(receipt["checkout"]["branch"], "feat/review-fixture")
+        self.assertEqual(receipt["checkout"]["head_sha"], local_head)
+        self.assertEqual(receipt["checkout"]["upstream"], "personal/feat/review-fixture")
+        self.assertEqual(receipt["review"], {
+            "head_sha": self.head_sha, "mode": "git_objects", "ahead": 1, "behind": 0,
+        })
+        self.assertEqual(self._git("show-ref", "--heads").stdout, before)
+        self.assertEqual(self._git("ls-files", "--stage").stdout, index_before)
+        collector = SKILL_ROOT.parent / "review/scripts/collect_review_snapshot.py"
+        evidence = json.loads(run([
+            sys.executable, str(collector), "--repo", str(self.checkout),
+            "--range", f"{receipt['base_sha']}...{receipt['review']['head_sha']}",
+        ], cwd=self.checkout).stdout)
+        self.assertEqual(evidence["snapshot"]["target_sha"], self.head_sha)
+        self.assertIn("+feature\n", evidence["patch"]["text"])
+        self.assertNotIn("local-only implementation", evidence["patch"]["text"])
+        self.assertEqual(self._git("show", f"{self.head_sha}:feature.txt").stdout, "feature\n")
+        self.assertEqual((self.checkout / "feature.txt").read_text(), "local-only implementation\n")
+        self._assert_fetches_once_per_remote()
         self._assert_clean_status()
+
+    def test_ahead_branch_reuse_revalidates_identity_and_preserves_commits(self) -> None:
+        local_head = self._create_ahead_branch("contributor")
+        self._git("switch", "dev")
+        first = self._json_receipt(self._prepare("--json"))
+        second = self._json_receipt(self._prepare(
+            "--json", "--reuse-branch", first["checkout"]["branch"],
+            "--expected-head", self.head_sha,
+        ))
+        self.assertEqual(second["review"]["mode"], "git_objects")
+        self.assertTrue(second["self_authored_branch_reused"])
+        self.assertEqual(second["checkout"]["head_sha"], local_head)
+        self.assertEqual(second["reused_branch"], "feat/review-fixture")
+        self.assertEqual(self._git("branch", "--list", "review/*").stdout, "")
+        denied = self._prepare("--json", "--reuse-branch", "feat/review-fixture", viewer_login="reviewer")
+        self.assertNotEqual(denied.returncode, 0)
+        self.assertEqual(self._git("rev-parse", "HEAD").stdout.strip(), local_head)
+
+    def test_self_authored_ahead_branch_without_upstream_is_preserved(self) -> None:
+        local_head = self._create_ahead_branch()
+        self._git("branch", "--unset-upstream")
+        receipt = self._json_receipt(self._prepare("--json"))
+        self.assertEqual(receipt["checkout"]["head_sha"], local_head)
+        self.assertEqual(receipt["checkout"]["upstream"], "contributor/feat/review-fixture")
+        self.assertEqual(receipt["review"]["mode"], "git_objects")
+
+    def test_self_authored_diverged_branch_stops_without_fallback(self) -> None:
+        self._create_same_name_branch_with_upstream(
+            remote_name="personal", remote_url="https://github.com/contributor/Scoco.git",
+        )
+        self._git("switch", "feat/review-fixture")
+        self._git("reset", "--hard", self.base_sha)
+        before = self._git("show-ref", "--heads").stdout
+        result = self._prepare("--json")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("ahead 1, behind 1", result.stderr)
+        self.assertEqual(self._git("show-ref", "--heads").stdout, before)
+        self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "feat/review-fixture")
+
+    def test_self_authored_ahead_branch_rejects_latest_base_without_mutation(self) -> None:
+        local_head = self._create_ahead_branch()
+        before = self._git("show-ref", "--heads").stdout
+        result = self._prepare("--json", "--merge-latest")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("latest-base integration", result.stderr)
+        self.assertEqual(self._git("show-ref", "--heads").stdout, before)
+        self.assertEqual(self._git("rev-parse", "HEAD").stdout.strip(), local_head)
+        self._assert_clean_status()
+
+    def test_self_authored_dirty_branch_stops_without_fallback(self) -> None:
+        self._create_ahead_branch()
+        (self.checkout / "feature.txt").write_text("uncommitted\n")
+        before = self._git("show-ref", "--heads").stdout
+        result = self._prepare("--json")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("uncommitted changes", result.stderr)
+        self.assertEqual(self._git("show-ref", "--heads").stdout, before)
+        self.assertEqual((self.checkout / "feature.txt").read_text(), "uncommitted\n")
+        self.assertEqual(self._fetch_calls(), [])
+
+    def test_other_authors_ahead_branch_retains_collision_fallback(self) -> None:
+        local_head = self._create_ahead_branch("contributor")
+        receipt = self._json_receipt(self._prepare("--json", viewer_login="reviewer"))
+        self._assert_collision_fallback(receipt)
+        self.assertEqual(self._git("rev-parse", "feat/review-fixture").stdout.strip(), local_head)
 
     def test_expected_head_mismatch_fails_before_fetch_or_git_writes(self) -> None:
         source_branch = self._git("branch", "--show-current").stdout.strip()
@@ -794,7 +889,7 @@ class PreparePRBranchTests(unittest.TestCase):
         self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "feat/review-fixture")
         self.assertIn("UU shared.txt", self._git("status", "--short").stdout)
 
-    def test_local_review_falls_back_when_head_branch_is_checked_out_elsewhere(self) -> None:
+    def test_other_authors_review_falls_back_when_head_branch_is_checked_out_elsewhere(self) -> None:
         self._git(
             "fetch",
             str(self.fork_remote),
@@ -805,7 +900,7 @@ class PreparePRBranchTests(unittest.TestCase):
         self._git("worktree", "add", str(occupied_path), "feat/review-fixture")
         self.worktree_paths.append(occupied_path)
 
-        result = self._prepare()
+        result = self._prepare(viewer_login="reviewer")
 
         expected_branch = "review/pr-42-" + self.head_sha[:10]
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -827,6 +922,32 @@ class PreparePRBranchTests(unittest.TestCase):
             self.head_sha,
         )
         self._assert_clean_status()
+
+    def test_self_authored_review_reuses_existing_worktree_and_preserves_dirty_source(self) -> None:
+        local_head = self._create_ahead_branch()
+        self._git("switch", "dev")
+        occupied = self.root / "existing checkout"
+        self._git("worktree", "add", str(occupied), "feat/review-fixture")
+        self.worktree_paths.append(occupied)
+        (self.checkout / "untracked.txt").write_text("keep source\n")
+        source_status = self._git("status", "--porcelain").stdout
+        source_head = self._git("rev-parse", "HEAD").stdout
+        for arguments in ((), ("--reuse-branch", "feat/review-fixture")):
+            with self.subTest(arguments=arguments):
+                receipt = self._json_receipt(self._prepare("--json", *arguments))
+                self.assertEqual(Path(receipt["checkout"]["path"]).resolve(), occupied.resolve())
+                self.assertEqual(receipt["checkout"]["head_sha"], local_head)
+                self.assertTrue(receipt["source_unchanged"])
+                self.assertTrue(receipt["reused_worktree"])
+                self.assertEqual(self._git("status", "--porcelain").stdout, source_status)
+                self.assertEqual(self._git("rev-parse", "HEAD").stdout, source_head)
+                self.assertEqual(self._git("branch", "--list", "review/*").stdout, "")
+        (occupied / "feature.txt").write_text("dirty target\n")
+        refused = self._prepare("--json")
+        self.assertNotEqual(refused.returncode, 0)
+        self.assertIn("uncommitted changes", refused.stderr)
+        self.assertEqual((occupied / "feature.txt").read_text(), "dirty target\n")
+        self.assertEqual(self._fetch_calls(), [])
 
     def test_json_worktree_receipt_proves_source_unchanged(self) -> None:
         source_branch = self._git("branch", "--show-current").stdout.strip()
