@@ -12,6 +12,9 @@ WORKFLOW_RUNTIME_DIR="$ROOT_DIR/.tmp/release/asc"
 WORKFLOW_PATH="$WORKFLOW_RUNTIME_DIR/asc-workflow.json"
 WORKFLOW_RUNS_DIR="$WORKFLOW_RUNTIME_DIR/runs"
 
+# shellcheck source=release-auth.sh
+source "$SCRIPT_DIR/release-auth.sh"
+
 usage() {
     cat <<'EOF'
 Usage:
@@ -327,6 +330,7 @@ main() {
                 || fail "cannot determine version from run file: $run_id"
 
             cd "$ROOT_DIR"
+            configure_release_auth
             prepare_workflow_runtime
             asc workflow validate --file "$WORKFLOW_PATH" >/dev/null
             export RELEASE_RUN_MODE=resume
@@ -429,6 +433,7 @@ main() {
             || fail "build number must be greater than zero"
     fi
     cd "$ROOT_DIR"
+    configure_release_auth
     prepare_workflow_runtime
     asc workflow validate --file "$WORKFLOW_PATH" >/dev/null
 

@@ -663,6 +663,8 @@
 		13A893BFBE2B4FD695223394 /* GitHubCopilotCatalogClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */; };
 		8FA639CB01DB48FFB856FAF6 /* GitHubCopilotModelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D62DA53787E49EC9011BB14 /* GitHubCopilotModelStore.swift */; };
 		49DAA0A4B12B418BA7791B8F /* GitHubCopilotModelCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBAB49A71BBA4870A9C4FF0C /* GitHubCopilotModelCache.swift */; };
+		11F98489481B416DA6201252 /* AnkiConnectSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E61BD21DF447CDB6B01D74 /* AnkiConnectSettingsView.swift */; };
+		CAEB481F1E2B475DBB446F8D /* SheetChevronRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6CC260EE5345A88A8DB738 /* SheetChevronRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1448,6 +1450,8 @@
 		3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotCatalogClient.swift; sourceTree = "<group>"; };
 		9D62DA53787E49EC9011BB14 /* GitHubCopilotModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelStore.swift; sourceTree = "<group>"; };
 		FBAB49A71BBA4870A9C4FF0C /* GitHubCopilotModelCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelCache.swift; sourceTree = "<group>"; };
+		71E61BD21DF447CDB6B01D74 /* AnkiConnectSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnkiConnectSettingsView.swift; sourceTree = "<group>"; };
+		0B6CC260EE5345A88A8DB738 /* SheetChevronRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetChevronRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1563,6 +1567,8 @@
 				96099AE12B5D40330055C4DD /* ShortcutTab.swift */,
 				03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */,
 				0A057D7F2F7000000025C51D /* AdvancedTabAnkiSection.swift */,
+				0B6CC260EE5345A88A8DB738 /* SheetChevronRow.swift */,
+				71E61BD21DF447CDB6B01D74 /* AnkiConnectSettingsView.swift */,
 				276742042B3DC230002A2C75 /* PrivacyTab.swift */,
 				276742052B3DC230002A2C75 /* AboutTab.swift */,
 			);
@@ -4910,6 +4916,8 @@
 				036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */,
 				03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */,
 				0A057D802F7000000025C51D /* AdvancedTabAnkiSection.swift in Sources */,
+				CAEB481F1E2B475DBB446F8D /* SheetChevronRow.swift in Sources */,
+				11F98489481B416DA6201252 /* AnkiConnectSettingsView.swift in Sources */,
 				035FB78C2ED4E08500F3EB27 /* String+Layout.swift in Sources */,
 				0AC8A8452B6A4D97006DA5CC /* ServiceCells.swift in Sources */,
 				276742092B3DC230002A2C75 /* AboutTab.swift in Sources */,

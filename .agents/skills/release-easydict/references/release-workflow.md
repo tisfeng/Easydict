@@ -3,6 +3,13 @@
 执行 `draft`、`publish`、`release` 或 Release `resume` 时读取本文档。本文件仅定义
 Agent 必须遵守的动作选择、内容决策、外部写入和恢复契约。
 
+## 本机 ASC 认证
+
+运行生命周期前，按[维护指南的 App Store Connect API 账号配置](../../../../docs/releases/easydict.md#app-store-connect-api-账号)
+准备仓库外的专用文件凭据，并使用其中的子 Shell 命令验证。路径、profile、权限要求和
+环境隔离说明统一维护在该指南，认证由 `scripts/release-auth.sh` 校验；配置无效时停止，
+不改用交互式钥匙串认证。不要为诊断或配置认证而自动开始或恢复 Draft。
+
 ## Git 与状态边界
 
 - `draft` 生成、验证并提交 appcast，然后只推送指向 appcast 提交的
