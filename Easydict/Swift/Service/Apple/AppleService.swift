@@ -196,8 +196,8 @@ public class AppleService: QueryService {
         to targetLanguage: Language
     ) async throws
         -> QueryResult {
-        guard let fromLanguage = languageMapper.supportedLanguages[sourceLanguage],
-              let toLanguage = languageMapper.supportedLanguages[targetLanguage]
+        guard let fromLanguage = languageMapper.shortcutLanguageCode(for: sourceLanguage),
+              let toLanguage = languageMapper.shortcutLanguageCode(for: targetLanguage)
         else {
             throw QueryError(
                 type: .parameter, message: "Unsupported language for Apple Translation"
