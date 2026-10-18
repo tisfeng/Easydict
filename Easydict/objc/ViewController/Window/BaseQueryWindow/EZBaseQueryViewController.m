@@ -27,6 +27,8 @@ static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
 static NSString *const EZResultViewId = @"EZResultViewId";
 
 static NSString *const EZColumnId = @"EZColumnId";
+static NSTimeInterval const EZWindowHeightCoalescingInterval = 0.08;
+static NSTimeInterval const EZWindowHeightAnimationDuration = 0.18;
 
 static NSString *const kDCSActiveDictionariesChangedDistributedNotification = @"kDCSActiveDictionariesChangedDistributedNotification";
 
@@ -71,8 +73,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
 
-@property (nonatomic, assign) BOOL lockResizeWindow;
 @property (nonatomic, assign) BOOL isUpdatingWindowFrameInternally;
+@property (nonatomic, assign) BOOL windowHeightUpdateScheduled;
+@property (nonatomic, assign) BOOL needsWindowHeightUpdate;
+@property (nonatomic, assign) BOOL isUpdatingRowHeights;
+@property (nonatomic, assign) CGFloat lastLayoutWidth;
 
 @property (nonatomic, assign) BOOL isInputFieldCellVisible;
 @property (nonatomic, assign) BOOL isSelectLanguageCellVisible;
@@ -125,6 +130,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)viewWillAppear {
     [super viewWillAppear];
 
+    // The window may still have the frame saved from the last session; fit it before it is on screen.
+    if (!self.isUpdatingWindowFrameInternally) {
+        [self applyWindowHeightAnimated:NO];
+    }
+
     [EZAnalyticsService logWindowAppear:self.windowType];
 }
 
@@ -148,13 +158,17 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self setResizeWindowBlock:^{
         mm_strongify(self);
 
-        // Avoid recycling call, resize window --> update window height --> resize window
-        if (self.lockResizeWindow || self.isUpdatingWindowFrameInternally) {
-            //            MMLogInfo(@"lockResizeWindow");
+        // Height-only animation changes the viewport, not the content layout.
+        // Recheck a deferred width change when the window animation completes.
+        if (self.isUpdatingWindowFrameInternally) {
             return;
         }
-        
-        MMLogInfo(@"resize window, update window height");
+
+        CGFloat width = self.scrollView.contentSize.width;
+        if (fabs(width - self.lastLayoutWidth) < EZLayoutGeometryTolerance_0_5) {
+            return;
+        }
+        self.lastLayoutWidth = width;
 
         [self setNeedUpdateIframeHeightForAllResults];
 
@@ -166,7 +180,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
                 if (self.isInputFieldCellVisible) {
                     NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-                    [self.tableView noteHeightOfRowsWithIndexesChanged:firstIndexSet];
+                    [self updateRowHeightsWithoutAnimation:firstIndexSet];
                 }
             }
 
@@ -315,6 +329,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)boundsDidChangeNotification:(NSNotification *)notification {
+    if (self.isUpdatingWindowFrameInternally || self.isUpdatingRowHeights) {
+        return;
+    }
     // TODO: need to optimize. Manually update the cell height, because the reused cell will not self-adjust the height.
     //    [self updateAllResultCellHeightIfNeed];
     [self updateTableViewHeight];
@@ -646,7 +663,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self clearInput];
 
     [self updateQueryCellWithCompletionHandler:^{
-        // !!!: To show closing animation, we cannot reset result directly.
         [self closeAllResultView:^{
             [self resetQueryAndResults];
         }];
@@ -1041,18 +1057,20 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 /// Reset tableView, reloadData
 - (void)resetTableView:(nullable void (^)(void))completion {
     [self resetQueryAndResults];
-    [self reloadTableViewData:completion];
+    [self reloadTableViewDataWithoutWindowHeightUpdate:^{
+        // Callers position the window by its height, so fit it now instead of coalescing the update.
+        [self applyWindowHeightAnimated:NO];
+        if (completion) {
+            completion();
+        }
+    }];
 }
 
 /// TableView reloadData, and update window height.
 - (void)reloadTableViewData:(nullable void (^)(void))completion {
-    [self reloadTableViewDataWithLock:YES completion:completion];
-}
-
-- (void)reloadTableViewDataWithLock:(BOOL)lockFlag completion:(nullable void (^)(void))completion {
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
-        [self updateWindowHeightWithLock:lockFlag];
+        [self updateWindowHeight];
         if (completion) {
             completion();
         }
@@ -1120,20 +1138,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData completionHandler:nil];
 }
 
-/// Update tableView row data, update row height and window height with animation.
-- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
-    [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData animate:YES completionHandler:completionHandler];
-}
-
-/// Update cell row height, and reload cell data with animation.
-/// TODO: we need to optimize the way of updating row height.
+/// Commit row layout immediately; only the enclosing window animates.
 - (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes
                        reloadData:(BOOL)reloadData
-                          animate:(BOOL)animateFlag
                 completionHandler:(void (^)(void))completionHandler {
-    //    MMLogInfo(@"updateTableViewRowIndexes: %@", rowIndexes);
-
-    // !!!: Since the caller may be in non-main thread, we need to dispatch to main thread, but canont always use dispatch_async, it will cause the animation not smooth.
     dispatch_block_on_main_safely(^{
         if (reloadData) {
             // !!!: Note: For NSView-based table views, this method drops the view-cells in the table row, but not the NSTableRowView instances.
@@ -1143,42 +1151,47 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
         }
 
-        CGFloat duration = animateFlag ? EZUpdateTableViewRowHeightAnimationDuration : 0;
-
-        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
-            context.duration = duration;
-            context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-
-            // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
-            //            MMLogInfo(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
-            [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
-            [self updateWindowHeight];
-        } completionHandler:^{
-            //            MMLogInfo(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
-            if (completionHandler) {
-                completionHandler();
-            }
-        }];
+        [self updateRowHeightsWithoutAnimation:rowIndexes];
+        [self updateWindowHeight];
+        if (completionHandler) {
+            completionHandler();
+        }
     });
 }
 
-- (void)updateQueryCell {
-    [self updateQueryCellWithAnimation:NO completionHandler:nil];
+- (void)updateRowHeightsWithoutAnimation:(NSIndexSet *)rowIndexes {
+    if (self.isUpdatingRowHeights) {
+        return;
+    }
+    self.isUpdatingRowHeights = YES;
+    NSMutableIndexSet *changedRows = [NSMutableIndexSet indexSet];
+    [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger row, BOOL *stop) {
+        if (row >= self.tableView.numberOfRows) {
+            return;
+        }
+        CGFloat height = [self tableView:self.tableView heightOfRow:row] + self.tableView.intercellSpacing.height;
+        if (fabs([self.tableView rectOfRow:row].size.height - height) >= EZLayoutGeometryTolerance_0_5) {
+            [changedRows addIndex:row];
+        }
+    }];
+    if (changedRows.count) {
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+            context.duration = 0;
+            [self.tableView noteHeightOfRowsWithIndexesChanged:changedRows];
+        } completionHandler:nil];
+    }
+    self.isUpdatingRowHeights = NO;
 }
 
-- (void)updateQueryCellWithAnimation:(BOOL)animateFlag {
-    [self updateQueryCellWithAnimation:animateFlag completionHandler:nil];
+- (void)updateQueryCell {
+    [self updateQueryCellWithCompletionHandler:nil];
 }
 
 /// Update query cell data and row height.
 - (void)updateQueryCellWithCompletionHandler:(nullable void (^)(void))completionHandler {
-    [self updateQueryCellWithAnimation:YES completionHandler:completionHandler];
-}
-
-- (void)updateQueryCellWithAnimation:(BOOL)animateFlag completionHandler:(nullable void (^)(void))completionHandler {
     if (self.isInputFieldCellVisible) {
         NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:self.inputFieldCellIndex];
-        [self updateTableViewRowIndexes:firstIndexSet reloadData:NO animate:animateFlag completionHandler:completionHandler];
+        [self updateTableViewRowIndexes:firstIndexSet reloadData:NO completionHandler:completionHandler];
     }
 }
 
@@ -1210,13 +1223,13 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)updateTableViewHeight {
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self.tableView numberOfRows])];
-    [self.tableView noteHeightOfRowsWithIndexesChanged:indexSet];
+    [self updateRowHeightsWithoutAnimation:indexSet];
 }
 
 - (void)updateResultCellHeight:(EZQueryResult *)result {
     NSIndexSet *indexSet = [self indexSetOfResult:result];
     if (indexSet) {
-        [self.tableView noteHeightOfRowsWithIndexesChanged:indexSet];
+        [self updateRowHeightsWithoutAnimation:indexSet];
     }
 }
 
@@ -1660,8 +1673,20 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
-    // Existing matching results only need their expanded/collapsed state redrawn.
-    [self updateCellWithResult:result reloadData:YES];
+    EZResultView *resultView = [self resultCellOfResult:result];
+    // Dictionary HTML still needs its load and measurement lifecycle on expansion.
+    if (resultView.result == result && !EZResultNeedsDictionaryHTMLHeight(result)) {
+        [resultView updateExpandedState];
+        [self updateCellWithResult:result reloadData:NO];
+        // The cell is not reloaded, so sync its loading dots with the updated isLoading state.
+        [resultView updateLoadingAnimation];
+    } else {
+        [self updateCellWithResult:result reloadData:YES];
+    }
+    // Direct interaction does not need the service-response coalescing delay.
+    if (!self.isUpdatingWindowFrameInternally) {
+        [self applyWindowHeight];
+    }
 }
 
 /// Check that a delayed arrow action still targets the same service, result, and query.
@@ -1771,15 +1796,42 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 #pragma mark - Update Window Height
 
 - (void)updateWindowHeight {
-    [self updateWindowHeightWithLock:YES];
+    dispatch_block_on_main_safely(^{
+        self.needsWindowHeightUpdate = YES;
+        if (self.isUpdatingWindowFrameInternally || self.windowHeightUpdateScheduled) {
+            return;
+        }
+
+        NSWindow *window = self.baseQueryWindow ?: self.view.window;
+        if (!window.isVisible || window.inLiveResize) {
+            [self applyWindowHeight];
+            return;
+        }
+
+        // A fixed deadline merges bursts without starving continuous streams.
+        self.windowHeightUpdateScheduled = YES;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZWindowHeightCoalescingInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.windowHeightUpdateScheduled = NO;
+            if (!self.isUpdatingWindowFrameInternally && self.needsWindowHeightUpdate) {
+                [self applyWindowHeight];
+            }
+        });
+    });
 }
 
-- (void)updateWindowHeightWithLock:(BOOL)lockFlag {
-    if (lockFlag) {
-        self.lockResizeWindow = YES;
+- (void)applyWindowHeight {
+    [self applyWindowHeightAnimated:YES];
+}
+
+- (void)applyWindowHeightAnimated:(BOOL)allowsAnimation {
+    self.needsWindowHeightUpdate = NO;
+    NSWindow *window = self.baseQueryWindow ?: self.view.window;
+    if (!window) {
+        return;
     }
 
-        MMLogInfo(@"updateWindowViewHeightWithLock");
+    [self.view layoutSubtreeIfNeeded];
+    [self updateTableViewHeight];
 
     CGFloat tableViewHeight = [self getScrollViewContentHeight];
     CGFloat height = [self getRestrainedScrollViewHeight:tableViewHeight];
@@ -1793,63 +1845,79 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     scrollViewHeight = MIN(scrollViewHeight, maxWindowSize.height - titleBarHeight);
     //    MMLogInfo(@"scrollViewHeight: %@", @(scrollViewHeight));
 
-    // Diable change window height manually.
-    [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.equalTo(@(scrollViewHeight)).priority(MASLayoutPriorityDefaultHigh);
-    }];
+    // The scroll view follows the window edges. Its document keeps its full height
+    // while NSClipView reveals more content during the window animation.
 
     CGFloat showingWindowHeight = scrollViewHeight + titleBarHeight;
     showingWindowHeight = MIN(showingWindowHeight, maxWindowSize.height);
-
-    // Since changing height will cause position change, adjust y to keep top-left coordinate stable.
-    NSWindow *window = self.baseQueryWindow ?: self.view.window;
-    if (!window) {
-        self.lockResizeWindow = NO;
-        return;
-    }
-
-    CGFloat deltaHeight = window.height - showingWindowHeight;
-    CGFloat y = window.y + deltaHeight;
-
-    CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
 
     // Use the window's current screen. The cached one only refreshes on clicks,
     // so on multi-monitor setups it can yank the window back to the old display.
     // window.screen picks the display with the largest overlap, which handles
     // cross-screen drags better than our own first-intersect lookup.
-    NSScreen *currentScreen = window.screen ?: [EZCoordinateUtils screenForRect:newFrame] ?: NSScreen.mainScreen;
+    NSScreen *currentScreen = window.screen ?: [EZCoordinateUtils screenForRect:window.frame] ?: NSScreen.mainScreen;
     CGRect screenVisibleFrame = currentScreen.visibleFrame;
+
+    // Keep the window top fixed: content only extends downward, and scrolls once it reaches the screen bottom,
+    // instead of pushing the whole window up.
+    CGFloat windowTop = NSMaxY(window.frame);
+    CGFloat heightToScreenBottom = windowTop - NSMinY(screenVisibleFrame);
+    CGFloat minimumWindowHeight = [EZLayoutManager.shared minimumWindowSize:self.windowType].height;
+    // The scroll view below the title bar requires at least the minimum height.
+    showingWindowHeight = MIN(showingWindowHeight, MAX(heightToScreenBottom, minimumWindowHeight + titleBarHeight));
+
+    CGRect newFrame = CGRectMake(window.x, windowTop - showingWindowHeight, window.width, showingWindowHeight);
     CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
+    CGFloat targetHeight = CGRectGetHeight(safeFrame);
 
     if (ez_frame_equal_with_tolerance(window.frame,
                                       safeFrame,
                                       EZLayoutGeometryTolerance_0_5)) {
-        self.tableView.height = tableViewHeight;
-        self.lockResizeWindow = NO;
-        MMLogInfo(@"Equal frame, no need to update window frame");
+        [self limitHeightOfWindow:window from:targetHeight to:targetHeight];
         return;
     }
 
-    // ???: why set window frame will change tableView height?
-    // ???: why this window animation will block cell rendering?
-    //    [self.window setFrame:safeFrame display:NO animate:animateFlag];
+    // Keep both heights reachable while the frame animates between them.
+    [self limitHeightOfWindow:window
+                         from:MIN(window.height, targetHeight)
+                           to:MAX(window.height, targetHeight)];
+
+    BOOL animate = allowsAnimation && window.isVisible && !window.inLiveResize &&
+        !NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion;
+    self.lastLayoutWidth = self.scrollView.contentSize.width;
     self.isUpdatingWindowFrameInternally = YES;
-    [window setFrame:safeFrame display:YES];
-    [self restoreFirstResponderIfWindowIsKey];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+        context.duration = animate ? EZWindowHeightAnimationDuration : 0;
+        context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+        if (animate) {
+            [[window animator] setFrame:safeFrame display:NO];
+        } else {
+            [window setFrame:safeFrame display:YES];
+        }
+    } completionHandler:^{
+        [self limitHeightOfWindow:window from:targetHeight to:targetHeight];
+
+        // Newly visible cells can measure their content during the window animation.
+        [self updateTableViewHeight];
+        BOOL contentHeightChanged = fabs([self getScrollViewContentHeight] - tableViewHeight) >= EZLayoutGeometryTolerance_0_5;
         self.isUpdatingWindowFrameInternally = NO;
-    });
-
-    // Restore tableView height.
-    self.tableView.height = tableViewHeight;
-
-    // Animation cost time.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZUpdateTableViewRowHeightAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.lockResizeWindow = NO;
         [self restoreFirstResponderIfWindowIsKey];
-    });
+        if (self.resizeWindowBlock) {
+            self.resizeWindowBlock();
+        }
+        if (self.needsWindowHeightUpdate || contentHeightChanged) {
+            // Updates received during the animation have already been coalesced.
+            [self applyWindowHeight];
+        }
+    }];
+}
 
-    //    MMLogInfo(@"window frame: %@", @(window.frame));
+/// Users may only resize the window width; its height follows the content and the maximum window height.
+- (void)limitHeightOfWindow:(NSWindow *)window from:(CGFloat)minHeight to:(CGFloat)maxHeight {
+    CGFloat minimumWidth = [EZLayoutManager.shared minimumWindowSize:self.windowType].width;
+    window.minSize = CGSizeMake(minimumWidth, minHeight);
+    // Keep the system's unlimited default width.
+    window.maxSize = CGSizeMake(FLT_MAX, maxHeight);
 }
 
 - (void)restoreFirstResponderIfWindowIsKey {
