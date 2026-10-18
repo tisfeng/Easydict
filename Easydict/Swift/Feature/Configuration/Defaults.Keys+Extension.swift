@@ -189,7 +189,7 @@ extension Defaults.Keys {
 
     static var minClassicalChineseTextDetectLength = Key<String>(
         "minClassicalChineseTextDetectLength",
-        default: "\(SharedConstants.minClassicalChineseLength)"
+        default: "\(AppConstants.minClassicalChineseLength)"
     )
 
     static let enableForceGetSelectedText = Key<Bool>(
