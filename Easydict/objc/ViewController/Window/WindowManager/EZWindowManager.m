@@ -902,20 +902,20 @@ static EZWindowManager *_instance;
     MMLogInfo(@"Pasteboard Translate with windowType: %@", @(windowType));
 
     self.actionType = EZActionTypePasteboardTranslate;
-    BOOL autoQuery = [MyConfiguration.shared autoQueryPastedText];
 
     // Try to read image from pasteboard first.
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSImage *image = pasteboard.image;
     if (image) {
+        BOOL autoQuery = [MyConfiguration.shared autoQueryOCRText];
         [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:self.actionType];
         return;
     }
 
-    // If no image, read string from pasteboard.
+    // Explicit text translation always queries, regardless of the ordinary paste preference.
     NSString *queryText = pasteboard.string;
     if (queryText.length > 0) {
-        [self showFloatingWindowType:windowType queryText:queryText autoQuery:autoQuery actionType:self.actionType];
+        [self showFloatingWindowType:windowType queryText:queryText autoQuery:YES actionType:self.actionType];
     }
 }
 
@@ -1099,9 +1099,9 @@ static EZWindowManager *_instance;
 
 /// For easy debugging, when Easydict is running in debug mode, we don't show Easydict release App.
 - (BOOL)hasEasydictRunningInDebugMode {
-    BOOL isDebugRunning = [self isAppRunningWithBundleId:EZDebugBundleId];
+    BOOL isDebugRunning = [self isAppRunningWithBundleId:AppConstants.debugBundleID];
     NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
-    BOOL isReleasedEasydict = [bundleId isEqualToString:EZBundleId];
+    BOOL isReleasedEasydict = [bundleId isEqualToString:AppConstants.bundleID];
     if (isDebugRunning && isReleasedEasydict) {
         MMLogInfo(@"Easydict is running in debug mode, so do not show release App.");
         return YES;
