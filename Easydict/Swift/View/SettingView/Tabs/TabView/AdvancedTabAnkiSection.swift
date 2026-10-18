@@ -28,36 +28,21 @@ struct AdvancedTabAnkiSection: View {
                 )
             }
 
-            DisclosureGroup("setting.advance.anki_configuration", isExpanded: $isConfigurationExpanded) {
-                endpointRow
-                deckRow
-                modelRow
-                mappingRow
-                previewRow
-            }
+            endpointRow
+            deckRow
+            modelRow
+            mappingRow
+            previewRow
         } header: {
             Text("setting.advance.header.anki_connect")
         }
-        .background(WindowAccessor(window: $settingsWindow))
         .onAppear {
             ensureAnkiMappings()
-        }
-        .onChange(of: enableAnkiConnect) { isEnabled in
-            if isEnabled {
-                isConfigurationExpanded = true
-            }
-        }
-        // SwiftUI can reuse the settings window and its view state after closing.
-        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { notification in
-            guard let settingsWindow, notification.object as? NSWindow === settingsWindow else { return }
-            isConfigurationExpanded = false
         }
     }
 
     // MARK: Private
 
-    @State private var isConfigurationExpanded = false
-    @State private var settingsWindow: NSWindow?
     @State private var isFetchingFields = false
     @State private var isLoadingPreview = false
     @State private var previewTextInput = ""
