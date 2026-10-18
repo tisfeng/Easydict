@@ -903,17 +903,16 @@ static EZWindowManager *_instance;
 
     self.actionType = EZActionTypePasteboardTranslate;
 
-    // Explicit translation actions always query, regardless of the ordinary paste preference.
-
     // Try to read image from pasteboard first.
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSImage *image = pasteboard.image;
     if (image) {
-        [self showFloatingWindowWithOCRImage:image autoQuery:YES actionType:self.actionType];
+        BOOL autoQuery = [MyConfiguration.shared autoQueryOCRText];
+        [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:self.actionType];
         return;
     }
 
-    // If no image, read string from pasteboard.
+    // Explicit text translation always queries, regardless of the ordinary paste preference.
     NSString *queryText = pasteboard.string;
     if (queryText.length > 0) {
         [self showFloatingWindowType:windowType queryText:queryText autoQuery:YES actionType:self.actionType];
