@@ -5,19 +5,10 @@ Agent 必须遵守的动作选择、内容决策、外部写入和恢复契约�
 
 ## 本机 ASC 认证
 
-发布入口仅在 `prepare`、`draft`、`publish`、`release` 及 Release `resume` 的进程树内
-启用 ASC 文件认证，不写入全局 Shell 配置，也不改变其他 asc 调用的认证方式。
-默认配置为 `~/.config/easydict/release/asc-config.json`，可用
-`EASYDICT_RELEASE_ASC_CONFIG` 指定其他绝对路径；profile 固定为 `Easydict Release`。
-配置包含该 profile 的 `key_id`、`issuer_id` 和绝对路径 `private_key_path`。
-
-配置和私钥必须位于 Git 工作树之外，由当前用户持有，文件权限为 `600`、各自所在目录
-权限为 `700`；不接受文件符号链接。入口在执行 ASC 命令前校验这些条件，失败时停止，
-不回退到钥匙串。入口显式选择配置和 profile，清除继承的 ASC API 凭据字段，并启用
-`ASC_BYPASS_KEYCHAIN=1` 和 `ASC_STRICT_AUTH=1`，避免混用认证来源。
-
-私钥采用本地文件权限保护；不得将配置、私钥或内容写入仓库、命令参数、日志或提交。
-`sync-notes`、Issue 跟进、cleanup 及帮助不需要 ASC 认证，不加载此配置。
+运行生命周期前，按[维护指南的 App Store Connect API 账号配置](../../../../docs/releases/easydict.md#app-store-connect-api-账号)
+准备仓库外的专用文件凭据，并使用其中的子 Shell 命令验证。路径、profile、权限要求和
+环境隔离说明统一维护在该指南，认证由 `scripts/release-auth.sh` 校验；配置无效时停止，
+不改用交互式钥匙串认证。不要为诊断或配置认证而自动开始或恢复 Draft。
 
 ## Git 与状态边界
 

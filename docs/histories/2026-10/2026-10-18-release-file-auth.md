@@ -10,7 +10,7 @@
 
 ### 用户请求
 
-将 ASC 发布认证迁移到仓库外文件，限制权限，仅在发布流程启用；暂不继续 2.25.0 beta Draft。
+将 ASC 发布认证迁移到仓库外文件，限制权限，仅在发布流程启用；暂不继续 2.25.0 beta Draft。后续要求同步发布维护指南、检查相关文档遗漏并提交到本地。
 
 ### 变更
 
@@ -19,6 +19,8 @@
 - 清除进程继承的 ASC API 凭据字段，避免混用；其他 asc 调用和全局 Shell 配置保持原样。
 - 将匹配当前 API Key 的已有私钥复制到用户配置目录下的专用发布目录，凭据不进入 Git。
 - 中断归档阶段的 `draft-20261018T075631Z-9da8d528`，保留失败状态及恢复材料，未执行公证、上传或后续 Draft 阶段。
+
+- 补充发布维护指南的首次文件配置、权限要求、子 Shell 只读诊断、认证作用范围、helper 索引和停止条件；Skill reference 链接该指南作为统一配置说明。
 
 ### 设计意图
 
@@ -34,8 +36,11 @@
 - Review：检查认证来源隔离、权限校验、错误路径和生命周期调用位置，未发现有效 finding；当前实现满足范围，无需增加其他认证层。
 - GitHub 只读查询：2.25.0 Release 尚不存在；相关工作流与构建进程已停止。
 
+- 文档补充：已检索现行发布文档并核对 helper 实现；Markdown 相对链接、锚点、Shell 示例语法和差异空白检查通过。未运行或恢复 Draft。
+
 ### 受影响文件
 
+- `docs/releases/easydict.md`
 - `.agents/skills/release-easydict/scripts/release-auth.sh`
 - `.agents/skills/release-easydict/scripts/release-easydict.sh`
 - `.agents/skills/release-easydict/references/release-workflow.md`
