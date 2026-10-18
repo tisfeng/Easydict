@@ -1057,7 +1057,13 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 /// Reset tableView, reloadData
 - (void)resetTableView:(nullable void (^)(void))completion {
     [self resetQueryAndResults];
-    [self reloadTableViewData:completion];
+    [self reloadTableViewDataWithoutWindowHeightUpdate:^{
+        // Callers position the window by its height, so fit it now instead of coalescing the update.
+        [self applyWindowHeightAnimated:NO];
+        if (completion) {
+            completion();
+        }
+    }];
 }
 
 /// TableView reloadData, and update window height.
@@ -1672,6 +1678,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (resultView.result == result && !EZResultNeedsDictionaryHTMLHeight(result)) {
         [resultView updateExpandedState];
         [self updateCellWithResult:result reloadData:NO];
+        // The cell is not reloaded, so sync its loading dots with the updated isLoading state.
+        [resultView updateLoadingAnimation];
     } else {
         [self updateCellWithResult:result reloadData:YES];
     }
@@ -1855,7 +1863,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     CGFloat windowTop = NSMaxY(window.frame);
     CGFloat heightToScreenBottom = windowTop - NSMinY(screenVisibleFrame);
     CGFloat minimumWindowHeight = [EZLayoutManager.shared minimumWindowSize:self.windowType].height;
-    showingWindowHeight = MIN(showingWindowHeight, MAX(heightToScreenBottom, minimumWindowHeight));
+    // The scroll view below the title bar requires at least the minimum height.
+    showingWindowHeight = MIN(showingWindowHeight, MAX(heightToScreenBottom, minimumWindowHeight + titleBarHeight));
 
     CGRect newFrame = CGRectMake(window.x, windowTop - showingWindowHeight, window.width, showingWindowHeight);
     CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
