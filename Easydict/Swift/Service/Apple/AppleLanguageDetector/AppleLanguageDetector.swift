@@ -95,7 +95,7 @@ public class AppleLanguageDetector: NSObject {
     public func detectLanguage(text: String) -> Language {
         // Reset analysis state for each detection
         resetAnalysis()
-        return detectLanguageInternal(text: text, applyPostProcessing: true)
+        return detectLanguageInternal(text: text, analyzeMixedContent: true)
     }
 
     /// Get detailed language detection probabilities for analysis and debugging
@@ -153,16 +153,8 @@ public class AppleLanguageDetector: NSObject {
     /// Chinese text detection utility for classical Chinese analysis
     private var chineseGenreAnalyzer: ChineseGenreAnalyzer?
 
-    /// Internal unified language detection with configurable post-processing
-    ///
-    /// Combines detection logic and optional post-processing corrections.
-    /// Used by both the public interface and internal mixed-content analysis.
-    ///
-    /// - Parameters:
-    ///   - text: Text to analyze for language detection
-    ///   - applyPostProcessing: Whether to apply post-processing corrections
-    /// - Returns: Detected Language enum value (.auto for empty text)
-    private func detectLanguageInternal(text: String, applyPostProcessing: Bool) -> Language {
+    /// Classifies text, optionally checking mixed scripts with one secondary pass.
+    private func detectLanguageInternal(text: String, analyzeMixedContent: Bool) -> Language {
         // Handle empty or whitespace-only text
         if text.isEmpty || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return .auto
@@ -191,17 +183,13 @@ public class AppleLanguageDetector: NSObject {
 
         let topConfidence = mostConfident.value
         let nlLanguage = mostConfident.key
-        var detectedLanguage = languageMapper.languageEnum(from: nlLanguage)
-
-        // Apply post-processing corrections if requested
-        if applyPostProcessing {
-            detectedLanguage = applyPostProcessingCorrections(
-                detectedLanguage: detectedLanguage,
-                confidence: topConfidence,
-                text: text,
-                allProbabilities: adjustedProbabilities
-            )
-        }
+        let detectedLanguage = applyPostProcessingCorrections(
+            detectedLanguage: languageMapper.languageEnum(from: nlLanguage),
+            confidence: topConfidence,
+            text: text,
+            allProbabilities: adjustedProbabilities,
+            analyzeMixedContent: analyzeMixedContent
+        )
 
         if isDebugLogEnabled {
             print("Final detected text: \(text.prefix200)")
@@ -283,12 +271,14 @@ public class AppleLanguageDetector: NSObject {
     ///   - confidence: Detection confidence score (0.0-1.0)
     ///   - text: Original input text
     ///   - allProbabilities: All language probabilities from detection
+    ///   - analyzeMixedContent: Whether mixed-script analysis may run for this text
     /// - Returns: Corrected language after all post-processing steps
     private func applyPostProcessingCorrections(
         detectedLanguage: Language,
         confidence: Double,
         text: String,
-        allProbabilities: [NLLanguage: Double]
+        allProbabilities: [NLLanguage: Double],
+        analyzeMixedContent: Bool
     )
         -> Language {
         let cleanText = text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -307,7 +297,7 @@ public class AppleLanguageDetector: NSObject {
         }
 
         // Priority 2: Handle common misdetections with mixed content
-        if let correctedLanguage = handleMixedContent(
+        if analyzeMixedContent, let correctedLanguage = handleMixedContent(
             detectedLanguage: detectedLanguage,
             text: cleanText,
             confidence: confidence
@@ -347,10 +337,7 @@ public class AppleLanguageDetector: NSObject {
         return .english
     }
 
-    /// Handle mixed content detection and script analysis in one unified function
-    ///
-    /// Combines the functionality of handleMixedContentDetection and analyzeMixedScriptText
-    /// to provide comprehensive mixed-content language detection without recursion depth tracking.
+    /// Reclassifies the non-English portion of mixed-script text when it dominates.
     ///
     /// - Parameters:
     ///   - detectedLanguage: Language detected by ML system
@@ -380,11 +367,10 @@ public class AppleLanguageDetector: NSObject {
                     return .english
                 }
 
-                // Since we have removed English characters, it won't be deteced as English anymore.
-                // Make sure this recursive call will not cause infinite loop.
+                // The remaining text can still classify as English; do not recurse again.
                 let nonEnglishLanguage = detectLanguageInternal(
                     text: pureWordNonEnglishText,
-                    applyPostProcessing: true
+                    analyzeMixedContent: false
                 )
                 if nonEnglishLanguage != .english, nonEnglishLanguage != .auto {
                     return nonEnglishLanguage
