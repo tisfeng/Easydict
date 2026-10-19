@@ -212,7 +212,8 @@ Git remote 自己的 SSH 或 HTTPS 凭据。这两者与 Apple API 账号互相�
 
 `changelog/<version>.md` 是 GitHub Release 正文和 Sparkle 更新说明的唯一 Markdown 来源。
 准备内容时，按[Release 内容决策](../../.agents/skills/release-easydict/references/release-workflow.md#内容决策)
-核查完整版本提交范围，结合 PR 和重要直接提交整理最终用户可见变化。
+核查完整版本提交范围：人工 PR 通常收录，排除意义不大的维护项；直接提交只补充重要用户可见变化
+或 UI/交互变化。完整范围用于查漏，不按提交逐条生成日志。
 先校验，再把它提交到本地 `dev`：
 
 ```bash

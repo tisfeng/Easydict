@@ -68,3 +68,14 @@
 - 新 Draft URL：https://github.com/tisfeng/Easydict/releases/tag/untagged-5f8081fab8f091fa4c51 。GitHub 编辑正文后生成新的草稿 URL，数据库 ID 417145629 保持不变。
 - Skill 校验、changelog 格式及 bot PR policy、冻结 notes/refs 校验、verify-draft 和 local artifact verification 通过；Review 未发现有效 finding。
 - 未重建、移动 Tag、改写附件、推送 dev/main、正式发布或处理 Issue。
+
+## 用户筛选规则修正
+
+- 用户指出 QR 调度/结果交付属于内部实现，不适合用户更新日志；前一版将其收录的判断撤销。
+- 本轮起始主目录 dev 为 d4886a7d74ae52df0627358c85648a446bd5657c，工作树与索引干净。
+- 发布 Skill 入口明确写入人工 PR 通常收录、无意义维护 PR 可省略；直接提交仅收录重要用户可见变化或真实 UI/交互变化。完整提交范围只用于查漏，fix/perf 类型不作为收录依据。
+- 移除 QR 条目，保留 DeepL 新增语言支持与 Anki Sheet UI 两项直接提交；原 10 个 PR 条目保持。
+- Draft 修订提交 876941b0b0b438b72506db910e5ae92b4fd3c46c，仅更新 changelog 与目标 description；备份保存在 .tmp/release/2.25.0/state/notes-user-facing-20261019/。
+- 新 Markdown 哈希：7167edbed77014ca140b8fd4a1e1bb1340281605ad72d818d34084bfe4571582；HTML 哈希：cb33bccd914335e8633f76e4d9fe50606ae7e08ac2a23ef3a1f333eb778e3cb3。
+- Draft、冻结 notes/refs、候选 XML 语义和 Skill 格式校验通过；Tag/资产/远程 dev/main 不变，仍未正式发布。
+- 聊天任务 worktree 起始停在旧 e9ce80eb8，导致这里看不到此前主目录的技能修改；交付时确认干净及祖先关系后快进到本地 dev 的新规则提交。

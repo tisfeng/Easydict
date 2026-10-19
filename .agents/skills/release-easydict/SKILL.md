@@ -5,7 +5,11 @@ description: 编排 Easydict macOS 的 draft、publish、release 和 resume，�
 
 # 发布 Easydict
 
-使用仓库脚本发布 Easydict，并整理英文 GitHub Release 内容、跟进关联 Issue。
+使用仓库脚本发布 Easydict，并整理面向用户的英文 GitHub Release 内容、跟进关联 Issue。
+
+Changelog 通常收录人工 PR，排除意义不大的维护项；直接提交只补充重要用户可见变化或 UI 变化，
+不因提交类型为 `fix`、`perf` 或标题包含“修复”就收录。详细筛选标准见
+[内容决策](references/release-workflow.md#内容决策)。
 
 ## 动作路由
 

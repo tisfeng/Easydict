@@ -48,3 +48,13 @@
 
 - Draft 保持未发布；备份及修订收据保存在 `.tmp/release/2.25.0/state/notes-revision-20261019/`。
 - GitHub Release 端点拒绝条件 PATCH，原正文未变；通过紧邻写入的身份/正文/资产/引用复核与仅正文更新恢复，并立即验证。回退不提供服务器原子并发保护，规则已明确限制；[官方条件请求说明](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api#use-conditional-requests-if-appropriate)与实际 HTTP 400 响应一致。未改动已有的已发布版本 sync-notes 实现。
+
+### 后续修正：面向用户的筛选门槛
+
+- 用户明确 QR 调度说明不应收录；前述首次补全中的该条目已撤销。发布 Skill 入口与内容决策现明确区分：人工 PR 通常保留，意义不大的维护 PR 可省略；直接提交只保留重要用户可见变化或真实 UI/交互变化。
+- 完整提交范围用于查漏，不能逐条生成日志；内部调度、并发整理、完成时机和警告修正不因 fix/perf 类型自动收录，也不将 UI 代码的纯重构算作 UI 更新。
+- 2.25.0 删除 QR 条目，保留 DeepL 希伯来语/泰语支持和 Anki 设置 Sheet 两个直接提交及原 10 个 PR；同步候选 appcast、正文与冻结状态。
+- 隔离发布分支提交：876941b0b0b438b72506db910e5ae92b4fd3c46c。新 Draft URL：https://github.com/tisfeng/Easydict/releases/tag/untagged-29b60d398f5899521f58 。数据库 ID 417145629、beta、Tag 与附件均未变化。
+- Markdown SHA-256：7167edbed77014ca140b8fd4a1e1bb1340281605ad72d818d34084bfe4571582；HTML SHA-256：cb33bccd914335e8633f76e4d9fe50606ae7e08ac2a23ef3a1f333eb778e3cb3。Skill 格式、changelog、verify-draft、冻结 notes/refs 与 appcast 语义校验通过；规则与修订操作 Review 无有效 finding。
+- 本轮起始主目录 dev 为 d4886a7d7 且干净；聊天任务 worktree 停留旧 e9ce80eb8，无法看到上一轮主目录的规则提交。交付时核对干净与祖先关系后快进到本地 dev 新提交；不推送 dev/main。
+- 原状态备份和本次收据保存在 `.tmp/release/2.25.0/state/notes-user-facing-20261019/`，未重建或正式发布。
