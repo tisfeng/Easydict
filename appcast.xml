@@ -3,6 +3,41 @@
     <channel>
         <title>Easydict</title>
         <item>
+            <title>2.25.0</title>
+            <pubDate>Mon, 19 Oct 2026 18:05:55 +0800</pubDate>
+            <description>&lt;h1&gt;✨ feat: add Anki Connect integration&lt;/h1&gt;
+&lt;h2&gt;What's Changed&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Add Anki Connect integration by @XbuLee in &lt;a href="https://github.com/tisfeng/Easydict/pull/1241"&gt;#1241&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Update the pinned iOS translation app version to 26.52 by @codexss in &lt;a href="https://github.com/tisfeng/Easydict/pull/1336"&gt;#1336&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Fetch the DeepL Web App version dynamically by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1341"&gt;#1341&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Migrate Gemini to the OpenAI format by @Jerry23011 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1342"&gt;#1342&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Support absolute paths for Apple Dictionary audio by @KurodaKayn in &lt;a href="https://github.com/tisfeng/Easydict/pull/1351"&gt;#1351&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Include prereleases in the latest version when beta updates are enabled by @Aurora-NICExq in &lt;a href="https://github.com/tisfeng/Easydict/pull/1358"&gt;#1358&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Allow forced text selection in Warp by @Lilien86 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1343"&gt;#1343&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Move the Apple Translate offline setting from Advanced to Services by @Jerry23011 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1340"&gt;#1340&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Stabilize query window resizing and text rendering by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1327"&gt;#1327&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Move Anki Connect configuration into a dedicated settings sheet by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/e9ce80eb854c1747de209615b10472b9f0b02f03"&gt;commit&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;New Contributors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;@XbuLee made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1241"&gt;#1241&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@codexss made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1336"&gt;#1336&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@Lilien86 made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1343"&gt;#1343&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/tisfeng/Easydict/compare/2.24.0...2.25.0"&gt;2.24.0...2.25.0&lt;/a&gt;&lt;/p&gt;</description>
+            <sparkle:channel>beta</sparkle:channel>
+            <sparkle:version>68</sparkle:version>
+            <sparkle:shortVersionString>2.25.0</sparkle:shortVersionString>
+            <sparkle:fullReleaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.25.0</sparkle:fullReleaseNotesLink>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.25.0/Easydict.zip" length="36093454" type="application/octet-stream" sparkle:edSignature="ZBOirZv2L5ZPXkPuThlwaWWCgZTbTqWCNzlfuDl4oIrcX4OO4nvzPBqmcQQjvqK4u8vo4v5Qx3nEn/HV1pmZCg==" />
+        </item>
+        <item>
             <title>2.24.0</title>
             <pubDate>Mon, 28 Sep 2026 01:40:47 +0800</pubDate>
             <description>&lt;h1&gt;✨ feat: add GitHub Copilot CLI translation&lt;/h1&gt;
@@ -22,7 +57,6 @@
 &lt;li&gt;@crossoverJie made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1319"&gt;#1319&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/tisfeng/Easydict/compare/2.23.0...2.24.0"&gt;2.23.0...2.24.0&lt;/a&gt;&lt;/p&gt;</description>
-            <sparkle:channel>beta</sparkle:channel>
             <sparkle:version>67</sparkle:version>
             <sparkle:shortVersionString>2.24.0</sparkle:shortVersionString>
             <sparkle:fullReleaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.24.0</sparkle:fullReleaseNotesLink>
