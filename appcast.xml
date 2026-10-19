@@ -17,13 +17,8 @@
 &lt;li&gt;Allow forced text selection in Warp by @Lilien86 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1343"&gt;#1343&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Move the Apple Translate offline setting from Advanced to Services by @Jerry23011 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1340"&gt;#1340&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Stabilize query window resizing and text rendering by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1327"&gt;#1327&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Move Anki Connect configuration into a dedicated settings sheet by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/e9ce80eb854c1747de209615b10472b9f0b02f03"&gt;commit&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Support Hebrew and Thai in DeepL by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/88e2a0b6034ff9b17488c6507356f7e73449acbd"&gt;commit&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;Improve QR code detection scheduling and result delivery by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/f384db30793a4aeb3c4a61ae7f7384ed717a3a81"&gt;commit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Move Anki Connect configuration into a dedicated settings sheet by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/e9ce80eb854c1747de209615b10472b9f0b02f03"&gt;commit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Support Hebrew and Thai in DeepL by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/88e2a0b6034ff9b17488c6507356f7e73449acbd"&gt;commit&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Fix Brazilian Portuguese mapping in Apple Translate by @joaovitoras in &lt;a href="https://github.com/tisfeng/Easydict/pull/1361"&gt;#1361&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;New Contributors&lt;/h2&gt;
