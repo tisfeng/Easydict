@@ -532,15 +532,18 @@ extension AppleDictionary {
         guard !state.loadingURLs.contains(resourceURL), state.loadingURLs.count < 8 else {
             return nil
         }
+        var stylesheetState: ResourceEmbeddingState?
         if resourceURL.pathExtension.lowercased() == "css" {
             guard let css = String(data: resourceData, encoding: .utf8) else { return nil }
-            state.loadingURLs.insert(resourceURL)
+            // Resolve children provisionally; only the final stylesheet consumes the outer budget.
+            var provisionalState = state
+            provisionalState.loadingURLs.insert(resourceURL)
             let resolvedCSS = embedDictionaryResources(
-                ofHTML: css, in: contentsURL, state: &state,
+                ofHTML: css, in: contentsURL, state: &provisionalState,
                 relativeTo: resourceURL.deletingLastPathComponent()
             )
-            state.loadingURLs.remove(resourceURL)
             resourceData = Data(resolvedCSS.utf8)
+            stylesheetState = provisionalState
         }
 
         let mimeType = UTType(filenameExtension: resourceURL.pathExtension)?.preferredMIMEType
@@ -548,6 +551,9 @@ extension AppleDictionary {
         let dataURL = "data:\(mimeType);base64,\(resourceData.base64EncodedString())"
         guard state.embeddedBytes + dataURL.utf8.count <= kMaxEmbeddedResourceBytesPerQuery else {
             return nil
+        }
+        if let stylesheetState {
+            state.dataURLs = stylesheetState.dataURLs
         }
         state.dataURLs[resourceURL] = dataURL
         state.embeddedBytes += dataURL.utf8.count
