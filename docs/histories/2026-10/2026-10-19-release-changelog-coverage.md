@@ -58,3 +58,10 @@
 - Markdown SHA-256：7167edbed77014ca140b8fd4a1e1bb1340281605ad72d818d34084bfe4571582；HTML SHA-256：cb33bccd914335e8633f76e4d9fe50606ae7e08ac2a23ef3a1f333eb778e3cb3。Skill 格式、changelog、verify-draft、冻结 notes/refs 与 appcast 语义校验通过；规则与修订操作 Review 无有效 finding。
 - 本轮起始主目录 dev 为 d4886a7d7 且干净；聊天任务 worktree 停留旧 e9ce80eb8，无法看到上一轮主目录的规则提交。交付时核对干净与祖先关系后快进到本地 dev 新提交；不推送 dev/main。
 - 原状态备份和本次收据保存在 `.tmp/release/2.25.0/state/notes-user-facing-20261019/`，未重建或正式发布。
+
+### 后续修订：发布重点
+
+- 按用户要求，将正文 H1 改为 `# 🐞 fix: stabilize query window resizing and text rendering`；保留原更新条目，GitHub Release 名称仍为 `2.25.0`。
+- Draft 和 Sparkle description 已同步；隔离分支提交 ad8c70e44bb7ffbd6511a78b1b295702283a8d40，最新 Draft URL：https://github.com/tisfeng/Easydict/releases/tag/untagged-9afd5356ed7695699944 。
+- Markdown SHA-256：6c1b7cfab3669f8c9fa76345024f525577d02f42dc9bd9abae7e94d353590045；HTML SHA-256：213e5c2b6af195c4e01d727804da2e541550e80fc858ffdfba92d452416fa3c1。原 Tag、构建 68、beta、附件和远程 dev/main 保持不变，未正式发布。
+- 备份与收据保存在 `.tmp/release/2.25.0/state/notes-headline-20261019/`；正文仅主标题变化，校验与冻结状态核验通过。

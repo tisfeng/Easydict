@@ -79,3 +79,11 @@
 - 新 Markdown 哈希：7167edbed77014ca140b8fd4a1e1bb1340281605ad72d818d34084bfe4571582；HTML 哈希：cb33bccd914335e8633f76e4d9fe50606ae7e08ac2a23ef3a1f333eb778e3cb3。
 - Draft、冻结 notes/refs、候选 XML 语义和 Skill 格式校验通过；Tag/资产/远程 dev/main 不变，仍未正式发布。
 - 聊天任务 worktree 起始停在旧 e9ce80eb8，导致这里看不到此前主目录的技能修改；交付时确认干净及祖先关系后快进到本地 dev 的新规则提交。
+
+## 主标题修订计划
+
+- 用户指定查询窗口大小调整与文本渲染修复为发布重点，只更新 H1 和对应 description，保留所有条目。
+- 沿用未发布 Draft 的说明修订路径，备份位于 .tmp/release/2.25.0/state/notes-headline-20261019/。
+
+- 主标题已改为 `# 🐞 fix: stabilize query window resizing and text rendering`，其余条目未改动；Draft 和 description 已同步，修订提交 ad8c70e44bb7ffbd6511a78b1b295702283a8d40。
+- 新 Markdown/HTML 哈希分别为 6c1b7cfab3669f8c9fa76345024f525577d02f42dc9bd9abae7e94d353590045 / 213e5c2b6af195c4e01d727804da2e541550e80fc858ffdfba92d452416fa3c1；原 Tag、附件和远程 dev/main 保持不变。
