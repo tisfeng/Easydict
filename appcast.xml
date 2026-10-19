@@ -5,7 +5,7 @@
         <item>
             <title>2.25.0</title>
             <pubDate>Mon, 19 Oct 2026 18:05:55 +0800</pubDate>
-            <description>&lt;h1&gt;✨ feat: add Anki Connect integration&lt;/h1&gt;
+            <description>&lt;h1&gt;🐞 fix: stabilize query window resizing and text rendering&lt;/h1&gt;
 &lt;h2&gt;What's Changed&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Add Anki Connect integration by @XbuLee in &lt;a href="https://github.com/tisfeng/Easydict/pull/1241"&gt;#1241&lt;/a&gt;&lt;/li&gt;
