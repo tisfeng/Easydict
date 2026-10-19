@@ -5,7 +5,11 @@ description: 编排 Easydict macOS 的 draft、publish、release 和 resume，�
 
 # 发布 Easydict
 
-使用仓库脚本发布 Easydict，并整理英文 GitHub Release 内容、跟进关联 Issue。
+使用仓库脚本发布 Easydict，并整理面向用户的英文 GitHub Release 内容、跟进关联 Issue。
+
+Changelog 通常收录人工 PR，排除意义不大的维护项；直接提交只补充重要用户可见变化或 UI 变化，
+不因提交类型为 `fix`、`perf` 或标题包含“修复”就收录。详细筛选标准见
+[内容决策](references/release-workflow.md#内容决策)。
 
 ## 动作路由
 
@@ -20,6 +24,12 @@ Release 生命周期：
 - `release <version>`：依次执行本 skill 的 `draft` 和 `publish` 行为。
 - `resume <version-or-run-id>`：使用现有 skill 和 asc 状态，只继续未完成的 Release
   生命周期阶段。
+
+已有 Draft 的说明修订：
+
+- 用户要求补全或修订未发布 Draft 的说明时，读取
+  [未发布 Draft 的说明修订](references/release-workflow.md#未发布-draft-的说明修订)，
+  按原冻结源码范围同步 canonical notes、候选 appcast 与冻结状态，保留 Tag 和安装包。
 
 已发布版本的日志修订：
 
@@ -55,7 +65,7 @@ Release 生命周期：
   分析，不运行该命令；必要时说明缺少可持久化的计划状态。
 - 只有当用户针对具体版本或运行明确请求 `draft`、`publish`、`release`、Release
   `resume`、`sync-notes <version> --execute`、`issue-followup apply` 或 `issue-followup
-  resume` 时，才执行远程修改。`sync-notes` 不带 `--execute` 始终保持 preview。
+  resume`，或明确要求修订具体版本的 Draft 说明时，才执行远程修改。`sync-notes` 不带 `--execute` 始终保持 preview。
 - 用户明确请求 `publish` 或 `release` 后，同一版本通过远程发布验证时，也同时授权其
   内部 `issue-followup apply` 阶段。翻译、重点内容、评论或关闭已解决 Issue 不再另行
   请求确认。
