@@ -34,9 +34,10 @@ Issue 状态只使用 `.tmp/release/<version>/state/issue-followup/` 的 schema 
 
 1. 验证请求版本、channel、当前 GitHub Release、`.tmp/release/<version>/` 状态和相关
    asc run ID。
-2. 创建新 Draft 前，根据上一个版本以来的已合并 PR 创建或更新
-   `changelog/<version>.md`。正文使用简洁英文，应用统一 bot PR 过滤策略，保留有效 PR 作者、链接、New Contributors
-   和 Full Changelog 范围。把选出的重点功能写成首个 Markdown 标题
+2. 创建新 Draft 前，按下方“内容决策”核查上一个版本 Tag 到本次冻结源码的完整提交范围，
+   结合已合并 PR 与重要直接提交创建或更新 `changelog/<version>.md`。正文使用简洁英文，
+   保留有效作者、PR/commit 链接、New Contributors 和 Full Changelog 范围。
+   把选出的重点功能写成首个 Markdown 标题
    `# <emoji> <type>: <concise English summary>`，后续 changelog 从 `## What's Changed`
    开始；将文件提交到本地 `dev`，然后运行“验证 changelog”。
 3. 运行“创建 Draft”。如果 Draft 已存在，验证并复用；只有用户明确要求替换时才运行
@@ -70,6 +71,29 @@ Release DerivedData。该 worktree 只服务于本地 Archive，不替代版本 
 fingerprint 并回退一次 clean Archive。缓存命中不改变签名、公证、stapling、appcast
 或远程验证要求。
 
+## 未发布 Draft 的说明修订
+
+用户明确要求补全或修订已有 Draft 说明时，可以只修订说明，不必替换安装包或重建源码。
+这不同于 `--replace-draft`；`sync-notes` 仍只用于已发布版本，不用于此路径。
+
+1. 确认目标仍为预期版本、渠道的 Draft，没有正在运行的发布流程或 publish 集成状态；
+   核对本地和远程 Tag identity、临时分支与 `draft-refs.env`，并保存原 Draft、ETag、附件 digest、
+   canonical notes、候选 appcast 和冻结状态备份。
+2. 按原冻结版本范围修订 canonical notes，生成并审查仅更新目标 `<description>` 的 appcast；
+   保留版本、构建、channel、签名、下载 URL、旧版本条目和全部安装包不变。
+3. 在原隔离发布分支追加仅包含 changelog 与 appcast 的提交；以旧分支 head 为 lease，
+   只向前推进临时发布分支。再次确认 Draft 身份和附件未变，仅在端点支持时采用 ETag 条件写入。
+   端点已明确不支持条件写入时，不重复尝试；确认正文未变，紧邻写入重新获取并逐项核对原 Draft ID、
+   版本、渠道、正文、附件和远端引用，再用 `gh release edit --notes-file` 仅更新正文；
+   该回退不能提供服务器原子并发保护，写后必须立即复核，发生任何漂移即停止并报告。
+   不移动 Tag，不更新远程 dev/main，不执行 publish/release 或 Issue 动作。
+4. 将修订后的候选 appcast、`release-notes.json` 和 `draft-refs.env` 同步到可供后续 publish
+   使用的一致状态。复核正文与 Markdown/HTML 哈希、临时分支及本地引用、Tag 和附件；
+   保留审计备份和原 ASC run ID，不通过 resume 重做已完成阶段。
+
+出现并发、身份漂移或部分失败时保留现场并报告准确阶段；依据备份和实际远端状态恢复，
+不得循环覆盖远端或仅修改 GitHub 正文而留下过期的冻结哈希和 appcast。
+
 ## 已发布日志的独立同步
 
 如果发布完成后人工修改了 `changelog/<version>.md`，不要重新运行 `resume`、`draft` 或
@@ -101,8 +125,15 @@ branch head 和 Git push lease；任一并发校验失败都会停止，避免�
 
 ## 内容决策
 
-- changelog 只翻译每个变更条目中由人编写的 PR 标题部分，并保持英文标题简洁；作者、
-  PR 链接、贡献者和比较范围保持不变。
+- 候选来源是上一个版本 Tag 到本次发布源码的完整 Git 提交范围，不仅是 GitHub 的 PR 列表。
+  新 Draft 使用已选定的发布源码；已有 Draft 的日志修订使用其冻结版本提交，不收录此后新增的 dev 变更。
+- 将提交与已合并 PR 对应，结合实际 diff 和最终代码行为核查遗漏。PR 已覆盖的内部提交不重复列出；
+  无 PR 的重要用户可见功能、修复、安全或性能变化同样收录，保留作者并附完整 commit 链接。
+- 按最终用户行为合并同类变化；被撤回或被后续方案完全替代的中间实现不单列。默认省略纯格式、
+  内部重构、发布维护、生成资源和机器人维护项；PR 条目沿用统一 bot PR 过滤策略。
+- 用简洁英文描述最终用户可见结果，不照搬技术性提交标题；PR 标题与 diff 不符时以实际变更为准。
+  保留有效作者、PR/commit 链接、贡献者和比较范围。完成前逐项核对完整范围，记录重要直接提交
+  的收录或合并依据，以及存在疑问的排除项；链接与哈希校验不能代替内容完整性检查。
 - Draft 阶段不评论 Issue/PR、不关闭 Issue、不推送 `main` 的 appcast；只有正式 Release
   远程验证成功后才执行 Issue 和无关联人工 PR 通知。PR 通知只发表评论，不关闭 PR。
 - 按以下顺序选择重点：安全、数据丢失或崩溃修复；重要用户可见功能；重要用户可见修复；

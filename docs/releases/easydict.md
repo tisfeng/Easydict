@@ -211,6 +211,8 @@ Git remote 自己的 SSH 或 HTTPS 凭据。这两者与 Apple API 账号互相�
 ### 1. 准备 changelog
 
 `changelog/<version>.md` 是 GitHub Release 正文和 Sparkle 更新说明的唯一 Markdown 来源。
+准备内容时，按[Release 内容决策](../../.agents/skills/release-easydict/references/release-workflow.md#内容决策)
+核查完整版本提交范围，结合 PR 和重要直接提交整理最终用户可见变化。
 先校验，再把它提交到本地 `dev`：
 
 ```bash
@@ -220,7 +222,9 @@ python3 .agents/skills/release-easydict/scripts/release_notes.py validate \
 ```
 
 GitHub Release 标题不写入 changelog。发布开始后，正文和渲染结果的 SHA-256 会被冻结；
-后续阶段或恢复时发现漂移会停止。
+后续阶段或恢复时发现漂移会停止。用户要求补全已有 Draft 说明时，遵循
+[未发布 Draft 的说明修订](../../.agents/skills/release-easydict/references/release-workflow.md#未发布-draft-的说明修订)，
+同时更新候选 appcast 和冻结状态。
 
 ### 2. 预览或准备产物
 

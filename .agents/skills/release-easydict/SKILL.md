@@ -21,6 +21,12 @@ Release 生命周期：
 - `resume <version-or-run-id>`：使用现有 skill 和 asc 状态，只继续未完成的 Release
   生命周期阶段。
 
+已有 Draft 的说明修订：
+
+- 用户要求补全或修订未发布 Draft 的说明时，读取
+  [未发布 Draft 的说明修订](references/release-workflow.md#未发布-draft-的说明修订)，
+  按原冻结源码范围同步 canonical notes、候选 appcast 与冻结状态，保留 Tag 和安装包。
+
 已发布版本的日志修订：
 
 - `sync-notes <version>`：读取人工修改后的 `changelog/<version>.md`，预览并（仅在显式
@@ -55,7 +61,7 @@ Release 生命周期：
   分析，不运行该命令；必要时说明缺少可持久化的计划状态。
 - 只有当用户针对具体版本或运行明确请求 `draft`、`publish`、`release`、Release
   `resume`、`sync-notes <version> --execute`、`issue-followup apply` 或 `issue-followup
-  resume` 时，才执行远程修改。`sync-notes` 不带 `--execute` 始终保持 preview。
+  resume`，或明确要求修订具体版本的 Draft 说明时，才执行远程修改。`sync-notes` 不带 `--execute` 始终保持 preview。
 - 用户明确请求 `publish` 或 `release` 后，同一版本通过远程发布验证时，也同时授权其
   内部 `issue-followup apply` 阶段。翻译、重点内容、评论或关闭已解决 Issue 不再另行
   请求确认。
