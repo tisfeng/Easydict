@@ -45,7 +45,7 @@ public final class ClaudeService: StreamService {
     }
 
     override var defaultModel: String {
-        ClaudeModel.claude_sonnet_4_6.rawValue
+        ClaudeModel.claude_sonnet_5_5.rawValue
     }
 
     override var defaultEndpoint: String {
@@ -159,6 +159,13 @@ public final class ClaudeService: StreamService {
     /// The maximum number of tokens to generate in the response.
     private let maxTokens = 4096
 
+    /// Models released before Claude Opus 4.7 accept `temperature`; later models
+    /// reject a non-default value with HTTP 400, so it is omitted for them.
+    /// https://platform.claude.com/docs/en/about-claude/model-deprecations
+    private let temperatureSupportedModels = [
+        "claude-sonnet-4-", "claude-haiku-4-", "claude-opus-4-5", "claude-opus-4-6",
+    ]
+
     private var currentTask: Task<(), Never>?
 
     // MARK: - Message Construction
@@ -199,10 +206,13 @@ public final class ClaudeService: StreamService {
         var body: [String: Any] = [
             "model": model,
             "max_tokens": maxTokens,
-            "temperature": min(max(temperature, 0), 1),
             "stream": true,
             "messages": messages.map { ["role": $0.role.rawValue, "content": $0.content] },
         ]
+
+        if temperatureSupportedModels.contains(where: model.contains) {
+            body["temperature"] = min(max(temperature, 0), 1)
+        }
 
         if !systemPrompt.isEmpty {
             body["system"] = systemPrompt
@@ -377,8 +387,8 @@ enum ClaudeModel: String, CaseIterable {
     // Docs: https://docs.anthropic.com/en/docs/about-claude/models
     // Pricing: https://www.anthropic.com/pricing
 
+    case claude_sonnet_5_5 = "claude-sonnet-5-5"
+    case claude_haiku_5_5 = "claude-haiku-5-5"
+    case claude_opus_5_5 = "claude-opus-5-5"
     case claude_sonnet_4_6 = "claude-sonnet-4-6"
-    case claude_haiku_4_5 = "claude-haiku-4-5"
-    case claude_opus_4_6 = "claude-opus-4-6"
-    case claude_opus_4_7 = "claude-opus-4-7"
 }

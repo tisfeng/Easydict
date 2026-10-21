@@ -58,6 +58,7 @@ enum ZhipuModel: String, CaseIterable {
     // rate-limits: https://www.bigmodel.cn/usercenter/proj-mgmt/rate-limits
 
     // Text models
+    case glm_5_3 = "glm-5.3" // TBD.
     case glm_5 = "glm-5" // Input CNY 4-6 / 1M tokens; output CNY 18-22 / 1M tokens (tiered).
     case glm_4_7 = "glm-4.7" // Input CNY 2-4 / 1M tokens; output CNY 8-16 / 1M tokens (tiered).
     case glm_4_7_flash = "glm-4.7-flash" // Free.

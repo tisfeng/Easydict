@@ -35,7 +35,7 @@ class OpenAIService: BaseOpenAIService {
     }
 
     override var defaultModel: String {
-        OpenAIModel.gpt_5_mini.rawValue
+        OpenAIModel.gpt_6_luna.rawValue
     }
 
     override var defaultEndpoint: String {
@@ -53,9 +53,9 @@ enum OpenAIModel: String, CaseIterable {
     // Models: https://platform.openai.com/docs/models
     // Pricing https://platform.openai.com/docs/pricing
 
-    case gpt_5 = "gpt-5" // gpt-5-2025-08-07  Input: $1.25 | Output: $10
-    case gpt_5_mini = "gpt-5-mini" // gpt-5-mini-2025-08-07  Input: $0.125 | Output: $2
-    case gpt_5_nano = "gpt-5-nano" // gpt-5-nano-2025-08-07  Input: $0.05 | Output: $0.4
+    case gpt_6_luna = "gpt-6-luna" // Input: $0.10 | Output: $0.50
+    case gpt_6_1_sol = "gpt-6.1-sol" // Input: $2 | Output: $10
+    case gpt_6_astra = "gpt-6-astra" // Input: $10 | Output: $50
 
-    case gpt_4_1 = "gpt-4.1" // gpt-4.1-2025-04-14  Input: $2 | Output: $8
+    case gpt_4_1 = "gpt-4.1" // gpt-4.1-2025-04-14  Input: $2 | Output: $8, shutdown: 2027-01-14
 }
