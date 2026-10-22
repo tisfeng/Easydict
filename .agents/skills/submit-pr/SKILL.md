@@ -20,32 +20,37 @@ PR 正文只使用 Skill 自带的 [固定模板](assets/pull_request_template.m
 
 用户未指定时使用默认模式。用户的只读、确认、暂缓和范围限制持续有效。
 
-只有需要把既有 staged 内容创建为提交时才依赖 `git-commit`。从当前 Skill 清单定位实际入口，
-未提供位置时才检查 [同级安装位置](../git-commit/SKILL.md)。干净的已有提交和纯 plan 不要求
-该依赖；需要提交但依赖缺失时，可继续只读检查，但在提交、fetch 或 push 前停止。
+分支命名依赖完整的 `git-commit` 技能，须同级安装；命名只使用其
+[统一规范与工具](../git-commit/references/branch-naming.md)，不触发提交流程。
+只有需要把既有 staged 内容创建为提交时才执行 `git-commit` 的提交流程。
+依赖缺失时可报告已知事实，但在 Git 写入前停止，不复制或另拟规则。
 
 ## 主流程
 
 1. 读取 [工作流契约](references/workflow.md)，确定用户语言、固定正文、Issue 策略、repository
    拓扑、base/head 分支与恢复规则。
 2. 记录 HEAD、当前分支和 staged、unstaged、untracked 边界。若 checkout 处于 detached 状态：
-   - 用户明确名称或项目既有命名优先；否则根据任务与只读 diff 选择最窄 Angular type，生成
-     `<type>/<english-kebab-case-summary>`。
-   - 使用 `git check-ref-format --branch` 验证字面名称，并在本轮 `plan` 与 `apply` 都显式传入
-     `--head-branch`；调用 Agent 不在 helper 之外创建或切换分支。
-3. `plan` 模式只使用现有提交和缓存的远程事实，运行 helper `plan` 并展示完整 PR 预览。
-   缺少提交或 cached base 时报告预览缺口，不为使 plan 成功而写入。
-4. 默认或 `draft` 模式要求工作树可安全交付：
+   - 根据统一命名规范获取用户明确名称或生成任务候选。
+   - 使用统一命名工具的 `validate` 校验字面名称，并在本轮 `preflight`、`plan` 与 `apply` 都
+     显式传入 `--head-branch`；调用 Agent 不在 helper 之外创建或切换分支。
+3. 在创建 staged 提交、fetch 或 apply 前运行 helper `preflight`，使用本轮相同的拓扑参数与
+   `--head-branch`。它只读解析目标 base 和 GitHub default branch。当前分支名与任一分支相同时，
+   停止并提示用户新建、切换到任务分支后重新运行；即使指定了不同的 `--head-branch` 也不得继续。
+   调用 Agent 不自动创建或切换分支、不在保护分支上提交。已有提交会随新分支保留，无需重复创建
+   相同提交。显式 head 名称与 base/default 同名时也停止，包括 head 来自 fork 的情况。
+4. `plan` 模式运行 helper `plan` 并展示完整 PR 预览。该模式不 fetch、创建分支、写仓库文件、push
+   或创建 PR。缺少提交或 cached base 时报告预览缺口，不为使 plan 成功而写入。
+5. 默认或 `draft` 模式要求工作树可安全交付：
    - 存在 unstaged 或 untracked 内容时停止，不运行 `git add`。
    - 仅 staged 非空时，按宿主交付规则使用 `git-commit`；工作树干净时复用已有提交。
    - 精确 fetch base ref，检查完整 `<base-remote>/<base>..HEAD` 提交与文件范围。
      范围为空、来源不明或 HEAD 未包含 base 时停止，不自动修正历史。
-5. 根据真实范围起草 Context、Changes 和 Verification；不读取目标仓库中的
+6. 根据真实范围起草 Context、Changes 和 Verification；不读取目标仓库中的
    `pull_request_template` 文件或目录。运行 helper `plan` 并展示语言来源和完整预览。
    默认模式继续；用户要求确认或暂缓时先停止。
-6. 使用相同内容运行 helper `apply`；`draft` 追加 `--draft`。helper 重新发现并校验本地/远程状态，
+7. 使用相同内容运行 helper `apply`；`draft` 追加 `--draft`。helper 重新发现并校验本地/远程状态，
    精确 push，创建或复用 PR，然后读回验证身份、head SHA、title、body 和 Draft 状态。
-7. 报告 PR URL、base/head repository 与 branch、head SHA、Draft、分支/push/PR 动作和截图提醒。
+8. 报告 PR URL、base/head repository 与 branch、head SHA、Draft、分支/push/PR 动作和截图提醒。
    本轮创建提交时同时保留 `git-commit` 的完整回执。
 
 ## 安全、完成与停止

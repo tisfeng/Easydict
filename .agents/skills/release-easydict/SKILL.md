@@ -70,7 +70,7 @@ Release 生命周期：
   内部 `issue-followup apply` 阶段。翻译、重点内容、评论或关闭已解决 Issue 不再另行
   请求确认。
 - Draft 通过隔离 worktree 发布已提交的本地 `dev`，先冻结 appcast 提交，再只推送指向
-  appcast 提交的临时 `release/sync-<version>` 和指向版本提交的版本 Tag，不修改本地或远程
+  appcast 提交的临时发布同步分支和指向版本提交的版本 Tag，不修改本地或远程
   `dev`、`main`。
 - Publish 使用隔离 worktree 先完成 merge 预检。当前 checkout 位于其他分支时保持
   不变；当前 checkout 就是干净的 `dev` 时，发布提交验证后允许 fast-forward 更新。
@@ -78,6 +78,9 @@ Release 生命周期：
 - GitHub Release 公开后，先验证 API 中唯一且已上传的 ZIP、DMG、checksum 的大小、类型和
   SHA-256 digest，再验证匿名下载端点的状态、长度、类型、ZIP/DMG Range 和 checksum 内容；
   这些检查通过前不得推进公开 appcast 所在的远程引用。
+
+发布同步分支名依赖同级 `git-commit` 的[统一命名规范与工具](../git-commit/references/branch-naming.md)，
+由 `release-common.sh` 调用；依赖缺失时不继续发布，不维护第二套拼接规则。
 
 ## 默认值与完成条件
 

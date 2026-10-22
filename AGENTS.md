@@ -38,6 +38,8 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 ## 任务路由
 
 - 只读取当前任务需要的专题规则。
+- Git 分支命名：统一遵循
+  [`git-commit` 分支命名规范](.agents/skills/git-commit/references/branch-naming.md)。
 - 构建、测试、工程文件与资源、Xcode 验证：[`build-and-test.md`](docs/agents/build-and-test.md)。
 - 跨语言代码质量、Swift、Objective-C、SwiftUI、API 和本地化：
   [`coding-guidelines.md`](docs/agents/coding-guidelines.md)。

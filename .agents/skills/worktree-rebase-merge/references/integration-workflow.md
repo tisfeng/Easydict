@@ -34,10 +34,10 @@ python3 "<worktree-skill-dir>/scripts/collect-integration-facts.py" \
 1. 记录 HEAD 和完整 status。
 2. 依次从 staged diff、unstaged/untracked 内容、`git log <target>..HEAD` 的第一个明确来源
    推断任务意图。全部为空时停止，不创建分支。
-3. 调用 `git-commit` 的分支命名组合能力，只获取候选名。
-4. 使用 `git check-ref-format --branch <branch-name>` 验证。候选不存在时运行
+3. 按 [`git-commit` 统一命名规范](../../git-commit/references/branch-naming.md) 调用工具，只获取候选名。
+4. 使用统一命名工具的 `validate` 校验。候选不存在时运行
    `git switch -c <branch-name>`；如果它指向原 detached commit 且未被其他 worktree 使用，
-   运行 `git switch <branch-name>`；否则使用 `-2`、`-3` 等未占用后缀。
+   运行 `git switch <branch-name>`；否则由统一工具生成下一冲突候选。
 5. 不移动或覆盖现有分支。挂接后确认 HEAD 仍是原提交，且 staged、unstaged 和
    untracked 状态完全不变。
 
