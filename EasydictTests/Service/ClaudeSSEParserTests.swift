@@ -130,3 +130,30 @@ struct ClaudeSSEParserTests {
         return "event: error\(lineSeparator)data: \(payload)\(lineSeparator)\(lineSeparator)"
     }
 }
+
+/// Guards the Claude temperature allowlist so pre-4.7 models saved in a custom
+/// model list keep working, while Opus 4.7 and the 5.x family never receive it.
+@Suite("Claude temperature support", .tags(.unit))
+struct ClaudeTemperatureSupportTests {
+    // MARK: Internal
+
+    @Test("Pre-4.7 families keep temperature, including saved legacy IDs")
+    func legacyModelsKeepTemperature() {
+        for identifier in [
+            "claude-sonnet-4-6", "claude-haiku-4-5", "claude-opus-4-6",
+            "claude-3-7-sonnet-20250219", "claude-3-5-haiku-20241022",
+            "claude-opus-4-1-20250805",
+        ] {
+            #expect(ClaudeService.modelSupportsTemperature(identifier), "\(identifier)")
+        }
+    }
+
+    @Test("Opus 4.7 and later omit temperature")
+    func reasoningEraModelsOmitTemperature() {
+        for identifier in [
+            "claude-opus-4-7", "claude-sonnet-5-5", "claude-haiku-5-5", "claude-opus-5-5",
+        ] {
+            #expect(!ClaudeService.modelSupportsTemperature(identifier), "\(identifier)")
+        }
+    }
+}

@@ -159,12 +159,32 @@ public final class ClaudeService: StreamService {
     /// The maximum number of tokens to generate in the response.
     private let maxTokens = 4096
 
-    /// Models released before Claude Opus 4.7 accept `temperature`; later models
-    /// reject a non-default value with HTTP 400, so it is omitted for them.
+    /// Claude models released before Opus 4.7 accept `temperature`; Opus 4.7 and the
+    /// 5.x family reject a non-default value with HTTP 400, so the field is omitted for
+    /// them. Unknown IDs are treated as unsupported: a missing temperature only costs
+    /// randomness, while sending one to a newer model fails the whole request (#1311).
     /// https://platform.claude.com/docs/en/about-claude/model-deprecations
-    private let temperatureSupportedModels = [
-        "claude-sonnet-4-", "claude-haiku-4-", "claude-opus-4-5", "claude-opus-4-6",
-    ]
+    static func modelSupportsTemperature(_ model: String) -> Bool {
+        let identifier = model.lowercased()
+
+        // Reasoning-era models reject a non-default temperature outright.
+        let rejectsTemperature = [
+            "claude-opus-4-7", "claude-opus-4-8", "claude-opus-4-9",
+            "claude-sonnet-5", "claude-haiku-5", "claude-opus-5",
+        ]
+        if rejectsTemperature.contains(where: identifier.contains) {
+            return false
+        }
+
+        // Legacy families that still accept it. Users may have saved pre-4.7 IDs in
+        // their own model list (`claude-3-7-sonnet-20250219`, `claude-opus-4-1-...`),
+        // so the allowlist must cover them instead of only the current defaults.
+        let supportsTemperature = [
+            "claude-2", "claude-instant", "claude-3",
+            "claude-sonnet-4", "claude-haiku-4", "claude-opus-4-",
+        ]
+        return supportsTemperature.contains(where: identifier.contains)
+    }
 
     private var currentTask: Task<(), Never>?
 
@@ -210,7 +230,7 @@ public final class ClaudeService: StreamService {
             "messages": messages.map { ["role": $0.role.rawValue, "content": $0.content] },
         ]
 
-        if temperatureSupportedModels.contains(where: model.contains) {
+        if Self.modelSupportsTemperature(model) {
             body["temperature"] = min(max(temperature, 0), 1)
         }
 

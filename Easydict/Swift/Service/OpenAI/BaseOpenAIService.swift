@@ -146,12 +146,21 @@ public class BaseOpenAIService: StreamService {
         return normalizedRemoteModelIDs(modelList.data.map(\.id))
     }
 
+    /// Reasoning models (o-series and GPT-5 and later) reject a non-default
+    /// `temperature` with HTTP 400, so the field must be omitted for them; sending
+    /// the UI slider value would break the default `gpt-6-luna` path entirely.
+    static func modelSupportsTemperature(_ model: String) -> Bool {
+        let identifier = model.lowercased()
+        let reasoningPrefixes = ["o1", "o3", "o4", "gpt-5", "gpt-6"]
+        return !reasoningPrefixes.contains { identifier.hasPrefix($0) }
+    }
+
     func openAIChatQuery(messages: [OpenAIChatMessage]) -> ChatQuery {
         ChatQuery(
             messages: messages,
             model: model,
             reasoningEffort: reasoningEffort,
-            temperature: temperature
+            temperature: Self.modelSupportsTemperature(model) ? temperature : nil
         )
     }
 
