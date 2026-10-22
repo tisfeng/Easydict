@@ -1,0 +1,76 @@
+## 2026-10-23 | 任务：新增 Urdu 界面本地化
+
+**Links:** [执行计划](../../exec-plans/active/2026-10-23-urdu-localization.md)
+
+### 执行上下文
+
+- **Agent Name:** `Codex`
+- **Model:** `GPT-6`
+- **Environment:** `macOS 27.0.1 / Xcode Unknown (Unknown)`
+
+### 用户请求
+
+向上游 dev 贡献自然、完整的 Urdu 界面资源；审查、验证、提交到现有 fork 的独立分支，
+在缺少必需验证时诚实记录限制并使用 Draft PR，不合并、不发布。
+
+### 变更
+
+- `Localizable.xcstrings` 新增 566 个 `ur` 条目，`InfoPlist.xcstrings` 新增 4 个条目，
+  包括 AppleScript 权限说明。明确不可翻译的 `%lld` 不添加 locale。
+- 51 个主目录值保留品牌、API 凭据字段标识、端点示例、纯占位符和 UK/US 标签；2 个 bundle
+  名称仍为 Easydict。覆盖率表示适用资源覆盖，并不表示独立语言质量或运行时验证已通过。
+- 在语言选择枚举和 Xcode knownRegions 注册 `ur`，原生名称为 `اردو`。
+- SwiftUI 设置和菜单的语义布局跟随界面语言；查询输入按段落自然对齐，独立于界面和翻译目标语言。
+- 添加 locale 注册、区域匹配、资源打包、界面方向与混合文本保真测试，并同步测试 target 引用。
+
+### 设计意图
+
+沿用现有语言偏好和 String Catalog 架构。没有新增字体、依赖、服务，也没有修改源/目标语言选择、
+语言检测、OCR 或 TTS 能力。现有 Urdu 映射包括 Google/Bing/Ali/NiuTrans/Volcano 的 `ur`
+和 Baidu 的 `urd`；DeepL 列表不声明 Urdu，保持原有不支持行为。Apple OCR 映射没有 Urdu；
+Bing 有 `ur-PK` 声音配置，实际可用性未调用验证，Apple 语音仍依赖系统声音和既有回退。
+未使用付费 API 或私有文本，未宣称语言自动检测准确率。
+
+自然对齐采用平台段落语义，不为翻译文本强设 RTL 或添加隐藏方向字符。字典 web 内容保持其
+原有 HTML/MDX 渲染，没有未经验证的全局镜像或样式覆盖。
+
+### 验证
+
+- 基线：最新上游 dev `8d80bfa219dde99c9c1f2760b59b2df72ad4adef`，初始工作树和索引为空。
+- `jq -e .`（两个 catalog）、`plutil -lint Easydict.xcodeproj/project.pbxproj`、
+  `git diff --check`：通过。
+- 一次性 JSON 审计：检测重复 key、非空条目、printf 参数位置/类型/次数、命名变量、URL、
+  Markdown 链接、标签、代码片段和换行；禁止隐藏方向控制符。全部通过；没有复数/substitution。
+  删除新增 `ur` 后与 `git show <base>:<catalog>` 的 JSON 逐项相同，源文本和其他语言未改。
+- 工程对象审计：仅 knownRegions、Localization 测试 group/file/build 引用变化，原 build settings 不变。
+- `xcrun swiftc -frontend -parse`（修改后的 Swift 文件及新测试）：通过。
+- 实际 LanguageState/I18nHelper 源码配隔离通知 fixture 的命令行程序编译和断言通过，覆盖
+  `ur` 注册/标识往返、三个区域标识及全部 7 种语言方向/Locale 匹配。这不是完整应用构建或测试。
+- 独立 AppKit/CoreText 探针：10 个多语言样本无缺失字形，文本和选择范围保真；使用系统字体回退。
+  selection export 返回 false，应用复制仍未验证，未把直接写入临时 pasteboard 的成功当作复制通过。
+- `xcodebuild -list`、workspace build 和 `-only-testing:EasydictTests/LocalizationTests`：
+  均被缺少完整 Xcode 阻塞，没有运行宿主测试。当前仅有 Command Line Tools，Swift 6.4。
+- 手动检查：完成 agent 翻译第二遍及最终 diff 审查；没有确认的未修复 finding。未做独立流利 Urdu
+  审校，未运行修改后的应用，因此窗口/菜单/权限弹窗的视觉、光标、复制、浅色/深色和英文切回未验证。
+- 复现应用验证：安装 Xcode，打开 `Easydict.xcworkspace` 并选择 `Easydict` scheme；运行
+  `xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict -derivedDataPath <agent-dd>
+  -only-testing:EasydictTests/LocalizationTests`。在设置中选择 `اردو`，检查主/浮动/迷你窗口、
+  服务配置、历史/收藏、菜单和权限文案；输入 Urdu、英语和 URL/数字/快捷键混排，检查选择与复制，
+  切换浅色/深色并切回 English；保存无私人数据的截图。
+
+### 受影响文件
+
+- `Easydict/App/Localizable.xcstrings`
+- `Easydict/App/InfoPlist.xcstrings`
+- `Easydict/App/EasydictApp.swift`
+- `Easydict/Swift/Feature/Localization/LanguageState.swift`
+- `Easydict/objc/ViewController/View/TextView/EZTextView.m`
+- `EasydictTests/Feature/Localization/LocalizationTests.swift`
+- `Easydict.xcodeproj/project.pbxproj`
+- 本 history 及同任务 plan。
+
+### 后续事项
+
+- 本地实现准备完成后提交 Draft PR；PR URL 与最终远程状态在交付完成时补记。
+- 补齐完整 Xcode 构建/宿主测试、真实界面和 web 内容检查、复制/光标行为、截图及独立流利 Urdu 审校。
+- 语音的系统声音匹配和回退行为可另行核查；本次没有修改或承诺 Urdu OCR/TTS 支持。

@@ -68,6 +68,7 @@ struct EasydictApp: App {
             MenuItemView()
                 .environmentObject(languageState)
                 .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
+                .environment(\.layoutDirection, languageState.language.layoutDirection)
         } label: {
             Label {
                 Text("Easydict")
@@ -104,6 +105,7 @@ struct EasydictApp: App {
             SettingView()
                 .environmentObject(languageState)
                 .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
+                .environment(\.layoutDirection, languageState.language.layoutDirection)
         }
     }
 

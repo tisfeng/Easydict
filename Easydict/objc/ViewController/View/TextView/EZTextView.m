@@ -77,7 +77,8 @@
             textView.backgroundColor = isDarkMode ? [NSColor ez_queryViewBgDarkColor] : [NSColor ez_queryViewBgLightColor];
             [textView setTextColor:isDarkMode ? [NSColor ez_queryTextDarkColor] : [NSColor ez_queryTextLightColor]];
         }];
-        self.alignment = NSTextAlignmentLeft;
+        // Align each paragraph to its content, independently of the interface language.
+        self.alignment = NSTextAlignmentNatural;
         self.textContainerInset = CGSizeMake(0, 0);
         self.automaticLinkDetectionEnabled = YES;
 
