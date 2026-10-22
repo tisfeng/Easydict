@@ -37,6 +37,26 @@ def configure_repository(repository):
 
 
 class ReleaseGitFlowTests(unittest.TestCase):
+    def test_release_branch_uses_shared_naming_without_creating_files(self):
+        common = ROOT / ".agents/skills/release-easydict/scripts/release-common.sh"
+        with tempfile.TemporaryDirectory() as directory:
+            temporary = Path(directory)
+            for version, expected in (("2.25.0", "release/sync-2.25.0"), ("2.25.0-beta.1", "release/sync-2.25.0-beta.1")):
+                env = dict(os.environ, VERSION=version, RELEASE_SOURCE_ROOT=str(temporary))
+                result = run(
+                    ["bash", "-c", 'source "$1"; printf "%s" "$RELEASE_BRANCH"', "bash", str(common)],
+                    cwd=temporary, env=env,
+                )
+                self.assertEqual(result.stdout, expected)
+                self.assertEqual(list(temporary.iterdir()), [])
+            result = run(
+                ["bash", "-c", 'source "$1"', "bash", str(common)],
+                cwd=temporary, env=dict(os.environ, VERSION="../main", RELEASE_SOURCE_ROOT=str(temporary)), check=False,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("Branch naming failed", result.stderr)
+            self.assertEqual(list(temporary.iterdir()), [])
+
     def test_draft_is_isolated_and_publish_merges_into_local_dev(self):
         version = "7.8.9"
         with tempfile.TemporaryDirectory() as directory:

@@ -13,7 +13,7 @@ Agent 必须遵守的动作选择、内容决策、外部写入和恢复契约�
 ## Git 与状态边界
 
 - `draft` 生成、验证并提交 appcast，然后只推送指向 appcast 提交的
-  `release/sync-<version>` 和指向版本提交的版本 Tag；不得把 Draft 提交直接推送到
+  [统一规范中的发布同步分支](../../git-commit/references/branch-naming.md) 和指向版本提交的版本 Tag；不得把 Draft 提交直接推送到
   `origin/dev` 或 `origin/main`。
 - `publish` 在 GitHub Release 公开前完成 merge 预检；公开 Release 后先验证 GitHub API
   资产元数据与 digest，以及匿名公开 ZIP、DMG、checksum 的 HTTP 和内容契约。通过后才使用
