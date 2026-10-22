@@ -1,9 +1,9 @@
 # Urdu 界面本地化
 
-- 状态：active
+- 状态：completed
 - 创建日期：2026-10-23
 - 负责人：Codex
-- 关联 Issue/PR：none
+- 关联 Issue/PR：https://github.com/tisfeng/Easydict/pull/1374
 
 ## 执行上下文
 
@@ -50,7 +50,7 @@
 - [x] 核对规则、base、fork 和既有 Urdu 支持。
 - [x] 翻译和运行时注册。
 - [x] 完成可用验证和审查；Xcode 与应用 GUI 验证受环境阻塞。
-- [ ] 交付和记录。
+- [x] 已提交、推送 fork 并创建 Draft PR #1374；完成 history 和归档。
 
 ## 验证
 
@@ -78,3 +78,8 @@
 
 - 完成范围内实现、静态验证和审查，明确标注所有环境阻塞。
 - 完成 history、归档计划、创建聚焦提交；记录 PR 或准确交付阻塞。
+
+- 首次远程交付：Draft PR #1374，base `tisfeng/Easydict:dev`，head
+  `AlleyNawaz/Easydict:feat/urdu-localization`；helper 写后身份、正文、SHA 和 Draft 校验通过，
+  GitHub 报告可合并。首次查询 CodeQL scope/greeting 成功，Swift 分析与 GitGuardian 仍在运行。
+  尚无实质 review finding；后续 CI 状态以 PR 页面为准，不把 pending 写成通过。

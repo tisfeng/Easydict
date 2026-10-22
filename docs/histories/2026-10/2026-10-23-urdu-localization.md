@@ -1,6 +1,7 @@
 ## 2026-10-23 | 任务：新增 Urdu 界面本地化
 
-**Links:** [执行计划](../../exec-plans/active/2026-10-23-urdu-localization.md)
+**Links:** [PR #1374](https://github.com/tisfeng/Easydict/pull/1374) ·
+[执行计划](../../exec-plans/completed/2026-10/2026-10-23-urdu-localization.md)
 
 ### 执行上下文
 
@@ -53,8 +54,8 @@ Bing 有 `ur-PK` 声音配置，实际可用性未调用验证，Apple 语音仍
 - 手动检查：完成 agent 翻译第二遍及最终 diff 审查；没有确认的未修复 finding。未做独立流利 Urdu
   审校，未运行修改后的应用，因此窗口/菜单/权限弹窗的视觉、光标、复制、浅色/深色和英文切回未验证。
 - 复现应用验证：安装 Xcode，打开 `Easydict.xcworkspace` 并选择 `Easydict` scheme；运行
-  `xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict -derivedDataPath <agent-dd>
-  -only-testing:EasydictTests/LocalizationTests`。在设置中选择 `اردو`，检查主/浮动/迷你窗口、
+  `xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict -derivedDataPath <agent-dd> -only-testing:EasydictTests/LocalizationTests`。
+  在设置中选择 `اردو`，检查主/浮动/迷你窗口、
   服务配置、历史/收藏、菜单和权限文案；输入 Urdu、英语和 URL/数字/快捷键混排，检查选择与复制，
   切换浅色/深色并切回 English；保存无私人数据的截图。
 
@@ -71,6 +72,8 @@ Bing 有 `ur-PK` 声音配置，实际可用性未调用验证，Apple 语音仍
 
 ### 后续事项
 
-- 本地实现准备完成后提交 Draft PR；PR URL 与最终远程状态在交付完成时补记。
+- 已用现有 Git identity 创建 `8dd8cff17e445f8189f3ba76f514b56ba1e11114`，推送 fork 的
+  `feat/urdu-localization`，创建并验证 Draft PR #1374，目标为上游 `dev`。首次检查可合并且无实质
+  review finding；CodeQL scope/greeting 成功，Swift 分析与 GitGuardian 当时仍在运行，后续以 PR 为准。
 - 补齐完整 Xcode 构建/宿主测试、真实界面和 web 内容检查、复制/光标行为、截图及独立流利 Urdu 审校。
 - 语音的系统声音匹配和回退行为可另行核查；本次没有修改或承诺 Urdu OCR/TTS 支持。
