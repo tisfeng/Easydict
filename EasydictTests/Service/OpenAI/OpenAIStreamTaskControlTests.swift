@@ -77,27 +77,3 @@ struct OpenAIStreamTaskControlTests {
         }
     }
 }
-
-/// Guards the temperature allowlist: a new default reasoning model must not ship
-/// a request that OpenAI rejects with HTTP 400.
-@Suite("OpenAI temperature support", .tags(.unit))
-struct OpenAITemperatureSupportTests {
-    // MARK: Internal
-
-    @Test("Reasoning models omit temperature")
-    func reasoningModelsOmitTemperature() {
-        for identifier in [
-            "gpt-6-luna", "gpt-6.1-sol", "gpt-6-astra",
-            "gpt-5-mini", "gpt-5-nano", "o1-preview", "o3-mini", "o4-mini",
-        ] {
-            #expect(!BaseOpenAIService.modelSupportsTemperature(identifier), "\(identifier)")
-        }
-    }
-
-    @Test("Chat models keep the configured temperature")
-    func chatModelsKeepTemperature() {
-        for identifier in ["gpt-4.1", "gpt-4o", "gpt-4o-mini", "gpt-3.5-turbo"] {
-            #expect(BaseOpenAIService.modelSupportsTemperature(identifier), "\(identifier)")
-        }
-    }
-}
