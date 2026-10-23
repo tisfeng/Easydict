@@ -581,6 +581,10 @@
 		A9F10005B3C24D5E8A000005 /* MDictRIPEMD128.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F10005B3C24D5E8A000005 /* MDictRIPEMD128.swift */; };
 		A9F10006B3C24D5E8A000006 /* MDictKeyIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F10006B3C24D5E8A000006 /* MDictKeyIndex.swift */; };
 		AA0000012E00000000000001 /* QueryRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000022E00000000000001 /* QueryRecord.swift */; };
+		AC2026102200000000001000 /* MarkdownBlockParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2026102200000000000000 /* MarkdownBlockParser.swift */; };
+		AC2026102200000000001001 /* MarkdownInlineRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2026102200000000000001 /* MarkdownInlineRenderer.swift */; };
+		AC2026102200000000001002 /* MarkdownMathRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2026102200000000000002 /* MarkdownMathRenderer.swift */; };
+		AC2026102200000000002000 /* SwiftMath in Frameworks */ = {isa = PBXBuildFile; productRef = AC2026102200000000002001 /* SwiftMath */; };
 		B11F773A639D431BB1D320F3 /* AppPathManager+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE8364C45FA492183DC4477 /* AppPathManager+Cache.swift */; };
 		B4D8B2EE2F9E1D8D0088A304 /* EZWindowPatch.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D8B2ED2F9E1D8D0088A304 /* EZWindowPatch.m */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
@@ -1362,6 +1366,9 @@
 		A6C26D557A3746598059449DAD170FE1 /* OrderedDictionary+Variadic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "OrderedDictionary+Variadic.m"; sourceTree = "<group>"; };
 		A77009152026000000000002 /* AppPathMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathMigration.swift; sourceTree = "<group>"; };
 		AA0000022E00000000000001 /* QueryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRecord.swift; sourceTree = "<group>"; };
+		AC2026102200000000000000 /* MarkdownBlockParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownBlockParser.swift; sourceTree = "<group>"; };
+		AC2026102200000000000001 /* MarkdownInlineRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownInlineRenderer.swift; sourceTree = "<group>"; };
+		AC2026102200000000000002 /* MarkdownMathRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownMathRenderer.swift; sourceTree = "<group>"; };
 		AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeCLIRunnerTests.swift; sourceTree = "<group>"; };
 		B4D8B2EC2F9E1D880088A304 /* EZWindowPatch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWindowPatch.h; sourceTree = "<group>"; };
 		B4D8B2ED2F9E1D8D0088A304 /* EZWindowPatch.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWindowPatch.m; sourceTree = "<group>"; };
@@ -1464,6 +1471,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC2026102200000000002000 /* SwiftMath in Frameworks */,
 				0AC8A84F2B6DFDD4006DA5CC /* SettingsAccess in Frameworks */,
 				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
 				038030952B4106800009230C /* CocoaLumberjack in Frameworks */,
@@ -1500,6 +1508,9 @@
 			isa = PBXGroup;
 			children = (
 				02DEDC042026043000000002 /* MarkdownRenderer.swift */,
+				AC2026102200000000000002 /* MarkdownMathRenderer.swift */,
+				AC2026102200000000000001 /* MarkdownInlineRenderer.swift */,
+				AC2026102200000000000000 /* MarkdownBlockParser.swift */,
 				02DEDC042026043000000003 /* MarkdownLabel.swift */,
 				02DEDC042026043000000004 /* MarkdownToggleButton.swift */,
 			);
@@ -4020,6 +4031,7 @@
 			);
 			name = Easydict;
 			packageProductDependencies = (
+				AC2026102200000000002001 /* SwiftMath */,
 				2721E4CF2AFE920700A059AC /* Alamofire */,
 				03FD68BA2B1DC59600FD388E /* CryptoSwift */,
 				03022F1B2B35DEBA00B63209 /* Hue */,
@@ -4084,6 +4096,7 @@
 			);
 			mainGroup = C99EEB0F2385796700FEE666;
 			packageReferences = (
+				AC2026102200000000002002 /* XCRemoteSwiftPackageReference "SwiftMath" */,
 				2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */,
 				03FD68B92B1DC59600FD388E /* XCRemoteSwiftPackageReference "CryptoSwift" */,
 				03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */,
@@ -4489,6 +4502,9 @@
 				031C66E02EDB00010025D190 /* DictionaryHTMLRenderer.swift in Sources */,
 				B8D793EA87784E0B9D82C7FC /* MDictConfigurationView.swift in Sources */,
 				02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */,
+				AC2026102200000000001002 /* MarkdownMathRenderer.swift in Sources */,
+				AC2026102200000000001001 /* MarkdownInlineRenderer.swift in Sources */,
+				AC2026102200000000001000 /* MarkdownBlockParser.swift in Sources */,
 				02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */,
 				02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */,
 				0338210C2F0EAF490087A361 /* AppleScriptTask.swift in Sources */,
@@ -5267,6 +5283,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		AC2026102200000000002002 /* XCRemoteSwiftPackageReference "SwiftMath" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mgriebling/SwiftMath.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.7.3;
+			};
+		};
 		03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/zenangst/Hue";
@@ -5454,6 +5478,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		AC2026102200000000002001 /* SwiftMath */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC2026102200000000002002 /* XCRemoteSwiftPackageReference "SwiftMath" */;
+			productName = SwiftMath;
+		};
 		03022F1B2B35DEBA00B63209 /* Hue */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */;
