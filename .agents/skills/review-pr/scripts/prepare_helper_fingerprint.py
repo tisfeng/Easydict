@@ -10,6 +10,7 @@ import sys
 # Keep the transitive preparation dependencies explicit, including this collector.
 # Snapshot collection and reporting assets are outside this execution boundary.
 PREPARATION_FILES = (
+    "../git-commit/scripts/branch_name.py",
     "scripts/prepare-pr-branch.sh",
     "scripts/prepare_helper_fingerprint.py",
     "scripts/prepare_pr_metadata.py",

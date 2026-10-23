@@ -25,43 +25,53 @@ helper 只接受指向 `github.com` 的 SSH 或 HTTPS remote，并按以下顺�
 
 显式参数只解决歧义，不能绕过 remote URL、fork 网络和 GitHub 返回身份的校验。
 同次拓扑发现中，显式 repository 与已查询的 remote repository 相同时复用元数据；每次
-`plan` 或 `apply` 调用重新发现，不跨调用缓存，也不省略写入前后的状态校验。
+`preflight`、`plan` 或 `apply` 调用重新发现，不跨调用缓存，也不省略写入前后的状态校验。
 同一 `apply` 调用内已经验证的 repository 元数据、remote push URL 和冻结 SHA 可以复用，避免
 为相同事实重复启动本地进程；复用范围不得跨越新的 helper 调用。
 
 ## 分支决策
 
-任务分支默认使用 Conventional 格式 `<type>/<kebab-case-summary>`。显式 `--head-branch`
-支持用户或项目既有的其他 Git 合法字面名称，例如 `codex/fix-login`、`feature/login`；不接受
-`@{-1}` 等会被 Git 展开为其他引用的表达式。
+任务名与显式名称校验统一使用 [`git-commit` 的命名工具](../../git-commit/references/branch-naming.md)。
+显式 `--head-branch` 可提供用户指定的其他合法字面名称；普通本地提交不受下面的 PR 来源分支限制。
 
 base branch、GitHub default branch 和重复传入的 `--protected-branch` 都属于保护分支。
 
-- 当前分支是保护分支或不符合 Conventional 格式：必须提供
-  `--head-branch <task-branch>`。helper 从冻结 HEAD 创建或复用该本地
-  ref，但不切换 checkout、不移动当前分支。
+- `preflight` 是只读分支预检：解析仓库拓扑后，比较当前分支名与 base branch、GitHub default
+  branch，并校验显式 `--head-branch`。它不 fetch、不创建 ref、不切换 checkout、不写仓库文件或
+  push；成功时返回已解析的 repository、base/default、head remote 和 branch 信息。
+- 当前分支名与 base branch 或 GitHub default branch 相同时，`preflight`、`plan` 和 `apply` 都拒绝
+  继续，即使传入了不同的 `--head-branch`。错误提示用户自行创建并切换到新的任务分支后重试；已有
+  提交可由新分支继承，无需重复创建相同提交。`apply` 在 fetch base 前重复此检查。
+- 显式 head 名称不得与 base branch、GitHub default branch 或额外配置的保护分支同名。head 位于
+  fork remote 时仍按名称比较，不因 repository 不同而绕过检查。
+- 当前分支是其他保护分支或不符合 Conventional 格式：必须提供
+  `--head-branch <task-branch>`。helper 从冻结 HEAD 创建或复用该本地 ref，但不切换 checkout、不
+  移动当前分支。
 - 显式名称等于当前非保护分支时直接复用，不因其格式与默认值不同而另建分支。
 - 当前已经是默认 Conventional 非保护任务分支：直接使用；如果同时提供 `--head-branch`，名称必须相同。
 - 显式名称不得是保护分支；名称冲突时尝试的后缀候选同样跳过保护分支。
 - Detached HEAD：调用 Agent 根据用户明确名称、项目既有命名或任务与只读 diff 生成分支名，并向
-  helper 显式传入 `--head-branch`。helper 自身不从 PR 标题猜测名称；缺少参数时在写入前停止。
+  `preflight`、`plan` 和 `apply` 显式传入相同的 `--head-branch`。helper 自身不从 PR 标题猜测名称；
+  缺少参数时在写入前停止。
   `plan` 以 `current_branch: null` 和 `would-create`、`would-update` 或 `would-reuse` 预览动作且不创建
   ref；`apply` 从冻结 HEAD 创建、更新或复用本地 ref，不切换 checkout。
 
-apply 先 fetch 精确 base ref，再要求 `<base-remote>/<base>` 是 HEAD 的祖先且范围至少
-包含一个提交。该拓扑检查不替代调用 Agent 对提交范围和任务边界的语义审查。
+调用 Agent 在提交 staged 内容、fetch 或调用 `apply` 前运行 `preflight`；`plan` 和 `apply` 内部也
+重复分支检查，不能依赖调用方一定执行预检。`apply` 先解析拓扑并完成保护分支检查，再 fetch
+精确 base ref，之后要求 `<base-remote>/<base>` 是 HEAD 的祖先且范围至少包含一个提交。该拓扑检查
+不替代调用 Agent 对提交范围和任务边界的语义审查。
 
 ## 工作树与提交
 
-- `plan` 使用 `GIT_OPTIONAL_LOCKS=0` 执行 Git 读取，可以报告 staged、unstaged 和
-  untracked 状态，但不 fetch、不创建 ref、不写临时文件。
+- `preflight` 与 `plan` 使用 `GIT_OPTIONAL_LOCKS=0` 执行 Git 读取；二者都不 fetch、不创建 ref、
+  不写临时文件。`plan` 可以报告 staged、unstaged 和 untracked 状态。
 - `apply` 要求工作树完全干净。
 - `apply` 在本地 ref 写入前重新检查 checkout 的 attached/detached 状态与 HEAD；与冻结计划不一致时
   停止，并重新读取目标 ref。分支更新继续使用 Git 的 worktree 检出保护，不移动其他 worktree
   正在使用的分支。
 - helper 不运行 `git add` 或 `git commit`。已有 staged 内容由调用 Agent 根据目标
   仓库交付规则处理；有 unstaged 或 untracked 内容时停止。
-- 默认/draft 的调用方在最终 plan 前完成允许的 staged 提交和精确 base fetch，解决首次提交或
+- 默认/draft 的调用方先运行 `preflight`，再完成允许的 staged 提交和精确 base fetch，解决首次提交或
   缺少 cached base 的准备问题。纯 plan 不执行这些动作，缺少前提时只报告限制。
 - helper 不修改提交历史，也不把无关提交从范围中自动剔除。
 

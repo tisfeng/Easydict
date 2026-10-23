@@ -7,6 +7,7 @@ import argparse
 from contextlib import contextmanager
 from dataclasses import dataclass
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -53,14 +54,24 @@ CONVENTIONAL_TYPES = (
 TITLE_PATTERN = re.compile(
     rf"^(?:{CONVENTIONAL_TYPES})(?:\([a-z0-9][a-z0-9._/-]*\))?!?:\s+\S.*$"
 )
-BRANCH_PATTERN = re.compile(
-    rf"^(?:{CONVENTIONAL_TYPES})/[a-z0-9]+(?:-[a-z0-9]+)*$"
-)
 MINIMUM_PYTHON = (3, 10)
 
 
 class SubmitPRError(RuntimeError):
     """Raised when PR planning or submission is unsafe."""
+
+
+def branch_policy():
+    """Load the installed git-commit naming dependency, never a host checkout."""
+
+    path = Path(__file__).resolve().parents[2] / "git-commit" / "scripts" / "branch_name.py"
+    if not path.is_file():
+        raise SubmitPRError("Missing git-commit naming dependency; install the complete git-commit skill beside this skill")
+    spec = importlib.util.spec_from_file_location("shared_branch_naming", path)
+    module = importlib.util.module_from_spec(spec)
+    # Loading policy must not write __pycache__ into a managed skill snapshot.
+    exec(compile(path.read_bytes(), str(path), "exec"), module.__dict__)
+    return module
 
 
 def require_supported_python(
@@ -473,11 +484,10 @@ def parse_status(status_text: str) -> dict[str, list[str]]:
 
 
 def validate_branch_name(repo_root: Path, branch: str) -> None:
-    result = git_result(repo_root, "check-ref-format", "--branch", branch)
-    # --branch accepts shortcuts such as @{-1}; subsequent ref operations need
-    # the exact literal name supplied by the caller, not an expanded revision.
-    if result.returncode != 0 or result.stdout.strip() != branch:
-        raise SubmitPRError(f"invalid head branch name: {branch!r}")
+    try:
+        branch_policy().validate_literal(branch)
+    except (ValueError, OSError) as error:
+        raise SubmitPRError(f"invalid head branch name: {branch!r}: {error}") from error
 
 
 def local_branch_sha(repo_root: Path, branch: str) -> str | None:
@@ -554,7 +564,7 @@ def choose_branch_name(
     if requested in protected:
         raise SubmitPRError(f"head branch is protected: {requested!r}")
     for suffix in range(1, 101):
-        candidate = requested if suffix == 1 else f"{requested}-{suffix}"
+        candidate = branch_policy().candidate_name(requested, suffix)
         if candidate in protected:
             continue
         validate_branch_name(repo_root, candidate)
@@ -682,6 +692,50 @@ def protected_branches(
     }
 
 
+def protected_branch_description(
+    context: RepositoryContext,
+    branch: str,
+) -> str:
+    matches: list[str] = []
+    if branch == context.base_branch:
+        matches.append(f"PR base {context.base_branch!r}")
+    if branch == context.default_branch:
+        matches.append(f"repository default {context.default_branch!r}")
+    return " and ".join(matches) if matches else "a protected branch"
+
+
+def preflight_branch_safety(
+    repo_root: Path,
+    context: RepositoryContext,
+    args: argparse.Namespace,
+) -> None:
+    # This dependency is required even without an explicit --head-branch.
+    # Check it before apply can fetch or callers can commit staged changes.
+    branch_policy()
+    branch = current_branch(repo_root)
+    if branch != context.current_branch:
+        raise SubmitPRError(
+            "checkout branch changed during branch preflight: "
+            f"expected {context.current_branch!r}, got {branch!r}"
+        )
+    if branch in {context.base_branch, context.default_branch}:
+        description = protected_branch_description(context, branch)
+        raise SubmitPRError(
+            f"current branch {branch!r} matches protected {description}; "
+            "create and check out a new task branch from the current commit, "
+            "then rerun submit-pr. Existing commits will be preserved."
+        )
+
+    if args.head_branch:
+        validate_branch_name(repo_root, args.head_branch)
+        if args.head_branch in protected_branches(context, args.protected_branch):
+            description = protected_branch_description(context, args.head_branch)
+            raise SubmitPRError(
+                f"head branch {args.head_branch!r} matches protected {description}; "
+                "choose a different task branch"
+            )
+
+
 def resolve_head_branch(
     repo_root: Path,
     current: str | None,
@@ -698,7 +752,7 @@ def resolve_head_branch(
         if requested in protected:
             raise SubmitPRError(f"head branch is protected: {requested!r}")
     current_is_task = current is not None and current not in protected and (
-        BRANCH_PATTERN.fullmatch(current) is not None or requested == current
+        branch_policy().is_task_name(current) or requested == current
     )
     if current_is_task:
         if requested and requested != current:
@@ -735,14 +789,15 @@ def build_plan(
     include_remote_branch_check: bool,
     push_url: str | None = None,
 ) -> tuple[dict[str, Any], str]:
-    content = prepare_content(args)
-    body = render_pr_body(content)
     branch = current_branch(repo_root)
     if branch != context.current_branch:
         raise SubmitPRError(
             "checkout branch changed during planning: "
             f"expected {context.current_branch!r}, got {branch!r}"
         )
+    preflight_branch_safety(repo_root, context, args)
+    content = prepare_content(args)
+    body = render_pr_body(content)
     status = parse_status(git_status_output(repo_root))
     head_sha, commits, files = ensure_commit_range(
         repo_root,
@@ -1099,6 +1154,34 @@ def plan_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
     return plan
 
 
+def preflight_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
+    previous_locks = os.environ.get("GIT_OPTIONAL_LOCKS")
+    os.environ["GIT_OPTIONAL_LOCKS"] = "0"
+    try:
+        context = resolve_repository_context(args, repo_root)
+        preflight_branch_safety(repo_root, context, args)
+    finally:
+        if previous_locks is None:
+            os.environ.pop("GIT_OPTIONAL_LOCKS", None)
+        else:
+            os.environ["GIT_OPTIONAL_LOCKS"] = previous_locks
+    return {
+        "mode": "preflight",
+        "repository": context.base_repository,
+        "base_remote": context.base_remote,
+        "base": context.base_branch,
+        "default_branch": context.default_branch,
+        "head_repository": context.head_repository,
+        "head_remote": context.head_remote,
+        "head_branch": args.head_branch,
+        "current_branch": context.current_branch,
+        "protected_branches": sorted(
+            protected_branches(context, args.protected_branch)
+        ),
+        "status": "passed",
+    }
+
+
 def apply_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
     started = time.monotonic()
     timings_ms: dict[str, float] = {}
@@ -1108,6 +1191,7 @@ def apply_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
         check_github_auth(repo_root)
     with measure_phase(timings_ms, "topology"):
         context = resolve_repository_context(args, repo_root)
+        preflight_branch_safety(repo_root, context, args)
         push_url = unique_push_url(repo_root, context.head_remote)
     with measure_phase(timings_ms, "fetch_base"):
         fetch_base(repo_root, context.base_remote, context.base_branch)
@@ -1188,10 +1272,12 @@ def resolve_repo_root(path: str | None) -> Path:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Plan or submit a GitHub pull request from the current checkout.",
+        description=(
+            "Preflight, plan, or submit a GitHub pull request from the current checkout."
+        ),
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
-    for command in ("plan", "apply"):
+    for command in ("preflight", "plan", "apply"):
         subparser = subparsers.add_parser(command)
         subparser.add_argument("--repo")
         subparser.add_argument("--repo-root")
@@ -1200,6 +1286,8 @@ def build_parser() -> argparse.ArgumentParser:
         subparser.add_argument("--head-remote")
         subparser.add_argument("--head-branch")
         subparser.add_argument("--protected-branch", action="append", default=[])
+        if command == "preflight":
+            continue
         subparser.add_argument("--title", required=True)
         subparser.add_argument("--context", required=True)
         subparser.add_argument("--changes", required=True)
@@ -1220,11 +1308,12 @@ def main() -> int:
         require_supported_python()
         args = build_parser().parse_args()
         repo_root = resolve_repo_root(args.repo_root)
-        result = (
-            plan_command(args, repo_root)
-            if args.command == "plan"
-            else apply_command(args, repo_root)
-        )
+        if args.command == "preflight":
+            result = preflight_command(args, repo_root)
+        elif args.command == "plan":
+            result = plan_command(args, repo_root)
+        else:
+            result = apply_command(args, repo_root)
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
     except SubmitPRError as error:
