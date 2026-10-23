@@ -159,31 +159,31 @@ public final class ClaudeService: StreamService {
     /// The maximum number of tokens to generate in the response.
     private let maxTokens = 4096
 
-    /// Claude models released before Opus 4.7 accept `temperature`; Opus 4.7 and the
-    /// 5.x family reject a non-default value with HTTP 400, so the field is omitted for
-    /// them. Unknown IDs are treated as unsupported: a missing temperature only costs
+    /// Claude models released before Opus 4.7 accept `temperature`; Opus 4.7 and later
+    /// reject any non-default value with HTTP 400, so the field is omitted for them.
+    /// Unknown IDs are treated as unsupported: a missing temperature only costs
     /// randomness, while sending one to a newer model fails the whole request (#1311).
     /// https://platform.claude.com/docs/en/about-claude/model-deprecations
     static func modelSupportsTemperature(_ model: String) -> Bool {
-        let identifier = model.lowercased()
+        // Provider-qualified IDs ("anthropic/claude-opus-4-6") can reach this service.
+        let name = model.lowercased().split(separator: "/").last.map(String.init) ?? ""
+        guard name.hasPrefix("claude-") else { return false }
+        if name.hasPrefix("claude-instant") { return true }
 
-        // Reasoning-era models reject a non-default temperature outright.
-        let rejectsTemperature = [
-            "claude-opus-4-7", "claude-opus-4-8", "claude-opus-4-9",
-            "claude-sonnet-5", "claude-haiku-5", "claude-opus-5",
-        ]
-        if rejectsTemperature.contains(where: identifier.contains) {
-            return false
+        var tokens = name.dropFirst("claude-".count).split(separator: "-").map(String.init)
+        if let family = tokens.first, ["opus", "sonnet", "haiku"].contains(family) {
+            tokens.removeFirst()
         }
+        guard let majorToken = tokens.first,
+              let major = Int(majorToken.split(separator: ".")[0]) else { return false }
+        if major < 4 { return true } // Claude 2/3 families accept it.
+        guard major == 4 else { return false } // 5.x and later reject it.
 
-        // Legacy families that still accept it. Users may have saved pre-4.7 IDs in
-        // their own model list (`claude-3-7-sonnet-20250219`, `claude-opus-4-1-...`),
-        // so the allowlist must cover them instead of only the current defaults.
-        let supportsTemperature = [
-            "claude-2", "claude-instant", "claude-3",
-            "claude-sonnet-4", "claude-haiku-4", "claude-opus-4-",
-        ]
-        return supportsTemperature.contains(where: identifier.contains)
+        // Claude 4 minors 0...6 accept it. Parse the minor instead of enumerating 7/8/9,
+        // otherwise "claude-opus-4-10" would read as an allowed 4.x variant.
+        guard let minorToken = tokens.dropFirst().first,
+              let minor = Int(minorToken) else { return true } // "claude-sonnet-4" == 4.0
+        return minor <= 6
     }
 
     private var currentTask: Task<(), Never>?

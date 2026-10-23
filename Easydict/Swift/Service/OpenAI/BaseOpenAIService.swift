@@ -146,13 +146,26 @@ public class BaseOpenAIService: StreamService {
         return normalizedRemoteModelIDs(modelList.data.map(\.id))
     }
 
-    /// Reasoning models (o-series and GPT-5 and later) reject a non-default
-    /// `temperature` with HTTP 400, so the field must be omitted for them; sending
-    /// the UI slider value would break the default `gpt-6-luna` path entirely.
+    /// Reasoning families (the o-series and GPT-5 and later) reject a non-default
+    /// `temperature` with HTTP 400, so the field must be omitted for them; sending the
+    /// UI slider value would break the default `gpt-6-luna` path entirely.
     static func modelSupportsTemperature(_ model: String) -> Bool {
-        let identifier = model.lowercased()
-        let reasoningPrefixes = ["o1", "o3", "o4", "gpt-5", "gpt-6"]
-        return !reasoningPrefixes.contains { identifier.hasPrefix($0) }
+        // Custom/proxy endpoints can forward provider-qualified IDs ("openai/gpt-5").
+        let name = model.lowercased().split(separator: "/").last.map(String.init) ?? ""
+
+        // Any o-series generation (o1, o3, o4, o5-mini, ...) rejects it, so match the
+        // family pattern instead of enumerating today's names.
+        let characters = Array(name)
+        if characters.first == "o", characters.dropFirst().first?.isNumber == true {
+            return false
+        }
+
+        // GPT-5 and later reject it; GPT-4.x and older still accept the slider value.
+        if name.hasPrefix("gpt-"),
+           let major = Int(name.dropFirst("gpt-".count).prefix(while: \.isNumber)) {
+            return major < 5
+        }
+        return true
     }
 
     func openAIChatQuery(messages: [OpenAIChatMessage]) -> ChatQuery {
