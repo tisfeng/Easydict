@@ -30,6 +30,10 @@ class OpenAIService: BaseOpenAIService {
 
     // MARK: Internal
 
+    override var supportsTemperature: Bool {
+        serviceType() != .openAI
+    }
+
     override var defaultModels: [String] {
         OpenAIModel.allCases.map(\.rawValue)
     }

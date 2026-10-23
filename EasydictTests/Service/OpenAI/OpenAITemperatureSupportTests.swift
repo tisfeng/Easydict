@@ -10,24 +10,22 @@ import Testing
 
 @testable import Easydict
 
-/// Verifies the OpenAI `temperature` capability check added for #1311.
+/// Verifies service-level temperature policy without inspecting model identifiers.
 @Suite("OpenAI Temperature Support", .tags(.unit))
 struct OpenAITemperatureSupportTests {
-    @Test("Reasoning families omit temperature")
-    func reasoningFamiliesOmitTemperature() {
-        let identifiers = [
-            "gpt-6-luna", "gpt-6.1-sol",
-        ]
-        for identifier in identifiers {
-            #expect(!BaseOpenAIService.modelSupportsTemperature(identifier), "\(identifier)")
+    @Test("Services with disabled temperature omit the parameter")
+    func disabledServicesOmitTemperature() {
+        let services: [BaseOpenAIService] = [OpenAIService(), MiniMaxService()]
+        for service in services {
+            #expect(!service.supportsTemperature)
         }
     }
 
-    @Test("Chat models keep temperature")
-    func chatModelsKeepTemperature() {
-        let identifiers = ["openai/gpt-oss-20b"]
-        for identifier in identifiers {
-            #expect(BaseOpenAIService.modelSupportsTemperature(identifier), "\(identifier)")
+    @Test("Compatible services keep temperature")
+    func compatibleServicesKeepTemperature() {
+        let services: [BaseOpenAIService] = [GroqService()]
+        for service in services {
+            #expect(service.supportsTemperature)
         }
     }
 }

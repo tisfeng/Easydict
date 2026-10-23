@@ -146,17 +146,12 @@ public class BaseOpenAIService: StreamService {
         return normalizedRemoteModelIDs(modelList.data.map(\.id))
     }
 
-    /// Current GPT-6 models use reasoning by default and omit sampling temperature.
-    static func modelSupportsTemperature(_ model: String) -> Bool {
-        !model.hasPrefix("gpt-6")
-    }
-
     func openAIChatQuery(messages: [OpenAIChatMessage]) -> ChatQuery {
         ChatQuery(
             messages: messages,
             model: model,
             reasoningEffort: reasoningEffort,
-            temperature: supportsTemperature && Self.modelSupportsTemperature(model) ? temperature : nil
+            temperature: supportsTemperature ? temperature : nil
         )
     }
 
