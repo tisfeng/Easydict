@@ -476,6 +476,7 @@
 		0D124C3F2E8AD3EA00D6B72C /* DoubaoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3A2E8AD3EA00D6B72C /* DoubaoResponse.swift */; };
 		0D124C402E8AD3EA00D6B72C /* DoubaoTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */; };
 		0DEEFE010001000000000015 /* ReasoningEffort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEEFE010002000000000015 /* ReasoningEffort.swift */; };
+		A2C0FF010000000000000B01 /* ChatQueryBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C0FF010000000000000B02 /* ChatQueryBody.swift */; };
 		11F98489481B416DA6201252 /* AnkiConnectSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E61BD21DF447CDB6B01D74 /* AnkiConnectSettingsView.swift */; };
 		126B89658F8B4B520F4E1FBC /* CodexRequestCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB71FF785ED1821858ABF77A /* CodexRequestCoordinator.swift */; };
 		13A893BFBE2B4FD695223394 /* GitHubCopilotCatalogClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C335534370E4C3DB5E2B412 /* GitHubCopilotCatalogClient.swift */; };
@@ -1254,6 +1255,7 @@
 		0D124C3C2E8AD3EA00D6B72C /* DoubaoTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoTranslateType.swift; sourceTree = "<group>"; };
 		0DD3C7A500554103B1723150 /* AppPathManager+Codex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathManager+Codex.swift"; sourceTree = "<group>"; };
 		0DEEFE010002000000000015 /* ReasoningEffort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReasoningEffort.swift; sourceTree = "<group>"; };
+		A2C0FF010000000000000B02 /* ChatQueryBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatQueryBody.swift; sourceTree = "<group>"; };
 		0E05FAE652054152B23EB28E /* ClaudeCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeService.swift; sourceTree = "<group>"; };
 		13DB7B7B4B9BCB76E7824231 /* CodexManagedRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedRuntime.swift; sourceTree = "<group>"; };
 		14921B68C1D645268F93668E /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
@@ -2167,6 +2169,7 @@
 				0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */,
 				03779F0B2BB256A7008D3C42 /* OpenAIService.swift */,
 				031CBA632CD76F1500364437 /* ChatMessage.swift */,
+				A2C0FF010000000000000B02 /* ChatQueryBody.swift */,
 			);
 			path = OpenAI;
 			sourceTree = "<group>";
@@ -4686,6 +4689,7 @@
 				8049F36C2F0376B000DD454F /* NSImage+RoundedCorner.swift in Sources */,
 				03A5E0922D3C020200FF7D95 /* StreamService.swift in Sources */,
 				0DEEFE010001000000000015 /* ReasoningEffort.swift in Sources */,
+				A2C0FF010000000000000B01 /* ChatQueryBody.swift in Sources */,
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
 				03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */,
 				035166F92E0C0FF9004C65BB /* Int+ToDouble.swift in Sources */,
