@@ -210,10 +210,6 @@ public class StreamService: QueryService {
 
     var hideThinkTagContent: Bool = true
 
-    /// Whether this service accepts a configurable sampling temperature.
-    /// Used by both request construction and the shared configuration UI.
-    var supportsTemperature: Bool { true }
-
     /// The optional OpenAI-compatible reasoning mode for stream services.
     /// Subclasses can override this when the selected provider supports the parameter.
     @nonobjc
@@ -405,14 +401,6 @@ public class StreamService: QueryService {
 
     var apiKeyPlaceholder: String {
         String(localized: "service.configuration.api_key.placeholder \(serviceType().rawValue)")
-    }
-
-    var temperatureKey: Defaults.Key<Double> {
-        serviceDefaultsKey(.temperature, defaultValue: 0.3)
-    }
-
-    var temperature: Double {
-        Defaults[temperatureKey]
     }
 
     var enableStreamingKey: Defaults.Key<Bool> {

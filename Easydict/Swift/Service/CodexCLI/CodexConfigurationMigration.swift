@@ -35,7 +35,7 @@ enum CodexConfigurationMigration {
                 }
             }
             for configuration in legacyKeys {
-                let prefix = "EZCodexCLI" + configuration.rawValue.capitalizeFirstLetter()
+                let prefix = "EZCodexCLI" + configuration.capitalizeFirstLetter()
                 if key == prefix + "Key" {
                     identifiers.insert("")
                 } else if key.hasPrefix(prefix + "_"), key.hasSuffix("_Key") {
@@ -53,9 +53,10 @@ enum CodexConfigurationMigration {
 
     // MARK: Private
 
-    private static let legacyKeys: [ServiceConfigurationKey] = [
-        .serviceUsageStatus, .translation, .dictionary, .sentence, .supportedModels,
+    // Retired key names remain migration evidence; their values are never read or applied.
+    private static let legacyKeys: [String] = [
+        ServiceConfigurationKey.serviceUsageStatus, .translation, .dictionary, .sentence, .supportedModels,
         .validModels, .model, .apiKey, .endpoint, .name, .enableCustomPrompt,
-        .systemPrompt, .userPrompt, .thinkTag, .temperature, .enableStreaming, .reasoningEffort,
-    ]
+        .systemPrompt, .userPrompt, .thinkTag, .enableStreaming, .reasoningEffort,
+    ].map(\.rawValue) + ["temperature"]
 }

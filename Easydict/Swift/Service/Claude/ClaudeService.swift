@@ -36,9 +36,6 @@ public final class ClaudeService: StreamService {
 
     // MARK: Internal
 
-    // Current Claude models no longer accept sampling temperature.
-    override var supportsTemperature: Bool { false }
-
     override var defaultModels: [String] {
         ClaudeModel.allCases.map(\.rawValue)
     }

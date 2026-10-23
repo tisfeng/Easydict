@@ -13,7 +13,7 @@ import SwiftUI
 
 /// Configuration view for the GitHub Copilot translation service.
 ///
-/// Hides the API key, endpoint, temperature, and think-tag sections, which do not apply to a CLI
+/// Hides the API key, endpoint and think-tag sections, which do not apply to a CLI
 /// tool. Authentication happens in the `copilot` CLI itself, so there is no login flow here.
 struct GitHubCopilotServiceConfigurationView: View {
     // MARK: Lifecycle
@@ -46,8 +46,7 @@ struct GitHubCopilotServiceConfigurationView: View {
             showEndpointSection: false,
             showSupportedModelsSection: false,
             showUsedModelSection: false,
-            showThinkTagContent: false,
-            showTemperatureSlider: false
+            showThinkTagContent: false
         )
     }
 

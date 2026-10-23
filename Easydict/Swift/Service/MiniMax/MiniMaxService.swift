@@ -29,9 +29,6 @@ class MiniMaxService: OpenAIService {
 
     // MARK: Internal
 
-    // MiniMax M3 models fix temperature at 1 and ignore custom values.
-    override var supportsTemperature: Bool { false }
-
     override var defaultModels: [String] {
         MiniMaxModel.allCases.map(\.rawValue)
     }

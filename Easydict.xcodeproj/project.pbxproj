@@ -416,7 +416,6 @@
 		03E75A0A2ED760E200E1741E /* NSAttributedString+ObjCCompat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E75A062ED760E200E1741E /* NSAttributedString+ObjCCompat.swift */; };
 		03E75A0C2ED7610400E1741E /* Array+ObjCCompat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E75A0B2ED7610400E1741E /* Array+ObjCCompat.swift */; };
 		03E75A122ED76ACB00E1741E /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E75A112ED76ACB00E1741E /* OrderedDictionary.swift */; };
-		03F086F22DB1F5F000268DF0 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F12DB1F5F000268DF0 /* SliderCell.swift */; };
 		03F086F52DB21EC200268DF0 /* Double+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F42DB21EC200268DF0 /* Double+String.swift */; };
 		03F086F82DB3A94600268DF0 /* GroqService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F086F72DB3A94600268DF0 /* GroqService.swift */; };
 		03F19D7C2E08FB060046C6F2 /* AppleLanguageMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F19D7B2E08FB060046C6F2 /* AppleLanguageMapper.swift */; };
@@ -562,7 +561,6 @@
 		A1B2C3D4E5F6000000000002 /* VocabularyEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000001 /* VocabularyEntry.swift */; };
 		A1B2C3D4E5F6000000000004 /* VocabularyNotebookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000003 /* VocabularyNotebookService.swift */; };
 		A1C1A10130ABCDEF00112233 /* ClaudeSSEParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */; };
-		A20908020000000000000005 /* OpenAITemperatureSupportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20908020000000000000015 /* OpenAITemperatureSupportTests.swift */; };
 		A1C1A10430ABCDEF00112233 /* ClaudeSSEParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C1A10330ABCDEF00112233 /* ClaudeSSEParser.swift */; };
 		A1D1807B2F8D100100B1C0D1 /* ThrottleGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D1807A2F8D100100B1C0D1 /* ThrottleGate.swift */; };
 		A1D1807E2F8D100100B1C0D1 /* ThrottleGateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D1807D2F8D100100B1C0D1 /* ThrottleGateTests.swift */; };
@@ -1195,7 +1193,6 @@
 		03E75A072ED760E200E1741E /* NSMutableAttributedString+ObjCCompat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+ObjCCompat.swift"; sourceTree = "<group>"; };
 		03E75A0B2ED7610400E1741E /* Array+ObjCCompat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+ObjCCompat.swift"; sourceTree = "<group>"; };
 		03E75A112ED76ACB00E1741E /* OrderedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedDictionary.swift; sourceTree = "<group>"; };
-		03F086F12DB1F5F000268DF0 /* SliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
 		03F086F42DB21EC200268DF0 /* Double+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+String.swift"; sourceTree = "<group>"; };
 		03F086F72DB3A94600268DF0 /* GroqService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroqService.swift; sourceTree = "<group>"; };
 		03F19D7B2E08FB060046C6F2 /* AppleLanguageMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLanguageMapper.swift; sourceTree = "<group>"; };
@@ -1352,7 +1349,6 @@
 		A1B2C3D4E5F6000000000001 /* VocabularyEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyEntry.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000000000003 /* VocabularyNotebookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyNotebookService.swift; sourceTree = "<group>"; };
 		A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSSEParserTests.swift; sourceTree = "<group>"; };
-		A20908020000000000000015 /* OpenAITemperatureSupportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAITemperatureSupportTests.swift; sourceTree = "<group>"; };
 		A1C1A10330ABCDEF00112233 /* ClaudeSSEParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSSEParser.swift; sourceTree = "<group>"; };
 		A1D1807A2F8D100100B1C0D1 /* ThrottleGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGate.swift; sourceTree = "<group>"; };
 		A1D1807D2F8D100100B1C0D1 /* ThrottleGateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGateTests.swift; sourceTree = "<group>"; };
@@ -3645,7 +3641,6 @@
 			isa = PBXGroup;
 			children = (
 				A20908020000000000000014 /* OpenAIStreamTaskControlTests.swift */,
-				A20908020000000000000015 /* OpenAITemperatureSupportTests.swift */,
 			);
 			path = OpenAI;
 			sourceTree = "<group>";
@@ -3937,7 +3932,6 @@
 				0AC8A8442B6A4D97006DA5CC /* ServiceCells.swift */,
 				0357B9592C04387D00A48CB0 /* TextEditorCell.swift */,
 				035F9CCE2C529A04005D1C9A /* ServiceAPIType.swift */,
-				03F086F12DB1F5F000268DF0 /* SliderCell.swift */,
 				5F42ADC9AAB3494D9E85B5D8 /* ClaudeCodeServiceConfigurationView.swift */,
 				C0FFEEFD2026092400000008 /* GitHubCopilotServiceConfigurationView.swift */,
 				C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */,
@@ -4423,7 +4417,6 @@
 				A1C1A10130ABCDEF00112233 /* ClaudeSSEParserTests.swift in Sources */,
 				03C408F92EF5CB830025A1F0 /* ServiceTests.swift in Sources */,
 				A20908020000000000000004 /* OpenAIStreamTaskControlTests.swift in Sources */,
-				A20908020000000000000005 /* OpenAITemperatureSupportTests.swift in Sources */,
 				E4DB533B0AB343F2973A7D63 /* QueryModelCancellationTests.swift in Sources */,
 				0312584F2E1802650072320C /* AppleLanguageDetectorTests.swift in Sources */,
 				03A8846E2F12000100D5C0DE /* TaskTimeoutTests.swift in Sources */,
@@ -4562,7 +4555,6 @@
 				03F281572D97A22500AE518C /* String+ClassicalChinese.swift in Sources */,
 				03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */,
 				C43B56702C693FE000EF26FD /* VolcanoResponse.swift in Sources */,
-				03F086F22DB1F5F000268DF0 /* SliderCell.swift in Sources */,
 				03D486502E3F2021009313B3 /* Regex+List.swift in Sources */,
 				03D9D6FD2D8C0DA6009E0CEC /* Screenshot.swift in Sources */,
 				03FEF1632D45D5C2002D5F28 /* HostWindowManager.swift in Sources */,

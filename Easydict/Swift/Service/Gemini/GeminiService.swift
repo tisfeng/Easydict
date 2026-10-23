@@ -36,9 +36,6 @@ final class GeminiService: OpenAIService {
 
     // MARK: Internal
 
-    // Current Gemini models use provider-managed sampling; omit deprecated controls.
-    override var supportsTemperature: Bool { false }
-
     override var defaultModels: [String] {
         GeminiModel.allCases.map(\.rawValue)
     }

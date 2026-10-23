@@ -138,7 +138,6 @@ class DeepSeekService: OpenAIService {
         let requestBody = DeepSeekChatRequest(
             messages: messages.map(DeepSeekChatMessage.init),
             model: model,
-            temperature: temperature,
             stream: true,
             thinking: .init(type: effort.isEnabled ? "enabled" : "disabled"),
             reasoningEffort: effort.requestValue
@@ -254,7 +253,6 @@ private struct DeepSeekChatRequest: Encodable {
 
     let messages: [DeepSeekChatMessage]
     let model: String
-    let temperature: Double
     let stream: Bool
     let thinking: DeepSeekThinking
     let reasoningEffort: String?
@@ -264,7 +262,6 @@ private struct DeepSeekChatRequest: Encodable {
     private enum CodingKeys: String, CodingKey {
         case messages
         case model
-        case temperature
         case stream
         case thinking
         case reasoningEffort = "reasoning_effort"
