@@ -62,7 +62,7 @@ struct MarkdownRenderer {
         -> [NSAttributedString.Key: Any] {
         var attrs: [NSAttributedString.Key: Any] = [
             .font: font ?? baseFont,
-            .foregroundColor: foregroundColor,
+            .foregroundColor: quotes.isEmpty ? foregroundColor : NSColor.secondaryLabelColor,
             .paragraphStyle: paragraph,
             .kern: 0.2,
         ]
@@ -116,7 +116,7 @@ struct MarkdownRenderer {
                     latex: latex,
                     source: source,
                     font: baseFont,
-                    color: foregroundColor,
+                    color: attrs[.foregroundColor] as? NSColor ?? foregroundColor,
                     display: true
                 ) {
                     style.alignment = .center
