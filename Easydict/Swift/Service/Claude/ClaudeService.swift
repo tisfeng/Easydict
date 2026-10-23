@@ -159,35 +159,6 @@ public final class ClaudeService: StreamService {
     /// The maximum number of tokens to generate in the response.
     private let maxTokens = 4096
 
-    /// Claude models released before Opus 4.7 accept `temperature`; Opus 4.7 and later
-    /// reject any non-default value with HTTP 400, so the field is omitted for them.
-    /// Unknown IDs are treated as unsupported: a missing temperature only costs
-    /// randomness, while sending one to a newer model fails the whole request (#1311).
-    /// https://platform.claude.com/docs/en/about-claude/model-deprecations
-    static func modelSupportsTemperature(_ model: String) -> Bool {
-        // Provider-qualified IDs ("anthropic/claude-opus-4-6") can reach this service.
-        let name = model.lowercased().split(separator: "/").last.map(String.init) ?? ""
-        guard name.hasPrefix("claude-") else { return false }
-        if name.hasPrefix("claude-instant") { return true }
-
-        var tokens = name.dropFirst("claude-".count).split(separator: "-").map(String.init)
-        if let family = tokens.first, ["opus", "sonnet", "haiku"].contains(family) {
-            tokens.removeFirst()
-        }
-        guard let majorToken = tokens.first,
-              let majorText = majorToken.split(separator: ".").first,
-              let major = Int(majorText) else { return false }
-        if major < 4 { return true } // Claude 2/3 families accept it.
-        guard major == 4 else { return false } // 5.x and later reject it.
-
-        // Claude 4 minors 0...6 accept it; dated 4.0 IDs have no minor token at all
-        // ("claude-opus-4-20250514"), and an 8-digit token is a release date, not a minor.
-        guard let minorToken = tokens.dropFirst().first else { return true }
-        if minorToken.count >= 8 { return true }
-        guard let minor = Int(minorToken) else { return true }
-        return minor <= 6
-    }
-
     private var currentTask: Task<(), Never>?
 
     // MARK: - Message Construction
@@ -231,10 +202,6 @@ public final class ClaudeService: StreamService {
             "stream": true,
             "messages": messages.map { ["role": $0.role.rawValue, "content": $0.content] },
         ]
-
-        if Self.modelSupportsTemperature(model) {
-            body["temperature"] = min(max(temperature, 0), 1)
-        }
 
         if !systemPrompt.isEmpty {
             body["system"] = systemPrompt

@@ -562,7 +562,6 @@
 		A1B2C3D4E5F6000000000002 /* VocabularyEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000001 /* VocabularyEntry.swift */; };
 		A1B2C3D4E5F6000000000004 /* VocabularyNotebookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000003 /* VocabularyNotebookService.swift */; };
 		A1C1A10130ABCDEF00112233 /* ClaudeSSEParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */; };
-		A1E1F0012B9A4C7D8E3F0002 /* ClaudeTemperatureSupportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E1F0012B9A4C7D8E3F0001 /* ClaudeTemperatureSupportTests.swift */; };
 		A20908020000000000000005 /* OpenAITemperatureSupportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20908020000000000000015 /* OpenAITemperatureSupportTests.swift */; };
 		A1C1A10430ABCDEF00112233 /* ClaudeSSEParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C1A10330ABCDEF00112233 /* ClaudeSSEParser.swift */; };
 		A1D1807B2F8D100100B1C0D1 /* ThrottleGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D1807A2F8D100100B1C0D1 /* ThrottleGate.swift */; };
@@ -1353,7 +1352,6 @@
 		A1B2C3D4E5F6000000000001 /* VocabularyEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyEntry.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000000000003 /* VocabularyNotebookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyNotebookService.swift; sourceTree = "<group>"; };
 		A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSSEParserTests.swift; sourceTree = "<group>"; };
-		A1E1F0012B9A4C7D8E3F0001 /* ClaudeTemperatureSupportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeTemperatureSupportTests.swift; sourceTree = "<group>"; };
 		A20908020000000000000015 /* OpenAITemperatureSupportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAITemperatureSupportTests.swift; sourceTree = "<group>"; };
 		A1C1A10330ABCDEF00112233 /* ClaudeSSEParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSSEParser.swift; sourceTree = "<group>"; };
 		A1D1807A2F8D100100B1C0D1 /* ThrottleGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleGate.swift; sourceTree = "<group>"; };
@@ -2942,7 +2940,6 @@
 				A13180012026091600000001 /* AppleDictionaryTests.swift */,
 				034080A12F6B1C75005C8508 /* AppleSpeechServiceTests.swift */,
 				A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */,
-				A1E1F0012B9A4C7D8E3F0003 /* Claude */,
 				0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */,
 				179EFB3D68574DE5817C8AB9 /* ClaudeCode */,
 				C0DEC11E0003000000000002 /* CodexCLI */,
@@ -3642,14 +3639,6 @@
 				A1B2C3D4E5F6000000000003 /* VocabularyNotebookService.swift */,
 			);
 			path = VocabularyNotebook;
-			sourceTree = "<group>";
-		};
-		A1E1F0012B9A4C7D8E3F0003 /* Claude */ = {
-			isa = PBXGroup;
-			children = (
-				A1E1F0012B9A4C7D8E3F0001 /* ClaudeTemperatureSupportTests.swift */,
-			);
-			path = Claude;
 			sourceTree = "<group>";
 		};
 		A20908020000000000000021 /* OpenAI */ = {
@@ -4432,7 +4421,6 @@
 				0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */,
 				59F60C73B7C74FC8820E138E /* SystemUtilitiesTests.swift in Sources */,
 				A1C1A10130ABCDEF00112233 /* ClaudeSSEParserTests.swift in Sources */,
-				A1E1F0012B9A4C7D8E3F0002 /* ClaudeTemperatureSupportTests.swift in Sources */,
 				03C408F92EF5CB830025A1F0 /* ServiceTests.swift in Sources */,
 				A20908020000000000000004 /* OpenAIStreamTaskControlTests.swift in Sources */,
 				A20908020000000000000005 /* OpenAITemperatureSupportTests.swift in Sources */,
