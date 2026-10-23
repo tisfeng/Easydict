@@ -597,6 +597,8 @@
 		C0DEC11E0001000000000004 /* CodexCLIEventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000004 /* CodexCLIEventParser.swift */; };
 		C0DEC11E0001000000000005 /* CodexCLILogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000005 /* CodexCLILogger.swift */; };
 		C0DEC11E0001000000000006 /* CodexCLIDebugWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */; };
+		C0DEC11E0017000000000003 /* CodexModelIDField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0017000000000004 /* CodexModelIDField.swift */; };
+		C0DEC11E0017000000000001 /* CodexManagedModelPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0017000000000002 /* CodexManagedModelPicker.swift */; };
 		C0DEC11E0001000000000007 /* CodexCLIServiceConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */; };
 		C0DEC11E0001000000000010 /* CodexCLIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */; };
 		C0DEC11E0001000000000011 /* CodexCLIRunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */; };
@@ -1381,6 +1383,8 @@
 		C0DEC11E0002000000000004 /* CodexCLIEventParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIEventParser.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000005 /* CodexCLILogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLILogger.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000006 /* CodexCLIDebugWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIDebugWindow.swift; sourceTree = "<group>"; };
+		C0DEC11E0017000000000004 /* CodexModelIDField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexModelIDField.swift; sourceTree = "<group>"; };
+		C0DEC11E0017000000000002 /* CodexManagedModelPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexManagedModelPicker.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIServiceConfigurationView.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000010 /* CodexCLIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIServiceTests.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000011 /* CodexCLIRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIRunnerTests.swift; sourceTree = "<group>"; };
@@ -3934,6 +3938,8 @@
 				03F086F12DB1F5F000268DF0 /* SliderCell.swift */,
 				5F42ADC9AAB3494D9E85B5D8 /* ClaudeCodeServiceConfigurationView.swift */,
 				C0FFEEFD2026092400000008 /* GitHubCopilotServiceConfigurationView.swift */,
+				C0DEC11E0017000000000004 /* CodexModelIDField.swift */,
+				C0DEC11E0017000000000002 /* CodexManagedModelPicker.swift */,
 				C0DEC11E0002000000000007 /* CodexCLIServiceConfigurationView.swift */,
 				6F6403A348529CBE1CFB24A1 /* CodexManagedAccountView.swift */,
 			);
@@ -4745,6 +4751,8 @@
 				126B89658F8B4B520F4E1FBC /* CodexRequestCoordinator.swift in Sources */,
 				DE948D64CB926DD8B42428EB /* CodexManagedAccount.swift in Sources */,
 				C0DEC11E0001000000000006 /* CodexCLIDebugWindow.swift in Sources */,
+				C0DEC11E0017000000000003 /* CodexModelIDField.swift in Sources */,
+				C0DEC11E0017000000000001 /* CodexManagedModelPicker.swift in Sources */,
 				C0DEC11E0001000000000007 /* CodexCLIServiceConfigurationView.swift in Sources */,
 				6808374D0730B5F9ADF6DD84 /* CodexManagedAccountView.swift in Sources */,
 				C0DEC11E0001000000000014 /* CodexReasoningEffort.swift in Sources */,
