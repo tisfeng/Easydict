@@ -54,10 +54,14 @@ enum ZhipuModel: String, CaseIterable {
     // pricing: https://bigmodel.cn/pricing
     // rate-limits: https://www.bigmodel.cn/usercenter/proj-mgmt/rate-limits
 
-    case glm_5_3_flash = "glm-5.3-flash"
-    case glm_5_3 = "glm-5.3"
+    /// The first case is the list order users see and the fallback for a saved-but-removed
+    /// model ID (`StreamService.model`), so it must stay the free default; otherwise an
+    /// existing user silently lands on the paid GLM-5.3-Flash.
+    case glm_4_flash_250414 = "glm-4-flash-250414"
 
     // Keep the free IDs used by BuiltInAIService; GLM-4.5-Flash routes to GLM-4.7-Flash.
     case glm_4_5_flash = "glm-4.5-flash"
-    case glm_4_flash_250414 = "glm-4-flash-250414"
+
+    case glm_5_3_flash = "glm-5.3-flash"
+    case glm_5_3 = "glm-5.3"
 }
