@@ -42,7 +42,7 @@ class DeepSeekService: OpenAIService {
     }
 
     override var defaultModel: String {
-        DeepSeekModel.deepseekV4Flash.rawValue
+        DeepSeekModel.deepseekFlash.rawValue
     }
 
     override var observeKeys: [Defaults.Key<String>] {
@@ -240,7 +240,7 @@ class DeepSeekService: OpenAIService {
 enum DeepSeekModel: String, CaseIterable {
     // Docs: https://api-docs.deepseek.com
     // Pricing: https://api-docs.deepseek.com/quick_start/pricing
-    case deepseekV4Flash = "deepseek-v4-flash"
+    case deepseekFlash = "deepseek-flash"
     case deepseekV4Pro = "deepseek-v4-pro"
 }
 
