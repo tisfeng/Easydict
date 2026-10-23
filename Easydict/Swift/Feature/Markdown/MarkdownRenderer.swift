@@ -145,11 +145,15 @@ struct MarkdownRenderer {
         for item in items {
             let start = output.length
             append(
-                item.blocks.isEmpty ? [.paragraph("")] : item.blocks,
+                item.blocks,
                 indent: contentIndent,
                 quotes: quotes,
                 to: output
             )
+            // Empty containers, such as a bare blockquote, still need a paragraph for the marker.
+            if output.length == start {
+                append([.paragraph("")], indent: contentIndent, quotes: quotes, to: output)
+            }
             let range = (output.string as NSString).paragraphRange(for: NSRange(location: start, length: 0))
             let style = (output.attribute(.paragraphStyle, at: start, effectiveRange: nil) as? NSParagraphStyle)?
                 .mutableCopy()
