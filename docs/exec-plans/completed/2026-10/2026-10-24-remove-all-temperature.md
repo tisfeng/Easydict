@@ -33,14 +33,18 @@
 ## 风险与决策
 
 - 删除温度配置后，输出使用服务默认值；旧偏好留在磁盘但不再读取。
-- 保留 Codex 历史配置标识的迁移识别，避免影响旧实例访问模式迁移。
+- 用户进一步要求删除 Codex 旧温度键名兼容；只剩温度键的历史实例不再据此触发迁移。
 - 删除仅测试已移除能力的两个测试；不新增测试。
 
 ## 进度
 
+- [x] 后续：删除 Codex 旧温度迁移识别，9 个迁移测试通过，review 无有效 finding，纳入 dev 本地提交。
+
 - [x] 删除与验证完成，review 无有效 finding，纳入 dev 本地提交。
 
 ## 验证
+
+- 后续迁移清理：相同独立 DerivedData 及临时构建参数下，CodexConfigurationMigrationTests 9 个现有测试通过；源码搜索无 temperature，review 无有效 finding。
 
 - 独立 Agent DerivedData 下 xcodebuild test：ClaudeSSEParserTests、OpenAIStreamTaskControlTests、QueryModelCancellationTests、CodexConfigurationMigrationTests，24 个现有测试通过，Debug 编译成功。
 - 临时使用 EASYDICT_RELEASE_PACKAGING=YES EXCLUDED_SOURCE_FILE_NAMES=Package.resolved；未改工程配置，不覆盖发布打包。
