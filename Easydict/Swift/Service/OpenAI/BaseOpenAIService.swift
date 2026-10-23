@@ -156,7 +156,7 @@ public class BaseOpenAIService: StreamService {
             messages: messages,
             model: model,
             reasoningEffort: reasoningEffort,
-            temperature: Self.modelSupportsTemperature(model) ? temperature : nil
+            temperature: supportsTemperature && Self.modelSupportsTemperature(model) ? temperature : nil
         )
     }
 
