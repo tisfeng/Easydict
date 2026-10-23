@@ -175,14 +175,16 @@ public final class ClaudeService: StreamService {
             tokens.removeFirst()
         }
         guard let majorToken = tokens.first,
-              let major = Int(majorToken.split(separator: ".")[0]) else { return false }
+              let majorText = majorToken.split(separator: ".").first,
+              let major = Int(majorText) else { return false }
         if major < 4 { return true } // Claude 2/3 families accept it.
         guard major == 4 else { return false } // 5.x and later reject it.
 
-        // Claude 4 minors 0...6 accept it. Parse the minor instead of enumerating 7/8/9,
-        // otherwise "claude-opus-4-10" would read as an allowed 4.x variant.
-        guard let minorToken = tokens.dropFirst().first,
-              let minor = Int(minorToken) else { return true } // "claude-sonnet-4" == 4.0
+        // Claude 4 minors 0...6 accept it; dated 4.0 IDs have no minor token at all
+        // ("claude-opus-4-20250514"), and an 8-digit token is a release date, not a minor.
+        guard let minorToken = tokens.dropFirst().first else { return true }
+        if minorToken.count >= 8 { return true }
+        guard let minor = Int(minorToken) else { return true }
         return minor <= 6
     }
 

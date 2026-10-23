@@ -2939,7 +2939,7 @@
 				A13180012026091600000001 /* AppleDictionaryTests.swift */,
 				034080A12F6B1C75005C8508 /* AppleSpeechServiceTests.swift */,
 				A1C1A10030ABCDEF00112233 /* ClaudeSSEParserTests.swift */,
-				A1E1F0012B9A4C7D8E3F0001 /* ClaudeTemperatureSupportTests.swift */,
+				A1E1F0012B9A4C7D8E3F0003 /* Claude */,
 				0312584E2E1802650072320C /* AppleLanguageDetectorTests.swift */,
 				179EFB3D68574DE5817C8AB9 /* ClaudeCode */,
 				C0DEC11E0003000000000002 /* CodexCLI */,
@@ -3639,6 +3639,14 @@
 				A1B2C3D4E5F6000000000003 /* VocabularyNotebookService.swift */,
 			);
 			path = VocabularyNotebook;
+			sourceTree = "<group>";
+		};
+		A1E1F0012B9A4C7D8E3F0003 /* Claude */ = {
+			isa = PBXGroup;
+			children = (
+				A1E1F0012B9A4C7D8E3F0001 /* ClaudeTemperatureSupportTests.swift */,
+			);
+			path = Claude;
 			sourceTree = "<group>";
 		};
 		A20908020000000000000021 /* OpenAI */ = {

@@ -2,6 +2,9 @@
 //  OpenAITemperatureSupportTests.swift
 //  EasydictTests
 //
+//  Created by Randomness.K on 2026/10/23.
+//  Copyright © 2026 izual. All rights reserved.
+//
 
 import Testing
 

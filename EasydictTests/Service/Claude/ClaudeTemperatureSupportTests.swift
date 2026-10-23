@@ -2,6 +2,9 @@
 //  ClaudeTemperatureSupportTests.swift
 //  EasydictTests
 //
+//  Created by Randomness.K on 2026/10/23.
+//  Copyright © 2026 izual. All rights reserved.
+//
 
 import Testing
 
@@ -22,6 +25,14 @@ struct ClaudeTemperatureSupportTests {
         }
     }
 
+    @Test("Dated 4.0 IDs are not read as an oversized minor")
+    func datedFourOhIdentifiersKeepTemperature() {
+        let identifiers = ["claude-opus-4-20250514", "claude-sonnet-4-20250514"]
+        for identifier in identifiers {
+            #expect(ClaudeService.modelSupportsTemperature(identifier), "\(identifier)")
+        }
+    }
+
     @Test("Opus 4.7 and later omit temperature")
     func reasoningEraModelsOmitTemperature() {
         let identifiers = [
@@ -33,10 +44,12 @@ struct ClaudeTemperatureSupportTests {
         }
     }
 
-    @Test("Provider-qualified and unknown IDs fail safe")
+    @Test("Provider-qualified, malformed and unknown IDs fail safe")
     func providerQualifiedAndUnknownIdentifiers() {
         #expect(ClaudeService.modelSupportsTemperature("anthropic/claude-opus-4-6"))
         #expect(!ClaudeService.modelSupportsTemperature("anthropic/claude-opus-4-7"))
+        #expect(!ClaudeService.modelSupportsTemperature("claude-."))
+        #expect(!ClaudeService.modelSupportsTemperature("claude-opus-."))
         #expect(!ClaudeService.modelSupportsTemperature("some-custom-model"))
     }
 }
