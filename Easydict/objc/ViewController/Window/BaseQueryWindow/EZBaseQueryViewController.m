@@ -85,6 +85,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 @property (nonatomic, assign) NSInteger inputFieldCellIndex;     // always 0
 @property (nonatomic, assign) NSInteger selectLanguageCellIndex; // 0 or 1
 
+/// Current collapsed state of input field, only persisted for select text translation.
+@property (nonatomic, assign) BOOL isInputFieldCollapsed;
+
 @property (nonatomic, strong) MyConfiguration *config;
 @property (nonatomic, strong) id fontSizeObserver;
 
@@ -486,7 +489,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     self.inputText = text;
-    self.queryModel.actionType = actionType;
+    [self switchActionType:actionType];
     self.queryView.isTypingChinese = NO;
 
     if ([self handleEasydictScheme:text]) {
@@ -544,6 +547,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     self.queryModel.ocrImage = image;
 
     self.queryView.isTypingChinese = NO;
+    // Keep collapsed state while OCR is loading, the loading view is shown in the button bar of collapsed input field.
     [self.queryView startLoadingAnimation:YES];
 
     mm_weakify(self);
@@ -722,7 +726,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             self.queryModel.userTargetLanguage = toLanguage;
             self.inputText = translatedText;
             self.queryModel.ocrImage = nil;
-            self.queryModel.actionType = EZActionTypeInputQuery;
+            [self switchActionType:EZActionTypeInputQuery];
         }
     }
 
@@ -784,6 +788,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)queryType {
     [self.queryView.textView updateTextAndParagraphStyle:text];
     self.queryModel.actionType = queryType;
+    [self updateInputFieldCollapsedWithActionType:queryType];
 
     if (text) {
         // Updating query text programmatically loses input focus, we need to recover it.
@@ -793,6 +798,54 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)updateActionType:(EZActionType)actionType {
     self.queryModel.actionType = actionType;
+    [self updateInputFieldCollapsedWithActionType:actionType];
+}
+
+/// Update action type in current window, only apply input field collapsed state when action type changes,
+/// so that re-querying with the same action type keeps the collapsed state toggled in current session.
+- (void)switchActionType:(EZActionType)actionType {
+    BOOL isChanged = ![self.queryModel.actionType isEqualToString:actionType];
+    self.queryModel.actionType = actionType;
+    if (isChanged) {
+        [self updateInputFieldCollapsedWithActionType:actionType];
+    }
+}
+
+#pragma mark - Input Field Collapsed State
+
+/// Select text translation, including invoke query from PopClip or macOS Services via URL scheme.
+- (BOOL)isSelectTextActionType:(EZActionType)actionType {
+    return actionType == EZActionTypeAutoSelectQuery
+        || actionType == EZActionTypeShortcutQuery
+        || actionType == EZActionTypeInvokeQuery;
+}
+
+/// OCR translation, the input text is recognized from image, so users may not need to see it.
+- (BOOL)isOCRActionType:(EZActionType)actionType {
+    return actionType == EZActionTypeOCRQuery
+        || actionType == EZActionTypeScreenshotOCR
+        || actionType == EZActionTypePasteboardOCR;
+}
+
+/// Restore saved collapsed state for select text translation, keep current state for OCR, other actions always expand input field.
+- (void)updateInputFieldCollapsedWithActionType:(EZActionType)actionType {
+    if ([self isOCRActionType:actionType]) {
+        return;
+    }
+
+    BOOL collapsed = NO;
+    if ([self isSelectTextActionType:actionType]) {
+        collapsed = [self.config inputFieldCollapsedWithWindowType:self.windowType];
+    }
+
+    if (collapsed == self.isInputFieldCollapsed) {
+        return;
+    }
+
+    self.isInputFieldCollapsed = collapsed;
+    self.queryView.collapsed = collapsed;
+    self.queryModel.queryViewHeight = self.queryView ? [self.queryView heightOfQueryView] : [self miniQueryViewHeight];
+    [self updateQueryCellWithAnimation:NO];
 }
 
 - (void)scrollToEndOfTextView {
@@ -1470,8 +1523,20 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     queryView.placeholderText = placeholderText;
 
     queryView.audioButton.audioPlayer = self.audioPlayer;
+    queryView.collapsed = self.isInputFieldCollapsed;
 
     mm_weakify(self);
+    [queryView setToggleCollapsedBlock:^(BOOL collapsed) {
+        mm_strongify(self);
+        self.isInputFieldCollapsed = collapsed;
+        if ([self isSelectTextActionType:self.queryModel.actionType]) {
+            [self.config setInputFieldCollapsed:collapsed windowType:self.windowType];
+        }
+
+        self.queryModel.queryViewHeight = [self.queryView heightOfQueryView];
+        [self updateQueryCellWithAnimation:YES];
+    }];
+
     [queryView setUpdateInputTextBlock:^(NSString *text, CGFloat queryViewHeight) {
         mm_strongify(self);
         //        MMLogInfo(@"UpdateQueryTextBlock");
@@ -1970,6 +2035,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (CGFloat)miniQueryViewHeight {
+    if (self.isInputFieldCollapsed) {
+        return EZQueryViewExceptInputViewHeight;
+    }
+
     CGFloat miniInputViewHeight = [[EZLayoutManager shared] inputViewMinHeight:self.windowType];
     CGFloat queryViewHeight = miniInputViewHeight + EZQueryViewExceptInputViewHeight;
     return queryViewHeight;
