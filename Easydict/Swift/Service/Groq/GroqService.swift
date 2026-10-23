@@ -56,7 +56,4 @@ enum GroqModel: String, CaseIterable {
     // Production Models
     case gpt_oss_120b = "openai/gpt-oss-120b" // 30 RPM, 1k RPD, 8k TPM, 200k TPD
     case gpt_oss_20b = "openai/gpt-oss-20b" // 30 RPM, 1k RPD, 8k TPM, 200k TPD
-
-    case llama3_3_70b_versatile = "llama-3.3-70b-versatile"
-    case llama3_1_8b_instant = "llama-3.1-8b-instant" // 30 RPM, 14.4k RPD, 6k TPM, 500k TPD
 }

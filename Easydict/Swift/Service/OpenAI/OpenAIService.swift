@@ -56,6 +56,4 @@ enum OpenAIModel: String, CaseIterable {
     case gpt_6_luna = "gpt-6-luna" // Input: $0.10 | Output: $0.50
     case gpt_6_1_sol = "gpt-6.1-sol" // Input: $2 | Output: $10
     case gpt_6_astra = "gpt-6-astra" // Input: $10 | Output: $50
-
-    case gpt_4_1 = "gpt-4.1" // gpt-4.1-2025-04-14  Input: $2 | Output: $8, shutdown: 2027-01-14
 }

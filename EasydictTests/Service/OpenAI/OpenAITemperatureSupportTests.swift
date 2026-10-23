@@ -25,7 +25,7 @@ struct OpenAITemperatureSupportTests {
 
     @Test("Chat models keep temperature")
     func chatModelsKeepTemperature() {
-        let identifiers = ["gpt-4.1"]
+        let identifiers = ["openai/gpt-oss-20b"]
         for identifier in identifiers {
             #expect(BaseOpenAIService.modelSupportsTemperature(identifier), "\(identifier)")
         }
