@@ -59,7 +59,7 @@ Scoco 开发基线为 dev `03c6c63333df859f408e0422e0dfeb6aed5ac568`。
 
 - [x] 冻结基线与来源，复用干净的独立 worktree 并创建任务分支。
 - [x] F1 实现、验证、review 和本地提交。
-- [ ] F2 实现、验证、review 和本地提交。
+- [x] F2 实现、验证、review 和本地提交。
 - [ ] F3 实现、验证、review 和本地提交。
 - [ ] 归档计划并完成交付回执。
 
@@ -72,7 +72,10 @@ Scoco 开发基线为 dev `03c6c63333df859f408e0422e0dfeb6aed5ac568`。
   不包含完整模型初始化，不声称全宿主 TSAN 通过。
 - F1：SwiftFormat 无修改，SwiftLint 430 文件零 violation，工程 `plutil -lint` 和
   `git diff --check` 通过；锁顺序、回调/捕获释放、服务调用者、测试断言和工程引用 review 无有效 finding。
-- F2、F3：待分别验证并记录。
+- F2：Markdown 相对链接、`git diff --check` 和规则语义检查通过；
+  文档 review 无有效 finding。保留独立 DerivedData、bundle ID 不覆盖、用户多实例授权例外、
+  进程查询与只清理本任务实例等边界；未把共享资源存在冲突时允许并行写入作为承诺。
+- F3：待验证并记录。
 
 ## 完成条件
 

@@ -20,7 +20,11 @@
   被替换/清除的旧闭包在解锁后释放。同步 Swift/ObjC API 保持兼容。
 - F1 测试：移植 7 个取消注册回归测试（析构重入有替换、清除两个参数场景），
   按目标目录组织到 `EasydictTests/Model/`，补齐工程引用和测试 Sources。
-- F2、F3 待完成，尚未标记为已移植。
+- F2 已完成：来源 `7f219bee2b088c5affef07eddd76a3b00e11b6ea` 的实例规则及
+  `03c6c63333df859f408e0422e0dfeb6aed5ac568` 的精简版本。
+  根据实际共享资源冲突决定隔离或串行；区分测试宿主和意外重复，保留用户明确多实例例外。
+- F3 待完成，尚未标记为已移植。
+- F1 目标提交：`2e5b45b6e91cc62404a38cadcb40ef4c4ba71fd4`。
 
 ### 设计意图
 
@@ -47,15 +51,22 @@ Scoco 开发基线为 dev `03c6c63333df859f408e0422e0dfeb6aed5ac568`。
   QueryService/DeepL/Google 调用者、闭包生命周期和工程引用；复验摘要一致，无有效 finding。
   当前窄锁方案足够，不需要扩大为模型 actor 化。
 
+- F2：`git diff --check`、Markdown 相对链接及规则语义检查通过。
+  文档 review 核对共享资源、用户实例保护、测试宿主识别、异常排查与构建隔离，无有效 finding。
+  [Apple 测试运行选项](https://help.apple.com/xcode/mac/current/en.lproj/dev6061748b5.html)
+  说明单元测试可由多个应用实例承载；这不证明任意共享偏好或全局快捷键可以无冲突并行。
+  本次测试前没有运行中的 Easydict，未实际验证与用户 GUI 实例并行的资源安全性。
+
 ### 受影响文件
 
 - `Easydict/Swift/Model/QueryModel.swift`
 - `EasydictTests/Model/QueryModelCancellationTests.swift`
 - `Easydict.xcodeproj/project.pbxproj`
+- `docs/agents/build-and-test.md`
 - 本任务 plan/history。
 
 ### 后续事项
 
-- 继续 F2、F3，并记录各自来源、验证和提交映射。
+- 继续 F3，并补全提交映射。
 - 完整宿主 TSAN 的既有 Ollama 服务初始化竞争另行处理；本次不扩大修复范围。
 - 尚未集成到本地 dev，不 push；未执行 GUI、真实服务账号或其他 macOS 版本验证。
