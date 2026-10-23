@@ -55,24 +55,19 @@ final class MarkdownLabel: EZLabel {
 
     /// Include TeX source when a selection containing rendered equations is copied as text.
     override func writeSelection(to pboard: NSPasteboard, type: NSPasteboard.PasteboardType) -> Bool {
-        guard markdownEnabled, type == .string, let textStorage else {
+        guard markdownEnabled, type == .string else {
             return super.writeSelection(to: pboard, type: type)
         }
-        let selections = selectedRanges.compactMap { value -> String? in
-            let range = value.rangeValue
-            guard range.length > 0, NSMaxRange(range) <= textStorage.length else { return nil }
-            let selected = textStorage.attributedSubstring(from: range)
-            let plain = NSMutableString(string: "")
-            selected.enumerateAttribute(.markdownMathSource, in: NSRange(
-                location: 0,
-                length: selected.length
-            )) { source, range, _ in
-                plain.append(source as? String ?? (selected.string as NSString).substring(with: range))
-            }
-            return plain as String
-        }
+        let selections = selectedRanges.compactMap { sourceText(in: $0.rangeValue) }
         guard !selections.isEmpty else { return false }
         return pboard.setString(selections.joined(separator: "\n"), forType: .string)
+    }
+
+    override func selectedText() -> String? {
+        guard markdownEnabled, let range = selectedRanges.first?.rangeValue, range.length > 0 else {
+            return super.selectedText()
+        }
+        return sourceText(in: range)
     }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -112,5 +107,19 @@ final class MarkdownLabel: EZLabel {
     private var resolvedForegroundColor: NSColor {
         if let textForegroundColor { return textForegroundColor }
         return isDarkMode ? .ez_resultTextDark() : .ez_resultTextLight()
+    }
+
+    /// Expands mathematical attachments back to their original TeX for text actions.
+    private func sourceText(in range: NSRange) -> String? {
+        guard let textStorage, range.length > 0, NSMaxRange(range) <= textStorage.length else { return nil }
+        let selected = textStorage.attributedSubstring(from: range)
+        let plain = NSMutableString(string: "")
+        selected.enumerateAttribute(.markdownMathSource, in: NSRange(
+            location: 0,
+            length: selected.length
+        )) { source, range, _ in
+            plain.append(source as? String ?? (selected.string as NSString).substring(with: range))
+        }
+        return plain as String
     }
 }
