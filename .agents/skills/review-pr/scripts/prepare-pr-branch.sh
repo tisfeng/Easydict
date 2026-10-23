@@ -45,6 +45,10 @@ fail() {
   exit 1
 }
 
+branch_name() {
+  python3 "${script_dir}/../../git-commit/scripts/branch_name.py" "$@"
+}
+
 same_github_repo_url() {
   local actual_url=$1 owner=$2 repo=$3
 
@@ -254,12 +258,11 @@ inspect_head_branch() {
 }
 
 # Create or reuse the collision-fallback review branch
-# review/pr-<number>-<head-short-sha> tracking the contributor remote branch.
+# Its name comes from the shared policy; it tracks the contributor remote branch.
 prepare_collision_review_branch() {
   local reason=$1
-  local head_short=${head_oid:0:10}
   local actual_head actual_upstream
-  review_branch="review/pr-${pr_number}-${head_short}"
+  review_branch=$(branch_name review --pr "$pr_number" --sha "$head_oid")
   receipt_collision=$reason
 
   if git show-ref --verify --quiet "refs/heads/${review_branch}"; then
@@ -288,11 +291,12 @@ prepare_collision_review_branch() {
 validate_reused_branch() {
   local branch=$1
   local actual_head actual_upstream
-  local expected_fallback="review/pr-${pr_number}-${head_oid:0:10}"
+  local expected_fallback
+  expected_fallback=$(branch_name review --pr "$pr_number" --sha "$head_oid")
 
   [[ $checkout_mode == local ]] || \
     fail "--reuse-branch is only supported in local checkout mode."
-  git check-ref-format "refs/heads/${branch}" >/dev/null || \
+  branch_name validate --name "$branch" >/dev/null || \
     fail "Invalid reused review branch '${branch}'."
   case "$branch" in
     dev | main | master | develop | trunk)
@@ -384,7 +388,6 @@ verify_source_checkout() {
 # Resolve one stable review location from the repository's common Git dir.
 resolve_worktree_target() {
   local common_dir main_worktree parent_dir repo_name suffix
-  local head_short=${head_oid:0:10}
   common_dir=$(git rev-parse --path-format=absolute --git-common-dir)
   [[ $common_dir == */.git ]] || \
     fail "Could not derive the main worktree from Git common dir '${common_dir}'."
@@ -394,13 +397,12 @@ resolve_worktree_target() {
   repo_name=$(basename "$main_worktree")
 
   if [[ $mode == "merge" ]]; then
-    suffix="pr-${pr_number}-merge-${head_short}"
-    review_branch="review/pr-${pr_number}-merge-${head_short}"
+    review_branch=$(branch_name review --pr "$pr_number" --sha "$head_oid" --merge-latest)
   else
-    suffix="pr-${pr_number}-${head_short}"
-    review_branch="review/pr-${pr_number}-${head_short}"
+    review_branch=$(branch_name review --pr "$pr_number" --sha "$head_oid")
   fi
 
+  suffix=${review_branch#*/}
   review_root="${parent_dir}/.review-pr-worktrees/${repo_name}"
   worktree_path="${review_root}/${suffix}"
 }
@@ -991,7 +993,7 @@ if [[ $checkout_mode == worktree && -n $reuse_branch ]]; then
   fail "--reuse-branch cannot be combined with --worktree."
 fi
 if [[ -n $reuse_branch ]]; then
-  git check-ref-format "refs/heads/${reuse_branch}" >/dev/null || \
+  branch_name validate --name "$reuse_branch" >/dev/null || \
     fail "Invalid reused review branch '${reuse_branch}'."
 fi
 

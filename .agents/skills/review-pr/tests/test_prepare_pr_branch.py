@@ -491,18 +491,17 @@ class PreparePRBranchTests(unittest.TestCase):
         self._assert_clean_status()
 
     def test_reuse_branch_rejects_invalid_ref_before_fetch(self) -> None:
-        result = self._prepare(
-            "--json",
-            "--reuse-branch",
-            "not a branch",
-            "--expected-head",
-            self.head_sha,
-        )
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Invalid reused review branch", result.stderr)
-        self.assertEqual(self._fetch_calls(), [])
-        self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "dev")
-        self._assert_clean_status()
+        for name in ("not a branch", "HEAD", "-topic", "@{-1}"):
+            with self.subTest(name=name):
+                result = self._prepare(
+                    "--json", "--reuse-branch", name,
+                    "--expected-head", self.head_sha,
+                )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("Invalid reused review branch", result.stderr)
+                self.assertEqual(self._fetch_calls(), [])
+                self.assertEqual(self._git("branch", "--show-current").stdout.strip(), "dev")
+                self._assert_clean_status()
 
     def test_reuse_branch_rejects_worktree_mode(self) -> None:
         result = self._prepare(
