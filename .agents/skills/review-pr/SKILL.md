@@ -13,6 +13,9 @@ description: 审查 GitHub PR 的准确 head/base diff、关联 issue、CI 和 r
 未提供位置时才检查 [同级安装位置](../review/SKILL.md)。开始 Git 准备前确认依赖可读；
 缺失时可收集获准的只读证据，但不得声称完整代码审查已完成。
 
+审查分支命名依赖同级完整安装的 `git-commit`，只使用其
+[统一命名规范与工具](../git-commit/references/branch-naming.md)；缺失时不执行本地 Git 准备，可继续远程证据审查。
+
 ## 模式与授权
 
 - **默认本地审查**：明确请求审查 PR 时，包含必要的 remote 添加、fetch、安全分支创建或
