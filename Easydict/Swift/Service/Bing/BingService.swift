@@ -220,7 +220,7 @@ class BingService: QueryService {
         logInfo("Bing is fetching text audio: \(text)")
 
         let audioData: Data? = try await withCheckedThrowingContinuation { continuation in
-            bingRequest.fetchTextToAudio(
+            audioRequest.fetchTextToAudio(
                 text: text,
                 fromLanguage: language,
                 accent: accent
@@ -257,4 +257,9 @@ class BingService: QueryService {
         }
         return false
     }
+
+    // MARK: Private
+
+    // Speech and translation must not cancel each other's in-flight requests.
+    private lazy var audioRequest = BingRequest()
 }
