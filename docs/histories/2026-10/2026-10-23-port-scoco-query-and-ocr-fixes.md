@@ -1,6 +1,6 @@
 ## 2026-10-23 | 任务：移植 Scoco 取消注册、测试规则与 OCR 调度修复
 
-**Links:** [执行计划](../../exec-plans/active/2026-10-23-port-scoco-query-and-ocr-fixes.md)
+**Links:** [执行计划](../../exec-plans/completed/2026-10/2026-10-23-port-scoco-query-and-ocr-fixes.md)
 
 ### 执行上下文
 
@@ -23,8 +23,18 @@
 - F2 已完成：来源 `7f219bee2b088c5affef07eddd76a3b00e11b6ea` 的实例规则及
   `03c6c63333df859f408e0422e0dfeb6aed5ac568` 的精简版本。
   根据实际共享资源冲突决定隔离或串行；区分测试宿主和意外重复，保留用户明确多实例例外。
-- F3 待完成，尚未标记为已移植。
+- F3 已完成：语义移植 `bd01b8dc5617415d40d8fc2a2ca3d49761645b65` 的 QR utility +
+  enforceQoS 调度、perform 完成后恢复，以及请求前后取消检查；取消不进入 QR 成功降级。
+  仅适配目标现有单一 QR 入口，保留原始 payload、比较规范化和去重行为。
+- F3 依赖适配：仅取 `34caa5ec396f411aab9427d4d85bfe39d5ad9ba5` 中 AppleService
+  直接 await 引擎的片段，避免目标原回调桥新建 Task 丢失取消状态；不移植其超时和诊断系统。
+  不主动中断正在执行的同步 Vision 请求；完成后丢弃已取消任务的结果。
+- F3 聚合候选处理：`276fa5d1efa211da75763025fa3190ee2f8522a9` 是多调用者结构整理，
+  目标只有单一入口，不复制其命名空间拆分；`a006be94cad18714e80210c75f269cab62c6ceca`
+  提高预热优先级的方案缺少可靠 macOS 因果验证，不标记为已移植，保留现有 utility 预热。
 - F1 目标提交：`2e5b45b6e91cc62404a38cadcb40ef4c4ba71fd4`。
+- F2 目标提交：`9373d0eeafee77273bc4ee0d8689603b37ff172c`。
+- F3 与本 history 的最终更新一同提交，以 `fix(ocr)` 提交定位，完整 SHA 见本次交付回执。
 
 ### 设计意图
 
@@ -57,16 +67,31 @@ Scoco 开发基线为 dev `03c6c63333df859f408e0422e0dfeb6aed5ac568`。
   说明单元测试可由多个应用实例承载；这不证明任意共享偏好或全局快捷键可以无冲突并行。
   本次测试前没有运行中的 Easydict，未实际验证与用户 GUI 实例并行的资源安全性。
 
+- F3 最终源码：`xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict
+  -configuration Debug -destination 'platform=macOS' -derivedDataPath <checkout-agent-derived-data>
+  -enableThreadSanitizer NO -only-testing:EasydictTests/OCRQRCodeTests`，4/4 通过。
+  同配置编译已覆盖；SwiftFormat 无修改，SwiftLint 零 violation，`git diff --check` 通过。
+- F3 review：冻结 F2 提交基线及两份源码 SHA-256，核对 QR 唯一调用者、服务入口、
+  perform/continuation 时序、取消与降级路径、原样 payload 和去重，复验快照一致，无有效 finding。
+  直接 await 和局部调度适配足够，不引入共享检测模块或提高预热优先级。
+- 调度参考：[Apple enforceQoS](https://developer.apple.com/documentation/dispatch/dispatchworkitemflags/enforceqos)
+  优先采用 work item QoS，但不构成目标实际有效 QoS 或所有框架等待告警消失的证明。
+- F3 未新增测试；现有 OCR suite 没有取消专用断言，服务取消传播通过代码审查确认。
+  未复现原始 Thread Performance Checker 场景，未运行 macOS 13–25 legacy Vision 分支；
+  不宣称解决全部 Vision 等待警告或 GUI 操作层的任务生命周期问题。
+
 ### 受影响文件
 
 - `Easydict/Swift/Model/QueryModel.swift`
 - `EasydictTests/Model/QueryModelCancellationTests.swift`
 - `Easydict.xcodeproj/project.pbxproj`
 - `docs/agents/build-and-test.md`
+- `Easydict/Swift/Service/Apple/AppleOCREngine/AppleOCREngine.swift`
+- `Easydict/Swift/Service/Apple/AppleService.swift`
 - 本任务 plan/history。
 
 ### 后续事项
 
-- 继续 F3，并补全提交映射。
+- F1、F2、F3 均已完成；保持三个独立本地提交。预热替代方案不重复列为待执行移植。
 - 完整宿主 TSAN 的既有 Ollama 服务初始化竞争另行处理；本次不扩大修复范围。
 - 尚未集成到本地 dev，不 push；未执行 GUI、真实服务账号或其他 macOS 版本验证。

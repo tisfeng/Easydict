@@ -1,6 +1,6 @@
 # 移植 Scoco 取消注册、测试实例规则和 OCR 调度修复
 
-- 状态：active
+- 状态：completed
 - 创建日期：2026-10-23
 - 负责人：Codex
 - 关联 Issue/PR：none
@@ -23,7 +23,8 @@ Scoco 开发基线为 dev `03c6c63333df859f408e0422e0dfeb6aed5ac568`。
   适配二维码 Vision 阻塞工作 QoS 与取消边界。
 - 允许修改路径：`Easydict/Swift/Model/QueryModel.swift`、`EasydictTests/Model/`、
   `Easydict.xcodeproj/project.pbxproj`、`docs/agents/build-and-test.md`、
-  `Easydict/Swift/Service/Apple/AppleOCREngine/AppleOCREngine.swift` 及本任务 plan/history。
+  `Easydict/Swift/Service/Apple/AppleOCREngine/AppleOCREngine.swift`、
+  `Easydict/Swift/Service/Apple/AppleService.swift` 及本任务 plan/history。
 - 同任务 history：`docs/histories/2026-10/2026-10-23-port-scoco-query-and-ocr-fixes.md`
 - 用户限制：仅本地提交，三组分别交付；不 push、不自动合并 dev，不影响用户主 checkout。
   F1 明确包含相关回归测试；F3 仅运行现有测试，不新增测试。
@@ -47,6 +48,9 @@ Scoco 开发基线为 dev `03c6c63333df859f408e0422e0dfeb6aed5ac568`。
 - stopAllService 原子取走当前快照，之后注册的请求保持有效；同步 ObjC/Swift API 保持不变。
 - 测试使用按 checkout 派生的独立 DerivedData，不改 bundle ID，不退出用户实例。
 - OCR 保留现有 payload 规范化、去重和错误降级；取消不能作为 QR 成功结果返回。
+- 调用链适配补充：目标 AppleService 的回调包装新建不传递取消的 Task；
+  仅移植来源 `34caa5ec396f411aab9427d4d85bfe39d5ad9ba5` 中服务直接 await 引擎的依赖片段，
+  不导入其超时/诊断系统。保留 ObjC 回调 API，不改用户操作的任务所有权。
 - Easydict 只有一个 QR 入口，不复制 Scoco 多调用者的模块拆分。
   fork 提高预热 QoS 的因果假说未获可靠 macOS 复现支持，保留现有预热策略。
 - 构建/测试及调度代码审查不能证明所有 Thread Performance Checker 警告消失。
@@ -60,8 +64,8 @@ Scoco 开发基线为 dev `03c6c63333df859f408e0422e0dfeb6aed5ac568`。
 - [x] 冻结基线与来源，复用干净的独立 worktree 并创建任务分支。
 - [x] F1 实现、验证、review 和本地提交。
 - [x] F2 实现、验证、review 和本地提交。
-- [ ] F3 实现、验证、review 和本地提交。
-- [ ] 归档计划并完成交付回执。
+- [x] F3 实现、验证、review 和本地提交。
+- [x] 归档计划并完成交付回执。
 
 ## 验证
 
@@ -75,7 +79,16 @@ Scoco 开发基线为 dev `03c6c63333df859f408e0422e0dfeb6aed5ac568`。
 - F2：Markdown 相对链接、`git diff --check` 和规则语义检查通过；
   文档 review 无有效 finding。保留独立 DerivedData、bundle ID 不覆盖、用户多实例授权例外、
   进程查询与只清理本任务实例等边界；未把共享资源存在冲突时允许并行写入作为承诺。
-- F3：待验证并记录。
+- F3：最终源码 `xcodebuild test -enableThreadSanitizer NO
+  -only-testing:EasydictTests/OCRQRCodeTests` 4/4 通过，覆盖 QR-only、混合文本、去重、多 QR 和无 QR。
+  同配置构建已覆盖，SwiftFormat 无修改，SwiftLint 零 violation，`git diff --check` 通过。
+- F3 review：对比冻结的 `9373d0eeafee77273bc4ee0d8689603b37ff172c` 基线和两份源码 SHA-256，
+  核对 QR 唯一调用者、AppleService async 入口、错误降级、continuation 只恢复一次、
+  原样 payload 和归一化去重；复验内容未漂移，无有效 finding。直接 await 和局部调度足够，
+  不需要引入多调用者共享模块或改变预热策略。
+- 验证边界：F3 没有新增测试；现有 suite 无取消断言，取消链路通过代码审查确认。
+  未验证原始 Thread Performance Checker 场景，不宣称所有 Vision 等待警告消失；
+  未验证 macOS 13–25 的 legacy Vision 分支和用户 GUI 操作。
 
 ## 完成条件
 
