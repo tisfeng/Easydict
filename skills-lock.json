@@ -3,7 +3,7 @@
   "skills": {
     "code-simplifier": {
       "source": "tisfeng/skills",
-      "ref": "v0.8.0",
+      "ref": "v0.8.1",
       "sourceType": "github",
       "skillPath": "skills/code-simplifier/SKILL.md",
       "computedHash": "59f615935befe37a597770ad6536e504b8b449b6c52ce0b6f6bdbeafadbe3d96"
@@ -17,35 +17,35 @@
     },
     "git-commit": {
       "source": "tisfeng/skills",
-      "ref": "v0.8.0",
+      "ref": "v0.8.1",
       "sourceType": "github",
       "skillPath": "skills/git-commit/SKILL.md",
       "computedHash": "83479cd507030fc9ee5043200e743fc6114688a0738a526604c9dd95269fcc0f"
     },
     "review": {
       "source": "tisfeng/skills",
-      "ref": "v0.8.0",
+      "ref": "v0.8.1",
       "sourceType": "github",
       "skillPath": "skills/review/SKILL.md",
       "computedHash": "4e082e710e59b438fee4242ce77ab87dc0735137d4e65873b88b6ae3b839434e"
     },
     "review-pr": {
       "source": "tisfeng/skills",
-      "ref": "v0.8.0",
+      "ref": "v0.8.1",
       "sourceType": "github",
       "skillPath": "skills/review-pr/SKILL.md",
       "computedHash": "4b1fcdbea7924d48fbb0b9c18f675ec38da3b82bbf435ce3ec341dbd580ad55c"
     },
     "submit-pr": {
       "source": "tisfeng/skills",
-      "ref": "v0.8.0",
+      "ref": "v0.8.1",
       "sourceType": "github",
       "skillPath": "skills/submit-pr/SKILL.md",
-      "computedHash": "109479d10b8817ae78bd960cf21c4379a76677cb290b1d89a03c7f886799fd09"
+      "computedHash": "6b4903eb458c1618c9b3daf36f8472f245447ef32f553e0fc8dc8e69e4e02d27"
     },
     "worktree-rebase-merge": {
       "source": "tisfeng/skills",
-      "ref": "v0.8.0",
+      "ref": "v0.8.1",
       "sourceType": "github",
       "skillPath": "skills/worktree-rebase-merge/SKILL.md",
       "computedHash": "983723230a91e2b96c736003d56d22d1ad9434e2e328d9d4a18d8a0540c17052"

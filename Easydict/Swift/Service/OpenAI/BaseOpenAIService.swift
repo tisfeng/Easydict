@@ -150,8 +150,7 @@ public class BaseOpenAIService: StreamService {
         ChatQuery(
             messages: messages,
             model: model,
-            reasoningEffort: reasoningEffort,
-            temperature: temperature
+            reasoningEffort: reasoningEffort
         )
     }
 
