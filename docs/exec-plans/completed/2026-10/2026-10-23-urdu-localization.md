@@ -69,6 +69,14 @@
 
 ### 2026-10-24 续办验证
 
+- Ready 后自动 review 新增两个线程及各自翻译回复。C1 指出独立贡献分支仍引用
+  `github_models`：已恢复该 key 的全部原始 locale，不添加 Urdu，避免独立分支显示裸 key。
+  该资源与 merge-base 完全相同，合入 dev 时由上游删除；资源审计和模拟 dev 合并均通过。
+  下方“删除 key”的记录为最初修复尝试，不代表最终资源状态。
+- C2 指出方向覆盖仅到 SwiftUI 设置/菜单，AppKit 查询窗口及其他 hosted roots 未覆盖。
+  已核对 `modifyAppLanguage:`、`HostWindowManager` 和固定 left/right 布局，确认是当前已知范围限制，
+  不能把自然文本对齐称为完整窗口镜像；最终正文及交付明确列出，不声称运行时验证通过。
+
 - 完整 threads/replies 为空；唯一 review 是欢迎 bot，无需修复或 resolve 的评论。
 - 初始 PR head 的 5 项 checks 均成功；资源修复提交触发了新一轮检查，不把旧检查归属于最终 head。
 - GitHub PR 元数据中的 base SHA 仍显示旧分叉点，但 fetch 和直接 branch API 确认当前 dev 为

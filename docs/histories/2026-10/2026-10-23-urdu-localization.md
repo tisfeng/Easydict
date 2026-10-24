@@ -140,3 +140,19 @@ review，不表示无法执行的验证已经通过。初始 HEAD 为 `e33aaaaf1
 - 在完整 Xcode 环境补齐应用构建和 LocalizationTests，完成窗口、菜单、权限、混排文本、
   选择/复制、语言切回及浅色/深色检查；附无私人数据的截图并取得独立流利 Urdu 审校。
 - 自动检测、提供商行为、Urdu OCR 和语音可用性仍未验证；没有扩大本次支持承诺。
+
+### Ready 后新增 review 的复核
+
+- Ready 操作触发自动 review，最终刷新发现两个新线程及完整翻译回复。之前“无 actionable 评论”
+  的记录只适用于初始快照；本轮没有发送回复或 resolve 线程。
+- C1：独立贡献分支仍由 `GitHubService` 与 `QueryServiceFactory` 引用 `github_models`。
+  为避免独立分支回退到裸 key，恢复该 key 的原始 locale，保持与 merge-base 完全相同，不修改它的
+  Urdu。最终 diff 因而不再删除任何既有 key；真正合入当前 dev 时沿用上游对该资源的删除。
+  上文删除资源的提交为最初尝试，后续修复采用保留原始 key 的方式。
+- 重跑 JSON/占位符/变量/链接/标记/换行/方向控制符审计通过；全部现存非 Urdu 数据与原始
+  merge-base 相同。归一化去掉上游已删的 legacy key 后，非 Urdu 数据与当前 dev 相同。
+  histogram 模拟合并成功，合并结果不含 legacy key，且其余非 Urdu 数据与当前 dev 一致。
+- C2：确认只有设置/菜单的 SwiftUI 根跟随界面语言方向；AppKit 主/浮动/迷你窗口与其他
+  hosted roots 仍沿用系统/现有布局。自然查询文本对齐不等于界面控件镜像。
+  完整窗口 RTL 镜像作为已知范围限制公开记录，仍需完整 Xcode 环境下实现与视觉验证。
+  不以简单设置根视图属性来宣称固定 left/right 约束和嵌入内容全部镜像。
