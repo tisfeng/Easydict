@@ -26,7 +26,8 @@ typealias BingTranslateCompletion = (
 class BingRequest {
     // MARK: Lifecycle
 
-    init() {
+    init(session: Session = .default) {
+        self.session = session
         self.bingConfig = BingConfig.loadFromUserDefaults()
     }
 
@@ -44,135 +45,27 @@ class BingRequest {
         to: String,
         completionHandler completion: @escaping BingTranslateCompletion
     ) {
-        cancelActiveRequests()
-        resetData()
-        self.from = from
-        self.to = to
-        self.text = text
-        self.completion = completion
+        let context = TranslationContext(completion: completion)
+        beginRequest(context.id)
 
-        fetchBingHost(callback: { [weak self] in
-            guard let self = self else {
-                completion(nil, nil, CancellationError(), nil)
-                return
-            }
-
-            fetchBingConfig { [weak self] in
-                guard let self = self else {
-                    completion(nil, nil, CancellationError(), nil)
-                    return
-                }
-
-                let parameters: [String: Any] = [
-                    "text": text,
-                    "to": to,
-                    "token": bingConfig.token ?? "",
-                    "key": bingConfig.key ?? "",
-                ]
-
-                // Get translate data
-                var translateParameters = parameters
-                translateParameters["fromLang"] = from
-                translateParameters["tryFetchingGenderDebiasedTranslations"] = "true"
-
-                let translateRequest = makeTranslateRequest(
-                    url: bingConfig.ttranslatev3URLString,
-                    parameters: translateParameters
-                )
-                translateRequest.responseData { [weak self] response in
-                    guard let self = self else { return }
-                    untrackRequest(translateRequest)
-
-                    if let error = response.error {
-                        if isCancelledError(error) {
-                            translateError = CancellationError()
-                            executeCallback()
-                            return
-                        }
-
-                        // if this problem occurs, you can try switching networks
-                        // if you use a VPN, you can try replacing nodes，or try adding `bing.com` into a direct rule
-                        // https://immersivetranslate.com/docs/faq/#429-%E9%94%99%E8%AF%AF
-                        if response.response?.statusCode == 429 {
-                            translateError = QueryError(
-                                type: .api,
-                                message: "429 error, Bing translate too many requests"
-                            )
-                        } else {
-                            translateError = error
-                        }
-                        executeCallback()
-                        return
-                    }
-
-                    guard let data = response.data else {
-                        translateError = QueryError(
-                            type: .api,
-                            message: "bing translate responseObject is not Data"
-                        )
-                        executeCallback()
-                        return
-                    }
-
-                    translateData = data
-                    executeCallback()
-                }
-
-                // Get lookup data
-                var dictParameters = parameters
-                dictParameters["from"] = from
-
-                let lookupRequest = makeTranslateRequest(
-                    url: bingConfig.tlookupv3URLString,
-                    parameters: dictParameters
-                )
-                lookupRequest.responseData { [weak self] response in
-                    guard let self = self else { return }
-                    untrackRequest(lookupRequest)
-
-                    if let error = response.error {
-                        if isCancelledError(error) {
-                            lookupError = CancellationError()
-                            executeCallback()
-                            return
-                        }
-
-                        logError("bing lookup error: \(error)")
-                        lookupError = error
-                        executeCallback()
-                        return
-                    }
-
-                    guard let data = response.data else {
-                        lookupError = QueryError(type: .api, message: "bing lookup responseObject is not Data")
-                        executeCallback()
-                        return
-                    }
-
-                    lookupData = data
-                    executeCallback()
-                }
-            } failure: { error in
-                completion(nil, nil, error, nil)
-            }
-        }, failure: { error in
-            completion(nil, nil, error, nil)
-        })
+        startTranslation(text: text, from: from, to: to, context: context, canRetryFetchHost: true)
     }
 
     func fetchTextToAudio(
         text: String,
         fromLanguage from: Language,
         accent: String?,
+        requestID: UUID? = nil,
         completion: @escaping (Data?, Error?) -> ()
     ) {
-        fetchBingHost(callback: { [weak self] in
+        let requestID = requestID ?? beginRequest()
+        fetchBingHost(requestID: requestID, callback: { [weak self] in
             guard let self = self else {
                 completion(nil, CancellationError())
                 return
             }
 
-            fetchBingConfig { [weak self] in
+            fetchBingConfig(requestID: requestID) { [weak self] in
                 guard let self = self else {
                     completion(nil, CancellationError())
                     return
@@ -185,16 +78,24 @@ class BingRequest {
                     "key": bingConfig.key ?? "",
                 ]
 
-                let request = makeTTSRequest(
+                guard let request = makeTTSRequest(
                     url: bingConfig.tfetttsURLString,
-                    parameters: parameters
-                )
+                    parameters: parameters,
+                    requestID: requestID
+                ) else {
+                    completion(nil, CancellationError())
+                    return
+                }
                 request.responseData { [weak self] response in
                     guard let self = self else {
                         completion(nil, CancellationError())
                         return
                     }
                     untrackRequest(request)
+                    guard isCurrentTranslation(requestID) else {
+                        completion(nil, CancellationError())
+                        return
+                    }
 
                     if let error = response.error {
                         if isCancelledError(error) {
@@ -217,7 +118,10 @@ class BingRequest {
                         bingConfig.host = host
                         bingConfig.saveToUserDefaults()
 
-                        fetchTextToAudio(text: text, fromLanguage: from, accent: accent, completion: completion)
+                        fetchTextToAudio(
+                            text: text, fromLanguage: from, accent: accent,
+                            requestID: requestID, completion: completion
+                        )
                     } else {
                         completion(nil, nil)
                     }
@@ -234,22 +138,31 @@ class BingRequest {
         text: String,
         completion: @escaping ([String: Any]?, Error?) -> ()
     ) {
-        fetchBingHost(callback: { [weak self] in
+        let requestID = beginRequest()
+        fetchBingHost(requestID: requestID, callback: { [weak self] in
             guard let self = self else {
                 completion(nil, CancellationError())
                 return
             }
 
-            let request = makeDictTranslateRequest(
+            guard let request = makeDictTranslateRequest(
                 url: bingConfig.dictTranslateURLString,
-                parameters: ["q": text]
-            )
+                parameters: ["q": text],
+                requestID: requestID
+            ) else {
+                completion(nil, CancellationError())
+                return
+            }
             request.responseData { [weak self] response in
                 guard let self = self else {
                     completion(nil, CancellationError())
                     return
                 }
                 untrackRequest(request)
+                guard isCurrentTranslation(requestID) else {
+                    completion(nil, CancellationError())
+                    return
+                }
 
                 if let error = response.error {
                     if isCancelledError(error) {
@@ -277,13 +190,13 @@ class BingRequest {
     func reset() {
         cancelActiveRequests()
         bingConfig.resetToken()
-        resetData()
     }
 
     func cancelActiveRequests() {
         activeRequestLock.lock()
         let requests = activeRequests
         activeRequests.removeAll()
+        translationID = nil
         activeRequestLock.unlock()
 
         for request in requests {
@@ -293,51 +206,251 @@ class BingRequest {
 
     // MARK: Private
 
+    // Responses arrive on the main queue; each query owns its completion.
+    private final class TranslationContext {
+        // MARK: Lifecycle
+
+        init(completion: @escaping BingTranslateCompletion) {
+            self.completion = completion
+        }
+
+        // MARK: Internal
+
+        let id = UUID()
+        var translateData: Data?
+        var lookupData: Data?
+        var translateError: Error?
+        var lookupError: Error?
+        var responseCount = 0
+
+        func finish(_ translateData: Data?, _ lookupData: Data?, _ translateError: Error?, _ lookupError: Error?) {
+            completionLock.lock()
+            let callback = completion
+            completion = nil
+            completionLock.unlock()
+            callback?(translateData, lookupData, translateError, lookupError)
+        }
+
+        func resetResponses() {
+            translateData = nil
+            lookupData = nil
+            translateError = nil
+            lookupError = nil
+            responseCount = 0
+        }
+
+        // MARK: Private
+
+        private let completionLock = NSLock()
+        private var completion: BingTranslateCompletion?
+    }
+
     // MARK: - Private Properties
 
-    private var translateData: Data?
-    private var lookupData: Data?
-    private var translateError: Error?
-    private var lookupError: Error?
-    private var responseCount = 0
-
-    private var from: String = ""
-    private var to: String = ""
-    private var text: String = ""
-    private var completion: BingTranslateCompletion?
-
-    private var canRetryFetchHost = true
+    private var translationID: UUID?
+    private let session: Session
     private let activeRequestLock = NSLock()
     private var activeRequests: [Request] = []
 
-    // MARK: - Private Methods
-
-    private func executeCallback() {
-        responseCount += 1
-        if responseCount >= 2 {
-            // Through testing, after switching to a different IP in a different country, the previous host might not return an error, but data is empty.
-            // So we need to re-fetch the host.
-            // But this scenario is not guaranteed to be a host issue, so retry once.
-            if canRetryFetchHost,
-               translateData != nil, translateData?.isEmpty == true,
-               lookupData != nil, lookupData?.isEmpty == true {
-                reset()
-                canRetryFetchHost = false
-                bingConfig.host = nil
-                bingConfig.saveToUserDefaults()
-                translateText(text: text, from: from, to: to, completionHandler: completion ?? { _, _, _, _ in })
+    private func startTranslation(
+        text: String,
+        from: String,
+        to: String,
+        context: TranslationContext,
+        canRetryFetchHost: Bool
+    ) {
+        let completion: BingTranslateCompletion =
+            { [weak self] translateData, lookupData, translateError, lookupError in
+                guard let self, isCurrentTranslation(context.id) else {
+                    context.finish(nil, nil, CancellationError(), nil)
+                    return
+                }
+                context.finish(translateData, lookupData, translateError, lookupError)
+            }
+        let executeCallback = { [weak self] in
+            guard let self else {
+                completion(nil, nil, CancellationError(), nil)
+                return
+            }
+            context.responseCount += 1
+            guard context.responseCount == 2 else { return }
+            guard isCurrentTranslation(context.id) else {
+                completion(nil, nil, CancellationError(), nil)
                 return
             }
 
-            if let completion = completion {
-                completion(translateData, lookupData, translateError, lookupError)
-                canRetryFetchHost = true
+            // An empty response pair can indicate a stale host after a network change.
+            if canRetryFetchHost,
+               context.translateData?.isEmpty == true,
+               context.lookupData?.isEmpty == true {
+                bingConfig.resetToken()
+                bingConfig.host = nil
+                bingConfig.saveToUserDefaults()
+                context.resetResponses()
+                startTranslation(text: text, from: from, to: to, context: context, canRetryFetchHost: false)
+                return
             }
-            resetData()
+            completion(context.translateData, context.lookupData, context.translateError, context.lookupError)
         }
+
+        let requestID = context.id
+        fetchBingHost(requestID: requestID, callback: { [weak self] in
+            guard let self = self else {
+                completion(nil, nil, CancellationError(), nil)
+                return
+            }
+
+            guard isCurrentTranslation(context.id) else {
+                completion(nil, nil, CancellationError(), nil)
+                return
+            }
+
+            fetchBingConfig(requestID: requestID) { [weak self] in
+                guard let self = self else {
+                    completion(nil, nil, CancellationError(), nil)
+                    return
+                }
+
+                guard isCurrentTranslation(context.id) else {
+                    completion(nil, nil, CancellationError(), nil)
+                    return
+                }
+
+                let parameters: [String: Any] = [
+                    "text": text,
+                    "to": to,
+                    "token": bingConfig.token ?? "",
+                    "key": bingConfig.key ?? "",
+                ]
+
+                // Get translate data
+                var translateParameters = parameters
+                translateParameters["fromLang"] = from
+                translateParameters["tryFetchingGenderDebiasedTranslations"] = "true"
+
+                guard let translateRequest = makeTranslateRequest(
+                    url: bingConfig.ttranslatev3URLString,
+                    parameters: translateParameters,
+                    requestID: requestID
+                ) else {
+                    completion(nil, nil, CancellationError(), nil)
+                    return
+                }
+                translateRequest.responseData { [weak self] response in
+                    guard let self = self else {
+                        completion(nil, nil, CancellationError(), nil)
+                        return
+                    }
+                    untrackRequest(translateRequest)
+
+                    if let error = response.error {
+                        if isCancelledError(error) {
+                            context.translateError = CancellationError()
+                            executeCallback()
+                            return
+                        }
+
+                        // if this problem occurs, you can try switching networks
+                        // if you use a VPN, you can try replacing nodes，or try adding `bing.com` into a direct rule
+                        // https://immersivetranslate.com/docs/faq/#429-%E9%94%99%E8%AF%AF
+                        if response.response?.statusCode == 429 {
+                            context.translateError = QueryError(
+                                type: .api,
+                                message: "429 error, Bing translate too many requests"
+                            )
+                        } else {
+                            context.translateError = error
+                        }
+                        executeCallback()
+                        return
+                    }
+
+                    guard let data = response.data else {
+                        context.translateError = QueryError(
+                            type: .api,
+                            message: "bing translate responseObject is not Data"
+                        )
+                        executeCallback()
+                        return
+                    }
+
+                    context.translateData = data
+                    executeCallback()
+                }
+
+                // Get lookup data
+                var dictParameters = parameters
+                dictParameters["from"] = from
+
+                guard let lookupRequest = makeTranslateRequest(
+                    url: bingConfig.tlookupv3URLString,
+                    parameters: dictParameters,
+                    requestID: requestID
+                ) else {
+                    completion(nil, nil, CancellationError(), nil)
+                    return
+                }
+                lookupRequest.responseData { [weak self] response in
+                    guard let self = self else {
+                        completion(nil, nil, CancellationError(), nil)
+                        return
+                    }
+                    untrackRequest(lookupRequest)
+
+                    if let error = response.error {
+                        if isCancelledError(error) {
+                            context.lookupError = CancellationError()
+                            executeCallback()
+                            return
+                        }
+
+                        logError("bing lookup error: \(error)")
+                        context.lookupError = error
+                        executeCallback()
+                        return
+                    }
+
+                    guard let data = response.data else {
+                        context.lookupError = QueryError(type: .api, message: "bing lookup responseObject is not Data")
+                        executeCallback()
+                        return
+                    }
+
+                    context.lookupData = data
+                    executeCallback()
+                }
+            } failure: { error in
+                completion(nil, nil, error, nil)
+            }
+        }, failure: { error in
+            completion(nil, nil, error, nil)
+        })
     }
 
-    private func fetchBingHost(callback: @escaping () -> (), failure: @escaping (Error) -> ()) {
+    // MARK: - Private Methods
+
+    @discardableResult
+    private func beginRequest(_ id: UUID = UUID()) -> UUID {
+        activeRequestLock.lock()
+        let requests = activeRequests
+        activeRequests.removeAll()
+        translationID = id
+        activeRequestLock.unlock()
+        requests.forEach { $0.cancel() }
+        return id
+    }
+
+    private func isCurrentTranslation(_ id: UUID) -> Bool {
+        activeRequestLock.lock()
+        defer { activeRequestLock.unlock() }
+        return translationID == id
+    }
+
+    private func fetchBingHost(requestID: UUID, callback: @escaping () -> (), failure: @escaping (Error) -> ()) {
+        guard isCurrentTranslation(requestID) else {
+            failure(CancellationError())
+            return
+        }
         if bingConfig.host != nil {
             callback()
             return
@@ -346,13 +459,20 @@ class BingRequest {
         // For www.bing.com, sometimes it won't return redirect URL, so we use cn.bing.com
         let webBingURLString = "http://\(BingConfig.chinaHost)"
 
-        let request = makeTranslateRequest(url: webBingURLString)
+        guard let request = makeTranslateRequest(url: webBingURLString, requestID: requestID) else {
+            failure(CancellationError())
+            return
+        }
         request.responseData { [weak self] response in
             guard let self = self else {
                 failure(CancellationError())
                 return
             }
             untrackRequest(request)
+            guard isCurrentTranslation(requestID) else {
+                failure(CancellationError())
+                return
+            }
 
             if let error = response.error {
                 if isCancelledError(error) {
@@ -374,20 +494,31 @@ class BingRequest {
         }
     }
 
-    private func fetchBingConfig(callback: @escaping () -> (), failure: @escaping (Error) -> ()) {
+    private func fetchBingConfig(requestID: UUID, callback: @escaping () -> (), failure: @escaping (Error) -> ()) {
+        guard isCurrentTranslation(requestID) else {
+            failure(CancellationError())
+            return
+        }
         if !bingConfig.isBingTokenExpired() {
             callback()
             return
         }
 
         let url = bingConfig.translatorURLString
-        let request = makeHTMLRequest(url: url)
+        guard let request = makeHTMLRequest(url: url, requestID: requestID) else {
+            failure(CancellationError())
+            return
+        }
         request.responseData { [weak self] response in
             guard let self = self else {
                 failure(CancellationError())
                 return
             }
             untrackRequest(request)
+            guard isCurrentTranslation(requestID) else {
+                failure(CancellationError())
+                return
+            }
 
             if let error = response.error {
                 if isCancelledError(error) {
@@ -458,67 +589,67 @@ class BingRequest {
         }
     }
 
-    private func resetData() {
-        translateData = nil
-        lookupData = nil
-        translateError = nil
-        lookupError = nil
-        responseCount = 0
-    }
-
     @discardableResult
     private func makeHTMLRequest(
         url: String,
-        parameters: Parameters? = nil
+        parameters: Parameters? = nil,
+        requestID: UUID
     )
-        -> DataRequest {
+        -> DataRequest? {
         makeRequest(
             url: url,
             method: .get,
             parameters: parameters,
-            headers: requestHeaders()
+            headers: requestHeaders(),
+            requestID: requestID
         )
     }
 
     @discardableResult
     private func makeTranslateRequest(
         url: String,
-        parameters: Parameters? = nil
+        parameters: Parameters? = nil,
+        requestID: UUID
     )
-        -> DataRequest {
+        -> DataRequest? {
         makeRequest(
             url: url,
             method: parameters == nil ? .get : .post,
             parameters: parameters,
-            headers: requestHeaders(includeCookie: true)
+            headers: requestHeaders(includeCookie: true),
+            requestID: requestID
         )
     }
 
     @discardableResult
     private func makeTTSRequest(
         url: String,
-        parameters: Parameters
+        parameters: Parameters,
+        requestID: UUID
     )
-        -> DataRequest {
+        -> DataRequest? {
         makeRequest(
             url: url,
             method: .post,
             parameters: parameters,
-            headers: requestHeaders(includeCookie: true)
+            headers: requestHeaders(includeCookie: true),
+            requestID: requestID
         )
     }
 
     @discardableResult
     private func makeDictTranslateRequest(
         url: String,
-        parameters: Parameters
+        parameters: Parameters,
+        requestID: UUID
     )
-        -> DataRequest {
+        -> DataRequest? {
         makeRequest(
             url: url,
             method: .get,
             parameters: parameters,
-            headers: requestHeaders(includeCookie: true)
+            headers: requestHeaders(includeCookie: true),
+            requestID: requestID
         )
     }
 
@@ -527,11 +658,15 @@ class BingRequest {
         url: String,
         method: HTTPMethod,
         parameters: Parameters? = nil,
-        headers: HTTPHeaders
+        headers: HTTPHeaders,
+        requestID: UUID
     )
-        -> DataRequest {
+        -> DataRequest? {
+        activeRequestLock.lock()
+        defer { activeRequestLock.unlock() }
+        guard translationID == requestID else { return nil }
         let encoding: ParameterEncoding = method == .get ? URLEncoding.default : URLEncoding.httpBody
-        let request = AF.request(
+        let request = session.request(
             url,
             method: method,
             parameters: parameters,
@@ -543,7 +678,7 @@ class BingRequest {
         )
         .validate(statusCode: 200 ..< 300)
 
-        trackRequest(request)
+        activeRequests.append(request)
         return request
     }
 
@@ -560,13 +695,10 @@ class BingRequest {
     }
 
     private func isCancelledError(_ error: Error) -> Bool {
-        (error as NSError).code == NSURLErrorCancelled
-    }
-
-    private func trackRequest(_ request: Request) {
-        activeRequestLock.lock()
-        activeRequests.append(request)
-        activeRequestLock.unlock()
+        if let error = error as? AFError {
+            return error.isExplicitlyCancelledError || error.underlyingError.map(isCancelledError) == true
+        }
+        return error is CancellationError || (error as? URLError)?.code == .cancelled
     }
 
     private func untrackRequest(_ request: Request) {

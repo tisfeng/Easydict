@@ -6,9 +6,11 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+@testable import Easydict
+import NaturalLanguage
 import Testing
 
-@testable import Easydict
+// MARK: - AppleLanguageDetectorTests
 
 /// Comprehensive tests for Apple Language Detection with intelligent corrections
 ///
@@ -22,6 +24,14 @@ import Testing
 @Suite("Apple Language Detector", .tags(.apple, .unit))
 struct AppleLanguageDetectorTests {
     // MARK: Internal
+
+    @Test("Stops mixed-script detection after one secondary pass", .tags(.apple, .unit))
+    func boundsMixedScriptDetection() {
+        let detector = LanguageDetectorStub(probabilities: [[.english: 1], [.english: 1]])
+
+        #expect(detector.detectLanguage(text: "hi 中文") == .english)
+        #expect(detector.inputs == ["hi 中文", "中文"])
+    }
 
     // MARK: - Pure Language Detection Tests
 
@@ -601,4 +611,29 @@ struct AppleLanguageDetectorTests {
 
     /// The detector instance used across all tests
     private let detector = AppleLanguageDetector()
+}
+
+// MARK: - LanguageDetectorStub
+
+private final class LanguageDetectorStub: AppleLanguageDetector {
+    // MARK: Lifecycle
+
+    init(probabilities: [[NLLanguage: Double]]) {
+        self.probabilities = probabilities
+        super.init(enableClassicalChineseDetection: false)
+    }
+
+    // MARK: Internal
+
+    private(set) var inputs: [String] = []
+
+    override func detectLanguageDict(text: String) -> [NLLanguage: Double] {
+        inputs.append(text)
+        let index = inputs.count - 1
+        return probabilities.indices.contains(index) ? probabilities[index] : [:]
+    }
+
+    // MARK: Private
+
+    private let probabilities: [[NLLanguage: Double]]
 }
