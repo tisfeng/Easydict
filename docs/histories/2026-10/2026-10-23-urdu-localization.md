@@ -77,3 +77,66 @@ Bing 有 `ur-PK` 声音配置，实际可用性未调用验证，Apple 语音仍
   review finding；CodeQL scope/greeting 成功，Swift 分析与 GitGuardian 当时仍在运行，后续以 PR 为准。
 - 补齐完整 Xcode 构建/宿主测试、真实界面和 web 内容检查、复制/光标行为、截图及独立流利 Urdu 审校。
 - 语音的系统声音匹配和回退行为可另行核查；本次没有修改或承诺 Urdu OCR/TTS 支持。
+
+## 2026-10-24 | 任务：更新 Urdu PR 并标记 Ready for review
+
+**Links:** [PR #1374](https://github.com/tisfeng/Easydict/pull/1374) ·
+[执行计划](../../exec-plans/completed/2026-10/2026-10-23-urdu-localization.md)
+
+### 执行上下文
+
+- **Agent Name:** `Codex`
+- **Model:** `GPT-6`
+- **Environment:** `macOS 27.0.1 / Xcode Unknown (Unknown)`
+
+### 用户请求
+
+更新现有 Urdu PR，检查 diff、CI 和完整 review 评论，修复范围内问题并提交、普通推送现有 fork
+分支；明确要求改为 Ready for review，保留所有真实验证限制，不新建 PR、不合并、不发布。
+
+### 变更
+
+- 删除 `github_models` catalog 条目，尊重当前 dev 已移除该服务的资源决策；没有恢复服务代码，
+  没有合并或 rebase dev。其余 catalog 删除 `ur` 后与当前 dev 完全相同。
+- 使用既有 identity `AlleyNawaz <AlleyNawaz@gmail.com>` 创建并普通推送资源修复提交
+  `3d1d9f991101463bc19c3c1e0746596e0896df1c`。
+- 同一 PR 已改为 Ready for review，正文同步 565/565 主目录与 4/4 metadata 的覆盖率及当前限制，
+  删除旧的 Draft 前置要求。读回确认正文完全一致、OPEN、非 Draft 和准确贡献分支。
+- 续用并归档同任务 plan，保留首次交付历史；本记录提交后仍需普通推送并复验最终远程 head/CI。
+
+### 设计意图
+
+只解决本地化目录与已删除资源的冲突，沿用现有语言注册和平台自然方向机制。Ready 表示请求
+review，不表示无法执行的验证已经通过。初始 HEAD 为 `e33aaaaf14fbd4ae961fbe6ebfb35638ac9fccac`，
+索引和工作树为空，没有覆盖或携带无关本地变更。
+
+### 验证
+
+- 初始完整 review threads/replies 为 0，只有欢迎 bot review；初始 head 的 5 项 checks 成功。
+- fetch 和直接 branch API 确认 dev 为 `3843ffdd46ac63aada494dcb4f63adf06aec04c3`；
+  PR 元数据仍显示旧 base SHA，真实 merge-base 为 `8d80bfa219dde99c9c1f2760b59b2df72ad4adef`。
+- 对当前 dev 重跑既有 JSON 审计：565/565 主目录（50 个技术/品牌值相同）、4/4 metadata
+  （2 个 bundle 名称相同），非空、去重、占位符、变量、链接、标记、换行及方向控制符检查通过；
+  删除 `ur` 后与当前 dev 相同。
+- `jq -e .`、`plutil -lint`、Swift 语法解析、工程对象范围及 `git diff --check` 通过。
+- 使用实际 LanguageState/I18nHelper 源码重新编译并运行既有隔离程序：Urdu 标识往返、
+  ur/ur-PK/ur-IN 匹配和全部 7 种界面语言方向通过；不是应用构建或 hosted tests。
+- `git merge-file --diff-algorithm=histogram` 与提交后的完整 `git merge-tree --write-tree`
+  成功；GitHub 读回 `mergeable: true`。分支仍落后 dev，没有进行 base 集成。
+- workspace build 和 LocalizationTests 都因只有 Command Line Tools 被入口阻塞。
+  早先平台探针未重跑，应用 GUI、视觉、复制、光标、截图和独立流利 Urdu 审校仍未验证。
+- 手动检查：按 review 技能复查资源值和受影响入口、测试、工程引用，未发现确认的未修复缺陷。
+- 资源修复提交的初次 CI 查询：CodeQL scope 成功，其余排队或运行；不把初始 head 的成功结果
+  声称为最终 head 通过。最终 head、CI 和最新评论由提交后远程查询确认并在回复中报告。
+
+### 受影响文件
+
+- `Easydict/App/Localizable.xcstrings`
+- `docs/exec-plans/completed/2026-10/2026-10-23-urdu-localization.md`
+- `docs/histories/2026-10/2026-10-23-urdu-localization.md`
+
+### 后续事项
+
+- 在完整 Xcode 环境补齐应用构建和 LocalizationTests，完成窗口、菜单、权限、混排文本、
+  选择/复制、语言切回及浅色/深色检查；附无私人数据的截图并取得独立流利 Urdu 审校。
+- 自动检测、提供商行为、Urdu OCR 和语音可用性仍未验证；没有扩大本次支持承诺。

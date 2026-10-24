@@ -34,12 +34,19 @@
 3. 检查完整性、格式、占位符、链接和现有语言不变性；添加聚焦行为回归测试。
 4. 运行可用验证并按 review 技能审查最终 diff。
 5. 记录真实验证限制，提交、推送 fork 并交付可审查结果。
+6. 2026-10-24 续办：复查现有 PR、CI 和完整评论，移除与最新 dev 冲突的退役
+   `github_models` 资源，重跑可用验证，使用现有 identity 提交并普通推送同一分支。
+7. 按用户新授权将现有 PR 标记 Ready for review，更新正文并保留构建、运行时、截图与独立
+   Urdu 审校限制；复验远程身份、head 和可用 CI，不合并、不发布。
 
 ## 风险与决策
 
 - 本机只有 Command Line Tools，没有完整 Xcode；构建、宿主测试和修改后应用的 GUI 验证可能受阻。
 - 界面语言和翻译源/目标语言独立，保留所有服务能力与语言检测逻辑。
 - 不插入隐藏方向字符、不反转字符串，使用平台自然段落方向和语义布局。
+- 2026-10-24：初始工作树和索引为空，HEAD 为 `e33aaaaf14fbd4ae961fbe6ebfb35638ac9fccac`。
+  本轮仅允许修改主 catalog 和同任务 plan/history；不新增测试或集成其他 dev 变更。
+  用户明确要求 Ready for review，覆盖首次交付时使用 Draft 的要求；不以 Ready 状态代表验证完成。
 - 工作术语：Settings＝ترتیبات；Translation＝ترجمہ；Translate＝ترجمہ کریں；
   Source language＝ماخذ زبان；Target language＝ہدف زبان；History＝سابقہ سرگرمیاں；
   Favorites＝پسندیدہ؛ Cancel＝منسوخ کریں；Close＝بند کریں；Save＝محفوظ کریں；
@@ -51,8 +58,37 @@
 - [x] 翻译和运行时注册。
 - [x] 完成可用验证和审查；Xcode 与应用 GUI 验证受环境阻塞。
 - [x] 已提交、推送 fork 并创建 Draft PR #1374；完成 history 和归档。
+- [x] 2026-10-24：复查 PR、完整 threads/replies 与 CI；无开放线程，仅有欢迎 bot review，
+  已报告的 5 项 checks 成功。
+- [x] 移除退役资源，完成当前快照验证、审查和提交，普通推送
+  `3d1d9f991101463bc19c3c1e0746596e0896df1c`。
+- [x] 更新现有 PR 正文并标记 Ready；读回确认 OPEN、非 Draft、准确 base/head 与正文，
+  GitHub 已报告可合并。完成本记录后再普通推送文档提交，并在最终回复前复验最新 head 和 CI。
 
 ## 验证
+
+### 2026-10-24 续办验证
+
+- 完整 threads/replies 为空；唯一 review 是欢迎 bot，无需修复或 resolve 的评论。
+- 初始 PR head 的 5 项 checks 均成功；资源修复提交触发了新一轮检查，不把旧检查归属于最终 head。
+- GitHub PR 元数据中的 base SHA 仍显示旧分叉点，但 fetch 和直接 branch API 确认当前 dev 为
+  `3843ffdd46ac63aada494dcb4f63adf06aec04c3`，真实 merge-base 仍为 `8d80bfa2`。
+- 删除上游已移除的 `github_models` 后，主 catalog 覆盖为 565/565，保留 50 个技术/品牌值；
+  metadata 仍为 4/4。JSON 去重、占位符、变量、链接、标记、换行和隐藏方向控制符审计通过。
+  从两个 catalog 删除 `ur` 后与 fetch 的当前 dev 完全相同。
+- `jq -e .`、`plutil -lint`、Swift 语法解析、工程对象范围检查及 `git diff --check` 通过。
+  实际 LanguageState/I18nHelper 源码的既有隔离程序重新编译并运行通过；未新增或扩写测试。
+- `git merge-file` 的默认 diff 算法把相邻 Gemini Urdu 插入误报为冲突；显式 histogram 算法
+  成功，结果等于当前 catalog。提交后的 `git merge-tree --write-tree` 对完整 dev/head 返回成功，
+  GitHub 亦报告 `mergeable: true`，不是仅凭 JSON 相同声称冲突消除。
+- workspace build 与 LocalizationTests 的调用均在入口被缺少完整 Xcode 阻塞；不视为构建或
+  测试成功。没有重跑早先 AppKit/CoreText 探针，应用 GUI、复制、截图与独立 Urdu 审校仍未完成。
+- review 技能复查全部资源值、语言注册、SwiftUI 布局、自然段落对齐及既有测试与工程引用；
+  本轮删除与当前 dev 一致，无确认的未修复 finding。沿用现有架构已足够，无需扩展产品逻辑。
+- 用户授权的普通 push、Ready 操作及正文更新成功；读回身份、非 Draft 状态和完整正文一致。
+  资源修复提交的初次 CI 查询为 scope 成功、其余运行或排队中，后续状态以最终远程查询为准。
+
+### 首次交付验证
 
 - `sw_vers -productVersion`：27.0.1。
 - `xcodebuild -version`：失败，当前开发目录只有 Command Line Tools。
