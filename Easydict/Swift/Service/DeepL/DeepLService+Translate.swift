@@ -52,17 +52,16 @@ extension DeepLService {
 
             let appVersion = await DeepLWebAppVersionProvider.shared.currentVersion()
             updateResultLock.withLock {
-                guard generation == resultGeneration, !Task.isCancelled else {
+                guard generation == self.resultGeneration, !Task.isCancelled else {
                     completion(QueryResult(), CancellationError())
                     return
                 }
-                webTranslationTask = nil
-                performDeepLWebTranslate(
+                self.webTranslationTask = nil
+                self.performDeepLWebTranslate(
                     text,
                     from: from,
                     to: to,
-                    appVersion: appVersion,
-                    generation: generation,
+                    context: DeepLWebTranslationContext(appVersion: appVersion, generation: generation),
                     completion: completion
                 )
             }
@@ -73,8 +72,7 @@ extension DeepLService {
         _ text: String,
         from: Language,
         to: Language,
-        appVersion: String,
-        generation: UInt,
+        context: DeepLWebTranslationContext,
         completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
         let sourceLanguageCode = languageCode(for: from) ?? "auto"
@@ -95,7 +93,7 @@ extension DeepLService {
             appInformation: DeepLAppInformation(
                 os: "iOS",
                 osVersion: kDeepLWebOSVersion,
-                appVersion: appVersion,
+                appVersion: context.appVersion,
                 appBuild: kDeepLWebAppBuild,
                 instanceID: kDeepLWebInstanceID
             )
@@ -115,7 +113,7 @@ extension DeepLService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("None", forHTTPHeaderField: "Authorization")
         request.setValue(
-            deepLWebUserAgent(appVersion: appVersion),
+            deepLWebUserAgent(appVersion: context.appVersion),
             forHTTPHeaderField: "User-Agent"
         )
         request.setValue(kDeepLWebOSVersion, forHTTPHeaderField: "x-app-os-version")
@@ -137,7 +135,7 @@ extension DeepLService {
 
             updateResultLock.lock()
             defer { updateResultLock.unlock() }
-            guard generation == resultGeneration, activeDataRequest === dataRequest else {
+            guard context.generation == resultGeneration, activeDataRequest === dataRequest else {
                 completion(QueryResult(), CancellationError())
                 return
             }
@@ -155,7 +153,7 @@ extension DeepLService {
                 let useOfficialAPI = !Defaults[.deepLAuth].isEmpty &&
                     (Defaults[.deepLTranslation] == .webFirst)
                 if useOfficialAPI {
-                    deepLTranslate(text, from: from, to: to, generation: generation, completion: completion)
+                    deepLTranslate(text, from: from, to: to, generation: context.generation, completion: completion)
                     return
                 }
 
@@ -346,6 +344,13 @@ extension DeepLService {
         default: return languageCode.lowercased()
         }
     }
+}
+
+// MARK: - DeepLWebTranslationContext
+
+private struct DeepLWebTranslationContext {
+    let appVersion: String
+    let generation: UInt
 }
 
 private func deepLWebUserAgent(appVersion: String) -> String {

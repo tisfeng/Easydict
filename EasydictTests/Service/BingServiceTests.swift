@@ -123,10 +123,12 @@ struct BingServiceTests {
     }
 
     private func makeTranslateData(_ translatedText: String) throws -> Data {
-        try JSONSerialization.data(withJSONObject: [[
-            "detectedLanguage": ["language": "en", "score": 1.0],
-            "translations": [["text": translatedText, "to": "zh-Hans"]],
-        ]])
+        try JSONSerialization.data(withJSONObject: [
+            [
+                "detectedLanguage": ["language": "en", "score": 1.0],
+                "translations": [["text": translatedText, "to": "zh-Hans"]],
+            ],
+        ])
     }
 
     private func makeNetworkRequest() -> (BingRequest, Session, String, BingRequestChannel) {
@@ -169,9 +171,9 @@ private final class BingRequestChannel {
 private final class BingURLProtocol: URLProtocol, @unchecked Sendable {
     // MARK: Internal
 
-    override class func canInit(with _: URLRequest) -> Bool { true }
+    override static func canInit(with _: URLRequest) -> Bool { true }
 
-    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override static func canonicalRequest(for request: URLRequest) -> URLRequest { request }
 
     override func startLoading() {
         Self.channelLock.lock()

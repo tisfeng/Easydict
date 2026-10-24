@@ -542,7 +542,11 @@ open class QueryService: NSObject {
     private var cachedLanguages: [Language]?
     private var languageFromStringDict: [String: Language]?
     private var languageIndexDict: [Language: NSNumber]?
+}
 
+// MARK: - QueryService Private Implementation
+
+extension QueryService {
     /// Keeps preprocessing and stream creation in the originating query generation.
     /// The synchronous prehandle core writes shared result fields, so it uses the
     /// same lock as reset. No lock is held while awaiting stream output.
