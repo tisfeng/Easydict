@@ -52,7 +52,6 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepSeek;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeGroq;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeZhipu;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeMiniMax;
-FOUNDATION_EXPORT EZServiceType const EZServiceTypeGitHub;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeDoubao;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeClaudeCode;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeClaude;

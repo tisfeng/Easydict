@@ -78,7 +78,8 @@ base branch、GitHub default branch 和重复传入的 `--protected-branch` 都�
 ## 固定 PR 正文契约
 
 `plan`、默认和 `draft` 均依据用户请求、目标仓库规则、真实提交范围与 diff 起草正文。
-PR 标题使用 Angular-style `type(scope): subject`，说明主要行为。
+PR 标题使用 Angular-style `type(scope): subject`，subject 统一使用英文说明主要行为，不随正文或
+对话语言变化。
 
 正文只使用 Skill 自带的 [固定模板](../assets/pull_request_template.md)，依次包含：
 
@@ -95,7 +96,7 @@ PR 标题使用 Angular-style `type(scope): subject`，说明主要行为。
 helper 要求 `--title`、`--context`、`--changes` 和 `--verification`；不接受 `--summary`、
 `--template`、`--extra-body-file` 或任意正文文件。Context、Changes 和 Verification 均不能为空。
 
-### 用户语言
+### 正文与报告语言
 
 调用 Agent 在起草前按顺序从第一个可用来源解析 `{USR_PREFERRED_LANGUAGE}`：
 
@@ -105,18 +106,18 @@ helper 要求 `--title`、`--context`、`--changes` 和 `--verification`；不�
    `LC_MESSAGES`、`LANG`、`locale` 或 Windows PowerShell culture 输出。
 4. 以上均无法确定时使用英语。
 
-目标仓库明确要求特定 PR 语言时，将其作为独立硬约束并在预览中说明；若它与用户明确偏好冲突，
+目标仓库明确要求特定正文语言时，将其作为独立硬约束并在预览中说明；若它与用户明确偏好冲突，
 停止并请求用户决定。固定模板标题、提交信息、分支名或单独的英文终端 locale 不能覆盖已经确定的
 对话语言，也不能单独视为仓库语言要求。
 
-PR 默认使用一种首选语言。标题的 subject、Context、Changes、Verification、调用 Agent 自拟的
-Issue 或截图说明，以及用户可见的最终报告都使用该语言；只有用户或仓库明确要求时才生成双语
-内容。Angular `type(scope)`、Issue 关键字、命令、路径、branch、SHA、API、产品名和检查名等
-技术标识保留原文。
+PR 正文默认使用一种首选语言。Context、Changes、Verification、调用 Agent 自拟的 Issue 或
+截图说明，以及用户可见的最终报告都使用该语言；只有用户或仓库明确要求时才生成双语正文。
+引用 PR 标题时保留其英文原文；Angular `type(scope)`、Issue 关键字、命令、路径、branch、SHA、
+API、产品名和检查名等技术标识保留原文。
 
 固定模板的双语标题、`N/A` 和 helper 固定截图提示属于稳定结构，不参与语言推断。调用 Agent
-在运行 helper 前负责检查草稿与首选语言一致，并在 PR 预览中显示语言及来源；helper 只校验并
-原样渲染传入内容，不检测语言或翻译。
+在运行 helper 前负责检查标题使用英文、正文与首选语言一致，并在 PR 预览中分别显示标题语言
+和正文语言及来源；helper 只校验格式并原样渲染传入内容，不检测语言或翻译。
 
 - 没有关联 Issue 时保持该区域为空。
 - UI 修改需要补图时不因截图缺失停止，也不自动改为 Draft。

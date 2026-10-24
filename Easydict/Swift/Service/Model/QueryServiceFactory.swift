@@ -120,7 +120,6 @@ final class QueryServiceFactory: NSObject {
         .init(.groq, GroqService.self, "groq_translate"),
         .init(.zhipu, ZhipuService.self, "zhipu_translate"),
         .init(.miniMax, MiniMaxService.self, "minimax_translate"),
-        .init(.gitHub, GitHubService.self, "github_models"),
         .init(.builtInAI, BuiltInAIService.self, "built_in_ai", apiKeyRequirement: .builtIn),
         .init(.claudeCode, ClaudeCodeService.self, "service.claude_code.name", apiKeyRequirement: .agentCLI),
         .init(.codexCLI, CodexCLIService.self, "service.codex_cli.name", apiKeyRequirement: .agentCLI),
