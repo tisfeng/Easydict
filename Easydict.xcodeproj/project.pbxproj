@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A73120261023000000000001 /* LocalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73120261023000000000002 /* LocalizationTests.swift */; };
 		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
 		02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000003 /* MarkdownLabel.swift */; };
 		02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000004 /* MarkdownToggleButton.swift */; };
@@ -689,6 +690,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A73120261023000000000002 /* LocalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationTests.swift; sourceTree = "<group>"; };
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
@@ -1498,6 +1500,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A73120261023000000000003 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				A73120261023000000000002 /* LocalizationTests.swift */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
 		02DEDC042026043000000001 /* Markdown */ = {
 			isa = PBXGroup;
 			children = (
@@ -3670,6 +3680,7 @@
 		BE5912DE778CDCD8495CA4E5 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				A73120261023000000000003 /* Localization */,
 				A12760012026090500000003 /* Query */,
 				02DEDC0420260430000000C1 /* Markdown */,
 				030732CB2F24862A0001382A /* OCR */,
@@ -4079,6 +4090,7 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				ur,
 				en,
 				Base,
 				es,
@@ -4429,6 +4441,7 @@
 				03A8846E2F12000100D5C0DE /* TaskTimeoutTests.swift in Sources */,
 				A1D1807E2F8D100100B1C0D1 /* ThrottleGateTests.swift in Sources */,
 				B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */,
+				A73120261023000000000001 /* LocalizationTests.swift in Sources */,
 				73960B6BE1AB4186BA1377CF /* TestSuites.swift in Sources */,
 				03FDAE962E1A8A290029369E /* RegexTests.swift in Sources */,
 				031153412EDB0BA20083521F /* StringCommentHandlingTests.swift in Sources */,
