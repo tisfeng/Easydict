@@ -18,7 +18,7 @@ class BingService: QueryService {
 
     /// Returns configuration items for the Bing service settings view.
     open override func configurationListItems() -> Any? {
-        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.bingCookieKey]) {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.bingCookieKey], requiredKeys: []) {
             SecureInputCell(
                 textFieldTitleKey: "service.configuration.bing.cookie.title",
                 key: .bingCookieKey

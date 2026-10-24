@@ -8784,37 +8784,37 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cookie Key"
+            "value" : "Cookie Key (optional)"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clave de cookie"
+            "value" : "Clave de cookie (opcional)"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cookie キー"
+            "value" : "Cookie キー（任意）"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cookie Key"
+            "value" : "Cookie Key (voliteľné)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cookie Key"
+            "value" : "Cookie Key（可选）"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cookie 金鑰"
+            "value" : "Cookie 金鑰（選填）"
           }
         }
       }
