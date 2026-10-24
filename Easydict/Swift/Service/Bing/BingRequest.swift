@@ -58,7 +58,12 @@ class BingRequest {
         requestID: UUID? = nil,
         completion: @escaping (Data?, Error?) -> ()
     ) {
+        let isNewRequest = requestID == nil
         let requestID = requestID ?? beginRequest()
+        if isNewRequest {
+            // Translation may have refreshed the persisted host or token since the last speech request.
+            bingConfig = BingConfig.loadFromUserDefaults()
+        }
         fetchBingHost(requestID: requestID, callback: { [weak self] in
             guard let self = self else {
                 completion(nil, CancellationError())
