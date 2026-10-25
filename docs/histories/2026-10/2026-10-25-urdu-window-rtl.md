@@ -68,3 +68,21 @@ push 与维持 Ready 的授权，不新建 PR、不合并、不发布，保留�
 - 在完整 Xcode 环境运行 build 和 LocalizationTests，并检查 Urdu/English 往返切换、新建/已开
   主/浮动/迷你窗口、About/致谢、OCR/截图与 debug 面板的布局、点击、复制、浅色/深色和长文案。
 - 没有修改后应用截图或独立流利 Urdu 审校；Release/Archive、Intel 和服务行为仍未验证。
+
+### 后续修正：RTL popup 右侧对齐
+
+- `7ea15d8d` 的 [popup review](https://github.com/tisfeng/Easydict/pull/1374#discussion_r4371069380)
+  指出把菜单左上角放到按钮右侧不能实现右对齐；确认该 finding 有效。翻译 bot 的回复是同一问题。
+- 只修改共享 popup helper：RTL 时先 `update()` 确保菜单尺寸反映当前内容，再使用
+  `view.bounds.maxX - size.width` 计算物理左边缘。LTR 的 x=0、原有垂直间距和调用 API 保持不变。
+  五处语言、通用选项、模型和快捷操作调用均已在弹出前构造菜单，没有新增 delegate 延迟填充路径。
+- [Apple popup 文档](https://developer.apple.com/documentation/appkit/nsmenu/popup(positioning:at:in:))
+  说明 nil positioning 使用内容框左上角；[size 文档](https://developer.apple.com/documentation/appkit/nsmenu/size)
+  提供菜单宽度，并说明屏幕空间可能限制最终显示尺寸。
+- 对修改后的实际本地化、通知和 popup 源码重新运行 Swift 5 / macOS 13 typecheck，通过；
+  `git diff --check` 通过。没有新增或扩写测试。
+- build 与 LocalizationTests 再次因缺少完整 Xcode 在入口失败；没有运行修改后应用或获取截图。
+  屏幕边缘夹紧及 Urdu/English 视觉对齐仍需运行时确认。
+- 使用 review 技能冻结基线 `7ea15d8de6726a4e3e13b358946d82d66291d6b3`，复查完整补丁、
+  全部五处调用和 AppKit 定位契约；修正覆盖该 finding，未确认其他缺陷。沿用最小 helper 修正，
+  没有引入自定义菜单窗口或改变选项选择行为。

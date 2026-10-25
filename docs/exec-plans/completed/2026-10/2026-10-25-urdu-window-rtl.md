@@ -72,3 +72,12 @@ LocalizationTests 验证记录。C1 的 GitHub Models 引用已删除；C2 的 A
 
 - 完成方向传播、切换与 chrome 布局实现，保留内容/坐标边界并完成可用验证和 review。
 - 记录环境限制并交付现有 Ready PR 的准确最终状态。
+
+## 后续 popup 修正
+
+- 对 `7ea15d8d` 的新 review finding 已确认并修复：RTL popup 更新尺寸后，从触发按钮的
+  `bounds.maxX` 减去菜单宽度，避免将菜单左上角直接放在按钮右侧。
+- 共享 helper 覆盖语言、模型、通用选项和快捷操作菜单；LTR 原点和垂直间距不变。
+- 实际源码 Swift 5 / macOS 13 typecheck 与 whitespace 检查通过；按 review 技能复查补丁及
+  五处调用，没有确认的未修复 finding。build/test 仍因没有完整 Xcode 失败，GUI 对齐未验证。
+- 本轮为单个 helper 的局部修正，复用同任务 plan/history，不新增执行计划或测试。
