@@ -77,7 +77,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
     [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
         CGFloat leftOffset = 8;
         padding += leftOffset;
-        make.left.equalTo(self).offset(leftOffset);
+        make.leading.equalTo(self).offset(leftOffset);
         make.centerY.equalTo(self).offset(1);
         make.width.height.mas_equalTo(imageViewWidth);
     }];
@@ -88,11 +88,11 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
     [self.textField mas_updateConstraints:^(MASConstraintMaker *make) {
         CGFloat leftOffset = 3;
         padding += leftOffset;
-        make.left.equalTo(self.imageView.mas_right).offset(leftOffset);
+        make.leading.equalTo(self.imageView.mas_trailing).offset(leftOffset);
         
         CGFloat rightOffset = 3;
         padding += rightOffset;
-        make.right.equalTo(self).offset(-rightOffset);
+        make.trailing.equalTo(self).offset(-rightOffset);
         make.centerY.equalTo(self);
         make.width.mas_equalTo(textFieldWidth);
     }];

@@ -31,7 +31,9 @@ final class GitHubCopilotDebugWindowController: NSWindowController {
         panel.level = .floating
         panel.isReleasedWhenClosed = false
         panel.center()
-        panel.contentView = NSHostingView(rootView: GitHubCopilotDebugView())
+        panel.contentView = NSHostingView(rootView: GitHubCopilotDebugView().interfaceLanguage { [weak panel] in
+            panel?.title = String(localized: "service.github_copilot.debug_log.window_title")
+        })
         super.init(window: panel)
     }
 

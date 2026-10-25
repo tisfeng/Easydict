@@ -873,6 +873,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
     }
 
     [self setupBottomToolBarButtons:result lastView:lastView height:height];
+    [EZI18nHelper.shared applyInterfaceLayoutDirectionToView:self];
 }
 
 /// Setup bottom tool bar buttons.
@@ -943,7 +944,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             make.top.equalTo(self).offset(audioButtonTopOffset);
         }
 
-        make.left.offset(audioButtonLeftOffset);
+        make.leading.offset(audioButtonLeftOffset);
         make.width.height.mas_equalTo(EZAudioButtonWidthHeight_24);
     }];
     lastView = audioButton;
@@ -956,7 +957,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
 
 
     [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(audioButton.mas_right).offset(buttonPadding);
+        make.leading.equalTo(audioButton.mas_trailing).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
     }];
 
@@ -982,7 +983,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
     linkButton.mas_key = @"result_linkButton";
 
     [linkButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(textCopyButton.mas_right).offset(buttonPadding);
+        make.leading.equalTo(textCopyButton.mas_trailing).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
     }];
 
@@ -1003,7 +1004,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
     replaceTextButton.mas_key = @"replaceTextButton";
 
     [replaceTextButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(linkButton.mas_right).offset(buttonPadding);
+        make.leading.equalTo(linkButton.mas_trailing).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
     }];
 
@@ -1036,7 +1037,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
         }];
 
         [ankiButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(rightmostButton.mas_right).offset(buttonPadding);
+            make.leading.equalTo(rightmostButton.mas_trailing).offset(buttonPadding);
             make.width.height.bottom.equalTo(audioButton);
         }];
 
@@ -1070,7 +1071,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
         };
 
         [markdownToggleButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(rightmostButton.mas_right).offset(buttonPadding);
+            make.leading.equalTo(rightmostButton.mas_trailing).offset(buttonPadding);
             make.width.height.bottom.equalTo(audioButton);
         }];
     }

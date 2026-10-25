@@ -67,8 +67,7 @@ struct EasydictApp: App {
         MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
             MenuItemView()
                 .environmentObject(languageState)
-                .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
-                .environment(\.layoutDirection, languageState.language.layoutDirection)
+                .interfaceLanguage()
         } label: {
             Label {
                 Text("Easydict")
@@ -104,8 +103,7 @@ struct EasydictApp: App {
         Settings {
             SettingView()
                 .environmentObject(languageState)
-                .environment(\.locale, .init(identifier: I18nHelper.shared.localizeCode))
-                .environment(\.layoutDirection, languageState.language.layoutDirection)
+                .interfaceLanguage()
         }
     }
 
@@ -128,6 +126,13 @@ struct EasydictApp: App {
                     performTerminationTasks()
                 }
             },
+        NotificationCenter.default.publisher(for: .languagePreferenceChanged)
+            .receive(on: DispatchQueue.main)
+            .sink { _ in
+                MainActor.assumeIsolated {
+                    updateMainMenuDirection()
+                }
+            },
     ]
 
     @Environment(\.openSettingsLegacy) private var openSettingsLegacy
@@ -146,7 +151,15 @@ struct EasydictApp: App {
 
     @MainActor
     private static func performPostLaunchTasks() {
+        updateMainMenuDirection()
         GitHubCopilotModelStore.shared.startAutomaticRefresh()
+    }
+
+    @MainActor
+    private static func updateMainMenuDirection() {
+        if let menu = NSApp.mainMenu {
+            I18nHelper.shared.applyInterfaceLayoutDirection(to: menu)
+        }
     }
 
     /// Persist queued writes synchronously; an asynchronous task may not run before exit.

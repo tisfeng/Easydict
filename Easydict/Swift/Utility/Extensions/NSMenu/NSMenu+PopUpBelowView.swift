@@ -11,8 +11,12 @@ import Foundation
 
 @objc
 extension NSMenu {
+    @MainActor
     func popUp(belowView view: NSView) {
-        let point = CGPoint(x: 0, y: view.frame.height + 8)
+        I18nHelper.shared.applyInterfaceLayoutDirection(to: self)
+        let isRTL = I18nHelper.shared.interfaceLayoutDirection == .rightToLeft
+        view.userInterfaceLayoutDirection = I18nHelper.shared.interfaceLayoutDirection
+        let point = CGPoint(x: isRTL ? view.bounds.width : 0, y: view.frame.height + 8)
         popUp(positioning: nil, at: point, in: view)
     }
 }

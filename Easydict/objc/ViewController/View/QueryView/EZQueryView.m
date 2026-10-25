@@ -126,7 +126,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     
     [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(textView).offset(5);
-        make.left.equalTo(textView).offset(10);
+        make.leading.equalTo(textView).offset(10);
         make.height.mas_equalTo(30);
     }];
     
@@ -284,12 +284,12 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     
     [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.bottom.offset(-EZAudioButtonBottomMargin_4);
-        make.left.offset(EZAudioButtonLeftMargin_6);
+        make.leading.offset(EZAudioButtonLeftMargin_6);
         make.width.height.mas_equalTo(EZAudioButtonWidthHeight_24);
     }];
     
     [self.textCopyButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.audioButton.mas_right).offset(EZAudioButtonRightPadding_1);
+        make.leading.equalTo(self.audioButton.mas_trailing).offset(EZAudioButtonRightPadding_1);
         make.width.height.bottom.equalTo(self.audioButton);
     }];
     
@@ -306,7 +306,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     }];
     
     [self.clearButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.bottom.equalTo(self).offset(-4);
+        make.trailing.bottom.equalTo(self).offset(-4);
         make.width.height.mas_equalTo(24);
     }];
     
@@ -631,7 +631,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     CGFloat height = 20;
     self.detectButton.cornerRadius = height / 2;
     [self.detectButton mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.textCopyButton.mas_right).offset(6.5);
+        make.leading.equalTo(self.textCopyButton.mas_trailing).offset(6.5);
         make.centerY.equalTo(self.textCopyButton).offset(-0.5);
         make.height.mas_equalTo(height);
     }];

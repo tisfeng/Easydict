@@ -50,6 +50,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
 }
 
 - (void)setup {
+    self.userInterfaceLayoutDirection = EZI18nHelper.shared.interfaceLayoutDirection;
     self.buttonWidth = 24;
     self.imageWidth = 20;
     self.buttonPadding = 4;
@@ -66,6 +67,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
 }
 
 - (void)updateTitlebar {
+    self.userInterfaceLayoutDirection = EZI18nHelper.shared.interfaceLayoutDirection;
     /**
      Fix appcenter issue, seems cannot remove self.subviews 🤔
      
@@ -93,16 +95,25 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
 - (void)updateConstraints {
     CGFloat margin = EZHorizontalCellSpacing_10;
     CGFloat topOffset = EZTitlebarHeight_28 - self.buttonWidth;
+    BOOL isRTL = self.userInterfaceLayoutDirection == NSUserInterfaceLayoutDirectionRightToLeft;
     
-    [self.pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.pinButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.width.height.mas_equalTo(self.buttonWidth);
-        make.left.inset(margin);
+        if (isRTL) {
+            make.right.inset(margin);
+        } else {
+            make.left.inset(margin);
+        }
         make.top.equalTo(self).offset(topOffset);
     }];
     
     [self.stackView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self).offset(topOffset);
-        make.right.equalTo(self).offset(-margin);
+        if (isRTL) {
+            make.left.equalTo(self).offset(margin);
+        } else {
+            make.right.equalTo(self).offset(-margin);
+        }
     }];
     
     if (MyConfiguration.shared.showQuickActionButton) {
@@ -192,7 +203,10 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         _stackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
         _stackView.spacing = self.buttonPadding;
         _stackView.alignment = NSLayoutAttributeCenterY;
-        _stackView.userInterfaceLayoutDirection = NSUserInterfaceLayoutDirectionRightToLeft;
+        // Keep the existing trailing-to-leading button order, mirrored with the interface.
+        _stackView.userInterfaceLayoutDirection =
+            self.userInterfaceLayoutDirection == NSUserInterfaceLayoutDirectionRightToLeft
+                ? NSUserInterfaceLayoutDirectionLeftToRight : NSUserInterfaceLayoutDirectionRightToLeft;
     }
     return _stackView;
 }

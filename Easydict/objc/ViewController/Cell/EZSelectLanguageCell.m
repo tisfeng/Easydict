@@ -137,13 +137,13 @@
     [self.fromLanguageButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.languageBarView);
         make.height.mas_equalTo(transformButtonWidth);
-        make.right.lessThanOrEqualTo(self.transformButton.mas_left).offset(-fromButtonMargin);
+        make.trailing.lessThanOrEqualTo(self.transformButton.mas_leading).offset(-fromButtonMargin);
     }];
     
     [self.toLanguageButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.languageBarView);
         make.height.mas_equalTo(transformButtonWidth);
-        make.left.greaterThanOrEqualTo(self.transformButton.mas_right).offset(toButtonMargin);
+        make.leading.greaterThanOrEqualTo(self.transformButton.mas_trailing).offset(toButtonMargin);
     }];
     
     [super updateConstraints];

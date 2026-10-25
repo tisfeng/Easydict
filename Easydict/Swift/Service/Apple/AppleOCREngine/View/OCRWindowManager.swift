@@ -66,6 +66,7 @@ class OCRWindowManager {
         currentViewModel = viewModel
 
         let debugView = OCRDebugView(viewModel: viewModel)
+            .interfaceLanguage()
         let hostingController = NSHostingController(rootView: debugView)
 
         let screenVisibleFrame = EZWindowManager.shared().screenVisibleFrame

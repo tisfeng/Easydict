@@ -32,7 +32,9 @@ final class CodexCLIDebugWindowController: NSWindowController {
         panel.level = .floating
         panel.isReleasedWhenClosed = false
         panel.center()
-        panel.contentView = NSHostingView(rootView: CodexCLIDebugView())
+        panel.contentView = NSHostingView(rootView: CodexCLIDebugView().interfaceLanguage { [weak panel] in
+            panel?.title = String(localized: "service.codex_cli.debug_log.window_title")
+        })
         super.init(window: panel)
     }
 

@@ -195,48 +195,48 @@
     }];
     
     [self.serviceIcon mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.topBarView).offset(8);
+        make.leading.equalTo(self.topBarView).offset(8);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
     
     [self.serviceNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceIcon.mas_right).offset(2);
+        make.leading.equalTo(self.serviceIcon.mas_trailing).offset(2);
         make.centerY.equalTo(self.topBarView).offset(0);
     }];
     
     [self.serviceModelButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceNameLabel.mas_right).offset(0);
+        make.leading.equalTo(self.serviceNameLabel.mas_trailing).offset(0);
         make.top.equalTo(self.topBarView).offset(8);
         make.bottom.equalTo(self.topBarView).offset(-8);
     }];
     
     [self.errorImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceModelButton.mas_right).offset(5);
+        make.leading.equalTo(self.serviceModelButton.mas_trailing).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
     
     [self.loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.serviceModelButton.mas_right).offset(3);
+        make.leading.equalTo(self.serviceModelButton.mas_trailing).offset(3);
         make.centerY.equalTo(self.topBarView);
         make.height.equalTo(self.topBarView);
     }];
     
     [self.arrowButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.topBarView.mas_right).offset(-5);
+        make.trailing.equalTo(self.topBarView.mas_trailing).offset(-5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
     
     [self.stopButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.arrowButton.mas_left).offset(0);
+        make.trailing.equalTo(self.arrowButton.mas_leading).offset(0);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
     
     [self.retryButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.arrowButton.mas_left).offset(0);
+        make.trailing.equalTo(self.arrowButton.mas_leading).offset(0);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];

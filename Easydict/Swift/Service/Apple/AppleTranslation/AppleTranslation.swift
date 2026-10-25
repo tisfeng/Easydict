@@ -129,6 +129,7 @@ public class AppleTranslation: NSObject {
 
     private lazy var translationController = NSHostingController(
         rootView: TranslationView(manager: manager)
+            .interfaceLanguage()
     )
 
     /// Check if the translation is ready for use.
