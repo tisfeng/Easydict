@@ -86,3 +86,21 @@ push 与维持 Ready 的授权，不新建 PR、不合并、不发布，保留�
 - 使用 review 技能冻结基线 `7ea15d8de6726a4e3e13b358946d82d66291d6b3`，复查完整补丁、
   全部五处调用和 AppKit 定位契约；修正覆盖该 finding，未确认其他缺陷。沿用最小 helper 修正，
   没有引入自定义菜单窗口或改变选项选择行为。
+
+### 后续修正：Apple Translation 编译
+
+- 用户提供失败截图后，读取 [CodeQL run #3177](https://github.com/tisfeng/Easydict/actions/runs/40199943735)
+  的完整失败日志，确认运行 head 为 `1e88f2efe12456b6eb5db5e9b5f4b5aa37c386b9`。
+  失败发生在应用构建：`AppleTranslation.swift:130` 的 lazy 属性无法推导包含 `some View` 的
+  `NSHostingController` 类型；不是安全分析发现，也不是截图中的 Ubuntu runner 提示导致。
+- 在本机用实际 AppleTranslation、TranslationManager、TranslationView 及本地化源码
+  重现相同编译错误，补上 `translationController: NSViewController` 后相同 typecheck 通过。
+  扩大到共享 AppKit/popup 源码的 module emit 与 Objective-C header emit 也通过，均使用
+  Swift 5、macOS 13 target 和真实应用头文件。之前 focused check 未包含 Apple Translation，
+  不能据其成功证明全应用可编译。
+- 只给存储属性添加显式 superclass 类型；实际对象仍为原来的 NSHostingController，保留
+  `.interfaceLanguage()`、lazy 生命周期、view 获取和两种窗口挂载路径。不改 CI 或服务逻辑。
+- 对基线 `1e88f2ef` 的单行生产差异使用 review 技能审查，核对全部三处读取和生成的 Objective-C
+  header；没有确认的其他缺陷。采用现有调用仅需的 NSViewController 接口，不增加 AnyView 包装。
+- `git diff --check` 通过；build 与 LocalizationTests 再次因缺少完整 Xcode 在入口失败，
+  没有新增测试或运行修改后应用。push 后的新 CI 结果需按准确 head 单独确认，旧 run 仍为失败。

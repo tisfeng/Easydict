@@ -81,3 +81,12 @@ LocalizationTests 验证记录。C1 的 GitHub Models 引用已删除；C2 的 A
 - 实际源码 Swift 5 / macOS 13 typecheck 与 whitespace 检查通过；按 review 技能复查补丁及
   五处调用，没有确认的未修复 finding。build/test 仍因没有完整 Xcode 失败，GUI 对齐未验证。
 - 本轮为单个 helper 的局部修正，复用同任务 plan/history，不新增执行计划或测试。
+
+## 后续 Apple Translation 编译修正
+
+- CodeQL run #3177 在 `1e88f2ef` 的应用构建阶段报出 AppleTranslation lazy controller 的
+  opaque return type 推导错误；本机扩大 focused 编译范围后重现。
+- 显式保存为 `NSViewController`，保留实际 hosting controller 及其 RTL modifier。修正后同一组
+  真实源码 typecheck 和扩大后的 module/header emit 均通过；review 覆盖三处 controller 读取。
+- workspace build/test 仍因本机缺少完整 Xcode 失败，后续 CI 必须对应新提交。复用同任务记录，
+  不修改 workflow、不新增测试；runtime、截图和独立 Urdu 审校限制继续适用。

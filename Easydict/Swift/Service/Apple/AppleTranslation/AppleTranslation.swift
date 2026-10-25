@@ -127,7 +127,7 @@ public class AppleTranslation: NSObject {
     private let manager = TranslationManager()
     private var translationWindow: NSWindow?
 
-    private lazy var translationController = NSHostingController(
+    private lazy var translationController: NSViewController = NSHostingController(
         rootView: TranslationView(manager: manager)
             .interfaceLanguage()
     )
