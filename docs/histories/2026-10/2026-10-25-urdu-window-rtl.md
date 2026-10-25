@@ -104,3 +104,21 @@ push 与维持 Ready 的授权，不新建 PR、不合并、不发布，保留�
   header；没有确认的其他缺陷。采用现有调用仅需的 NSViewController 接口，不增加 AnyView 包装。
 - `git diff --check` 通过；build 与 LocalizationTests 再次因缺少完整 Xcode 在入口失败，
   没有新增测试或运行修改后应用。push 后的新 CI 结果需按准确 head 单独确认，旧 run 仍为失败。
+
+### 后续修正：折叠结果箭头
+
+- 确认 `bdbbc6c9` 的 [折叠箭头 review](https://github.com/tisfeng/Easydict/pull/1374#discussion_r4371417476)
+  有效：trailing 约束把按钮移到 RTL 左侧，但固定 `arrow-left` PNG 没有方向变体。
+- `EZResultView` 仅在折叠且自身方向为 RTL 时，对已着色的箭头图像作水平反射；展开仍使用原有
+  down 图像，LTR 保持原有 left 图像。使用新的 block-based NSImage，不修改共享 asset 或按钮几何。
+- 覆盖方向 setter，调用 superclass 后刷新现有箭头；适配器改变已打开行的方向时立即更新。
+  result/collapse 与 appearance 更新继续走原有图像方法，不新增通知 observer。
+- AppKit SDK 编译验证：将实际源码中新增的 NSImage 绘制表达式原样提取到临时编译单元，使用真实
+  AppKit、ARC、blocks、macOS 13 target 和 `-Werror`，语法检查通过。这只证明该绘制表达式可编译，
+  不等同于完整 EZResultView 编译、像素验证或 GUI 运行。未新增或扩写测试。
+- 按 review 技能以 `bdbbc6c9c4d975a59a5c0ee9bd0a14c28cc1cacc` 为基线复查完整补丁，
+  核对 init、方向 setter、collapse/result、appearance、table row 创建/复用及语言切换调用链；
+  反射保存并恢复绘图状态，block 不捕获 self，不会再次翻转已经镜像的图像。没有确认的其他 finding。
+- `git diff --check` 通过；build 与 LocalizationTests 调用仍在入口因缺少 Xcode 失败。
+  Urdu/English 往返切换时的折叠/展开箭头，以及 light/dark 外观仍待实际应用检查。
+- 本轮开始时 `bdbbc6c9` 的 CodeQL 分析仍在运行，其他已报告检查成功；最终新 head 的 CI 单独报告。

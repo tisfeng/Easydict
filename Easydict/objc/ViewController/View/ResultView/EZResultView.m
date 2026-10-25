@@ -272,6 +272,13 @@
 
 #pragma mark - Setter
 
+- (void)setUserInterfaceLayoutDirection:(NSUserInterfaceLayoutDirection)layoutDirection {
+    [super setUserInterfaceLayoutDirection:layoutDirection];
+    if (self.arrowButton) {
+        [self updateArrowButtonImage];
+    }
+}
+
 - (void)setResult:(EZQueryResult *)result {
     _result = result;
     
@@ -582,7 +589,22 @@
 - (void)updateArrowButtonImage {
     NSImage *baseImage = self.result.isShowing ? [NSImage imageNamed:@"arrow-down"] : [NSImage imageNamed:@"arrow-left"];
     NSColor *tintColor = self.arrowButton.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
-    self.arrowButton.image = [baseImage imageWithTintColor:tintColor];
+    NSImage *image = [baseImage imageWithTintColor:tintColor];
+    if (!self.result.isShowing && self.userInterfaceLayoutDirection == NSUserInterfaceLayoutDirectionRightToLeft) {
+        // Mirror only the collapsed glyph, without changing the shared asset or button geometry.
+        NSImage *leftArrow = image;
+        image = [NSImage imageWithSize:leftArrow.size flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+            [NSGraphicsContext saveGraphicsState];
+            NSAffineTransform *mirror = [NSAffineTransform transform];
+            [mirror translateXBy:NSMinX(dstRect) + NSMaxX(dstRect) yBy:0];
+            [mirror scaleXBy:-1 yBy:1];
+            [mirror concat];
+            [leftArrow drawInRect:dstRect];
+            [NSGraphicsContext restoreGraphicsState];
+            return YES;
+        }];
+    }
+    self.arrowButton.image = image;
 }
 
 - (void)updateRetryButtonImage {

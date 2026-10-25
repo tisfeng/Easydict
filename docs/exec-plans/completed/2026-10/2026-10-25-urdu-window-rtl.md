@@ -90,3 +90,11 @@ LocalizationTests 验证记录。C1 的 GitHub Models 引用已删除；C2 的 A
   真实源码 typecheck 和扩大后的 module/header emit 均通过；review 覆盖三处 controller 读取。
 - workspace build/test 仍因本机缺少完整 Xcode 失败，后续 CI 必须对应新提交。复用同任务记录，
   不修改 workflow、不新增测试；runtime、截图和独立 Urdu 审校限制继续适用。
+
+## 后续折叠箭头修正
+
+- 新 review 确认固定 left PNG 在 RTL 的结果行中朝向错误；只镜像折叠箭头图像，保留展开的 down
+  图像、LTR 外观、共享资源和按钮几何。方向 setter 同步刷新，覆盖已打开行切换语言的情况。
+- 新增的实际 NSImage 绘制表达式通过 macOS 13 / AppKit / ARC / blocks / `-Werror` 编译检查；
+  review 覆盖创建、复用、方向、collapse 和 appearance 路径，未确认其他缺陷。
+- Full build/test 仍因缺少 Xcode 失败，未运行应用或像素检查，未新增测试；沿用本任务 plan/history。
