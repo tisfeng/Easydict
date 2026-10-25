@@ -40,6 +40,18 @@
             "state" : "translated",
             "value" : "Easydict"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
         }
       }
     },
@@ -78,6 +90,18 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Easydict"
@@ -124,6 +148,18 @@
             "state" : "translated",
             "value" : "Easydict requiere permiso para ejecutar AppleScript."
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict требуется разрешение на выполнение AppleScript."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict потрібен дозвіл на виконання AppleScript."
+          }
         }
       }
     },
@@ -165,6 +201,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copyright © 2023-2025 tisfeng. Todos los derechos reservados."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copyright © 2023-2025 tisfeng. Все права защищены."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copyright © 2023-2025 tisfeng. Усі права захищено."
           }
         }
       }
