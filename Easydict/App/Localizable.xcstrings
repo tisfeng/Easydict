@@ -10104,43 +10104,43 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cookie Key"
+            "value" : "Cookie Key (optional)"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clave de cookie"
+            "value" : "Clave de cookie (opcional)"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cookie キー"
+            "value" : "Cookie キー（任意）"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cookie Key"
+            "value" : "Cookie Key (voliteľné)"
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cookie Key"
+            "value" : "Cookie Key (اختیاری)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cookie Key"
+            "value" : "Cookie Key（可选）"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cookie 金鑰"
+            "value" : "Cookie 金鑰（選填）"
           }
         }
       }
@@ -11981,52 +11981,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "系統 Prompt"
-          }
-        }
-      }
-    },
-    "service.configuration.openai.temperature.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Temperature"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Temperatura"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Temperature"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teplota"
-          }
-        },
-        "ur" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ٹیمپریچر"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "温度"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "溫度"
           }
         }
       }

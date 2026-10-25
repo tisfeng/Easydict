@@ -16,12 +16,18 @@ extension BingService {
         useDictQuery: Bool,
         from: Language,
         to: Language,
+        retryOnInvalidToken: Bool = true,
+        queryGeneration: UInt? = nil,
         completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
+        updateResultLock.lock()
+        defer { updateResultLock.unlock() }
+        let generation = queryGeneration ?? QueryService.queryGeneration ?? resultGeneration
+        guard generation == resultGeneration, !Task.isCancelled else {
+            completion(QueryResult(), CancellationError())
+            return
+        }
         isDictQueryResult = false
-        queryModel.setStop({ [weak self] in
-            self?.bingRequest.cancelActiveRequests()
-        }, serviceType: serviceType().rawValue)
 
         if useDictQuery {
             bingRequest.translateTextFromDict(text: text) { [weak self] json, error in
@@ -30,11 +36,25 @@ extension BingService {
                     return
                 }
 
+                updateResultLock.lock()
+                defer { updateResultLock.unlock() }
+                guard resultGeneration == generation, !(error is CancellationError) else {
+                    completion(QueryResult(), CancellationError())
+                    return
+                }
+
                 parseBingDictTranslate(json, word: text) { dictResult, dictError in
                     if error is CancellationError || dictError is CancellationError {
                         completion(QueryResult(), CancellationError())
                     } else if error != nil || dictError != nil {
-                        self.bingTranslate(text, useDictQuery: false, from: from, to: to, completion: completion)
+                        self.bingTranslate(
+                            text,
+                            useDictQuery: false,
+                            from: from,
+                            to: to,
+                            queryGeneration: generation,
+                            completion: completion
+                        )
                     } else {
                         self.isDictQueryResult = true
                         completion(dictResult, nil)
@@ -58,6 +78,16 @@ extension BingService {
                 return
             }
 
+            updateResultLock.lock()
+            defer { updateResultLock.unlock() }
+            guard resultGeneration == generation,
+                  !(translateError is CancellationError),
+                  !(lookupError is CancellationError)
+            else {
+                completion(QueryResult(), CancellationError())
+                return
+            }
+
             if let translateError = translateError {
                 result.error = QueryError(type: .api, message: translateError.localizedDescription)
                 logError("bing translate error: \(translateError)")
@@ -74,22 +104,22 @@ extension BingService {
                 needRetry: &needRetry
             )
 
-            // canRetry is used to avoid recursive calls, code 205 only retry once.
-            if canRetry, needRetry {
-                canRetry = false
-                bingTranslate(text, useDictQuery: false, from: from, to: to, completion: completion)
+            if retryOnInvalidToken, needRetry {
+                bingTranslate(
+                    text,
+                    useDictQuery: false,
+                    from: from,
+                    to: to,
+                    retryOnInvalidToken: false,
+                    queryGeneration: generation,
+                    completion: completion
+                )
                 return
             }
-            canRetry = true
 
             if let error = error {
                 result.error = QueryError(type: .api, message: error.localizedDescription)
                 completion(result, error)
-                return
-            }
-
-            if lookupError is CancellationError {
-                completion(QueryResult(), CancellationError())
                 return
             }
 

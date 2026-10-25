@@ -34,10 +34,6 @@ public final class ClaudeService: StreamService {
         NSLocalizedString("claude_translate", comment: "The name of Claude Translate")
     }
 
-    public override func configurationListItems() -> Any {
-        StreamConfigurationView(service: self, temperatureMaxValue: 1)
-    }
-
     // MARK: Internal
 
     override var defaultModels: [String] {

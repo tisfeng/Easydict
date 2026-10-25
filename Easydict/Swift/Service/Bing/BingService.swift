@@ -18,7 +18,7 @@ class BingService: QueryService {
 
     /// Returns configuration items for the Bing service settings view.
     open override func configurationListItems() -> Any? {
-        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.bingCookieKey]) {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.bingCookieKey], requiredKeys: []) {
             SecureInputCell(
                 textFieldTitleKey: "service.configuration.bing.cookie.title",
                 key: .bingCookieKey
@@ -31,7 +31,6 @@ class BingService: QueryService {
     // MARK: - Internal Properties (for extension)
 
     lazy var bingRequest = BingRequest()
-    var canRetry = true
     var isDictQueryResult = false
 
     // MARK: - Service Type & Configuration
@@ -158,19 +157,37 @@ class BingService: QueryService {
         to: Language
     ) async throws
         -> QueryResult {
-        try await withCheckedThrowingContinuation { continuation in
-            bingTranslate(
-                text,
-                useDictQuery: isEnglishWordToChinese(text, from: from, to: to),
-                from: from,
-                to: to
-            ) { result, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: result)
+        let generation = updateResultLock.withLock { QueryService.queryGeneration ?? resultGeneration }
+        return try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                bingTranslate(
+                    text,
+                    useDictQuery: isEnglishWordToChinese(text, from: from, to: to),
+                    from: from,
+                    to: to,
+                    queryGeneration: generation
+                ) { result, error in
+                    if let error {
+                        continuation.resume(throwing: error)
+                    } else {
+                        continuation.resume(returning: result)
+                    }
                 }
             }
+        } onCancel: {
+            self.updateResultLock.withLock {
+                guard self.resultGeneration == generation else { return }
+                self.cancelStream()
+            }
+        }
+    }
+
+    override func cancelStream() {
+        updateResultLock.withLock {
+            resultGeneration &+= 1
+            bingRequest.cancelActiveRequests()
+            result?.isStreamFinished = true
+            result?.isLoading = false
         }
     }
 
@@ -203,7 +220,7 @@ class BingService: QueryService {
         logInfo("Bing is fetching text audio: \(text)")
 
         let audioData: Data? = try await withCheckedThrowingContinuation { continuation in
-            bingRequest.fetchTextToAudio(
+            audioRequest.fetchTextToAudio(
                 text: text,
                 fromLanguage: language,
                 accent: accent
@@ -240,4 +257,9 @@ class BingService: QueryService {
         }
         return false
     }
+
+    // MARK: Private
+
+    // Speech and translation must not cancel each other's in-flight requests.
+    private lazy var audioRequest = BingRequest()
 }
