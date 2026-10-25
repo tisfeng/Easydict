@@ -7,9 +7,8 @@
 //
 
 import AppKit
-import Testing
-
 @testable import Easydict
+import Testing
 
 // MARK: - MarkdownRendererTests
 
@@ -238,6 +237,109 @@ struct MarkdownRendererTests {
             #expect(textFont.pointSize == 18)
         }
         #expect(storage.string == source)
+    }
+
+    @Test("Nested lists keep continuation and child indentation")
+    func nestedLists() throws {
+        let result = renderer.render("- **Parent**\n  - Child\n    continued\n- Next")
+        let parent = (result.string as NSString).range(of: "Parent")
+        let child = (result.string as NSString).range(of: "Child")
+        let continued = (result.string as NSString).range(of: "continued")
+        let next = (result.string as NSString).range(of: "Next")
+        let parentStyle = try #require(result.attribute(
+            .paragraphStyle,
+            at: parent.location,
+            effectiveRange: nil
+        ) as? NSParagraphStyle)
+        let childStyle = try #require(result.attribute(
+            .paragraphStyle,
+            at: child.location,
+            effectiveRange: nil
+        ) as? NSParagraphStyle)
+        let continuedStyle = try #require(result.attribute(
+            .paragraphStyle,
+            at: continued.location,
+            effectiveRange: nil
+        ) as? NSParagraphStyle)
+        let nextStyle = try #require(result.attribute(
+            .paragraphStyle,
+            at: next.location,
+            effectiveRange: nil
+        ) as? NSParagraphStyle)
+        #expect(childStyle.headIndent > parentStyle.headIndent)
+        #expect(continuedStyle.headIndent == childStyle.headIndent)
+        #expect(nextStyle.firstLineHeadIndent == parentStyle.firstLineHeadIndent)
+        #expect(renderer.render("-\n  - Child").string == "•\t\n•\tChild")
+    }
+
+    @Test("Pipe tables use native cells and preserve column alignment")
+    func tableLayout() throws {
+        let result = renderer.render("| Word | Meaning |\n| :--- | ---: |\n| **envisage** | 设想 |\n\nAfter")
+        let word = (result.string as NSString).range(of: "envisage")
+        let meaning = (result.string as NSString).range(of: "设想")
+        let after = (result.string as NSString).range(of: "After")
+        let wordStyle = try #require(result.attribute(
+            .paragraphStyle,
+            at: word.location,
+            effectiveRange: nil
+        ) as? NSParagraphStyle)
+        let meaningStyle = try #require(result.attribute(
+            .paragraphStyle,
+            at: meaning.location,
+            effectiveRange: nil
+        ) as? NSParagraphStyle)
+        let afterStyle = try #require(result.attribute(
+            .paragraphStyle,
+            at: after.location,
+            effectiveRange: nil
+        ) as? NSParagraphStyle)
+        #expect(wordStyle.textBlocks.first is NSTextTableBlock)
+        #expect(meaningStyle.alignment == .right)
+        #expect(afterStyle.textBlocks.isEmpty)
+        #expect(!result.string.contains("**"))
+    }
+
+    @Test("Supported delimiters typeset fractions and retain TeX source", arguments: [
+        #"$\frac{1}{2}$"#, #"\(\frac{1}{2}\)"#, #"$$\frac{1}{2}$$"#, #"\[\frac{1}{2}\]"#,
+        #"$$\begin{align*}x &= 1 \\ y &= 2\end{align*}$$"#,
+    ])
+    func mathematicalDelimiters(source: String) throws {
+        let result = renderer.render(source)
+        let attachment = try #require(result.attribute(.attachment, at: 0, effectiveRange: nil) as? NSTextAttachment)
+        #expect(attachment.bounds.height > baseSize)
+        #expect(result.attribute(.markdownMathSource, at: 0, effectiveRange: nil) as? String == source)
+    }
+
+    @MainActor
+    @Test("Formula source survives streaming, code spans, and selection copy")
+    func mathSourcePreservation() throws {
+        for source in [#"\(\frac{1}{"#, #"$\unknowncommand{x}$"#, #"Prices: $5 and $10"#, "$$\n- x^2\n\n> y"] {
+            #expect(renderer.render(source).string == source)
+        }
+        #expect(renderer.render(#"`$x_1$` and ``\(x^2\)``"#).string == #"$x_1$ and \(x^2\)"#)
+        #expect(renderer.render("```latex\n$x$\n```").string == "$x$")
+        #expect(renderer.render("Cost **$5** and **$10**.").string == "Cost $5 and $10.")
+        let linked = renderer.render("[price](https://example.com/$USD)")
+        #expect(linked.string == "price")
+        #expect((linked.attribute(.link, at: 0, effectiveRange: nil) as? URL)?
+            .absoluteString == "https://example.com/$USD")
+        let label = MarkdownLabel(frame: NSRect(x: 0, y: 0, width: 120, height: 200))
+        let source = #"Formula: $\frac{1}{2}$"#
+        label.text = source
+        label.setSelectedRange(NSRange(location: 0, length: label.string.utf16.count))
+        let pasteboard = NSPasteboard.withUniqueName()
+        defer { pasteboard.releaseGlobally() }
+        pasteboard.declareTypes([.string], owner: nil)
+        #expect(label.writeSelection(to: pasteboard, type: .string))
+        #expect(pasteboard.string(forType: .string) == source)
+
+        let container = NSTextContainer(containerSize: NSSize(width: 100, height: CGFloat.greatestFiniteMagnitude))
+        let layout = NSLayoutManager()
+        let storage = NSTextStorage(attributedString: renderer.render(#"$$x_1+x_2+x_3+x_4+x_5+x_6+x_7+x_8$$"#))
+        layout.addTextContainer(container)
+        storage.addLayoutManager(layout)
+        layout.ensureLayout(for: container)
+        #expect(layout.usedRect(for: container).width <= 100)
     }
 
     // MARK: Private
