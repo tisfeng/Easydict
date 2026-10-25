@@ -4073,6 +4073,8 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				ru,
+				uk,
 				en,
 				Base,
 				es,

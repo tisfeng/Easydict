@@ -22,6 +22,8 @@ class LanguageState: ObservableObject {
         case slovak = "sk"
         case japanese = "ja"
         case spanish = "es"
+        case russian = "ru"
+        case ukrainian = "uk"
 
         // MARK: Internal
 
@@ -39,6 +41,10 @@ class LanguageState: ObservableObject {
                 "日本語"
             case .spanish:
                 "Español"
+            case .russian:
+                "Русский"
+            case .ukrainian:
+                "Українська"
             }
         }
     }
