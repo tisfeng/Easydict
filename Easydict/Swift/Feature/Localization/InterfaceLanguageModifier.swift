@@ -8,9 +8,13 @@
 import Combine
 import SwiftUI
 
+// MARK: - InterfaceLanguageModifier
+
 /// Gives every SwiftUI window the selected app locale and live layout direction.
 private struct InterfaceLanguageModifier: ViewModifier {
-    var onChange: (() -> Void)?
+    // MARK: Internal
+
+    var onChange: (() -> ())?
 
     func body(content: Content) -> some View {
         content
@@ -27,13 +31,15 @@ private struct InterfaceLanguageModifier: ViewModifier {
             }
     }
 
+    // MARK: Private
+
     @AppStorage(languagePreferenceLocalKey)
     private var language: LanguageState.LanguageType = I18nHelper.shared.languageType
 }
 
 extension View {
     /// Also refreshes an AppKit window's localized title when supplied by its owner.
-    func interfaceLanguage(onChange: (() -> Void)? = nil) -> some View {
+    func interfaceLanguage(onChange: (() -> ())? = nil) -> some View {
         modifier(InterfaceLanguageModifier(onChange: onChange))
     }
 }
