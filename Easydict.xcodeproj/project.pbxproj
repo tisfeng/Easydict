@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A73120261027000000000001 /* TranslationResultLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73120261027000000000002 /* TranslationResultLabel.swift */; };
+		A73120261023000000000001 /* LocalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73120261023000000000002 /* LocalizationTests.swift */; };
 		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
 		02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000003 /* MarkdownLabel.swift */; };
 		02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000004 /* MarkdownToggleButton.swift */; };
@@ -521,6 +523,7 @@
 		6808374D0730B5F9ADF6DD84 /* CodexManagedAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6403A348529CBE1CFB24A1 /* CodexManagedAccountView.swift */; };
 		6A8C988E2BAC88B500DB835A /* LanguageState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C988C2BAC88B500DB835A /* LanguageState.swift */; };
 		6A8C988F2BAC88B500DB835A /* I18nHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C988D2BAC88B500DB835A /* I18nHelper.swift */; };
+		A73120261025000000000003 /* InterfaceLanguageModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73120261025000000000004 /* InterfaceLanguageModifier.swift */; };
 		6A8C98952BAE841600DB835A /* LocalizedBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C98942BAE841600DB835A /* LocalizedBundle.swift */; };
 		6ADED1552BAE8809004A15BE /* NSBundle+Localization.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */; };
 		6BF322BF19CC4C61816B34F9 /* ClaudeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3F84B513D845C38F346217 /* ClaudeResponse.swift */; };
@@ -687,6 +690,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A73120261027000000000002 /* TranslationResultLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationResultLabel.swift; sourceTree = "<group>"; };
+		A73120261023000000000002 /* LocalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationTests.swift; sourceTree = "<group>"; };
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000002 /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		02DEDC042026043000000003 /* MarkdownLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLabel.swift; sourceTree = "<group>"; };
@@ -1308,6 +1313,7 @@
 		63D2A8E02F1C4B2E8C9A7101 /* MDictMetadataCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictMetadataCache.swift; sourceTree = "<group>"; };
 		6A8C988C2BAC88B500DB835A /* LanguageState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageState.swift; sourceTree = "<group>"; };
 		6A8C988D2BAC88B500DB835A /* I18nHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = I18nHelper.swift; sourceTree = "<group>"; };
+		A73120261025000000000004 /* InterfaceLanguageModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceLanguageModifier.swift; sourceTree = "<group>"; };
 		6A8C98942BAE841600DB835A /* LocalizedBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedBundle.swift; sourceTree = "<group>"; };
 		6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Localization.m"; sourceTree = "<group>"; };
 		6BFA978362272A43BC0169C0 /* CodexRuntimeDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexRuntimeDescriptor.swift; sourceTree = "<group>"; };
@@ -1494,11 +1500,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A73120261023000000000003 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				A73120261023000000000002 /* LocalizationTests.swift */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
 		02DEDC042026043000000001 /* Markdown */ = {
 			isa = PBXGroup;
 			children = (
 				02DEDC042026043000000002 /* MarkdownRenderer.swift */,
 				02DEDC042026043000000003 /* MarkdownLabel.swift */,
+				A73120261027000000000002 /* TranslationResultLabel.swift */,
 				02DEDC042026043000000004 /* MarkdownToggleButton.swift */,
 			);
 			path = Markdown;
@@ -3528,6 +3543,7 @@
 			isa = PBXGroup;
 			children = (
 				6A8C988D2BAC88B500DB835A /* I18nHelper.swift */,
+				A73120261025000000000004 /* InterfaceLanguageModifier.swift */,
 				6A8C988C2BAC88B500DB835A /* LanguageState.swift */,
 				6A8C98942BAE841600DB835A /* LocalizedBundle.swift */,
 				6ADED1542BAE8809004A15BE /* NSBundle+Localization.m */,
@@ -3665,6 +3681,7 @@
 		BE5912DE778CDCD8495CA4E5 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				A73120261023000000000003 /* Localization */,
 				A12760012026090500000003 /* Query */,
 				02DEDC0420260430000000C1 /* Markdown */,
 				030732CB2F24862A0001382A /* OCR */,
@@ -4073,6 +4090,7 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				ur,
 				en,
 				Base,
 				es,
@@ -4422,6 +4440,7 @@
 				03A8846E2F12000100D5C0DE /* TaskTimeoutTests.swift in Sources */,
 				A1D1807E2F8D100100B1C0D1 /* ThrottleGateTests.swift in Sources */,
 				B95E8E65988E4351BF03462E /* UtilityFunctionsTests.swift in Sources */,
+				A73120261023000000000001 /* LocalizationTests.swift in Sources */,
 				73960B6BE1AB4186BA1377CF /* TestSuites.swift in Sources */,
 				03FDAE962E1A8A290029369E /* RegexTests.swift in Sources */,
 				031153412EDB0BA20083521F /* StringCommentHandlingTests.swift in Sources */,
@@ -4488,6 +4507,7 @@
 				B8D793EA87784E0B9D82C7FC /* MDictConfigurationView.swift in Sources */,
 				02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */,
 				02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */,
+				A73120261027000000000001 /* TranslationResultLabel.swift in Sources */,
 				02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */,
 				0338210C2F0EAF490087A361 /* AppleScriptTask.swift in Sources */,
 				03F5A1032F5B3A0100AA0001 /* NSStringEasydictBridge.swift in Sources */,
@@ -4814,6 +4834,7 @@
 				033C6DCB2ED9E2E500AC39FC /* NiuTransTranslateResponse.swift in Sources */,
 				03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */,
 				6A8C988F2BAC88B500DB835A /* I18nHelper.swift in Sources */,
+				A73120261025000000000003 /* InterfaceLanguageModifier.swift in Sources */,
 				03A9BE952E70631B0013E645 /* SystemUtility+Selection.swift in Sources */,
 				03D5C4CC2DA21EAD0054D0D4 /* MetadataExtractor.swift in Sources */,
 				03F2F1A62E54D70500FF71E3 /* OCRWindow.swift in Sources */,
@@ -4963,6 +4984,10 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/Easydict/objc/ViewController/View/EZQueryMenuTextView",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 14.1;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.izual.EasydictSwiftTests;
@@ -4970,7 +4995,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/objc/ViewController/View/TextView/EZTextView.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Easydict-debug.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Easydict-debug";
@@ -4992,13 +5017,17 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/Easydict/objc/ViewController/View/EZQueryMenuTextView",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 14.1;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.izual.EasydictSwiftTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/objc/ViewController/View/TextView/EZTextView.h";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Easydict-debug.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Easydict-debug";
 			};
