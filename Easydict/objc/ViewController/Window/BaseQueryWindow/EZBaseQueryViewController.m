@@ -112,7 +112,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)loadView {
     CGRect frame = [[EZLayoutManager shared] windowFrameWithType:self.windowType];
     self.view = [[NSView alloc] initWithFrame:frame];
-    self.view.userInterfaceLayoutDirection = EZI18nHelper.shared.interfaceLayoutDirection;
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = EZCornerRadius_8;
     self.view.layer.masksToBounds = YES;
@@ -233,7 +232,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
                       selector:@selector(updateWindowHeight)
                           name:NSNotification.maxWindowHeightSettingsChanged
                         object:nil];
-    [EZI18nHelper.shared applyInterfaceLayoutDirectionToView:self.view];
 }
 
 - (void)updateWindowConfiguration:(NSNotification *)notification {
@@ -256,7 +254,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)modifyAppLanguage:(NSNotification *)notification {
-    [EZI18nHelper.shared applyInterfaceLayoutDirectionToView:self.view];
     [self.tableView reloadData];
 }
 
@@ -991,7 +988,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         self.queryView.associatedWindowType = self.windowType;
         [self.queryView initializeAimatedButtonAlphaValue:self.queryModel];
         self.queryView.queryModel = self.queryModel;
-        [EZI18nHelper.shared applyInterfaceLayoutDirectionToView:self.queryView];
         return self.queryView;
     }
 
@@ -1016,13 +1012,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             mm_strongify(self);
             [self toggleTranslationLanguages];
         }];
-        [EZI18nHelper.shared applyInterfaceLayoutDirectionToView:selectLanguageCell];
         return selectLanguageCell;
     }
 
     EZResultView *resultCell = [self resultCellAtRow:row];
     resultCell.associatedWindowType = self.windowType;
-    [EZI18nHelper.shared applyInterfaceLayoutDirectionToView:resultCell];
 
     return resultCell;
 }

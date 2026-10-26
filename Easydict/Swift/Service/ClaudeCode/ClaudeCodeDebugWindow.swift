@@ -32,9 +32,7 @@ final class ClaudeCodeDebugWindowController: NSWindowController {
         panel.level = .floating
         panel.isReleasedWhenClosed = false
         panel.center()
-        panel.contentView = NSHostingView(rootView: ClaudeCodeDebugView().interfaceLanguage { [weak panel] in
-            panel?.title = String(localized: "service.claude_code.debug_log.window_title")
-        })
+        panel.contentView = NSHostingView(rootView: ClaudeCodeDebugView())
         super.init(window: panel)
     }
 

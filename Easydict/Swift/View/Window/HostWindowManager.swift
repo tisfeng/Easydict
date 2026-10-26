@@ -46,9 +46,6 @@ final class HostWindowManager {
         window.center()
 
         let wrappedContent = content()
-            .interfaceLanguage { [weak window] in
-                window?.title = title ?? NSLocalizedString(windowId, comment: "")
-            }
             .frame(
                 minWidth: width, maxWidth: .infinity,
                 minHeight: height, maxHeight: .infinity

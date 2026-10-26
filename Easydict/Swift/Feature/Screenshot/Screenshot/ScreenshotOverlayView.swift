@@ -23,9 +23,7 @@ struct ScreenshotOverlayView: View {
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             backgroundLayer
-                .environment(\.layoutDirection, .leftToRight)
             selectionLayer
-                .environment(\.layoutDirection, .leftToRight)
 
             if state.isTipVisible {
                 tipLayer
@@ -38,7 +36,6 @@ struct ScreenshotOverlayView: View {
 
     @State private var backgroundImage: NSImage?
     @ObservedObject private var state: ScreenshotState
-    @Environment(\.layoutDirection) private var layoutDirection
 
     // MARK: Gestures
 
@@ -99,7 +96,7 @@ struct ScreenshotOverlayView: View {
         }
     }
 
-    /// Place tips at the interface's leading edge, independently of capture coordinates.
+    /// Tip layer at bottom-left corner
     private var tipLayer: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("screenshot.tip.capture_last_area_desc")
@@ -123,29 +120,18 @@ struct ScreenshotOverlayView: View {
                     }
                     // Get the tip frame
                     .onAppear {
-                        updateTipFrame(size: geometry.size)
-                    }
-                    .onChange(of: geometry.size) { size in
-                        updateTipFrame(size: size)
-                    }
-                    .onChange(of: layoutDirection) { _ in
-                        updateTipFrame(size: geometry.size)
+                        state.tipFrame = CGRect(
+                            x: state.screen.frame.minX,
+                            y: state.screen.frame.minY,
+                            width: geometry.size.width,
+                            height: geometry.size.height
+                        )
                     }
             }
         }
     }
 
     // MARK: Event Handlers
-
-    private func updateTipFrame(size: CGSize) {
-        state.tipFrame = CGRect(
-            x: layoutDirection == .rightToLeft
-                ? state.screen.frame.maxX - size.width : state.screen.frame.minX,
-            y: state.screen.frame.minY,
-            width: size.width,
-            height: size.height
-        )
-    }
 
     /// Handle drag gesture change
     private func handleDragChange(_ value: DragGesture.Value) {

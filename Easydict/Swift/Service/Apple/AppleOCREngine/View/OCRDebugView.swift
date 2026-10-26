@@ -37,8 +37,6 @@ struct OCRDebugView: View {
                     bands: viewModel.bands,
                     selectedIndex: $viewModel.selectedIndex
                 )
-                // Vision boxes and pointer coordinates stay in the image's physical coordinate space.
-                .environment(\.layoutDirection, .leftToRight)
                 .frame(minWidth: 420)
 
                 // Middle: Band analysis results

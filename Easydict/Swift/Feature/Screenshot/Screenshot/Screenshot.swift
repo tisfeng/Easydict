@@ -196,7 +196,6 @@ class Screenshot: NSObject {
 
         let state = ScreenshotState(screen: screen)
         let contentView = ScreenshotOverlayView(state: state)
-            .interfaceLanguage()
         window.contentView = ScreenshotOverlayHostingView(rootView: contentView)
         if let contentView = window.contentView {
             window.invalidateCursorRects(for: contentView)

@@ -153,6 +153,13 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
     return self;
 }
 
+/// Only result text opts into paragraph-direction handling; window chrome is unchanged.
+- (EZTranslationResultLabel *)makeResultTextLabel {
+    EZTranslationResultLabel *label = [[EZTranslationResultLabel alloc] init];
+    label.markdownEnabled = NO;
+    return label;
+}
+
 // TODO: This method is too long, need to refactor.
 - (void)refreshWithResult:(EZQueryResult *)result {
     BOOL shouldRenderHTML = EZResultShouldRenderDictionaryHTML(result);
@@ -224,7 +231,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
 
         BOOL showBigWord = result.wordResult || result.showBigWord;
         if (isShortWordLength && showBigWord) {
-            EZLabel *bigWordLabel = [[EZLabel alloc] init];
+            EZLabel *bigWordLabel = [self makeResultTextLabel];
             [self addSubview:bigWordLabel];
             bigWordLabel.font = [NSFont systemFontOfSize:24 * self.fontSizeRatio weight:NSFontWeightSemibold];
             bigWordLabel.text = result.queryText;
@@ -266,15 +273,8 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             }
 
             if (text) {
-                EZLabel *resultLabel;
-                BOOL serviceIsStreaming = [self.service isStream];
-                if (serviceIsStreaming && errorMessage.length == 0) {
-                    EDMarkdownLabel *markdownLabel = [[EDMarkdownLabel alloc] init];
-                    markdownLabel.markdownEnabled = result.isMarkdownRenderingEnabled;
-                    resultLabel = markdownLabel;
-                } else {
-                    resultLabel = [[EZLabel alloc] init];
-                }
+                EZTranslationResultLabel *resultLabel = [self makeResultTextLabel];
+                resultLabel.markdownEnabled = [self.service isStream] && errorMessage.length == 0 && result.isMarkdownRenderingEnabled;
                 resultLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
                 [self addSubview:resultLabel];
 
@@ -370,7 +370,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
 
 
         [wordResult.phonetics enumerateObjectsUsingBlock:^(EZWordPhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-            EZLabel *phoneticTagLabel = [[EZLabel alloc] init];
+            EZLabel *phoneticTagLabel = [self makeResultTextLabel];
             [self addSubview:phoneticTagLabel];
             phoneticTagLabel.font = typeTextFont;
             phoneticTagLabel.textForegroundColor = typeTextColor;
@@ -404,7 +404,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             // Fix: SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x7ff85c514b40
             NSString *phonetic = obj.value;
             if ([phonetic isKindOfClass:NSString.class] && phonetic.length) {
-                phoneticLabel = [[EZLabel alloc] init];
+                phoneticLabel = [self makeResultTextLabel];
                 [self addSubview:phoneticLabel];
                 phoneticLabel.textContainer.lineFragmentPadding = 0;
                 phoneticLabel.font = [NSFont systemFontOfSize:textFont.pointSize * self.fontSizeRatio];
@@ -525,7 +525,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             EZLabel *partLabel = nil;
             __block CGFloat exceptedWidth = 0;
             if (obj.part.length) {
-                partLabel = [[EZLabel alloc] init];
+                partLabel = [self makeResultTextLabel];
                 [self addSubview:partLabel];
                 partLabel.font = typeTextFont;
                 partLabel.textForegroundColor = typeTextColor;
@@ -555,7 +555,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
                 partLabel.mas_key = @"partLabel";
             }
 
-            EZLabel *meanLabel = [[EZLabel alloc] init];
+            EZLabel *meanLabel = [self makeResultTextLabel];
             meanLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
             [self addSubview:meanLabel];
             NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
@@ -603,7 +603,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
         }];
 
         [wordResult.exchanges enumerateObjectsUsingBlock:^(EZTranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-            EZLabel *exchangeLabel = [[EZLabel alloc] init];
+            EZLabel *exchangeLabel = [self makeResultTextLabel];
             [self addSubview:exchangeLabel];
             exchangeLabel.font = typeTextFont;
             exchangeLabel.textForegroundColor = typeTextColor;
@@ -692,7 +692,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
         [showingSimpleWords enumerateObjectsUsingBlock:^(EZTranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             EZLabel *partLabel = nil;
             if (!obj.showPartMeans && obj.part.length && (!lastSimpleWordPart || ![obj.part isEqualToString:lastSimpleWordPart])) {
-                partLabel = [[EZLabel alloc] init];
+                partLabel = [self makeResultTextLabel];
                 [self addSubview:partLabel];
                 partLabel.font = typeTextFont;
                 partLabel.textForegroundColor = typeTextColor;
@@ -769,7 +769,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             wordButton.mas_key = @"wordButton_simpleWords";
 
 
-            EZLabel *meanLabel = [[EZLabel alloc] init];
+            EZLabel *meanLabel = [self makeResultTextLabel];
             meanLabel.text = obj.meansText;
             meanLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
             [self addSubview:meanLabel];
@@ -812,7 +812,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
         if (wordResult.etymology.length) {
             __block CGFloat exceptedWidth = 0;
 
-            EZLabel *etymologyLabel = [[EZLabel alloc] init];
+            EZLabel *etymologyLabel = [self makeResultTextLabel];
             [self addSubview:etymologyLabel];
             etymologyLabel.font = typeTextFont;
             etymologyLabel.textForegroundColor = typeTextColor;
@@ -836,7 +836,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             lastView = etymologyLabel;
 
 
-            EZLabel *resultLabel = [[EZLabel alloc] init];
+            EZLabel *resultLabel = [self makeResultTextLabel];
             [self addSubview:resultLabel];
             resultLabel.text = wordResult.etymology;
             resultLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
@@ -873,7 +873,6 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
     }
 
     [self setupBottomToolBarButtons:result lastView:lastView height:height];
-    [EZI18nHelper.shared applyInterfaceLayoutDirectionToView:self];
 }
 
 /// Setup bottom tool bar buttons.
@@ -944,7 +943,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             make.top.equalTo(self).offset(audioButtonTopOffset);
         }
 
-        make.leading.offset(audioButtonLeftOffset);
+        make.left.offset(audioButtonLeftOffset);
         make.width.height.mas_equalTo(EZAudioButtonWidthHeight_24);
     }];
     lastView = audioButton;
@@ -957,7 +956,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
 
 
     [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(audioButton.mas_trailing).offset(buttonPadding);
+        make.left.equalTo(audioButton.mas_right).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
     }];
 
@@ -983,7 +982,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
     linkButton.mas_key = @"result_linkButton";
 
     [linkButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(textCopyButton.mas_trailing).offset(buttonPadding);
+        make.left.equalTo(textCopyButton.mas_right).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
     }];
 
@@ -1004,7 +1003,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
     replaceTextButton.mas_key = @"replaceTextButton";
 
     [replaceTextButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(linkButton.mas_trailing).offset(buttonPadding);
+        make.left.equalTo(linkButton.mas_right).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
     }];
 
@@ -1037,7 +1036,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
         }];
 
         [ankiButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.leading.equalTo(rightmostButton.mas_trailing).offset(buttonPadding);
+            make.left.equalTo(rightmostButton.mas_right).offset(buttonPadding);
             make.width.height.bottom.equalTo(audioButton);
         }];
 
@@ -1071,7 +1070,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
         };
 
         [markdownToggleButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.leading.equalTo(rightmostButton.mas_trailing).offset(buttonPadding);
+            make.left.equalTo(rightmostButton.mas_right).offset(buttonPadding);
             make.width.height.bottom.equalTo(audioButton);
         }];
     }
@@ -1103,7 +1102,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
                                             height:(CGFloat *)height
                                           lastView:(NSView *)lastView {
     __block NSView *rtnView = lastView;
-    EZLabel *synonymsTitle = [[EZLabel alloc] init];
+    EZLabel *synonymsTitle = [self makeResultTextLabel];
     [self addSubview:synonymsTitle];
     synonymsTitle.font = typeTextFont;
     synonymsTitle.textForegroundColor = typeTextColor;
@@ -1129,7 +1128,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
     [parts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         if (obj.means.count == 0)
             return;
-        EZLabel *partLabel = [[EZLabel alloc] init];
+        EZLabel *partLabel = [self makeResultTextLabel];
         partLabel.font = typeTextFont;
         partLabel.textForegroundColor = typeTextColor;
         partLabel.text = obj.part;

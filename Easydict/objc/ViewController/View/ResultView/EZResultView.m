@@ -195,48 +195,48 @@
     }];
     
     [self.serviceIcon mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(self.topBarView).offset(8);
+        make.left.equalTo(self.topBarView).offset(8);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
     
     [self.serviceNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(self.serviceIcon.mas_trailing).offset(2);
+        make.left.equalTo(self.serviceIcon.mas_right).offset(2);
         make.centerY.equalTo(self.topBarView).offset(0);
     }];
     
     [self.serviceModelButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(self.serviceNameLabel.mas_trailing).offset(0);
+        make.left.equalTo(self.serviceNameLabel.mas_right).offset(0);
         make.top.equalTo(self.topBarView).offset(8);
         make.bottom.equalTo(self.topBarView).offset(-8);
     }];
     
     [self.errorImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(self.serviceModelButton.mas_trailing).offset(5);
+        make.left.equalTo(self.serviceModelButton.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
     
     [self.loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(self.serviceModelButton.mas_trailing).offset(3);
+        make.left.equalTo(self.serviceModelButton.mas_right).offset(3);
         make.centerY.equalTo(self.topBarView);
         make.height.equalTo(self.topBarView);
     }];
     
     [self.arrowButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.trailing.equalTo(self.topBarView.mas_trailing).offset(-5);
+        make.right.equalTo(self.topBarView.mas_right).offset(-5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
     
     [self.stopButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.trailing.equalTo(self.arrowButton.mas_leading).offset(0);
+        make.right.equalTo(self.arrowButton.mas_left).offset(0);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
     
     [self.retryButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.trailing.equalTo(self.arrowButton.mas_leading).offset(0);
+        make.right.equalTo(self.arrowButton.mas_left).offset(0);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
@@ -271,13 +271,6 @@
 }
 
 #pragma mark - Setter
-
-- (void)setUserInterfaceLayoutDirection:(NSUserInterfaceLayoutDirection)layoutDirection {
-    [super setUserInterfaceLayoutDirection:layoutDirection];
-    if (self.arrowButton) {
-        [self updateArrowButtonImage];
-    }
-}
 
 - (void)setResult:(EZQueryResult *)result {
     _result = result;
@@ -589,22 +582,7 @@
 - (void)updateArrowButtonImage {
     NSImage *baseImage = self.result.isShowing ? [NSImage imageNamed:@"arrow-down"] : [NSImage imageNamed:@"arrow-left"];
     NSColor *tintColor = self.arrowButton.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
-    NSImage *image = [baseImage imageWithTintColor:tintColor];
-    if (!self.result.isShowing && self.userInterfaceLayoutDirection == NSUserInterfaceLayoutDirectionRightToLeft) {
-        // Mirror only the collapsed glyph, without changing the shared asset or button geometry.
-        NSImage *leftArrow = image;
-        image = [NSImage imageWithSize:leftArrow.size flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-            [NSGraphicsContext saveGraphicsState];
-            NSAffineTransform *mirror = [NSAffineTransform transform];
-            [mirror translateXBy:NSMinX(dstRect) + NSMaxX(dstRect) yBy:0];
-            [mirror scaleXBy:-1 yBy:1];
-            [mirror concat];
-            [leftArrow drawInRect:dstRect];
-            [NSGraphicsContext restoreGraphicsState];
-            return YES;
-        }];
-    }
-    self.arrowButton.image = image;
+    self.arrowButton.image = [baseImage imageWithTintColor:tintColor];
 }
 
 - (void)updateRetryButtonImage {
