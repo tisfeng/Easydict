@@ -45,3 +45,14 @@
 
 - 按用户限制未进行 GUI 替换验证，现有测试不直接验证新子类的实际段落方向与混排显示；Release、Intel 和旧系统未验证。
 - 保留的未使用 modifier 及语言方向查询属性不再参与 UI；后续可在原有改动明确归属后清理。
+
+### 用户实测后的补充修复
+
+- 用户截图显示 Urdu 最后一行仍靠左。前次仅写入 `.natural`，不能保证内容靠右，前次现有测试通过也未验证新子类实际显示，不能代替该验收。
+- 依据 Apple SDK NSText.h 与 [NSTextAlignment.natural](https://developer.apple.com/documentation/appkit/nstextalignment/natural) 的解析契约，改为显式对齐。
+- 生产代码仅修改 TranslationResultLabel：每段按首个强方向字符解析 Unicode bidi 类 R/AL/L，跳过中性标点与数字；RTL 明确右对齐、LTR 明确左对齐。段内混排仍由系统负责，不修改文本；代码块强制 LTR。
+- 保持纯文本、Markdown 和字体/外观更新共用入口；不调整标题、工具栏、窗口、设置和词典 HTML。
+- 本轮以 3b3837cd8a6592c997060abe163be5aa4e0dc78a 为基线，原有 modifier 格式修改原样保留，不纳入提交。
+- 验证：同一独立 Agent DerivedData 上 Debug `xcodebuild test` 成功，LocalizationTests、MarkdownRendererTests 共 28 项通过，未新增/扩写测试；`git diff --check` 通过。
+- review：冻结并复验最终源码；检查首个强方向、UTF-16 范围、代码标记优先级、空段落及保留样式、现有测量和调用入口，未发现有效 finding；当前小范围实现足够。
+- 限制：保持用户运行实例不变，未执行 GUI 验证；既有测试没有直接验证新子类的混排与对齐效果，视觉验收仍需运行新构建确认。未 push。

@@ -57,3 +57,14 @@
 ## 完成条件
 
 - 范围内实现、验证和 review 完成，记录 GUI 未实测限制，创建本地提交并保留两处原有改动。
+
+## 用户实测后的补充修复
+
+- 用户提供截图：Urdu 正文的最后一行仍然靠左，未达到要求；此前 GUI 未验证，不能把现有测试通过视为正文方向验收完成。
+- 本轮基线：3b3837cd8a6592c997060abe163be5aa4e0dc78a；仅 modifier 文件有原有未提交格式修改，保持原样排除提交。
+- 修改范围：TranslationResultLabel 显式解析每个段落首个强方向字符，并同时设置基础方向与左/右对齐；围栏代码固定 LTR，其他 UI 不变。
+- 验证：运行既有两套测试、构建和 review；保留运行实例，不新增测试或执行 GUI 替换，不 push。
+- [x] 完成显式方向与对齐修复、验证、review 和本地提交（本记录同批交付）。
+- Debug 构建与两个既有 suite 共 28 项通过；未新增测试。GUI 仍未验证，当前用户实例 PID/产物路径保持不变。
+- review：检查最终子类差异及纯文本/Markdown 更新入口、尺寸测量和调用者；未发现有效 finding。显式内容方向消除 locale 对齐歧义，未触及其他 UI，实现范围足够。
+- Apple SDK NSText.h 说明 natural alignment 可能按 UI 语言或 base writing direction 解析；因此不能把 `.natural` 当作内容靠右的保证。采用文档：[NSTextAlignment.natural](https://developer.apple.com/documentation/appkit/nstextalignment/natural)。
