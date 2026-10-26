@@ -31,6 +31,6 @@
 - 已执行 `git diff --check` 和上述两个针对性测试，均通过；相同 head 的 CI 共 3 项，全部通过。
   未运行桌面端交互验证，因此不将真实使用体验标为已验证。
 - 最终刷新：`<时间及时区>`；PR `updatedAt`：`<时间>`。head/base、需求、评论、线程回复与 checks
-  未变化，无未检查的新活动。线程：初始开放 0，本轮 resolve 0，最终开放 0。
-- 实际操作：fetch 并复验本地分支；未修改产品代码、提交 GitHub review、resolve 或 push。
+  未变化，无未检查的新活动。线程：初始开放 0，本轮发布回复 0，本轮 resolve 0，最终开放 0。
+- 实际操作：fetch 并复验本地分支；未修改产品代码、提交 GitHub review、回复评论、resolve 或 push。
 ```
