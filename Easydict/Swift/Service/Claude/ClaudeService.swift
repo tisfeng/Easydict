@@ -34,10 +34,6 @@ public final class ClaudeService: StreamService {
         NSLocalizedString("claude_translate", comment: "The name of Claude Translate")
     }
 
-    public override func configurationListItems() -> Any {
-        StreamConfigurationView(service: self, temperatureMaxValue: 1)
-    }
-
     // MARK: Internal
 
     override var defaultModels: [String] {
@@ -45,7 +41,7 @@ public final class ClaudeService: StreamService {
     }
 
     override var defaultModel: String {
-        ClaudeModel.claude_sonnet_4_6.rawValue
+        ClaudeModel.claude_sonnet_5_5.rawValue
     }
 
     override var defaultEndpoint: String {
@@ -199,7 +195,6 @@ public final class ClaudeService: StreamService {
         var body: [String: Any] = [
             "model": model,
             "max_tokens": maxTokens,
-            "temperature": min(max(temperature, 0), 1),
             "stream": true,
             "messages": messages.map { ["role": $0.role.rawValue, "content": $0.content] },
         ]
@@ -377,8 +372,7 @@ enum ClaudeModel: String, CaseIterable {
     // Docs: https://docs.anthropic.com/en/docs/about-claude/models
     // Pricing: https://www.anthropic.com/pricing
 
-    case claude_sonnet_4_6 = "claude-sonnet-4-6"
-    case claude_haiku_4_5 = "claude-haiku-4-5"
-    case claude_opus_4_6 = "claude-opus-4-6"
-    case claude_opus_4_7 = "claude-opus-4-7"
+    case claude_sonnet_5_5 = "claude-sonnet-5-5"
+    case claude_haiku_5_5 = "claude-haiku-5-5"
+    case claude_opus_5_5 = "claude-opus-5-5"
 }

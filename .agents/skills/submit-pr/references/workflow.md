@@ -25,50 +25,61 @@ helper 只接受指向 `github.com` 的 SSH 或 HTTPS remote，并按以下顺�
 
 显式参数只解决歧义，不能绕过 remote URL、fork 网络和 GitHub 返回身份的校验。
 同次拓扑发现中，显式 repository 与已查询的 remote repository 相同时复用元数据；每次
-`plan` 或 `apply` 调用重新发现，不跨调用缓存，也不省略写入前后的状态校验。
+`preflight`、`plan` 或 `apply` 调用重新发现，不跨调用缓存，也不省略写入前后的状态校验。
 同一 `apply` 调用内已经验证的 repository 元数据、remote push URL 和冻结 SHA 可以复用，避免
 为相同事实重复启动本地进程；复用范围不得跨越新的 helper 调用。
 
 ## 分支决策
 
-任务分支默认使用 Conventional 格式 `<type>/<kebab-case-summary>`。显式 `--head-branch`
-支持用户或项目既有的其他 Git 合法字面名称，例如 `codex/fix-login`、`feature/login`；不接受
-`@{-1}` 等会被 Git 展开为其他引用的表达式。
+任务名与显式名称校验统一使用 [`git-commit` 的命名工具](../../git-commit/references/branch-naming.md)。
+显式 `--head-branch` 可提供用户指定的其他合法字面名称；普通本地提交不受下面的 PR 来源分支限制。
 
 base branch、GitHub default branch 和重复传入的 `--protected-branch` 都属于保护分支。
 
-- 当前分支是保护分支或不符合 Conventional 格式：必须提供
-  `--head-branch <task-branch>`。helper 从冻结 HEAD 创建或复用该本地
-  ref，但不切换 checkout、不移动当前分支。
+- `preflight` 是只读分支预检：解析仓库拓扑后，比较当前分支名与 base branch、GitHub default
+  branch，并校验显式 `--head-branch`。它不 fetch、不创建 ref、不切换 checkout、不写仓库文件或
+  push；成功时返回已解析的 repository、base/default、head remote 和 branch 信息。
+- 当前分支名与 base branch 或 GitHub default branch 相同时，`preflight`、`plan` 和 `apply` 都拒绝
+  继续，即使传入了不同的 `--head-branch`。错误提示用户自行创建并切换到新的任务分支后重试；已有
+  提交可由新分支继承，无需重复创建相同提交。`apply` 在 fetch base 前重复此检查。
+- 显式 head 名称不得与 base branch、GitHub default branch 或额外配置的保护分支同名。head 位于
+  fork remote 时仍按名称比较，不因 repository 不同而绕过检查。
+- 当前分支是其他保护分支或不符合 Conventional 格式：必须提供
+  `--head-branch <task-branch>`。helper 从冻结 HEAD 创建或复用该本地 ref，但不切换 checkout、不
+  移动当前分支。
 - 显式名称等于当前非保护分支时直接复用，不因其格式与默认值不同而另建分支。
 - 当前已经是默认 Conventional 非保护任务分支：直接使用；如果同时提供 `--head-branch`，名称必须相同。
 - 显式名称不得是保护分支；名称冲突时尝试的后缀候选同样跳过保护分支。
 - Detached HEAD：调用 Agent 根据用户明确名称、项目既有命名或任务与只读 diff 生成分支名，并向
-  helper 显式传入 `--head-branch`。helper 自身不从 PR 标题猜测名称；缺少参数时在写入前停止。
+  `preflight`、`plan` 和 `apply` 显式传入相同的 `--head-branch`。helper 自身不从 PR 标题猜测名称；
+  缺少参数时在写入前停止。
   `plan` 以 `current_branch: null` 和 `would-create`、`would-update` 或 `would-reuse` 预览动作且不创建
   ref；`apply` 从冻结 HEAD 创建、更新或复用本地 ref，不切换 checkout。
 
-apply 先 fetch 精确 base ref，再要求 `<base-remote>/<base>` 是 HEAD 的祖先且范围至少
-包含一个提交。该拓扑检查不替代调用 Agent 对提交范围和任务边界的语义审查。
+调用 Agent 在提交 staged 内容、fetch 或调用 `apply` 前运行 `preflight`；`plan` 和 `apply` 内部也
+重复分支检查，不能依赖调用方一定执行预检。`apply` 先解析拓扑并完成保护分支检查，再 fetch
+精确 base ref，之后要求 `<base-remote>/<base>` 是 HEAD 的祖先且范围至少包含一个提交。该拓扑检查
+不替代调用 Agent 对提交范围和任务边界的语义审查。
 
 ## 工作树与提交
 
-- `plan` 使用 `GIT_OPTIONAL_LOCKS=0` 执行 Git 读取，可以报告 staged、unstaged 和
-  untracked 状态，但不 fetch、不创建 ref、不写临时文件。
+- `preflight` 与 `plan` 使用 `GIT_OPTIONAL_LOCKS=0` 执行 Git 读取；二者都不 fetch、不创建 ref、
+  不写临时文件。`plan` 可以报告 staged、unstaged 和 untracked 状态。
 - `apply` 要求工作树完全干净。
 - `apply` 在本地 ref 写入前重新检查 checkout 的 attached/detached 状态与 HEAD；与冻结计划不一致时
   停止，并重新读取目标 ref。分支更新继续使用 Git 的 worktree 检出保护，不移动其他 worktree
   正在使用的分支。
 - helper 不运行 `git add` 或 `git commit`。已有 staged 内容由调用 Agent 根据目标
   仓库交付规则处理；有 unstaged 或 untracked 内容时停止。
-- 默认/draft 的调用方在最终 plan 前完成允许的 staged 提交和精确 base fetch，解决首次提交或
+- 默认/draft 的调用方先运行 `preflight`，再完成允许的 staged 提交和精确 base fetch，解决首次提交或
   缺少 cached base 的准备问题。纯 plan 不执行这些动作，缺少前提时只报告限制。
 - helper 不修改提交历史，也不把无关提交从范围中自动剔除。
 
 ## 固定 PR 正文契约
 
 `plan`、默认和 `draft` 均依据用户请求、目标仓库规则、真实提交范围与 diff 起草正文。
-PR 标题使用 Angular-style `type(scope): subject`，说明主要行为。
+PR 标题使用 Angular-style `type(scope): subject`，subject 统一使用英文说明主要行为，不随正文或
+对话语言变化。
 
 正文只使用 Skill 自带的 [固定模板](../assets/pull_request_template.md)，依次包含：
 
@@ -85,7 +96,7 @@ PR 标题使用 Angular-style `type(scope): subject`，说明主要行为。
 helper 要求 `--title`、`--context`、`--changes` 和 `--verification`；不接受 `--summary`、
 `--template`、`--extra-body-file` 或任意正文文件。Context、Changes 和 Verification 均不能为空。
 
-### 用户语言
+### 正文与报告语言
 
 调用 Agent 在起草前按顺序从第一个可用来源解析 `{USR_PREFERRED_LANGUAGE}`：
 
@@ -95,18 +106,18 @@ helper 要求 `--title`、`--context`、`--changes` 和 `--verification`；不�
    `LC_MESSAGES`、`LANG`、`locale` 或 Windows PowerShell culture 输出。
 4. 以上均无法确定时使用英语。
 
-目标仓库明确要求特定 PR 语言时，将其作为独立硬约束并在预览中说明；若它与用户明确偏好冲突，
+目标仓库明确要求特定正文语言时，将其作为独立硬约束并在预览中说明；若它与用户明确偏好冲突，
 停止并请求用户决定。固定模板标题、提交信息、分支名或单独的英文终端 locale 不能覆盖已经确定的
 对话语言，也不能单独视为仓库语言要求。
 
-PR 默认使用一种首选语言。标题的 subject、Context、Changes、Verification、调用 Agent 自拟的
-Issue 或截图说明，以及用户可见的最终报告都使用该语言；只有用户或仓库明确要求时才生成双语
-内容。Angular `type(scope)`、Issue 关键字、命令、路径、branch、SHA、API、产品名和检查名等
-技术标识保留原文。
+PR 正文默认使用一种首选语言。Context、Changes、Verification、调用 Agent 自拟的 Issue 或
+截图说明，以及用户可见的最终报告都使用该语言；只有用户或仓库明确要求时才生成双语正文。
+引用 PR 标题时保留其英文原文；Angular `type(scope)`、Issue 关键字、命令、路径、branch、SHA、
+API、产品名和检查名等技术标识保留原文。
 
 固定模板的双语标题、`N/A` 和 helper 固定截图提示属于稳定结构，不参与语言推断。调用 Agent
-在运行 helper 前负责检查草稿与首选语言一致，并在 PR 预览中显示语言及来源；helper 只校验并
-原样渲染传入内容，不检测语言或翻译。
+在运行 helper 前负责检查标题使用英文、正文与首选语言一致，并在 PR 预览中分别显示标题语言
+和正文语言及来源；helper 只校验格式并原样渲染传入内容，不检测语言或翻译。
 
 - 没有关联 Issue 时保持该区域为空。
 - UI 修改需要补图时不因截图缺失停止，也不自动改为 Draft。

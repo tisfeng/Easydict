@@ -14,7 +14,7 @@ import SwiftUI
 
 /// Configuration view for the Claude Code translation service.
 ///
-/// Hides API key, endpoint, model, temperature, and think-tag sections
+/// Hides API key, endpoint, model and think-tag sections
 /// since they are not applicable to CLI tools.
 struct ClaudeCodeServiceConfigurationView: View {
     // MARK: Lifecycle
@@ -60,8 +60,7 @@ struct ClaudeCodeServiceConfigurationView: View {
             showEndpointSection: false,
             showSupportedModelsSection: false,
             showUsedModelSection: false,
-            showThinkTagContent: false,
-            showTemperatureSlider: false
+            showThinkTagContent: false
         )
     }
 

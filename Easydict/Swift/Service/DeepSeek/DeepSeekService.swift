@@ -42,7 +42,7 @@ class DeepSeekService: OpenAIService {
     }
 
     override var defaultModel: String {
-        DeepSeekModel.deepseekV4Flash.rawValue
+        DeepSeekModel.deepseekFlash.rawValue
     }
 
     override var observeKeys: [Defaults.Key<String>] {
@@ -138,7 +138,6 @@ class DeepSeekService: OpenAIService {
         let requestBody = DeepSeekChatRequest(
             messages: messages.map(DeepSeekChatMessage.init),
             model: model,
-            temperature: temperature,
             stream: true,
             thinking: .init(type: effort.isEnabled ? "enabled" : "disabled"),
             reasoningEffort: effort.requestValue
@@ -240,7 +239,7 @@ class DeepSeekService: OpenAIService {
 enum DeepSeekModel: String, CaseIterable {
     // Docs: https://api-docs.deepseek.com
     // Pricing: https://api-docs.deepseek.com/quick_start/pricing
-    case deepseekV4Flash = "deepseek-v4-flash"
+    case deepseekFlash = "deepseek-flash"
     case deepseekV4Pro = "deepseek-v4-pro"
 }
 
@@ -254,7 +253,6 @@ private struct DeepSeekChatRequest: Encodable {
 
     let messages: [DeepSeekChatMessage]
     let model: String
-    let temperature: Double
     let stream: Bool
     let thinking: DeepSeekThinking
     let reasoningEffort: String?
@@ -264,7 +262,6 @@ private struct DeepSeekChatRequest: Encodable {
     private enum CodingKeys: String, CodingKey {
         case messages
         case model
-        case temperature
         case stream
         case thinking
         case reasoningEffort = "reasoning_effort"

@@ -62,8 +62,8 @@ description: 起草、创建或汇报 Angular-style 本地 Git 提交。用于�
    不 amend，不声称交付完成。
 5. 校验通过后删除本任务消息文件，读取 [统计与提交回执](references/reporting.md)，根据 Git 真实结果交付。
 
-仅为 `submit-pr` 或 `worktree-rebase-merge` 推导分支名时，读取
-[分支命名](references/branch-naming.md)，不进入提交流程。
+任何技能或 Agent 需要拟定、分类或校验分支名称时，读取
+[统一分支命名](references/branch-naming.md) 并使用其中工具，不进入提交流程。
 
 ## 完成与停止条件
 

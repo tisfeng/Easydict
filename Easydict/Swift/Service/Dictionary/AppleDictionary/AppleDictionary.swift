@@ -29,6 +29,7 @@ private let kLegacyHTMLDirectories = [
 private struct ResourceEmbeddingState {
     var dataURLs: [URL: String] = [:]
     var embeddedBytes = 0
+    var loadingURLs: Set<URL> = []
 }
 
 // MARK: - AppleDictionary
@@ -305,6 +306,8 @@ extension AppleDictionary {
 
         result?.htmlStrings = allEntryHTMLs
         result?.innerTexts = allInnerTexts
+        result?.translatedResults = allInnerTexts
+        result?.copiedText = allInnerTexts.joined(separator: "\n\n")
         return renderResult.htmlString
     }
 
@@ -382,16 +385,23 @@ extension AppleDictionary {
 extension AppleDictionary {
     // MARK: Private
 
-    /// Embeds dictionary audio and fonts so in-memory HTML does not require file access.
+    /// Embeds dictionary media, styles and small fonts so in-memory HTML does not require file access.
     private func embedDictionaryResources(
         ofHTML html: String,
         in contentsURL: URL,
-        state: inout ResourceEmbeddingState
+        state: inout ResourceEmbeddingState,
+        relativeTo baseURL: URL? = nil
     )
         -> String {
-        let patterns: [(pattern: String, pathGroup: Int)] = [
-            (#"new\s+Audio\(\s*(?:&quot;|&apos;|["'])(.*?)(?:&quot;|&apos;|["'])\s*\)"#, 1),
-            (#"<audio\b[^>]*?\bsrc\s*=\s*(["'])(.*?)\1"#, 2),
+        let patterns: [(pattern: String, pathGroup: Int, extensions: Set<String>?)] = [
+            (#"new\s+Audio\(\s*(?:&quot;|&apos;|["'])(.*?)(?:&quot;|&apos;|["'])\s*\)"#, 1, nil),
+            (#"<(?:audio|source|img|video)\b[^>]*?\ssrc\s*=\s*(["'])(.*?)\1"#, 2, nil),
+            (#"<link\b[^>]*?\shref\s*=\s*(["'])(.*?)\1"#, 2, nil),
+            // Font-face declarations are handled separately with a smaller size limit.
+            (
+                #"@font-face\s*\{[^}]*\}|\burl\(\s*(&quot;|&apos;|["']?)(.*?)\1\s*\)"#, 2,
+                ["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "ico", "avif", "css"]
+            ),
         ]
         var resolvedHTML = html
 
@@ -407,11 +417,14 @@ extension AppleDictionary {
                 range: NSRange(resolvedHTML.startIndex..., in: resolvedHTML)
             )
             for match in matches.reversed() {
-                guard let pathRange = Range(match.range(at: item.pathGroup), in: resolvedHTML),
+                guard match.range(at: item.pathGroup).location != NSNotFound,
+                      let pathRange = Range(match.range(at: item.pathGroup), in: resolvedHTML),
                       let dataURL = resourceDataURL(
                           for: String(resolvedHTML[pathRange]),
                           in: contentsURL,
-                          state: &state
+                          state: &state,
+                          relativeTo: baseURL,
+                          allowedExtensions: item.extensions
                       )
                 else {
                     continue
@@ -419,14 +432,15 @@ extension AppleDictionary {
                 resolvedHTML.replaceSubrange(pathRange, with: dataURL)
             }
         }
-        return embedFontResources(ofHTML: resolvedHTML, in: contentsURL, state: &state)
+        return embedFontResources(ofHTML: resolvedHTML, in: contentsURL, state: &state, relativeTo: baseURL)
     }
 
     /// Resolves font URLs only within inline font-face declarations.
     private func embedFontResources(
         ofHTML html: String,
         in contentsURL: URL,
-        state: inout ResourceEmbeddingState
+        state: inout ResourceEmbeddingState,
+        relativeTo baseURL: URL? = nil
     )
         -> String {
         guard let fontFaceRegex = try? NSRegularExpression(
@@ -450,6 +464,7 @@ extension AppleDictionary {
                       let pathRange = Range(url.range(at: group), in: declaration),
                       let dataURL = resourceDataURL(
                           for: String(declaration[pathRange]), in: contentsURL, state: &state,
+                          relativeTo: baseURL,
                           allowedExtensions: ["ttf", "otf", "woff", "woff2"],
                           maxFileSize: kMaxEmbeddedFontSize
                       )
@@ -465,6 +480,7 @@ extension AppleDictionary {
         for resourcePath: String,
         in contentsURL: URL,
         state: inout ResourceEmbeddingState,
+        relativeTo baseURL: URL? = nil,
         allowedExtensions: Set<String>? = nil,
         maxFileSize: Int = kMaxEmbeddedResourceSize
     )
@@ -478,7 +494,7 @@ extension AppleDictionary {
         let escapedPath = String(pathWithoutFragment[..<queryIndex]).unescapedXMLString().trim()
         let decodedPath = escapedPath.removingPercentEncoding ?? escapedPath
         guard !decodedPath.isEmpty,
-              let resourceURL = localResourceURL(for: decodedPath, in: contentsURL),
+              let resourceURL = localResourceURL(for: decodedPath, in: contentsURL, relativeTo: baseURL),
               allowedExtensions?.contains(resourceURL.pathExtension.lowercased()) != false
         else {
             return nil
@@ -508,9 +524,26 @@ extension AppleDictionary {
         let resolvedPath = FilePath(resourceURL.path).lexicallyNormalized()
         guard resolvedPath.starts(with: rootPath),
               resolvedPath != rootPath,
-              let resourceData = FileManager.default.contents(atPath: resolvedPath.string)
+              var resourceData = FileManager.default.contents(atPath: resolvedPath.string)
         else {
             return nil
+        }
+
+        guard !state.loadingURLs.contains(resourceURL), state.loadingURLs.count < 8 else {
+            return nil
+        }
+        var stylesheetState: ResourceEmbeddingState?
+        if resourceURL.pathExtension.lowercased() == "css" {
+            guard let css = String(data: resourceData, encoding: .utf8) else { return nil }
+            // Resolve children provisionally; only the final stylesheet consumes the outer budget.
+            var provisionalState = state
+            provisionalState.loadingURLs.insert(resourceURL)
+            let resolvedCSS = embedDictionaryResources(
+                ofHTML: css, in: contentsURL, state: &provisionalState,
+                relativeTo: resourceURL.deletingLastPathComponent()
+            )
+            resourceData = Data(resolvedCSS.utf8)
+            stylesheetState = provisionalState
         }
 
         let mimeType = UTType(filenameExtension: resourceURL.pathExtension)?.preferredMIMEType
@@ -519,12 +552,20 @@ extension AppleDictionary {
         guard state.embeddedBytes + dataURL.utf8.count <= kMaxEmbeddedResourceBytesPerQuery else {
             return nil
         }
+        if let stylesheetState {
+            state.dataURLs = stylesheetState.dataURLs
+        }
         state.dataURLs[resourceURL] = dataURL
         state.embeddedBytes += dataURL.utf8.count
         return dataURL + fragment
     }
 
-    private func localResourceURL(for resourcePath: String, in contentsURL: URL) -> URL? {
+    private func localResourceURL(
+        for resourcePath: String,
+        in contentsURL: URL,
+        relativeTo baseURL: URL?
+    )
+        -> URL? {
         guard !resourcePath.hasPrefix("//"),
               URL(string: resourcePath)?.scheme == nil
         else {
@@ -537,6 +578,8 @@ extension AppleDictionary {
         if resourcePath.hasPrefix("/") {
             // Dictionary entries may provide absolute paths within their bundle.
             candidates = [URL(fileURLWithPath: resourcePath)]
+        } else if let baseURL {
+            candidates = [baseURL.appendingPathComponent(resourcePath)]
         } else {
             candidates = [
                 rootURL.appendingPathComponent("Resources", isDirectory: true)

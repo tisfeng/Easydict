@@ -27,16 +27,16 @@ Easydict 直接从仓库运行共享 Skills，安装内容需要可离线审查�
 
 ## 来源基线：tisfeng/skills
 
-- 核对日期：2026-09-27；来源：`https://github.com/tisfeng/skills`；安装器 `skills@1.5.25`。
-- 采用版本：`v0.7.2`；annotated tag `4040ed8b87a26c8c89530362f285270fd0912b73`（unsigned），
-  peeled commit `f979c5ddc4e9eab6ae04bad912ed95c7ecdde344`；核验时同时固定 tag 和 peeled
+- 核对日期：2026-10-23；来源：`https://github.com/tisfeng/skills`；安装器 `skills@1.5.25`。
+- 采用版本：`v0.8.1`；annotated tag `d033324dd8e3b882ad8694836693df5dfd5e12a6`（unsigned），
+  peeled commit `1b40de2c4a1b03dcc117b14a1d089d3445bb2b9c`；核验时同时固定 tag 和 peeled
   commit。
 - 采用范围：`code-simplifier`、`git-commit`、`review`、`review-pr`、`submit-pr`、
   `worktree-rebase-merge` 六个完整 Skill 目录，不采用其他上游内容。
 
 ```bash
 npx -y skills@1.5.25 add \
-  https://github.com/tisfeng/skills/tree/v0.7.2 \
+  https://github.com/tisfeng/skills/tree/v0.8.1 \
   --skill code-simplifier git-commit review review-pr submit-pr worktree-rebase-merge \
   --agent codex --yes --copy --full-depth
 ```
@@ -45,6 +45,9 @@ npx -y skills@1.5.25 add \
   返回 `EPERM`，用独立的 `npm_config_cache` 运行安装器。
 - `skills-lock.json` 的内容哈希为 sha256：把 Skill 目录内全部文件按相对路径排序后拼接路径
   与内容再哈希。
+- v0.8.0 的 `submit-pr`、`review-pr`、`worktree-rebase-merge` 与项目专属 `release-easydict`
+  依赖同级完整安装的 `git-commit`；分支命名只在
+  [统一规范](../../.agents/skills/git-commit/references/branch-naming.md)维护。
 - v0.6.3 强制双语提交的本地语言与英文标题分别使用对应语言，并保持相同的 Angular
   type、scope 与 breaking 语义，避免两个区块复用同一英文标题。
 - 上游仓库级格式校验不随安装器复制，升级时另行核对 frontmatter、`agents/openai.yaml` 和

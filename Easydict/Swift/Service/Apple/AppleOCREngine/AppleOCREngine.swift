@@ -128,6 +128,7 @@ public class AppleOCREngine: NSObject {
         detectsQRCodes: Bool
     ) async throws
         -> EZOCRResult {
+        try Task.checkCancellation()
         logInfo("Recognizing text in image with language: \(language), image size: \(image.size)")
 
         guard image.isValid else {
@@ -144,13 +145,16 @@ public class AppleOCREngine: NSObject {
         }
 
         let startTime = CFAbsoluteTimeGetCurrent()
-        let qrCodePayloads = detectsQRCodes ? await detectQRCodePayloads(on: cgImage) : []
+        let qrCodePayloads = detectsQRCodes ? try await detectQRCodePayloads(on: cgImage) : []
 
         // Perform Vision OCR using unified API
         let observations: [EZRecognizedTextObservation]
         do {
             observations = try await performVisionOCR(on: cgImage, language: language)
+        } catch is CancellationError {
+            throw CancellationError()
         } catch {
+            try Task.checkCancellation()
             guard !qrCodePayloads.isEmpty else { throw error }
 
             logError(
@@ -159,6 +163,7 @@ public class AppleOCREngine: NSObject {
             return makeQRCodeOnlyResult(payloads: qrCodePayloads, language: language)
         }
 
+        try Task.checkCancellation()
         logInfo("Recognize observations count: \(observations.count) (\(language))")
         logInfo("Cost time: \(startTime.elapsedTimeString) seconds")
 
@@ -204,6 +209,7 @@ public class AppleOCREngine: NSObject {
         //    (we're already confident enough with the result)
         // 3. Only perform second pass when requiresAccurateRecognition is true AND smartMerging is false
 
+        try Task.checkCancellation()
         if !requiresAccurateRecognition || smartMerging {
             appendQRCodePayloads(qrCodePayloads, to: ocrResult)
             logInfo("OCR completion (\(language)) cost time: \(startTime.elapsedTimeString) seconds")
@@ -219,6 +225,7 @@ public class AppleOCREngine: NSObject {
             candidates: rawProbabilities
         )
 
+        try Task.checkCancellation()
         appendQRCodePayloads(qrCodePayloads, to: mostConfidentResult)
 
         logInfo("Get most confident OCR cost time: \(startSelectTime.elapsedTimeString) seconds")
@@ -227,11 +234,13 @@ public class AppleOCREngine: NSObject {
         return mostConfidentResult
     }
 
-    /// Detects QR code payloads without affecting the primary text-recognition path.
-    private func detectQRCodePayloads(on cgImage: CGImage) async -> [String] {
-        await withCheckedContinuation { continuation in
-            // QR detection is part of the user's pending OCR request.
-            DispatchQueue.global(qos: .userInitiated).async {
+    /// Treats QR detection failures as empty payloads while propagating task cancellation.
+    private func detectQRCodePayloads(on cgImage: CGImage) async throws -> [String] {
+        try Task.checkCancellation()
+        let payloads: [String] = await withCheckedContinuation { continuation in
+            // Vision can synchronously wait for utility workers when acquiring image contexts.
+            // Set the blocking work item's QoS explicitly while the caller remains suspended.
+            DispatchQueue.global(qos: .utility).async(qos: .utility, flags: .enforceQoS) {
                 let payloads: [String]
                 do {
                     let request = VNDetectBarcodesRequest()
@@ -254,6 +263,9 @@ public class AppleOCREngine: NSObject {
                 continuation.resume(returning: payloads)
             }
         }
+        // Synchronous Vision work finishes normally; a cancelled caller must discard its result.
+        try Task.checkCancellation()
+        return payloads
     }
 
     /// Creates an OCR result when the image contains QR codes but no recognized text.
