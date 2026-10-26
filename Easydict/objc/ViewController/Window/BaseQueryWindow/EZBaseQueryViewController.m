@@ -845,7 +845,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     self.isInputFieldCollapsed = collapsed;
     self.queryView.collapsed = collapsed;
     self.queryModel.queryViewHeight = self.queryView ? [self.queryView heightOfQueryView] : [self miniQueryViewHeight];
-    [self updateQueryCellWithAnimation:NO];
+    [self updateQueryCell];
 }
 
 - (void)scrollToEndOfTextView {
@@ -1534,7 +1534,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         }
 
         self.queryModel.queryViewHeight = [self.queryView heightOfQueryView];
-        [self updateQueryCellWithAnimation:YES];
+        [self updateQueryCell];
     }];
 
     [queryView setUpdateInputTextBlock:^(NSString *text, CGFloat queryViewHeight) {

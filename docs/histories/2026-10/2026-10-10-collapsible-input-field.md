@@ -49,6 +49,8 @@
   新增 `switchActionType:`，在 `startQueryText:actionType:` 与 `toggleTranslationLanguages` 中使用，
   仅在动作类型变化时应用折叠状态，同类型重新查询（重试、切换语言、点击结果中的单词）保留当前会话
   中手动切换的状态。
+- 修复（合并 `dev` 后的 Review 反馈）：`dev` 中 #1327 移除了 `updateQueryCellWithAnimation:`，
+  行高改为立即提交、仅窗口动画；折叠切换的两处调用改为 `updateQueryCell`。
 
 ### 设计意图
 
@@ -73,6 +75,8 @@
   `git diff --check` 通过；未进行手动 UI 验证。
 - Query in App / 互换语言修复：同一构建命令（附加上述图标参数）构建成功；`git diff --check` 通过；
   未进行手动 UI 验证。
+- 合并 `dev` 后替换已移除的 `updateQueryCellWithAnimation:`：默认构建命令构建成功（无需附加图标参数）；
+  `git diff --check` 通过；未进行手动 UI 验证。
 
 ### 受影响文件
 
