@@ -18,7 +18,7 @@
   保留原 checkout 的分支、HEAD 和文件状态，后续命令以回执的 `checkout.path` 为 cwd。
   原 checkout 可有未提交变更，目标 checkout 脏或不可用时停止，不强行切换或另建分支。
 - 非本人或作者身份无法确认时，沿用准确 head 的准备规则；同名分支 upstream 不匹配、领先、
-  分叉或被其他 worktree 占用时创建 `review/pr-<number>-<head-short-sha>`，不改变冲突分支。
+  分叉或被其他 worktree 占用时按[统一命名规范](../../git-commit/references/branch-naming.md)生成审查分支，不改变冲突分支。
 - 既有 review 分支只在它干净、位于准确 head 且 tracking `<owner>/<head-branch>` 时复用；
   否则停止。不 detached checkout remote-tracking ref 或以 fetch ref 绕过 PR 身份验证。
 - 除非用户明确要求隔离 worktree 或 latest-base，不创建其他命名的分支。
@@ -31,8 +31,7 @@
 
 显式 worktree 模式使用：
 
-- 普通审查分支：`review/pr-<number>-<head-short-sha>`。
-- latest-base 分支：`review/pr-<number>-merge-<head-short-sha>`。
+- 普通及 latest-base 分支名由统一工具使用 PR 编号、冻结 head SHA 和模式生成。
 - 路径：`../.review-pr-worktrees/<repo>/pr-<number>[-merge]-<head-short-sha>`。
 
 审查后保留分支或 worktree 供调试，不自动删除。
@@ -105,7 +104,7 @@ git merge-tree <frozen-merge-base> <frozen-base-sha> <remote-head-sha>
 
 只有明确要求更新最新 base、解决冲突或审查集成结果时，才使用 `--merge-latest`。
 本地模式在已选的 head 同名或 collision fallback 分支上运行 `git merge --no-edit`，
-保留分支名。只有显式 `--worktree --merge-latest` 使用 `review/pr-<number>-merge-...` 命名。
+保留分支名。只有显式 `--worktree --merge-latest` 使用统一工具的 latest-base 审查命名。
 执行前说明可能创建本地 merge commit；未获 latest-base 授权时在创建该集成分支前停止。
 
 ## 冲突恢复

@@ -22,6 +22,7 @@ class LanguageState: ObservableObject {
         case slovak = "sk"
         case japanese = "ja"
         case spanish = "es"
+        case urdu = "ur"
 
         // MARK: Internal
 
@@ -39,7 +40,15 @@ class LanguageState: ObservableObject {
                 "日本語"
             case .spanish:
                 "Español"
+            case .urdu:
+                "اردو"
             }
+        }
+
+        /// Layout follows the selected interface language, independently of translated content.
+        var layoutDirection: LayoutDirection {
+            Locale.Language(identifier: rawValue).characterDirection == .rightToLeft
+                ? .rightToLeft : .leftToRight
         }
     }
 

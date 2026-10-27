@@ -113,6 +113,13 @@ public class AppleOCREngine: NSObject {
     /// Language detector used for tie-breaking when confidences are equal.
     private let languageDetector = AppleLanguageDetector()
 
+    /// Normalizes payloads for comparison without altering the returned QR code content.
+    private static func normalizedQRCodePayload(_ payload: String) -> String {
+        payload
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     /// Runs OCR while allowing internal retries to skip duplicate QR code detection.
     private func recognizeText(
         image: NSImage,
@@ -121,6 +128,7 @@ public class AppleOCREngine: NSObject {
         detectsQRCodes: Bool
     ) async throws
         -> EZOCRResult {
+        try Task.checkCancellation()
         logInfo("Recognizing text in image with language: \(language), image size: \(image.size)")
 
         guard image.isValid else {
@@ -137,13 +145,16 @@ public class AppleOCREngine: NSObject {
         }
 
         let startTime = CFAbsoluteTimeGetCurrent()
-        let qrCodePayloads = detectsQRCodes ? await detectQRCodePayloads(on: cgImage) : []
+        let qrCodePayloads = detectsQRCodes ? try await detectQRCodePayloads(on: cgImage) : []
 
         // Perform Vision OCR using unified API
         let observations: [EZRecognizedTextObservation]
         do {
             observations = try await performVisionOCR(on: cgImage, language: language)
+        } catch is CancellationError {
+            throw CancellationError()
         } catch {
+            try Task.checkCancellation()
             guard !qrCodePayloads.isEmpty else { throw error }
 
             logError(
@@ -152,6 +163,7 @@ public class AppleOCREngine: NSObject {
             return makeQRCodeOnlyResult(payloads: qrCodePayloads, language: language)
         }
 
+        try Task.checkCancellation()
         logInfo("Recognize observations count: \(observations.count) (\(language))")
         logInfo("Cost time: \(startTime.elapsedTimeString) seconds")
 
@@ -197,6 +209,7 @@ public class AppleOCREngine: NSObject {
         //    (we're already confident enough with the result)
         // 3. Only perform second pass when requiresAccurateRecognition is true AND smartMerging is false
 
+        try Task.checkCancellation()
         if !requiresAccurateRecognition || smartMerging {
             appendQRCodePayloads(qrCodePayloads, to: ocrResult)
             logInfo("OCR completion (\(language)) cost time: \(startTime.elapsedTimeString) seconds")
@@ -212,6 +225,7 @@ public class AppleOCREngine: NSObject {
             candidates: rawProbabilities
         )
 
+        try Task.checkCancellation()
         appendQRCodePayloads(qrCodePayloads, to: mostConfidentResult)
 
         logInfo("Get most confident OCR cost time: \(startSelectTime.elapsedTimeString) seconds")
@@ -220,11 +234,13 @@ public class AppleOCREngine: NSObject {
         return mostConfidentResult
     }
 
-    /// Detects QR code payloads without affecting the primary text-recognition path.
-    private func detectQRCodePayloads(on cgImage: CGImage) async -> [String] {
-        await withCheckedContinuation { continuation in
-            // QR detection is part of the user's pending OCR request.
-            DispatchQueue.global(qos: .userInitiated).async {
+    /// Treats QR detection failures as empty payloads while propagating task cancellation.
+    private func detectQRCodePayloads(on cgImage: CGImage) async throws -> [String] {
+        try Task.checkCancellation()
+        let payloads: [String] = await withCheckedContinuation { continuation in
+            // Vision can synchronously wait for utility workers when acquiring image contexts.
+            // Set the blocking work item's QoS explicitly while the caller remains suspended.
+            DispatchQueue.global(qos: .utility).async(qos: .utility, flags: .enforceQoS) {
                 let payloads: [String]
                 do {
                     let request = VNDetectBarcodesRequest()
@@ -234,7 +250,7 @@ public class AppleOCREngine: NSObject {
                     let observations = request.results ?? []
                     var seenPayloads = Set<String>()
                     payloads = observations.compactMap(\.payloadStringValue).filter { payload in
-                        let normalizedPayload = self.normalizedQRCodePayload(payload)
+                        let normalizedPayload = Self.normalizedQRCodePayload(payload)
                         return !normalizedPayload.isEmpty
                             && seenPayloads.insert(normalizedPayload).inserted
                     }
@@ -247,6 +263,9 @@ public class AppleOCREngine: NSObject {
                 continuation.resume(returning: payloads)
             }
         }
+        // Synchronous Vision work finishes normally; a cancelled caller must discard its result.
+        try Task.checkCancellation()
+        return payloads
     }
 
     /// Creates an OCR result when the image contains QR codes but no recognized text.
@@ -263,22 +282,15 @@ public class AppleOCREngine: NSObject {
 
     /// Appends unique QR code payloads after the recognized document text.
     private func appendQRCodePayloads(_ payloads: [String], to result: EZOCRResult) {
-        var existingTexts = Set(result.texts.map(normalizedQRCodePayload))
+        var existingTexts = Set(result.texts.map(Self.normalizedQRCodePayload))
         let newPayloads = payloads.filter { payload in
-            let normalizedPayload = normalizedQRCodePayload(payload)
+            let normalizedPayload = Self.normalizedQRCodePayload(payload)
             return !normalizedPayload.isEmpty && existingTexts.insert(normalizedPayload).inserted
         }
         guard !newPayloads.isEmpty else { return }
 
         result.texts = result.texts + newPayloads
         result.mergedText = result.texts.joined(separator: OCRConstants.paragraphSeparator)
-    }
-
-    /// Normalizes payloads for comparison without altering the returned QR code content.
-    private func normalizedQRCodePayload(_ payload: String) -> String {
-        payload
-            .replacingOccurrences(of: "\r\n", with: "\n")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     /// The core async method that executes a `VNRecognizeTextRequest` on a given `CGImage`.

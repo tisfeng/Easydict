@@ -57,22 +57,10 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.prefer_youdao_tts_for_english_word_desc"
                     )
                 }
-                // Require macOS 15+
-                if #available(macOS 15.0, *) {
-                    Toggle(isOn: $enableLocalAppleTranslation) {
-                        AdvancedTabItemView(
-                            color: .orange,
-                            icon: .appleLogo,
-                            labelText: "setting.advance.apple_offline_translation",
-                            subtitleText: "setting.advance.apple_offline_translation_desc"
-                        )
-                    }
-                }
-
                 LabeledContent {
                     TextField(
                         text: $minClassicalChineseTextDetectLength,
-                        prompt: Text(verbatim: "\(SharedConstants.minClassicalChineseLength)")
+                        prompt: Text(verbatim: "\(AppConstants.minClassicalChineseLength)")
                     ) {
                         EmptyView()
                     }
@@ -473,7 +461,6 @@ struct AdvancedTab: View {
     @Default(.preferYoudaoTTSForEnglishWord) private var preferYoudaoTTSForEnglishWord
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
     @Default(.enableCompatibilityReplace) private var enableCompatibilityReplace
-    @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
     @Default(.minClassicalChineseTextDetectLength) private var minClassicalChineseTextDetectLength
     @Default(.enableOCRTextNormalization) private var enableOCRTextNormalization
     @Default(.showOCRMenuItems) private var showOCRMenuItems

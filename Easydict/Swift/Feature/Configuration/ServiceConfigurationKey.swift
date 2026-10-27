@@ -55,7 +55,6 @@ enum ServiceConfigurationKey: String {
     case systemPrompt
     case userPrompt
     case thinkTag
-    case temperature
     case enableStreaming
     case reasoningEffort = "ReasoningEffort"
     // Effort level for agent CLI services (e.g. claude --effort). Distinct from
