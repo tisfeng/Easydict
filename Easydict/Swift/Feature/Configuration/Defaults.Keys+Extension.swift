@@ -380,10 +380,6 @@ extension Defaults.Keys {
     // Caiyun
     static let caiyunToken = Key<String>(EZCaiyunToken, default: "")
 
-    // tencent
-    static let tencentSecretId = Key<String>(EZTencentSecretId, default: "")
-    static let tencentSecretKey = Key<String>(EZTencentSecretKey, default: "")
-
     // Ali
     static let aliAccessKeyId = Key<String>(EZAliAccessKeyId, default: "")
     static let aliAccessKeySecret = Key<String>(EZAliAccessKeySecret, default: "")
