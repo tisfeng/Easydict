@@ -23,6 +23,7 @@ NSString *const EZServiceTypeBuiltInAI = @"BuiltInAI";
 NSString *const EZServiceTypeBing = @"Bing";
 NSString *const EZServiceTypeNiuTrans = @"NiuTrans";
 NSString *const EZServiceTypeCaiyun = @"Caiyun";
+NSString *const EZServiceTypeTokenHub = @"TokenHub";
 NSString *const EZServiceTypeAlibaba = @"Alibaba";
 NSString *const EZServiceTypeGemini = @"Gemini";
 NSString *const EZServiceTypeOllama = @"Ollama";
