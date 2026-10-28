@@ -64,7 +64,7 @@ def bilingual(
 
 
 def references(*entries: str) -> str:
-    """Build one global references section."""
+    """Build one language block's references section."""
 
     return "References:\n" + "\n".join(f"- {entry}" for entry in entries)
 
@@ -121,13 +121,19 @@ class CommitMessageValidatorTests(unittest.TestCase):
             bilingual(local=block("fix(agent): corriger la validation"))
         )
 
-    def test_accepts_one_global_references_section(self) -> None:
+    def test_accepts_references_in_each_language_block(self) -> None:
         section = references(
             "Apple TN3212: https://developer.apple.com/documentation/technotes/tn3212",
             "https://github.com/example/project/issues/123",
         )
         self.assert_valid(block() + "\n\n" + section + "\n", "english")
-        self.assert_valid(bilingual().rstrip("\n") + "\n\n" + section + "\n")
+        local = block("fix(agent): 强制校验提交信息", labels=CHINESE_BODY_LABELS)
+        self.assert_valid(
+            bilingual(
+                local=local + "\n\n" + section.replace("Apple TN3212:", "苹果 TN3212:"),
+                english=block() + "\n\n" + section,
+            )
+        )
 
     def test_accepts_references_after_breaking_change_footers(self) -> None:
         local = block(
@@ -139,11 +145,10 @@ class CommitMessageValidatorTests(unittest.TestCase):
             "feat(agent)!: enforce commit message validation",
             footer="BREAKING CHANGE: The old commit flow is unsupported.",
         )
-        message = bilingual(local=local, english=english).rstrip("\n")
-        message += (
-            "\n\n"
-            + references("Migration: https://example.com/migration")
-            + "\n"
+        section = references("Migration: https://example.com/migration")
+        message = bilingual(
+            local=local + "\n\n" + section,
+            english=english + "\n\n" + section,
         )
         self.assert_valid(message)
 
@@ -322,7 +327,7 @@ class CommitMessageValidatorTests(unittest.TestCase):
             "english",
         )
 
-    def test_rejects_references_between_bilingual_blocks(self) -> None:
+    def test_rejects_references_in_only_one_language_block(self) -> None:
         local = block(
             "fix(agent): 强制校验提交信息",
             labels=CHINESE_BODY_LABELS,
@@ -339,7 +344,41 @@ class CommitMessageValidatorTests(unittest.TestCase):
         )
         self.assert_invalid(
             message,
-            "must use '- [label: ]http(s)://...'",
+            "language blocks must use matching References URLs",
+        )
+        self.assert_invalid(
+            bilingual(
+                english=block()
+                + "\n\n"
+                + references("https://example.com/reference")
+            ),
+            "language blocks must use matching References URLs",
+        )
+
+    def test_rejects_different_bilingual_reference_urls(self) -> None:
+        local = block("fix(agent): 强制校验提交信息", labels=CHINESE_BODY_LABELS)
+        message = bilingual(
+            local=local + "\n\n" + references("https://example.com/first"),
+            english=block() + "\n\n" + references("https://example.com/second"),
+        )
+        self.assert_invalid(
+            message,
+            "language blocks must use matching References URLs",
+        )
+
+    def test_rejects_reversed_bilingual_reference_order(self) -> None:
+        local = block("fix(agent): 强制校验提交信息", labels=CHINESE_BODY_LABELS)
+        message = bilingual(
+            local=local
+            + "\n\n"
+            + references("https://example.com/first", "https://example.com/second"),
+            english=block()
+            + "\n\n"
+            + references("https://example.com/second", "https://example.com/first"),
+        )
+        self.assert_invalid(
+            message,
+            "language blocks must use matching References URLs in the same order",
         )
 
     def test_requires_ordered_language_appropriate_body_labels(self) -> None:
@@ -420,11 +459,12 @@ class CommitMessageValidatorTests(unittest.TestCase):
         self.git("config", "user.email", "tests@example.com")
         self.git("config", "commit.gpgsign", "false")
         message_path = self.root / "expected.txt"
-        expected = bilingual().rstrip("\n")
-        expected += (
-            "\n\n"
-            + references("Issue: https://example.com/issues/123")
-            + "\n"
+        section = references("Issue: https://example.com/issues/123")
+        expected = bilingual(
+            local=block("fix(agent): 强制校验提交信息", labels=CHINESE_BODY_LABELS)
+            + "\n\n"
+            + section,
+            english=block() + "\n\n" + section,
         )
         message_path.write_text(expected, encoding="utf-8")
         self.git("commit", "--quiet", "--allow-empty", "-F", str(message_path))

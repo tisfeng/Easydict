@@ -179,34 +179,44 @@ open class QueryModel: NSObject, NSCopying {
     ///   - serviceType: Service type identifier.
     @objc(setStopBlock:serviceType:)
     func setStop(_ stopBlock: (() -> ())?, serviceType: String) {
-        if let stopBlock {
-            stopBlockDictionary[serviceType] = stopBlock
-        } else {
-            stopBlockDictionary.removeValue(forKey: serviceType)
+        let previousBlock = stopBlockLock.withLock {
+            if let stopBlock {
+                return stopBlockDictionary.updateValue(stopBlock, forKey: serviceType)
+            }
+            return stopBlockDictionary.removeValue(forKey: serviceType)
         }
+        // Releasing captured objects may reenter the model, so keep them alive until unlocked.
+        withExtendedLifetime(previousBlock) {}
     }
 
     /// Stops the request for a service type and removes the block.
     /// - Parameter serviceType: Service type identifier.
     func stopServiceRequest(_ serviceType: String) {
-        if let stopBlock = stopBlockDictionary[serviceType] {
-            stopBlock()
+        let stopBlock = stopBlockLock.withLock {
             stopBlockDictionary.removeValue(forKey: serviceType)
         }
+        // Remove before invoking so reentrant registration survives this stop operation.
+        stopBlock?()
     }
 
     /// Returns whether a service has been stopped.
     /// - Parameter serviceType: Service type identifier.
     /// - Returns: True if no stop block is registered for the service.
     func isServiceStopped(_ serviceType: String) -> Bool {
-        stopBlockDictionary[serviceType] == nil
+        stopBlockLock.withLock {
+            stopBlockDictionary[serviceType] == nil
+        }
     }
 
-    /// Stops all registered services.
+    /// Stops the current registrations; callbacks registered after the snapshot remain active.
     func stopAllService() {
-        let serviceTypes = Array(stopBlockDictionary.keys)
-        for serviceType in serviceTypes {
-            stopServiceRequest(serviceType)
+        let stopBlocks = stopBlockLock.withLock {
+            let blocks = Array(stopBlockDictionary.values)
+            stopBlockDictionary.removeAll()
+            return blocks
+        }
+        for stopBlock in stopBlocks {
+            stopBlock()
         }
     }
 
@@ -217,6 +227,8 @@ open class QueryModel: NSObject, NSCopying {
     private var inputTextStorage: String = ""
     private var detectedLanguageStorage: Language = .auto
     private var needDetectLanguageStorage: Bool = true
+    // Protects only cancellation registrations shared by service tasks and UI callers.
+    private let stopBlockLock = NSLock()
     private var stopBlockDictionary: [String: () -> ()] = [:]
     private var cancellables: Set<AnyCancellable> = []
 

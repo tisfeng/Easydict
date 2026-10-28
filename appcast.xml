@@ -3,6 +3,67 @@
     <channel>
         <title>Easydict</title>
         <item>
+            <title>2.26.0</title>
+            <pubDate>Tue, 27 Oct 2026 22:33:47 +0800</pubDate>
+            <description>&lt;h1&gt;🐞 fix: prevent crashes during repeated translations&lt;/h1&gt;
+&lt;h2&gt;What's Changed&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Prevent crashes during repeated queries and mixed-language detection, and improve overlapping Bing and DeepL requests by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1368"&gt;#1368&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Add an Urdu interface with right-to-left layout support by @AlleyNawaz in &lt;a href="https://github.com/tisfeng/Easydict/pull/1374"&gt;#1374&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Refresh built-in AI model lists and fix translation errors with newer Claude models by @xxxxxthhh in &lt;a href="https://github.com/tisfeng/Easydict/pull/1371"&gt;#1371&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Use provider defaults for AI response temperature and remove the temperature setting by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/20875c581abf4489717f6d5a16dc9734cafbd3dc"&gt;commit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Restore local images, audio and styles in Apple Dictionary results, and improve copying and reading result text by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1355"&gt;#1355&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Allow Bing service validation without entering an optional cookie by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/8c5e207445da72a6c2c08824c883cc91d82c946e"&gt;commit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Make Translate Clipboard query text immediately, while clipboard images follow the OCR auto-query setting by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/f7dbb50ca863ab4d1be12fc2430db0eff62e30b3"&gt;commit&lt;/a&gt; and &lt;a href="https://github.com/tisfeng/Easydict/commit/d0c117898523aefafceaa5c087771eca7528a3c7"&gt;commit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Remove the retired GitHub Models service by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1373"&gt;#1373&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Remove the retired Tencent Translate service by @Jerry23011 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1345"&gt;#1345&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;New Contributors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;@xxxxxthhh made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1371"&gt;#1371&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@AlleyNawaz made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1374"&gt;#1374&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/tisfeng/Easydict/compare/2.25.0...2.26.0"&gt;2.25.0...2.26.0&lt;/a&gt;&lt;/p&gt;</description>
+            <sparkle:channel>beta</sparkle:channel>
+            <sparkle:version>69</sparkle:version>
+            <sparkle:shortVersionString>2.26.0</sparkle:shortVersionString>
+            <sparkle:fullReleaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.26.0</sparkle:fullReleaseNotesLink>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.26.0/Easydict.zip" length="36102341" type="application/octet-stream" sparkle:edSignature="LT6OLcXMUZgPBjh6n96y7jlhmXMegkGILlJtpk3oaaoqaNZ7kBZ19CDPx4d0wgJpMx2PaSgDJTExd2XcOy8HAA==" />
+        </item>
+        <item>
+            <title>2.25.0</title>
+            <pubDate>Mon, 19 Oct 2026 18:05:55 +0800</pubDate>
+            <description>&lt;h1&gt;🐞 fix: stabilize query window resizing and text rendering&lt;/h1&gt;
+&lt;h2&gt;What's Changed&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Add Anki Connect integration by @XbuLee in &lt;a href="https://github.com/tisfeng/Easydict/pull/1241"&gt;#1241&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Update the DeepL client version to restore translation compatibility by @codexss in &lt;a href="https://github.com/tisfeng/Easydict/pull/1336"&gt;#1336&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Fetch the DeepL Web App version dynamically by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/pull/1341"&gt;#1341&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Migrate Gemini to the OpenAI format by @Jerry23011 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1342"&gt;#1342&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Support absolute paths for Apple Dictionary audio by @KurodaKayn in &lt;a href="https://github.com/tisfeng/Easydict/pull/1351"&gt;#1351&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Include prereleases in the latest version when beta updates are enabled by @Aurora-NICExq in &lt;a href="https://github.com/tisfeng/Easydict/pull/1358"&gt;#1358&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Allow forced text selection in Warp by @Lilien86 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1343"&gt;#1343&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Move the Apple Translate offline setting from Advanced to Services by @Jerry23011 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1340"&gt;#1340&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Stabilize query window resizing and text rendering by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1327"&gt;#1327&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Move Anki Connect configuration into a dedicated settings sheet by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/e9ce80eb854c1747de209615b10472b9f0b02f03"&gt;commit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Support Hebrew and Thai in DeepL by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/88e2a0b6034ff9b17488c6507356f7e73449acbd"&gt;commit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Fix Brazilian Portuguese mapping in Apple Translate by @joaovitoras in &lt;a href="https://github.com/tisfeng/Easydict/pull/1361"&gt;#1361&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;New Contributors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;@XbuLee made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1241"&gt;#1241&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@codexss made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1336"&gt;#1336&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;@Lilien86 made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1343"&gt;#1343&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/tisfeng/Easydict/compare/2.24.0...2.25.0"&gt;2.24.0...2.25.0&lt;/a&gt;&lt;/p&gt;</description>
+            <sparkle:version>68</sparkle:version>
+            <sparkle:shortVersionString>2.25.0</sparkle:shortVersionString>
+            <sparkle:fullReleaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.25.0</sparkle:fullReleaseNotesLink>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.25.0/Easydict.zip" length="36093454" type="application/octet-stream" sparkle:edSignature="ZBOirZv2L5ZPXkPuThlwaWWCgZTbTqWCNzlfuDl4oIrcX4OO4nvzPBqmcQQjvqK4u8vo4v5Qx3nEn/HV1pmZCg==" />
+        </item>
+        <item>
             <title>2.24.0</title>
             <pubDate>Mon, 28 Sep 2026 01:40:47 +0800</pubDate>
             <description>&lt;h1&gt;✨ feat: add GitHub Copilot CLI translation&lt;/h1&gt;
@@ -22,7 +83,6 @@
 &lt;li&gt;@crossoverJie made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1319"&gt;#1319&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/tisfeng/Easydict/compare/2.23.0...2.24.0"&gt;2.23.0...2.24.0&lt;/a&gt;&lt;/p&gt;</description>
-            <sparkle:channel>beta</sparkle:channel>
             <sparkle:version>67</sparkle:version>
             <sparkle:shortVersionString>2.24.0</sparkle:shortVersionString>
             <sparkle:fullReleaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.24.0</sparkle:fullReleaseNotesLink>

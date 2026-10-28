@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -16,6 +17,19 @@ from typing import Any
 
 class InspectionError(RuntimeError):
     """The requested Git facts could not be collected safely."""
+
+
+def branch_policy():
+    """Load the installed git-commit naming dependency, never a host checkout."""
+
+    path = Path(__file__).resolve().parents[2] / "git-commit" / "scripts" / "branch_name.py"
+    if not path.is_file():
+        raise InspectionError("Missing git-commit naming dependency; install the complete git-commit skill beside this skill")
+    spec = importlib.util.spec_from_file_location("shared_branch_naming", path)
+    module = importlib.util.module_from_spec(spec)
+    # Loading policy must not write __pycache__ into a managed skill snapshot.
+    exec(compile(path.read_bytes(), str(path), "exec"), module.__dict__)
+    return module
 
 
 def git(
@@ -62,11 +76,13 @@ def text(repository: Path, *arguments: str, **kwargs: Any) -> str:
 
 
 def branch_ref(repository: Path, name: str) -> str:
-    """Validate a local branch name and return its full ref."""
+    """Validate a local branch name using the shared naming policy."""
 
-    ref = f"refs/heads/{name}"
-    text(repository, "check-ref-format", ref)
-    return ref
+    try:
+        branch_policy().validate_literal(name)
+    except (ValueError, OSError) as error:
+        raise InspectionError(f"invalid branch name {name!r}: {error}") from error
+    return f"refs/heads/{name}"
 
 
 def commit_oid(repository: Path, revision: str) -> str:
@@ -313,7 +329,7 @@ def choose_source_branch(
     occupied = {item.get("branch") for item in worktrees}
     number = 1
     while True:
-        name = requested if number == 1 else f"{requested}-{number}"
+        name = branch_policy().candidate_name(requested, number)
         ref = branch_ref(repository, name)
         try:
             result = subprocess.run(

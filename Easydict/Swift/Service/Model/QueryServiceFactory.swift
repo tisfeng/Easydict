@@ -121,7 +121,6 @@ final class QueryServiceFactory: NSObject {
         .init(.zhipu, ZhipuService.self, "zhipu_translate"),
         .init(.miniMax, MiniMaxService.self, "minimax_translate"),
         .init(.tokenHub, TokenHubService.self, "tokenhub_translate"),
-        .init(.gitHub, GitHubService.self, "github_models"),
         .init(.builtInAI, BuiltInAIService.self, "built_in_ai", apiKeyRequirement: .builtIn),
         .init(.claudeCode, ClaudeCodeService.self, "service.claude_code.name", apiKeyRequirement: .agentCLI),
         .init(.codexCLI, CodexCLIService.self, "service.codex_cli.name", apiKeyRequirement: .agentCLI),
@@ -140,7 +139,6 @@ final class QueryServiceFactory: NSObject {
         .init(.volcano, VolcanoService.self, "volcano_translate"),
         .init(.niuTrans, NiuTransService.self, "niuTrans_translate", apiKeyRequirement: .builtIn),
         .init(.caiyun, CaiyunService.self, "caiyun_translate", apiKeyRequirement: .builtIn),
-        .init(.tencent, TencentService.self, "tencent_translate"),
         .init(.alibaba, AliService.self, "ali_translate"),
         .init(.doubao, DoubaoService.self, "doubao_translate"),
     ]

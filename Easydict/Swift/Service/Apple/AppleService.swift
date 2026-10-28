@@ -7,8 +7,10 @@
 //
 
 import AVFoundation
+import Defaults
 import Foundation
 import NaturalLanguage
+import SwiftUI
 import Translation
 import Vision
 
@@ -28,6 +30,14 @@ public class AppleService: QueryService {
 
     public override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
         .none
+    }
+
+    /// Returns configuration items for the Apple translation service settings view.
+    public override func configurationListItems() -> Any? {
+        if #available(macOS 15.0, *) {
+            return AppleTranslationConfigurationView()
+        }
+        return nil
     }
 
     /// Supported languages dictionary
@@ -70,18 +80,7 @@ public class AppleService: QueryService {
     ) async throws
         -> EZOCRResult? {
         _ = to
-        return try await withCheckedThrowingContinuation { continuation in
-            ocrEnginee.recognizeText(
-                image: image,
-                language: from
-            ) { result, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: result)
-                }
-            }
-        }
+        return try await ocrEnginee.recognizeText(image: image, language: from)
     }
 
     public override func autoConvertTraditionalChinese() -> Bool {
@@ -186,8 +185,8 @@ public class AppleService: QueryService {
         to targetLanguage: Language
     ) async throws
         -> QueryResult {
-        guard let fromLanguage = languageMapper.supportedLanguages[sourceLanguage],
-              let toLanguage = languageMapper.supportedLanguages[targetLanguage]
+        guard let fromLanguage = languageMapper.shortcutLanguageCode(for: sourceLanguage),
+              let toLanguage = languageMapper.shortcutLanguageCode(for: targetLanguage)
         else {
             throw QueryError(
                 type: .parameter, message: "Unsupported language for Apple Translation"
@@ -204,6 +203,30 @@ public class AppleService: QueryService {
         result.translatedResults = [text]
         return result
     }
+}
+
+// MARK: - AppleTranslationConfigurationView
+
+@available(macOS 15.0, *)
+private struct AppleTranslationConfigurationView: View {
+    // MARK: Internal
+
+    var body: some View {
+        Section {
+            Toggle(
+                "service.configuration.apple.offline_translation.title",
+                isOn: $enableOfflineTranslation
+            )
+        } header: {
+            Text("apple_translate")
+        } footer: {
+            Text("service.configuration.apple.offline_translation.description")
+        }
+    }
+
+    // MARK: Private
+
+    @Default(.enableAppleOfflineTranslation) private var enableOfflineTranslation
 }
 
 // Only extend TranslationService when it's available

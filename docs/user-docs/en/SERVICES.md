@@ -37,7 +37,6 @@ The Services settings use these access types:
 | Zhipu AI (`Zhipu`) | User key | Uses the Zhipu open platform API. |
 | MiniMax (`MiniMax`) | User key | Uses the MiniMax API. |
 | Tencent TokenHub (`TokenHub`) | User key | Uses Tencent TokenHub API |
-| GitHub Models (`GitHub`) | User key | Uses GitHub Models. |
 | Built-in AI (`BuiltInAI`) | Built in | AI queries without a separately configured API key. |
 | Claude Code (`ClaudeCode`) | CLI | Calls an installed and authenticated Claude Code CLI. |
 | Codex CLI (`CodexCLI`) | CLI | Calls an installed and authenticated Codex CLI. |
@@ -65,7 +64,6 @@ The Services settings use these access types:
 | Volcano Translate (`Volcano`) | User key | Requires Volcano translation credentials. |
 | NiuTrans (`NiuTrans`) | Built in | Uses access provided by the project. |
 | Caiyun (`Caiyun`) | Built in | Uses access provided by the project. |
-| Tencent Translate (`Tencent`) | User key | Requires Tencent translation credentials. |
 | Alibaba Translate (`Alibaba`) | User key | Requires Alibaba translation credentials. |
 | Doubao Translate (`Doubao`) | User key | Requires Doubao translation credentials. |
 

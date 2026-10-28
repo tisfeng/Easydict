@@ -403,14 +403,6 @@ public class StreamService: QueryService {
         String(localized: "service.configuration.api_key.placeholder \(serviceType().rawValue)")
     }
 
-    var temperatureKey: Defaults.Key<Double> {
-        serviceDefaultsKey(.temperature, defaultValue: 0.3)
-    }
-
-    var temperature: Double {
-        Defaults[temperatureKey]
-    }
-
     var enableStreamingKey: Defaults.Key<Bool> {
         boolDefaultsKey(.enableStreaming, defaultValue: true)
     }
@@ -485,7 +477,7 @@ public class StreamService: QueryService {
             url,
             method: .get,
             headers: headers,
-            requestModifier: { $0.timeoutInterval = EZNetWorkTimeoutInterval }
+            requestModifier: { $0.timeoutInterval = AppConstants.networkTimeoutInterval }
         )
         .serializingData(automaticallyCancelling: true)
         .response

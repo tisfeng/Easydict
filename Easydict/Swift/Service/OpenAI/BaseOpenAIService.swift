@@ -150,8 +150,7 @@ public class BaseOpenAIService: StreamService {
         ChatQuery(
             messages: messages,
             model: model,
-            reasoningEffort: reasoningEffort,
-            temperature: temperature
+            reasoningEffort: reasoningEffort
         )
     }
 
@@ -406,7 +405,7 @@ public class BaseOpenAIService: StreamService {
         query.stream = false
 
         var request = URLRequest(
-            url: url, timeoutInterval: SharedConstants.llmRequestTimeoutInterval
+            url: url, timeoutInterval: AppConstants.llmRequestTimeoutInterval
         )
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

@@ -7,32 +7,34 @@
 
 - contributor remote 名称必须与 PR head repository owner login 完全一致。
   同名 remote 已指向其他位置时停止并请用户决定。
-- 默认本地模式优先使用 PR head 分支名。先核验 GitHub 当前用户、PR 作者、head 仓库和
-  分支身份；同名分支不是身份相同的充分证据。
-- 本人 PR 的同名分支与远程一致时直接复用，落后时仅 fast-forward；允许保留实际指向准确
-  head repository/branch 的等价 upstream remote 别名，缺少 upstream 时设置准确 head upstream。
-- 本人分支领先且包含完整远程 head 时保留本地提交，以 `git_objects` 模式准备：本地 HEAD
-  不回退，审查对象固定为远程 SHA。分叉、错误 upstream、受保护名称或与 base 同名时停止，
-  报告具体原因，不静默新建 review 分支。
-- 本人同名分支在其他 worktree 打开时，核实目标存在、分支匹配且干净后复用该 checkout；
+- 默认本地模式优先使用 PR head 分支名。关联以 upstream 的实际 remote 仓库地址和远程
+  分支为准；同名分支不是身份相同的充分证据，不以 PR 作者或 remote 别名代替关联核验。
+- 已关联准确 head repository/branch 的同名分支与远程一致时直接复用，落后时仅
+  fast-forward；保留原 upstream remote 别名。不存在同名分支时创建同名分支并自动 tracking
+  `<owner>/<head-branch>`，准备完成前校验 upstream，后续审查继续复用。
+- 已关联分支领先且包含完整远程 head 时保留本地提交，以 `git_objects` 模式准备：本地 HEAD
+  不回退，审查对象固定为远程 SHA。分叉、受保护名称或与 base 同名时停止，报告具体原因，
+  不静默新建 review 分支。
+- 已关联同名分支在其他 worktree 打开时，核实目标存在、分支匹配且干净后复用该 checkout；
   保留原 checkout 的分支、HEAD 和文件状态，后续命令以回执的 `checkout.path` 为 cwd。
   原 checkout 可有未提交变更，目标 checkout 脏或不可用时停止，不强行切换或另建分支。
-- 非本人或作者身份无法确认时，沿用准确 head 的准备规则；同名分支 upstream 不匹配、领先、
-  分叉或被其他 worktree 占用时创建 `review/pr-<number>-<head-short-sha>`，不改变冲突分支。
+- 未关联同名分支仍沿用现有规则：确认本人 PR 时可补设准确 upstream；本人分支 upstream
+  不匹配时停止。其他作者或身份无法确认且 upstream 不匹配/缺失、分支被其他 worktree
+  占用时，按[统一命名规范](../../git-commit/references/branch-naming.md)生成审查分支，不改变冲突分支。
 - 既有 review 分支只在它干净、位于准确 head 且 tracking `<owner>/<head-branch>` 时复用；
   否则停止。不 detached checkout remote-tracking ref 或以 fetch ref 绕过 PR 身份验证。
 - 除非用户明确要求隔离 worktree 或 latest-base，不创建其他命名的分支。
 
 多阶段 review 必须把首次回执中的 `checkout.branch` 传给 `--reuse-branch`，在回执路径
-继续。helper 复验远程冻结 head、分支身份和 upstream；本人分支在普通审查中可以领先于
-该 head，按 `git_objects` 模式保留，其他分支必须准确匹配。分叉、身份或 upstream 漂移时
-停止，不自动切换到新分支。请求 latest-base 时仍要求分支准确位于远程 head，领先时停止，
+继续。helper 复验远程冻结 head、分支身份和 upstream；已关联的同名分支在普通审查中可以领先于
+该 head，按 `git_objects` 模式保留，fallback 分支必须准确匹配。PR head 推进时先重新冻结快照并传入新的 `--expected-head`；
+`--reuse-branch` 对准确关联且落后的同名分支仅执行 fast-forward，保留分支名和 upstream。
+分叉、身份或 upstream 漂移时停止，不自动切换到新分支。请求 latest-base 时仍要求分支准确位于远程 head，领先时停止，
 由用户决定额外提交的处理或授权隔离集成，不能把本地提交混入 PR head/base 集成证据。
 
 显式 worktree 模式使用：
 
-- 普通审查分支：`review/pr-<number>-<head-short-sha>`。
-- latest-base 分支：`review/pr-<number>-merge-<head-short-sha>`。
+- 普通及 latest-base 分支名由统一工具使用 PR 编号、冻结 head SHA 和模式生成。
 - 路径：`../.review-pr-worktrees/<repo>/pr-<number>[-merge]-<head-short-sha>`。
 
 审查后保留分支或 worktree 供调试，不自动删除。
@@ -60,11 +62,14 @@ snapshot 的版本；旧回执不能证明本地领先模式已正确验证。
 
 - `head_sha` 和 `review.head_sha` 均为冻结的远程 PR head；`checkout.head_sha` 为实际本地 HEAD。
 - `review.mode` 为 `checkout`、`git_objects` 或 `integration`。前者要求本地 HEAD 等于远程；
-  `git_objects` 仅允许本人同名分支干净且领先；`integration` 单独验证 head/base 合并。
+  `git_objects` 仅允许准确关联的同名分支干净且领先；`integration` 单独验证 head/base 合并。
 - `review.ahead/behind` 描述最终 checkout 相对远程 head 的提交数；`git_objects` 要求 ahead
   大于零、behind 为零。它不表示额外提交已纳入远程审查。
-- `selection_reason`、`collision_reason`、`reused_branch`、`self_authored_branch_reused`、
+- `selection_reason`、`collision_reason`、`reused_branch`、`self_authored_branch_reused`、`linked_pr_branch_reused`、
   `reused_worktree` 和 `source_unchanged` 解释选择结果；已有 worktree 复用不等于新建隔离环境。
+  `linked_pr_branch_reused` 表示准备前已关联的同名分支被复用；本人分支首次补设 upstream
+  不计入该字段。`self_authored_branch_reused` 保持本人身份的原义。非本人关联分支的选择原因
+  使用 `linked_pr_branch` 或 `linked_local_commits`，不冒充本人 PR。
 
 回执中的 `helper` 保留 `path` 和入口文件的 `sha256`，并增加：
 
@@ -105,7 +110,7 @@ git merge-tree <frozen-merge-base> <frozen-base-sha> <remote-head-sha>
 
 只有明确要求更新最新 base、解决冲突或审查集成结果时，才使用 `--merge-latest`。
 本地模式在已选的 head 同名或 collision fallback 分支上运行 `git merge --no-edit`，
-保留分支名。只有显式 `--worktree --merge-latest` 使用 `review/pr-<number>-merge-...` 命名。
+保留分支名。只有显式 `--worktree --merge-latest` 使用统一工具的 latest-base 审查命名。
 执行前说明可能创建本地 merge commit；未获 latest-base 授权时在创建该集成分支前停止。
 
 ## 冲突恢复
@@ -134,9 +139,9 @@ git for-each-ref --format='%(upstream:short)' refs/heads/<selected-branch>
 ```
 
 普通本地准备要求分支干净，分支名为 head 分支或 collision fallback；`checkout` 模式 HEAD
-等于 `headRefOid`，`git_objects` 模式则验证该 SHA 是本人分支 HEAD 的祖先、回执中的本地
+等于 `headRefOid`，`git_objects` 模式则验证该 SHA 是已关联分支 HEAD 的祖先、回执中的本地
 SHA 未漂移，并按 [证据协议](evidence-workflow.md#代码范围与语义审查) 读取冻结源码。
-新建分支与 collision fallback tracking `<owner>/<head-branch>`；本人 PR 复用的同名分支可
+新建分支与 collision fallback tracking `<owner>/<head-branch>`；复用的同名分支可
 保留名称不同但实际指向准确 head repository/branch 的 upstream。latest-base 后改为
 要求 remote head 和 frozen base 都是 HEAD 的 ancestor；如产生 merge commit，两个 parent
 必须分别为该 head/base。

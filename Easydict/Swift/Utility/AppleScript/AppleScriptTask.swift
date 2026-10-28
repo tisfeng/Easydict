@@ -27,7 +27,7 @@ class AppleScriptTask: NSObject {
     /// - Throws: `QueryError` when script execution fails.
     static func runTranslateShortcut(parameters: [String: String]) async throws -> String? {
         let appleScript = appleScript(
-            of: SharedConstants.easydictTranslateShortcutName, parameters: parameters
+            of: AppConstants.translateShortcutName, parameters: parameters
         )
         return try await runAppleScript(appleScript)
     }

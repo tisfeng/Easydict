@@ -25,6 +25,7 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 
 ### 通用规则
 
+- 用户可能会出错；发现用户有明显错误或决策冲突时，应明确指出并说明原因。
 - 无法确认修改授权时保持只读；从计划模式转入执行模式后，从“执行前”开始。
 - 用户的禁止、范围和顺序要求优先；push、创建 Pull Request、发布及其他外部写入仅在用户明确
   要求时执行。
@@ -37,6 +38,8 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 ## 任务路由
 
 - 只读取当前任务需要的专题规则。
+- Git 分支命名：统一遵循
+  [`git-commit` 分支命名规范](.agents/skills/git-commit/references/branch-naming.md)。
 - 构建、测试、工程文件与资源、Xcode 验证：[`build-and-test.md`](docs/agents/build-and-test.md)。
 - 跨语言代码质量、Swift、Objective-C、SwiftUI、API 和本地化：
   [`coding-guidelines.md`](docs/agents/coding-guidelines.md)。

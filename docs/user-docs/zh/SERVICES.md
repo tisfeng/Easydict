@@ -34,7 +34,6 @@ macOS 版本、网络环境、账号权限和上游接口状态。
 | 智谱 AI (`Zhipu`) | 用户密钥 | 使用智谱开放平台 API。 |
 | MiniMax (`MiniMax`) | 用户密钥 | 使用 MiniMax API。 |
 | 腾讯 TokenHub (`TokenHub`) | 用户密钥 | 使用腾讯 TokenHub API。 |
-| GitHub Models (`GitHub`) | 用户密钥 | 使用 GitHub Models。 |
 | 内置 AI (`BuiltInAI`) | 项目内置 | 无需单独配置 API Key 的 AI 查询服务。 |
 | Claude Code (`ClaudeCode`) | CLI | 调用已安装并登录的 Claude Code CLI。 |
 | Codex CLI (`CodexCLI`) | CLI | 调用已安装并登录的 Codex CLI。 |
@@ -62,7 +61,6 @@ macOS 版本、网络环境、账号权限和上游接口状态。
 | 火山翻译 (`Volcano`) | 用户密钥 | 需要火山翻译服务凭据。 |
 | 小牛翻译 (`NiuTrans`) | 项目内置 | 使用项目内置访问方式。 |
 | 彩云小译 (`Caiyun`) | 项目内置 | 使用项目内置访问方式。 |
-| 腾讯翻译 (`Tencent`) | 用户密钥 | 需要腾讯翻译服务凭据。 |
 | 阿里翻译 (`Alibaba`) | 用户密钥 | 需要阿里翻译服务凭据。 |
 | 豆包翻译 (`Doubao`) | 用户密钥 | 需要豆包翻译服务凭据。 |
 
