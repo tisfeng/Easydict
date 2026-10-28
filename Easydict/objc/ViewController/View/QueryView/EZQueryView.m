@@ -17,6 +17,7 @@
 #import "EZSchemeParser.h"
 #import "EZCopyButton.h"
 #import "NSImage+EZSymbolmage.h"
+#import "NSObject+EZDarkMode.h"
 
 /// Debounce delay before auto querying while the user keeps typing.
 /// Kept relatively long since each query is heavy, especially for
@@ -30,6 +31,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 
 @property (nonatomic, strong) EZDetectLanguageButton *detectButton;
 @property (nonatomic, strong) EZHoverButton *clearButton;
+@property (nonatomic, strong) EZHoverButton *arrowButton;
 @property (nonatomic, strong) NSTextField *alertTextField;
 
 @property (nonatomic, assign) CGFloat textViewMinHeight;
@@ -39,6 +41,11 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 @property (nonatomic, assign) NSTimeInterval lastRecordTimestamp;
 
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
+/// Loading view is placed in the input text area when expanded, and in the button bar when collapsed.
+@property (nonatomic, copy) NSArray<MASConstraint *> *loadingViewExpandedConstraints;
+@property (nonatomic, copy) NSArray<MASConstraint *> *loadingViewCollapsedConstraints;
+/// Keep loading view right of detect button in collapsed state, only active when detect button is visible.
+@property (nonatomic, strong) MASConstraint *loadingViewAfterDetectButtonConstraint;
 @property (nonatomic, strong) id fontSizeObserver;
 
 @end
@@ -124,12 +131,6 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     [self addSubview:loadingAnimationView];
     self.loadingAnimationView = loadingAnimationView;
     
-    [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(textView).offset(5);
-        make.left.equalTo(textView).offset(10);
-        make.height.mas_equalTo(30);
-    }];
-    
     EZAudioButton *audioButton = [[EZAudioButton alloc] init];
     [self addSubview:audioButton];
     self.audioButton = audioButton;
@@ -205,6 +206,45 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
             self.clearBlock(self.copiedText);
         }
     }];
+
+    EZHoverButton *arrowButton = [[EZHoverButton alloc] init];
+    [self addSubview:arrowButton];
+    self.arrowButton = arrowButton;
+    arrowButton.mas_key = @"queryView_arrowButton";
+
+    [self executeOnAppearanceChange:^(EZQueryView *view, BOOL isDarkMode) {
+        [view updateArrowButton];
+    }];
+
+    [arrowButton setClickBlock:^(EZButton *_Nonnull button) {
+        mm_strongify(self);
+        [self toggleCollapsed];
+    }];
+
+    [self setupLoadingAnimationViewConstraints];
+}
+
+/// Do not remake loading view constraints, it would remove the internal width constraint of loading view.
+- (void)setupLoadingAnimationViewConstraints {
+    self.loadingViewExpandedConstraints = [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.textView).offset(5);
+        make.left.equalTo(self.textView).offset(10);
+        make.height.mas_equalTo(30);
+    }];
+
+    // Place loading view right after the left buttons of button bar.
+    CGFloat leftPadding = 6;
+    self.loadingViewCollapsedConstraints = [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.greaterThanOrEqualTo(self.textCopyButton.mas_right).offset(leftPadding);
+        make.left.equalTo(self.textCopyButton.mas_right).offset(leftPadding).priorityLow();
+        make.centerY.height.equalTo(self.textCopyButton);
+    }];
+
+    [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
+        self.loadingViewAfterDetectButtonConstraint = make.left.greaterThanOrEqualTo(self.detectButton.mas_right).offset(leftPadding);
+    }];
+
+    [self updateLoadingAnimationViewConstraints];
 }
 
 - (NSTextField *)alertTextField {
@@ -230,6 +270,9 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 #pragma mark - Public Methods
 
 - (CGFloat)heightOfQueryView {
+    if (self.collapsed) {
+        return EZQueryViewExceptInputViewHeight;
+    }
     return [self heightOfTextView] + EZQueryViewExceptInputViewHeight;
 }
 
@@ -266,7 +309,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         self.textView.editable = hidden;
     });
 
-    self.alertTextField.hidden = hidden;
+    self.alertTextField.hidden = hidden || self.collapsed;
     self.detectButton.showAutoLanguage = NO;
     [self updateDetectButton];
 }
@@ -297,19 +340,32 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     
     
     [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.inset(0);
+        make.left.right.inset(0);
+        // Do not pin top in collapsed state, avoid conflicting with audio button bottom constraint when cell is taller than button bar.
+        if (!self.collapsed) {
+            make.top.inset(0);
+        }
         // Add a padding to audio button, avoid making users feel that there is still text below that has not been fully displayed.
         make.bottom.equalTo(self.audioButton.mas_top).offset(-EZAudioButtonInputViewTopPadding_4);
         
-        CGFloat textViewHeight = [self heightOfTextView];
-        make.height.mas_greaterThanOrEqualTo(textViewHeight);
+        if (self.collapsed) {
+            make.height.mas_equalTo(0);
+        } else {
+            CGFloat textViewHeight = [self heightOfTextView];
+            make.height.mas_greaterThanOrEqualTo(textViewHeight);
+        }
     }];
     
-    [self.clearButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.arrowButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.bottom.equalTo(self).offset(-4);
         make.width.height.mas_equalTo(24);
     }];
     
+    [self.clearButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.arrowButton.mas_left).offset(-2);
+        make.bottom.width.height.equalTo(self.arrowButton);
+    }];
+
     [super updateConstraints];
 }
 
@@ -336,6 +392,16 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     }
     
     [self updateButtonsDisplayState:queryText];
+}
+
+- (void)setCollapsed:(BOOL)collapsed {
+    _collapsed = collapsed;
+
+    self.scrollView.hidden = collapsed;
+    self.alertTextField.hidden = collapsed || self.alertText.length == 0;
+    [self updateLoadingAnimationViewConstraints];
+    [self updateArrowButton];
+    [self setNeedsUpdateConstraints:YES];
 }
 
 - (void)setAssociatedWindowType:(EZWindowType)windowType {
@@ -501,6 +567,11 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     self.queryModel.actionType = EZActionTypeInputQuery;
     self.queryModel.needDetectLanguage = YES;
 
+    // Expand input text area when user types in collapsed state, otherwise the typed text is invisible.
+    if (self.collapsed) {
+        [self toggleCollapsed];
+    }
+
     // textView.string has been changed, we don't need to update it again.
     [self updateInputText:nil];
 
@@ -572,8 +643,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     [self updateButtonsDisplayState:text];
     
     if (self.updateInputTextBlock) {
-        CGFloat textViewHeight = [self heightOfTextView];
-        self.updateInputTextBlock(text, textViewHeight + EZQueryViewExceptInputViewHeight);
+        self.updateInputTextBlock(text, [self heightOfQueryView]);
     }
 }
 
@@ -621,12 +691,49 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     self.alertTextField.hidden = hidden;
 }
 
+- (void)toggleCollapsed {
+    self.collapsed = !self.collapsed;
+    MMLogInfo(@"toggle query view collapsed: %@", @(self.collapsed));
+
+    if (self.toggleCollapsedBlock) {
+        self.toggleCollapsedBlock(self.collapsed);
+    }
+}
+
+/// Move loading view to the button bar while collapsed, right after the left buttons, so loading progress is visible without expanding input text area.
+- (void)updateLoadingAnimationViewConstraints {
+    NSArray<MASConstraint *> *activeConstraints = self.collapsed ? self.loadingViewCollapsedConstraints : self.loadingViewExpandedConstraints;
+    NSArray<MASConstraint *> *inactiveConstraints = self.collapsed ? self.loadingViewExpandedConstraints : self.loadingViewCollapsedConstraints;
+    for (MASConstraint *constraint in inactiveConstraints) {
+        [constraint deactivate];
+    }
+    for (MASConstraint *constraint in activeConstraints) {
+        [constraint activate];
+    }
+
+    BOOL isDetectButtonVisible = self.detectButton.showAutoLanguage || ![self.detectButton.detectedLanguage isEqualToString:EZLanguageAuto];
+    if (self.collapsed && isDetectButtonVisible) {
+        [self.loadingViewAfterDetectButtonConstraint activate];
+    } else {
+        [self.loadingViewAfterDetectButtonConstraint deactivate];
+    }
+}
+
+- (void)updateArrowButton {
+    self.arrowButton.toolTip = self.collapsed ? NSLocalizedString(@"show", nil) : NSLocalizedString(@"hide", nil);
+
+    NSImage *baseImage = self.collapsed ? [NSImage imageNamed:@"arrow-left"] : [NSImage imageNamed:@"arrow-down"];
+    NSColor *tintColor = self.arrowButton.isDarkMode ? [NSColor ez_imageTintDarkColor] : [NSColor ez_imageTintLightColor];
+    self.arrowButton.image = [baseImage imageWithTintColor:tintColor];
+}
+
 - (void)updateDetectButton {
     // If user has designated source language, there is no meaning to detect language.
     self.detectButton.enabled = !self.queryModel.hasUserSourceLanguage;
     
     self.detectButton.showAutoLanguage = self.queryModel.showAutoLanguage;
     self.detectButton.detectedLanguage = self.queryModel.detectedLanguage;
+    [self updateLoadingAnimationViewConstraints];
     
     CGFloat height = 20;
     self.detectButton.cornerRadius = height / 2;
