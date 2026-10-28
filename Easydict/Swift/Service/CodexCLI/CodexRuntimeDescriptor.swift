@@ -139,6 +139,48 @@ struct CodexModelCatalog: Decodable {
         }
     }
 
+    /// Accepts a model identifier, never a URL, CLI option or configuration expression.
+    static func isValidModelID(_ model: String) -> Bool {
+        !model.isEmpty && model.utf8.count <= 128
+            && model.range(of: "^[A-Za-z0-9][A-Za-z0-9._-]*$", options: .regularExpression) != nil
+    }
+
+    /// An explicit text-only profile for the pinned modern runtime. Unknown models
+    /// inherit no other model's instructions, reasoning defaults or optional capabilities.
+    static func customModelData(model: String, effort: String? = nil) throws -> Data {
+        guard isValidModelID(model) else { throw CodexManagedError.invalidModel }
+        try CodexReasoningEffort.validateCustomOverride(effort)
+        // This catalog admits the requested override to the transport. A successful
+        // request, not this local declaration, validates the model/effort combination.
+        let reasoning = effort.map { [["effort": $0, "description": $0]] } ?? []
+        let profile: [String: Any] = [
+            "slug": model,
+            "display_name": model,
+            "supported_reasoning_levels": reasoning,
+            "shell_type": "disabled",
+            "visibility": "list",
+            "supported_in_api": true,
+            "priority": 0,
+            "service_tiers": [[
+                "id": "priority", "name": "Fast", "description": "Faster processing, increased usage",
+            ]],
+            "support_verbosity": false,
+            "truncation_policy": ["mode": "tokens", "limit": 10000],
+            "experimental_supported_tools": [],
+            "input_modalities": ["text"],
+            "tool_mode": "direct",
+            "use_responses_lite": false,
+            "supports_reasoning_summary_parameter": false,
+            "default_reasoning_summary": "none",
+            "include_skills_usage_instructions": false,
+            "include_apps_usage_instructions": false,
+            "include_plugin_usage_instructions": false,
+            "supports_search_tool": false,
+            "model_messages": ["instructions_template": CodexManagedRuntime.translationInstructions],
+        ]
+        return try JSONSerialization.data(withJSONObject: ["models": [profile]], options: [.sortedKeys])
+    }
+
     /// Validates selection without resolving or installing the executable package.
     func validate(model: String, effort: String?) throws {
         guard let selected = models.first(where: { $0.slug == model.trimmingCharacters(in: .whitespacesAndNewlines) }),
