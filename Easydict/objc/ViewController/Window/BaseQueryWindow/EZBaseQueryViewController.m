@@ -559,6 +559,15 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         };
         [EZAnalyticsService logEventWithName:@"ocr" parameters:dict];
 
+        if (error) {
+            [self.queryView startLoadingAnimation:NO];
+
+            NSString *errorMsg = [error localizedDescription];
+            dispatch_block_on_main_safely(^{
+                [EZToast showToast:errorMsg];
+            });
+            return;
+        }
 
         if (actionType == EZActionTypeScreenshotOCR) {
             [inputText copyToPasteboard];
@@ -580,14 +589,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             self.queryModel.showAutoLanguage = YES;
 
             [self updateQueryTextAndParagraphStyle:inputText actionType:actionType];
-
-            if (error) {
-                NSString *errorMsg = [error localizedDescription];
-                dispatch_block_on_main_safely(^{
-                    [EZToast showToast:errorMsg];
-                });
-                return;
-            }
 
             if (self.config.autoCopyOCRText) {
                 [inputText copyToPasteboard];

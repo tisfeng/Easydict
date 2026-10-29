@@ -25,11 +25,16 @@ extension AppleOCREngine {
     /// can stall for 60–120 seconds. The compiled artifacts are cached per app, so a single
     /// throwaway request at launch moves that cost off the user's first query.
     ///
-    /// This runs at most once per process and returns immediately. With a warm cache the
-    /// underlying request finishes in well under a second, so no cache probing is needed. Any
-    /// failure only means the first real OCR pays the original cost, which is why errors are
-    /// logged instead of propagated.
+    /// This runs at most once per process and returns immediately. On macOS 26 and later the
+    /// warm-up is deliberately skipped: Vision can leave the warm-up request stuck in the same
+    /// ANE path needed by the first real query. The real request has its own deadline and fallback,
+    /// so it is both safer and more useful than speculative work on those systems.
     static func warmUpVisionOCRIfNeeded() {
+        if #available(macOS 26.0, *) {
+            logInfo("Skipping Vision OCR warm-up; real OCR has a bounded fallback")
+            return
+        }
+
         guard markWarmUpStarted() else { return }
 
         Task.detached(priority: .utility) {
@@ -39,6 +44,32 @@ extension AppleOCREngine {
         }
     }
 
+    /// Maximum time to wait for one Vision recognition attempt.
+    static let recognitionTimeout: TimeInterval = 10
+
+    /// Claims the only accurate OCR slot while the modern accurate path is still usable.
+    static func claimAccurateRecognition() -> Bool {
+        warmUpLock.lock()
+        defer { warmUpLock.unlock() }
+
+        switch accurateRecognitionState {
+        case .available, .unknown:
+            guard !hasAccurateRecognitionInFlight else { return false }
+            hasAccurateRecognitionInFlight = true
+            return true
+        case .unavailable:
+            return false
+        }
+    }
+
+    static func markAccurateRecognitionAvailable() {
+        updateAccurateRecognitionState(.available)
+    }
+
+    static func markAccurateRecognitionUnavailable() {
+        updateAccurateRecognitionState(.unavailable)
+    }
+
     // MARK: Private
 
     /// Delay before the warm-up request starts, in seconds.
@@ -46,6 +77,8 @@ extension AppleOCREngine {
 
     private static let warmUpLock = NSLock()
     private static var hasStartedWarmUp = false
+    private static var hasAccurateRecognitionInFlight = false
+    private static var accurateRecognitionState = AccurateRecognitionState.unknown
 
     /// Claims the one-shot warm-up slot, returning `true` only for the first caller.
     private static func markWarmUpStarted() -> Bool {
@@ -55,6 +88,13 @@ extension AppleOCREngine {
         guard !hasStartedWarmUp else { return false }
         hasStartedWarmUp = true
         return true
+    }
+
+    private static func updateAccurateRecognitionState(_ state: AccurateRecognitionState) {
+        warmUpLock.lock()
+        accurateRecognitionState = state
+        hasAccurateRecognitionInFlight = false
+        warmUpLock.unlock()
     }
 
     /// Runs one throwaway OCR pass so Vision compiles its neural networks ahead of first use.
@@ -171,4 +211,12 @@ extension AppleOCREngine {
 
         return context.makeImage()
     }
+}
+
+// MARK: - AccurateRecognitionState
+
+private enum AccurateRecognitionState {
+    case unknown
+    case available
+    case unavailable
 }
