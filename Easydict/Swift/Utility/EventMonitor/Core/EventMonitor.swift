@@ -128,6 +128,13 @@ final class EventMonitor: NSObject {
 
     func addBothMonitor(_ isAutoSelectTextEnabled: Bool) {
         isAutoSelectTextMonitoringEnabled = isAutoSelectTextEnabled
+        if !isAutoSelectTextEnabled {
+            forceDismissPopButton()
+        }
+
+        // Cursor updates belong to AppKit's tracking areas, not selection
+        // gestures. Dismissing a window while its cursor is updating can
+        // invalidate the cursor region again.
         let eventMask: NSEvent.EventTypeMask = [
             .leftMouseDown,
             .leftMouseUp,
@@ -136,7 +143,6 @@ final class EventMonitor: NSObject {
             .keyUp,
             .flagsChanged,
             .leftMouseDragged,
-            .cursorUpdate,
         ]
 
         bothMonitorWithEvent(eventMask) { [weak self] event in
@@ -155,9 +161,8 @@ final class EventMonitor: NSObject {
     }
 
     func stop() {
+        forceDismissPopButton()
         eventMonitorEngine.stop()
-        highFrequencyEventMonitorEngine.stop()
-        eventTapMonitor.stop()
         if let escapeKeyMonitor {
             NSEvent.removeMonitor(escapeKeyMonitor)
             self.escapeKeyMonitor = nil
@@ -508,6 +513,10 @@ extension EventMonitor {
             guard let self else { return }
             DispatchQueue.main.async {
                 guard self.autoSelectionGeneration == selectionGeneration else { return }
+                guard self.enabledAutoSelectText() else {
+                    self.forceDismissPopButton()
+                    return
+                }
                 if let snapshot {
                     self.selectTextType = snapshot.selectTextType
                     self.isSelectedTextEditable = snapshot.isEditable
@@ -534,9 +543,8 @@ extension EventMonitor {
         let shouldShow = (actionType == .autoSelectQuery) && shouldShowAutoQueryIcon(for: trimmed)
         let updateUI = { [weak self] in
             guard let self else { return }
-            guard shouldShow else {
+            guard enabledAutoSelectText(), shouldShow else {
                 forceDismissPopButton()
-                eventTapMonitor.stop()
                 return
             }
 
@@ -578,12 +586,11 @@ extension EventMonitor {
         if shouldBypassDismissIgnore == false, popButtonController.shouldIgnoreDismiss() {
             return
         }
-        autoSelectionGeneration &+= 1
-        dismissPopButtonBlock?()
-        popButtonController.isPopButtonVisible = false
-        mouseMovedThrottleGate.reset()
-        stopHighFrequencyEventMonitor()
-        eventTapMonitor.stop()
+        let wasVisible = popButtonController.isPopButtonVisible
+        consumePopButtonActivation()
+        if wasVisible {
+            dismissPopButtonBlock?()
+        }
     }
 
     private func delayDismissPopButton() {
@@ -628,14 +635,12 @@ extension EventMonitor {
         return modifierKeyCodes.contains(keyCode)
     }
 
-    /// Dismisses the pop button even if dismiss ignores are active.
+    /// Cancels pending selection work even before its pop button becomes visible.
     private func forceDismissPopButton() {
         log("forceDismissPopButton")
-        if popButtonController.isPopButtonVisible {
-            shouldBypassDismissIgnore = true
-            dismissPopButton()
-            shouldBypassDismissIgnore = false
-        }
+        shouldBypassDismissIgnore = true
+        dismissPopButton()
+        shouldBypassDismissIgnore = false
     }
 
     private func delayDismissPopButton(delay: TimeInterval) {
