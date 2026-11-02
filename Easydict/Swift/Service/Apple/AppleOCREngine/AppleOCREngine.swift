@@ -256,35 +256,64 @@ public class AppleOCREngine: NSObject {
     /// Treats QR detection failures as empty payloads while propagating task cancellation.
     private func detectQRCodePayloads(on cgImage: CGImage) async throws -> [String] {
         try Task.checkCancellation()
-        let payloads: [String] = await withCheckedContinuation { continuation in
+
+        let payloads: [String]
+        do {
+            if #available(macOS 15.0, *) {
+                payloads = try await detectModernQRCodePayloads(on: cgImage)
+            } else {
+                payloads = try await detectLegacyQRCodePayloads(on: cgImage)
+            }
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch {
+            try Task.checkCancellation()
+            logError("QR code detection failed: \(error.localizedDescription)")
+            return []
+        }
+
+        // A cancelled caller must discard results even if Vision finishes normally.
+        try Task.checkCancellation()
+        var seenPayloads = Set<String>()
+        return payloads.filter { payload in
+            let normalizedPayload = payload.normalizedQRCodePayload
+            return !normalizedPayload.isEmpty
+                && seenPayloads.insert(normalizedPayload).inserted
+        }
+    }
+
+    /// Uses Vision's native async API on systems that support it.
+    @available(macOS 15.0, *)
+    private func detectModernQRCodePayloads(on cgImage: CGImage) async throws -> [String] {
+        var request = DetectBarcodesRequest()
+        request.symbologies = [.qr]
+
+        do {
+            let observations = try await request.perform(on: cgImage)
+            return observations.compactMap(\.payloadString)
+        } catch VisionError.requestCancelled(_) {
+            throw CancellationError()
+        }
+    }
+
+    /// Keeps synchronous Vision work off the cooperative executor on older systems.
+    private func detectLegacyQRCodePayloads(on cgImage: CGImage) async throws -> [String] {
+        try await withCheckedThrowingContinuation { continuation in
             // Vision can synchronously wait for utility workers when acquiring image contexts.
             // Set the blocking work item's QoS explicitly while the caller remains suspended.
             DispatchQueue.global(qos: .utility).async(qos: .utility, flags: .enforceQoS) {
-                let payloads: [String]
                 do {
                     let request = VNDetectBarcodesRequest()
                     request.symbologies = [.qr]
                     try VNImageRequestHandler(cgImage: cgImage).perform([request])
 
                     let observations = request.results ?? []
-                    var seenPayloads = Set<String>()
-                    payloads = observations.compactMap(\.payloadStringValue).filter { payload in
-                        let normalizedPayload = payload.normalizedQRCodePayload
-                        return !normalizedPayload.isEmpty
-                            && seenPayloads.insert(normalizedPayload).inserted
-                    }
+                    continuation.resume(returning: observations.compactMap(\.payloadStringValue))
                 } catch {
-                    logError("QR code detection failed: \(error.localizedDescription)")
-                    payloads = []
+                    continuation.resume(throwing: error)
                 }
-
-                // Vision completion handlers run before synchronous perform returns.
-                continuation.resume(returning: payloads)
             }
         }
-        // Synchronous Vision work finishes normally; a cancelled caller must discard its result.
-        try Task.checkCancellation()
-        return payloads
     }
 
     /// Creates an OCR result when the image contains QR codes but no recognized text.
