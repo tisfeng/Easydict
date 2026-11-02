@@ -116,6 +116,9 @@ public class AppleOCREngine: NSObject {
     /// The text processor responsible for sorting, merging, and normalizing the OCR results.
     private let textProcessor = OCRTextProcessor()
 
+    /// Handles QR code detection and OCR content integration.
+    private let qrCode = QRCode()
+
     /// A mapper to convert between Easydict's `Language` enum and Apple's language identifiers.
     private let languageMapper = AppleLanguageMapper.shared
 
@@ -164,7 +167,7 @@ public class AppleOCREngine: NSObject {
         }
 
         let startTime = CFAbsoluteTimeGetCurrent()
-        let qrCodePayloads = detectsQRCodes ? try await detectQRCodePayloads(on: cgImage) : []
+        let qrCodePayloads = detectsQRCodes ? try await qrCode.payloads(in: cgImage) : []
 
         // Perform Vision OCR using unified API
         let observations: [EZRecognizedTextObservation]
@@ -179,7 +182,8 @@ public class AppleOCREngine: NSObject {
             logError(
                 "Text recognition failed; using QR code payloads: \(error.localizedDescription)"
             )
-            return makeQRCodeOnlyResult(payloads: qrCodePayloads, language: language)
+            textProcessor.reset()
+            return qrCode.makeResult(payloads: qrCodePayloads, language: language)
         }
 
         try Task.checkCancellation()
@@ -230,7 +234,7 @@ public class AppleOCREngine: NSObject {
 
         try Task.checkCancellation()
         if !requiresAccurateRecognition || smartMerging {
-            appendQRCodePayloads(qrCodePayloads, to: ocrResult)
+            qrCode.append(qrCodePayloads, to: ocrResult)
             logInfo("OCR completion (\(language)) cost time: \(startTime.elapsedTimeString) seconds")
             return ocrResult
         }
@@ -245,100 +249,12 @@ public class AppleOCREngine: NSObject {
         )
 
         try Task.checkCancellation()
-        appendQRCodePayloads(qrCodePayloads, to: mostConfidentResult)
+        qrCode.append(qrCodePayloads, to: mostConfidentResult)
 
         logInfo("Get most confident OCR cost time: \(startSelectTime.elapsedTimeString) seconds")
         logInfo("Total OCR cost time: \(startTime.elapsedTimeString) seconds")
 
         return mostConfidentResult
-    }
-
-    /// Treats QR detection failures as empty payloads while propagating task cancellation.
-    private func detectQRCodePayloads(on cgImage: CGImage) async throws -> [String] {
-        try Task.checkCancellation()
-
-        let payloads: [String]
-        do {
-            if #available(macOS 15.0, *) {
-                payloads = try await detectModernQRCodePayloads(on: cgImage)
-            } else {
-                payloads = try await detectLegacyQRCodePayloads(on: cgImage)
-            }
-        } catch is CancellationError {
-            throw CancellationError()
-        } catch {
-            try Task.checkCancellation()
-            logError("QR code detection failed: \(error.localizedDescription)")
-            return []
-        }
-
-        // A cancelled caller must discard results even if Vision finishes normally.
-        try Task.checkCancellation()
-        var seenPayloads = Set<String>()
-        return payloads.filter { payload in
-            let normalizedPayload = payload.normalizedQRCodePayload
-            return !normalizedPayload.isEmpty
-                && seenPayloads.insert(normalizedPayload).inserted
-        }
-    }
-
-    /// Uses Vision's native async API on systems that support it.
-    @available(macOS 15.0, *)
-    private func detectModernQRCodePayloads(on cgImage: CGImage) async throws -> [String] {
-        var request = DetectBarcodesRequest()
-        request.symbologies = [.qr]
-
-        do {
-            let observations = try await request.perform(on: cgImage)
-            return observations.compactMap(\.payloadString)
-        } catch VisionError.requestCancelled(_) {
-            throw CancellationError()
-        }
-    }
-
-    /// Keeps synchronous Vision work off the cooperative executor on older systems.
-    private func detectLegacyQRCodePayloads(on cgImage: CGImage) async throws -> [String] {
-        try await withCheckedThrowingContinuation { continuation in
-            // Vision can synchronously wait for utility workers when acquiring image contexts.
-            // Set the blocking work item's QoS explicitly while the caller remains suspended.
-            DispatchQueue.global(qos: .utility).async(qos: .utility, flags: .enforceQoS) {
-                do {
-                    let request = VNDetectBarcodesRequest()
-                    request.symbologies = [.qr]
-                    try VNImageRequestHandler(cgImage: cgImage).perform([request])
-
-                    let observations = request.results ?? []
-                    continuation.resume(returning: observations.compactMap(\.payloadStringValue))
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
-
-    /// Creates an OCR result when the image contains QR codes but no recognized text.
-    private func makeQRCodeOnlyResult(payloads: [String], language: Language) -> EZOCRResult {
-        textProcessor.reset()
-
-        let result = EZOCRResult()
-        result.from = language
-        result.texts = payloads
-        result.mergedText = payloads.joined(separator: OCRConstants.paragraphSeparator)
-        result.raw = payloads
-        return result
-    }
-
-    /// Appends unique QR code payloads after the recognized document text.
-    private func appendQRCodePayloads(_ payloads: [String], to result: EZOCRResult) {
-        var existingTexts = Set(result.texts.map(\.normalizedQRCodePayload))
-        let newPayloads = payloads.filter { payload in
-            let normalizedPayload = payload.normalizedQRCodePayload
-            return !normalizedPayload.isEmpty && existingTexts.insert(normalizedPayload).inserted
-        }
-        guard !newPayloads.isEmpty else { return }
-
-        result.texts = result.texts + newPayloads
-        result.mergedText = result.texts.joined(separator: OCRConstants.paragraphSeparator)
     }
 
     /// The core async method that executes a `VNRecognizeTextRequest` on a given `CGImage`.
@@ -787,16 +703,6 @@ public class AppleOCREngine: NSObject {
                     type: .api, message: "Vision OCR request failed: \(error.localizedDescription)"
                 )
         }
-    }
-}
-
-// MARK: - String
-
-extension String {
-    /// Normalizes QR payloads for comparison without altering their returned content.
-    fileprivate var normalizedQRCodePayload: String {
-        replacingOccurrences(of: "\r\n", with: "\n")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
