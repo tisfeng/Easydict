@@ -104,6 +104,14 @@ public class AppleOCREngine: NSObject {
 
     // MARK: Private
 
+    /// Maximum time for an accurate attempt (including slot waiting) or one fast fallback.
+    private static let recognitionTimeout: TimeInterval = 10
+
+    private static let accurateRecognitionLock = NSLock()
+
+    /// Protected by `accurateRecognitionLock` until the underlying Vision operation exits.
+    private static var hasAccurateRecognitionInFlight = false
+
     /// The text processor responsible for sorting, merging, and normalizing the OCR results.
     private let textProcessor = OCRTextProcessor()
 
@@ -118,6 +126,23 @@ public class AppleOCREngine: NSObject {
         payload
             .replacingOccurrences(of: "\r\n", with: "\n")
             .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// Claims the accurate slot until the underlying Vision operation exits.
+    private static func claimAccurateRecognition() -> Bool {
+        accurateRecognitionLock.lock()
+        defer { accurateRecognitionLock.unlock() }
+
+        guard !hasAccurateRecognitionInFlight else { return false }
+        hasAccurateRecognitionInFlight = true
+        return true
+    }
+
+    /// Releases the slot after Vision finishes, even if the caller has already timed out.
+    private static func releaseAccurateRecognition() {
+        accurateRecognitionLock.lock()
+        hasAccurateRecognitionInFlight = false
+        accurateRecognitionLock.unlock()
     }
 
     /// Runs OCR while allowing internal retries to skip duplicate QR code detection.
@@ -561,45 +586,38 @@ public class AppleOCREngine: NSObject {
         }
     }
 
-    /// Runs accurate modern OCR when the process is healthy, then falls back to the lightweight
-    /// fast path when Vision stalls or fails. A timed-out Vision task may continue inside the
-    /// framework, so the shared execution policy prevents subsequent accurate work from piling up.
+    /// Gives every query a bounded accurate attempt before one fast fallback. Waiting for a busy
+    /// accurate slot counts toward the deadline. The underlying operation owns the slot until it
+    /// exits, even if the caller has already timed out, so stalled Vision work cannot pile up.
     @available(macOS 26.0, *)
     private func performModernVisionOCRWithFallback(
         on cgImage: CGImage,
         language: Language
     ) async throws
         -> [RecognizedTextObservation] {
-        if Self.claimAccurateRecognition() {
-            do {
-                let observations = try await Task.withTimeout(
-                    seconds: Self.recognitionTimeout
-                ) { [weak self] in
-                    guard let self else { throw CancellationError() }
-                    return try await performModernVisionOCR(
-                        on: cgImage,
-                        language: language,
-                        recognitionLevel: .accurate
-                    )
+        do {
+            return try await Task.withTimeout(
+                seconds: Self.recognitionTimeout
+            ) { [weak self] in
+                guard let self else { throw CancellationError() }
+                try Task.checkCancellation()
+                while !Self.claimAccurateRecognition() {
+                    // Suspend without blocking a thread; timeout cancels this wait.
+                    try await Task.sleep(for: .milliseconds(50))
                 }
-                Self.markAccurateRecognitionAvailable()
-                return observations
-            } catch is CancellationError {
-                Self.markAccurateRecognitionAvailable()
-                throw CancellationError()
-            } catch {
-                if error is TaskTimeoutError || (error as? QueryError)?.type != .noResult {
-                    Self.markAccurateRecognitionUnavailable()
-                } else {
-                    Self.markAccurateRecognitionAvailable()
-                }
-                logAccurateRecognitionFallback(error: error)
+                defer { Self.releaseAccurateRecognition() }
+                try Task.checkCancellation()
+                return try await performModernVisionOCR(
+                    on: cgImage,
+                    language: language,
+                    recognitionLevel: .accurate
+                )
             }
-        } else {
-            logInfo(
-                "Skipping accurate Vision OCR because another request is in flight "
-                    + "or the path is unavailable"
-            )
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch {
+            try Task.checkCancellation()
+            logAccurateRecognitionFallback(error: error)
         }
 
         do {
@@ -655,6 +673,13 @@ public class AppleOCREngine: NSObject {
         )
 
         if observations.isEmpty, language == .auto {
+            // Fast recognition does not support Japanese. An empty fast result is final,
+            // rather than a reason to issue a second fast request with another language.
+            guard recognitionLevel == .accurate else {
+                throw QueryError.error(
+                    type: .noResult, message: String(localized: "ocr_result_is_empty")
+                )
+            }
             logInfo("No text recognized with auto language, retrying with Japanese.")
             return try await performSingleModernVisionOCR(
                 on: cgImage,
@@ -681,18 +706,18 @@ public class AppleOCREngine: NSObject {
         // Configure recognition settings
         request.recognitionLevel = recognitionLevel
         if recognitionLevel == .fast {
-            // The fast path supports a smaller language set than accurate recognition. Preserve
-            // the configured preference order while excluding unsupported languages.
+            // Match equivalent identifiers (for example, en and en-US) in preference order,
+            // keeping Vision's supported language values rather than the app's shorthand values.
             let preferredLanguages = languageMapper.ocrRecognitionLocaleLanguages(
                 for: language, isModernOCR: true
             )
-            let supportedLanguages = request.supportedRecognitionLanguages
-            request.recognitionLanguages = preferredLanguages.filter {
-                supportedLanguages.contains($0)
-            }
             request.usesLanguageCorrection = false
+            let supportedLanguages = request.supportedRecognitionLanguages
+            request.recognitionLanguages = preferredLanguages.compactMap { preferredLanguage in
+                supportedLanguages.first { $0.isEquivalent(to: preferredLanguage) }
+            }
             let requestedLanguageIsSupported = language != .auto
-                && request.recognitionLanguages.first == preferredLanguages.first
+                && request.recognitionLanguages.contains { $0.isEquivalent(to: language.localeLanguage) }
             request.automaticallyDetectsLanguage = !requestedLanguageIsSupported
         } else {
             request.recognitionLanguages = languageMapper.ocrRecognitionLocaleLanguages(

@@ -374,7 +374,6 @@
 		03C3E9F52E4A10C40029CA12 /* ocr-en-text-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */; };
 		03C408F52EF472660025A1F0 /* BaiduService+OCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C408F32EF472660025A1F0 /* BaiduService+OCR.swift */; };
 		03C408F92EF5CB830025A1F0 /* ServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C408F82EF5CB830025A1F0 /* ServiceTests.swift */; };
-		03C9A1022F8A4B0100D5C0DE /* AppleOCREngine+WarmUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C9A1012F8A4B0100D5C0DE /* AppleOCREngine+WarmUp.swift */; };
 		03CA1CF12EDE089E001908D0 /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CED2EDE089E001908D0 /* Appearance.swift */; };
 		03CA1CF22EDE089E001908D0 /* DarkModeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CEF2EDE089E001908D0 /* DarkModeProtocol.swift */; };
 		03CA1CF32EDE089E001908D0 /* DarkModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA1CEE2EDE089E001908D0 /* DarkModeManager.swift */; };
@@ -1144,7 +1143,6 @@
 		03C3E9F42E4A10C40029CA12 /* ocr-en-text-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-text-5.png"; sourceTree = "<group>"; };
 		03C408F32EF472660025A1F0 /* BaiduService+OCR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaiduService+OCR.swift"; sourceTree = "<group>"; };
 		03C408F82EF5CB830025A1F0 /* ServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTests.swift; sourceTree = "<group>"; };
-		03C9A1012F8A4B0100D5C0DE /* AppleOCREngine+WarmUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppleOCREngine+WarmUp.swift"; sourceTree = "<group>"; };
 		03CA1CED2EDE089E001908D0 /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
 		03CA1CEE2EDE089E001908D0 /* DarkModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeManager.swift; sourceTree = "<group>"; };
 		03CA1CEF2EDE089E001908D0 /* DarkModeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeProtocol.swift; sourceTree = "<group>"; };
@@ -1671,7 +1669,6 @@
 				039223B82E4B41770052F695 /* View */,
 				03B170982E122CF80021FDE4 /* Model */,
 				031760EA2E065EF500CE8FD7 /* AppleOCREngine.swift */,
-				03C9A1012F8A4B0100D5C0DE /* AppleOCREngine+WarmUp.swift */,
 				034E30992E17809C0079E371 /* OCRTextProcessor.swift */,
 				03F19D7F2E0938D70046C6F2 /* OCRSectionMerger.swift */,
 				033E8A102E4F79E6008A7110 /* OCRBandMerger.swift */,
@@ -4685,7 +4682,6 @@
 				0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */,
 				0A1189A22F700001005C51D /* ServiceTabListViews.swift in Sources */,
 				031760EB2E065EF500CE8FD7 /* AppleOCREngine.swift in Sources */,
-				03C9A1022F8A4B0100D5C0DE /* AppleOCREngine+WarmUp.swift in Sources */,
 				03882F8D29D95044005B5A52 /* CTView.m in Sources */,
 				0396DE552BB5844A009FD2A5 /* BaseOpenAIService.swift in Sources */,
 				A20908010000000000000001 /* OpenAIStreamTransport.swift in Sources */,
