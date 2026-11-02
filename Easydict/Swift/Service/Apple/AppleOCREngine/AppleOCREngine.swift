@@ -104,6 +104,15 @@ public class AppleOCREngine: NSObject {
 
     // MARK: Private
 
+    /// Shared across engine instances so timed-out Vision work cannot accumulate in this process.
+    private static let accurateRecognitionLock = NSLock()
+
+    /// Protected by `accurateRecognitionLock` until the underlying Vision operation exits.
+    private static var hasAccurateRecognitionInFlight = false
+
+    /// Maximum time for an accurate attempt (including slot waiting) or one fast fallback.
+    private let recognitionTimeout: TimeInterval = 5
+
     /// The text processor responsible for sorting, merging, and normalizing the OCR results.
     private let textProcessor = OCRTextProcessor()
 
@@ -113,11 +122,21 @@ public class AppleOCREngine: NSObject {
     /// Language detector used for tie-breaking when confidences are equal.
     private let languageDetector = AppleLanguageDetector()
 
-    /// Normalizes payloads for comparison without altering the returned QR code content.
-    private static func normalizedQRCodePayload(_ payload: String) -> String {
-        payload
-            .replacingOccurrences(of: "\r\n", with: "\n")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+    /// Claims the accurate slot until the underlying Vision operation exits.
+    private static func claimAccurateRecognition() -> Bool {
+        accurateRecognitionLock.lock()
+        defer { accurateRecognitionLock.unlock() }
+
+        guard !hasAccurateRecognitionInFlight else { return false }
+        hasAccurateRecognitionInFlight = true
+        return true
+    }
+
+    /// Releases the slot after Vision finishes, even if the caller has already timed out.
+    private static func releaseAccurateRecognition() {
+        accurateRecognitionLock.lock()
+        hasAccurateRecognitionInFlight = false
+        accurateRecognitionLock.unlock()
     }
 
     /// Runs OCR while allowing internal retries to skip duplicate QR code detection.
@@ -250,7 +269,7 @@ public class AppleOCREngine: NSObject {
                     let observations = request.results ?? []
                     var seenPayloads = Set<String>()
                     payloads = observations.compactMap(\.payloadStringValue).filter { payload in
-                        let normalizedPayload = Self.normalizedQRCodePayload(payload)
+                        let normalizedPayload = payload.normalizedQRCodePayload
                         return !normalizedPayload.isEmpty
                             && seenPayloads.insert(normalizedPayload).inserted
                     }
@@ -282,9 +301,9 @@ public class AppleOCREngine: NSObject {
 
     /// Appends unique QR code payloads after the recognized document text.
     private func appendQRCodePayloads(_ payloads: [String], to result: EZOCRResult) {
-        var existingTexts = Set(result.texts.map(Self.normalizedQRCodePayload))
+        var existingTexts = Set(result.texts.map(\.normalizedQRCodePayload))
         let newPayloads = payloads.filter { payload in
-            let normalizedPayload = Self.normalizedQRCodePayload(payload)
+            let normalizedPayload = payload.normalizedQRCodePayload
             return !normalizedPayload.isEmpty && existingTexts.insert(normalizedPayload).inserted
         }
         guard !newPayloads.isEmpty else { return }
@@ -547,8 +566,9 @@ public class AppleOCREngine: NSObject {
         // Fix https://github.com/tisfeng/Easydict/pull/950#issuecomment-3222553146
         if #available(macOS 26.0, *) {
             logInfo("Using modern RecognizeTextRequest API")
-            let modernObservations = try await performModernVisionOCR(
-                on: cgImage, language: language
+            let modernObservations = try await performModernVisionOCRWithFallback(
+                on: cgImage,
+                language: language
             )
             return modernObservations.toEZRecognizedTextObservations()
         } else {
@@ -560,18 +580,106 @@ public class AppleOCREngine: NSObject {
         }
     }
 
+    /// Gives every query a bounded accurate attempt before one fast fallback. Waiting for a busy
+    /// accurate slot counts toward the deadline. The underlying operation owns the slot until it
+    /// exits, even if the caller has already timed out, so stalled Vision work cannot pile up.
+    @available(macOS 26.0, *)
+    private func performModernVisionOCRWithFallback(
+        on cgImage: CGImage,
+        language: Language
+    ) async throws
+        -> [RecognizedTextObservation] {
+        do {
+            return try await Task.withTimeout(
+                seconds: recognitionTimeout
+            ) { [weak self] in
+                guard let self else { throw CancellationError() }
+                try Task.checkCancellation()
+                while !Self.claimAccurateRecognition() {
+                    // Suspend without blocking a thread; timeout cancels this wait.
+                    try await Task.sleep(for: .milliseconds(50))
+                }
+                defer { Self.releaseAccurateRecognition() }
+                try Task.checkCancellation()
+                return try await performModernVisionOCR(
+                    on: cgImage,
+                    language: language,
+                    recognitionLevel: .accurate
+                )
+            }
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch {
+            try Task.checkCancellation()
+            logAccurateRecognitionFallback(error: error)
+        }
+
+        do {
+            return try await Task.withTimeout(
+                seconds: recognitionTimeout
+            ) { [weak self] in
+                guard let self else { throw CancellationError() }
+                return try await performModernVisionOCR(
+                    on: cgImage,
+                    language: language,
+                    recognitionLevel: .fast
+                )
+            }
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch is TaskTimeoutError {
+            logError(
+                "Fast Vision OCR timed out after \(recognitionTimeout) seconds"
+            )
+            throw QueryError.timeoutError
+        }
+    }
+
+    private func logAccurateRecognitionFallback(error: Error) {
+        if error is TaskTimeoutError {
+            logError(
+                "Accurate Vision OCR timed out after \(recognitionTimeout) seconds; "
+                    + "retrying with fast recognition"
+            )
+        } else {
+            logError(
+                "Accurate Vision OCR failed: \(error.localizedDescription); "
+                    + "retrying with fast recognition"
+            )
+        }
+    }
+
     // MARK: - Modern API Implementation (macOS 15.0+)
 
     @available(macOS 15.0, *)
-    private func performModernVisionOCR(on cgImage: CGImage, language: Language = .auto)
+    private func performModernVisionOCR(
+        on cgImage: CGImage,
+        language: Language = .auto,
+        recognitionLevel: RecognizeTextRequest.RecognitionLevel
+    )
         async throws
         -> [RecognizedTextObservation] {
         // Try primary OCR first
-        let observations = try await performSingleModernVisionOCR(on: cgImage, language: language)
+        let observations = try await performSingleModernVisionOCR(
+            on: cgImage,
+            language: language,
+            recognitionLevel: recognitionLevel
+        )
 
         if observations.isEmpty, language == .auto {
+            // Fast recognition does not support Japanese. An empty fast result is final,
+            // rather than a reason to issue a second fast request with another language.
+            guard recognitionLevel == .accurate else {
+                throw QueryError.error(
+                    type: .noResult, message: String(localized: "ocr_result_is_empty")
+                )
+            }
             logInfo("No text recognized with auto language, retrying with Japanese.")
-            return try await performSingleModernVisionOCR(on: cgImage, language: .japanese)
+            return try await performSingleModernVisionOCR(
+                on: cgImage,
+                language: .japanese,
+                recognitionLevel: recognitionLevel
+            )
         }
 
         return observations
@@ -579,24 +687,48 @@ public class AppleOCREngine: NSObject {
 
     /// Performs a single Vision OCR request using the modern async API (macOS 15.0+)
     @available(macOS 15.0, *)
-    private func performSingleModernVisionOCR(on cgImage: CGImage, language: Language = .auto)
+    private func performSingleModernVisionOCR(
+        on cgImage: CGImage,
+        language: Language = .auto,
+        recognitionLevel: RecognizeTextRequest.RecognitionLevel
+    )
         async throws
         -> [RecognizedTextObservation] {
-        let enableAutoDetect = !hasValidOCRLanguage(language, isModernOCR: true)
-        logInfo(
-            "Performing modern Vision OCR with language: \(language), auto detect: \(enableAutoDetect)"
-        )
-
         // Create the modern RecognizeTextRequest
         var request = RecognizeTextRequest()
 
         // Configure recognition settings
-        request.recognitionLevel = .accurate
-        request.recognitionLanguages = languageMapper.ocrRecognitionLocaleLanguages(
-            for: language, isModernOCR: true
+        request.recognitionLevel = recognitionLevel
+        if recognitionLevel == .fast {
+            // Match equivalent identifiers (for example, en and en-US) in preference order,
+            // keeping Vision's supported language values rather than the app's shorthand values.
+            let preferredLanguages = languageMapper.ocrRecognitionLocaleLanguages(
+                for: language, isModernOCR: true
+            )
+            request.usesLanguageCorrection = false
+            let supportedLanguages = request.supportedRecognitionLanguages
+            request.recognitionLanguages = preferredLanguages.compactMap { preferredLanguage in
+                supportedLanguages.first { $0.isEquivalent(to: preferredLanguage) }
+            }
+            let requestedLanguageIsSupported = language != .auto
+                && request.recognitionLanguages.contains { $0.isEquivalent(to: language.localeLanguage) }
+            request.automaticallyDetectsLanguage = !requestedLanguageIsSupported
+        } else {
+            request.recognitionLanguages = languageMapper.ocrRecognitionLocaleLanguages(
+                for: language, isModernOCR: true
+            )
+            request.usesLanguageCorrection = true
+            request.automaticallyDetectsLanguage = !hasValidOCRLanguage(
+                language,
+                isModernOCR: true
+            )
+        }
+
+        logInfo(
+            "Performing modern Vision OCR with language: \(language), "
+                + "level: \(recognitionLevel), "
+                + "auto detect: \(request.automaticallyDetectsLanguage)"
         )
-        request.usesLanguageCorrection = true
-        request.automaticallyDetectsLanguage = enableAutoDetect
 
         do {
             // Perform OCR using the new async API - returns [RecognizedText]
@@ -618,12 +750,24 @@ public class AppleOCREngine: NSObject {
 
             return recognizedTexts
 
+        } catch is CancellationError {
+            throw CancellationError()
         } catch {
             throw QueryError.queryError(from: error, type: .api)
                 ?? QueryError.error(
                     type: .api, message: "Vision OCR request failed: \(error.localizedDescription)"
                 )
         }
+    }
+}
+
+// MARK: - String
+
+extension String {
+    /// Normalizes QR payloads for comparison without altering their returned content.
+    fileprivate var normalizedQRCodePayload: String {
+        replacingOccurrences(of: "\r\n", with: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
