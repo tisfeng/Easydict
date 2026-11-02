@@ -104,13 +104,14 @@ public class AppleOCREngine: NSObject {
 
     // MARK: Private
 
-    /// Maximum time for an accurate attempt (including slot waiting) or one fast fallback.
-    private static let recognitionTimeout: TimeInterval = 10
-
+    /// Shared across engine instances so timed-out Vision work cannot accumulate in this process.
     private static let accurateRecognitionLock = NSLock()
 
     /// Protected by `accurateRecognitionLock` until the underlying Vision operation exits.
     private static var hasAccurateRecognitionInFlight = false
+
+    /// Maximum time for an accurate attempt (including slot waiting) or one fast fallback.
+    private let recognitionTimeout: TimeInterval = 5
 
     /// The text processor responsible for sorting, merging, and normalizing the OCR results.
     private let textProcessor = OCRTextProcessor()
@@ -120,13 +121,6 @@ public class AppleOCREngine: NSObject {
 
     /// Language detector used for tie-breaking when confidences are equal.
     private let languageDetector = AppleLanguageDetector()
-
-    /// Normalizes payloads for comparison without altering the returned QR code content.
-    private static func normalizedQRCodePayload(_ payload: String) -> String {
-        payload
-            .replacingOccurrences(of: "\r\n", with: "\n")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-    }
 
     /// Claims the accurate slot until the underlying Vision operation exits.
     private static func claimAccurateRecognition() -> Bool {
@@ -275,7 +269,7 @@ public class AppleOCREngine: NSObject {
                     let observations = request.results ?? []
                     var seenPayloads = Set<String>()
                     payloads = observations.compactMap(\.payloadStringValue).filter { payload in
-                        let normalizedPayload = Self.normalizedQRCodePayload(payload)
+                        let normalizedPayload = payload.normalizedQRCodePayload
                         return !normalizedPayload.isEmpty
                             && seenPayloads.insert(normalizedPayload).inserted
                     }
@@ -307,9 +301,9 @@ public class AppleOCREngine: NSObject {
 
     /// Appends unique QR code payloads after the recognized document text.
     private func appendQRCodePayloads(_ payloads: [String], to result: EZOCRResult) {
-        var existingTexts = Set(result.texts.map(Self.normalizedQRCodePayload))
+        var existingTexts = Set(result.texts.map(\.normalizedQRCodePayload))
         let newPayloads = payloads.filter { payload in
-            let normalizedPayload = Self.normalizedQRCodePayload(payload)
+            let normalizedPayload = payload.normalizedQRCodePayload
             return !normalizedPayload.isEmpty && existingTexts.insert(normalizedPayload).inserted
         }
         guard !newPayloads.isEmpty else { return }
@@ -597,7 +591,7 @@ public class AppleOCREngine: NSObject {
         -> [RecognizedTextObservation] {
         do {
             return try await Task.withTimeout(
-                seconds: Self.recognitionTimeout
+                seconds: recognitionTimeout
             ) { [weak self] in
                 guard let self else { throw CancellationError() }
                 try Task.checkCancellation()
@@ -622,7 +616,7 @@ public class AppleOCREngine: NSObject {
 
         do {
             return try await Task.withTimeout(
-                seconds: Self.recognitionTimeout
+                seconds: recognitionTimeout
             ) { [weak self] in
                 guard let self else { throw CancellationError() }
                 return try await performModernVisionOCR(
@@ -635,7 +629,7 @@ public class AppleOCREngine: NSObject {
             throw CancellationError()
         } catch is TaskTimeoutError {
             logError(
-                "Fast Vision OCR timed out after \(Self.recognitionTimeout) seconds"
+                "Fast Vision OCR timed out after \(recognitionTimeout) seconds"
             )
             throw QueryError.timeoutError
         }
@@ -644,7 +638,7 @@ public class AppleOCREngine: NSObject {
     private func logAccurateRecognitionFallback(error: Error) {
         if error is TaskTimeoutError {
             logError(
-                "Accurate Vision OCR timed out after \(Self.recognitionTimeout) seconds; "
+                "Accurate Vision OCR timed out after \(recognitionTimeout) seconds; "
                     + "retrying with fast recognition"
             )
         } else {
@@ -764,6 +758,16 @@ public class AppleOCREngine: NSObject {
                     type: .api, message: "Vision OCR request failed: \(error.localizedDescription)"
                 )
         }
+    }
+}
+
+// MARK: - String
+
+extension String {
+    /// Normalizes QR payloads for comparison without altering their returned content.
+    fileprivate var normalizedQRCodePayload: String {
+        replacingOccurrences(of: "\r\n", with: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
