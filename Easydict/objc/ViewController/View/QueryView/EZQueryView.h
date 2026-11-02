@@ -33,6 +33,9 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 @property (nonatomic, assign) BOOL clearButtonHidden;
 @property (nonatomic, assign) BOOL isTypingChinese;
 
+/// Whether the input text area is collapsed, only the bottom button bar is visible.
+@property (nonatomic, assign) BOOL collapsed;
+
 @property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
 
 @property (nonatomic, copy) void (^playAudioBlock)(NSString *text);
@@ -43,6 +46,9 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 
 @property (nonatomic, copy) void (^updateInputTextBlock)(NSString *text, CGFloat queryViewHeight);
 @property (nonatomic, copy) void (^selectedLanguageBlock)(EZLanguage language);
+
+/// Called when user toggles the collapsed state, by clicking arrow button or typing in collapsed state.
+@property (nonatomic, copy) void (^toggleCollapsedBlock)(BOOL collapsed);
 
 
 - (CGFloat)heightOfQueryView;

@@ -75,3 +75,15 @@ extension MyConfiguration {
         Defaults[windowConfigurationKey(key, windowType: windowType, defaultValue: true)]
     }
 }
+
+// MARK: Input Field Collapsed State
+
+extension MyConfiguration {
+    func inputFieldCollapsed(windowType: EZWindowType) -> Bool {
+        Defaults[.inputFieldCollapsed(for: windowType)]
+    }
+
+    func setInputFieldCollapsed(_ collapsed: Bool, windowType: EZWindowType) {
+        Defaults[.inputFieldCollapsed(for: windowType)] = collapsed
+    }
+}

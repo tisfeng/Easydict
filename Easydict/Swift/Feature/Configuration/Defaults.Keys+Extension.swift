@@ -261,6 +261,11 @@ extension Defaults.Keys {
         let key = "EZConfiguration_kWindowFrameKey_\(windowType)"
         return .init(key, default: .zero)
     }
+
+    static func inputFieldCollapsed(for windowType: EZWindowType) -> Key<Bool> {
+        let key = "EZConfiguration_kInputFieldCollapsedKey_\(windowType.rawValue)"
+        return .init(key, default: false)
+    }
 }
 
 // MARK: - EZQueryTextType + Defaults.Serializable
