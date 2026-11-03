@@ -244,8 +244,10 @@ struct MarkdownBlockParser {
         var content = String(first.dropFirst(open.count))
         var index = start
         while true {
-            if let range = content.range(of: close),
-               content[range.upperBound...].trimmingCharacters(in: .whitespaces).isEmpty {
+            if let range = content.range(of: close) {
+                guard content[range.upperBound...].trimmingCharacters(in: .whitespaces).isEmpty else {
+                    return nil
+                }
                 return (String(content[..<range.lowerBound]), lines[start ... index].joined(separator: "\n"), index + 1)
             }
             index += 1

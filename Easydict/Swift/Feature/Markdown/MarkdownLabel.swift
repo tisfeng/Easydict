@@ -8,16 +8,12 @@
 
 import AppKit
 
-/// `EZLabel` subclass that renders Markdown source through ``MarkdownRenderer``
-/// when `markdownEnabled` is `true`. Falls back to the parent's plain-text
-/// pipeline otherwise so non-AI services keep their existing appearance and
-/// dark-mode switching keeps working through the inherited appearance hook.
+/// Displays Markdown or plain text using the label's font and appearance.
 @objc(EDMarkdownLabel)
 class MarkdownLabel: EZLabel {
     // MARK: Internal
 
-    /// Toggles between Markdown rendering and plain-text rendering. Re-applies
-    /// the current `text` immediately so the visible state stays consistent.
+    /// Re-renders the current text when Markdown is enabled or disabled.
     @objc var markdownEnabled: Bool = true {
         didSet {
             guard oldValue != markdownEnabled else { return }
@@ -31,10 +27,7 @@ class MarkdownLabel: EZLabel {
             return
         }
 
-        // `text` is `nullable` because EZLabel triggers `updateDisplayedText`
-        // from the font / line-spacing setters during super init, before
-        // `setText:` has run. Coalesce so an early invocation renders nothing
-        // instead of crashing.
+        // EZLabel's style setters can call this before text is initialized.
         let source = text ?? ""
         guard !source.isEmpty else {
             textStorage?.setAttributedString(NSAttributedString())
@@ -114,11 +107,14 @@ class MarkdownLabel: EZLabel {
         guard let textStorage, range.length > 0, NSMaxRange(range) <= textStorage.length else { return nil }
         let selected = textStorage.attributedSubstring(from: range)
         let plain = NSMutableString(string: "")
-        selected.enumerateAttribute(.markdownMathSource, in: NSRange(
+        // Enumerate attachment runs separately, even when adjacent formulas have the same source.
+        selected.enumerateAttributes(in: NSRange(
             location: 0,
             length: selected.length
-        )) { source, range, _ in
-            plain.append(source as? String ?? (selected.string as NSString).substring(with: range))
+        )) { attributes, range, _ in
+            plain
+                .append(attributes[.markdownMathSource] as? String ?? (selected.string as NSString)
+                    .substring(with: range))
         }
         return plain as String
     }
