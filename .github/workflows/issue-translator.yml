@@ -11,8 +11,11 @@ on:
 jobs:
   translate:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
-      - uses: tisfeng/issues-translate-action@v2.9.2
+      - uses: tisfeng/issues-translate-action@v2.9.3
         with:
           IS_MODIFY_TITLE: false
           PRIMARY_LANGUAGE: zh-CN

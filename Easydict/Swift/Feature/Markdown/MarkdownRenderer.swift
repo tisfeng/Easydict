@@ -11,7 +11,7 @@ import Foundation
 
 // MARK: - MarkdownRenderer
 
-/// Renders AI Markdown as native attributed text, including tables and mathematical attachments.
+/// Renders Markdown as native attributed text, including tables and mathematical attachments.
 struct MarkdownRenderer {
     // MARK: Internal
 
@@ -93,6 +93,7 @@ struct MarkdownRenderer {
             case let .code(code):
                 attrs[.font] = NSFont.monospacedSystemFont(ofSize: baseFont.pointSize, weight: .regular)
                 attrs[.backgroundColor] = codeBackground
+                attrs[.markdownCodeBlock] = true
                 style.headIndent += 6
                 style.firstLineHeadIndent += 6
                 output.append(NSAttributedString(string: code, attributes: attrs))
@@ -214,6 +215,7 @@ struct MarkdownRenderer {
 }
 
 extension NSAttributedString.Key {
+    static let markdownCodeBlock = NSAttributedString.Key("EDMarkdownCodeBlock")
     static let markdownBlockquote = NSAttributedString.Key("EDMarkdownBlockquote")
     static let markdownRule = NSAttributedString.Key("EDMarkdownRule")
 }

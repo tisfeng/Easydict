@@ -56,14 +56,4 @@ enum GroqModel: String, CaseIterable {
     // Production Models
     case gpt_oss_120b = "openai/gpt-oss-120b" // 30 RPM, 1k RPD, 8k TPM, 200k TPD
     case gpt_oss_20b = "openai/gpt-oss-20b" // 30 RPM, 1k RPD, 8k TPM, 200k TPD
-
-    case llama3_1_8b_instant = "llama-3.1-8b-instant" // 30 RPM, 14.4k RPD, 6k TPM, 500k TPD
-
-    // Preview Models
-    case kimi_k2_instruct_0905 = "moonshotai/kimi-k2-instruct-0905" // 60 RPM, 1k RPD, 10k TPM, 300k TPD
-
-    case llama4_maverick_17b_128e =
-        "meta-llama/llama-4-maverick-17b-128e-instruct" // 30 RPM, 1k RPD, 6k TPM, 500k TPD
-
-    case qwen3_32b = "qwen/qwen3-32b" // 60 RPM, 1k RPD, 6k TPM, 300k TPD
 }

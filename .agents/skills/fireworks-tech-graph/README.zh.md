@@ -47,10 +47,6 @@ python3 "$SKILL_ROOT/scripts/fireworks.py" export-png diagram.svg diagram.png --
     <td width="200" align="center"><a href="https://aigocode.app/invite/yizhiyanhua"><img src="assets/sponsors/aigocode.png" alt="AIGoCode" width="160" /></a></td>
     <td>感谢 <strong>AIGoCode</strong> 对本项目的赞助！AIGoCode 是一个集成了 Claude Code、Codex 与最新 Gemini 模型的一站式平台，为你提供稳定、高效且极具性价比的 AI 编程服务。据赞助方介绍，平台提供灵活订阅与无需 VPN 的直连服务；可用性与账户规则以其自身服务条款为准。AIGoCode 为 <strong>fireworks-tech-graph</strong> 用户准备了专属福利：通过<a href="https://aigocode.app/invite/yizhiyanhua">此链接</a>注册，首次充值即可额外获得 <strong>10% 奖励额度</strong>！</td>
   </tr>
-  <tr>
-    <td width="200" align="center"><a href="https://go.apimart.ai/gh-fireworks-tech-graph"><img src="assets/sponsors/apimart.png" alt="APIMart" width="160" /></a></td>
-    <td>感谢 <strong>APIMart</strong> 赞助了本项目！APIMart 是专注 AI 图片/视频生成的低价 API 平台，GPT-Image-2 低至 <strong>$0.006/张</strong>，1 美元可出图 160+ 张。图片、视频一套异步 API 通吃，提交任务拿 ID、回调取结果，跑批万张不超时、换模型不改代码。按量付费、无月费，通过<a href="https://go.apimart.ai/gh-fireworks-tech-graph">此注册链接</a>注册即可开用。</td>
-  </tr>
 </table>
 
 有兴趣成为赞助商？请联系：<a href="mailto:ccc7574@gmail.com">ccc7574@gmail.com</a>

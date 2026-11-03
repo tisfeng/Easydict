@@ -56,6 +56,6 @@ enum CodexConfigurationMigration {
     private static let legacyKeys: [ServiceConfigurationKey] = [
         .serviceUsageStatus, .translation, .dictionary, .sentence, .supportedModels,
         .validModels, .model, .apiKey, .endpoint, .name, .enableCustomPrompt,
-        .systemPrompt, .userPrompt, .thinkTag, .temperature, .enableStreaming, .reasoningEffort,
+        .systemPrompt, .userPrompt, .thinkTag, .enableStreaming, .reasoningEffort,
     ]
 }

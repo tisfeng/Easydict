@@ -29,8 +29,6 @@ struct StreamConfigurationView: View {
         showDictionaryToggle: Bool = true,
         showUsageStatusPicker: Bool = true,
         showThinkTagContent: Bool = true,
-        showTemperatureSlider: Bool = true,
-        temperatureMaxValue: Double = 2,
         showStreamingToggle: Bool = false,
         showValidationButton: Bool = true
     ) {
@@ -47,9 +45,7 @@ struct StreamConfigurationView: View {
         self.showDictionaryToggle = showDictionaryToggle
         self.showUsageStatusPicker = showUsageStatusPicker
         self.showThinkTagSection = showThinkTagContent
-        self.showTemperatureSlider = showTemperatureSlider
         self.showStreamingToggle = showStreamingToggle
-        self.temperatureMaxValue = temperatureMaxValue
         self.showValidationButton = showValidationButton
 
         // Disable user to edit built-in supported models.
@@ -75,8 +71,6 @@ struct StreamConfigurationView: View {
     let showDictionaryToggle: Bool
     let showUsageStatusPicker: Bool
     let showThinkTagSection: Bool
-    let showTemperatureSlider: Bool
-    let temperatureMaxValue: Double
     let showStreamingToggle: Bool
     let showValidationButton: Bool
 
@@ -220,14 +214,6 @@ struct StreamConfigurationView: View {
                 ToggleCell(
                     titleKey: "service.configuration.openai.hide_think_tag_content.title",
                     key: service.thinkTagKey
-                )
-            }
-
-            if showTemperatureSlider {
-                SliderCell(
-                    titleKey: "service.configuration.openai.temperature.title",
-                    storedValueKey: service.temperatureKey,
-                    maxValue: temperatureMaxValue
                 )
             }
 

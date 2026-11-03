@@ -13,7 +13,7 @@ import AppKit
 /// pipeline otherwise so non-AI services keep their existing appearance and
 /// dark-mode switching keeps working through the inherited appearance hook.
 @objc(EDMarkdownLabel)
-final class MarkdownLabel: EZLabel {
+class MarkdownLabel: EZLabel {
     // MARK: Internal
 
     /// Toggles between Markdown rendering and plain-text rendering. Re-applies

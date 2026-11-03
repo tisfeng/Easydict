@@ -1,6 +1,6 @@
 ---
 name: review-pr
-description: 审查 GitHub PR 的准确 head/base diff、关联 issue、CI 和 review threads，交付前刷新。创建 PR 使用 submit-pr；本地审查使用 review。
+description: 审查 GitHub PR 的准确 head/base diff、关联 issue、CI 和 review threads；明确调用时回复并关闭已解决线程，交付前刷新。创建 PR 使用 submit-pr；本地审查使用 review。
 ---
 
 # GitHub PR 审查
@@ -20,14 +20,17 @@ description: 审查 GitHub PR 的准确 head/base diff、关联 issue、CI 和 r
 
 - **默认本地审查**：明确请求审查 PR 时，包含必要的 remote 添加、fetch、安全分支创建或
   fast-forward、upstream 设置和 checkout。
-- **隔离 worktree**：只在用户明确要求 worktree、并行或并发 review 时新建；本人 PR 分支
+- **隔离 worktree**：只在用户明确要求 worktree、并行或并发 review 时新建；已关联的 PR 同名分支
   已在其他 worktree 打开时可复用其干净 checkout，后续命令使用回执路径。
 - **latest-base 集成审查**：只在用户明确要求更新最新 base、解决冲突或审查集成结果时使用。
 - **不改变 Git 状态**：遵守用户的只读或不切分支限制，改用可访问的准确远程 diff、源码和评论；
   证据不足时报告限制。
 
-上述本地准备授权不包含产品修复、push、发布评论、approve、删除评论或关闭 PR。
-线程 resolve 需要单独的远程操作授权和当前远程证据。仅方案或解释不执行 Git 准备。
+明确调用本 Skill 审查 PR 时，默认包含检查全部开放线程，并对确认已修复或不再适用的线程
+回复依据后 resolve；该评论维护授权不需要逐条重复确认。用户只读、仅方案、禁止评论或
+限制远程操作时遵守其限制，只检查和报告。隐式选用本 Skill 不自行扩大发布回复的授权；
+按已有任务授权执行。其他产品修复、push、发布独立评论、approve、删除评论或关闭 PR
+仍不包含在上述授权中。仅方案或解释不执行 Git 准备。
 
 ## 核心安全边界
 
@@ -40,10 +43,11 @@ description: 审查 GitHub PR 的准确 head/base diff、关联 issue、CI 和 r
 - 不覆盖、删除、重命名、rebase、reset、强制更新、stash 或丢弃本地分支、worktree 或变更。
 - 普通审查必须对应 PR 元数据的准确 `headRefOid` 和真实 base/merge-base diff；
   不用 detached HEAD、已 fetch ref 或无关 `origin` 绕过身份检查。
-- 本人 PR 优先复用已核实身份的同名分支及等价 upstream。相同或落后的分支安全准备到远程
-  head；领先时保留额外提交，按冻结 Git 对象审查，不新建 review 分支。回执区分 checkout
-  与 review SHA；源码上下文和验证归属遵循 [证据协议](references/evidence-workflow.md)。
-  本人分支分叉或 upstream 不匹配时停止；其他作者仍按本地准备协议处理 collision fallback。
+- 本地同名分支的 upstream 指向准确 PR head 仓库与分支时，直接复用，不受 PR 作者身份
+  或 remote 别名限制。相同或落后的分支安全准备到远程 head；领先时保留额外提交，按冻结
+  Git 对象审查；分叉时停止，不另建 review 分支绕过。没有同名分支时创建并校验准确 upstream。
+  回执区分 checkout 与 review SHA；源码和验证归属遵循 [证据协议](references/evidence-workflow.md)。
+  未关联或 upstream 不匹配时按本地准备协议处理，不覆盖原关联。
 - `mergeable: CONFLICTING`、`mergeStateStatus: DIRTY` 或 base 领先不构成 latest-base 授权。
 - 除非用户明确要求，审查、准备、冲突处理和线程维护都不 push。审查后保留准备好的
   分支或 worktree，不自动删除。
@@ -56,8 +60,8 @@ description: 审查 GitHub PR 的准确 head/base diff、关联 issue、CI 和 r
 3. 将 PR 目标、关键验收条件、冻结 base/head 和完整 raw diff 交给 `review`，检查需求满足程度、
    实现方式与代码正确性。
 4. 评估每个开放 thread，包括 outdated、bot 和所有回复。已有评论只放在对应评论条目，
-   不重复列为独立 finding。需要 resolve 且已获授权时才读取
-   [线程维护](references/thread-resolution.md)。
+   不重复列为独立 finding。读取 [线程维护](references/thread-resolution.md) 判定是否已修复或
+   不再适用；在授权范围内先回复依据、确认成功后 resolve，仍有效或证据不足则保持开放。
 5. 如任务包含冲突处理、验证或本地提交，先完成这些获准操作；结论前按证据协议立即刷新 PR、
    选定问题证据、checks 和完整 threads/replies，处理所有新活动。
 6. 生成最终回复前重新读取 [PR 审查报告](references/reporting.md)；此前已读过或上下文摘要中
