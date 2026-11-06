@@ -11,6 +11,8 @@
 - [`app-path-management.md`](app-path-management.md)：应用本地文件的目录布局、所有权、迁移和
   日志导出边界。
 - [`select-text-flow.md`](select-text-flow.md)：文本选择的回退流程。
+- [`bing-dict-service.md`](bing-dict-service.md)：必应词典双语查词服务的组件边界、页面解析约定、
+  原生渲染映射与已知限制。
 
 产品与技术设计随实现更新；长期设计决策保留状态、日期、背景、取舍和重新评估条件。本目录
 不保存任务日志或公共使用说明，也不作为第二套 Agent 任务路由。
