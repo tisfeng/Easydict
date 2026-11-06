@@ -164,6 +164,8 @@ class Screenshot: NSObject {
         window.acceptsMouseMovedEvents = true
         window.backgroundColor = .clear
         window.isOpaque = false
+        // Keep the full-screen snapshot stationary when the panel appears or disappears.
+        window.animationBehavior = .none
         window.hidesOnDeactivate = false
         window.becomesKeyOnlyIfNeeded = true
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
