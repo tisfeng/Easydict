@@ -36,11 +36,6 @@ class BingDictService: QueryService, @unchecked Sendable {
         .none
     }
 
-    /// Reuse the bundled Bing logo, which is also the official dict site icon.
-    override func iconName() -> String {
-        "Bing"
-    }
-
     /// The dict page only carries EN-CN content.
     override func supportedQueryType() -> EZQueryTextType {
         [.dictionary]

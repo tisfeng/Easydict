@@ -124,8 +124,8 @@ flowchart LR
 
 ## 图标
 
-`BingDictService.iconName()` 返回 `Bing`，复用既有 `Bing.imageset` 资源。该图标与必应词典
-官网图标一致，也避免新增二进制资源。
+服务使用 `BingDict.imageset` 资源（与 `Bing.imageset` 同一图标文件），沿用「资源名 = 服务类型」
+的既有约定，结果卡片与设置页服务列表都按服务类型取图。图标与必应词典官网一致。
 
 ## 取舍
 
