@@ -6,6 +6,7 @@
 //
 
 import CoreFoundation
+import CryptoKit
 import Foundation
 
 // MARK: - CodexManagedRuntime
@@ -42,7 +43,14 @@ struct CodexManagedRuntime {
     let catalogURL: URL
 
     /// Rejects invalid settings before resolving any installed component or identity.
-    static func validateSelection(model: String, effort: String?) throws {
+    static func validateSelection(model: String, effort: String?, customModel: Bool = false) throws {
+        if customModel {
+            guard CodexRuntimeRelease.current == .modern,
+                  CodexModelCatalog.isValidModelID(model)
+            else { throw CodexManagedError.invalidModel }
+            try CodexReasoningEffort.validateCustomOverride(effort)
+            return
+        }
         let descriptor = try CodexRuntimeDescriptor.load()
         try CodexModelCatalog.load(at: descriptor.catalogURL).validate(model: model, effort: effort)
     }
@@ -87,6 +95,30 @@ struct CodexManagedRuntime {
         return quoted
     }
 
+    /// Catalogs are loaded at process startup. A custom request therefore receives
+    /// its own runtime and App Server instead of mutating the shared built-in session.
+    func forCustomModel(_ model: String, effort: String? = nil) throws -> Self {
+        guard release == .modern else { throw CodexManagedError.invalidModel }
+        let data = try CodexModelCatalog.customModelData(model: model, effort: effort)
+        let digest = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+        let directory = codexHome.appendingPathComponent("runtimes/\(release.rawValue)/translation-catalogs")
+        guard directory.resolvingSymlinksInPath() == directory.standardizedFileURL else {
+            throw CodexManagedError.externalConfiguration
+        }
+        try FileManager.default.createDirectory(
+            at: directory, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700]
+        )
+        let url = directory.appendingPathComponent("\(digest).json")
+        guard url.resolvingSymlinksInPath() == url.standardizedFileURL else {
+            throw CodexManagedError.externalConfiguration
+        }
+        if (try? Data(contentsOf: url)) != data { try data.write(to: url, options: .atomic) }
+        return Self(
+            executable: executable, home: home, codexHome: codexHome,
+            workingDirectory: workingDirectory, release: release, catalogURL: url
+        )
+    }
+
     func command(
         _ arguments: [String], process: CodexManagedProcess, input: Data = Data(),
         timeout: TimeInterval = 30, stderrReceived: (@Sendable (Data) -> ())? = nil
@@ -102,7 +134,7 @@ struct CodexManagedRuntime {
         )
     }
 
-    func translationArguments(model: String, effort: String?) throws -> [String] {
+    func translationArguments(model: String, effort: String?, fastMode: Bool = false) throws -> [String] {
         let model = model.trimmingCharacters(in: .whitespacesAndNewlines)
         let catalog = try CodexModelCatalog.load(at: catalogURL)
         try catalog.validate(model: model, effort: effort)
@@ -123,6 +155,7 @@ struct CodexManagedRuntime {
             model,
         ]
         arguments += translationConfigurationArguments(includeDeveloperInstructions: true)
+        arguments += ["-c", "service_tier=\(Self.quoted(fastMode ? "priority" : "default"))"]
         if let effort { arguments += ["-c", "model_reasoning_effort=\(Self.quoted(effort))"] }
         // Authentication overrides are appended by command(), before this stdin marker.
         return arguments

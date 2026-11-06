@@ -50,7 +50,7 @@ private struct ServiceItemView: View {
 
             Spacer(minLength: 4)
 
-            ServiceRequirementBadge(requirement: item.requirement)
+            ServiceRequirementBadge(requirement: item.requirement, usesChatGPTSignIn: item.usesChatGPTSignIn)
 
             // Magnet can trigger a SwiftUI List(selection:) edge case where the
             // first click on an unselected row selects the row before Toggle sees it.
@@ -322,15 +322,19 @@ private struct AddServiceSheet: View {
     }
 
     private var requirementGroups: [ServiceGroup] {
-        ServiceAPIKeyRequirement.addSheetOrder.compactMap { requirement in
+        let chatGPTItems = viewModel.availableServiceItems.filter(\.usesChatGPTSignIn)
+        let groups = ServiceAPIKeyRequirement.addSheetOrder.compactMap { requirement -> ServiceGroup? in
             let items = viewModel.availableServiceItems.filter {
-                $0.requirement == requirement
+                $0.requirement == requirement && !$0.usesChatGPTSignIn
             }
             guard !items.isEmpty else {
                 return nil
             }
             return ServiceGroup(title: ServiceRequirementBadge.title(for: requirement), items: items)
         }
+        return (chatGPTItems.isEmpty ? [] : [
+            ServiceGroup(title: String(localized: "service.codex_cli.managed.badge"), items: chatGPTItems),
+        ]) + groups
     }
 
     private func toggleSelection(_ item: ServiceListItem) {
@@ -412,9 +416,11 @@ private struct ServiceRequirementBadge: View {
     // MARK: Internal
 
     let requirement: ServiceAPIKeyRequirement
+    var usesChatGPTSignIn = false
 
     var body: some View {
-        Text(verbatim: Self.title(for: requirement))
+        Text(verbatim: usesChatGPTSignIn ? String(localized: "service.codex_cli.managed.badge")
+            : Self.title(for: requirement))
             .font(.caption2.weight(.medium))
             .foregroundStyle(foregroundColor)
             .lineLimit(1)
@@ -484,4 +490,12 @@ extension ServiceAPIKeyRequirement {
         .agentCLI,
         .userProvided,
     ]
+}
+
+extension ServiceListItem {
+    fileprivate var usesChatGPTSignIn: Bool {
+        guard type == .codexCLI,
+              let metadata = QueryServiceFactory.shared.metadata(withTypeId: id) else { return false }
+        return Defaults[CodexAccessMode.key(uuid: metadata.uuid)] == .managed
+    }
 }
