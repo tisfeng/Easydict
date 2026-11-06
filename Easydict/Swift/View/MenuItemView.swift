@@ -38,6 +38,7 @@ struct MenuItemView: View {
             Divider()
 
             screenshotItem.keyboardShortcut(.snipTranslate)
+            FormulaScreenshotModeToggle()
             silentScreenshotOCRItem.keyboardShortcut(.silentScreenshotOCR)
 
             if showOCRMenuItems {
@@ -303,6 +304,31 @@ final class MenuItemStore: ObservableObject {
     // MARK: Internal
 
     @Published var canCheckForUpdates = false
+}
+
+// MARK: - Formula Screenshot Mode
+
+struct FormulaScreenshotModeToggle: View {
+    @Default(.formulaScreenshotMode) private var enabled
+
+    var body: some View {
+        Toggle("setting.general.screenshot.formula_mode", isOn: $enabled)
+    }
+}
+
+/// Hosts the same preference control in the AppKit translation card title bar.
+@objc(EZFormulaScreenshotModeControl)
+final class FormulaScreenshotModeControl: NSObject {
+    @MainActor @objc static func makeView() -> NSView {
+        NSHostingView(
+            rootView: FormulaScreenshotModeToggle()
+                .toggleStyle(.switch)
+                .controlSize(.small)
+                .font(.system(size: 12))
+                .fixedSize()
+                .environment(\.locale, Locale(identifier: I18nHelper.shared.localizeCode))
+        )
+    }
 }
 
 #Preview {

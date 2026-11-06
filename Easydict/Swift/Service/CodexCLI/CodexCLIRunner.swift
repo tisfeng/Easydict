@@ -436,7 +436,7 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// - CLI `--disable`: https://developers.openai.com/codex/cli/reference
     /// - Feature flags: https://developers.openai.com/codex/config-basic#feature-flags
     /// - Feature list: https://developers.openai.com/codex/cli/reference#codex-features
-    private static let disabledToolFeatures = [
+    static let disabledToolFeatures = [
         "shell_tool",
         "shell_snapshot",
         "browser_use",
@@ -599,7 +599,7 @@ final class CodexCLIRunner: @unchecked Sendable {
     /// on each call so that uninstall or upgrade is detected automatically.
     ///
     /// - Throws: `CodexCLIError.notInstalled` if no binary is found.
-    private static func detectCodexBinary() throws -> String {
+    static func detectCodexBinary() throws -> String {
         cacheLock.lock()
         defer { cacheLock.unlock() }
 

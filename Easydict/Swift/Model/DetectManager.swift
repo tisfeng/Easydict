@@ -58,12 +58,19 @@ public final class DetectManager: NSObject {
     /// Performs OCR on the query model's image and then detects the language of the OCR result.
     /// - Parameter completion: Callback with the updated query model and optional error.
     public func ocrAndDetectText(completion: @escaping (QueryModel, Error?) -> ()) {
+        let requestModel = queryModel
+        let requestImage = requestModel.ocrImage
+        let requestAction = requestModel.actionType
+        let requestInput = requestModel.inputText
         ocr { [weak self] ocrResult, error in
             guard let self else {
                 completion(QueryModel(), error)
                 return
             }
 
+            // A superseded OCR request must not replace a newer screenshot preview.
+            guard queryModel === requestModel, requestModel.ocrImage === requestImage,
+                  requestModel.actionType == requestAction, requestModel.inputText == requestInput else { return }
             guard let ocrResult else {
                 completion(queryModel, error)
                 return

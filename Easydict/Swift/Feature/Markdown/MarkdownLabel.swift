@@ -25,6 +25,13 @@ class MarkdownLabel: EZLabel {
         }
     }
 
+    @objc var rendersMath = false {
+        didSet {
+            guard oldValue != rendersMath else { return }
+            updateDisplayedText()
+        }
+    }
+
     override func updateDisplayedText() {
         guard markdownEnabled else {
             super.updateDisplayedText()
@@ -45,7 +52,8 @@ class MarkdownLabel: EZLabel {
             baseFont: font ?? .systemFont(ofSize: 14),
             foregroundColor: resolvedForegroundColor,
             lineSpacing: lineSpacing,
-            paragraphSpacing: paragraphSpacing
+            paragraphSpacing: paragraphSpacing,
+            rendersMath: rendersMath
         )
         let attributed = renderer.render(source)
         textStorage?.setAttributedString(attributed)

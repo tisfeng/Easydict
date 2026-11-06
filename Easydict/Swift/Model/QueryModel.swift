@@ -69,7 +69,12 @@ open class QueryModel: NSObject, NSCopying {
     var specifiedTextLanguageDict: NSMutableDictionary = .init()
 
     /// OCR image for the current query.
-    var ocrImage: NSImage?
+    var ocrImage: NSImage? {
+        didSet { screenshotSourceMarkdown = nil }
+    }
+
+    /// Temporary transcription for the screenshot preview, separate from editable query text.
+    var screenshotSourceMarkdown: String?
 
     /// Audio URL generated for the current query.
     var audioURL: String?
@@ -94,6 +99,7 @@ open class QueryModel: NSObject, NSCopying {
         get { inputTextStorage }
         set {
             if newValue != inputTextStorage {
+                screenshotSourceMarkdown = nil
                 audioURL = nil
                 needDetectLanguage = true
                 queryText = newValue.handlingInputText()
@@ -112,6 +118,7 @@ open class QueryModel: NSObject, NSCopying {
     var actionType: ActionType = .none {
         didSet {
             let isOCRAction = actionType == .ocrQuery
+                || actionType == .formulaScreenshot
                 || actionType == .screenshotOCR
                 || actionType == .pasteboardOCR
                 || actionType == .none

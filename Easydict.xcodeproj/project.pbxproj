@@ -485,6 +485,7 @@
 		1CC83D91B3954BE7894CC2C8 /* MDictReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76B47A0150434485FCBBAD /* MDictReaderTests.swift */; };
 		24832952EE17407C852B2258 /* String+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24832951EE17407C852B2258 /* String+Convenience.swift */; };
 		24D3321DBBE84C798A32C595 /* ClaudeCodeServiceConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F42ADC9AAB3494D9E85B5D8 /* ClaudeCodeServiceConfigurationView.swift */; };
+		44E4918CB018468980EF16E0 /* SwiftMath in Frameworks */ = {isa = PBXBuildFile; productRef = ACD8C471534B4196BF8635AF /* SwiftMath */; };
 		2721E4D02AFE920700A059AC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2721E4CF2AFE920700A059AC /* Alamofire */; };
 		2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746AEC02AF95138005FE0A1 /* CaiyunService.swift */; };
 		276742082B3DC230002A2C75 /* PrivacyTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276742042B3DC230002A2C75 /* PrivacyTab.swift */; };
@@ -1465,6 +1466,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0AC8A84F2B6DFDD4006DA5CC /* SettingsAccess in Frameworks */,
+				44E4918CB018468980EF16E0 /* SwiftMath in Frameworks */,
 				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
 				038030952B4106800009230C /* CocoaLumberjack in Frameworks */,
 				03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */,
@@ -4036,6 +4038,7 @@
 			);
 			name = Easydict;
 			packageProductDependencies = (
+				ACD8C471534B4196BF8635AF /* SwiftMath */,
 				2721E4CF2AFE920700A059AC /* Alamofire */,
 				03FD68BA2B1DC59600FD388E /* CryptoSwift */,
 				03022F1B2B35DEBA00B63209 /* Hue */,
@@ -4101,6 +4104,7 @@
 			);
 			mainGroup = C99EEB0F2385796700FEE666;
 			packageReferences = (
+				908D6E8123CA47A5904EF413 /* XCRemoteSwiftPackageReference "SwiftMath" */,
 				2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */,
 				03FD68B92B1DC59600FD388E /* XCRemoteSwiftPackageReference "CryptoSwift" */,
 				03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */,
@@ -5476,6 +5480,14 @@
 				minimumVersion = 8.2.0;
 			};
 		};
+		908D6E8123CA47A5904EF413 /* XCRemoteSwiftPackageReference "SwiftMath" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mgriebling/SwiftMath.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.7.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -5593,6 +5605,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA3B81FA2B52555C004C0E8B /* XCRemoteSwiftPackageReference "Defaults" */;
 			productName = Defaults;
+		};
+		ACD8C471534B4196BF8635AF /* SwiftMath */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 908D6E8123CA47A5904EF413 /* XCRemoteSwiftPackageReference "SwiftMath" */;
+			productName = SwiftMath;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

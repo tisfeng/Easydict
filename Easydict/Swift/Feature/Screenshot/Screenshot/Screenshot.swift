@@ -7,6 +7,7 @@
 //
 
 import AppKit
+import Defaults
 import Foundation
 import SwiftUI
 
@@ -78,6 +79,10 @@ class Screenshot: NSObject {
         }
 
         previousActiveApp = nil
+
+        if Defaults[.localAutoSave], let image {
+            image.write(to: AppPathManager.current.snipImageFileURL, using: .png)
+        }
 
         // Call the original completion handler
         captureCompletionHandler?(image)

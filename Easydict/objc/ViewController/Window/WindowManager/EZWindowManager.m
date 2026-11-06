@@ -349,7 +349,7 @@ static EZWindowManager *_instance;
     self.selectedText = queryText;
     self.actionType = actionType;
 
-    MMLogInfo(@"show floating windowType: %ld, queryText: %@, autoQuery: %d, actionType: %@, atPoint: %@", windowType, queryText.truncated, autoQuery, actionType, @(point));
+    MMLogInfo(@"show floating windowType: %ld, autoQuery: %d, actionType: %@, atPoint: %@", windowType, autoQuery, actionType, @(point));
 
     // Update isTextEditable value when using invoke query, such as open URL Scheme by PopClip.
     if (actionType == EZActionTypeInvokeQuery) {
@@ -859,8 +859,10 @@ static EZWindowManager *_instance;
     [self closeFloatingWindowIfNotPinnedOrMain];
 
     [self captureWithRestorePreviousApp:NO completion:^(NSImage *_Nullable image) {
-        BOOL autoQuery = [MyConfiguration.shared autoQueryOCRText];
-        [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:EZActionTypeOCRQuery];
+        BOOL formulaMode = MyConfiguration.shared.formulaScreenshotMode;
+        BOOL autoQuery = MyConfiguration.shared.autoQueryOCRText;
+        EZActionType actionType = formulaMode ? EZActionTypeFormulaScreenshot : EZActionTypeOCRQuery;
+        [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:actionType];
     }];
 }
 
@@ -947,7 +949,7 @@ static EZWindowManager *_instance;
             return;
         }
 
-        MMLogInfo(@"Screenshot captured: %@", image);
+        MMLogInfo(@"Screenshot captured");
 
         if (imageHandler) {
             imageHandler(image);

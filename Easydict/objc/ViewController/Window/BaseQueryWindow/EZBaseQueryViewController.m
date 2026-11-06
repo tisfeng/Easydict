@@ -65,6 +65,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 @property (nonatomic, strong, readwrite) EZQueryModel *queryModel;
 
 @property (nonatomic, strong) EZQueryService *firstService;
+@property (nonatomic, assign) BOOL showingFormulaScreenshot;
 
 @property (nonatomic, strong) EZQueryService *defaultTTSService;
 @property (nonatomic, strong) EZQueryService *youdaoService;
@@ -307,6 +308,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)handleServiceUpdate:(NSNotification *)notification {
+    // Formula screenshots use a separate service until the next query.
+    if (self.showingFormulaScreenshot) {
+        return;
+    }
     NSDictionary *userInfo = notification.userInfo;
     EZWindowType windowType = [userInfo[UserInfoKey.windowType] integerValue];
     NSString *serviceType = userInfo[UserInfoKey.serviceType];
@@ -485,8 +490,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
+    [self restoreNormalServices];
     self.inputText = text;
-    self.queryModel.actionType = actionType;
+    self.queryModel.actionType = actionType == EZActionTypeFormulaScreenshot ? EZActionTypeInputQuery : actionType;
     self.queryView.isTypingChinese = NO;
 
     if ([self handleEasydictScheme:text]) {
@@ -543,15 +549,35 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     self.queryModel.actionType = actionType;
     self.queryModel.ocrImage = image;
 
+    if (actionType == EZActionTypeFormulaScreenshot) {
+        [self.queryModel stopAllService];
+        [self.queryView startLoadingAnimation:NO];
+        self.inputText = @"";
+
+        EZQueryService *service = [EZCodexCLIService makeFormulaScreenshotService];
+        [self resetService:service];
+        self.showingFormulaScreenshot = YES;
+        self.services = @[ service ];
+        self.serviceTypeIds = @[ service.serviceTypeWithUniqueIdentifier ];
+        self.firstService = service;
+        [self.tableView reloadData];
+        [self queryWithModel:self.queryModel service:service];
+        return;
+    }
+
+    [self restoreNormalServices];
     self.queryView.isTypingChinese = NO;
     [self.queryView startLoadingAnimation:YES];
 
+    BOOL saveOCRLocally = MyConfiguration.shared.localAutoSave;
     mm_weakify(self);
     [self.detectManager ocrAndDetectTextWithCompletion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
         // !!!: inputText should be used here, not queryText, queryText may be modified, such as easydict://query?text=xxx
         NSString *inputText = queryModel.inputText;
-        MMLogInfo(@"ocr result: %@", inputText);
+        if (saveOCRLocally && MyConfiguration.shared.localAutoSave && inputText.length && !error) {
+            MMLogInfo(@"ocr result: %@", inputText);
+        }
 
         NSDictionary *dict = @{
             @"detectedLanguage" : queryModel.detectedLanguage,
@@ -639,8 +665,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (self.queryView.window == self.baseQueryWindow) {
         // Delay to make textView the first responder.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
-            if (self.config.selectQueryTextWhenWindowActivate) {
+            NSView *documentView = self.queryView.scrollView.documentView;
+            [self.baseQueryWindow makeFirstResponder:documentView];
+            if (documentView == self.queryView.textView && self.config.selectQueryTextWhenWindowActivate) {
                 self.queryView.textView.selectedRange = NSMakeRange(0, self.inputText.length);
             }
         });
@@ -653,8 +680,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)clearInput {
     // Clear query text, detect language and clear button right now;
-    self.inputText = @"";
     self.queryModel.ocrImage = nil;
+    self.inputText = @"";
     [self.queryView setAlertTextHidden:YES];
 
     [self.audioPlayer stop];
@@ -673,7 +700,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)copyQueryText {
-    [self.inputText ns_copyAndShowToast:YES];
+    NSString *source = self.queryModel.screenshotSourceMarkdown ?: self.inputText;
+    [source ns_copyAndShowToast:YES];
 }
 
 - (void)copyFirstTranslatedText {
@@ -827,7 +855,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)startQueryWithType:(EZActionType)actionType {
     NSImage *ocrImage = self.queryModel.ocrImage;
 
-    if (ocrImage && (actionType == EZActionTypeOCRQuery || actionType == EZActionTypePasteboardOCR)) {
+    if (ocrImage && (actionType == EZActionTypeOCRQuery || actionType == EZActionTypePasteboardOCR
+                     || actionType == EZActionTypeFormulaScreenshot)) {
         BOOL autoQuery = self.config.autoCopyOCRText || self.config.autoQueryPastedText || self.queryModel.autoQuery;
         [self startOCRImage:ocrImage actionType:actionType autoQuery:autoQuery];
     } else {
@@ -842,7 +871,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
-    MMLogInfo(@"query text: %@", self.queryText.truncated);
+    [self restoreNormalServices];
 
     // !!!: Reset all result before new query.
     [self resetAllResults];
@@ -857,7 +886,17 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel {
+    if (self.showingFormulaScreenshot || queryModel.queryText.length == 0) {
+        return;
+    }
     MMLogInfo(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
+
+    if (MyConfiguration.shared.localAutoSave && queryModel.queryText.length) {
+        [QueryRecordManager.shared addRecordWithQueryText:queryModel.queryText
+                                             fromLanguage:queryModel.queryFromLanguage
+                                               toLanguage:queryModel.queryTargetLanguage
+                                                       to:RecordTypeHistory];
+    }
 
     self.firstService = nil;
     for (EZQueryService *service in self.services) {
@@ -876,12 +915,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     [[EZLocalStorage shared] increaseQueryCount:self.inputText];
-    
-    // Add to history
-    [QueryRecordManager.shared addRecordWithQueryText:queryModel.queryText
-                                         fromLanguage:queryModel.queryFromLanguage
-                                           toLanguage:queryModel.queryTargetLanguage
-                                                   to:RecordTypeHistory];
 
     // Auto play query text if it is an English word.
     [self autoPlayEnglishWordAudio];
@@ -889,11 +922,21 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
     NSString *queryText = [queryModel.queryText copy];
+    NSImage *screenshot = queryModel.actionType == EZActionTypeFormulaScreenshot ? queryModel.ocrImage : nil;
+    BOOL saveLocally = MyConfiguration.shared.localAutoSave;
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
         if (error) {
-            MMLogError(@"service: %@, query error: %@", service.serviceType, error);
+            MMLogError(@"service: %@, query error code: %ld", service.serviceType, (long)error.code);
         }
         result.error = [EZQueryError queryErrorFrom:error];
+
+        if (result.screenshotSourceMarkdown.length && screenshot
+            && queryModel == self.queryModel && queryModel.ocrImage == screenshot
+            && queryModel.inputText.length == 0
+            && ![queryModel.screenshotSourceMarkdown isEqualToString:result.screenshotSourceMarkdown]) {
+            queryModel.screenshotSourceMarkdown = result.screenshotSourceMarkdown;
+            [self updateQueryViewModelAndDetectedLanguage:queryModel];
+        }
 
         // Auto convert to traditional Chinese if needed.
         if (service.autoConvertTraditionalChinese &&
@@ -909,15 +952,22 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         //        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
         [self updateCellWithResult:result reloadData:YES];
 
-        // Backfill history record with the first service's translated text.
         if (service == self.firstService) {
             BOOL shouldRecord = !service.isStream || result.isStreamFinished;
-            if (shouldRecord && result.translatedText.length > 0) {
-                [QueryRecordManager.shared updateTranslatedResult:result.translatedText
-                                                      forQueryText:queryText
-                                                                in:RecordTypeHistory];
+            if (saveLocally && MyConfiguration.shared.localAutoSave && shouldRecord && result.error == nil
+                && result.translatedText.length) {
+                if (screenshot && queryModel.ocrImage == screenshot && result.screenshotSourceMarkdown.length) {
+                    [QueryRecordManager.shared addRecordWithQueryText:result.screenshotSourceMarkdown
+                                                         fromLanguage:queryModel.queryFromLanguage
+                                                           toLanguage:queryModel.queryTargetLanguage
+                                                     translatedResult:result.translatedText
+                                                                   to:RecordTypeHistory];
+                } else if (queryText.length) {
+                    [QueryRecordManager.shared updateTranslatedResult:result.translatedText
+                                                          forQueryText:queryText
+                                                                    in:RecordTypeHistory];
+                }
             }
-
             // Append the query to the vocabulary notebook when it has content.
             // HTML-only dictionary results (Apple Dictionary, MDict) carry neither a
             // word result nor translated text, so htmlString must count as content too.
@@ -947,7 +997,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         MMLogWarn(@"service disabled: %@", service.serviceTypeWithUniqueIdentifier);
         return;
     }
-    if (queryModel.queryText.length == 0) {
+    BOOL translatesScreenshot = queryModel.actionType == EZActionTypeFormulaScreenshot && queryModel.ocrImage
+        && self.showingFormulaScreenshot && service == self.firstService;
+    if (self.showingFormulaScreenshot && !translatesScreenshot) {
+        return;
+    }
+    if (queryModel.queryText.length == 0 && !translatesScreenshot) {
         MMLogWarn(@"queryText is empty");
         return;
     }
@@ -1317,10 +1372,23 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 #pragma mark - Update Data.
 
+- (void)restoreNormalServices {
+    if (!self.showingFormulaScreenshot) {
+        return;
+    }
+    [self.queryModel stopAllService];
+    self.showingFormulaScreenshot = NO;
+    self.firstService = nil;
+    [self setupServices:[self latestServices]];
+    [self.tableView reloadData];
+}
+
 - (void)resetQueryAndResults {
+    [self restoreNormalServices];
     [self resetAllResults];
 
-    if (self.inputText.length) {
+    if (self.inputText.length || self.queryModel.ocrImage) {
+        self.queryModel.ocrImage = nil;
         self.inputText = @"";
     }
 }
@@ -1406,7 +1474,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {
-    self.queryView.clearButtonHidden = (queryModel.inputText.length == 0) && ([self allShowingResults].count == 0);
+    self.queryView.clearButtonHidden = queryModel.inputText.length == 0
+        && queryModel.screenshotSourceMarkdown.length == 0 && [self allShowingResults].count == 0;
 
     self.queryView.queryModel = queryModel;
     [self updateQueryCell];
@@ -1635,7 +1704,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             [service.audioPlayer stop];
         }
 
-        service.enabledQuery = isShowing;
+        if (!self.showingFormulaScreenshot) {
+            service.enabledQuery = isShowing;
+        }
         [self handleArrowToggleForResult:newResult service:service isShowing:isShowing];
     }];
 }
@@ -1988,7 +2059,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
-    MMLogInfo(@"Auto play English word audio: %@", self.queryText);
+    MMLogInfo(@"Auto play English word audio");
     [self togglePlayQueryText:YES];
 }
 

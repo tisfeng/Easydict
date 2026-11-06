@@ -158,7 +158,7 @@ public class AppleService: QueryService {
 
     private let ocrEnginee = AppleOCREngine()
     private let languageMapper = AppleLanguageMapper.shared
-    private let languageDetector = AppleLanguageDetector(enableDebugLog: true)
+    private let languageDetector = AppleLanguageDetector()
     private let speechService = AppleSpeechService()
 
     private var translationService: Any? // Use Any to avoid compile-time type checking

@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 
 // MARK: - CodexCLILogger
@@ -15,6 +16,7 @@ final class CodexCLILogger: @unchecked Sendable {
     // MARK: Lifecycle
 
     init(command: String, prompt: String) {
+        self.saveLocally = Defaults[.localAutoSave]
         self.command = command
         self.prompt = prompt
 
@@ -67,6 +69,7 @@ final class CodexCLILogger: @unchecked Sendable {
     /// Maximum number of log files to keep. Oldest files are deleted when exceeded.
     private static let maxLogFiles = 50
 
+    private let saveLocally: Bool
     private let command: String
     private let prompt: String
     private let timestamp: String
@@ -82,7 +85,8 @@ final class CodexCLILogger: @unchecked Sendable {
 
     /// Deletes the oldest log files in the log directory when the count exceeds `maxLogFiles`.
     private func pruneOldLogs() {
-        guard let logDir = fileURL?.deletingLastPathComponent() else { return }
+        guard saveLocally, Defaults[.localAutoSave],
+              let logDir = fileURL?.deletingLastPathComponent() else { return }
         queue.async {
             let fm = FileManager.default
             guard let urls = try? fm.contentsOfDirectory(
@@ -108,8 +112,9 @@ final class CodexCLILogger: @unchecked Sendable {
     }
 
     private func write(_ text: String) {
-        guard let url = fileURL else { return }
+        guard saveLocally, Defaults[.localAutoSave], let url = fileURL else { return }
         queue.async {
+            guard Defaults[.localAutoSave] else { return }
             if let data = text.data(using: .utf8) {
                 if FileManager.default.fileExists(atPath: url.path) {
                     if let handle = try? FileHandle(forWritingTo: url) {

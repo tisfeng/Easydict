@@ -73,6 +73,10 @@ struct GeneralTab: View {
             Section {
                 Toggle("auto_query_selected_text", isOn: $autoQuerySelectedText)
                 Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
+                FormulaScreenshotModeToggle()
+                Text("setting.general.screenshot.formula_mode.description")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                 Toggle("auto_query_pasted_text", isOn: $autoQueryPastedText)
                 Toggle("auto_query_when_text_changed", isOn: $autoQueryWhenTextChanged)
                 Toggle("setting.general.voice.auto_play_word_audio", isOn: $autoPlayAudio)

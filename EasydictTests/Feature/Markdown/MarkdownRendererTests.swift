@@ -240,6 +240,34 @@ struct MarkdownRendererTests {
         #expect(storage.string == source)
     }
 
+    @MainActor
+    @Test("Formula results render inline and centered display math only when enabled")
+    func mathRenderingIsOptIn() throws {
+        let label = TranslationResultLabel(frame: .zero)
+        let source = #"""
+        Phase \(p_7 = 53\)
+        \[
+        R_8 = \frac{x_j^2 + 1}{\sqrt{n + 3}} \qquad (8)
+        \]
+        """#
+        label.text = source
+        let storage = try #require(label.textStorage)
+        #expect(storage.string == source)
+
+        label.rendersMath = true
+
+        var alignments: [NSTextAlignment] = []
+        storage.enumerateAttribute(.attachment, in: NSRange(location: 0, length: storage.length)) { value, range, _ in
+            guard value is NSTextAttachment,
+                  let style = storage.attribute(.paragraphStyle, at: range.location, effectiveRange: nil)
+                  as? NSParagraphStyle
+            else { return }
+            alignments.append(style.alignment)
+        }
+        #expect(alignments == [.left, .center])
+        #expect(label.text == source)
+    }
+
     // MARK: Private
 
     private let baseSize: CGFloat = 14

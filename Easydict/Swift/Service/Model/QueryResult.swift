@@ -181,6 +181,7 @@ public class QueryResult: NSObject {
     var isStreamFinished: Bool = true
 
     var queryText: String = ""
+    var screenshotSourceMarkdown: String?
     var from: Language = .auto
     var to: Language = .auto
 
@@ -242,7 +243,7 @@ public class QueryResult: NSObject {
     /// override (set via the inline toggle button) wins; otherwise the global
     /// `Defaults[.enableMarkdownRendering]` value is used.
     var isMarkdownRenderingEnabled: Bool {
-        markdownRenderingOverride ?? Defaults[.enableMarkdownRendering]
+        markdownRenderingOverride ?? (queryModel.actionType == .formulaScreenshot || Defaults[.enableMarkdownRendering])
     }
 
     var hasShowingResult: Bool {
@@ -293,6 +294,7 @@ public class QueryResult: NSObject {
     func reset() {
         queryModel = QueryModel()
         translatedResults = nil
+        screenshotSourceMarkdown = nil
         wordResult = nil
         error = nil
         validationMessage = nil
