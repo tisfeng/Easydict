@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A6F40A102F00000100000001 /* ScreenshotKeyboardEventTap.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6F40A102F00000100000002 /* ScreenshotKeyboardEventTap.swift */; };
 		A73120261027000000000001 /* TranslationResultLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73120261027000000000002 /* TranslationResultLabel.swift */; };
 		A73120261023000000000001 /* LocalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73120261023000000000002 /* LocalizationTests.swift */; };
 		02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEDC042026043000000002 /* MarkdownRenderer.swift */; };
@@ -688,6 +689,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A6F40A102F00000100000002 /* ScreenshotKeyboardEventTap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotKeyboardEventTap.swift; sourceTree = "<group>"; };
 		A73120261027000000000002 /* TranslationResultLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationResultLabel.swift; sourceTree = "<group>"; };
 		A73120261023000000000002 /* LocalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationTests.swift; sourceTree = "<group>"; };
 		003F53EF2A8C452998524A99 /* UtilityFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityFunctionsTests.swift; sourceTree = "<group>"; };
@@ -2032,6 +2034,7 @@
 			children = (
 				03D9D6FC2D8C0DA6009E0CEC /* Screenshot.swift */,
 				03D9D6FA2D8C0D38009E0CEC /* Screenshot+EventMonitor.swift */,
+				A6F40A102F00000100000002 /* ScreenshotKeyboardEventTap.swift */,
 				03CF2F742D87CF68006DC7E1 /* Screenshot+UserDefaults.swift */,
 				03D9D6F62D8AB0C8009E0CEC /* ScreenshotState.swift */,
 				03675A2B2D7FE598004E780A /* ScreenshotOverlayView.swift */,
@@ -4716,6 +4719,7 @@
 				03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */,
 				0364636A2CB62B8900D0D6CC /* AppleService.swift in Sources */,
 				03D9D6FB2D8C0D38009E0CEC /* Screenshot+EventMonitor.swift in Sources */,
+				A6F40A102F00000100000001 /* ScreenshotKeyboardEventTap.swift in Sources */,
 				B4D8B2EE2F9E1D8D0088A304 /* EZWindowPatch.m in Sources */,
 				0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */,
 				033821292F0EB9560087A361 /* AppBundleIDs.swift in Sources */,
