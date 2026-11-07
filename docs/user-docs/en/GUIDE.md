@@ -107,6 +107,19 @@ System OCR also extracts QR code payloads. When an image contains both text and 
 For better results, capture a smaller area, improve text/background contrast, and select the correct
 recognition language in settings.
 
+### STEM formula mode
+
+Enable **STEM formula mode** at the top of the translation window or in Settings → General, then
+capture an area with the screenshot translation shortcut (default `Option + S`). The mode sends
+the screenshot to Codex for processing with a vision-capable model. Install the local Codex CLI
+and sign in with ChatGPT first. Both the source and translation render Markdown and LaTeX. The
+copy buttons provide the underlying LaTeX source. Turn off the mode to use ordinary OCR and the
+enabled translation services on your next capture.
+
+Click the model name on the Codex result card to choose a model and one of its supported reasoning
+efforts. In formula mode, the list is limited to models that can accept images, and the selection
+applies to the next capture.
+
 ## Text to speech
 
 Easydict supports Apple, Baidu, Bing, Google, and Youdao TTS, with Youdao selected by default. TTS
@@ -172,7 +185,7 @@ its behavior, so please report it.
 
 ## History and results
 
-- Query history keeps recent items for re-querying, favoriting, exporting, or clearing.
+- **Save locally** in Settings → Privacy enables query history, saving the latest screenshot, and logging recognized OCR text. It defaults to off. Turning it off stops new saves and retains existing files and history.
 - Favorites keep entries you want to revisit.
 - Markdown returned by AI services is rendered as rich text; copied content remains available as text.
 - Service cards can be retried, copied, or collapsed depending on the current window and state.

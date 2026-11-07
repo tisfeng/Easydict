@@ -16,7 +16,7 @@ import SwiftUI
 /// The `default` case omits the CLI override and keeps the user's config.
 /// Codex does not support `none` for model reasoning effort, so it is not
 /// exposed here.
-enum CodexReasoningEffort: String, CaseIterable, Defaults.Serializable {
+enum CodexReasoningEffort: String, CaseIterable, Codable, Defaults.Serializable {
     /// Sentinel meaning "use whatever is in ~/.codex/config.toml";
     /// the runner skips the flag.
     case `default`
@@ -40,10 +40,10 @@ enum CodexReasoningEffort: String, CaseIterable, Defaults.Serializable {
         self == .default ? nil : rawValue
     }
 
-    static func validateLocalOverride(_ value: String?) throws {
+    static func validateLocalOverride(_ value: String?, supportedEfforts: [Self] = localOptions) throws {
         guard let value, !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         guard let effort = Self(rawValue: value.trimmingCharacters(in: .whitespacesAndNewlines)),
-              localOptions.contains(effort), effort != .default
+              supportedEfforts.contains(effort), effort != .default
         else { throw CodexCLIError.unsupportedReasoningEffort }
     }
 }
@@ -51,7 +51,13 @@ enum CodexReasoningEffort: String, CaseIterable, Defaults.Serializable {
 // MARK: EnumLocalizedStringConvertible
 
 extension CodexReasoningEffort: EnumLocalizedStringConvertible {
-    var title: LocalizedStringKey {
+    var title: LocalizedStringKey { LocalizedStringKey(titleKey) }
+
+    var localizedTitle: String {
+        NSLocalizedString(titleKey, comment: "Codex reasoning effort")
+    }
+
+    private var titleKey: String {
         switch self {
         case .default:
             "service.codex_cli.reasoning_effort.default"

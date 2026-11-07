@@ -25,6 +25,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
 @interface EZTitlebar ()
 
 @property (nonatomic, strong) NSStackView *stackView;
+@property (nonatomic, strong) NSView *formulaModeControl;
 @property (nonatomic, strong) NSMenu *quickActionMenu;
 
 @property (nonatomic, assign) CGSize buttonSize;
@@ -59,6 +60,8 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     
     [self addSubview:self.pinButton];
     [self addSubview:self.stackView];
+    self.formulaModeControl = [EZFormulaScreenshotModeControl makeView];
+    [self addSubview:self.formulaModeControl];
 
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(updateTitlebar) name:NSNotification.linkButtonUpdated object:nil];
@@ -78,6 +81,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     
     [_pinButton removeFromSuperview];
     [_stackView removeFromSuperview];
+    [self.formulaModeControl removeFromSuperview];
     _stackView = nil;
     _quickActionButton = nil;
     _quickActionMenu = nil;
@@ -86,6 +90,8 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     
     [self addSubview:self.pinButton];
     [self addSubview:self.stackView];
+    self.formulaModeControl = [EZFormulaScreenshotModeControl makeView];
+    [self addSubview:self.formulaModeControl];
     
     [self setNeedsUpdateConstraints:YES];
 }
@@ -105,6 +111,12 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         make.right.equalTo(self).offset(-margin);
     }];
     
+    [self.formulaModeControl mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.pinButton.mas_right).offset(6);
+        make.centerY.equalTo(self.pinButton);
+        make.right.lessThanOrEqualTo(self.stackView.mas_left).offset(-8);
+    }];
+
     if (MyConfiguration.shared.showQuickActionButton) {
         [self.stackView addArrangedSubview:self.quickActionButton];
     }
@@ -432,7 +444,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     EZBaseQueryViewController *viewController = window.queryViewController;
     EZQueryModel *queryModel = viewController.queryModel;
     
-    NSString *queryText = queryModel.queryText;
+    NSString *queryText = queryModel.queryText.length ? queryModel.queryText : queryModel.screenshotSourceMarkdown;
     if (queryText.length == 0) {
         return;
     }

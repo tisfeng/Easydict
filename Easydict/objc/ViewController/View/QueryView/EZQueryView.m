@@ -27,6 +27,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
 @property (nonatomic, strong) EZHoverButton *textCopyButton;
+@property (nonatomic, strong, nullable) EDMarkdownLabel *screenshotSourceView;
 
 @property (nonatomic, strong) EZDetectLanguageButton *detectButton;
 @property (nonatomic, strong) EZHoverButton *clearButton;
@@ -111,7 +112,9 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
                                                        queue:NSOperationQueue.mainQueue
                                                   usingBlock:^(NSNotification * _Nonnull notification) {
         mm_strongify(self);
-        self.textView.font = [NSFont systemFontOfSize:14 * MyConfiguration.shared.fontSizeRatio];
+        NSFont *font = [NSFont systemFontOfSize:14 * MyConfiguration.shared.fontSizeRatio];
+        self.textView.font = font;
+        self.screenshotSourceView.font = font;
     }];
     
     // When programatically setting the text, like auto select text, or OCR text.
@@ -125,8 +128,8 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     self.loadingAnimationView = loadingAnimationView;
     
     [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(textView).offset(5);
-        make.left.equalTo(textView).offset(10);
+        make.top.equalTo(scrollView).offset(5);
+        make.left.equalTo(scrollView).offset(10);
         make.height.mas_equalTo(30);
     }];
     
@@ -335,7 +338,40 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         [self setAlertTextHidden:YES];
     }
     
+    [self updateScreenshotSourceView:model.screenshotSourceMarkdown];
     [self updateButtonsDisplayState:queryText];
+}
+
+- (void)updateScreenshotSourceView:(nullable NSString *)source {
+    if (source.length) {
+        if (!self.screenshotSourceView) {
+            EDMarkdownLabel *preview = [[EDMarkdownLabel alloc] initWithFrame:self.scrollView.contentView.bounds];
+            preview.rendersMath = YES;
+            preview.font = self.textView.font;
+            preview.textContainerInset = self.textView.textContainerInset;
+            preview.textContainer.widthTracksTextView = YES;
+            preview.verticallyResizable = YES;
+            preview.horizontallyResizable = NO;
+            preview.selectable = YES;
+            preview.delegate = self;
+            self.screenshotSourceView = preview;
+        }
+        EDMarkdownLabel *preview = self.screenshotSourceView;
+        if (self.scrollView.documentView != preview) {
+            preview.frame = self.scrollView.contentView.bounds;
+            self.scrollView.documentView = preview;
+        }
+        if (![preview.text isEqualToString:source]) {
+            preview.text = source;
+            [preview scrollRangeToVisible:NSMakeRange(0, 0)];
+        }
+        self.queryModel.queryViewHeight = [self heightOfQueryView];
+    } else if (self.scrollView.documentView == self.screenshotSourceView) {
+        self.textView.frame = self.scrollView.contentView.bounds;
+        self.scrollView.documentView = self.textView;
+        self.screenshotSourceView.text = nil;
+        self.queryModel.queryViewHeight = [self heightOfQueryView];
+    }
 }
 
 - (void)setAssociatedWindowType:(EZWindowType)windowType {
@@ -393,7 +429,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 #pragma mark - Getter
 
 - (NSString *)copiedText {
-    return [self.textView.string copy];
+    return [self.queryModel.screenshotSourceMarkdown copy] ?: [self.textView.string copy];
 }
 
 - (EZSchemeParser *)schemeParser {
@@ -411,7 +447,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 //    NSInteger keyCode = currentEvent.keyCode;
 //    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
     
-    if (commandSelector == @selector(insertNewline:)) {
+    if (commandSelector == @selector(insertNewline:) && textView == self.textView) {
         // Shift + Enter
         if (flags & NSEventModifierFlagShift) {
             return NO;
@@ -578,7 +614,8 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 }
 
 - (CGFloat)heightOfTextView {
-    CGFloat height = [self.textView ez_getTextViewHeightDesignatedWidth:self.width];
+    NSTextView *documentView = (NSTextView *)self.scrollView.documentView;
+    CGFloat height = [documentView ez_getTextViewHeightDesignatedWidth:self.width];
 //    MMLogInfo(@"text: %@, height: %@", self.textView.string, @(height));
     
     height = MAX(height, self.textViewMinHeight);

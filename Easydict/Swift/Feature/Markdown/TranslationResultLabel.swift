@@ -27,6 +27,7 @@ final class TranslationResultLabel: MarkdownLabel {
             let original = rendered.attribute(.paragraphStyle, at: paragraphRange.location, effectiveRange: nil)
                 as? NSParagraphStyle ?? .default
             let style = original.mutableCopy() as! NSMutableParagraphStyle
+            guard style.alignment != .center else { return }
             let isCode = rendered.attribute(.markdownCodeBlock, at: paragraphRange.location, effectiveRange: nil)
                 as? Bool ?? false
             // Natural alignment can follow the app locale. Resolve content explicitly so

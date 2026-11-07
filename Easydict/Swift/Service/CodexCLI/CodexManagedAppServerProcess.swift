@@ -13,7 +13,7 @@ import Foundation
 final class CodexManagedAppServerProcess: @unchecked Sendable {
     // MARK: Lifecycle
 
-    init(runtime: CodexManagedRuntime) {
+    init(runtime: CodexManagedRuntime?) {
         self.runtime = runtime
     }
 
@@ -31,14 +31,18 @@ final class CodexManagedAppServerProcess: @unchecked Sendable {
     ) throws {
         let context = Context()
         let process = Process()
-        process.executableURL = runtime.executable
-        process.arguments = runtime.appServerArguments()
-        process.environment = CodexManagedRuntime.environment(
-            home: runtime.home,
-            codexHome: runtime.codexHome,
-            executable: runtime.executable
-        )
-        process.currentDirectoryURL = runtime.workingDirectory
+        if let runtime {
+            process.executableURL = runtime.executable
+            process.arguments = runtime.appServerArguments()
+            process.environment = CodexManagedRuntime.environment(
+                home: runtime.home,
+                codexHome: runtime.codexHome,
+                executable: runtime.executable
+            )
+            process.currentDirectoryURL = runtime.workingDirectory
+        } else {
+            try configureLocalProcess(process)
+        }
         process.standardInput = context.stdinPipe
         process.standardOutput = context.stdoutPipe
         process.standardError = context.stderrPipe
@@ -108,10 +112,11 @@ final class CodexManagedAppServerProcess: @unchecked Sendable {
         var stderrBuffer = Data()
     }
 
-    private static let maximumLineSize = 4 * 1024 * 1024
+    // App Server may echo the in-memory image in the user message event.
+    private static let maximumLineSize = 20 * 1024 * 1024
     private static let maximumStderrSize = 1024 * 1024
 
-    private let runtime: CodexManagedRuntime
+    private let runtime: CodexManagedRuntime?
     private let stateLock = NSLock()
     private let writeLock = NSLock()
     private let ioQueue = DispatchQueue(
@@ -122,6 +127,29 @@ final class CodexManagedAppServerProcess: @unchecked Sendable {
     private var context: Context?
     private var messageReceived: (@Sendable (Data) -> ())?
     private var terminationReceived: (@Sendable (Data) -> ())?
+
+    /// Reuse the installed CLI's ChatGPT sign-in for in-memory screenshot turns.
+    private func configureLocalProcess(_ process: Process) throws {
+        let executable = try CodexCLIRunner.detectCodexBinary()
+        var environment = CodexCLIRunner.buildProcessEnvironment()
+        for key in ["OPENAI_API_KEY", "CODEX_API_KEY", "CODEX_ACCESS_TOKEN"] {
+            environment.removeValue(forKey: key)
+        }
+        environment["RUST_LOG"] = "off"
+        process.executableURL = URL(fileURLWithPath: executable)
+        process.environment = environment
+        process.currentDirectoryURL = FileManager.default.temporaryDirectory
+        process.arguments = [
+            "app-server", "--listen", "stdio://",
+            "-c", #"forced_login_method="chatgpt""#,
+            "-c", #"history.persistence="none""#,
+            "-c", #"web_search="disabled""#,
+            "-c", "mcp_servers={}",
+            "-c", "project_doc_max_bytes=0",
+            "-c", "analytics.enabled=false",
+            "-c", "feedback.enabled=false",
+        ] + CodexCLIRunner.disabledToolFeatures.flatMap { ["--disable", $0] }
+    }
 
     private func appendStdout(_ data: Data) {
         guard let context else { return }

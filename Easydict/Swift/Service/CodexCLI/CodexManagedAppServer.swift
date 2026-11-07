@@ -20,16 +20,28 @@ actor CodexManagedAppServer {
         let prompt: String
         let model: String
         let effort: String?
-        let runtime: CodexManagedRuntime
+        let runtime: CodexManagedRuntime?
+        var imageURL: String? = nil
         let isCancelled: @Sendable () -> Bool
         let deltaReceived: @Sendable (String) -> ()
     }
 
+    struct LocalModel: Sendable {
+        let identifier: String
+        let inputModalities: [String]?
+        let efforts: [CodexReasoningEffort]
+
+        var acceptsImages: Bool {
+            inputModalities?.contains("image") ?? (identifier == CodexServiceConfiguration.formulaDefaultModel)
+        }
+    }
+
     static let shared = CodexManagedAppServer()
+    static let local = CodexManagedAppServer()
     static let providerID = "easydict"
 
     func runtime() async throws -> CodexManagedRuntime {
-        if let session { return session.runtime }
+        if let runtime = session?.runtime { return runtime }
         if let cachedRuntime { return cachedRuntime }
         if let runtimeLoad { return try await runtimeLoad.task.value }
 
@@ -52,11 +64,57 @@ actor CodexManagedAppServer {
         }
     }
 
+    /// Lists picker-visible models without creating a thread or starting a turn.
+    func localModelList() async throws -> [LocalModel] {
+        idleTask?.cancel()
+        idleTask = nil
+        defer { scheduleIdleShutdown() }
+
+        let session = try await ensureSession(runtime: nil)
+        var models: [LocalModel] = []
+        var identifiers = Set<String>()
+        var cursors = Set<String>()
+        var cursor: String?
+        repeat {
+            var params: [String: Any] = ["includeHidden": false, "limit": 50]
+            if let cursor { params["cursor"] = cursor }
+            let response = try await request(session: session, method: "model/list", params: params)
+            guard let entries = response.object["data"] as? [[String: Any]] else {
+                throw CodexManagedError.invalidResponse
+            }
+            for entry in entries where entry["hidden"] as? Bool != true {
+                guard let identifier = entry["model"] as? String, !identifier.isEmpty,
+                      identifiers.insert(identifier).inserted else { continue }
+                let options = entry["supportedReasoningEfforts"] as? [[String: Any]] ?? []
+                let advertised = Set(options.compactMap { $0["reasoningEffort"] as? String })
+                let efforts = CodexReasoningEffort.allCases.filter { advertised.contains($0.rawValue) }
+                models.append(LocalModel(
+                    identifier: identifier, inputModalities: entry["inputModalities"] as? [String], efforts: efforts
+                ))
+            }
+            cursor = response.object["nextCursor"] as? String
+            if let cursor, !cursors.insert(cursor).inserted { throw CodexManagedError.invalidResponse }
+        } while cursor != nil
+        return models
+    }
+
     func translate(_ translation: TranslationRequest) async throws
         -> CodexManagedTranslation.Result {
         try Task.checkCancellation()
         guard !translation.isCancelled() else { throw CancellationError() }
-        try CodexManagedRuntime.validateSelection(model: translation.model, effort: translation.effort)
+        if translation.runtime != nil {
+            try CodexManagedRuntime.validateSelection(model: translation.model, effort: translation.effort)
+        } else if translation.imageURL != nil {
+            if translation.model != CodexServiceConfiguration.formulaDefaultModel || translation.effort != nil {
+                let available = try await localModelList()
+                guard let model = available.first(where: { $0.identifier == translation.model && $0.acceptsImages }) else {
+                    throw CodexManagedError.unavailableImageModel
+                }
+                try CodexReasoningEffort.validateLocalOverride(translation.effort, supportedEfforts: model.efforts)
+            }
+        } else {
+            try CodexReasoningEffort.validateLocalOverride(translation.effort)
+        }
 
         idleTask?.cancel()
         idleTask = nil
@@ -92,10 +150,11 @@ actor CodexManagedAppServer {
             requestByThread[threadID] = translation.identifier
             if let failure = state.failure { throw failure }
 
-            var turnParameters: [String: Any] = [
-                "threadId": threadID,
-                "input": [["type": "text", "text": translation.prompt]],
-            ]
+            var input = [["type": "text", "text": translation.prompt]]
+            if let imageURL = translation.imageURL {
+                input.append(["type": "image", "url": imageURL])
+            }
+            var turnParameters: [String: Any] = ["threadId": threadID, "input": input]
             if let effort = translation.effort { turnParameters["effort"] = effort }
             let turnResponse = try await request(
                 session: session,
@@ -165,7 +224,7 @@ actor CodexManagedAppServer {
     private final class Session {
         // MARK: Lifecycle
 
-        init(runtime: CodexManagedRuntime, process: CodexManagedAppServerProcess) {
+        init(runtime: CodexManagedRuntime?, process: CodexManagedAppServerProcess) {
             self.runtime = runtime
             self.process = process
         }
@@ -173,7 +232,7 @@ actor CodexManagedAppServer {
         // MARK: Internal
 
         let identifier = UUID()
-        let runtime: CodexManagedRuntime
+        let runtime: CodexManagedRuntime?
         let process: CodexManagedAppServerProcess
         let messages = MessageChannel()
         var initialized = false
@@ -271,7 +330,7 @@ extension CodexManagedAppServer {
         return CodexCLIError.cliError(message: message)
     }
 
-    private func ensureSession(runtime: CodexManagedRuntime) async throws -> Session {
+    private func ensureSession(runtime: CodexManagedRuntime?) async throws -> Session {
         if let session, runtimeMatches(runtime, session.runtime) {
             if session.initialized { return session }
             try await withCheckedThrowingContinuation { continuation in
@@ -615,7 +674,7 @@ extension CodexManagedAppServer {
               let threadID = state.threadID
         else { return }
         state.threadReleased = true
-        let method = session.runtime.release == .modern ? "thread/delete" : "thread/unsubscribe"
+        let method = (session.runtime?.release ?? .modern) == .modern ? "thread/delete" : "thread/unsubscribe"
         sendWithoutWaiting(session: session, method: method, params: ["threadId": threadID])
     }
 
@@ -677,11 +736,11 @@ extension CodexManagedAppServer {
         stopSession(error: CancellationError())
     }
 
-    private func threadParameters(model: String, runtime: CodexManagedRuntime) -> [String: Any] {
+    private func threadParameters(model: String, runtime: CodexManagedRuntime?) -> [String: Any] {
         [
             "model": model,
-            "modelProvider": Self.providerID,
-            "cwd": runtime.workingDirectory.path,
+            "modelProvider": runtime == nil ? "openai" : Self.providerID,
+            "cwd": (runtime?.workingDirectory ?? FileManager.default.temporaryDirectory).path,
             "approvalPolicy": "never",
             "sandbox": "read-only",
             "developerInstructions": CodexManagedRuntime.translationInstructions,
@@ -712,8 +771,9 @@ extension CodexManagedAppServer {
         Int((ProcessInfo.processInfo.systemUptime - state.started) * 1000)
     }
 
-    private func runtimeMatches(_ lhs: CodexManagedRuntime, _ rhs: CodexManagedRuntime) -> Bool {
-        lhs.release == rhs.release
+    private func runtimeMatches(_ lhs: CodexManagedRuntime?, _ rhs: CodexManagedRuntime?) -> Bool {
+        guard let lhs, let rhs else { return lhs == nil && rhs == nil }
+        return lhs.release == rhs.release
             && lhs.executable == rhs.executable
             && lhs.codexHome == rhs.codexHome
             && lhs.workingDirectory == rhs.workingDirectory

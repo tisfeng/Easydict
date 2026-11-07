@@ -8,6 +8,7 @@
 
 import AppKit
 import CoreImage
+import Defaults
 import Foundation
 import NaturalLanguage
 @preconcurrency import Vision
@@ -70,8 +71,12 @@ public class AppleOCREngine: NSObject {
 
     @objc
     func showOCRWindow(image: NSImage, language: Language = .auto) async throws {
+        let saveLocally = Defaults[.localAutoSave]
         let result = try await recognizeText(image: image, language: language)
         let mergedText = result.mergedText
+        if saveLocally, Defaults[.localAutoSave], !mergedText.isEmpty {
+            logInfo("ocr result: \(mergedText)")
+        }
 
         Task { @MainActor in
             OCRWindowManager.shared.showWindow(
@@ -156,8 +161,6 @@ public class AppleOCREngine: NSObject {
         guard image.isValid else {
             throw QueryError.error(type: .parameter, message: "Invalid image provided for OCR")
         }
-
-        image.write(to: OCRConstants.snipImageFileURL, using: .png)
 
         // Convert NSImage to CGImage
         guard let cgImage = image.toCGImage() else {

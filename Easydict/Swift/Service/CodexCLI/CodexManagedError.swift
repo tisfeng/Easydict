@@ -24,6 +24,7 @@ enum CodexManagedError: Error, LocalizedError, Equatable {
     case loginRequired
     case operationInProgress(CodexAccountOperation)
     case invalidModel
+    case unavailableImageModel
 
     // MARK: Internal
 
@@ -40,6 +41,7 @@ enum CodexManagedError: Error, LocalizedError, Equatable {
         case .loginRequired: String(localized: "service.codex_cli.managed.login_required")
         case let .operationInProgress(operation): operation.message
         case .invalidModel: String(localized: "service.codex_cli.managed.invalid_model")
+        case .unavailableImageModel: String(localized: "service.codex_cli.model_picker.image_model_unavailable")
         }
     }
 }

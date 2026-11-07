@@ -8,12 +8,13 @@
 
 import AppKit
 import Foundation
+import SwiftMath
 
 // MARK: - MarkdownRenderer
 
 /// Lightweight Markdown-to-NSAttributedString converter tuned for AI/LLM
 /// translation results. Handles ATX headings, emphasis, blockquotes, ordered
-/// and unordered lists, fenced and inline code, links, and strikethrough.
+/// and unordered lists, fenced and inline code, links, strikethrough, and LaTeX math.
 /// Streaming-safe: partial input never throws and an unterminated code fence
 /// is rendered through to the current end of the buffer.
 struct MarkdownRenderer {
@@ -26,6 +27,7 @@ struct MarkdownRenderer {
     let foregroundColor: NSColor
     let lineSpacing: CGFloat
     let paragraphSpacing: CGFloat
+    var rendersMath = false
 
     /// Renders the given Markdown source to an attributed string, applying
     /// per-block paragraph styles and inline emphasis.
@@ -36,6 +38,7 @@ struct MarkdownRenderer {
         var inFence = false
         var codeBuffer: [String] = []
         var blankPending = false
+        var mathBlock: (delimiter: MathDelimiter, lines: [String])?
 
         for line in lines {
             if inFence {
@@ -52,6 +55,16 @@ struct MarkdownRenderer {
             let trimmed = line.trimmingPrefix(while: { $0 == " " || $0 == "\t" })
             let trimmedString = String(trimmed)
 
+            if let block = mathBlock {
+                if trimmedString.trimmingCharacters(in: .whitespaces) == block.delimiter.close {
+                    appendMathBlock(block.lines.joined(separator: "\n"), delimiter: block.delimiter, to: output)
+                    mathBlock = nil
+                } else {
+                    mathBlock?.lines.append(line)
+                }
+                continue
+            }
+
             if isFenceMarker(trimmedString) {
                 inFence = true
                 continue
@@ -65,6 +78,20 @@ struct MarkdownRenderer {
                 continue
             }
             blankPending = false
+
+            let lineContent = trimmedString.trimmingCharacters(in: .whitespaces)
+            if rendersMath, let delimiter = MathDelimiter.displayDelimiter(for: lineContent) {
+                if lineContent == delimiter.open {
+                    mathBlock = (delimiter, [])
+                } else if lineContent.hasSuffix(delimiter.close),
+                          lineContent.count > delimiter.open.count + delimiter.close.count {
+                    let latex = String(lineContent.dropFirst(delimiter.open.count).dropLast(delimiter.close.count))
+                    appendMathBlock(latex, delimiter: delimiter, to: output)
+                } else {
+                    appendParagraph(line, to: output)
+                }
+                continue
+            }
 
             if let (level, content) = headingComponents(trimmedString) {
                 appendHeading(level: level, text: content, to: output)
@@ -94,6 +121,11 @@ struct MarkdownRenderer {
 
         if inFence, !codeBuffer.isEmpty {
             appendCodeBlock(codeBuffer.joined(separator: "\n"), to: output)
+        }
+
+        if let block = mathBlock {
+            let source = ([block.delimiter.open] + block.lines).joined(separator: "\n")
+            output.append(NSAttributedString(string: source, attributes: baseAttributes()))
         }
 
         // Each block appends a trailing newline; drop the final one so the
@@ -152,7 +184,7 @@ struct MarkdownRenderer {
         headIndent: CGFloat = 0,
         paragraphSpacingBefore: CGFloat = 0
     )
-        -> NSParagraphStyle {
+        -> NSMutableParagraphStyle {
         let style = NSMutableParagraphStyle()
         style.lineSpacing = lineSpacing
         style.paragraphSpacing = paragraphSpacing
@@ -251,6 +283,16 @@ struct MarkdownRenderer {
                 continue
             }
 
+            if rendersMath, let math = inlineMath(in: scalars, at: index) {
+                if let attachment = mathAttachment(math.latex, display: math.delimiter.display, attributes: base) {
+                    result.append(attachment)
+                } else {
+                    append(String(scalars[index ..< math.end]))
+                }
+                index = math.end
+                continue
+            }
+
             // ***bold+italic*** must be tried before **bold**, otherwise the
             // outer pair of stars binds first and one star leaks as literal.
             if char == "*", index + 2 < scalars.count,
@@ -322,6 +364,135 @@ struct MarkdownRenderer {
         }
 
         return result
+    }
+
+    // MARK: Math
+
+    private enum MathDelimiter: CaseIterable {
+        case displayDollar, displayBracket, inlineParenthesis, inlineDollar
+
+        var open: String {
+            switch self {
+            case .displayDollar: "$$"
+            case .displayBracket: #"\["#
+            case .inlineParenthesis: #"\("#
+            case .inlineDollar: "$"
+            }
+        }
+
+        var close: String {
+            switch self {
+            case .displayBracket: #"\]"#
+            case .inlineParenthesis: #"\)"#
+            default: open
+            }
+        }
+
+        var display: Bool {
+            self == .displayDollar || self == .displayBracket
+        }
+
+        static func displayDelimiter(for line: String) -> Self? {
+            allCases.first { delimiter in delimiter.display && line.hasPrefix(delimiter.open) }
+        }
+    }
+
+    private func appendMathBlock(
+        _ latex: String, delimiter: MathDelimiter, to output: NSMutableAttributedString
+    ) {
+        let style = defaultParagraph()
+        style.alignment = .center
+        let attributes = baseAttributes(paragraph: style)
+        if let attachment = mathAttachment(latex, display: true, attributes: attributes) {
+            output.append(attachment)
+        } else {
+            let source = delimiter.open + "\n" + latex + "\n" + delimiter.close
+            output.append(NSAttributedString(string: source, attributes: baseAttributes()))
+        }
+        output.append(NSAttributedString(string: "\n", attributes: attributes))
+    }
+
+    private func mathAttachment(
+        _ latex: String, display: Bool, attributes: [NSAttributedString.Key: Any]
+    ) -> NSAttributedString? {
+        var source = latex.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !source.isEmpty else { return nil }
+        source = source.replacingOccurrences(
+            of: #"\\[dt]frac\b"#, with: #"\\frac"#, options: .regularExpression
+        )
+        // SwiftMath exposes bold math letters, including Greek symbols, through \bm.
+        source = source.replacingOccurrences(
+            of: #"(?<!\\)((?:\\\\)*)\\boldsymbol(?![A-Za-z])"#,
+            with: #"$1\\bm"#,
+            options: .regularExpression
+        )
+        if display {
+            // SwiftMath can typeset a number in the equation but has no \tag command.
+            source = source.replacingOccurrences(
+                of: #"\\tag\{([A-Za-z0-9.\-]+)\}"#,
+                with: #"\\qquad ($1)"#,
+                options: .regularExpression
+            )
+        }
+
+        let font = attributes[.font] as? NSFont ?? baseFont
+        let color = attributes[.foregroundColor] as? NSColor ?? foregroundColor
+        var formula = MathImage(
+            latex: source, fontSize: font.pointSize, textColor: color,
+            labelMode: display ? .display : .text
+        )
+        let (error, image, layout) = formula.asImage()
+        guard error == nil, let image, let layout, image.size.width > 0, image.size.height > 0 else {
+            return nil
+        }
+
+        let attachment = FittingMathAttachment()
+        attachment.image = image
+        attachment.bounds = CGRect(origin: CGPoint(x: 0, y: -layout.descent), size: image.size)
+        let result = NSMutableAttributedString(attachment: attachment)
+        result.addAttributes(attributes, range: NSRange(location: 0, length: result.length))
+        return result
+    }
+
+    private func inlineMath(in scalars: [Character], at start: Int)
+        -> (delimiter: MathDelimiter, latex: String, end: Int)? {
+        guard scalars[start] == "$" || scalars[start] == "\\",
+              !isEscaped(in: scalars, at: start),
+              let delimiter = MathDelimiter.allCases.first(where: {
+                  scalars[start...].starts(with: $0.open)
+              }) else { return nil }
+
+        let contentStart = start + delimiter.open.count
+        guard contentStart < scalars.count else { return nil }
+        if delimiter == .inlineDollar,
+           scalars[contentStart].isWhitespace || (start > 0 && scalars[start - 1] == "$") {
+            return nil
+        }
+
+        var searchStart = contentStart
+        while let close = findClose(of: delimiter.close, in: scalars, after: searchStart) {
+            let end = close + delimiter.close.count
+            searchStart = end
+            guard close > contentStart, !isEscaped(in: scalars, at: close) else { continue }
+            if delimiter == .inlineDollar,
+               scalars[close - 1].isWhitespace
+               || scalars[close - 1] == "$"
+               || (end < scalars.count && (scalars[end].isNumber || scalars[end] == "$")) {
+                return nil
+            }
+            let latex = String(scalars[contentStart ..< close])
+            if delimiter == .inlineDollar, latex.contains("`") { return nil }
+            return (delimiter, latex, end)
+        }
+        return nil
+    }
+
+    private func isEscaped(in scalars: [Character], at index: Int) -> Bool {
+        var firstSlash = index
+        while firstSlash > 0, scalars[firstSlash - 1] == "\\" {
+            firstSlash -= 1
+        }
+        return (index - firstSlash) % 2 != 0
     }
 
     // MARK: Block detection
@@ -446,4 +617,22 @@ extension NSAttributedString.Key {
     /// Marks a run that originated from a Markdown blockquote block, allowing
     /// host views to draw a side bar without re-parsing the source.
     static let markdownBlockquote = NSAttributedString.Key("EDMarkdownBlockquote")
+}
+
+/// Fits equation images to the current TextKit column while retaining their natural size.
+private final class FittingMathAttachment: NSTextAttachment {
+    override func attachmentBounds(
+        for textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect,
+        glyphPosition position: CGPoint, characterIndex charIndex: Int
+    ) -> CGRect {
+        guard let textContainer, bounds.width > 0 else { return bounds }
+        let width = min(lineFrag.width, textContainer.containerSize.width)
+            - 2 * textContainer.lineFragmentPadding
+        guard width.isFinite, width > 0 else { return bounds }
+        let scale = min(1, width / bounds.width)
+        return CGRect(
+            x: bounds.minX * scale, y: bounds.minY * scale,
+            width: bounds.width * scale, height: bounds.height * scale
+        )
+    }
 }
