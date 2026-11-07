@@ -858,7 +858,7 @@ static EZWindowManager *_instance;
     // Close non-main floating window if not pinned. Fix https://github.com/tisfeng/Easydict/issues/126
     [self closeFloatingWindowIfNotPinnedOrMain];
 
-    [self captureWithRestorePreviousApp:NO completion:^(NSImage *_Nullable image) {
+    [self captureWithCompletion:^(NSImage *_Nullable image) {
         BOOL formulaMode = MyConfiguration.shared.formulaScreenshotMode;
         BOOL autoQuery = MyConfiguration.shared.autoQueryOCRText;
         EZActionType actionType = formulaMode ? EZActionTypeFormulaScreenshot : EZActionTypeOCRQuery;
@@ -870,7 +870,7 @@ static EZWindowManager *_instance;
 - (void)silentScreenshotOCR {
     MMLogInfo(@"Silent screenshot and OCR");
 
-    [self captureWithRestorePreviousApp:YES completion:^(NSImage *_Nullable image) {
+    [self captureWithCompletion:^(NSImage *_Nullable image) {
         if (!image) {
             return;
         }
@@ -885,7 +885,7 @@ static EZWindowManager *_instance;
 - (void)screenshotOCR {
     MMLogInfo(@"Screenshot OCR");
 
-    [self captureWithRestorePreviousApp:YES completion:^(NSImage *_Nullable image) {
+    [self captureWithCompletion:^(NSImage *_Nullable image) {
         if (!image) {
             MMLogWarn(@"Screenshot OCR skipped: captured image is nil");
             return;
@@ -922,12 +922,10 @@ static EZWindowManager *_instance;
 }
 
 /**
- * Capture screenshot with options for app restoration
- * @param restorePreviousApp Whether to restore the previous application after capture
+ * Capture without changing the frontmost application
  * @param imageHandler Block to handle the captured image
  */
-- (void)captureWithRestorePreviousApp:(BOOL)restorePreviousApp
-                           completion:(void (^)(NSImage *_Nullable image))imageHandler {
+- (void)captureWithCompletion:(void (^)(NSImage *_Nullable image))imageHandler {
     MMLogInfo(@"Starting capture");
 
     [self saveFrontmostApplication];
@@ -936,9 +934,6 @@ static EZWindowManager *_instance;
         MMLogWarn(@"Already snapshotting, ignoring request");
         return;
     }
-
-    // Set whether to restore previous app
-    Screenshot.shared.shouldRestorePreviousApp = restorePreviousApp;
 
     void (^captureCompletion)(NSImage *_Nullable) = ^(NSImage *_Nullable image) {
         if (!image) {

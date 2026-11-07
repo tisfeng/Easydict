@@ -99,14 +99,17 @@ struct ScreenshotOverlayView: View {
     /// Tip layer at bottom-left corner
     private var tipLayer: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("screenshot.tip.capture_last_area_desc")
-                .foregroundStyle(.white)
-
-            Divider()
-
-            Text("screenshot.tip.cancel_capture_desc")
-                .foregroundStyle(.white)
+            if state.isKeyboardAvailable {
+                Text("screenshot.tip.capture_last_area_desc")
+                Divider()
+                Text("screenshot.tip.cancel_capture_desc")
+            } else {
+                Text("screenshot.tip.keyboard_unavailable")
+                    .frame(maxWidth: 420, alignment: .leading)
+            }
         }
+        .foregroundStyle(.white)
+        .allowsHitTesting(false)
         .fixedSize(horizontal: true, vertical: false)
         .padding(.vertical, 12)
         .padding(.horizontal, 16)
@@ -187,9 +190,39 @@ struct ScreenshotOverlayView: View {
 
 /// Ensures the cursor updates to a crosshair while hovering over the screenshot overlay.
 final class ScreenshotOverlayHostingView<Content: View>: NSHostingView<Content> {
+    // MARK: Internal
+
+    var onMouseMoved: (() -> ())?
+
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
+        true
+    }
+
+    override func updateTrackingAreas() {
+        if let mouseTrackingArea { removeTrackingArea(mouseTrackingArea) }
+        super.updateTrackingAreas()
+        let area = NSTrackingArea(
+            rect: .zero,
+            options: [.activeAlways, .mouseMoved, .inVisibleRect, .enabledDuringMouseDrag],
+            owner: self,
+            userInfo: nil
+        )
+        addTrackingArea(area)
+        mouseTrackingArea = area
+    }
+
+    override func mouseMoved(with event: NSEvent) {
+        onMouseMoved?()
+        super.mouseMoved(with: event)
+    }
+
     /// Registers a crosshair cursor for the entire overlay area.
     override func resetCursorRects() {
         discardCursorRects()
         addCursorRect(bounds, cursor: .crosshair)
     }
+
+    // MARK: Private
+
+    private var mouseTrackingArea: NSTrackingArea?
 }

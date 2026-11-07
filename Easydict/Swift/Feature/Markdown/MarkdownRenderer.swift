@@ -420,6 +420,12 @@ struct MarkdownRenderer {
         source = source.replacingOccurrences(
             of: #"\\[dt]frac\b"#, with: #"\\frac"#, options: .regularExpression
         )
+        // SwiftMath exposes bold math letters, including Greek symbols, through \bm.
+        source = source.replacingOccurrences(
+            of: #"(?<!\\)((?:\\\\)*)\\boldsymbol(?![A-Za-z])"#,
+            with: #"$1\\bm"#,
+            options: .regularExpression
+        )
         if display {
             // SwiftMath can typeset a number in the equation but has no \tag command.
             source = source.replacingOccurrences(
@@ -440,7 +446,7 @@ struct MarkdownRenderer {
             return nil
         }
 
-        let attachment = NSTextAttachment()
+        let attachment = FittingMathAttachment()
         attachment.image = image
         attachment.bounds = CGRect(origin: CGPoint(x: 0, y: -layout.descent), size: image.size)
         let result = NSMutableAttributedString(attachment: attachment)
@@ -611,4 +617,22 @@ extension NSAttributedString.Key {
     /// Marks a run that originated from a Markdown blockquote block, allowing
     /// host views to draw a side bar without re-parsing the source.
     static let markdownBlockquote = NSAttributedString.Key("EDMarkdownBlockquote")
+}
+
+/// Fits equation images to the current TextKit column while retaining their natural size.
+private final class FittingMathAttachment: NSTextAttachment {
+    override func attachmentBounds(
+        for textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect,
+        glyphPosition position: CGPoint, characterIndex charIndex: Int
+    ) -> CGRect {
+        guard let textContainer, bounds.width > 0 else { return bounds }
+        let width = min(lineFrag.width, textContainer.containerSize.width)
+            - 2 * textContainer.lineFragmentPadding
+        guard width.isFinite, width > 0 else { return bounds }
+        let scale = min(1, width / bounds.width)
+        return CGRect(
+            x: bounds.minX * scale, y: bounds.minY * scale,
+            width: bounds.width * scale, height: bounds.height * scale
+        )
+    }
 }

@@ -35,6 +35,8 @@ open class QueryModel: NSObject, NSCopying {
         model.userTargetLanguage = userTargetLanguage
         model.detectedLanguage = detectedLanguage
         model.ocrImage = ocrImage
+        model.screenshotSourceMarkdown = screenshotSourceMarkdown
+        model.screenshotTargetLanguage = screenshotTargetLanguage
         model.queryViewHeight = queryViewHeight
         model.audioURL = audioURL
         model.needDetectLanguage = needDetectLanguage
@@ -70,11 +72,17 @@ open class QueryModel: NSObject, NSCopying {
 
     /// OCR image for the current query.
     var ocrImage: NSImage? {
-        didSet { screenshotSourceMarkdown = nil }
+        didSet {
+            screenshotSourceMarkdown = nil
+            screenshotTargetLanguage = nil
+        }
     }
 
     /// Temporary transcription for the screenshot preview, separate from editable query text.
     var screenshotSourceMarkdown: String?
+
+    /// Target frozen for the completed screenshot request.
+    var screenshotTargetLanguage: Language?
 
     /// Audio URL generated for the current query.
     var audioURL: String?
@@ -100,6 +108,7 @@ open class QueryModel: NSObject, NSCopying {
         set {
             if newValue != inputTextStorage {
                 screenshotSourceMarkdown = nil
+                screenshotTargetLanguage = nil
                 audioURL = nil
                 needDetectLanguage = true
                 queryText = newValue.handlingInputText()
@@ -148,6 +157,7 @@ open class QueryModel: NSObject, NSCopying {
         if hasUserTargetLanguage {
             return userTargetLanguage
         }
+        if let screenshotTargetLanguage { return screenshotTargetLanguage }
         return EZLanguageManager.shared().userTargetLanguage(withSourceLanguage: fromLanguage)
     }
 

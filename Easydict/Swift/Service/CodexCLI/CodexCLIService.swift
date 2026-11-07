@@ -69,10 +69,10 @@ final class CodexCLIService: StreamService {
         return (source.isEmpty ? nil : source, translation)
     }
 
-    private func screenshotPrompt(from: Language, to: Language) -> String {
+    private func screenshotPrompt(to: Language, alternateTarget: Language?) -> String {
         var targetInstruction = "Translate its visible prose into \(to.queryLanguageName)."
-        if from == .auto, !queryModel.hasUserTargetLanguage {
-            let second = MyConfiguration.shared.secondLanguage.queryLanguageName
+        if let alternateTarget {
+            let second = alternateTarget.queryLanguageName
             targetInstruction += " If it is already in \(to.queryLanguageName), translate into \(second) instead."
         }
         return """
@@ -167,9 +167,11 @@ final class CodexCLIService: StreamService {
     )
         -> AsyncThrowingStream<String, Error> {
         let screenshot = queryModel.actionType == .formulaScreenshot ? queryModel.ocrImage : nil
+        let alternateTarget: Language? = screenshot != nil && from == .auto && !queryModel.hasUserTargetLanguage
+            ? EZLanguageManager.shared().userTargetLanguage(withSourceLanguage: to) : nil
         let combinedPrompt: String
         if screenshot != nil {
-            combinedPrompt = screenshotPrompt(from: from, to: to)
+            combinedPrompt = screenshotPrompt(to: to, alternateTarget: alternateTarget)
         } else {
             let queryType = queryType(text: text, from: from, to: to)
             let chatQueryParam = ChatQueryParam(
@@ -272,6 +274,10 @@ final class CodexCLIService: StreamService {
                             if screenshot != nil {
                                 let sections = Self.screenshotSections(result.text)
                                 self.result?.screenshotSourceMarkdown = sections.source
+                                let sourceLanguage = from == .auto
+                                    ? AppleLanguageDetector().detectLanguage(text: sections.source ?? "") : from
+                                self.result?.from = sourceLanguage
+                                self.result?.to = sourceLanguage == to ? alternateTarget ?? to : to
                                 guard !sections.translation.isEmpty else { throw CodexManagedError.invalidResponse }
                                 continuation.yield(sections.translation)
                             }

@@ -460,6 +460,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     EZQueryModel *model = [[EZQueryModel alloc] init];
     model.userSourceLanguage = MyConfiguration.shared.fromLanguage;
     model.userTargetLanguage = MyConfiguration.shared.toLanguage;
+    model.queryViewHeight = [self miniQueryViewHeight];
 
     self.queryModel = model;
     self.detectManager = [EZDetectManager managerWithModel:model];
@@ -490,6 +491,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
+    [self.queryView startLoadingAnimation:NO];
+    self.queryModel.ocrImage = nil;
     [self restoreNormalServices];
     self.inputText = text;
     self.queryModel.actionType = actionType == EZActionTypeFormulaScreenshot ? EZActionTypeInputQuery : actionType;
@@ -679,6 +682,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)clearInput {
+    [self.queryView startLoadingAnimation:NO];
     // Clear query text, detect language and clear button right now;
     self.queryModel.ocrImage = nil;
     self.inputText = @"";
@@ -935,6 +939,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             && queryModel.inputText.length == 0
             && ![queryModel.screenshotSourceMarkdown isEqualToString:result.screenshotSourceMarkdown]) {
             queryModel.screenshotSourceMarkdown = result.screenshotSourceMarkdown;
+            queryModel.detectedLanguage = result.from;
+            queryModel.screenshotTargetLanguage = result.to;
+            queryModel.showAutoLanguage = YES;
             [self updateQueryViewModelAndDetectedLanguage:queryModel];
         }
 
@@ -1085,7 +1092,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     CGFloat height;
 
     if ([self isInputFieldCellAtRow:row]) {
-        height = self.queryModel.queryViewHeight;
+        CGFloat queryViewHeight = self.queryModel.queryViewHeight;
+        CGFloat minimumHeight = [self miniQueryViewHeight];
+        height = isfinite(queryViewHeight) ? MAX(queryViewHeight, minimumHeight) : minimumHeight;
     } else if ([self isSelectLanguageCellAtRow:row]) {
         height = 35;
     } else {
@@ -1384,6 +1393,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)resetQueryAndResults {
+    [self.queryView startLoadingAnimation:NO];
     [self restoreNormalServices];
     [self resetAllResults];
 

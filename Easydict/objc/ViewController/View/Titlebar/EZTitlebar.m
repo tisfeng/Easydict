@@ -444,7 +444,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     EZBaseQueryViewController *viewController = window.queryViewController;
     EZQueryModel *queryModel = viewController.queryModel;
     
-    NSString *queryText = queryModel.queryText;
+    NSString *queryText = queryModel.queryText.length ? queryModel.queryText : queryModel.screenshotSourceMarkdown;
     if (queryText.length == 0) {
         return;
     }
