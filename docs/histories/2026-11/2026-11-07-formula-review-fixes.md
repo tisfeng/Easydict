@@ -1,6 +1,6 @@
 ## 2026-11-07 | 任务：修复公式截图 PR 审查意见并同步上游
 
-**Links:** [PR #1391](https://github.com/tisfeng/Easydict/pull/1391) · [执行计划](../../exec-plans/active/2026-11-07-formula-review-fixes.md)
+**Links:** [PR #1391](https://github.com/tisfeng/Easydict/pull/1391) · [执行计划](../../exec-plans/completed/2026-11/2026-11-07-formula-review-fixes.md)
 
 ### 执行上下文
 
@@ -47,4 +47,6 @@
 
 ### 后续事项
 
-- 提交后推送原 PR 分支，并据远程提交回复四条审查线程；最终状态以 PR 页面为准。
+- `10b8667a46aa9fcf0c44954936a404702974a66a` 已推送同一 PR 分支，保留上游 dev 为第二 parent。
+- 四条审查意见均已回复修复依据并 resolve：[公式宽度](https://github.com/tisfeng/Easydict/pull/1391#discussion_r4500036292)、[OCR 加载](https://github.com/tisfeng/Easydict/pull/1391#discussion_r4500037118)、[自动语言](https://github.com/tisfeng/Easydict/pull/1391#discussion_r4500037656)、[收藏](https://github.com/tisfeng/Easydict/pull/1391#discussion_r4500038076)。
+- PR 说明已更新验证结果并保留原截图；GitHub 确认可合并，等待维护者审核与合并。
