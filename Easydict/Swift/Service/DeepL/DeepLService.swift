@@ -6,6 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import Alamofire
 import Defaults
 import Foundation
 import SwiftUI
@@ -42,6 +43,18 @@ class DeepLService: QueryService {
     }
 
     // MARK: Internal
+
+    var activeDataRequest: DataRequest?
+    var webTranslationTask: Task<(), Never>?
+
+    override func cancelStream() {
+        updateResultLock.withLock {
+            webTranslationTask?.cancel()
+            webTranslationTask = nil
+            activeDataRequest?.cancel()
+            activeDataRequest = nil
+        }
+    }
 
     // MARK: - Service Type & Configuration
 
@@ -145,19 +158,27 @@ class DeepLService: QueryService {
         to: Language
     ) async throws
         -> QueryResult {
-        try await withCheckedThrowingContinuation { continuation in
-            let completion: (QueryResult, Error?) -> () = { result, error in
-                if let error {
-                    continuation.resume(throwing: error)
+        let generation = QueryService.queryGeneration ?? updateResultLock.withLock { resultGeneration }
+        return try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                let completion: (QueryResult, Error?) -> () = { result, error in
+                    if let error {
+                        continuation.resume(throwing: error)
+                    } else {
+                        continuation.resume(returning: result)
+                    }
+                }
+
+                if apiType == .webFirst {
+                    deepLWebTranslate(text, from: from, to: to, generation: generation, completion: completion)
                 } else {
-                    continuation.resume(returning: result)
+                    deepLTranslate(text, from: from, to: to, generation: generation, completion: completion)
                 }
             }
-
-            if apiType == .webFirst {
-                deepLWebTranslate(text, from: from, to: to, completion: completion)
-            } else {
-                deepLTranslate(text, from: from, to: to, completion: completion)
+        } onCancel: {
+            self.updateResultLock.withLock {
+                guard self.resultGeneration == generation else { return }
+                self.cancelStream()
             }
         }
     }

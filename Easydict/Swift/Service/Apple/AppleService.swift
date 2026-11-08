@@ -80,18 +80,7 @@ public class AppleService: QueryService {
     ) async throws
         -> EZOCRResult? {
         _ = to
-        return try await withCheckedThrowingContinuation { continuation in
-            ocrEnginee.recognizeText(
-                image: image,
-                language: from
-            ) { result, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: result)
-                }
-            }
-        }
+        return try await ocrEnginee.recognizeText(image: image, language: from)
     }
 
     public override func autoConvertTraditionalChinese() -> Bool {

@@ -27,6 +27,8 @@ def comment(identifier: str) -> dict:
         "databaseId": 1,
         "url": f"https://example.test/comments/{identifier}",
         "body": f"Comment {identifier}",
+        "viewerDidAuthor": False,
+        "state": "SUBMITTED",
         "updatedAt": "2026-09-06T00:00:00Z",
         "createdAt": "2026-09-06T00:00:00Z",
         "author": {"login": "reviewer"},
@@ -120,6 +122,7 @@ def decision(current_thread: dict, **changes: object) -> dict:
         "evidence": "Verified by the current implementation.",
         "permalink": "https://example.test/permalink",
         "evidence_head": "head-1",
+        "reply_body": "Fixed in the current remote implementation; validation not run.",
     }
     value.update(changes)
     return value
@@ -127,7 +130,7 @@ def decision(current_thread: dict, **changes: object) -> dict:
 
 def plan(*decisions: dict, **changes: object) -> dict:
     value = {
-        "version": 1,
+        "version": 2,
         "repo": "owner/repo",
         "number": 42,
         "id": "pr-1",
@@ -223,85 +226,215 @@ class CollectTargetThreadTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "does not belong"):
                 review_threads.collect_thread("owner/repo", 42, "thread-1")
 
+def collected_thread(identifier: str, *, resolved: bool = False, can_resolve: bool = True) -> dict:
+    value = thread(identifier, resolved=resolved, can_resolve=can_resolve)
+    value["comments"] = value["comments"]["nodes"]
+    return value
+
+
+def reply_comment() -> dict:
+    return dict(comment("reply-1"), viewerDidAuthor=True, body=decision({"id": "unused"})["reply_body"])
+
+
+def with_reply(current: dict, *, resolved: bool = False) -> dict:
+    return dict(current, comments=current["comments"] + [reply_comment()], isResolved=resolved)
+
+
 class ApplyPlanTests(unittest.TestCase):
-    def test_resolves_only_after_fresh_snapshot_and_reads_back(self) -> None:
-        current = thread("thread-1")
-        after = thread("thread-1", resolved=True)
-        calls: list[str] = []
+    def test_replies_then_resolves_only_after_confirmation_and_reads_back(self) -> None:
+        current = collected_thread("thread-1")
+        replied = with_reply(current)
+        events = []
 
-        def fake_graphql(query: str, **_variables: object) -> dict:
-            calls.append(query)
-            self.assertEqual(len(calls), 1, "the mutation must have exactly one fresh snapshot before it")
-            return {"data": "ignored"}
+        def collect(*_args):
+            events.append("collect")
+            return snapshot([[current, replied, dict(replied, isResolved=True)][events.count("collect") - 1]])
 
-        with patch.object(review_threads, "collect_thread", side_effect=[snapshot([current]), snapshot([after])]) as collect_thread, patch.object(review_threads, "graphql", side_effect=fake_graphql):
-            results = review_threads.apply_plan(plan(decision(current)))
+        def mutate(query, **variables):
+            if "addPullRequestReviewThreadReply" in query:
+                events.append("reply")
+                self.assertEqual(variables, {"id": "thread-1", "body": decision(current)["reply_body"]})
+                return {"addPullRequestReviewThreadReply": {"comment": reply_comment()}}
+            self.assertIn("resolveReviewThread", query)
+            events.append("resolve")
+            return {}
 
-        self.assertEqual(results[0]["status"], "resolved")
-        self.assertEqual(collect_thread.call_args_list, [
-            (("owner/repo", 42, "thread-1"), {}),
-            (("owner/repo", 42, "thread-1"), {}),
-        ])
-        self.assertIn("resolveReviewThread", calls[0])
+        with patch.object(review_threads, "collect_thread", side_effect=collect), patch.object(review_threads, "graphql", side_effect=mutate):
+            result = review_threads.apply_plan(plan(decision(current)))[0]
+        self.assertEqual(events, ["collect", "reply", "collect", "resolve", "collect"])
+        self.assertEqual(result["status"], "resolved")
+        self.assertEqual(result["reply_status"], "posted")
+        self.assertEqual(result["reply_url"], reply_comment()["url"])
 
     def test_thread_drift_is_skipped_but_a_later_stable_thread_can_proceed(self) -> None:
-        planned_first, planned_second = thread("thread-1"), thread("thread-2")
-        drifted_first = thread("thread-1", [comment("new-comment")])
-        stable_second = thread("thread-2")
-        resolved_second = thread("thread-2", resolved=True)
-        with patch.object(
-            review_threads,
-            "collect_thread",
-            side_effect=[snapshot([drifted_first]), snapshot([stable_second]), snapshot([resolved_second])],
-        ), patch.object(review_threads, "graphql") as graphql:
-            results = review_threads.apply_plan(plan(decision(planned_first), decision(planned_second)))
-
+        first, second = collected_thread("thread-1"), collected_thread("thread-2")
+        replied = with_reply(second)
+        drifted = dict(first, comments=first["comments"] + [comment("new-comment")])
+        with patch.object(review_threads, "collect_thread", side_effect=[snapshot([drifted]), snapshot([second]), snapshot([replied]), snapshot([dict(replied, isResolved=True)])]), patch.object(review_threads, "graphql", side_effect=[{"addPullRequestReviewThreadReply": {"comment": reply_comment()}}, {}]) as graphql:
+            results = review_threads.apply_plan(plan(decision(first), decision(second)))
         self.assertEqual([result["status"] for result in results], ["stale_thread", "resolved"])
-        graphql.assert_called_once()
+        self.assertEqual(graphql.call_count, 2)
 
     def test_pr_drift_stops_and_reports_unattempted_decisions(self) -> None:
-        first, second = thread("thread-1"), thread("thread-2")
-        with patch.object(review_threads, "collect_thread", return_value=snapshot([first], head="new-head")) as collect_thread, patch.object(review_threads, "graphql") as graphql:
+        first, second = collected_thread("thread-1"), collected_thread("thread-2")
+        with patch.object(review_threads, "collect_thread", return_value=snapshot([first], head="new-head")) as collect, patch.object(review_threads, "graphql") as graphql:
             results = review_threads.apply_plan(plan(decision(first), decision(second)))
-
         self.assertEqual([result["status"] for result in results], ["stale_pr", "not_attempted"])
-        collect_thread.assert_called_once_with("owner/repo", 42, "thread-1")
+        collect.assert_called_once()
         graphql.assert_not_called()
 
-    def test_missing_permission_is_reported_without_mutation(self) -> None:
-        current = thread("thread-1", can_resolve=False)
-        with patch.object(review_threads, "collect_thread", return_value=snapshot([current])), patch.object(review_threads, "graphql") as graphql:
-            results = review_threads.apply_plan(plan(decision(current)))
+    def test_missing_permission_and_already_resolved_do_not_reply(self) -> None:
+        for current, status in [(collected_thread("thread-1", can_resolve=False), "cannot_resolve"), (collected_thread("thread-1", resolved=True), "already_resolved")]:
+            with self.subTest(status=status), patch.object(review_threads, "collect_thread", return_value=snapshot([current])), patch.object(review_threads, "graphql") as graphql:
+                result = review_threads.apply_plan(plan(decision(current)))[0]
+                self.assertEqual(result["status"], status)
+                self.assertEqual(result["reply_status"], "not_attempted")
+                graphql.assert_not_called()
 
-        self.assertEqual(results[0]["status"], "cannot_resolve")
-        graphql.assert_not_called()
-
-    def test_post_mutation_head_or_thread_change_is_never_reported_as_success(self) -> None:
-        current = thread("thread-1")
-        changed = thread("thread-1", resolved=True)
-        another = thread("thread-2")
-        with patch.object(review_threads, "collect_thread", side_effect=[snapshot([current]), snapshot([changed], head="new-head")]), patch.object(review_threads, "graphql"):
+    def test_reply_failure_never_attempts_resolve(self) -> None:
+        current, another = collected_thread("thread-1"), collected_thread("thread-2")
+        error = subprocess.CalledProcessError(1, ["gh", "api", "graphql"])
+        with patch.object(review_threads, "collect_thread", return_value=snapshot([current])), patch.object(review_threads, "graphql", side_effect=error) as graphql:
             results = review_threads.apply_plan(plan(decision(current), decision(another)))
-
-        self.assertEqual([result["status"] for result in results], ["changed_after_mutation", "not_attempted"])
-        self.assertTrue(results[0]["isResolved"])
-
-    def test_mutation_failure_is_unknown_and_never_claims_resolution(self) -> None:
-        current, another = thread("thread-1"), thread("thread-2")
-        transport_error = subprocess.CalledProcessError(1, ["gh", "api", "graphql"])
-        with patch.object(review_threads, "collect_thread", return_value=snapshot([current])), patch.object(review_threads, "graphql", side_effect=transport_error):
-            results = review_threads.apply_plan(plan(decision(current), decision(another)))
-
         self.assertEqual([result["status"] for result in results], ["unknown_after_mutation", "not_attempted"])
+        self.assertEqual(results[0]["reply_status"], "unknown")
+        graphql.assert_called_once()
+        self.assertIn("addPullRequestReviewThreadReply", graphql.call_args.args[0])
+
+    def test_lost_reply_response_is_reused_after_refresh_without_duplicate(self) -> None:
+        remote_thread = collected_thread("thread-1")
+        original_plan = plan(decision(remote_thread))
+        mutations = []
+
+        def fake_graphql(query, **variables):
+            if "addPullRequestReviewThreadReply" in query:
+                mutations.append("reply")
+                remote_thread["comments"].append(
+                    dict(reply_comment(), body=variables["body"])
+                )
+                # The server commits the reply before the client loses its response.
+                raise subprocess.TimeoutExpired(["gh", "api", "graphql"], 60)
+            if "resolveReviewThread" in query:
+                mutations.append("resolve")
+                remote_thread["isResolved"] = True
+                return {"resolveReviewThread": {"thread": {"id": "thread-1", "isResolved": True}}}
+            if "totalCount" in query:
+                return target_final_response(
+                    remote_thread, total_count=len(remote_thread["comments"])
+                )
+            self.assertIn("node(id:$id)", query)
+            return target_response(
+                dict(remote_thread, comments=page(list(remote_thread["comments"])))
+            )
+
+        with patch.object(review_threads, "graphql", side_effect=fake_graphql):
+            failed = review_threads.apply_plan(original_plan)[0]
+            self.assertEqual(failed["status"], "unknown_after_mutation")
+            self.assertEqual(failed["reply_status"], "unknown")
+            self.assertNotIn("reply_id", failed)
+            self.assertFalse(remote_thread["isResolved"])
+            self.assertEqual(mutations, ["reply"])
+
+            stale = review_threads.apply_plan(original_plan)[0]
+            self.assertEqual(stale["status"], "stale_thread")
+            self.assertEqual(mutations, ["reply"])
+
+            refreshed = review_threads.collect_thread("owner/repo", 42, "thread-1")
+            refreshed_decision = decision(refreshed["threads"][0])
+            self.assertNotEqual(
+                refreshed_decision["fingerprint"], original_plan["decisions"][0]["fingerprint"]
+            )
+            resumed = review_threads.apply_plan(plan(refreshed_decision))[0]
+
+        self.assertEqual(resumed["status"], "resolved")
+        self.assertEqual(resumed["reply_status"], "reused")
+        self.assertEqual(resumed["reply_id"], "reply-1")
+        self.assertEqual(resumed["reply_url"], reply_comment()["url"])
+        self.assertEqual(mutations, ["reply", "resolve"])
+        self.assertEqual(
+            [item["id"] for item in remote_thread["comments"]],
+            ["thread-1-comment", "reply-1"],
+        )
+        self.assertTrue(remote_thread["isResolved"])
+
+    def test_changes_after_reply_prevent_resolution(self) -> None:
+        current = collected_thread("thread-1")
+        replied = with_reply(current)
+        changed = dict(replied, comments=replied["comments"] + [comment("follow-up")])
+        cases = [snapshot([replied], head="new-head"), snapshot([changed]), snapshot([current])]
+        for after in cases:
+            with self.subTest(after=after), patch.object(review_threads, "collect_thread", side_effect=[snapshot([current]), after]), patch.object(review_threads, "graphql", return_value={"addPullRequestReviewThreadReply": {"comment": reply_comment()}}) as graphql:
+                result = review_threads.apply_plan(plan(decision(current)))[0]
+                self.assertEqual(result["status"], "changed_after_reply")
+                self.assertEqual(result["reply_status"], "posted")
+                graphql.assert_called_once()
+
+    def test_resolve_failure_preserves_reply_and_refreshed_plan_reuses_it(self) -> None:
+        current = collected_thread("thread-1")
+        replied = with_reply(current)
+        error = subprocess.CalledProcessError(1, ["gh", "api", "graphql"])
+        with patch.object(review_threads, "collect_thread", side_effect=[snapshot([current]), snapshot([replied])]), patch.object(review_threads, "graphql", side_effect=[{"addPullRequestReviewThreadReply": {"comment": reply_comment()}}, error]):
+            result = review_threads.apply_plan(plan(decision(current)))[0]
+        self.assertEqual(result["status"], "unknown_after_mutation")
+        self.assertEqual(result["reply_status"], "posted")
+        self.assertEqual(result["reply_id"], "reply-1")
+        with patch.object(review_threads, "collect_thread", side_effect=[snapshot([replied]), snapshot([dict(replied, isResolved=True)])]), patch.object(review_threads, "graphql", return_value={}) as graphql:
+            resumed = review_threads.apply_plan(plan(decision(replied)))[0]
+        self.assertEqual(resumed["status"], "resolved")
+        self.assertEqual(resumed["reply_status"], "reused")
+        graphql.assert_called_once()
+        self.assertIn("resolveReviewThread", graphql.call_args.args[0])
+
+    def test_other_users_or_pending_matching_reply_is_not_reused(self) -> None:
+        for changes in [{"viewerDidAuthor": False}, {"state": "PENDING"}]:
+            current = collected_thread("thread-1")
+            current["comments"].append(dict(reply_comment(), id="other-reply", **changes))
+            replied = with_reply(current)
+            with self.subTest(changes=changes), patch.object(review_threads, "collect_thread", side_effect=[snapshot([current]), snapshot([replied]), snapshot([dict(replied, isResolved=True)])]), patch.object(review_threads, "graphql", side_effect=[{"addPullRequestReviewThreadReply": {"comment": reply_comment()}}, {}]) as graphql:
+                result = review_threads.apply_plan(plan(decision(current)))[0]
+                self.assertEqual(result["reply_status"], "posted")
+                self.assertEqual(graphql.call_count, 2)
+
+    def test_pending_reply_response_does_not_resolve(self) -> None:
+        current = collected_thread("thread-1")
+        with patch.object(review_threads, "collect_thread", return_value=snapshot([current])), patch.object(review_threads, "graphql", return_value={"addPullRequestReviewThreadReply": {"comment": dict(reply_comment(), state="PENDING")}}) as graphql:
+            result = review_threads.apply_plan(plan(decision(current)))[0]
+        self.assertEqual(result["status"], "unknown_after_mutation")
+        self.assertEqual(result["reply_status"], "unknown")
+        graphql.assert_called_once()
+
+    def test_post_resolution_drift_is_not_success(self) -> None:
+        current = with_reply(collected_thread("thread-1"))
+        with patch.object(review_threads, "collect_thread", side_effect=[snapshot([current]), snapshot([dict(current, isResolved=True)], head="new-head")]), patch.object(review_threads, "graphql", return_value={}):
+            result = review_threads.apply_plan(plan(decision(current)))[0]
+        self.assertEqual(result["status"], "changed_after_mutation")
+        self.assertTrue(result["isResolved"])
+
+    def test_old_plan_and_empty_reply_are_rejected_before_io(self) -> None:
+        current = collected_thread("thread-1")
+        for invalid in [plan(decision(current), version=1), plan(decision(current, reply_body=" "))]:
+            with self.subTest(plan=invalid), patch.object(review_threads, "graphql") as graphql:
+                with self.assertRaises(ValueError):
+                    review_threads.apply_plan(invalid)
+                graphql.assert_not_called()
 
 
 class CommandTests(unittest.TestCase):
-    def test_apply_cli_requires_explicit_allow_resolve(self) -> None:
-        with patch.object(sys, "argv", ["review_threads.py", "apply", "--plan", "plan.json"]):
-            with self.assertRaises(SystemExit) as raised:
-                review_threads.main()
+    def test_graphql_preserves_literal_reply_body(self) -> None:
+        for body in ["@filename", "true", "123", "First line\nSecond line"]:
+            response = subprocess.CompletedProcess([], 0, stdout='{"data":{"ok":true}}')
+            with self.subTest(body=body), patch.object(review_threads.subprocess, "run", return_value=response) as run:
+                self.assertEqual(review_threads.graphql("mutation", body=body, number=42), {"ok": True})
+                arguments = run.call_args.args[0]
+                self.assertEqual(arguments[arguments.index("body=" + body) - 1], "-f")
+                self.assertEqual(arguments[arguments.index("number=42") - 1], "-F")
 
-        self.assertEqual(raised.exception.code, 2)
+    def test_apply_cli_requires_explicit_allow_resolve(self) -> None:
+        for flags in [[], ["--allow-resolve"], ["--allow-reply"]]:
+            with self.subTest(flags=flags), patch.object(sys, "argv", ["review_threads.py", "apply", "--plan", "plan.json", *flags]):
+                with self.assertRaises(SystemExit) as raised:
+                    review_threads.main()
+                self.assertEqual(raised.exception.code, 2)
 
 
 if __name__ == "__main__":

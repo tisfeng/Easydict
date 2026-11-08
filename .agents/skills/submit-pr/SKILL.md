@@ -27,7 +27,7 @@ PR 正文只使用 Skill 自带的 [固定模板](assets/pull_request_template.m
 
 ## 主流程
 
-1. 读取 [工作流契约](references/workflow.md)，确定用户语言、固定正文、Issue 策略、repository
+1. 读取 [工作流契约](references/workflow.md)，确定英文标题、正文语言、固定正文、Issue 策略、repository
    拓扑、base/head 分支与恢复规则。
 2. 记录 HEAD、当前分支和 staged、unstaged、untracked 边界。若 checkout 处于 detached 状态：
    - 根据统一命名规范获取用户明确名称或生成任务候选。

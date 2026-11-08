@@ -14,7 +14,7 @@ import SwiftUI
 
 /// Configuration view for the Codex CLI translation service.
 ///
-/// Hides API key, endpoint, model, temperature, and think-tag sections
+/// Hides API key, endpoint, model and think-tag sections
 /// since they are not applicable to CLI tools.
 struct CodexCLIServiceConfigurationView: View {
     // MARK: Lifecycle
@@ -114,7 +114,6 @@ struct CodexCLIServiceConfigurationView: View {
             showSupportedModelsSection: false,
             showUsedModelSection: false,
             showThinkTagContent: false,
-            showTemperatureSlider: false,
             showValidationButton: accessMode == .localCLI
         )
     }

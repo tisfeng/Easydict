@@ -46,8 +46,21 @@
 - 因此 agent 运行 `xcodebuild` 时始终显式指定 `-derivedDataPath`，指向按 checkout 派生、与 Xcode
   默认目录不相交的 `~/Library/Developer/Xcode/DerivedData/Easydict-Agent/<checkout-id>`；损坏时
   删除该目录重建，不切换到 Xcode 默认 DerivedData。
-- `xcodebuild test` 会启动同 bundle id 的 `Easydict-debug.app` 测试宿主，不要与 Xcode 的 Run/Test
-  同时运行；构建与 Archive 不受此限制。
+- Agent 构建、运行和测试沿用项目当前配置的 bundle ID，不为隔离验证额外覆盖
+  `PRODUCT_BUNDLE_IDENTIFIER`，除非用户明确要求；编译缓存通过独立 DerivedData 隔离。
+
+## 应用实例与界面验证
+
+- `xcodebuild test` 和 `test-without-building` 会启动独立的 Easydict 测试宿主；同 bundle ID
+  本身不是禁止并行的依据。运行前检查测试及宿主启动逻辑涉及的共享资源冲突（如偏好、文件、
+  固定端口、全局快捷键或设备），必要时隔离或串行，不默认退出用户的 Xcode 实例。
+- 界面验证默认复用已有实例，不使用 `open -n`（用户明确要求多实例验证除外）；未获授权
+  不退出或替换用户实例。
+- 启动前后按 bundle ID、产物路径核对 PID 和实例数，区分测试宿主与非预期重复实例。
+  出现异常或界面自动化失败时暂停继续启动，仅查询进程排查，避免界面操作意外拉起应用。
+- 结束时仅退出本任务创建的实例并恢复临时设置；需要恢复原应用时，按原路径只启动一次，
+  再通过不会启动应用的进程查询确认。
+
 ## 常用命令
 
 ```bash

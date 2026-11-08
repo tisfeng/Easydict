@@ -216,6 +216,7 @@ struct MarkdownRenderer {
 
         var attrs = baseAttributes(font: monospaceFont, paragraph: style)
         attrs[.backgroundColor] = codeBackground
+        attrs[.markdownCodeBlock] = true
         output.append(NSAttributedString(string: code, attributes: attrs))
         output.append(NSAttributedString(string: "\n", attributes: attrs))
     }
@@ -439,6 +440,9 @@ struct MarkdownRenderer {
 // MARK: - Custom attribute keys
 
 extension NSAttributedString.Key {
+    /// Identifies fenced code without coupling consumers to its font or background color.
+    static let markdownCodeBlock = NSAttributedString.Key("EDMarkdownCodeBlock")
+
     /// Marks a run that originated from a Markdown blockquote block, allowing
     /// host views to draw a side bar without re-parsing the source.
     static let markdownBlockquote = NSAttributedString.Key("EDMarkdownBlockquote")
