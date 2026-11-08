@@ -46,6 +46,28 @@ class MarkdownLabel: EZLabel {
         needsDisplay = true
     }
 
+    override func copy(_ sender: Any?) {
+        guard markdownEnabled, let textStorage,
+              selectedRanges.contains(where: { selection in
+                  let range = selection.rangeValue
+                  guard range.length > 0, NSMaxRange(range) <= textStorage.length else { return false }
+                  var containsMath = false
+                  textStorage.enumerateAttribute(.markdownMathSource, in: range) { source, _, stop in
+                      if source != nil {
+                          containsMath = true
+                          stop.pointee = true
+                      }
+                  }
+                  return containsMath
+              }) else {
+            super.copy(sender)
+            return
+        }
+
+        // AppKit's Copy action can bypass the single-type pasteboard writer.
+        _ = writeSelection(to: .general, types: [.string])
+    }
+
     /// Include TeX source when a selection containing rendered equations is copied as text.
     override func writeSelection(to pboard: NSPasteboard, type: NSPasteboard.PasteboardType) -> Bool {
         guard markdownEnabled, type == .string else {
