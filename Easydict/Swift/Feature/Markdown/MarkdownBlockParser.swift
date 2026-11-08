@@ -266,19 +266,19 @@ struct MarkdownBlockParser {
         var current = ""
         let chars = Array(line.trimmingCharacters(in: .whitespaces))
         var index = 0
-        var codeFence = 0
         while index < chars.count {
             if chars[index] == "\\", index + 1 < chars.count {
                 current.append(chars[index]); current.append(chars[index + 1]); index += 2; continue
             }
             if chars[index] == "`" {
                 let count = chars[index...].prefix(while: { $0 == "`" }).count
-                if codeFence == 0 { codeFence = count } else if codeFence == count { codeFence = 0 }
-                current += String(repeating: "`", count: count)
-                index += count
+                let openingEnd = index + count
+                let end = tableCodeSpanEnd(chars, after: openingEnd, count: count) ?? openingEnd
+                current += String(chars[index ..< end])
+                index = end
                 continue
             }
-            if chars[index] == "|", codeFence == 0 {
+            if chars[index] == "|" {
                 cells.append(current)
                 current = ""
             } else {
@@ -290,6 +290,22 @@ struct MarkdownBlockParser {
         if chars.first == "|" { cells.removeFirst() }
         if chars.last == "|", cells.last == "" { cells.removeLast() }
         return cells.map { $0.trimmingCharacters(in: .whitespaces) }
+    }
+
+    private func tableCodeSpanEnd(_ chars: [Character], after openingEnd: Int, count: Int) -> Int? {
+        var index = openingEnd
+        while index < chars.count {
+            if chars[index] == "\\", index + 1 < chars.count {
+                index += 2
+            } else if chars[index] == "`" {
+                let run = chars[index...].prefix(while: { $0 == "`" }).count
+                index += run
+                if run == count { return index }
+            } else {
+                index += 1
+            }
+        }
+        return nil
     }
 
     private func tableSeparator(_ line: String) -> [Alignment]? {
