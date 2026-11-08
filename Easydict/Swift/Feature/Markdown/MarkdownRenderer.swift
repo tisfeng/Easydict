@@ -29,6 +29,9 @@ struct MarkdownRenderer {
            .textBlocks.isEmpty != false {
             output.deleteCharacters(in: NSRange(location: output.length - 1, length: 1))
         }
+        // Tracking is a Latin typographic adjustment; Core Text fills it on
+        // cursive scripts with tatweel glyphs and breaks Arabic shaping.
+        output.applyKernExcludingCursiveScripts(0.2)
         return output
     }
 
@@ -64,7 +67,6 @@ struct MarkdownRenderer {
             .font: font ?? baseFont,
             .foregroundColor: quotes.isEmpty ? foregroundColor : NSColor.secondaryLabelColor,
             .paragraphStyle: paragraph,
-            .kern: 0.2,
         ]
         if !quotes.isEmpty { attrs[.markdownBlockquote] = quotes }
         return attrs
