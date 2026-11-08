@@ -10,13 +10,11 @@
 &lt;ul&gt;
 &lt;li&gt;Prevent a crash when a query window opens after the background OCR model reloads by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/57f3ad4d28e3d380ff8f90a49b5e32b4b9098c40"&gt;commit&lt;/a&gt;.&lt;/li&gt;
 &lt;li&gt;Render LaTeX formulas and improve Markdown tables and lists in translation results by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1375"&gt;#1375&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Copy selected formulas as TeX by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/19524c110ed6346c5e13186b27560cb29b83df49"&gt;commit&lt;/a&gt;.&lt;/li&gt;
 &lt;li&gt;Add Tencent TokenHub as a translation provider by @Jerry23011 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1346"&gt;#1346&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Retry OCR with a fallback when Apple Vision stalls on macOS 27 by @hengstchon in &lt;a href="https://github.com/tisfeng/Easydict/pull/1382"&gt;#1382&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Improve QR code detection during screenshot recognition by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/3fce1a81056bf220583a85ced33800d889693c42"&gt;commit&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;Keep the current app focused during screenshot capture and show the selection overlay without animation by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/d8dcfd332cbadd9c5858387f62c270ceb7654cb7"&gt;focus fix&lt;/a&gt; and &lt;a href="https://github.com/tisfeng/Easydict/commit/221f5be81ea1bf3e3df3c7f6597e86773f0da4de"&gt;overlay update&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Keep the current app focused during screenshot capture by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/d8dcfd332cbadd9c5858387f62c270ceb7654cb7"&gt;focus fix&lt;/a&gt;.&lt;/li&gt;
 &lt;li&gt;Prevent stale selection popups when dragging in another app or in Control Center by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1325"&gt;#1325&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Add space between the model field and its fetch button in service settings by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/3801364f5da5dcb0392a78c6b4e2d84ba22809b2"&gt;commit&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;New Contributors&lt;/h2&gt;
 &lt;ul&gt;
