@@ -232,6 +232,7 @@ final class EventMonitor: NSObject {
     private var isAutoSelectTextMonitoringEnabled = false
     private var autoSelectionGeneration: UInt = 0
     private var selectionEventScope: EventScope?
+    private var dragStartWindowOwnerPID: pid_t?
     private var applicationActivationObserver: NSObjectProtocol?
 }
 
@@ -292,9 +293,15 @@ extension EventMonitor {
 
         switch event.type {
         case .leftMouseUp:
+            defer { dragStartWindowOwnerPID = nil }
             EZWindowManager.shared().lastPoint = mouseLocation
             endPoint = mouseLocation
             if triggerEvaluator.checkIfLeftMouseDragged() {
+                // System overlays can receive the drag without becoming the AX selection target.
+                if let dragStartWindowOwnerPID,
+                   dragStartWindowOwnerPID != frontmostApplication?.processIdentifier {
+                    return
+                }
                 triggerType = .dragged
                 let frontmostTriggerType = appContextProvider.frontmostAppTriggerType(
                     forceGetSelectedTextType: MyConfiguration.shared.forceGetSelectedTextType
@@ -306,6 +313,9 @@ extension EventMonitor {
         case .leftMouseDown:
             invalidateAutoSelection()
             selectionEventScope = scope
+            dragStartWindowOwnerPID = scope == .global && isAutoSelectTextMonitoringEnabled
+                ? windowOwnerPID(at: mouseLocation)
+                : nil
             triggerEvaluator.updateRecordedEvents(event)
             handleLeftMouseDown(event, mouseLocation: mouseLocation)
         case .leftMouseDragged:
@@ -498,6 +508,17 @@ extension EventMonitor {
         let popButtonWindow = EZWindowManager.shared().popButtonWindow
         let windowNumberAtPoint = NSWindow.windowNumber(at: mouseLocation, belowWindowWithWindowNumber: 0)
         return windowNumberAtPoint == popButtonWindow.windowNumber
+    }
+
+    private func windowOwnerPID(at mouseLocation: CGPoint) -> pid_t? {
+        let windowNumber = NSWindow.windowNumber(at: mouseLocation, belowWindowWithWindowNumber: 0)
+        guard windowNumber > 0, let windowID = CGWindowID(exactly: windowNumber) else { return nil }
+        let options: CGWindowListOption = [.optionOnScreenAboveWindow, .optionIncludingWindow]
+        let windows = CGWindowListCopyWindowInfo(options, windowID) as? [[String: Any]]
+        guard let window = windows?.last, window[kCGWindowNumber as String] as? CGWindowID == windowID else {
+            return nil
+        }
+        return window[kCGWindowOwnerPID as String] as? pid_t
     }
 
     /// Handles mouse-moved events with throttling to prevent excessive computation.
