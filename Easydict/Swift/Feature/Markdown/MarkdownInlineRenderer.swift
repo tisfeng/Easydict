@@ -126,8 +126,10 @@ struct MarkdownInlineRenderer {
             $0 != "<" && $0 != ">" && !$0.isWhitespace
         }
         guard content.endIndex < chars.count, chars[content.endIndex] == ">",
-              String(content).range(of: #"^[a-zA-Z][a-zA-Z0-9+.-]{1,31}:"#,
-                                    options: .regularExpression) != nil else { return nil }
+              String(content).range(
+                  of: #"^[a-zA-Z][a-zA-Z0-9+.-]{1,31}:"#,
+                  options: .regularExpression
+              ) != nil else { return nil }
         return content.endIndex + 1
     }
 
