@@ -295,9 +295,7 @@ struct MarkdownBlockParser {
     private func tableCodeSpanEnd(_ chars: [Character], after openingEnd: Int, count: Int) -> Int? {
         var index = openingEnd
         while index < chars.count {
-            if chars[index] == "\\", index + 1 < chars.count {
-                index += 2
-            } else if chars[index] == "`" {
+            if chars[index] == "`" {
                 let run = chars[index...].prefix(while: { $0 == "`" }).count
                 index += run
                 if run == count { return index }
