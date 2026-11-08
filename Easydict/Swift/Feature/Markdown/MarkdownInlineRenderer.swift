@@ -120,6 +120,17 @@ struct MarkdownInlineRenderer {
         return nil
     }
 
+    private func autolinkEnd(_ chars: [Character], start: Int) -> Int? {
+        guard chars[start] == "<" else { return nil }
+        let content = chars[(start + 1)...].prefix {
+            $0 != "<" && $0 != ">" && !$0.isWhitespace
+        }
+        guard content.endIndex < chars.count, chars[content.endIndex] == ">",
+              String(content).range(of: #"^[a-zA-Z][a-zA-Z0-9+.-]{1,31}:"#,
+                                    options: .regularExpression) != nil else { return nil }
+        return content.endIndex + 1
+    }
+
     private func protectMath(_ source: String, prefix: String) -> (text: String, formulas: [Formula]) {
         let chars = Array(source)
         var text = ""
@@ -129,17 +140,24 @@ struct MarkdownInlineRenderer {
             // Code spans are opaque, including multiple-backtick spans containing literal backticks.
             if chars[index] == "`" {
                 let count = chars[index...].prefix(while: { $0 == "`" }).count
-                var end = index + count
+                let openingEnd = index + count
+                var spanEnd = openingEnd
+                var end = openingEnd
                 while end < chars.count {
                     if chars[end] == "`" {
                         let closing = chars[end...].prefix(while: { $0 == "`" }).count
                         end += closing
-                        if closing == count { break }
+                        if closing == count {
+                            spanEnd = end
+                            break
+                        }
                     } else { end += 1 }
                 }
-                text += String(chars[index ..< end]); index = end; continue
+                text += String(chars[index ..< spanEnd])
+                index = spanEnd
+                continue
             }
-            if let end = linkDestinationEnd(chars, start: index) {
+            if let end = linkDestinationEnd(chars, start: index) ?? autolinkEnd(chars, start: index) {
                 text += String(chars[index ..< end])
                 index = end
                 continue
@@ -162,20 +180,27 @@ struct MarkdownInlineRenderer {
                 continue
             }
             let contentStart = index + open.count
+            let numericOpener = open == "$" && chars[contentStart].isNumber
             var end = contentStart
             var closing: Int?
             while end + close.count <= chars.count {
-                if String(chars[end ..< end + close.count]) == close,
-                   end > contentStart, !chars[end - 1].isWhitespace || close != "$" {
-                    // Avoid interpreting ordinary price pairs such as "$5 and $10" as math.
-                    if close != "$" || end + 1 == chars.count || !chars[end + 1].isNumber {
-                        closing = end; break
+                if String(chars[end ..< end + close.count]) == close, end > contentStart {
+                    // A price-like opener must not consume a later dollar-delimited formula.
+                    if numericOpener, end + 1 < chars.count, !chars[end + 1].isWhitespace,
+                       chars[end - 1].isWhitespace || "([{".contains(chars[end - 1]) {
+                        break
                     }
+                    if close != "$" || (!chars[end - 1].isWhitespace &&
+                        (end + 1 == chars.count || !chars[end + 1].isNumber)) {
+                        closing = end
+                        break
+                    }
+                    if numericOpener { break }
                 }
                 if chars[end] == "\\" { end += 1 }
                 end += 1
             }
-            if closing == nil, open == "$", chars[contentStart].isNumber {
+            if closing == nil, numericOpener {
                 text.append("$")
                 index += 1
                 continue

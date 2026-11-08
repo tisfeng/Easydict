@@ -126,7 +126,7 @@ struct MarkdownBlockParser {
                     index += 2
                     var rows: [[String]] = []
                     while index < lines.count, lines[index].contains("|"),
-                          !lines[index].trimmingCharacters(in: .whitespaces).isEmpty {
+                          !startsBlock(lines, at: index, lookAhead: false) {
                         rows.append(tableCells(lines[index]))
                         index += 1
                     }
@@ -147,13 +147,14 @@ struct MarkdownBlockParser {
         return blocks
     }
 
-    private func startsBlock(_ lines: [String], at index: Int) -> Bool {
+    private func startsBlock(_ lines: [String], at index: Int, lookAhead: Bool = true) -> Bool {
         let line = lines[index].trimmingCharacters(in: .whitespaces)
+        let startsMath = (line.hasPrefix("$$") || line.hasPrefix("\\["))
+            && (lookAhead || displayMath(lines, start: index) != nil)
         return line.isEmpty || fenceStart(line) != nil || line.hasPrefix(">") || heading(line) != nil
-            || isRule(line) || listItem(lines[index]) != nil || line.hasPrefix("$$") || line.hasPrefix("\\[")
-            ||
-            (index + 1 < lines
-                .count && (setextLevel(lines[index + 1]) != nil || tableSeparator(lines[index + 1]) != nil))
+            || isRule(line) || listItem(lines[index]) != nil || startsMath
+            || (lookAhead && index + 1 < lines.count
+                && (setextLevel(lines[index + 1]) != nil || tableSeparator(lines[index + 1]) != nil))
     }
 
     private func fenceStart(_ line: String) -> (marker: Character, count: Int)? {
