@@ -7860,6 +7860,53 @@
         }
       }
     },
+    "screenshot.tip.keyboard_unavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keyboard isolation is unavailable. Avoid typing; drag to capture or right-click to cancel. Check Easydict’s Accessibility permission in System Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El aislamiento del teclado no está disponible. Evita escribir; arrastra para capturar o haz clic derecho para cancelar. Comprueba el permiso de Accesibilidad de Easydict en Ajustes del Sistema."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーボード入力を遮断できません。文字を入力せず、ドラッグして撮影するか、右クリックでキャンセルしてください。システム設定で Easydict のアクセシビリティ権限を確認してください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izolácia klávesnice nie je dostupná. Nepíšte; potiahnutím vytvorte snímku alebo pravým kliknutím zrušte. Skontrolujte povolenie Prístupnosti pre Easydict v Systémových nastaveniach."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "کی بورڈ ان پٹ کو الگ نہیں کیا جا سکتا۔ ٹائپ نہ کریں؛ اسکرین شاٹ کے لیے ڈریگ کریں یا منسوخ کرنے کے لیے دایاں کلک کریں۔ سسٹم سیٹنگز میں Easydict کی Accessibility اجازت چیک کریں۔"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法隔离键盘输入。请勿打字；拖动鼠标截图，或右键取消。请在系统设置中检查 Easydict 的辅助功能权限。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法隔離鍵盤輸入。請勿打字；拖動滑鼠截圖，或右鍵取消。請在系統設定中檢查 Easydict 的輔助使用權限。"
+          }
+        }
+      }
+    },
     "select_query_text_when_window_activate" : {
       "extractionState" : "manual",
       "localizations" : {
