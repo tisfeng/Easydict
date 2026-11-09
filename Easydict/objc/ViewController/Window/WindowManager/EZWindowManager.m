@@ -910,7 +910,7 @@ static EZWindowManager *_instance;
     NSImage *image = pasteboard.image;
     if (image) {
         BOOL autoQuery = [MyConfiguration.shared autoQueryOCRText];
-        [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:self.actionType];
+        [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:EZActionTypePasteboardOCR];
         return;
     }
 

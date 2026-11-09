@@ -492,12 +492,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     [self.queryView startLoadingAnimation:NO];
-    if (actionType != EZActionTypeOCRQuery && actionType != EZActionTypePasteboardOCR) {
+    if (![actionType isEqualToString:EZActionTypeOCRQuery] && ![actionType isEqualToString:EZActionTypePasteboardOCR]) {
         self.queryModel.ocrImage = nil;
     }
     [self restoreNormalServices];
     self.inputText = text;
-    self.queryModel.actionType = actionType == EZActionTypeFormulaScreenshot ? EZActionTypeInputQuery : actionType;
+    self.queryModel.actionType = [actionType isEqualToString:EZActionTypeFormulaScreenshot] ? EZActionTypeInputQuery : actionType;
     self.queryView.isTypingChinese = NO;
 
     if ([self handleEasydictScheme:text]) {
@@ -551,13 +551,14 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
-    BOOL isFormulaRetry = actionType == EZActionTypeFormulaScreenshot
-        && self.queryModel.actionType == actionType && self.queryModel.ocrImage == image;
+    BOOL isFormula = [actionType isEqualToString:EZActionTypeFormulaScreenshot];
+    BOOL isFormulaRetry = isFormula && [self.queryModel.actionType isEqualToString:actionType]
+        && self.queryModel.ocrImage == image;
     EZLanguage detectedLanguage = isFormulaRetry ? self.queryModel.detectedLanguage : EZLanguageAuto;
     self.queryModel.actionType = actionType;
     self.queryModel.ocrImage = image;
 
-    if (actionType == EZActionTypeFormulaScreenshot) {
+    if (isFormula) {
         [self.queryModel stopAllService];
         [self.queryView startLoadingAnimation:NO];
         self.inputText = @"";
@@ -605,7 +606,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             return;
         }
 
-        if (actionType == EZActionTypeScreenshotOCR) {
+        if ([actionType isEqualToString:EZActionTypeScreenshotOCR]) {
             [inputText copyToPasteboard];
 
             dispatch_block_on_main_safely(^{
@@ -616,7 +617,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         }
 
 
-        if (actionType != EZActionTypeScreenshotOCR) {
+        if (![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
             [self.queryView startLoadingAnimation:NO];
 
             self.inputText = inputText;
@@ -657,7 +658,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     // If has designated language, we don't need to detect language again.
-    if (language == EZLanguageAuto) {
+    if ([language isEqualToString:EZLanguageAuto]) {
         self.queryModel.detectedLanguage = EZLanguageAuto;
         self.queryModel.needDetectLanguage = YES;
     } else {
@@ -866,8 +867,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)startQueryWithType:(EZActionType)actionType {
     NSImage *ocrImage = self.queryModel.ocrImage;
 
-    if (ocrImage && (actionType == EZActionTypeOCRQuery || actionType == EZActionTypePasteboardOCR
-                     || actionType == EZActionTypeFormulaScreenshot)) {
+    if (ocrImage && ([actionType isEqualToString:EZActionTypeOCRQuery]
+                     || [actionType isEqualToString:EZActionTypePasteboardOCR]
+                     || [actionType isEqualToString:EZActionTypeFormulaScreenshot])) {
         BOOL autoQuery = self.config.autoCopyOCRText || self.config.autoQueryPastedText || self.queryModel.autoQuery;
         [self startOCRImage:ocrImage actionType:actionType autoQuery:autoQuery];
     } else {
@@ -933,7 +935,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
     NSString *queryText = [queryModel.queryText copy];
-    NSImage *screenshot = queryModel.actionType == EZActionTypeFormulaScreenshot ? queryModel.ocrImage : nil;
+    NSImage *screenshot = [queryModel.actionType isEqualToString:EZActionTypeFormulaScreenshot] ? queryModel.ocrImage : nil;
     BOOL saveLocally = MyConfiguration.shared.localAutoSave;
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
         if (error) {
@@ -1011,7 +1013,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         MMLogWarn(@"service disabled: %@", service.serviceTypeWithUniqueIdentifier);
         return;
     }
-    BOOL translatesScreenshot = queryModel.actionType == EZActionTypeFormulaScreenshot && queryModel.ocrImage
+    BOOL translatesScreenshot = [queryModel.actionType isEqualToString:EZActionTypeFormulaScreenshot] && queryModel.ocrImage
         && self.showingFormulaScreenshot && service == self.firstService;
     if (self.showingFormulaScreenshot && !translatesScreenshot) {
         return;

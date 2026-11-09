@@ -440,7 +440,7 @@
     
     if (self.service.isStream) {
         BOOL waitingForFormula = self.result.isLoading
-            && self.result.queryModel.actionType == EZActionTypeFormulaScreenshot;
+            && [self.result.queryModel.actionType isEqualToString:EZActionTypeFormulaScreenshot];
         showStopButton = waitingForFormula || (self.result.hasTranslatedResult && !self.result.isStreamFinished);
     }
     
