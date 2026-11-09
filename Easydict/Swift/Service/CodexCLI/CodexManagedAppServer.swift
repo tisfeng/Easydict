@@ -13,6 +13,12 @@ import Foundation
 /// in an independent ephemeral thread. Requests are multiplexed by thread and turn
 /// identifiers so cancellation never terminates work owned by another window.
 actor CodexManagedAppServer {
+    // MARK: Lifecycle
+
+    private init(requiresChatGPTLogin: Bool = true) {
+        self.requiresChatGPTLogin = requiresChatGPTLogin
+    }
+
     // MARK: Internal
 
     struct TranslationRequest: @unchecked Sendable {
@@ -38,6 +44,7 @@ actor CodexManagedAppServer {
 
     static let shared = CodexManagedAppServer()
     static let local = CodexManagedAppServer()
+    static let localCatalog = CodexManagedAppServer(requiresChatGPTLogin: false)
     static let providerID = "easydict"
 
     func runtime() async throws -> CodexManagedRuntime {
@@ -210,6 +217,8 @@ actor CodexManagedAppServer {
 
     // MARK: Private
 
+    private let requiresChatGPTLogin: Bool
+
     private struct RPCResponse: @unchecked Sendable {
         let object: [String: Any]
     }
@@ -343,7 +352,10 @@ extension CodexManagedAppServer {
         }
         if session != nil { stopSession(error: CancellationError()) }
 
-        let process = CodexManagedAppServerProcess(runtime: runtime)
+        let process = CodexManagedAppServerProcess(
+            runtime: runtime,
+            requiresChatGPTLogin: requiresChatGPTLogin
+        )
         let session = Session(runtime: runtime, process: process)
         self.session = session
         cachedRuntime = runtime

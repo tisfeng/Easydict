@@ -22,6 +22,8 @@ enum CodexCLIError: Error, LocalizedError, Equatable {
     case unsupportedReasoningEffort
     /// The CLI exited with an authentication error (not signed in / unauthorized).
     case notLoggedIn
+    case screenshotEncodingFailed
+    case screenshotTooLarge
     /// The CLI exited with a quota / rate-limit error.
     /// - Parameter message: Optional human-readable message from the CLI.
     case quotaExceeded(message: String?)
@@ -38,6 +40,10 @@ enum CodexCLIError: Error, LocalizedError, Equatable {
             return String(localized: "service.codex_cli.not_installed")
         case .notLoggedIn:
             return String(localized: "service.codex_cli.not_logged_in")
+        case .screenshotEncodingFailed:
+            return String(localized: "service.codex_cli.screenshot.encoding_failed")
+        case .screenshotTooLarge:
+            return String(localized: "service.codex_cli.screenshot.too_large")
         case let .quotaExceeded(message):
             let base = String(localized: "service.codex_cli.quota_exceeded")
             if let message, !message.isEmpty {

@@ -16,7 +16,7 @@ import SwiftUI
 /// The `default` case omits the CLI override and keeps the user's config.
 /// Codex does not support `none` for model reasoning effort, so it is not
 /// exposed here.
-enum CodexReasoningEffort: String, CaseIterable, Codable, Defaults.Serializable {
+enum CodexReasoningEffort: String, CaseIterable, Codable, Defaults.Serializable, Defaults.PreferRawRepresentable {
     /// Sentinel meaning "use whatever is in ~/.codex/config.toml";
     /// the runner skips the flag.
     case `default`

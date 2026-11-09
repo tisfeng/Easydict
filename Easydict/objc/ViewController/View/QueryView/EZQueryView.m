@@ -27,7 +27,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
 @property (nonatomic, strong) EZHoverButton *textCopyButton;
-@property (nonatomic, strong, nullable) EDMarkdownLabel *screenshotSourceView;
+@property (nonatomic, strong, nullable) EDScreenshotSourceLabel *screenshotSourceView;
 
 @property (nonatomic, strong) EZDetectLanguageButton *detectButton;
 @property (nonatomic, strong) EZHoverButton *clearButton;
@@ -345,8 +345,15 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 - (void)updateScreenshotSourceView:(nullable NSString *)source {
     if (source.length) {
         if (!self.screenshotSourceView) {
-            EDMarkdownLabel *preview = [[EDMarkdownLabel alloc] initWithFrame:self.scrollView.contentView.bounds];
-            preview.rendersMath = YES;
+            EDScreenshotSourceLabel *preview = [[EDScreenshotSourceLabel alloc] initWithFrame:self.scrollView.contentView.bounds];
+            mm_weakify(self);
+            preview.beginEditing = ^NSTextView *{
+                mm_strongify(self);
+                self.queryModel.actionType = EZActionTypeInputQuery;
+                [self updateScreenshotSourceView:nil];
+                [self.window makeFirstResponder:self.textView];
+                return self.textView;
+            };
             preview.font = self.textView.font;
             preview.textContainerInset = self.textView.textContainerInset;
             preview.textContainer.widthTracksTextView = YES;
@@ -356,10 +363,15 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
             preview.delegate = self;
             self.screenshotSourceView = preview;
         }
-        EDMarkdownLabel *preview = self.screenshotSourceView;
+        EDScreenshotSourceLabel *preview = self.screenshotSourceView;
+        preview.markdownEnabled = MyConfiguration.shared.enableMarkdownRendering;
         if (self.scrollView.documentView != preview) {
+            BOOL restoreFocus = self.window.firstResponder == self.textView;
             preview.frame = self.scrollView.contentView.bounds;
             self.scrollView.documentView = preview;
+            if (restoreFocus) {
+                [self.window makeFirstResponder:preview];
+            }
         }
         if (![preview.text isEqualToString:source]) {
             preview.text = source;

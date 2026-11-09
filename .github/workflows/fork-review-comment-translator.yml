@@ -1,0 +1,47 @@
+name: fork-review-comment-translator
+
+on:
+  workflow_run:
+    workflows: [issue-translator]
+    types: [completed]
+
+jobs:
+  publish:
+    if: >-
+      github.event.workflow_run.event == 'pull_request_review_comment' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      pull-requests: write
+    concurrency:
+      group: fork-review-comment-${{ github.event.workflow_run.id }}
+    steps:
+      - name: Read review comment IDs
+        id: review
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+          SOURCE_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+        run: |
+          gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN/artifacts" |
+            jq -sr --arg prefix "fork-review-comment-$SOURCE_ATTEMPT-" '
+              [.[].artifacts[] | select(.expired == false) | .name |
+                select(startswith($prefix)) | ltrimstr($prefix)] |
+              if length == 0 then empty
+              elif length != 1 then error("Expected one review comment marker")
+              elif .[0] | test("^[1-9][0-9]*-[1-9][0-9]*\\z") then
+                .[0] | split("-") | "pull_number=\(.[0])\ncomment_id=\(.[1])"
+              else error("Invalid review comment marker")
+              end
+            ' >> "$GITHUB_OUTPUT"
+      - name: Translate and reply to review comment
+        if: steps.review.outputs.comment_id != ''
+        uses: tisfeng/issues-translate-action@584e38759d2c8af04b459e905438ecc0f325f675 # v2.10.0
+        with:
+          REVIEW_COMMENT_ID: ${{ steps.review.outputs.comment_id }}
+          REVIEW_PULL_NUMBER: ${{ steps.review.outputs.pull_number }}
+          PRIMARY_LANGUAGE: zh-CN
+          SECONDARY_LANGUAGE: en
+          CUSTOM_BOT_NOTE: Bot automatically translated this content.

@@ -13,8 +13,9 @@ import Foundation
 final class CodexManagedAppServerProcess: @unchecked Sendable {
     // MARK: Lifecycle
 
-    init(runtime: CodexManagedRuntime?) {
+    init(runtime: CodexManagedRuntime?, requiresChatGPTLogin: Bool = true) {
         self.runtime = runtime
+        self.requiresChatGPTLogin = requiresChatGPTLogin
     }
 
     deinit {
@@ -117,6 +118,7 @@ final class CodexManagedAppServerProcess: @unchecked Sendable {
     private static let maximumStderrSize = 1024 * 1024
 
     private let runtime: CodexManagedRuntime?
+    private let requiresChatGPTLogin: Bool
     private let stateLock = NSLock()
     private let writeLock = NSLock()
     private let ioQueue = DispatchQueue(
@@ -128,12 +130,14 @@ final class CodexManagedAppServerProcess: @unchecked Sendable {
     private var messageReceived: (@Sendable (Data) -> ())?
     private var terminationReceived: (@Sendable (Data) -> ())?
 
-    /// Reuse the installed CLI's ChatGPT sign-in for in-memory screenshot turns.
+    /// Use the installed CLI's configuration, restricting screenshot turns to ChatGPT sign-in.
     private func configureLocalProcess(_ process: Process) throws {
         let executable = try CodexCLIRunner.detectCodexBinary()
         var environment = CodexCLIRunner.buildProcessEnvironment()
-        for key in ["OPENAI_API_KEY", "CODEX_API_KEY", "CODEX_ACCESS_TOKEN"] {
-            environment.removeValue(forKey: key)
+        if requiresChatGPTLogin {
+            for key in ["OPENAI_API_KEY", "CODEX_API_KEY", "CODEX_ACCESS_TOKEN"] {
+                environment.removeValue(forKey: key)
+            }
         }
         environment["RUST_LOG"] = "off"
         process.executableURL = URL(fileURLWithPath: executable)
@@ -141,7 +145,6 @@ final class CodexManagedAppServerProcess: @unchecked Sendable {
         process.currentDirectoryURL = FileManager.default.temporaryDirectory
         process.arguments = [
             "app-server", "--listen", "stdio://",
-            "-c", #"forced_login_method="chatgpt""#,
             "-c", #"history.persistence="none""#,
             "-c", #"web_search="disabled""#,
             "-c", "mcp_servers={}",
@@ -149,6 +152,9 @@ final class CodexManagedAppServerProcess: @unchecked Sendable {
             "-c", "analytics.enabled=false",
             "-c", "feedback.enabled=false",
         ] + CodexCLIRunner.disabledToolFeatures.flatMap { ["--disable", $0] }
+        if requiresChatGPTLogin {
+            process.arguments?.append(contentsOf: ["-c", #"forced_login_method="chatgpt""#])
+        }
     }
 
     private func appendStdout(_ data: Data) {

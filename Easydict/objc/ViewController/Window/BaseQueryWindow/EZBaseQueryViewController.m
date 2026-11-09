@@ -492,7 +492,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     [self.queryView startLoadingAnimation:NO];
-    self.queryModel.ocrImage = nil;
+    if (actionType != EZActionTypeOCRQuery && actionType != EZActionTypePasteboardOCR) {
+        self.queryModel.ocrImage = nil;
+    }
     [self restoreNormalServices];
     self.inputText = text;
     self.queryModel.actionType = actionType == EZActionTypeFormulaScreenshot ? EZActionTypeInputQuery : actionType;
@@ -549,6 +551,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
+    BOOL isFormulaRetry = actionType == EZActionTypeFormulaScreenshot
+        && self.queryModel.actionType == actionType && self.queryModel.ocrImage == image;
+    EZLanguage detectedLanguage = isFormulaRetry ? self.queryModel.detectedLanguage : EZLanguageAuto;
     self.queryModel.actionType = actionType;
     self.queryModel.ocrImage = image;
 
@@ -556,6 +561,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         [self.queryModel stopAllService];
         [self.queryView startLoadingAnimation:NO];
         self.inputText = @"";
+        self.queryModel.detectedLanguage = detectedLanguage;
 
         EZQueryService *service = [EZCodexCLIService makeFormulaScreenshotService];
         [self resetService:service];
@@ -563,6 +569,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         self.services = @[ service ];
         self.serviceTypeIds = @[ service.serviceTypeWithUniqueIdentifier ];
         self.firstService = service;
+        [self autoCopyTranslatedTextOfService:service];
         [self.tableView reloadData];
         [self queryWithModel:self.queryModel service:service];
         return;
@@ -779,7 +786,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     void (^playAudioBlock)(void) = ^{
-        NSString *queryText = self.queryText;
+        NSString *queryText = self.queryModel.screenshotSourceMarkdown ?: self.queryText;
         NSString *textLanguage = self.queryModel.queryFromLanguage;
         BOOL isEnglishWord = [queryText isEnglishWordWithLanguage:textLanguage];
 
@@ -798,7 +805,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     };
 
     // Before playing audio, we should detect the query text language.
-    if (self.queryModel.hasQueryFromLanguage) {
+    if (self.queryModel.hasQueryFromLanguage || self.queryModel.screenshotSourceMarkdown.length) {
         playAudioBlock();
     } else {
         [self detectQueryText:^(NSString *_Nonnull language) {

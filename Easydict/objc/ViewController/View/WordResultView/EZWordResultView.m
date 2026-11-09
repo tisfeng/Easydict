@@ -274,7 +274,6 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
 
             if (text) {
                 EZTranslationResultLabel *resultLabel = [self makeResultTextLabel];
-                resultLabel.rendersMath = result.queryModel.actionType == EZActionTypeFormulaScreenshot;
                 resultLabel.markdownEnabled = [self.service isStream] && errorMessage.length == 0 && result.isMarkdownRenderingEnabled;
                 resultLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
                 [self addSubview:resultLabel];

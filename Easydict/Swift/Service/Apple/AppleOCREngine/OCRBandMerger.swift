@@ -49,8 +49,6 @@ class OCRBandMerger {
             let previousSection = band.sections[i - 1]
 
             log("📋 Analyzing section pair [\(i - 1) → \(i)]:")
-            log("  Previous section text: \(previousSection.mergedText.prefix(20))")
-            log("  Current section text:  \(currentSection.mergedText.prefix(20))")
 
             // Determine merge strategy for side-by-side sections
             let mergeStrategy = determineSideBySideMergeStrategy(
@@ -100,8 +98,6 @@ class OCRBandMerger {
         let pair = OCRObservationPair(current: current, previous: previous)
 
         log("  Analyzing side-by-side section pair:")
-        log("    Previous: '\(previousText)'")
-        log("    Current: '\(currentText)'")
 
         // Use the current section's metrics for analysis
         let dashHandler = OCRDashHandler(metrics: previousSection)
@@ -162,7 +158,6 @@ class OCRBandMerger {
 
         let finalText = result.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        log("🎯 Final section merged text: \(finalText.prefix(20))...")
         return finalText
     }
 }

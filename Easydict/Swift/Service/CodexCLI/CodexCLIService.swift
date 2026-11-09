@@ -92,17 +92,19 @@ final class CodexCLIService: StreamService {
     }
 
     private static func screenshotDataURL(_ image: NSImage) throws -> String {
-        guard let cgImage = image.toCGImage() else { throw CodexManagedError.invalidResponse }
+        guard let cgImage = image.toCGImage() else { throw CodexCLIError.screenshotEncodingFailed }
         let bitmap = NSBitmapImageRep(cgImage: cgImage)
         let maximumBytes = 10 * 1024 * 1024
-        if let png = bitmap.representation(using: .png, properties: [:]), png.count <= maximumBytes {
+        let png = bitmap.representation(using: .png, properties: [:])
+        if let png, png.count <= maximumBytes {
             return "data:image/png;base64," + png.base64EncodedString()
         }
-        if let jpeg = bitmap.representation(using: .jpeg, properties: [.compressionFactor: 0.94]),
-           jpeg.count <= maximumBytes {
+        let jpeg = bitmap.representation(using: .jpeg, properties: [.compressionFactor: 0.94])
+        if let jpeg, jpeg.count <= maximumBytes {
             return "data:image/jpeg;base64," + jpeg.base64EncodedString()
         }
-        throw CodexManagedError.invalidResponse
+        if png == nil, jpeg == nil { throw CodexCLIError.screenshotEncodingFailed }
+        throw CodexCLIError.screenshotTooLarge
     }
 
     // MARK: Public
@@ -339,7 +341,8 @@ final class CodexCLIService: StreamService {
 
         let requiresImages = isFormulaScreenshotService
         Task {
-            let catalog = try? await CodexManagedAppServer.local.localModelList()
+            let server = requiresImages ? CodexManagedAppServer.local : CodexManagedAppServer.localCatalog
+            let catalog = try? await server.localModelList()
             guard CodexServiceConfiguration(uuid: uuid).mode == configuration.mode else {
                 completion([], false)
                 return
@@ -370,8 +373,13 @@ final class CodexCLIService: StreamService {
             else { return }
         }
         let effortKey = CodexServiceConfiguration.effortKey(uuid: uuid, mode: mode)
-        if Defaults[effortKey] != effort { Defaults[effortKey] = effort }
-        if model != identifier { model = identifier }
+        let effortChanged = Defaults[effortKey] != effort
+        if effortChanged { Defaults[effortKey] = effort }
+        if model != identifier {
+            model = identifier
+        } else if effortChanged {
+            notifyServiceConfigurationChanged(autoQuery: true)
+        }
     }
 
     @MainActor override var selectableModels: [String] {

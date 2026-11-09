@@ -157,6 +157,9 @@ final class CodexManagedTranslation: @unchecked Sendable {
                 return result
             } catch {
                 clearAppServerRequest(requestID)
+                if runtime == nil, error as? CodexManagedError == .loginRequired {
+                    throw CodexCLIError.notLoggedIn
+                }
                 throw error
             }
         } onCancel: { [weak self] in

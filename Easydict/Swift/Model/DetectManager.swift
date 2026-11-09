@@ -62,6 +62,9 @@ public final class DetectManager: NSObject {
         let requestImage = requestModel.ocrImage
         let requestAction = requestModel.actionType
         let requestInput = requestModel.inputText
+        let requestLanguage = requestModel.queryFromLanguage
+        let requestID = UUID()
+        latestOCRRequestID = requestID
         ocr { [weak self] ocrResult, error in
             guard let self else {
                 completion(QueryModel(), error)
@@ -69,8 +72,9 @@ public final class DetectManager: NSObject {
             }
 
             // A superseded OCR request must not replace a newer screenshot preview.
-            guard queryModel === requestModel, requestModel.ocrImage === requestImage,
-                  requestModel.actionType == requestAction, requestModel.inputText == requestInput else { return }
+            guard latestOCRRequestID == requestID, queryModel === requestModel,
+                  requestModel.ocrImage === requestImage, requestModel.actionType == requestAction,
+                  requestModel.inputText == requestInput, requestModel.queryFromLanguage == requestLanguage else { return }
             guard let ocrResult else {
                 completion(queryModel, error)
                 return
@@ -161,12 +165,14 @@ public final class DetectManager: NSObject {
     /// Performs OCR on the query model's image.
     /// - Parameter completion: Callback with the OCR result and optional error.
     public func ocr(completion: @escaping (EZOCRResult?, Error?) -> ()) {
-        guard queryModel.ocrImage != nil else {
+        guard let image = queryModel.ocrImage else {
             let error = QueryError.error(type: .parameter, message: "ocr image cannot be nil")
             completion(nil, error)
             return
         }
 
+        let sourceLanguage = queryModel.queryFromLanguage
+        let targetLanguage = queryModel.queryTargetLanguage
         Task { [weak self] in
             guard let self else {
                 completion(nil, nil)
@@ -174,7 +180,7 @@ public final class DetectManager: NSObject {
             }
 
             do {
-                let result = try await ocrService.ocr(queryModel)
+                let result = try await ocrService.ocr(image, from: sourceLanguage, to: targetLanguage)
                 await MainActor.run {
                     completion(result, nil)
                 }
@@ -203,6 +209,8 @@ public final class DetectManager: NSObject {
     // MARK: Private
 
     // MARK: - Private Properties
+
+    private var latestOCRRequestID: UUID?
 
     private var allowsDetachedDetection = false
 

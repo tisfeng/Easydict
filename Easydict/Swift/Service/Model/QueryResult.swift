@@ -243,7 +243,7 @@ public class QueryResult: NSObject {
     /// override (set via the inline toggle button) wins; otherwise the global
     /// `Defaults[.enableMarkdownRendering]` value is used.
     var isMarkdownRenderingEnabled: Bool {
-        markdownRenderingOverride ?? (queryModel.actionType == .formulaScreenshot || Defaults[.enableMarkdownRendering])
+        markdownRenderingOverride ?? Defaults[.enableMarkdownRendering]
     }
 
     var hasShowingResult: Bool {

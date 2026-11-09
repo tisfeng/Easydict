@@ -112,9 +112,10 @@ recognition language in settings.
 Enable **STEM formula mode** at the top of the translation window or in Settings → General, then
 capture an area with the screenshot translation shortcut (default `Option + S`). The mode sends
 the screenshot to Codex for processing with a vision-capable model. Install the local Codex CLI
-and sign in with ChatGPT first. Both the source and translation render Markdown and LaTeX. The
-copy buttons provide the underlying LaTeX source. Turn off the mode to use ordinary OCR and the
-enabled translation services on your next capture.
+and sign in with ChatGPT first. When Markdown rendering is enabled, both screenshot panels display
+LaTeX, and the copy buttons provide the underlying source. The same rendering setting applies to
+ordinary AI translations. Turn off STEM formula mode to use ordinary OCR and the enabled translation
+services on your next capture.
 
 Click the model name on the Codex result card to choose a model and one of its supported reasoning
 efforts. In formula mode, the list is limited to models that can accept images, and the selection

@@ -9895,6 +9895,88 @@
         }
       }
     },
+    "service.codex_cli.screenshot.encoding_failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to prepare this screenshot. Capture the area again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo preparar la captura. Vuelve a capturar el área."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクリーンショットを処理できませんでした。もう一度撮影してください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snímku sa nepodarilo pripraviť. Zachyťte oblasť znova."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法处理这张截图，请重新截取该区域。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法處理這張截圖，請重新擷取該區域。"
+          }
+        }
+      }
+    },
+    "service.codex_cli.screenshot.too_large" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The screenshot is too large. Capture a smaller area and try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La captura es demasiado grande. Captura un área más pequeña e inténtalo de nuevo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクリーンショットが大きすぎます。範囲を狭めてもう一度お試しください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snímka je príliš veľká. Zachyťte menšiu oblasť a skúste to znova."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图过大，请缩小截图范围后重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截圖過大，請縮小截圖範圍後重試。"
+          }
+        }
+      }
+    },
     "service.configuration.ali.access_key_id.title" : {
       "localizations" : {
         "en" : {

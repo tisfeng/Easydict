@@ -94,8 +94,6 @@ class OCRSectionMerger {
             let pair = OCRObservationPair(current: current, previous: previous)
 
             log("\n📋 Analyzing pair [\(i - 1) → \(i)]:")
-            log("  Previous: \(previous.firstText.prefix20)")
-            log("  Current:  \(current.firstText.prefix20)")
 
             // Perform a comprehensive analysis to determine the merge strategy.
             let mergeStrategy = determineMergeStrategy(

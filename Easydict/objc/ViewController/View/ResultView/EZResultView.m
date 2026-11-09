@@ -357,6 +357,7 @@
 
 - (void)updateLoadingAnimation {
     [self startOrStopLoadingAnimation:self.result.isLoading];
+    [self updateStopButton];
 }
 
 - (void)startOrStopLoadingAnimation:(BOOL)isLoading {
@@ -438,7 +439,9 @@
     BOOL showStopButton = NO;
     
     if (self.service.isStream) {
-        showStopButton = self.result.hasTranslatedResult && !self.result.isStreamFinished;
+        BOOL waitingForFormula = self.result.isLoading
+            && self.result.queryModel.actionType == EZActionTypeFormulaScreenshot;
+        showStopButton = waitingForFormula || (self.result.hasTranslatedResult && !self.result.isStreamFinished);
     }
     
     self.stopButton.hidden = !showStopButton;
