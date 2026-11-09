@@ -74,7 +74,14 @@ public final class DetectManager: NSObject {
             // A superseded OCR request must not replace a newer screenshot preview.
             guard latestOCRRequestID == requestID, queryModel === requestModel,
                   requestModel.ocrImage === requestImage, requestModel.actionType == requestAction,
-                  requestModel.inputText == requestInput, requestModel.queryFromLanguage == requestLanguage else { return }
+                  requestModel.inputText == requestInput else { return }
+
+            // Another window can change the shared language without starting a new request here.
+            guard requestModel.queryFromLanguage == requestLanguage else {
+                completion(requestModel, CocoaError(.userCancelled))
+                return
+            }
+
             guard let ocrResult else {
                 completion(queryModel, error)
                 return

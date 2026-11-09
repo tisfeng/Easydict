@@ -584,6 +584,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     mm_weakify(self);
     [self.detectManager ocrAndDetectTextWithCompletion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
+        if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSUserCancelledError) {
+            [self.queryView startLoadingAnimation:NO];
+            return;
+        }
+
         // !!!: inputText should be used here, not queryText, queryText may be modified, such as easydict://query?text=xxx
         NSString *inputText = queryModel.inputText;
         if (saveOCRLocally && MyConfiguration.shared.localAutoSave && inputText.length && !error) {
@@ -974,8 +979,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
                 && result.translatedText.length) {
                 if (screenshot && queryModel.ocrImage == screenshot && result.screenshotSourceMarkdown.length) {
                     [QueryRecordManager.shared addRecordWithQueryText:result.screenshotSourceMarkdown
-                                                         fromLanguage:queryModel.queryFromLanguage
-                                                           toLanguage:queryModel.queryTargetLanguage
+                                                         fromLanguage:result.from
+                                                           toLanguage:result.to
                                                      translatedResult:result.translatedText
                                                                    to:RecordTypeHistory];
                 } else if (queryText.length) {
