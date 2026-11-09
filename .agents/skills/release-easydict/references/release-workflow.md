@@ -27,7 +27,7 @@ Release 内容状态保存在 `.tmp/release/<version>/state/`：
 
 - `release-notes.json`：冻结版本、Markdown SHA-256、渲染器标识和 HTML SHA-256。
 
-Issue 状态只使用 `.tmp/release/<version>/state/issue-followup/` 的 schema v2。直接存放在
+Issue 状态只使用 `.tmp/release/<version>/state/issue-followup/` 的 schema v3。直接存放在
 `state/` 下的 schema-v1 文件保留为审计数据，不自动复用、迁移或删除。
 
 ## 工作流
@@ -54,16 +54,8 @@ Issue 状态只使用 `.tmp/release/<version>/state/issue-followup/` 的 schema 
    和 checksum 内容。全部通过后，Draft 阶段已经生成、验证并提交的 appcast 才会安全更新
    本地 `dev`，再使用 lease 原子更新远程引用。最终公开 appcast 的目标版本、构建、channel、
    release notes、description、下载 URL、长度和签名必须与冻结候选一致。
-7. 读取 [Issue 跟进](issue-followup.md) 和
-   [Issue 决策策略](issue-followup-policy.md)，执行 `issue-followup apply <version>`。
-   它在修改前创建新计划，不依赖此前独立运行的 `plan`。
-8. 在终端报告中先保存 Release URL、标题、channel、notes 路径、Issue 和无关联 PR 摘要、
-   底层 run ID，再执行 `release-easydict.sh cleanup <version>` 预览并运行
-   `release-easydict.sh cleanup <version> --execute`。清理只处理该版本目录与对应 ASC
-   run JSON，保留 `.tmp/release/cache/`；版本内注册的 Git worktree 先用
-   `git worktree remove` 安全移除。未知文件、脏 worktree、活动构建或未完成状态会阻止清理。
-9. 报告本地清理结果。若清理失败，发布与 Issue 已完成，不重复执行远程动作；记录错误并
-   重试 `cleanup <version> --execute`。若 Issue 失败，在其 `resume` 成功后才清理。
+7. 远程验证成功后，发布入口接续[发布收尾](issue-followup.md#发布收尾)，完成 Issue 和 PR
+   通知，保存报告并清理归档。待补决策或中断时用同一 run ID 恢复。
 
 归档使用长期的本地构建 worktree（`.tmp/release/cache/worktree`）和带 fingerprint 的
 Release DerivedData。该 worktree 只服务于本地 Archive，不替代版本 release worktree，
@@ -178,16 +170,8 @@ branch head 和 Git push lease；任一并发校验失败都会停止，避免�
   不代表 `dev` 或 `main` 已更新。
 - Publish merge 冲突、本地 `dev` checkout 不干净或 lease 竞态失败时，保留集成 worktree
   和 `state/publish-git.env`；解决根因后使用 asc run ID 恢复。
-- Issue 跟进失败时不回滚已经发布的 Release、评论或 Issue 关闭操作。报告“发布成功，
-  但 issue 后续处理未完成”，并使用：
+- Issue 跟进或归档清理中断时，按[发布收尾](issue-followup.md#发布收尾)恢复同一运行。
 
-  ```text
-  $release-easydict issue-followup resume <version>
-  ```
-
-- 本地清理失败时保留剩余文件与清理收据；再次预览并执行同一版本的 `cleanup`。
-  清理成功后该版本的 `state/`、`logs/` 和 ASC run JSON 均不再保留，不能用旧 run ID
-  恢复已完成的发布。若需修改已发布日志，使用独立的 `sync-notes` 流程。
 
 评论幂等性、只关闭当前开放 Issue、固定报告格式和 Issue 决策验证由 Issue 跟进 reference
 定义，并由 `.agents/skills/release-easydict/scripts/release_issues.py` 强制执行。

@@ -290,15 +290,8 @@ Draft 时都传入 `--channel stable`。
 
 ### 6. 发布后 Issue 跟进
 
-Release 远程验证成功后，Skill 执行：
-
-- `issue-followup plan <version>`：收集 GitHub 证据并生成本地计划，不评论或关闭 Issue；
-- `issue-followup apply <version>`：重新生成计划，执行通知并关闭符合策略的 Issue；
-- `issue-followup resume <version>`：恢复中断的 Issue 动作。
-
-这些动作只作用于已公开 Release；PR 只评论、不关闭。参数和汇总格式见
-[`issue-followup.md`](../../.agents/skills/release-easydict/references/issue-followup.md)。Issue
-后续失败不回滚已经发布的 Release 或已完成动作。
+Release 远程验证成功后，发布入口继续处理 Issue、PR 通知和归档清理。证据决策及中断恢复
+见[发布收尾](../../.agents/skills/release-easydict/references/issue-followup.md#发布收尾)。
 
 ### 7. 修订已发布日志
 
@@ -338,11 +331,8 @@ Release ETag、远程 branch head 和 Git push lease 防止覆盖并发修改；
 会清理隔离的 release worktree；远程临时分支仅在完整远程验证后删除。替换 Draft 成功后还会
 清理旧 Draft 的本地备份，失败则保留用于诊断和恢复。
 
-Release 发布和 Issue 跟进全部成功、且已保存最终报告后，使用
-`./.agents/skills/release-easydict/scripts/release-easydict.sh cleanup <version>` 预览，
-再加 `--execute` 移除该版本的归档、产物、DerivedData、状态、日志和相应 ASC run JSON。
-命令会检查完成记录与 Git worktree 状态；清理失败可重复执行。`.tmp/release/cache/`
-是跨版本缓存，保留供后续版本复用。清理完成后旧 run ID 不再可用于 `resume`。
+发布收尾自动清理版本归档。手动检查可运行 `release-easydict.sh cleanup <version>`。
+完成记录保留在 `.tmp/release/asc/completion/`，跨版本缓存保留在 `.tmp/release/cache/`。
 
 长期构建 worktree 使用带 fingerprint 的 Release DerivedData。兼容缓存会被复用；增量
 Archive 失败时，只清理当前 fingerprint 并自动回退一次 clean Archive。缓存命中不降低

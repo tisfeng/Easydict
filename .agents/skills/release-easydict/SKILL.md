@@ -41,7 +41,7 @@ Release 生命周期：
 执行这些动作时读取 [Release 生命周期](references/release-workflow.md)。`release` 始终表示
 由本 Skill 编排 `draft` 和 `publish`，不直接调用仓库脚本的一次性 `release` 动作。
 
-`resume` 只恢复 ASC 发布工作流；它不会把新的 changelog 自动传播到已发布 Release。
+已发布 Release 的 changelog 修改通过 `sync-notes` 同步。
 
 发布后的 Issue 跟进：
 
@@ -52,7 +52,7 @@ Release 生命周期：
 
 执行这些动作时阅读 [references/issue-followup.md](references/issue-followup.md)
 和 [references/issue-followup-policy.md](references/issue-followup-policy.md)。
-`issue-followup resume` 恢复 Issue 跟进；`resume` 恢复 Release 生命周期。
+`resume <run-id>` 恢复完整发布生命周期，包括 Issue 跟进和清理。
 
 ## 授权边界
 
@@ -85,13 +85,8 @@ Release 生命周期：
 - 除非用户明确要求 `stable`，默认使用 `beta` channel，所有底层命令沿用同一 channel。
 - `draft` 只有在 Draft、Tag、临时发布分支、changelog 和正文哈希全部验证后才完成；随后
   停止，不发布也不处理 Issue。
-- `publish` 和 `release` 只有在 Release 公开资产、完整目标 appcast 条目、Git 引用和 Issue
-  跟进都得到最终核验后才完成；Issue 阶段失败时不回滚已经发布的 Release 或已完成动作，
-  而是报告可恢复状态。
-- 记录 Release URL、run ID 和 Issue 汇总后，执行 `cleanup <version>` 预览，再运行
-  `cleanup <version> --execute`。`issue-followup resume` 最终成功时也执行相同步骤。
-  清理仅在成功的 Publish/Release 运行和已执行的 Issue 计划同时存在时允许；失败时
-  报告“发布成功，本地清理未完成”及可重试的 `cleanup` 命令，不重做远程发布或 Issue 动作。
-- `resume` 只恢复现有运行的未完成阶段，不启动新的替换或发布。
+- `publish` 和 `release` 以[发布收尾](references/issue-followup.md#发布收尾)作为完成条件。
+  脚本如因待补 Issue 决策退出，按决策策略写入指定文件，再使用同一 run ID 恢复。
+- `resume` 只继续已有运行，按已保存的阶段接续。
 - 最终报告 Release URL、标题、channel、notes 路径、Issue 摘要、底层 run ID 和本地清理
   结果；未完成时给出可恢复状态路径及准确阶段。
