@@ -948,7 +948,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         }
         result.error = [EZQueryError queryErrorFrom:error];
 
-        if (result.screenshotSourceMarkdown.length && screenshot
+        if (result.isStreamFinished && result.screenshotSourceMarkdown.length && screenshot
             && queryModel == self.queryModel && queryModel.ocrImage == screenshot
             && queryModel.inputText.length == 0
             && ![queryModel.screenshotSourceMarkdown isEqualToString:result.screenshotSourceMarkdown]) {
