@@ -12372,6 +12372,12 @@
             "value" : "Vybraný model nie je dostupný pre snímky. Vyberte model s podporou obrázkov."
           }
         },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "منتخب ماڈل اسکرین شاٹس کے لیے دستیاب نہیں ہے۔ ایسا ماڈل منتخب کریں جو تصاویر کو سپورٹ کرتا ہو۔"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13022,6 +13028,12 @@
             "value" : "Snímku sa nepodarilo pripraviť. Zachyťte oblasť znova."
           }
         },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "یہ اسکرین شاٹ تیار نہیں ہو سکا۔ اس حصے کا دوبارہ اسکرین شاٹ لیں۔"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13061,6 +13073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Snímka je príliš veľká. Zachyťte menšiu oblasť a skúste to znova."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسکرین شاٹ بہت بڑا ہے۔ چھوٹے حصے کا اسکرین شاٹ لے کر دوبارہ کوشش کریں۔"
           }
         },
         "zh-Hans" : {
@@ -23437,6 +23455,12 @@
             "value" : "Automatické lokálne ukladanie"
           }
         },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خودکار مقامی محفوظ کاری"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -23476,6 +23500,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ukladá históriu dopytov, najnovšiu snímku a text OCR do tohto Macu."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تلاش کی سرگزشت، تازہ ترین اسکرین شاٹ اور OCR سے شناخت شدہ متن اس Mac پر محفوظ کریں۔"
           }
         },
         "zh-Hans" : {
