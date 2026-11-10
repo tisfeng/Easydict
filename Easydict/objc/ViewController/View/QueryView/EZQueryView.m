@@ -546,6 +546,10 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 //    NSString *text = [self copiedText];
 //    MMLogInfo(@"textDidChange: %@", text);
 
+    // Editing discards the screenshot, so its OCR completion will not stop this animation.
+    if (self.queryModel.ocrImage) {
+        [self.loadingAnimationView startLoading:NO];
+    }
     self.queryModel.actionType = EZActionTypeInputQuery;
     self.queryModel.needDetectLanguage = YES;
 
