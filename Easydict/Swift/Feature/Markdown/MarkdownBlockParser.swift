@@ -28,6 +28,16 @@ struct MarkdownBlockParser {
         parse(source.replacingOccurrences(of: "\r\n", with: "\n").components(separatedBy: "\n"), depth: 0)
     }
 
+    func containsMarkdown(_ source: String) -> Bool {
+        let inline = MarkdownInlineRenderer(codeBackground: .clear)
+        return parse(source).contains { block in
+            if case let .paragraph(text) = block {
+                return inline.containsMarkdown(text)
+            }
+            return true
+        }
+    }
+
     func containsMath(_ source: String) -> Bool {
         guard source.contains("$") || source.contains("\\(") || source.contains("\\[") else { return false }
         let inline = MarkdownInlineRenderer(codeBackground: .clear)

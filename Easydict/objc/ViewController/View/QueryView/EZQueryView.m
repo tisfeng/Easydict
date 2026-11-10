@@ -41,7 +41,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
 @property (nonatomic, strong) id fontSizeObserver;
 @property (nonatomic, strong) EDMarkdownLabel *formulaPreview;
-@property (nonatomic, assign) BOOL formulaPreviewAvailable;
+@property (nonatomic, strong) EDMarkdownToggleButton *markdownButton;
 
 @end
 
@@ -169,6 +169,22 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         }
     }];
     textCopyButton.mas_key = @"queryView_copyButton";
+
+    EDMarkdownToggleButton *markdownButton = [[EDMarkdownToggleButton alloc] init];
+    markdownButton.hidden = YES;
+    markdownButton.markdownEnabled = NO;
+    markdownButton.mas_key = @"queryView_markdownButton";
+    [self addSubview:markdownButton];
+    self.markdownButton = markdownButton;
+    markdownButton.clickAction = ^{
+        mm_strongify(self);
+        [self toggleFormulaPreview:nil];
+    };
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(markdownPreferenceDidChange:)
+                                                 name:NSUserDefaultsDidChangeNotification
+                                               object:NSUserDefaults.standardUserDefaults];
     
     
     EZDetectLanguageButton *detectButton = [[EZDetectLanguageButton alloc] initWithFrame:self.bounds];
@@ -255,6 +271,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     if (isLoading) {
         // Avoid to show placeholder.
         self.textView.string = @" ";
+        [self updateButtonsDisplayState:@""];
     }
     [self setAlertTextHidden:YES];
     self.textView.editable = !isLoading;
@@ -298,9 +315,13 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         make.width.height.bottom.equalTo(self.audioButton);
     }];
     
+    [self.markdownButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.textCopyButton.mas_right).offset(EZAudioButtonRightPadding_1);
+        make.width.height.bottom.equalTo(self.audioButton);
+    }];
+
     [self updateDetectButton];
-    
-    
+
     [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
         // Add a padding to audio button, avoid making users feel that there is still text below that has not been fully displayed.
@@ -322,7 +343,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 
 - (void)setQueryModel:(EZQueryModel *)model {
     NSString *queryText = model.inputText;
-    if ((_queryModel != model || !queryText.length) && self.formulaPreviewAvailable) {
+    if (_queryModel != model || !queryText.length) {
         [self resetFormulaPreview];
     }
     _queryModel = model;
@@ -351,24 +372,30 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 }
 
 - (void)enableFormulaPreview {
-    if (![EDMarkdownLabel containsMath:self.copiedText]) {
-        return;
-    }
-    self.formulaPreviewAvailable = YES;
-    if (MyConfiguration.shared.enableMarkdownRendering) {
+    if (!self.markdownButton.hidden && [EDMarkdownLabel containsMath:self.copiedText]
+        && self.visibleTextView != self.formulaPreview) {
         [self toggleFormulaPreview:nil];
     }
 }
 
 - (void)resetFormulaPreview {
-    self.formulaPreviewAvailable = NO;
-    if (self.visibleTextView == self.formulaPreview) {
+    if (self.formulaPreview && self.visibleTextView == self.formulaPreview) {
         [self showFormulaPreview:NO];
     }
 }
 
+- (void)markdownPreferenceDidChange:(NSNotification *)notification {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        BOOL wasPreviewing = self.formulaPreview && self.visibleTextView == self.formulaPreview;
+        [self updateButtonsDisplayState:self.copiedText];
+        if (wasPreviewing && self.visibleTextView != self.formulaPreview && self.updateInputTextBlock) {
+            self.updateInputTextBlock(self.copiedText, self.heightOfQueryView);
+        }
+    });
+}
+
 - (NSMenu *)textView:(NSTextView *)textView menu:(NSMenu *)menu forEvent:(NSEvent *)event atIndex:(NSUInteger)index {
-    if (self.formulaPreviewAvailable) {
+    if (!self.markdownButton.hidden) {
         NSString *title = textView == self.formulaPreview
             ? NSLocalizedString(@"query.formula.edit_source", nil)
             : NSLocalizedString(@"query.formula.show_preview", nil);
@@ -405,6 +432,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     NSTextView *next = show ? self.formulaPreview : self.textView;
     next.frame = self.scrollView.contentView.bounds;
     self.scrollView.documentView = next;
+    self.markdownButton.markdownEnabled = show;
     [next scrollRangeToVisible:NSMakeRange(show ? 0 : next.selectedRange.location, 0)];
     if (hadFocus || show) {
         [self.window makeFirstResponder:next];
@@ -677,7 +705,13 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];
 }
 
-- (void)updateButtonsDisplayState:(NSString *)text {    
+- (void)updateButtonsDisplayState:(NSString *)text {
+    self.markdownButton.hidden = !MyConfiguration.shared.enableMarkdownRendering
+        || ![EDMarkdownLabel containsMarkdown:text ?: @""];
+    if (self.markdownButton.hidden) {
+        [self resetFormulaPreview];
+    }
+
     if (self.clearButtonHidden && self.alertText.length) {
         [self.clearButton setAnimatedHidden:NO];
     }
@@ -710,8 +744,9 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     
     CGFloat height = 20;
     self.detectButton.cornerRadius = height / 2;
+    CGFloat markdownWidth = self.markdownButton.hidden ? 0 : EZAudioButtonWidthHeight_24 + EZAudioButtonRightPadding_1;
     [self.detectButton mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.textCopyButton.mas_right).offset(6.5);
+        make.left.equalTo(self.textCopyButton.mas_right).offset(6.5 + markdownWidth);
         make.centerY.equalTo(self.textCopyButton).offset(-0.5);
         make.height.mas_equalTo(height);
     }];

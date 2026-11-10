@@ -118,6 +118,11 @@ class MarkdownLabel: EZLabel {
     }
 
     @objc
+    static func containsMarkdown(_ source: String) -> Bool {
+        MarkdownBlockParser().containsMarkdown(source)
+    }
+
+    @objc
     static func containsMath(_ source: String) -> Bool {
         MarkdownBlockParser().containsMath(source)
     }
