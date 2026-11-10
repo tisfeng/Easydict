@@ -22,6 +22,7 @@ NSString *const EZServiceTypeCustomOpenAI = @"CustomOpenAI";
 NSString *const EZServiceTypeBuiltInAI = @"BuiltInAI";
 NSString *const EZServiceTypeBing = @"Bing";
 NSString *const EZServiceTypeBingDict = @"BingDict";
+NSString *const EZServiceTypeMerriamWebster = @"MerriamWebster";
 NSString *const EZServiceTypeNiuTrans = @"NiuTrans";
 NSString *const EZServiceTypeCaiyun = @"Caiyun";
 NSString *const EZServiceTypeAlibaba = @"Alibaba";

@@ -136,6 +136,7 @@ final class QueryServiceFactory: NSObject {
         .init(.baidu, BaiduService.self, "baidu_translate"),
         .init(.bing, BingService.self, "bing_translate", apiKeyRequirement: .none),
         .init(.bingDict, BingDictService.self, "bing_dict", apiKeyRequirement: .none),
+        .init(.merriamWebster, MWDictService.self, "merriam_webster", apiKeyRequirement: .userProvided),
         .init(.volcano, VolcanoService.self, "volcano_translate"),
         .init(.niuTrans, NiuTransService.self, "niuTrans_translate", apiKeyRequirement: .builtIn),
         .init(.caiyun, CaiyunService.self, "caiyun_translate", apiKeyRequirement: .builtIn),

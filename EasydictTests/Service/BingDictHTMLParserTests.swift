@@ -171,14 +171,14 @@ struct BingDictHTMLParserTests {
 struct BingDictServiceTests {
     @Test("Accepts single English headwords only")
     func singleWordGate() {
-        #expect(BingDictService.isSingleEnglishWord("develop"))
-        #expect(BingDictService.isSingleEnglishWord("well-known"))
-        #expect(BingDictService.isSingleEnglishWord("don't"))
-        #expect(BingDictService.isSingleEnglishWord("3D"))
-        #expect(!BingDictService.isSingleEnglishWord("two words"))
-        #expect(!BingDictService.isSingleEnglishWord("中文"))
-        #expect(!BingDictService.isSingleEnglishWord("C++"))
-        #expect(!BingDictService.isSingleEnglishWord(""))
+        #expect(DictionarySupport.isSingleEnglishWord("develop"))
+        #expect(DictionarySupport.isSingleEnglishWord("well-known"))
+        #expect(DictionarySupport.isSingleEnglishWord("don't"))
+        #expect(DictionarySupport.isSingleEnglishWord("3D"))
+        #expect(!DictionarySupport.isSingleEnglishWord("two words"))
+        #expect(!DictionarySupport.isSingleEnglishWord("中文"))
+        #expect(!DictionarySupport.isSingleEnglishWord("C++"))
+        #expect(!DictionarySupport.isSingleEnglishWord(""))
     }
 
     @Test("Maps the entry into site-ordered native parts")

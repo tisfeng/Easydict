@@ -27,7 +27,7 @@ enum BingDictRequest {
         timeout: TimeInterval = 30
     ) async throws
         -> String {
-        guard let url = URL(string: "\(baseURLString)?q=\(percentEncodedQueryValue(word))") else {
+        guard let url = URL(string: "\(baseURLString)?q=\(DictionarySupport.percentEncodedQueryValue(word))") else {
             throw QueryError.error(
                 type: .api,
                 message: "Bing dictionary URL is invalid: \(word)"
@@ -68,14 +68,6 @@ enum BingDictRequest {
                 message: "Bing dictionary request failed: \(error.localizedDescription)"
             )
         }
-    }
-
-    /// Percent-encode a query value so reserved characters (`+`, `&`, `=`, `#`)
-    /// reach Bing literally instead of changing the query.
-    static func percentEncodedQueryValue(_ text: String) -> String {
-        var allowed = CharacterSet.alphanumerics
-        allowed.insert(charactersIn: "-._~")
-        return text.addingPercentEncoding(withAllowedCharacters: allowed) ?? text
     }
 
     // MARK: Private

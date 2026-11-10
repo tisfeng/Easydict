@@ -71,7 +71,7 @@ class BingDictService: QueryService, @unchecked Sendable {
     }
 
     override func wordLink(_ queryModel: QueryModel) -> String? {
-        let encoded = BingDictRequest.percentEncodedQueryValue(queryModel.queryText)
+        let encoded = DictionarySupport.percentEncodedQueryValue(queryModel.queryText)
         return "\(BingDictRequest.baseURLString)?q=\(encoded)"
     }
 
@@ -86,7 +86,7 @@ class BingDictService: QueryService, @unchecked Sendable {
         -> QueryResult {
         guard from == .english,
               to == .simplifiedChinese || to == .traditionalChinese,
-              Self.isSingleEnglishWord(text)
+              DictionarySupport.isSingleEnglishWord(text)
         else {
             throw QueryError(type: .noResult)
         }
@@ -104,21 +104,6 @@ class BingDictService: QueryService, @unchecked Sendable {
         result?.translatedResults = entry.bestTranslation.map { [$0] } ?? []
 
         return result ?? QueryResult()
-    }
-
-    /// A single English dictionary headword: letters plus the hyphen and
-    /// apostrophe that `shouldQueryDictionary(maxWordCount: 1)` rejects
-    /// (`well-known`, `don't`).
-    static func isSingleEnglishWord(_ text: String) -> Bool {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty, trimmed.count <= 60 else { return false }
-
-        // Latin letters only: `CharacterSet.letters` would accept CJK input.
-        var allowed = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-        allowed.formUnion(.decimalDigits)
-        allowed.formUnion(CharacterSet(charactersIn: "-'’"))
-        guard trimmed.unicodeScalars.allSatisfy({ allowed.contains($0) }) else { return false }
-        return trimmed.unicodeScalars.contains { CharacterSet.letters.contains($0) }
     }
 
     /// Mirrors the official page structure and order:
