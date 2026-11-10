@@ -1,0 +1,23 @@
+{
+  "configurations": [
+    {
+      "id": "EC123A19-26A9-4DD6-A63A-EB27A666DDB8",
+      "name": "Configuration 1",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {},
+  "testTargets": [
+    {
+      "selectedTests": [
+        "CodexFormulaImageTests/testRecognizesFormulaImage"
+      ],
+      "target": {
+        "containerPath": "container:Easydict.xcodeproj",
+        "identifier": "03022F2D2B370B7100B63209",
+        "name": "EasydictTests"
+      }
+    }
+  ],
+  "version": 1
+}
