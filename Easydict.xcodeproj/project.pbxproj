@@ -497,6 +497,7 @@
 		43D9DD6610A34B56B85C8811 /* GitHubCopilotEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D9DD6610A34B56B85C8812 /* GitHubCopilotEnvironment.swift */; };
 		43D9DD6610A34B56B85C8813 /* GitHubCopilot-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 43D9DD6610A34B56B85C8814 /* GitHubCopilot-LICENSE.txt */; };
 		44476FC198C54239B507098E /* AppPathManager+Codex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD3C7A500554103B1723150 /* AppPathManager+Codex.swift */; };
+		46D62FBB510D4CD782AA49AA /* ocr-en-formula.png in Resources */ = {isa = PBXBuildFile; fileRef = 41A2F668F52C4618839B2C17 /* ocr-en-formula.png */; };
 		49DAA0A4B12B418BA7791B8F /* GitHubCopilotModelCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBAB49A71BBA4870A9C4FF0C /* GitHubCopilotModelCache.swift */; };
 		4D4D6D6F0000000000000002 /* MDictEntryScript.js in Resources */ = {isa = PBXBuildFile; fileRef = 4D4D6D6F0000000000000012 /* MDictEntryScript.js */; };
 		4D4D6D6F0000000000000003 /* MDictStyleScript.js in Resources */ = {isa = PBXBuildFile; fileRef = 4D4D6D6F0000000000000013 /* MDictStyleScript.js */; };
@@ -1290,6 +1291,7 @@
 		3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceFactory.swift; sourceTree = "<group>"; };
 		40F5D52B2D65B1B300EDB997 /* DeepSeekService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekService.swift; sourceTree = "<group>"; };
 		416B3D3DC9164AB48ABDE7A4 /* TestSuites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSuites.swift; sourceTree = "<group>"; };
+		41A2F668F52C4618839B2C17 /* ocr-en-formula.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-formula.png"; sourceTree = "<group>"; };
 		43D9DD6610A34B56B85C8812 /* GitHubCopilotEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotEnvironment.swift; sourceTree = "<group>"; };
 		43D9DD6610A34B56B85C8814 /* GitHubCopilot-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "GitHubCopilot-LICENSE.txt"; sourceTree = "<group>"; };
 		471884F63A2B43A3BF8F1C7D /* ClaudeCodeError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeError.swift; sourceTree = "<group>"; };
@@ -2891,6 +2893,7 @@
 				03C3A5A62E1BFE4900B59152 /* ocr-en-paper-9.png */,
 				03C3A5A72E1BFE4900B59152 /* ocr-en-paper-10.png */,
 				03C3A5A82E1BFE4900B59152 /* ocr-en-paper-11.png */,
+				41A2F668F52C4618839B2C17 /* ocr-en-formula.png */,
 				03C3A5A92E1BFE4900B59152 /* ocr-en-paper-12.png */,
 				03C3A5AA2E1BFE4900B59152 /* ocr-en-paper-13.png */,
 				03C3A5AC2E1BFE4900B59152 /* ocr-en-text-1.png */,
@@ -4181,6 +4184,7 @@
 				038A9BC72E59A4E300D08B57 /* ocr-zh-poetry-12.png in Resources */,
 				034227F22E36891A00325B47 /* ocr-zh-poetry-10.png in Resources */,
 				03C3A5BE2E1BFE4900B59152 /* ocr-en-paper-11.png in Resources */,
+				46D62FBB510D4CD782AA49AA /* ocr-en-formula.png in Resources */,
 				039247DE2E58D424008D31AE /* ocr-en-text-2.png in Resources */,
 				03C3A5BF2E1BFE4900B59152 /* ocr-en-text-reddit.png in Resources */,
 				039247DC2E58D158008D31AE /* ocr-zh-text-bitcoin.png in Resources */,
