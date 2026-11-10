@@ -20,6 +20,8 @@ import Vision
 public class AppleService: QueryService {
     // MARK: Public
 
+    public override func supportsOCR() -> Bool { true }
+
     public override func serviceType() -> ServiceType {
         .apple
     }

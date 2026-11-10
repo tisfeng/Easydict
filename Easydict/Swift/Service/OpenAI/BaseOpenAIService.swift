@@ -339,36 +339,9 @@ public class BaseOpenAIService: StreamService {
                 defer { self.nonStreamingTask = nil }
 
                 do {
-                    let request = try self.makeNonStreamingChatRequest(
-                        query: query,
-                        url: url,
-                        apiKey: apiKey
-                    )
-                    let (data, response) = try await URLSession.shared.data(for: request)
-                    try Task.checkCancellation()
-
-                    if let http = response as? HTTPURLResponse,
-                       !(200 ... 299).contains(http.statusCode) {
-                        if let apiError = try? JSONDecoder().decode(
-                            APIErrorResponse.self, from: data
-                        ) {
-                            throw apiError
-                        }
-                        throw QueryError(
-                            type: .api,
-                            message: "HTTP \(http.statusCode)",
-                            errorDataMessage: String(data: data, encoding: .utf8)
-                        )
-                    }
-
-                    let chatResult = try JSONDecoder().decode(ChatResult.self, from: data)
-                    if let content = chatResult.choices.first?.message.content,
-                       !content.isEmpty {
-                        continuation.yield(content)
-                        continuation.finish()
-                    } else {
-                        throw QueryError(type: .noResult)
-                    }
+                    let content = try await self.requestChatText(query: query, url: url, apiKey: apiKey)
+                    continuation.yield(content)
+                    continuation.finish()
                 } catch let urlError as URLError where urlError.code == .cancelled {
                     // Task cancellation often surfaces as URLError.cancelled from URLSession.
                     continuation.finish(throwing: CancellationError())
@@ -387,6 +360,24 @@ public class BaseOpenAIService: StreamService {
                 task.cancel()
             }
         }
+    }
+
+    func requestChatText(query: ChatQuery, url: URL, apiKey: String) async throws -> String {
+        let request = try makeNonStreamingChatRequest(query: query, url: url, apiKey: apiKey)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        try Task.checkCancellation()
+        if let http = response as? HTTPURLResponse, !(200 ... 299).contains(http.statusCode) {
+            if let apiError = try? JSONDecoder().decode(APIErrorResponse.self, from: data) {
+                throw apiError
+            }
+            throw QueryError(type: .api, message: "HTTP \(http.statusCode)",
+                             errorDataMessage: String(data: data, encoding: .utf8))
+        }
+        let chatResult = try JSONDecoder().decode(ChatResult.self, from: data)
+        guard let content = chatResult.choices.first?.message.content, !content.isEmpty else {
+            throw QueryError(type: .noResult)
+        }
+        return content
     }
 
     /// Builds the HTTP request for a non-streaming OpenAI-compatible chat completion.

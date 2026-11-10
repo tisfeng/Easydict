@@ -247,7 +247,7 @@ struct AdvancedTab: View {
             Section {
                 Picker("setting.advance.ocr_service", selection: $ocrServiceID) {
                     Text("setting.advance.ocr_service.apple").tag(ServiceType.apple.rawValue)
-                    ForEach(DetectManager.codexOCRServiceIDs, id: \.self) { identifier in
+                    ForEach(DetectManager.ocrServiceIDs, id: \.self) { identifier in
                         if let metadata = QueryServiceFactory.shared.metadata(withTypeId: identifier) {
                             Text(metadata.title).tag(identifier)
                         }
@@ -257,7 +257,7 @@ struct AdvancedTab: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .onAppear {
-                        if !DetectManager.codexOCRServiceIDs.contains(ocrServiceID) {
+                        if !DetectManager.ocrServiceIDs.contains(ocrServiceID) {
                             ocrServiceID = ServiceType.apple.rawValue
                         }
                     }

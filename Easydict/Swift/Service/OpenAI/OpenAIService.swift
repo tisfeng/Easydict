@@ -8,6 +8,7 @@
 
 import Defaults
 import Foundation
+import OpenAI
 import SwiftUI
 
 // MARK: - OpenAIService
@@ -15,6 +16,8 @@ import SwiftUI
 @objc(EZOpenAIService)
 class OpenAIService: BaseOpenAIService {
     // MARK: Public
+
+    public override func supportsOCR() -> Bool { serviceType() == .openAI }
 
     public override func serviceType() -> ServiceType {
         .openAI
@@ -26,6 +29,16 @@ class OpenAIService: BaseOpenAIService {
 
     public override func link() -> String? {
         "https://chatgpt.com"
+    }
+
+    override func recognizeImage(_ imageURL: String, prompt: String) async throws -> String {
+        let endpoint = try validateChatStreamRequest()
+        let message: ChatQuery.ChatCompletionMessageParam = .user(.init(content: .contentParts([
+            .text(.init(text: prompt)),
+            .image(.init(imageUrl: .init(url: imageURL, detail: nil))),
+        ])))
+        let query = makeChatQuery(messages: [message])
+        return try await requestChatText(query: query, url: endpoint, apiKey: apiKey)
     }
 
     // MARK: Internal

@@ -44,7 +44,7 @@ public final class DetectManager: NSObject {
     /// The OCR service used for text recognition (defaults to AppleService).
     public var ocrService: QueryService {
         let identifier = Defaults[.ocrServiceID]
-        if let service = Self.codexOCRService(identifier) {
+        if let service = Self.selectedOCRService(identifier) {
             return service
         }
         return AppleService.shared
@@ -114,7 +114,7 @@ public final class DetectManager: NSObject {
             let ocrLanguage = ocrResult.from
             if ocrLanguage != .auto {
                 queryModel.detectedLanguage = ocrLanguage
-                if service is CodexCLIService {
+                if service is StreamService {
                     queryModel.needDetectLanguage = false
                 }
             }
@@ -217,14 +217,8 @@ public final class DetectManager: NSObject {
 
     // MARK: Internal
 
-    @nonobjc static var codexOCRServiceIDs: [String] {
-        let storage = LocalStorage.shared()
-        let identifiers = [EZWindowType.fixed, .main, .mini].flatMap { storage.allServiceTypes($0) }
-        return Set(identifiers).filter {
-            guard let metadata = QueryServiceFactory.shared.metadata(withTypeId: $0),
-                  metadata.serviceType == .codexCLI else { return false }
-            return CodexServiceConfiguration(uuid: metadata.uuid).mode == .localCLI
-        }.sorted()
+    @nonobjc static var ocrServiceIDs: [String] {
+        configuredServiceIDs.filter { makeOCRService($0) != nil }.sorted()
     }
 
     // MARK: Private
@@ -244,9 +238,21 @@ public final class DetectManager: NSObject {
 
     private lazy var youdaoService: YoudaoService = .init()
 
-    private static func codexOCRService(_ identifier: String) -> CodexCLIService? {
-        guard identifier != ServiceType.apple.rawValue, codexOCRServiceIDs.contains(identifier) else { return nil }
-        return QueryServiceFactory.shared.service(withTypeId: identifier) as? CodexCLIService
+    private static var configuredServiceIDs: Set<String> {
+        let storage = LocalStorage.shared()
+        return Set([EZWindowType.fixed, .main, .mini].flatMap { storage.allServiceTypes($0) })
+    }
+
+    private static func makeOCRService(_ identifier: String) -> QueryService? {
+        guard identifier != ServiceType.apple.rawValue,
+              let service = QueryServiceFactory.shared.service(withTypeId: identifier),
+              service.supportsOCR() else { return nil }
+        return service
+    }
+
+    private static func selectedOCRService(_ identifier: String) -> QueryService? {
+        guard identifier != ServiceType.apple.rawValue, configuredServiceIDs.contains(identifier) else { return nil }
+        return makeOCRService(identifier)
     }
 
     @discardableResult

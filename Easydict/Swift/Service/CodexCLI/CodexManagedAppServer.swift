@@ -63,7 +63,13 @@ actor CodexManagedAppServer {
         try Task.checkCancellation()
         guard !translation.isCancelled() else { throw CancellationError() }
         let model: String
-        if translation.imageURL != nil {
+        if let runtime = translation.runtime {
+            try CodexManagedRuntime.validateSelection(model: translation.model, effort: translation.effort)
+            if translation.imageURL != nil, runtime.release != .modern {
+                throw CodexManagedError.ocrRequiresModernRuntime
+            }
+            model = translation.model
+        } else if translation.imageURL != nil {
             let available = try await localModelList()
             let configuredModel = translation.model.trimmingCharacters(in: .whitespacesAndNewlines)
             guard let selected = available.first(where: {
@@ -74,7 +80,6 @@ actor CodexManagedAppServer {
             try CodexReasoningEffort.validateLocalOverride(translation.effort, supportedEfforts: selected.efforts)
             model = selected.identifier
         } else {
-            try CodexManagedRuntime.validateSelection(model: translation.model, effort: translation.effort)
             model = translation.model
         }
 

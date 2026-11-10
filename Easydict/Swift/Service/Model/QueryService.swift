@@ -480,6 +480,8 @@ open class QueryService: NSObject {
         try await audioPlayer.defaultTTSService.textToAudio(text, fromLanguage: fromLanguage, accent: accent)
     }
 
+    open func supportsOCR() -> Bool { false }
+
     /// Perform OCR for the given image.
     open func ocr(
         _ image: NSImage,

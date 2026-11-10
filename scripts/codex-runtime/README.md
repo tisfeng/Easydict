@@ -22,7 +22,7 @@ Astra、Sol、Terra、Luna 与 gpt-5.5。组件历史目录中的存在不等于
 默认模型按 release 固定为旧版 gpt-5.5、新版 gpt-5.6-luna，并在对应目录中验证。
 保留模型的其余元数据与指令，改变以下三项：
 
-- `input_modalities=["text"]`：在 handler 读取图片之前拒绝 `view_image`。
+- 旧版保留 `input_modalities=["text"]`，在 handler 读取图片之前拒绝 `view_image`。新版允许用户在 OCR 请求中直接附图，并通过 `--disable view_image` 关闭本地图片读取工具。
 - `apply_patch_tool_type=null`：不注册补丁工具。
 - `experimental_supported_tools=[]`：不增加实验工具。
 

@@ -28,6 +28,7 @@
 		030732D42F24862A0001382A /* OCRTextProcessingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030732CA2F24862A0001382A /* OCRTextProcessingTests.swift */; };
 		030732D52F24862A0001382A /* OCRTestSample+Chinese.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030732C12F24862A0001382A /* OCRTestSample+Chinese.swift */; };
 		030732D72F24862A0001382A /* OCRQRCodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030732D62F24862A0001382A /* OCRQRCodeTests.swift */; };
+		CDA80C110000000000000001 /* OCRFormulaImageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA80C110000000000000002 /* OCRFormulaImageTests.swift */; };
 		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
 		030D61252CD9B906000DF298 /* AcknowListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030D61242CD9B905000DF298 /* AcknowListView.swift */; };
@@ -717,6 +718,7 @@
 		030732C92F24862A0001382A /* OCRTextProcessingChineseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessingChineseTests.swift; sourceTree = "<group>"; };
 		030732CA2F24862A0001382A /* OCRTextProcessingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTextProcessingTests.swift; sourceTree = "<group>"; };
 		030732D62F24862A0001382A /* OCRQRCodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRQRCodeTests.swift; sourceTree = "<group>"; };
+		CDA80C110000000000000002 /* OCRFormulaImageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRFormulaImageTests.swift; sourceTree = "<group>"; };
 		0309E1EB292B439A00AFB76A /* EZTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTextView.h; sourceTree = "<group>"; };
 		0309E1EC292B439A00AFB76A /* EZTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
 		0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZGetViewController.h"; sourceTree = "<group>"; };
@@ -1605,6 +1607,7 @@
 				030732C62F24862A0001382A /* Support */,
 				030732C72F24862A0001382A /* OCRImageTests.swift */,
 				030732D62F24862A0001382A /* OCRQRCodeTests.swift */,
+				CDA80C110000000000000002 /* OCRFormulaImageTests.swift */,
 				030732C82F24862A0001382A /* OCRPunctuationTests.swift */,
 				030732C92F24862A0001382A /* OCRTextProcessingChineseTests.swift */,
 				030732CA2F24862A0001382A /* OCRTextProcessingTests.swift */,
@@ -4501,6 +4504,7 @@
 				030732D42F24862A0001382A /* OCRTextProcessingTests.swift in Sources */,
 				030732D52F24862A0001382A /* OCRTestSample+Chinese.swift in Sources */,
 				030732D72F24862A0001382A /* OCRQRCodeTests.swift in Sources */,
+				CDA80C110000000000000001 /* OCRFormulaImageTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

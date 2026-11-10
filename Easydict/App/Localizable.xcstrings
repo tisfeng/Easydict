@@ -12207,6 +12207,52 @@
         }
       }
     },
+    "service.codex_cli.managed.ocr_requires_modern_runtime" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR with ChatGPT sign-in requires macOS 15 or later."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El OCR con inicio de sesión de ChatGPT requiere macOS 15 o posterior."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT ログインで OCR を使うには macOS 15 以降が必要です。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR s prihlásením cez ChatGPT vyžaduje macOS 15 alebo novší."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT سائن اِن کے ساتھ OCR کے لیے macOS 15 یا بعد کا ورژن درکار ہے۔"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 ChatGPT 登录进行 OCR 需要 macOS 15 或更高版本。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 ChatGPT 登入進行 OCR 需要 macOS 15 或更新版本。"
+          }
+        }
+      }
+    },
     "service.codex_cli.model_picker.image_model_unavailable" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -20975,43 +21021,43 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Applies to screenshot translation, clipboard images, and silent screenshot OCR. Codex requires Local CLI mode and a vision-capable model. Images are sent to its configured provider."
+            "value" : "Applies to screenshot translation, clipboard images, and silent screenshot OCR. Codex and OpenAI require a vision-capable model. Images are sent to the selected provider."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Se aplica a la traducción de capturas e imágenes del portapapeles y al OCR silencioso. Codex requiere el modo CLI local y un modelo compatible con imágenes. Las imágenes se envían al proveedor configurado."
+            "value" : "Se aplica a la traducción de capturas e imágenes del portapapeles y al OCR silencioso. Codex y OpenAI requieren un modelo compatible con imágenes. Las imágenes se envían al proveedor seleccionado."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "スクリーンショット翻訳、クリップボード画像の翻訳、サイレント OCR に適用されます。Codex にはローカル CLI モードと画像対応モデルが必要です。画像は設定したプロバイダーに送信されます。"
+            "value" : "スクリーンショット翻訳、クリップボード画像の翻訳、サイレント OCR に適用されます。Codex と OpenAI には画像対応モデルが必要です。画像は選択したプロバイダーに送信されます。"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Platí pre preklad snímok obrazovky a obrázkov zo schránky aj pre tiché OCR snímok. Codex vyžaduje režim lokálneho CLI a model s podporou obrázkov. Obrázky sa odošlú nakonfigurovanému poskytovateľovi."
+            "value" : "Platí pre preklad snímok obrazovky a obrázkov zo schránky aj pre tiché OCR snímok. Codex a OpenAI vyžadujú model s podporou obrázkov. Obrázky sa odošlú vybranému poskytovateľovi."
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اسکرین شاٹ کے ترجمے، کلپ بورڈ کی تصاویر اور خاموش اسکرین شاٹ OCR پر لاگو ہوتا ہے۔ Codex کے لیے مقامی CLI موڈ اور تصاویر قبول کرنے والا ماڈل درکار ہے۔ تصاویر ترتیب دیے گئے فراہم کنندہ کو بھیجی جاتی ہیں۔"
+            "value" : "اسکرین شاٹ کے ترجمے، کلپ بورڈ کی تصاویر اور خاموش اسکرین شاٹ OCR پر لاگو ہوتا ہے۔ Codex اور OpenAI کے لیے تصاویر قبول کرنے والا ماڈل درکار ہے۔ تصاویر منتخب فراہم کنندہ کو بھیجی جاتی ہیں۔"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用于截图翻译、剪贴板图片和静默截图 OCR。Codex 需使用本机 CLI 模式和支持图片的模型，图片会发送给所配置的服务。"
+            "value" : "用于截图翻译、剪贴板图片和静默截图 OCR。Codex 和 OpenAI 需要支持图片的模型，图片会发送给所选服务。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用於截圖翻譯、剪貼簿圖片和靜默截圖 OCR。Codex 需使用本機 CLI 模式和支援圖片的模型，圖片會傳送給所設定的服務。"
+            "value" : "用於截圖翻譯、剪貼簿圖片和靜默截圖 OCR。Codex 和 OpenAI 需要支援圖片的模型，圖片會傳送給所選服務。"
           }
         }
       }
