@@ -16,6 +16,7 @@
 
 - 公式截图请求先生成译文，再生成原文。复用现有 App Server 和流式结果视图，在段落或独立公式完整时推送预览。
 - 仅在流完成后提交原文及其语言。最终处理兼容旧响应顺序和模型重复输出的分隔标记。
+- GPT-6 Luna 在公式模式中选「默认」时使用 Low。显式选择仍按菜单所选的强度发送，其他模型沿用自己的默认值。
 
 ### 设计意图
 
@@ -35,10 +36,12 @@
 - 八次结果的原文及译文均保留分式、上下标和范数下标。一次基线 Low 将黑板粗体 X 写成普通 X。裁片右侧有遮挡，因此只用完整可见的公式比较识别。
 - 检查了新版首段和最终状态截图。离线解析检查覆盖标记分片、CRLF、多行公式、重复标记和旧格式。离线 App Server 桩实测首段出现后可点击停止，迟到的公式与原文均未回写。
 - `xcodebuild build-for-testing` 成功。首次离线回归的一项普通 Vision OCR 文字断言失败，复跑 14 个套件的 185 项测试全部通过。
+- 用户在安装的流式版上试用论文截图，确认首段等待改善。切换默认强度后，离线 App Server 桩在真实查询入口收到 Luna 默认的 `low` 和显式 `medium`。另一视觉模型的默认请求不附加强度参数。Codex 与 Markdown 的 132 项现有测试全部通过。
 
 ### 受影响文件
 
 - `Easydict/Swift/Service/CodexCLI/CodexCLIService.swift`
+- `Easydict/Swift/Service/CodexCLI/CodexManagedAppServer.swift`
 - `Easydict/objc/ViewController/Window/BaseQueryWindow/EZBaseQueryViewController.m`
 
 ### 后续事项

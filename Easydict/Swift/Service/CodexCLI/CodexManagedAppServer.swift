@@ -162,7 +162,11 @@ actor CodexManagedAppServer {
                 input.append(["type": "image", "url": imageURL])
             }
             var turnParameters: [String: Any] = ["threadId": threadID, "input": input]
-            if let effort = translation.effort { turnParameters["effort"] = effort }
+            if let effort = translation.effort {
+                turnParameters["effort"] = effort
+            } else if translation.imageURL != nil, translation.model == CodexServiceConfiguration.formulaDefaultModel {
+                turnParameters["effort"] = CodexReasoningEffort.low.rawValue
+            }
             let turnResponse = try await request(
                 session: session,
                 method: "turn/start",
