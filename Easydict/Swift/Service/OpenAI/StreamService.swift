@@ -35,6 +35,13 @@ public class StreamService: QueryService {
             .store(in: &cancellables)
     }
 
+    // MARK: Open
+
+    /// Cancels the current streaming request manually.
+    open override func cancelStream() {}
+
+    // MARK: Public
+
     public override func ocr(_ image: NSImage, from: Language, to _: Language) async throws -> EZOCRResult? {
         guard supportsOCR() else { throw QueryError(type: .parameter, message: "OCR is not supported") }
         try Task.checkCancellation()
@@ -55,38 +62,6 @@ public class StreamService: QueryService {
         result.from = from == .auto ? AppleLanguageDetector().detectLanguage(text: text) : from
         return result
     }
-
-    @nonobjc
-    func recognizeImage(_ imageURL: String, prompt: String) async throws -> String {
-        throw QueryError(type: .parameter, message: "OCR is not supported")
-    }
-
-    private static func ocrImageDataURL(_ image: NSImage) throws -> String {
-        guard let cgImage = image.toCGImage() else {
-            throw QueryError(type: .parameter, message: String(localized: "service.codex_cli.screenshot.encoding_failed"))
-        }
-        let bitmap = NSBitmapImageRep(cgImage: cgImage)
-        let maximumBytes = 10 * 1024 * 1024
-        let png = bitmap.representation(using: .png, properties: [:])
-        if let png, png.count <= maximumBytes {
-            return "data:image/png;base64," + png.base64EncodedString()
-        }
-        let jpeg = bitmap.representation(using: .jpeg, properties: [.compressionFactor: 0.94])
-        if let jpeg, jpeg.count <= maximumBytes {
-            return "data:image/jpeg;base64," + jpeg.base64EncodedString()
-        }
-        if png == nil, jpeg == nil {
-            throw QueryError(type: .parameter, message: String(localized: "service.codex_cli.screenshot.encoding_failed"))
-        }
-        throw QueryError(type: .parameter, message: String(localized: "service.codex_cli.screenshot.too_large"))
-    }
-
-    // MARK: Open
-
-    /// Cancels the current streaming request manually.
-    open override func cancelStream() {}
-
-    // MARK: Public
 
     /// Whether the service should be treated as stream-capable by higher layers.
     ///
@@ -482,6 +457,11 @@ public class StreamService: QueryService {
     @MainActor
     var modelSelectionHint: String? { nil }
 
+    @nonobjc
+    func recognizeImage(_ imageURL: String, prompt: String) async throws -> String {
+        throw QueryError(type: .parameter, message: "OCR is not supported")
+    }
+
     @MainActor
     func modelSelectionTitle(for identifier: String) -> String { identifier }
 
@@ -618,6 +598,32 @@ public class StreamService: QueryService {
     }
 
     // MARK: Private
+
+    private static func ocrImageDataURL(_ image: NSImage) throws -> String {
+        guard let cgImage = image.toCGImage() else {
+            throw QueryError(
+                type: .parameter,
+                message: String(localized: "service.codex_cli.screenshot.encoding_failed")
+            )
+        }
+        let bitmap = NSBitmapImageRep(cgImage: cgImage)
+        let maximumBytes = 10 * 1024 * 1024
+        let png = bitmap.representation(using: .png, properties: [:])
+        if let png, png.count <= maximumBytes {
+            return "data:image/png;base64," + png.base64EncodedString()
+        }
+        let jpeg = bitmap.representation(using: .jpeg, properties: [.compressionFactor: 0.94])
+        if let jpeg, jpeg.count <= maximumBytes {
+            return "data:image/jpeg;base64," + jpeg.base64EncodedString()
+        }
+        if png == nil, jpeg == nil {
+            throw QueryError(
+                type: .parameter,
+                message: String(localized: "service.codex_cli.screenshot.encoding_failed")
+            )
+        }
+        throw QueryError(type: .parameter, message: String(localized: "service.codex_cli.screenshot.too_large"))
+    }
 
     private func remoteModelError(statusCode: Int, data: Data?) -> QueryError {
         let message = data.flatMap(remoteModelErrorMessage)?.trim()

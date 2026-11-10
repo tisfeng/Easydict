@@ -223,6 +223,11 @@ public final class DetectManager: NSObject {
 
     // MARK: Private
 
+    private static var configuredServiceIDs: Set<String> {
+        let storage = LocalStorage.shared()
+        return Set([EZWindowType.fixed, .main, .mini].flatMap { storage.allServiceTypes($0) })
+    }
+
     // MARK: - Private Properties
 
     private var latestOCRRequestID: UUID?
@@ -237,11 +242,6 @@ public final class DetectManager: NSObject {
     private lazy var baiduService: BaiduService = .init()
 
     private lazy var youdaoService: YoudaoService = .init()
-
-    private static var configuredServiceIDs: Set<String> {
-        let storage = LocalStorage.shared()
-        return Set([EZWindowType.fixed, .main, .mini].flatMap { storage.allServiceTypes($0) })
-    }
 
     private static func makeOCRService(_ identifier: String) -> QueryService? {
         guard identifier != ServiceType.apple.rawValue,

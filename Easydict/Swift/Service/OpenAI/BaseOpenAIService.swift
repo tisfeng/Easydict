@@ -198,6 +198,27 @@ public class BaseOpenAIService: StreamService {
     @nonobjc
     func handleChatStreamError(_: Error) async {}
 
+    func requestChatText(query: ChatQuery, url: URL, apiKey: String) async throws -> String {
+        let request = try makeNonStreamingChatRequest(query: query, url: url, apiKey: apiKey)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        try Task.checkCancellation()
+        if let http = response as? HTTPURLResponse, !(200 ... 299).contains(http.statusCode) {
+            if let apiError = try? JSONDecoder().decode(APIErrorResponse.self, from: data) {
+                throw apiError
+            }
+            throw QueryError(
+                type: .api,
+                message: "HTTP \(http.statusCode)",
+                errorDataMessage: String(data: data, encoding: .utf8)
+            )
+        }
+        let chatResult = try JSONDecoder().decode(ChatResult.self, from: data)
+        guard let content = chatResult.choices.first?.message.content, !content.isEmpty else {
+            throw QueryError(type: .noResult)
+        }
+        return content
+    }
+
     // MARK: Private
 
     /// Snapshot of first-pass validation context to avoid in-place mutation from `resetServiceResult()`.
@@ -360,24 +381,6 @@ public class BaseOpenAIService: StreamService {
                 task.cancel()
             }
         }
-    }
-
-    func requestChatText(query: ChatQuery, url: URL, apiKey: String) async throws -> String {
-        let request = try makeNonStreamingChatRequest(query: query, url: url, apiKey: apiKey)
-        let (data, response) = try await URLSession.shared.data(for: request)
-        try Task.checkCancellation()
-        if let http = response as? HTTPURLResponse, !(200 ... 299).contains(http.statusCode) {
-            if let apiError = try? JSONDecoder().decode(APIErrorResponse.self, from: data) {
-                throw apiError
-            }
-            throw QueryError(type: .api, message: "HTTP \(http.statusCode)",
-                             errorDataMessage: String(data: data, encoding: .utf8))
-        }
-        let chatResult = try JSONDecoder().decode(ChatResult.self, from: data)
-        guard let content = chatResult.choices.first?.message.content, !content.isEmpty else {
-            throw QueryError(type: .noResult)
-        }
-        return content
     }
 
     /// Builds the HTTP request for a non-streaming OpenAI-compatible chat completion.

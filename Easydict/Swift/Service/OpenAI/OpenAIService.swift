@@ -31,16 +31,6 @@ class OpenAIService: BaseOpenAIService {
         "https://chatgpt.com"
     }
 
-    override func recognizeImage(_ imageURL: String, prompt: String) async throws -> String {
-        let endpoint = try validateChatStreamRequest()
-        let message: ChatQuery.ChatCompletionMessageParam = .user(.init(content: .contentParts([
-            .text(.init(text: prompt)),
-            .image(.init(imageUrl: .init(url: imageURL, detail: nil))),
-        ])))
-        let query = makeChatQuery(messages: [message])
-        return try await requestChatText(query: query, url: endpoint, apiKey: apiKey)
-    }
-
     // MARK: Internal
 
     override var defaultModels: [String] {
@@ -57,6 +47,16 @@ class OpenAIService: BaseOpenAIService {
 
     override var observeKeys: [Defaults.Key<String>] {
         [apiKeyKey, supportedModelsKey]
+    }
+
+    override func recognizeImage(_ imageURL: String, prompt: String) async throws -> String {
+        let endpoint = try validateChatStreamRequest()
+        let message: ChatQuery.ChatCompletionMessageParam = .user(.init(content: .contentParts([
+            .text(.init(text: prompt)),
+            .image(.init(imageUrl: .init(url: imageURL, detail: nil))),
+        ])))
+        let query = makeChatQuery(messages: [message])
+        return try await requestChatText(query: query, url: endpoint, apiKey: apiKey)
     }
 }
 

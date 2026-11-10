@@ -4,8 +4,12 @@ import Testing
 
 @testable import Easydict
 
+// MARK: - OCRFormulaImageTests
+
 @Suite("Formula image OCR")
 struct OCRFormulaImageTests {
+    // MARK: Internal
+
     @Test("Apple OCR recognizes the text around a formula")
     func appleRecognizesFormulaImage() async throws {
         let result = try #require(try await AppleService.shared.ocr(formulaImage(), from: .english, to: .auto))
@@ -35,6 +39,8 @@ struct OCRFormulaImageTests {
         #expect(!DeepSeekService().supportsOCR())
     }
 
+    // MARK: Private
+
     private func formulaImage() -> NSImage {
         NSImage(size: NSSize(width: 820, height: 170), flipped: false) { rect in
             NSColor.white.setFill()
@@ -47,6 +53,8 @@ struct OCRFormulaImageTests {
         }
     }
 }
+
+// MARK: - FormulaOCRService
 
 private final class FormulaOCRService: StreamService {
     override func serviceType() -> ServiceType { .openAI }
@@ -64,6 +72,8 @@ private final class FormulaOCRService: StreamService {
         return #" Equation (7): \(x_1 = \frac{1}{2}\). "#
     }
 }
+
+// MARK: - FormulaOpenAIService
 
 private final class FormulaOpenAIService: OpenAIService {
     override func validateChatStreamRequest() throws -> URL {
