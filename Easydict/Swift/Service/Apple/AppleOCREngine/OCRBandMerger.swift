@@ -94,7 +94,6 @@ class OCRBandMerger {
         }
 
         let previousText = previous.firstText
-        let currentText = current.firstText
         let pair = OCRObservationPair(current: current, previous: previous)
 
         log("  Analyzing side-by-side section pair:")
