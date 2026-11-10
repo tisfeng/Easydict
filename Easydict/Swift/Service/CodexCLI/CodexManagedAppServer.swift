@@ -27,7 +27,7 @@ actor CodexManagedAppServer {
         let model: String
         let effort: String?
         let runtime: CodexManagedRuntime?
-        var imageURL: String? = nil
+        var imageURL: String?
         let isCancelled: @Sendable () -> Bool
         let deltaReceived: @Sendable (String) -> ()
     }
@@ -114,7 +114,8 @@ actor CodexManagedAppServer {
         } else if translation.imageURL != nil {
             if translation.model != CodexServiceConfiguration.formulaDefaultModel || translation.effort != nil {
                 let available = try await localModelList()
-                guard let model = available.first(where: { $0.identifier == translation.model && $0.acceptsImages }) else {
+                guard let model = available.first(where: { $0.identifier == translation.model && $0.acceptsImages })
+                else {
                     throw CodexManagedError.unavailableImageModel
                 }
                 try CodexReasoningEffort.validateLocalOverride(translation.effort, supportedEfforts: model.efforts)
@@ -221,8 +222,6 @@ actor CodexManagedAppServer {
 
     // MARK: Private
 
-    private let requiresChatGPTLogin: Bool
-
     private struct RPCResponse: @unchecked Sendable {
         let object: [String: Any]
     }
@@ -304,6 +303,8 @@ actor CodexManagedAppServer {
     private static let requestTimeout: TimeInterval = 30
     private static let idleTimeout: TimeInterval = 300
     private static let allowedItemTypes = ["userMessage", "reasoning", "agentMessage"]
+
+    private let requiresChatGPTLogin: Bool
 
     private var session: Session?
     private var cachedRuntime: CodexManagedRuntime?

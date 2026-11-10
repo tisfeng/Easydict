@@ -306,20 +306,27 @@ final class MenuItemStore: ObservableObject {
     @Published var canCheckForUpdates = false
 }
 
-// MARK: - Formula Screenshot Mode
+// MARK: - FormulaScreenshotModeToggle
 
 struct FormulaScreenshotModeToggle: View {
-    @Default(.formulaScreenshotMode) private var enabled
+    // MARK: Internal
 
     var body: some View {
         Toggle("setting.general.screenshot.formula_mode", isOn: $enabled)
     }
+
+    // MARK: Private
+
+    @Default(.formulaScreenshotMode) private var enabled
 }
+
+// MARK: - FormulaScreenshotModeControl
 
 /// Hosts the same preference control in the AppKit translation card title bar.
 @objc(EZFormulaScreenshotModeControl)
 final class FormulaScreenshotModeControl: NSObject {
-    @MainActor @objc static func makeView() -> NSView {
+    @MainActor @objc
+    static func makeView() -> NSView {
         NSHostingView(
             rootView: FormulaScreenshotModeToggle()
                 .toggleStyle(.switch)

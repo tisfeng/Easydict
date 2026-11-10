@@ -31,6 +31,9 @@ struct CodexServiceConfiguration: Equatable {
 
     // MARK: Internal
 
+    static let formulaScreenshotID = "formula-screenshot"
+    static let formulaDefaultModel = "gpt-6-luna"
+
     let uuid: String
     let mode: CodexAccessMode
     let model: String
@@ -44,9 +47,6 @@ struct CodexServiceConfiguration: Equatable {
                 .supported_reasoning_levels.compactMap { CodexReasoningEffort(rawValue: $0.effort) } ?? [])
         }
     }
-
-    static let formulaScreenshotID = "formula-screenshot"
-    static let formulaDefaultModel = "gpt-6-luna"
 
     static func modelKey(uuid: String, mode: CodexAccessMode) -> Defaults.Key<String> {
         serivceConfigurationKey(

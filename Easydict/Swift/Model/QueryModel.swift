@@ -70,14 +70,6 @@ open class QueryModel: NSObject, NSCopying {
     /// Mapping from query text to a specified language.
     var specifiedTextLanguageDict: NSMutableDictionary = .init()
 
-    /// OCR image for the current query.
-    var ocrImage: NSImage? {
-        didSet {
-            screenshotSourceMarkdown = nil
-            screenshotTargetLanguage = nil
-        }
-    }
-
     /// Temporary transcription for the screenshot preview, separate from editable query text.
     var screenshotSourceMarkdown: String?
 
@@ -92,6 +84,14 @@ open class QueryModel: NSObject, NSCopying {
 
     /// Whether to auto query after updating the model.
     var autoQuery: Bool = true
+
+    /// OCR image for the current query.
+    var ocrImage: NSImage? {
+        didSet {
+            screenshotSourceMarkdown = nil
+            screenshotTargetLanguage = nil
+        }
+    }
 
     /// User selected source language.
     var userSourceLanguage: Language = .auto {

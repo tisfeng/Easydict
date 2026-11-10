@@ -8,6 +8,8 @@
 
 import AppKit
 
+// MARK: - MarkdownLabel
+
 /// Displays Markdown or plain text using the label's font and appearance.
 @objc(EDMarkdownLabel)
 class MarkdownLabel: EZLabel {
@@ -142,6 +144,7 @@ class MarkdownLabel: EZLabel {
     }
 }
 
+// MARK: - ScreenshotSourceLabel
 
 /// Displays the screenshot transcript while letting typing and paste start a text query.
 @objc(EDScreenshotSourceLabel)

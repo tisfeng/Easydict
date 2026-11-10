@@ -56,7 +56,6 @@ public class OCRTextProcessor {
         // Set basic OCR result properties using unified observations
         updateOCRResult(ocrResult, observations: observations)
 
-
         // If intelligent joining is not enabled, return simple result
         guard smartMerging else { return }
 
@@ -151,7 +150,6 @@ public class OCRTextProcessor {
 
         for (sectionIndex, section) in band.sections.enumerated() {
             let observations = section.observations
-
 
             let language = detectLanguageForSection(
                 observations: observations,
