@@ -4132,6 +4132,9 @@
 				03779F182BB25797008D3C42 /* XCRemoteSwiftPackageReference "OpenAI" */,
 				0364EC882C208EB40036B61B /* XCRemoteSwiftPackageReference "KeySender" */,
 				033E181D2C5A970A0099A7B0 /* XCRemoteSwiftPackageReference "vapor" */,
+				AC2026111000000000000001 /* XCRemoteSwiftPackageReference "swift-nio" */,
+				AC2026111000000000000002 /* XCRemoteSwiftPackageReference "swift-nio-extras" */,
+				AC2026111000000000000003 /* XCRemoteSwiftPackageReference "swift-nio-http2" */,
 				C4BE8E1A2C72E5C500F53204 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
 				036806562CA829F100800B76 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				03A173E52CD120E600791B51 /* XCRemoteSwiftPackageReference "SelectedTextKit" */,
@@ -5350,6 +5353,30 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 4.122.0;
+			};
+		};
+		AC2026111000000000000001 /* XCRemoteSwiftPackageReference "swift-nio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.100.0;
+			};
+		};
+		AC2026111000000000000002 /* XCRemoteSwiftPackageReference "swift-nio-extras" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio-extras.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.34.1;
+			};
+		};
+		AC2026111000000000000003 /* XCRemoteSwiftPackageReference "swift-nio-http2" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio-http2.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.44.0;
 			};
 		};
 		0354E91E2D3601500050E5BE /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
