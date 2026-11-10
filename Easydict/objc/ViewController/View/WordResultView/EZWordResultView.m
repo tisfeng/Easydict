@@ -274,7 +274,8 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
 
             if (text) {
                 EZTranslationResultLabel *resultLabel = [self makeResultTextLabel];
-                resultLabel.markdownEnabled = [self.service isStream] && errorMessage.length == 0 && result.isMarkdownRenderingEnabled;
+                resultLabel.markdownEnabled = errorMessage.length == 0 && result.isMarkdownRenderingEnabled
+                    && ([self.service isStream] || [EDMarkdownLabel containsMath:text]);
                 resultLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
                 [self addSubview:resultLabel];
 
@@ -1043,8 +1044,8 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
         rightmostButton = ankiButton;
     }
 
-    // Markdown rendering toggle, only on streaming (AI/LLM) services.
-    if ([self.service isStream]) {
+    if ([self.service isStream] || (hasTranslatedText && !result.errorMessage.length
+                                   && [EDMarkdownLabel containsMath:result.translatedText])) {
         EDMarkdownToggleButton *markdownToggleButton = [[EDMarkdownToggleButton alloc] init];
         [self addSubview:markdownToggleButton];
         markdownToggleButton.markdownEnabled = result.isMarkdownRenderingEnabled;

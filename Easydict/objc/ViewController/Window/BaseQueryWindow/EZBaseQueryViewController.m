@@ -489,6 +489,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     [self.detectManager cancelOCR];
     [self.queryView startLoadingAnimation:NO];
+    if (![text isEqualToString:self.inputText]) {
+        [self.queryView resetFormulaPreview];
+    }
     if (![actionType isEqualToString:EZActionTypeOCRQuery] && ![actionType isEqualToString:EZActionTypePasteboardOCR]) {
         self.queryModel.ocrImage = nil;
     }
@@ -548,6 +551,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
     self.queryModel.actionType = actionType;
+    [self.queryView resetFormulaPreview];
     self.queryModel.ocrImage = image;
 
     self.queryView.isTypingChinese = NO;
@@ -610,6 +614,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             }
 
             [self.queryView highlightAllLinks];
+            [self.queryView enableFormulaPreview];
 
             if ([self.inputText ns_isURL]) {
                 // Append a whitespace to beautify the link.
@@ -655,9 +660,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (self.queryView.window == self.baseQueryWindow) {
         // Delay to make textView the first responder.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
-            if (self.config.selectQueryTextWhenWindowActivate) {
-                self.queryView.textView.selectedRange = NSMakeRange(0, self.inputText.length);
+            NSTextView *textView = self.queryView.visibleTextView;
+            [self.baseQueryWindow makeFirstResponder:textView];
+            if (self.config.selectQueryTextWhenWindowActivate && textView == self.queryView.textView) {
+                textView.selectedRange = NSMakeRange(0, self.inputText.length);
             }
         });
     }
@@ -1958,7 +1964,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         NSResponder *curr = self.baseQueryWindow.firstResponder;
         BOOL isFocusEmpty = (curr == nil || curr == self.baseQueryWindow || curr == self.baseQueryWindow.contentView);
         if (isFocusEmpty) {
-            [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
+            [self.baseQueryWindow makeFirstResponder:self.queryView.visibleTextView];
         }
     }
 }

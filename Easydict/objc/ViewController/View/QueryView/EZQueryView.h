@@ -45,6 +45,11 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 @property (nonatomic, copy) void (^selectedLanguageBlock)(EZLanguage language);
 
 
+@property (nonatomic, readonly) NSTextView *visibleTextView;
+
+- (void)enableFormulaPreview;
+- (void)resetFormulaPreview;
+
 - (CGFloat)heightOfQueryView;
 
 - (void)initializeAimatedButtonAlphaValue:(EZQueryModel *)queryModel;

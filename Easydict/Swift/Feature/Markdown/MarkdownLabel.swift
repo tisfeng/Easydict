@@ -117,6 +117,11 @@ class MarkdownLabel: EZLabel {
         }
     }
 
+    @objc
+    static func containsMath(_ source: String) -> Bool {
+        MarkdownBlockParser().containsMath(source)
+    }
+
     // MARK: Private
 
     private var resolvedForegroundColor: NSColor {

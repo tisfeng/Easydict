@@ -40,6 +40,8 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
 @property (nonatomic, strong) id fontSizeObserver;
+@property (nonatomic, strong) EDMarkdownLabel *formulaPreview;
+@property (nonatomic, assign) BOOL formulaPreviewAvailable;
 
 @end
 
@@ -112,6 +114,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
                                                   usingBlock:^(NSNotification * _Nonnull notification) {
         mm_strongify(self);
         self.textView.font = [NSFont systemFontOfSize:14 * MyConfiguration.shared.fontSizeRatio];
+        self.formulaPreview.font = self.textView.font;
     }];
     
     // When programatically setting the text, like auto select text, or OCR text.
@@ -125,8 +128,8 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     self.loadingAnimationView = loadingAnimationView;
     
     [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(textView).offset(5);
-        make.left.equalTo(textView).offset(10);
+        make.top.equalTo(scrollView).offset(5);
+        make.left.equalTo(scrollView).offset(10);
         make.height.mas_equalTo(30);
     }];
     
@@ -317,6 +320,9 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 
 - (void)setQueryModel:(EZQueryModel *)model {
     NSString *queryText = model.inputText;
+    if ((_queryModel != model || !queryText.length) && self.formulaPreviewAvailable) {
+        [self resetFormulaPreview];
+    }
     _queryModel = model;
     
     // !!!: Set queryModel may trigger didChangeText.
@@ -336,6 +342,71 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     }
     
     [self updateButtonsDisplayState:queryText];
+}
+
+- (NSTextView *)visibleTextView {
+    return (NSTextView *)self.scrollView.documentView;
+}
+
+- (void)enableFormulaPreview {
+    if (![EDMarkdownLabel containsMath:self.copiedText]) {
+        return;
+    }
+    self.formulaPreviewAvailable = YES;
+    if (MyConfiguration.shared.enableMarkdownRendering) {
+        [self toggleFormulaPreview:nil];
+    }
+}
+
+- (void)resetFormulaPreview {
+    self.formulaPreviewAvailable = NO;
+    if (self.visibleTextView == self.formulaPreview) {
+        [self showFormulaPreview:NO];
+    }
+}
+
+- (NSMenu *)textView:(NSTextView *)textView menu:(NSMenu *)menu forEvent:(NSEvent *)event atIndex:(NSUInteger)index {
+    if (self.formulaPreviewAvailable) {
+        NSString *title = textView == self.formulaPreview
+            ? NSLocalizedString(@"query.formula.edit_source", nil)
+            : NSLocalizedString(@"query.formula.show_preview", nil);
+        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:title action:@selector(toggleFormulaPreview:) keyEquivalent:@""];
+        item.target = self;
+        [menu insertItem:NSMenuItem.separatorItem atIndex:0];
+        [menu insertItem:item atIndex:0];
+    }
+    return menu;
+}
+
+- (void)toggleFormulaPreview:(id)sender {
+    [self showFormulaPreview:self.visibleTextView != self.formulaPreview];
+    if (self.updateInputTextBlock) {
+        self.updateInputTextBlock(self.copiedText, self.heightOfQueryView);
+    }
+}
+
+- (void)showFormulaPreview:(BOOL)show {
+    BOOL hadFocus = self.window.firstResponder == self.visibleTextView;
+    if (show) {
+        if (!self.formulaPreview) {
+            EDMarkdownLabel *preview = [[EDMarkdownLabel alloc] initWithFrame:self.scrollView.contentView.bounds];
+            preview.delegate = self;
+            preview.selectable = YES;
+            preview.verticallyResizable = YES;
+            preview.textContainer.widthTracksTextView = YES;
+            preview.textContainerInset = self.textView.textContainerInset;
+            self.formulaPreview = preview;
+        }
+        self.formulaPreview.font = self.textView.font;
+        self.formulaPreview.text = self.copiedText;
+    }
+    NSTextView *next = show ? self.formulaPreview : self.textView;
+    next.frame = self.scrollView.contentView.bounds;
+    self.scrollView.documentView = next;
+    [next scrollRangeToVisible:NSMakeRange(show ? 0 : next.selectedRange.location, 0)];
+    if (hadFocus || show) {
+        [self.window makeFirstResponder:next];
+    }
 }
 
 - (void)setAssociatedWindowType:(EZWindowType)windowType {
@@ -569,6 +640,10 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         text = [self copiedText];
     }
     
+    if (self.visibleTextView == self.formulaPreview && ![self.formulaPreview.text isEqualToString:text]) {
+        self.formulaPreview.text = text;
+    }
+
     // Set `self.isTypingChinese` to NO when textView string is changed.
     self.isTypingChinese = NO;
     
@@ -581,7 +656,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 }
 
 - (CGFloat)heightOfTextView {
-    CGFloat height = [self.textView ez_getTextViewHeightDesignatedWidth:self.width];
+    CGFloat height = [self.visibleTextView ez_getTextViewHeightDesignatedWidth:self.width];
 //    MMLogInfo(@"text: %@, height: %@", self.textView.string, @(height));
     
     height = MAX(height, self.textViewMinHeight);
@@ -680,7 +755,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 }
 
 - (void)scrollToEndOfTextView {
-    [self.textView scrollToEndOfDocument:nil];
+    [self.visibleTextView scrollToEndOfDocument:nil];
 }
 
 #pragma mark - Undo

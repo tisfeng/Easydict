@@ -13,6 +13,10 @@ struct MarkdownInlineRenderer {
 
     let codeBackground: NSColor
 
+    func containsMath(_ source: String) -> Bool {
+        !protectMath(source, prefix: "").formulas.isEmpty
+    }
+
     func render(_ source: String, attributes: [NSAttributedString.Key: Any]) -> NSAttributedString {
         // Choose a prefix absent from the source so literal private-use characters remain literal.
         var prefix = "\u{E000}"

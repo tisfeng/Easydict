@@ -28,6 +28,24 @@ struct MarkdownBlockParser {
         parse(source.replacingOccurrences(of: "\r\n", with: "\n").components(separatedBy: "\n"), depth: 0)
     }
 
+    func containsMath(_ source: String) -> Bool {
+        guard source.contains("$") || source.contains("\\(") || source.contains("\\[") else { return false }
+        let inline = MarkdownInlineRenderer(codeBackground: .clear)
+        func containsMath(_ block: Block) -> Bool {
+            switch block {
+            case .math: return true
+            case let .heading(_, text), let .paragraph(text): return inline.containsMath(text)
+            case let .quote(blocks): return blocks.contains(where: containsMath)
+            case let .list(items): return items.contains { $0.blocks.contains(where: containsMath) }
+            case let .table(headers, rows, _):
+                return headers.contains(where: inline.containsMath) || rows
+                    .contains { $0.contains(where: inline.containsMath) }
+            case .code, .rule: return false
+            }
+        }
+        return parse(source).contains(where: containsMath)
+    }
+
     // MARK: Private
 
     private func parse(_ lines: [String], depth: Int) -> [Block] {
