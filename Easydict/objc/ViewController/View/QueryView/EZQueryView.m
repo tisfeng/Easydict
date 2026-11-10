@@ -75,6 +75,8 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.bounds];
     self.scrollView = scrollView;
     [self addSubview:scrollView];
+    // Let the query view supply the background when the formula preview is visible.
+    scrollView.drawsBackground = NO;
     scrollView.hasVerticalScroller = YES;
     scrollView.hasHorizontalScroller = NO;
     scrollView.autohidesScrollers = YES;
