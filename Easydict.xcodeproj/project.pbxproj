@@ -5448,7 +5448,7 @@
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.6.4;
+				minimumVersion = 2.9.2;
 			};
 		};
 		03A830932B4076FC00112834 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
