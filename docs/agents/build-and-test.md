@@ -46,6 +46,8 @@
 - 因此 agent 运行 `xcodebuild` 时始终显式指定 `-derivedDataPath`，指向按 checkout 派生、与 Xcode
   默认目录不相交的 `~/Library/Developer/Xcode/DerivedData/Easydict-Agent/<checkout-id>`；损坏时
   删除该目录重建，不切换到 Xcode 默认 DerivedData。
+- 禁止 Agent 在构建、测试或归档时通过命令行或环境变量手动设置 `ENABLE_PREVIEWS`。
+  该设置由 Xcode 管理，常规构建和测试按项目配置执行 SwiftFormat。
 - Agent 构建、运行和测试沿用项目当前配置的 bundle ID，不为隔离验证额外覆盖
   `PRODUCT_BUNDLE_IDENTIFIER`，除非用户明确要求；编译缓存通过独立 DerivedData 隔离。
 
