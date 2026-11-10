@@ -20,7 +20,6 @@
 @property (nonatomic, strong) NSImageView *serviceIcon;
 @property (nonatomic, strong) NSTextField *serviceNameLabel;
 @property (nonatomic, strong) EZButton *serviceModelButton;
-@property (nonatomic, strong, nullable) NSUUID *modelMenuRequest;
 @property (nonatomic, strong) NSImageView *errorImageView;
 @property (nonatomic, strong) EZLoadingAnimationView *loadingView;
 @property (nonatomic, strong) EZHoverButton *arrowButton;
@@ -357,7 +356,6 @@
 
 - (void)updateLoadingAnimation {
     [self startOrStopLoadingAnimation:self.result.isLoading];
-    [self updateStopButton];
 }
 
 - (void)startOrStopLoadingAnimation:(BOOL)isLoading {
@@ -439,9 +437,7 @@
     BOOL showStopButton = NO;
     
     if (self.service.isStream) {
-        BOOL waitingForFormula = self.result.isLoading
-            && [self.result.queryModel.actionType isEqualToString:EZActionTypeFormulaScreenshot];
-        showStopButton = waitingForFormula || (self.result.hasTranslatedResult && !self.result.isStreamFinished);
+        showStopButton = self.result.hasTranslatedResult && !self.result.isStreamFinished;
     }
     
     self.stopButton.hidden = !showStopButton;
@@ -463,11 +459,6 @@
         return;
     }
 
-    if ([service isKindOfClass:EZCodexCLIService.class]) {
-        [self showCodexModelMenu:(EZCodexCLIService *)service sender:sender];
-        return;
-    }
-
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Menu"];
     for (NSString *model in service.selectableModels) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:[service modelSelectionTitleFor:model]
@@ -486,57 +477,6 @@
     [menu popUpBelowView:sender];
 }
 
-- (void)showCodexModelMenu:(EZCodexCLIService *)service sender:(EZButton *)sender {
-    if (self.modelMenuRequest) {
-        return;
-    }
-
-    NSUUID *request = [NSUUID UUID];
-    self.modelMenuRequest = request;
-    [self updateServiceModelButton];
-    mm_weakify(self);
-    [service loadModelMenuWithCompletion:^(NSArray<EZCodexModelMenuChoice *> *choices, BOOL available) {
-        mm_strongify(self);
-        if (self.modelMenuRequest != request) {
-            return;
-        }
-        self.modelMenuRequest = nil;
-        [self updateServiceModelButton];
-        if (self.service != service || !sender.window.isKeyWindow) {
-            return;
-        }
-
-        NSMenu *menu = [[NSMenu alloc] initWithTitle:sender.title];
-        for (EZCodexModelMenuChoice *choice in choices) {
-            NSMenuItem *modelItem = [[NSMenuItem alloc] initWithTitle:choice.model action:nil keyEquivalent:@""];
-            BOOL selectedModel = [choice.model isEqualToString:service.model];
-            modelItem.state = selectedModel ? NSControlStateValueOn : NSControlStateValueOff;
-            NSMenu *efforts = [[NSMenu alloc] initWithTitle:choice.model];
-            for (NSString *effort in choice.effortIdentifiers) {
-                NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:[choice titleForEffort:effort]
-                                                            action:@selector(modelDidSelected:) keyEquivalent:@""];
-                item.target = self;
-                item.representedObject = @{ @"model": choice.model, @"effort": effort, @"service": service };
-                BOOL selectedEffort = [effort isEqualToString:service.selectedEffortIdentifier];
-                item.state = selectedModel && selectedEffort ? NSControlStateValueOn : NSControlStateValueOff;
-                [efforts addItem:item];
-            }
-            modelItem.submenu = efforts;
-            [menu addItem:modelItem];
-        }
-
-        NSString *hint = available ? service.modelSelectionHint : NSLocalizedString(@"service.codex_cli.model_picker.catalog_unavailable", nil);
-        if (hint.length) {
-            if (menu.numberOfItems) {
-                [menu addItem:NSMenuItem.separatorItem];
-            }
-            [menu addItem:[[NSMenuItem alloc] initWithTitle:hint action:nil keyEquivalent:@""]];
-        }
-        CGFloat bottom = sender.isFlipped ? NSMaxY(sender.bounds) : NSMinY(sender.bounds);
-        [menu popUpMenuPositioningItem:nil atLocation:NSMakePoint(NSMinX(sender.bounds), bottom) inView:sender];
-    }];
-}
-
 - (void)modelDidSelected:(NSMenuItem *)sender {
     EZStreamService *service = (EZStreamService *)self.service;
     NSDictionary *selection = sender.representedObject;
@@ -546,12 +486,7 @@
 
     NSString *model = selection[@"model"];
     if ([model isKindOfClass:NSString.class]) {
-        NSString *effort = selection[@"effort"];
-        if ([service isKindOfClass:EZCodexCLIService.class] && [effort isKindOfClass:NSString.class]) {
-            [(EZCodexCLIService *)service selectModel:model effort:effort];
-        } else {
-            [service selectModel:model];
-        }
+        [service selectModel:model];
         [self updateServiceModelButton];
     }
 }
@@ -562,10 +497,6 @@
     }
     EZStreamService *service = (EZStreamService *)self.service;
     NSString *title = service.modelDisplayName;
-    if ([service isKindOfClass:EZCodexCLIService.class]) {
-        title = title.length ? title : NSLocalizedString(@"service.configuration.codex_cli.model.title", nil);
-        title = [title stringByAppendingString:self.modelMenuRequest ? @" …" : @" ▾"];
-    }
     self.serviceModelButton.title = title;
     self.serviceModelButton.hoverTitle = title;
     self.serviceModelButton.highlightTitle = title;

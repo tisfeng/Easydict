@@ -107,19 +107,13 @@ System OCR also extracts QR code payloads. When an image contains both text and 
 For better results, capture a smaller area, improve text/background contrast, and select the correct
 recognition language in settings.
 
-### STEM formula mode
+### OCR service
 
-Enable **STEM formula mode** at the top of the translation window or in Settings → General, then
-capture an area with the screenshot translation shortcut (default `Option + S`). The mode sends
-the screenshot to Codex for processing with a vision-capable model. Install the local Codex CLI
-and sign in with ChatGPT first. When Markdown rendering is enabled, both screenshot panels display
-LaTeX, and the copy buttons provide the underlying source. The same rendering setting applies to
-ordinary AI translations. Turn off STEM formula mode to use ordinary OCR and the enabled translation
-services on your next capture.
-
-Click the model name on the Codex result card to choose a model and one of its supported reasoning
-efforts. In formula mode, the list is limited to models that can accept images, and the selection
-applies to the next capture.
+Apple OCR is the default. To use Codex for screenshot translation, clipboard images, or silent
+screenshot OCR, use Local CLI mode and configure a vision-capable model in Settings → Services → Codex. Then select
+Codex in Settings → Advanced → OCR Settings. The image is sent to the configured provider.
+Codex transcribes the image and keeps formulas as editable LaTeX. Translation uses the services
+already enabled for the window. The screenshot OCR preview continues to use Apple OCR.
 
 ## Text to speech
 

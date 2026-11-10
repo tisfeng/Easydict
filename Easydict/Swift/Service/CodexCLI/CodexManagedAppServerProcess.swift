@@ -13,9 +13,8 @@ import Foundation
 final class CodexManagedAppServerProcess: @unchecked Sendable {
     // MARK: Lifecycle
 
-    init(runtime: CodexManagedRuntime?, requiresChatGPTLogin: Bool = true) {
+    init(runtime: CodexManagedRuntime?) {
         self.runtime = runtime
-        self.requiresChatGPTLogin = requiresChatGPTLogin
     }
 
     deinit {
@@ -118,7 +117,6 @@ final class CodexManagedAppServerProcess: @unchecked Sendable {
     private static let maximumStderrSize = 1024 * 1024
 
     private let runtime: CodexManagedRuntime?
-    private let requiresChatGPTLogin: Bool
     private let stateLock = NSLock()
     private let writeLock = NSLock()
     private let ioQueue = DispatchQueue(
@@ -130,15 +128,10 @@ final class CodexManagedAppServerProcess: @unchecked Sendable {
     private var messageReceived: (@Sendable (Data) -> ())?
     private var terminationReceived: (@Sendable (Data) -> ())?
 
-    /// Use the installed CLI's configuration, restricting screenshot turns to ChatGPT sign-in.
+    /// Reuse the installed CLI's account, provider and environment.
     private func configureLocalProcess(_ process: Process) throws {
         let executable = try CodexCLIRunner.detectCodexBinary()
         var environment = CodexCLIRunner.buildProcessEnvironment()
-        if requiresChatGPTLogin {
-            for key in ["OPENAI_API_KEY", "CODEX_API_KEY", "CODEX_ACCESS_TOKEN"] {
-                environment.removeValue(forKey: key)
-            }
-        }
         environment["RUST_LOG"] = "off"
         process.executableURL = URL(fileURLWithPath: executable)
         process.environment = environment
@@ -152,9 +145,6 @@ final class CodexManagedAppServerProcess: @unchecked Sendable {
             "-c", "analytics.enabled=false",
             "-c", "feedback.enabled=false",
         ] + CodexCLIRunner.disabledToolFeatures.flatMap { ["--disable", $0] }
-        if requiresChatGPTLogin {
-            process.arguments?.append(contentsOf: ["-c", #"forced_login_method="chatgpt""#])
-        }
     }
 
     private func appendStdout(_ data: Data) {

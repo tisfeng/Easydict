@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 import SystemConfiguration
 
@@ -24,8 +25,6 @@ public final class DetectManager: NSObject {
     public init(model: QueryModel) {
         self.queryModel = model
 
-        self.ocrService = AppleService.shared
-
         super.init()
     }
 
@@ -35,13 +34,21 @@ public final class DetectManager: NSObject {
         self.allowsDetachedDetection = true
     }
 
+    deinit { ocrTask?.cancel() }
+
     // MARK: Public
 
     /// The query model containing text and image data to be processed.
     public var queryModel: QueryModel
 
     /// The OCR service used for text recognition (defaults to AppleService).
-    public private(set) var ocrService: QueryService
+    public var ocrService: QueryService {
+        let identifier = Defaults[.ocrServiceID]
+        if let service = Self.codexOCRService(identifier) {
+            return service
+        }
+        return AppleService.shared
+    }
 
     // MARK: - Static Factory
 
@@ -53,11 +60,18 @@ public final class DetectManager: NSObject {
         DetectManager(model: model)
     }
 
+    public func cancelOCR() {
+        latestOCRRequestID = nil
+        ocrTask?.cancel()
+        ocrTask = nil
+    }
+
     // MARK: - Public Methods
 
     /// Performs OCR on the query model's image and then detects the language of the OCR result.
     /// - Parameter completion: Callback with the updated query model and optional error.
     public func ocrAndDetectText(completion: @escaping (QueryModel, Error?) -> ()) {
+        cancelOCR()
         let requestModel = queryModel
         let requestImage = requestModel.ocrImage
         let requestAction = requestModel.actionType
@@ -65,19 +79,28 @@ public final class DetectManager: NSObject {
         let requestLanguage = requestModel.queryFromLanguage
         let requestID = UUID()
         latestOCRRequestID = requestID
-        ocr { [weak self] ocrResult, error in
+        let service = ocrService
+        ocrTask = performOCR(using: service) { [weak self] ocrResult, error in
             guard let self else {
-                completion(QueryModel(), error)
                 return
             }
 
+            guard latestOCRRequestID == requestID else { return }
+            ocrTask = nil
+            latestOCRRequestID = nil
+
             // A superseded OCR request must not replace a newer screenshot preview.
-            guard latestOCRRequestID == requestID, queryModel === requestModel,
+            guard queryModel === requestModel,
                   requestModel.ocrImage === requestImage, requestModel.actionType == requestAction,
                   requestModel.inputText == requestInput else { return }
 
             // Another window can change the shared language without starting a new request here.
             guard requestModel.queryFromLanguage == requestLanguage else {
+                completion(requestModel, CocoaError(.userCancelled))
+                return
+            }
+
+            if error is CancellationError {
                 completion(requestModel, CocoaError(.userCancelled))
                 return
             }
@@ -91,6 +114,9 @@ public final class DetectManager: NSObject {
             let ocrLanguage = ocrResult.from
             if ocrLanguage != .auto {
                 queryModel.detectedLanguage = ocrLanguage
+                if service is CodexCLIService {
+                    queryModel.needDetectLanguage = false
+                }
             }
 
             completion(queryModel, error)
@@ -172,31 +198,7 @@ public final class DetectManager: NSObject {
     /// Performs OCR on the query model's image.
     /// - Parameter completion: Callback with the OCR result and optional error.
     public func ocr(completion: @escaping (EZOCRResult?, Error?) -> ()) {
-        guard let image = queryModel.ocrImage else {
-            let error = QueryError.error(type: .parameter, message: "ocr image cannot be nil")
-            completion(nil, error)
-            return
-        }
-
-        let sourceLanguage = queryModel.queryFromLanguage
-        let targetLanguage = queryModel.queryTargetLanguage
-        Task { [weak self] in
-            guard let self else {
-                completion(nil, nil)
-                return
-            }
-
-            do {
-                let result = try await ocrService.ocr(image, from: sourceLanguage, to: targetLanguage)
-                await MainActor.run {
-                    completion(result, nil)
-                }
-            } catch {
-                await MainActor.run {
-                    completion(nil, error)
-                }
-            }
-        }
+        performOCR(using: ocrService, completion: completion)
     }
 
     /// Checks if a system proxy is configured.
@@ -213,11 +215,24 @@ public final class DetectManager: NSObject {
         return (httpProxy == true) || (httpEnable == 1)
     }
 
+    // MARK: Internal
+
+    @nonobjc static var codexOCRServiceIDs: [String] {
+        let storage = LocalStorage.shared()
+        let identifiers = [EZWindowType.fixed, .main, .mini].flatMap { storage.allServiceTypes($0) }
+        return Set(identifiers).filter {
+            guard let metadata = QueryServiceFactory.shared.metadata(withTypeId: $0),
+                  metadata.serviceType == .codexCLI else { return false }
+            return CodexServiceConfiguration(uuid: metadata.uuid).mode == .localCLI
+        }.sorted()
+    }
+
     // MARK: Private
 
     // MARK: - Private Properties
 
     private var latestOCRRequestID: UUID?
+    private var ocrTask: Task<(), Never>?
 
     private var allowsDetachedDetection = false
 
@@ -228,6 +243,39 @@ public final class DetectManager: NSObject {
     private lazy var baiduService: BaiduService = .init()
 
     private lazy var youdaoService: YoudaoService = .init()
+
+    private static func codexOCRService(_ identifier: String) -> CodexCLIService? {
+        guard identifier != ServiceType.apple.rawValue, codexOCRServiceIDs.contains(identifier) else { return nil }
+        return QueryServiceFactory.shared.service(withTypeId: identifier) as? CodexCLIService
+    }
+
+    @discardableResult
+    private func performOCR(
+        using service: QueryService, completion: @escaping (EZOCRResult?, Error?) -> ()
+    )
+        -> Task<(), Never>? {
+        guard let image = queryModel.ocrImage else {
+            let error = QueryError.error(type: .parameter, message: "ocr image cannot be nil")
+            completion(nil, error)
+            return nil
+        }
+
+        let sourceLanguage = queryModel.queryFromLanguage
+        let targetLanguage = queryModel.queryTargetLanguage
+        return Task {
+            do {
+                let result = try await service.ocr(image, from: sourceLanguage, to: targetLanguage)
+                try Task.checkCancellation()
+                await MainActor.run {
+                    completion(result, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    completion(nil, error)
+                }
+            }
+        }
+    }
 
     // MARK: - Private Methods
 

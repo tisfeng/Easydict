@@ -18,21 +18,12 @@ struct CodexServiceConfiguration: Equatable {
 
     init(uuid: String) {
         self.uuid = uuid
-        if uuid == Self.formulaScreenshotID {
-            self.mode = .localCLI
-            self.model = Self.formulaDefaultModel
-            self.effort = .default
-            return
-        }
         self.mode = Defaults[CodexAccessMode.key(uuid: uuid)]
         self.model = Defaults[Self.modelKey(uuid: uuid, mode: mode)]
         self.effort = Defaults[Self.effortKey(uuid: uuid, mode: mode)]
     }
 
     // MARK: Internal
-
-    static let formulaScreenshotID = "formula-screenshot"
-    static let formulaDefaultModel = "gpt-6-luna"
 
     let uuid: String
     let mode: CodexAccessMode
@@ -84,7 +75,6 @@ final class CodexRequestCoordinator: @unchecked Sendable {
     static let shared = CodexRequestCoordinator()
 
     func observe(uuid: String) {
-        guard uuid != CodexServiceConfiguration.formulaScreenshotID else { return }
         lock.lock()
         guard observers[uuid] == nil else { lock.unlock(); return }
         observers[uuid] = []

@@ -8,8 +8,6 @@
 
 import AppKit
 
-// MARK: - MarkdownLabel
-
 /// Displays Markdown or plain text using the label's font and appearance.
 @objc(EDMarkdownLabel)
 class MarkdownLabel: EZLabel {
@@ -141,37 +139,5 @@ class MarkdownLabel: EZLabel {
                     .substring(with: range))
         }
         return plain as String
-    }
-}
-
-// MARK: - ScreenshotSourceLabel
-
-/// Displays the screenshot transcript while letting typing and paste start a text query.
-@objc(EDScreenshotSourceLabel)
-final class ScreenshotSourceLabel: MarkdownLabel {
-    @objc var beginEditing: (() -> NSTextView?)?
-
-    override func keyDown(with event: NSEvent) {
-        let hasText = event.characters?.unicodeScalars.contains {
-            !CharacterSet.controlCharacters.contains($0) && !(0xF700 ... 0xF8FF).contains($0.value)
-        } ?? false
-        guard hasText, event.modifierFlags.intersection([.command, .control]).isEmpty,
-              let editor = beginEditing?() else {
-            super.keyDown(with: event)
-            return
-        }
-        editor.keyDown(with: event)
-    }
-
-    override func paste(_ sender: Any?) {
-        guard let editor = beginEditing?() else { return }
-        editor.paste(sender)
-    }
-
-    override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
-        if item.action == #selector(paste(_:)) {
-            return beginEditing != nil && NSPasteboard.general.availableType(from: [.string]) != nil
-        }
-        return super.validateUserInterfaceItem(item)
     }
 }

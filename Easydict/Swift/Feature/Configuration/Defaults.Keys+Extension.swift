@@ -48,7 +48,7 @@ extension Defaults.Keys {
         default: EnglishPronunciation.us
     )
     static let hideMainWindow = Key<Bool>("EZConfiguration_kHideMainWindowKey", default: true)
-    static let formulaScreenshotMode = Key<Bool>("EZConfiguration_kFormulaScreenshotMode", default: false)
+    static let ocrServiceID = Key<String>("EZConfiguration_kOCRServiceID", default: ServiceType.apple.rawValue)
     static let localAutoSave = Key<Bool>("EZConfiguration_kLocalAutoSave", default: false)
     static let autoQueryOCRText = Key<Bool>("EZConfiguration_kAutoQueryOCTTextKey", default: true)
     static let autoQuerySelectedText = Key<Bool>(

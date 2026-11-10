@@ -859,10 +859,8 @@ static EZWindowManager *_instance;
     [self closeFloatingWindowIfNotPinnedOrMain];
 
     [self captureWithCompletion:^(NSImage *_Nullable image) {
-        BOOL formulaMode = MyConfiguration.shared.formulaScreenshotMode;
         BOOL autoQuery = MyConfiguration.shared.autoQueryOCRText;
-        EZActionType actionType = formulaMode ? EZActionTypeFormulaScreenshot : EZActionTypeOCRQuery;
-        [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:actionType];
+        [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:EZActionTypeOCRQuery];
     }];
 }
 

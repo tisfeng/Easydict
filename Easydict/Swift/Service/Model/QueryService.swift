@@ -567,10 +567,6 @@ extension QueryService {
                         try Task.checkCancellation()
                         guard self.resultGeneration == generation else { throw CancellationError() }
                         self.queryModel = queryModel
-                        if self.serviceType() == .codexCLI, self.uuid == CodexServiceConfiguration.formulaScreenshotID,
-                           queryText.isEmpty, queryModel.actionType == .formulaScreenshot, queryModel.ocrImage != nil {
-                            return self.translateStream(queryText, from: fromLanguage, to: targetLanguage)
-                        }
                         let outcome = self.prehandleQueryTextOutcome(queryText, from: fromLanguage, to: targetLanguage)
                         if let error = outcome.error { throw error }
                         if outcome.handled {

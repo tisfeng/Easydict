@@ -12207,47 +12207,6 @@
         }
       }
     },
-    "service.codex_cli.model_picker.catalog_unavailable" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No selectable local Codex models were detected."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se detectaron modelos locales de Codex disponibles."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選択可能なローカルCodexモデルが見つかりませんでした。"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nenašli sa žiadne dostupné lokálne modely Codex."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未检测到可选的本机 Codex 模型。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未偵測到可選的本機 Codex 模型。"
-          }
-        }
-      }
-    },
     "service.codex_cli.model_picker.image_model_unavailable" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12285,47 +12244,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "所選模型目前無法處理截圖，請選擇支援圖片的模型。"
-          }
-        }
-      }
-    },
-    "service.codex_cli.model_picker.next_screenshot" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The model and reasoning effort apply to the next screenshot."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El modelo y el nivel de razonamiento se aplicarán a la próxima captura."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "モデルと推論の強度は次のスクリーンショットから適用されます。"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Model a úroveň uvažovania sa použijú pri ďalšej snímke."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模型和思考强度从下一次框选生效。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模型和思考強度從下一次框選生效。"
           }
         }
       }
@@ -20960,6 +20878,144 @@
         }
       }
     },
+    "setting.advance.ocr_service" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR Service"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servicio de OCR"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR サービス"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Služba OCR"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR سروس"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR 服务"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR 服務"
+          }
+        }
+      }
+    },
+    "setting.advance.ocr_service.apple" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple OCR"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR de Apple"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple OCR"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple OCR"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple OCR"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple OCR"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple OCR"
+          }
+        }
+      }
+    },
+    "setting.advance.ocr_service.description" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies to screenshot translation, clipboard images, and silent screenshot OCR. Codex requires Local CLI mode and a vision-capable model. Images are sent to its configured provider."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se aplica a la traducción de capturas e imágenes del portapapeles y al OCR silencioso. Codex requiere el modo CLI local y un modelo compatible con imágenes. Las imágenes se envían al proveedor configurado."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクリーンショット翻訳、クリップボード画像の翻訳、サイレント OCR に適用されます。Codex にはローカル CLI モードと画像対応モデルが必要です。画像は設定したプロバイダーに送信されます。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Platí pre preklad snímok obrazovky a obrázkov zo schránky aj pre tiché OCR snímok. Codex vyžaduje režim lokálneho CLI a model s podporou obrázkov. Obrázky sa odošlú nakonfigurovanému poskytovateľovi."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسکرین شاٹ کے ترجمے، کلپ بورڈ کی تصاویر اور خاموش اسکرین شاٹ OCR پر لاگو ہوتا ہے۔ Codex کے لیے مقامی CLI موڈ اور تصاویر قبول کرنے والا ماڈل درکار ہے۔ تصاویر ترتیب دیے گئے فراہم کنندہ کو بھیجی جاتی ہیں۔"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用于截图翻译、剪贴板图片和静默截图 OCR。Codex 需使用本机 CLI 模式和支持图片的模型，图片会发送给所配置的服务。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用於截圖翻譯、剪貼簿圖片和靜默截圖 OCR。Codex 需使用本機 CLI 模式和支援圖片的模型，圖片會傳送給所設定的服務。"
+          }
+        }
+      }
+    },
     "setting.advance.http_port" : {
       "localizations" : {
         "en" : {
@@ -23028,88 +23084,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "快速連結"
-          }
-        }
-      }
-    },
-    "setting.general.screenshot.formula_mode" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STEM Formula Mode"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modo de fórmulas STEM"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "理工系数式モード"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Režim vzorcov STEM"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "理工科公式模式"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "理工科公式模式"
-          }
-        }
-      }
-    },
-    "setting.general.screenshot.formula_mode.description" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Translate screenshots directly with GPT-6 Luna and typeset the source and translation."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Traduce capturas directamente con GPT-6 Luna y da formato al original y a la traducción."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GPT-6 Lunaでスクリーンショットを直接翻訳し、原文と訳文の数式を組版します。"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prekladá snímky priamo pomocou GPT-6 Luna a formátuje originál aj preklad."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "让 GPT-6 Luna 直接读取截图，并排版原文和译文中的公式。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "讓 GPT-6 Luna 直接讀取截圖，並排版原文和譯文中的公式。"
           }
         }
       }

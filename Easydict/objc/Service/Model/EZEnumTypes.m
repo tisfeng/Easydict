@@ -51,7 +51,6 @@ NSString *const EZActionTypeAutoSelectQuery = @"auto_select_query";
 NSString *const EZActionTypeShortcutQuery = @"shortcut_query";
 NSString *const EZActionTypeInputQuery = @"input_query";
 NSString *const EZActionTypeOCRQuery = @"ocr_query";
-NSString *const EZActionTypeFormulaScreenshot = @"formula_screenshot";
 NSString *const EZActionTypeScreenshotOCR = @"silent_screenshot_ocr";
 NSString *const EZActionTypeInvokeQuery = @"invoke_query";
 NSString *const EZActionTypePasteboardOCR = @"pasteboard_ocr";

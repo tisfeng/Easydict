@@ -35,8 +35,6 @@ open class QueryModel: NSObject, NSCopying {
         model.userTargetLanguage = userTargetLanguage
         model.detectedLanguage = detectedLanguage
         model.ocrImage = ocrImage
-        model.screenshotSourceMarkdown = screenshotSourceMarkdown
-        model.screenshotTargetLanguage = screenshotTargetLanguage
         model.queryViewHeight = queryViewHeight
         model.audioURL = audioURL
         model.needDetectLanguage = needDetectLanguage
@@ -70,11 +68,8 @@ open class QueryModel: NSObject, NSCopying {
     /// Mapping from query text to a specified language.
     var specifiedTextLanguageDict: NSMutableDictionary = .init()
 
-    /// Temporary transcription for the screenshot preview, separate from editable query text.
-    var screenshotSourceMarkdown: String?
-
-    /// Target frozen for the completed screenshot request.
-    var screenshotTargetLanguage: Language?
+    /// OCR image for the current query.
+    var ocrImage: NSImage?
 
     /// Audio URL generated for the current query.
     var audioURL: String?
@@ -84,14 +79,6 @@ open class QueryModel: NSObject, NSCopying {
 
     /// Whether to auto query after updating the model.
     var autoQuery: Bool = true
-
-    /// OCR image for the current query.
-    var ocrImage: NSImage? {
-        didSet {
-            screenshotSourceMarkdown = nil
-            screenshotTargetLanguage = nil
-        }
-    }
 
     /// User selected source language.
     var userSourceLanguage: Language = .auto {
@@ -107,8 +94,6 @@ open class QueryModel: NSObject, NSCopying {
         get { inputTextStorage }
         set {
             if newValue != inputTextStorage {
-                screenshotSourceMarkdown = nil
-                screenshotTargetLanguage = nil
                 audioURL = nil
                 needDetectLanguage = true
                 queryText = newValue.handlingInputText()
@@ -127,7 +112,6 @@ open class QueryModel: NSObject, NSCopying {
     var actionType: ActionType = .none {
         didSet {
             let isOCRAction = actionType == .ocrQuery
-                || actionType == .formulaScreenshot
                 || actionType == .screenshotOCR
                 || actionType == .pasteboardOCR
                 || actionType == .none
@@ -157,7 +141,6 @@ open class QueryModel: NSObject, NSCopying {
         if hasUserTargetLanguage {
             return userTargetLanguage
         }
-        if let screenshotTargetLanguage { return screenshotTargetLanguage }
         return EZLanguageManager.shared().userTargetLanguage(withSourceLanguage: fromLanguage)
     }
 
