@@ -51,49 +51,47 @@ struct CodexCLIServiceConfigurationView: View {
 
         // Managed `.default` effort uses the selected model's catalog default.
         // Local CLI empty/default values defer to ~/.codex/config.toml instead.
-        Section {
-            DisclosureGroup("service.codex_cli.advanced") {
-                StaticPickerCell(
-                    titleKey: "service.codex_cli.mode.title",
-                    key: service.accessModeKey,
-                    values: CodexAccessMode.allCases
+        Section("service.codex_cli.advanced") {
+            StaticPickerCell(
+                titleKey: "service.codex_cli.mode.title",
+                key: service.accessModeKey,
+                values: CodexAccessMode.allCases
+            )
+            if accessMode == .managed {
+                Picker("service.configuration.codex_cli.model.title", selection: managedModelSelection) {
+                    ForEach(CodexManagedRuntime.bundledModelNames, id: \.self) { model in
+                        Text(verbatim: model).tag(Optional(model))
+                    }
+                }
+                Picker(
+                    "service.configuration.codex_cli.reasoning_effort.title",
+                    selection: managedEffortSelection
+                ) {
+                    if managedEffortSelection.wrappedValue == nil {
+                        Text("service.codex_cli.managed.select_effort")
+                            .tag(nil as CodexReasoningEffort?)
+                            .disabled(true)
+                    }
+                    ForEach(managedEfforts, id: \.self) { effort in
+                        Text(effort == .default ? "service.codex_cli.managed.reasoning_default" : effort.title)
+                            .tag(Optional(effort))
+                    }
+                }
+                .disabled(!isManagedModelSupported)
+            } else {
+                InputCell(
+                    textFieldTitleKey: "service.configuration.codex_cli.model.title",
+                    key: service.modelKey,
+                    placeholder: "service.configuration.codex_cli.model.placeholder"
                 )
-                if accessMode == .managed {
-                    Picker("service.configuration.codex_cli.model.title", selection: managedModelSelection) {
-                        ForEach(CodexManagedRuntime.bundledModelNames, id: \.self) { model in
-                            Text(verbatim: model).tag(Optional(model))
-                        }
+                Picker("service.configuration.codex_cli.reasoning_effort.title", selection: localEffortSelection) {
+                    if localEffortSelection.wrappedValue == nil {
+                        Text("service.codex_cli.managed.select_effort")
+                            .tag(nil as CodexReasoningEffort?)
+                            .disabled(true)
                     }
-                    Picker(
-                        "service.configuration.codex_cli.reasoning_effort.title",
-                        selection: managedEffortSelection
-                    ) {
-                        if managedEffortSelection.wrappedValue == nil {
-                            Text("service.codex_cli.managed.select_effort")
-                                .tag(nil as CodexReasoningEffort?)
-                                .disabled(true)
-                        }
-                        ForEach(managedEfforts, id: \.self) { effort in
-                            Text(effort == .default ? "service.codex_cli.managed.reasoning_default" : effort.title)
-                                .tag(Optional(effort))
-                        }
-                    }
-                    .disabled(!isManagedModelSupported)
-                } else {
-                    InputCell(
-                        textFieldTitleKey: "service.configuration.codex_cli.model.title",
-                        key: service.modelKey,
-                        placeholder: "service.configuration.codex_cli.model.placeholder"
-                    )
-                    Picker("service.configuration.codex_cli.reasoning_effort.title", selection: localEffortSelection) {
-                        if localEffortSelection.wrappedValue == nil {
-                            Text("service.codex_cli.managed.select_effort")
-                                .tag(nil as CodexReasoningEffort?)
-                                .disabled(true)
-                        }
-                        ForEach(localEfforts, id: \.self) { effort in
-                            Text(effort.title).tag(Optional(effort))
-                        }
+                    ForEach(localEfforts, id: \.self) { effort in
+                        Text(effort.title).tag(Optional(effort))
                     }
                 }
             }
