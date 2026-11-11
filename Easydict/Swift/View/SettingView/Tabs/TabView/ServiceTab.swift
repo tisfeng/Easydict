@@ -135,17 +135,19 @@ class ServiceTabViewModel: ObservableObject {
         updateServices()
     }
 
-    func addServices(_ items: [ServiceListItem]) {
+    func addServices(_ items: [ServiceListItem]) async {
+        let targetWindow = windowType
         var addedTypeIds: [String] = []
         var addedItems: [ServiceListItem] = []
 
         for item in items {
+            guard !Task.isCancelled else { break }
             let serviceTypeId = item.createsNewInstance
                 ? "\(item.type.rawValue)#\(UUID().uuidString)"
                 : item.id
-            guard LocalStorage.shared().addServiceType(
+            guard await LocalStorage.shared().addServiceType(
                 serviceTypeId,
-                windowType: windowType
+                windowType: targetWindow
             ) else {
                 continue
             }
@@ -154,8 +156,10 @@ class ServiceTabViewModel: ObservableObject {
         }
 
         guard let selectedTypeId = addedTypeIds.last else { return }
-        setSelection([.service(selectedTypeId)])
-        postUpdateServiceNotification()
+        if windowType == targetWindow {
+            setSelection([.service(selectedTypeId)])
+        }
+        NotificationCenter.default.postServiceUpdateNotification(windowType: targetWindow)
         reloadLLMSubscribersIfNeeded(for: addedItems)
         updateServices()
     }
