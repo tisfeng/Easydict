@@ -17,19 +17,13 @@ enum CodexRuntimeRelease: String, Codable, CaseIterable, Sendable {
 
     // MARK: Internal
 
-    static var current: Self {
-        selected(osMajorVersion: ProcessInfo.processInfo.operatingSystemVersion.majorVersion)
-    }
+    static let current: Self = .modern
 
     var defaultModel: String {
         switch self {
         case .legacy: "gpt-5.5"
         case .modern: "gpt-5.6-luna"
         }
-    }
-
-    static func selected(osMajorVersion: Int) -> Self {
-        osMajorVersion >= 15 ? .modern : .legacy
     }
 }
 
@@ -91,7 +85,7 @@ struct CodexRuntimeDescriptor: Sendable {
         )
         guard let version = manifest.versions[release.rawValue],
               let package = version.packages[architecture.rawValue],
-              version.minimumOS == (release == .modern ? 15 : 13),
+              version.minimumOS == 13,
               package.target == "\(architecture.rawValue)-apple-darwin"
         else { throw CodexManagedError.componentMissing }
         return Self(

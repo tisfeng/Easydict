@@ -74,11 +74,8 @@ actor CodexManagedAppServer {
         try Task.checkCancellation()
         guard !translation.isCancelled() else { throw CancellationError() }
         let model: String
-        if let runtime = translation.runtime {
+        if translation.runtime != nil {
             try CodexManagedRuntime.validateSelection(model: translation.model, effort: translation.effort)
-            if translation.imageURL != nil, runtime.release != .modern {
-                throw CodexManagedError.ocrRequiresModernRuntime
-            }
             model = translation.model
         } else if translation.imageURL != nil {
             let available = try await localModelList()

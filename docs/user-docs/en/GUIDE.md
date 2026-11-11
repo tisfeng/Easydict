@@ -112,7 +112,7 @@ recognition language in settings.
 Apple OCR is the default. To use Codex or OpenAI for screenshot translation, clipboard images,
 or silent screenshot OCR, configure a vision-capable model in Settings → Services. Select that
 service in Settings → Advanced → OCR Settings. The image is sent to the selected provider.
-Codex OCR supports Local CLI and ChatGPT sign-in with the bundled component on macOS 15 or later.
+Codex OCR supports Local CLI and ChatGPT sign-in with the managed component on macOS 13 or later.
 Formulas are transcribed as editable LaTeX. Translation uses the services enabled for the window.
 The screenshot OCR preview uses Apple OCR.
 

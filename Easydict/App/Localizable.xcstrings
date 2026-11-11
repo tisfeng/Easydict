@@ -12299,52 +12299,6 @@
         }
       }
     },
-    "service.codex_cli.managed.ocr_requires_modern_runtime" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OCR with ChatGPT sign-in requires macOS 15 or later."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El OCR con inicio de sesión de ChatGPT requiere macOS 15 o posterior."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ChatGPT ログインで OCR を使うには macOS 15 以降が必要です。"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OCR s prihlásením cez ChatGPT vyžaduje macOS 15 alebo novší."
-          }
-        },
-        "ur" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ChatGPT سائن اِن کے ساتھ OCR کے لیے macOS 15 یا بعد کا ورژن درکار ہے۔"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用 ChatGPT 登录进行 OCR 需要 macOS 15 或更高版本。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用 ChatGPT 登入進行 OCR 需要 macOS 15 或更新版本。"
-          }
-        }
-      }
-    },
     "service.codex_cli.model_picker.image_model_unavailable" : {
       "extractionState" : "manual",
       "localizations" : {
