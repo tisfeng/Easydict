@@ -550,6 +550,21 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
+    EZStreamService *combinedService = autoQuery && ![actionType isEqualToString:EZActionTypeScreenshotOCR]
+        ? [self.detectManager combinedOCRServiceIn:self.services] : nil;
+    if (combinedService) {
+        [self.detectManager cancelOCR];
+        [self closeAllResultView:nil];
+        self.firstService = nil;
+        for (EZQueryService *service in self.services) {
+            if (service.enabledQuery && service.enabledAutoQuery && service.supportedQueryType != EZQueryTextTypeNone) {
+                self.firstService = service;
+                [self autoCopyTranslatedTextOfService:service];
+                break;
+            }
+        }
+    }
+
     self.queryModel.actionType = actionType;
     [self.queryView resetFormulaPreview];
     self.queryModel.ocrImage = image;
@@ -559,14 +574,15 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     BOOL saveOCRLocally = MyConfiguration.shared.localAutoSave;
     mm_weakify(self);
-    [self.detectManager ocrAndDetectTextWithProgress:^(NSString *text) {
+    void (^progress)(NSString *) = ^(NSString *text) {
         mm_strongify(self);
         if (![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
             [self.queryView startLoadingAnimation:NO];
             self.inputText = text;
             [self.queryView enableStreamingFormulaPreview];
         }
-    } completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+    };
+    void (^ocrCompletion)(EZQueryModel *, NSError *) = ^(EZQueryModel *queryModel, NSError *error) {
         mm_strongify(self);
         if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSUserCancelledError) {
             [self.queryView startLoadingAnimation:NO];
@@ -631,10 +647,26 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             }
 
             if (autoQuery) {
-                [self startQueryText];
+                if (combinedService && [combinedService canReuseOCRTranslationForModel:queryModel]) {
+                    [self queryAllSerives:queryModel excludingService:combinedService];
+                } else {
+                    [self startQueryText];
+                }
             }
         }
-    }];
+    };
+    if (combinedService) {
+        [self.detectManager ocrAndTranslateWithService:combinedService
+                                             progress:progress
+                                        ocrCompletion:ocrCompletion
+                                          translation:^(EZQueryResult *result, NSError *error) {
+            mm_strongify(self);
+            [self handleQueryResult:result error:error model:self.queryModel service:combinedService
+                          queryText:result.queryText saveLocally:saveOCRLocally];
+        }];
+    } else {
+        [self.detectManager ocrAndDetectTextWithProgress:progress completion:ocrCompletion];
+    }
 }
 
 - (void)retryQueryWithLanguage:(EZLanguage)language {
@@ -895,6 +927,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel {
+    [self queryAllSerives:queryModel excludingService:nil];
+}
+
+/// The combined image request already owns the excluded service's translation.
+- (void)queryAllSerives:(EZQueryModel *)queryModel excludingService:(EZQueryService *)excludedService {
     if (queryModel.queryText.length == 0) {
         return;
     }
@@ -915,7 +952,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             continue;
         }
 
-        [self queryWithModel:queryModel service:service];
+        if (service != excludedService) {
+            [self queryWithModel:queryModel service:service];
+        }
 
         if (!self.firstService) {
             self.firstService = service;
@@ -933,52 +972,63 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     NSString *queryText = [queryModel.queryText copy];
     BOOL saveLocally = MyConfiguration.shared.localAutoSave;
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
-        if (error) {
-            MMLogError(@"service: %@, query error code: %ld", service.serviceType, (long)error.code);
-        }
-        result.error = [EZQueryError queryErrorFrom:error];
-
-        // Auto convert to traditional Chinese if needed.
-        if (service.autoConvertTraditionalChinese &&
-            [self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
-            [service.result convertToTraditionalChineseResult];
-        }
-
-        BOOL hideResult = !result.manualShow && !result.hasTranslatedResult && result.isWarningErrorType;
-        if (hideResult) {
-            result.isShowing = NO;
-        }
-
-        //        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
-        [self updateCellWithResult:result reloadData:YES];
-
-        if (service == self.firstService) {
-            BOOL shouldRecord = !service.isStream || result.isStreamFinished;
-            if (saveLocally && MyConfiguration.shared.localAutoSave && shouldRecord && result.error == nil
-                && result.translatedText.length && queryText.length) {
-                [QueryRecordManager.shared updateTranslatedResult:result.translatedText
-                                                      forQueryText:queryText
-                                                                in:RecordTypeHistory];
-            }
-            // Append the query to the vocabulary notebook when it has content.
-            // HTML-only dictionary results (Apple Dictionary, MDict) carry neither a
-            // word result nor translated text, so htmlString must count as content too.
-            BOOL hasContent = queryText.length > 0
-                && (result.wordResult != nil
-                    || result.translatedText.length > 0
-                    || result.htmlString.length > 0);
-            if (shouldRecord && hasContent && result.error == nil) {
-                [VocabularyNotebookService.shared appendWithQueryModel:queryModel result:result];
-            }
-        }
-
-        if (service.autoCopyTranslatedTextBlock) {
-            BOOL shouldAutoCopy = !service.isStream || result.isStreamFinished;
-            if (shouldAutoCopy) {
-                service.autoCopyTranslatedTextBlock(result, error);
-            }
-        }
+        [self handleQueryResult:result error:error model:queryModel service:service
+                      queryText:queryText saveLocally:saveLocally];
     }];
+}
+
+/// Keep history, audio, copy and dictionary handling identical for image and text translations.
+- (void)handleQueryResult:(EZQueryResult *)result
+                    error:(NSError *)error
+                    model:(EZQueryModel *)queryModel
+                  service:(EZQueryService *)service
+                queryText:(NSString *)queryText
+              saveLocally:(BOOL)saveLocally {
+    if (error) {
+        MMLogError(@"service: %@, query error code: %ld", service.serviceType, (long)error.code);
+    }
+    result.error = [EZQueryError queryErrorFrom:error];
+
+    // Auto convert to traditional Chinese if needed.
+    if (service.autoConvertTraditionalChinese &&
+        [self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
+        [service.result convertToTraditionalChineseResult];
+    }
+
+    BOOL hideResult = !result.manualShow && !result.hasTranslatedResult && result.isWarningErrorType;
+    if (hideResult) {
+        result.isShowing = NO;
+    }
+
+    //        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
+    [self updateCellWithResult:result reloadData:YES];
+
+    if (service == self.firstService) {
+        BOOL shouldRecord = !service.isStream || result.isStreamFinished;
+        if (saveLocally && MyConfiguration.shared.localAutoSave && shouldRecord && result.error == nil
+            && result.translatedText.length && queryText.length) {
+            [QueryRecordManager.shared updateTranslatedResult:result.translatedText
+                                                  forQueryText:queryText
+                                                            in:RecordTypeHistory];
+        }
+        // Append the query to the vocabulary notebook when it has content.
+        // HTML-only dictionary results (Apple Dictionary, MDict) carry neither a
+        // word result nor translated text, so htmlString must count as content too.
+        BOOL hasContent = queryText.length > 0
+            && (result.wordResult != nil
+                || result.translatedText.length > 0
+                || result.htmlString.length > 0);
+        if (shouldRecord && hasContent && result.error == nil) {
+            [VocabularyNotebookService.shared appendWithQueryModel:queryModel result:result];
+        }
+    }
+
+    if (service.autoCopyTranslatedTextBlock) {
+        BOOL shouldAutoCopy = !service.isStream || result.isStreamFinished;
+        if (shouldAutoCopy) {
+            service.autoCopyTranslatedTextBlock(result, error);
+        }
+    }
 }
 
 // TODO: service already has the model property.

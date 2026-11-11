@@ -482,6 +482,9 @@ open class QueryService: NSObject {
 
     open func supportsOCR() -> Bool { false }
 
+    /// Whether one image request can also provide translation deltas.
+    open func supportsOCRAndTranslation() -> Bool { false }
+
     /// Perform OCR for the given image.
     open func ocr(
         _ image: NSImage,
@@ -539,6 +542,15 @@ open class QueryService: NSObject {
     /// Synchronizes generation checks and result changes, including terminal errors.
     /// A main-thread completion may synchronously reset the service for another query.
     let updateResultLock = NSRecursiveLock()
+
+    @nonobjc
+    func ocrAndTranslate(
+        _ image: NSImage, from: Language, to: Language,
+        onUpdate: @escaping @Sendable (OCRTranslationStream.Update) -> ()
+    ) async throws
+        -> (EZOCRResult, QueryResult) {
+        throw QueryError(type: .parameter)
+    }
 
     // MARK: Private
 

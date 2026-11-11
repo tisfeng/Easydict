@@ -178,6 +178,19 @@ final class CodexCLIService: StreamService {
 
     // MARK: Internal
 
+    override var ocrTranslationConfiguration: [String] {
+        let configuration = CodexServiceConfiguration(uuid: uuid)
+        return [
+            String(reflecting: type(of: self)),
+            serviceTypeWithUniqueIdentifier(),
+            uuid,
+            configuration.mode.rawValue,
+            configuration.model,
+            configuration.effort.rawValue,
+            String(enableCustomPrompt), String(enableStreaming),
+        ]
+    }
+
     override var synchronizesModelWithSupportedModels: Bool { false }
 
     override var model: String {
@@ -219,6 +232,7 @@ final class CodexCLIService: StreamService {
         _ imageURL: String, prompt: String, onDelta: @escaping @Sendable (String) -> ()
     ) async throws
         -> String {
+        updateResultLock.withLock { tokenUsage = nil }
         let configuration = CodexServiceConfiguration(uuid: uuid)
         let coordinator = CodexRequestCoordinator.shared
         let runner = CodexManagedTranslation()
@@ -243,7 +257,10 @@ final class CodexCLIService: StreamService {
             }
         )
         try Task.checkCancellation()
-        guard coordinator.isCurrent(token) else { throw CancellationError() }
+        try updateResultLock.withLock {
+            guard coordinator.isCurrent(token) else { throw CancellationError() }
+            tokenUsage = response.usage
+        }
         return response.text
     }
 

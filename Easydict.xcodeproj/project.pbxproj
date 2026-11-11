@@ -673,6 +673,12 @@
 		F955D7120AD72EFC6429A79A /* CodexComponentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB3E639236DC6875625F110 /* CodexComponentStoreTests.swift */; };
 		FA0D2894537C47E1AF63D495 /* QueryServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9448196CAA4B98A453AA5C /* QueryServiceFactory.swift */; };
 		FBA62739BEA249C9BC0DFBA3 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F35C93D0925433FA0AD6066 /* ClaudeService.swift */; };
+		3E8F5281CC25449F920C6FA6 /* OCRTranslationStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CECE4AB3DA4DAFA2DEBBA6 /* OCRTranslationStream.swift */; };
+		C4AA1264B3344DBC93867EC8 /* StreamService+OCRTranslation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1B98B294CD4233B9BA350E /* StreamService+OCRTranslation.swift */; };
+		CA2484AF139A4026A27D7E67 /* OCRTranslationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC041A8FCF34DCAAB63487C /* OCRTranslationRequest.swift */; };
+		81B4219268F446FE9B734DE2 /* OCRTranslationStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6426377020A14705A9700CE4 /* OCRTranslationStreamTests.swift */; };
+		BBB6717FA7F24455B300CCF0 /* OCRTranslationRoutingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D17DC52D8054F348C8A5687 /* OCRTranslationRoutingTests.swift */; };
+		1B6CD6D5909A40778B71B878 /* CombinedOCRTranslationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EFCC7C34253443EB350C7C7 /* CombinedOCRTranslationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1469,6 +1475,12 @@
 		FA76B47A0150434485FCBBAD /* MDictReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictReaderTests.swift; sourceTree = "<group>"; };
 		FBAB49A71BBA4870A9C4FF0C /* GitHubCopilotModelCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelCache.swift; sourceTree = "<group>"; };
 		FED70C029AC2438A8EBE25F1 /* AppPathManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathManager.swift; sourceTree = "<group>"; };
+		33CECE4AB3DA4DAFA2DEBBA6 /* OCRTranslationStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRTranslationStream.swift"; sourceTree = "<group>"; };
+		3B1B98B294CD4233B9BA350E /* StreamService+OCRTranslation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+OCRTranslation.swift"; sourceTree = "<group>"; };
+		5DC041A8FCF34DCAAB63487C /* OCRTranslationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRTranslationRequest.swift"; sourceTree = "<group>"; };
+		6426377020A14705A9700CE4 /* OCRTranslationStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTranslationStreamTests.swift; sourceTree = "<group>"; };
+		4D17DC52D8054F348C8A5687 /* OCRTranslationRoutingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRTranslationRoutingTests.swift; sourceTree = "<group>"; };
+		9EFCC7C34253443EB350C7C7 /* CombinedOCRTranslationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinedOCRTranslationTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1620,6 +1632,9 @@
 				030732C72F24862A0001382A /* OCRImageTests.swift */,
 				030732D62F24862A0001382A /* OCRQRCodeTests.swift */,
 				ABDD6BB67A5A4D4786F78427 /* OCRStreamingTests.swift */,
+				9EFCC7C34253443EB350C7C7 /* CombinedOCRTranslationTests.swift */,
+				4D17DC52D8054F348C8A5687 /* OCRTranslationRoutingTests.swift */,
+				6426377020A14705A9700CE4 /* OCRTranslationStreamTests.swift */,
 				CDA80C110000000000000002 /* OCRFormulaImageTests.swift */,
 				030732C82F24862A0001382A /* OCRPunctuationTests.swift */,
 				030732C92F24862A0001382A /* OCRTextProcessingChineseTests.swift */,
@@ -2193,6 +2208,7 @@
 				A20908010000000000000002 /* OpenAIStreamTransport.swift */,
 				0365B0682D3BFBDF00865F46 /* StreamService+AsyncStream.swift */,
 				0365B0662D3BE26000865F46 /* StreamService+UpdateResult.swift */,
+				3B1B98B294CD4233B9BA350E /* StreamService+OCRTranslation.swift */,
 				03FA677D2C2EFB10000FEA64 /* StreamService+Configuration.swift */,
 				03779F0C2BB256A7008D3C42 /* StreamService+Prompt.swift */,
 				0396DE542BB5844A009FD2A5 /* BaseOpenAIService.swift */,
@@ -3614,6 +3630,7 @@
 		967712EB2B5B93E200105E0F /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				B05D8870599749D58A61218A /* OCR */,
 				0328D0792D7D42520050B2C7 /* Screenshot */,
 				03A00D862E616D3D001A4D82 /* ActionManager */,
 				0370A0B22FBA0001000A0B12 /* AnkiConnect */,
@@ -3937,6 +3954,7 @@
 			isa = PBXGroup;
 			children = (
 				03DB07152F0C2CDD00D2C68C /* DetectManager.swift */,
+				5DC041A8FCF34DCAAB63487C /* OCRTranslationRequest.swift */,
 				03B877552EF9A51F00B5ED68 /* QueryModel.swift */,
 				035179172EF301C20054C985 /* AppTriggerConfig.swift */,
 				0340D39D2C951850004C9910 /* QueryError.swift */,
@@ -4033,6 +4051,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		B05D8870599749D58A61218A /* OCR */ = {isa = PBXGroup; children = (33CECE4AB3DA4DAFA2DEBBA6 /* OCRTranslationStream.swift */,); path = OCR; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -4532,6 +4551,9 @@
 				030732D72F24862A0001382A /* OCRQRCodeTests.swift in Sources */,
 				1C647D712E6F41BEAF443672 /* DeepSeekFormulaImageTests.swift in Sources */,
 				1460E92BF8B9455E95020DA2 /* OCRStreamingTests.swift in Sources */,
+				1B6CD6D5909A40778B71B878 /* CombinedOCRTranslationTests.swift in Sources */,
+				BBB6717FA7F24455B300CCF0 /* OCRTranslationRoutingTests.swift in Sources */,
+				81B4219268F446FE9B734DE2 /* OCRTranslationStreamTests.swift in Sources */,
 				CDA80C110000000000000001 /* OCRFormulaImageTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4610,6 +4632,8 @@
 				035E37E72A0953120061DFAF /* EZToast.m in Sources */,
 				033C6DC42ED9D6D700AC39FC /* DeepLService+Translate.swift in Sources */,
 				03DB07162F0C2CDD00D2C68C /* DetectManager.swift in Sources */,
+				CA2484AF139A4026A27D7E67 /* OCRTranslationRequest.swift in Sources */,
+				3E8F5281CC25449F920C6FA6 /* OCRTranslationStream.swift in Sources */,
 				033C6DC52ED9D6D700AC39FC /* DeepLService.swift in Sources */,
 				F12CD76026B145FDBD7A3880 /* DeepLWebAppVersionProvider.swift in Sources */,
 				033C6DC62ED9D6D700AC39FC /* DeepLTranslateResponse.swift in Sources */,
@@ -4851,6 +4875,7 @@
 				03538DEE2D259280005E56A8 /* YoudaoTranslateResponese.swift in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				0365B0672D3BE26000865F46 /* StreamService+UpdateResult.swift in Sources */,
+				C4AA1264B3344DBC93867EC8 /* StreamService+OCRTranslation.swift in Sources */,
 				0337D3CC2E66ABB000B08437 /* SystemUtility+Shortcut.swift in Sources */,
 				03F19D802E0938D70046C6F2 /* OCRSectionMerger.swift in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
