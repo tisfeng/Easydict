@@ -152,8 +152,9 @@ public final class ClaudeService: StreamService {
     /// The Anthropic API version header value.
     private let anthropicVersion = "2023-06-01"
 
-    /// The maximum number of tokens to generate in the response.
-    private let maxTokens = 4096
+    /// The per-request output token limit required by the Anthropic Messages API.
+    /// This gives long translations room to complete while allowing shorter responses to end naturally.
+    private let maxTokens = 32_000
 
     private var currentTask: Task<(), Never>?
 
