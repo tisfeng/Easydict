@@ -1,6 +1,6 @@
 ## 2026-11-11 | 任务：修复 OCR 审查回归
 
-**Links:** https://github.com/tisfeng/Easydict/pull/1391；[执行计划](../../exec-plans/active/2026-11-11-review-ocr-regressions.md)
+**Links:** https://github.com/tisfeng/Easydict/pull/1391；[执行计划](../../exec-plans/completed/2026-11/2026-11-11-review-ocr-regressions.md)
 
 ### 执行上下文
 
@@ -50,4 +50,6 @@
 
 ### 后续事项
 
-- 本地修复验证完成后推送原 PR，按远程 head 回复并关闭六条评论；CodeQL 状态以远程工作流为准。
+- 修复提交 `532bf3b6e4d1ae5ad9e43eb15c5be92308b29c7a` 已快进推送原 PR；六条评论均按远程 head 复核后回复、解决并读回验证，全量刷新为 34 条已解决、0 条开放。
+- CodeQL 修复轮次 `42972836821` 已启动，范围检查成功、Swift 构建进行中，尚未给出最终分析结果；前一轮 `42968653967` 为 cancelled。
+- 本记录的收尾归档仅修改文档，生产与测试源码保持在已验证的修复快照。最终安全检查与合并由 PR 最新工作流和维护者确认。
