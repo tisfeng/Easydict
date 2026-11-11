@@ -20,9 +20,7 @@ struct CodexFormulaImageTests {
     func testRecognizesFormulaImage() async throws {
         let image = try NSImage.loadTestImage(named: "ocr-en-formula.png")
         let service = CodexCLIService()
-        let configuredModel = CodexServiceConfiguration(uuid: "").model
-        let available = try await availableLocalModels()
-        let selected = try #require(CodexServiceConfiguration.localModel(configuredModel, in: available))
+        let selected = try await configuredLocalModel()
         #expect(selected.acceptsImages)
         #expect(selected.efforts.contains(.low))
         service.uuid = UUID().uuidString
@@ -63,9 +61,7 @@ struct CodexFormulaImageTests {
     @MainActor
     func testStreamsTranslationAndRendersClosedFormula() async throws {
         let service = CodexCLIService()
-        let configuredModel = CodexServiceConfiguration(uuid: "").model
-        let available = try await availableLocalModels()
-        let selected = try #require(CodexServiceConfiguration.localModel(configuredModel, in: available))
+        let selected = try await configuredLocalModel()
         service.uuid = UUID().uuidString
         let modeKey = CodexAccessMode.key(uuid: service.uuid)
         let modelKey = CodexServiceConfiguration.modelKey(uuid: service.uuid, mode: .localCLI)
@@ -116,15 +112,19 @@ struct CodexFormulaImageTests {
 
     // MARK: Private
 
-    private func availableLocalModels() async throws -> [CodexManagedAppServer.LocalModel] {
+    private func configuredLocalModel() async throws -> CodexManagedAppServer.LocalModel {
         let server = CodexManagedAppServer.local
+        let models: [CodexManagedAppServer.LocalModel]
         do {
             try await server.requireLocalAccountIfNeeded()
-            return try await server.availableLocalModels()
+            models = try await server.availableLocalModels()
         } catch CodexCLIError.notInstalled {
             try Test.cancel("Install the Codex CLI before running this test")
         } catch CodexCLIError.notLoggedIn {
             try Test.cancel("Run codex login or configure local Codex credentials before running this test")
         }
+        let modelKey = CodexServiceConfiguration.modelKey(uuid: "", mode: .localCLI)
+        let configuredModel = Defaults[modelKey]
+        return try #require(CodexServiceConfiguration.localModel(configuredModel, in: models))
     }
 }
