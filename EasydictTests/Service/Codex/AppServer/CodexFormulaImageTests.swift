@@ -25,8 +25,8 @@ struct CodexFormulaImageTests {
         #expect(selected.efforts.contains(.low))
         service.uuid = UUID().uuidString
         let modeKey = CodexAccessMode.key(uuid: service.uuid)
-        let modelKey = CodexServiceConfiguration.modelKey(uuid: service.uuid, mode: .localCLI)
-        let effortKey = CodexServiceConfiguration.effortKey(uuid: service.uuid, mode: .localCLI)
+        let modelKey = CodexServiceConfig.modelKey(uuid: service.uuid, mode: .localCLI)
+        let effortKey = CodexServiceConfig.effortKey(uuid: service.uuid, mode: .localCLI)
         defer { Defaults.reset(modeKey, modelKey, effortKey) }
         Defaults[modeKey] = .localCLI
         Defaults[modelKey] = selected.identifier
@@ -64,8 +64,8 @@ struct CodexFormulaImageTests {
         let selected = try await configuredLocalModel()
         service.uuid = UUID().uuidString
         let modeKey = CodexAccessMode.key(uuid: service.uuid)
-        let modelKey = CodexServiceConfiguration.modelKey(uuid: service.uuid, mode: .localCLI)
-        let effortKey = CodexServiceConfiguration.effortKey(uuid: service.uuid, mode: .localCLI)
+        let modelKey = CodexServiceConfig.modelKey(uuid: service.uuid, mode: .localCLI)
+        let effortKey = CodexServiceConfig.effortKey(uuid: service.uuid, mode: .localCLI)
         defer { service.cancelStream(); Defaults.reset(modeKey, modelKey, effortKey) }
         Defaults[modeKey] = .localCLI
         Defaults[modelKey] = selected.identifier
@@ -123,8 +123,8 @@ struct CodexFormulaImageTests {
         } catch CodexCLIError.notLoggedIn {
             try Test.cancel("Run codex login or configure local Codex credentials before running this test")
         }
-        let modelKey = CodexServiceConfiguration.modelKey(uuid: "", mode: .localCLI)
+        let modelKey = CodexServiceConfig.modelKey(uuid: "", mode: .localCLI)
         let configuredModel = Defaults[modelKey]
-        return try #require(CodexServiceConfiguration.localModel(configuredModel, in: models))
+        return try #require(CodexServiceConfig.localModel(configuredModel, in: models))
     }
 }

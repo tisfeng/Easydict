@@ -1,5 +1,5 @@
 //
-//  CodexConfigurationMigrationTests.swift
+//  CodexConfigMigrationTests.swift
 //  EasydictTests
 //
 //  Created by Alfred on 2026/09/07.
@@ -9,20 +9,20 @@
 import Foundation
 import Testing
 
-// MARK: - CodexConfigurationMigrationTests
+// MARK: - CodexConfigMigrationTests
 
-@Suite("Codex configuration migration")
-struct CodexConfigurationMigrationTests {
+@Suite("Codex config migration")
+struct CodexConfigMigrationTests {
     @Test("does not treat factory defaults as persisted Codex history")
     func ignoresEmptyAndUnrelatedSnapshots() {
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: [:]).isEmpty)
+        #expect(CodexConfigMigration.legacyUUIDs(in: [:]).isEmpty)
 
         let snapshot: [String: Any] = [
             "kAllServiceTypesKey-window-a": ["OpenAI", "DeepSeek"],
             "EZOpenAIModel_orphaned_Key": "",
         ]
 
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: snapshot).isEmpty)
+        #expect(CodexConfigMigration.legacyUUIDs(in: snapshot).isEmpty)
     }
 
     @Test("finds default and custom Codex instances persisted by separate windows")
@@ -32,7 +32,7 @@ struct CodexConfigurationMigrationTests {
             "kAllServiceTypesKey-window-b": ["CodexCLI#second"],
         ]
 
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: snapshot) == Set(["", "first", "second"]))
+        #expect(CodexConfigMigration.legacyUUIDs(in: snapshot) == Set(["", "first", "second"]))
     }
 
     @Test("finds disabled legacy instance from archived service info data")
@@ -42,7 +42,7 @@ struct CodexConfigurationMigrationTests {
             "kServiceInfoStorageKey-CodexCLI-\(uuid)-serviceUsageStatus": Data(),
         ]
 
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: snapshot) == Set([uuid]))
+        #expect(CodexConfigMigration.legacyUUIDs(in: snapshot) == Set([uuid]))
     }
 
     @Test("finds removed Codex instance when empty model settings remain")
@@ -53,7 +53,7 @@ struct CodexConfigurationMigrationTests {
             "EZCodexCLIReasoningEffort_\(uuid)_Key": "",
         ]
 
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: snapshot) == Set([uuid]))
+        #expect(CodexConfigMigration.legacyUUIDs(in: snapshot) == Set([uuid]))
     }
 
     @Test("recognizes retired managed settings without normalizing their values")
@@ -66,7 +66,7 @@ struct CodexConfigurationMigrationTests {
             effortKey: "ultra",
         ]
 
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: snapshot) == Set([uuid]))
+        #expect(CodexConfigMigration.legacyUUIDs(in: snapshot) == Set([uuid]))
         #expect(snapshot[modelKey] as? String == "gpt-5.4-mini")
         #expect(snapshot[effortKey] as? String == "ultra")
     }
@@ -75,7 +75,7 @@ struct CodexConfigurationMigrationTests {
     func ignoresDefaultModelThatWasNeverPersisted() {
         let snapshot: [String: Any] = ["kQueryServiceRecordKey": queryRecord(service: "OpenAI", count: 1)]
 
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: snapshot).isEmpty)
+        #expect(CodexConfigMigration.legacyUUIDs(in: snapshot).isEmpty)
     }
 
     @Test("retains explicit current and future access-mode values")
@@ -94,7 +94,7 @@ struct CodexConfigurationMigrationTests {
             CodexAccessMode.key(uuid: futureUUID).name: "a-future-mode",
         ]
 
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: snapshot).isEmpty)
+        #expect(CodexConfigMigration.legacyUUIDs(in: snapshot).isEmpty)
     }
 
     @Test("uses only a positive persisted Codex query count as legacy evidence")
@@ -103,9 +103,9 @@ struct CodexConfigurationMigrationTests {
         let negativeQueries: [String: Any] = ["kQueryServiceRecordKey": queryRecord(service: "CodexCLI", count: -1)]
         let positiveQueries: [String: Any] = ["kQueryServiceRecordKey": queryRecord(service: "CodexCLI", count: 1)]
 
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: noQueries).isEmpty)
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: negativeQueries).isEmpty)
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: positiveQueries) == Set([""]))
+        #expect(CodexConfigMigration.legacyUUIDs(in: noQueries).isEmpty)
+        #expect(CodexConfigMigration.legacyUUIDs(in: negativeQueries).isEmpty)
+        #expect(CodexConfigMigration.legacyUUIDs(in: positiveQueries) == Set([""]))
     }
 
     @Test("becomes a no-op after the caller writes the migrated mode")
@@ -115,11 +115,11 @@ struct CodexConfigurationMigrationTests {
             "kAllServiceTypesKey-window": ["CodexCLI#\(uuid)"],
         ]
 
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: snapshot) == Set([uuid]))
+        #expect(CodexConfigMigration.legacyUUIDs(in: snapshot) == Set([uuid]))
 
         snapshot[CodexAccessMode.key(uuid: uuid).name] = CodexAccessMode.localCLI.rawValue
 
-        #expect(CodexConfigurationMigration.legacyUUIDs(in: snapshot).isEmpty)
+        #expect(CodexConfigMigration.legacyUUIDs(in: snapshot).isEmpty)
     }
 }
 

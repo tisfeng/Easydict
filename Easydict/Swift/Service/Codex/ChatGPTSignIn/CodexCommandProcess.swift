@@ -1,5 +1,5 @@
 //
-//  CodexManagedProcess.swift
+//  CodexCommandProcess.swift
 //  Easydict
 //
 //  Created by Alfred on 2026/09/07.
@@ -11,7 +11,7 @@ import Foundation
 /// Executes one managed command in its own process group with bounded pipe I/O.
 /// Cancellation, timeout and root exit clean up only this invocation's descendants;
 /// the external CLI runner retains its existing launch and environment behavior.
-final class CodexManagedProcess: @unchecked Sendable {
+final class CodexCommandProcess: @unchecked Sendable {
     // MARK: Internal
 
     /// Captures the completed command without exposing authentication output to logs.
@@ -158,7 +158,7 @@ final class CodexManagedProcess: @unchecked Sendable {
                     failure = CancellationError()
                     stopTime = now
                 } else if now - started >= timeout {
-                    failure = CodexManagedError.timeout
+                    failure = CodexServiceError.timeout
                     stopTime = now
                 }
                 if stopTime != nil { kill(-child, SIGTERM) }
@@ -209,7 +209,7 @@ final class CodexManagedProcess: @unchecked Sendable {
                 if count > 0 {
                     let chunk = Data(buffer.prefix(count))
                     if stdout.count + stderr.count + count > outputLimit {
-                        failure = CodexManagedError.outputTooLarge
+                        failure = CodexServiceError.outputTooLarge
                         if stopTime == nil { stopTime = now; kill(-child, SIGTERM) }
                     } else if index == 2 {
                         stdout.append(chunk)

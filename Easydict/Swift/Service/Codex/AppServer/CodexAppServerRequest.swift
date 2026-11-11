@@ -16,7 +16,7 @@ final class CodexAppServerRequest: @unchecked Sendable {
         prompt: String,
         model: String,
         effort: String?,
-        runtime: CodexManagedRuntime?,
+        runtime: CodexRuntime?,
         imageURL: String? = nil,
         deltaReceived: @escaping @Sendable (String) -> ()
     ) async throws
@@ -46,7 +46,7 @@ final class CodexAppServerRequest: @unchecked Sendable {
                 return result
             } catch {
                 clearAppServerRequest(requestID)
-                if runtime == nil, error as? CodexManagedError == .loginRequired {
+                if runtime == nil, error as? CodexServiceError == .loginRequired {
                     throw CodexCLIError.notLoggedIn
                 }
                 throw error

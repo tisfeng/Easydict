@@ -1,5 +1,5 @@
 //
-//  CodexManagedRuntimeTests.swift
+//  CodexRuntimeTests.swift
 //  EasydictTests
 //
 //  Created by Alfred on 2026/09/14.
@@ -9,12 +9,12 @@
 import Foundation
 import Testing
 
-// MARK: - CodexManagedRuntimeTests
+// MARK: - CodexRuntimeTests
 
 /// Verifies the isolation rules applied before a managed Codex command starts.
 @MainActor
-@Suite("Codex managed runtime")
-struct CodexManagedRuntimeTests {
+@Suite("Codex runtime")
+struct CodexRuntimeTests {
     @Test("user skills do not block managed login while skill instructions stay disabled")
     func userSkillsDoNotBlockManagedLogin() async throws {
         for release in [CodexRuntimeRelease.legacy, .modern] {

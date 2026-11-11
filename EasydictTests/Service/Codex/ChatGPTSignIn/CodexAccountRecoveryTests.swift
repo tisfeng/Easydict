@@ -1,5 +1,5 @@
 //
-//  CodexManagedAccountRecoveryTests.swift
+//  CodexAccountRecoveryTests.swift
 //  EasydictTests
 //
 //  Created by Alfred on 2026/09/11.
@@ -13,15 +13,15 @@ import Testing
 /// Verifies that a settings refresh preserves current recovery evidence instead
 /// of restoring a superseded snapshot or disguising confirmed account loss.
 @MainActor
-@Suite("Codex managed account recovery", .serialized)
-struct CodexManagedAccountRecoveryTests {
+@Suite("Codex account recovery", .serialized)
+struct CodexAccountRecoveryTests {
     @Test("a successful read-only refresh retains applicable completed verification")
     func refreshRetainsCompletedVerification() async throws {
         try await withAccountFixture(initiallySignedIn: true, release: .current) { fixture in
             let uuid = UUID().uuidString
             installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
             defer { resetManagedConfiguration(uuid: uuid) }
-            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let configuration = CodexServiceConfig(uuid: uuid)
             let account = fixture.account()
 
             account.validate(configuration: configuration)
@@ -41,7 +41,7 @@ struct CodexManagedAccountRecoveryTests {
             let uuid = UUID().uuidString
             installManagedConfiguration(uuid: uuid, model: "gpt-5.4-mini", effort: .high)
             defer { resetManagedConfiguration(uuid: uuid) }
-            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let configuration = CodexServiceConfig(uuid: uuid)
             let account = fixture.account()
 
             account.validate(configuration: configuration)
@@ -51,7 +51,7 @@ struct CodexManagedAccountRecoveryTests {
             account.refresh()
             try await waitForAccount { !account.isBusy && account.isSignedIn }
 
-            #expect(account.verificationError(for: configuration) as? CodexManagedError == .invalidModel)
+            #expect(account.verificationError(for: configuration) as? CodexServiceError == .invalidModel)
             #expect(account.errorMessage(for: configuration) == validationError.localizedDescription)
         }
     }
@@ -61,7 +61,7 @@ struct CodexManagedAccountRecoveryTests {
         try await withAccountFixture(statusFailure: .keychain) { fixture in
             let gate = RuntimeFactoryGate()
             let calls = RuntimeFactoryCallCounter()
-            let account = CodexManagedAccount(
+            let account = CodexAccount(
                 runtimeFactory: {
                     await calls.record()
                     if await calls.count == 2 { await gate.wait() }
@@ -92,10 +92,10 @@ struct CodexManagedAccountRecoveryTests {
             let uuid = UUID().uuidString
             installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
             defer { resetManagedConfiguration(uuid: uuid) }
-            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let configuration = CodexServiceConfig(uuid: uuid)
             let gate = RuntimeFactoryGate()
             let calls = RuntimeFactoryCallCounter()
-            let account = CodexManagedAccount(
+            let account = CodexAccount(
                 runtimeFactory: {
                     await calls.record()
                     if await calls.count == 2 { await gate.wait() }
@@ -129,14 +129,14 @@ struct CodexManagedAccountRecoveryTests {
             let uuid = UUID().uuidString
             installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
             defer { resetManagedConfiguration(uuid: uuid) }
-            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let configuration = CodexServiceConfig(uuid: uuid)
             let account = fixture.account()
 
             account.validate(configuration: configuration)
             try await waitForAccount { !account.isBusy }
 
             #expect(accountIsSignedOut(account))
-            #expect(account.errorMessage == CodexManagedError.loginRequired.localizedDescription)
+            #expect(account.errorMessage == CodexServiceError.loginRequired.localizedDescription)
             #expect(account.verificationError(for: configuration) == nil)
         }
     }
@@ -147,14 +147,14 @@ struct CodexManagedAccountRecoveryTests {
             let uuid = UUID().uuidString
             installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
             defer { resetManagedConfiguration(uuid: uuid) }
-            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let configuration = CodexServiceConfig(uuid: uuid)
             let gate = RuntimeFactoryGate()
             let calls = RuntimeFactoryCallCounter()
-            let account = CodexManagedAccount(
+            let account = CodexAccount(
                 runtimeFactory: {
                     await calls.record()
                     switch await calls.count {
-                    case 2: throw CodexManagedError.keychainUnavailable
+                    case 2: throw CodexServiceError.keychainUnavailable
                     case 3: await gate.wait()
                     default: return fixture.runtime()
                     }
@@ -188,7 +188,7 @@ struct CodexManagedAccountRecoveryTests {
         try await withAccountFixture { fixture in
             let gate = RuntimeFactoryGate()
             let calls = RuntimeFactoryCallCounter()
-            let account = CodexManagedAccount(
+            let account = CodexAccount(
                 runtimeFactory: {
                     await calls.record()
                     if await calls.count == 2 { await gate.wait() }

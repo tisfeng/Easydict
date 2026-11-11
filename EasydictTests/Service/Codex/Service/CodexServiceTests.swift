@@ -83,18 +83,18 @@ struct CodexServiceTests {
             ),
             .init(identifier: "other", isDefault: false, inputModalities: ["text"], efforts: [.minimal, .medium]),
         ]
-        #expect(CodexServiceConfiguration.reasoningEfforts(mode: .localCLI, model: "", localModels: models)
+        #expect(CodexServiceConfig.reasoningEfforts(mode: .localCLI, model: "", localModels: models)
             == [.default, .low, .high, .max])
-        #expect(CodexServiceConfiguration.reasoningEfforts(mode: .localCLI, model: "other", localModels: models)
+        #expect(CodexServiceConfig.reasoningEfforts(mode: .localCLI, model: "other", localModels: models)
             == [.default, .minimal, .medium])
-        #expect(CodexServiceConfiguration
+        #expect(CodexServiceConfig
             .reasoningEfforts(mode: .localCLI, model: "missing", localModels: models) == [.default])
-        #expect(CodexServiceConfiguration.compatibleLocalEffort(.minimal, model: "vision-fast", models: models) == .low)
-        #expect(CodexServiceConfiguration.compatibleLocalEffort(.high, model: "vision-fast", models: models) == .high)
-        #expect(CodexServiceConfiguration
+        #expect(CodexServiceConfig.compatibleLocalEffort(.minimal, model: "vision-fast", models: models) == .low)
+        #expect(CodexServiceConfig.compatibleLocalEffort(.high, model: "vision-fast", models: models) == .high)
+        #expect(CodexServiceConfig
             .compatibleLocalEffort(.ultra, model: "vision-fast", models: models) == .default)
-        #expect(CodexServiceConfiguration.compatibleLocalEffort(.minimal, model: "missing", models: models) == .minimal)
-        #expect(CodexServiceConfiguration.compatibleLocalEffort(.minimal, model: "vision-fast", models: []) == .minimal)
+        #expect(CodexServiceConfig.compatibleLocalEffort(.minimal, model: "missing", models: models) == .minimal)
+        #expect(CodexServiceConfig.compatibleLocalEffort(.minimal, model: "vision-fast", models: []) == .minimal)
         #expect(throws: CodexCLIError.self) {
             try CodexReasoningEffort.validateLocalOverride("minimal", supportedEfforts: models[0].efforts)
         }
@@ -119,14 +119,14 @@ struct CodexServiceTests {
         service.uuid = uuid
         let streamService: StreamService = service
         let modeKey = CodexAccessMode.key(uuid: uuid)
-        let managedModelKey = CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed)
-        let localModelKey = CodexServiceConfiguration.modelKey(uuid: uuid, mode: .localCLI)
+        let managedModelKey = CodexServiceConfig.modelKey(uuid: uuid, mode: .managed)
+        let localModelKey = CodexServiceConfig.modelKey(uuid: uuid, mode: .localCLI)
         let localModelsKey = service.validModelsKey
         defer {
             Defaults.reset(modeKey, managedModelKey, localModelKey, localModelsKey)
         }
 
-        let bundledModels = CodexManagedRuntime.bundledModelNames
+        let bundledModels = CodexRuntime.bundledModelNames
         #expect(!bundledModels.isEmpty)
         guard let bundledModel = bundledModels.first else { return }
 
@@ -139,7 +139,7 @@ struct CodexServiceTests {
 
         // The result-row interface must show the request snapshot for the active
         // mode. Reading a now-invalid old selection must not rewrite it.
-        #expect(streamService.model == CodexServiceConfiguration(uuid: uuid).model)
+        #expect(streamService.model == CodexServiceConfig(uuid: uuid).model)
         #expect(streamService.model == retiredManagedModel)
         #expect(streamService.validModels == bundledModels)
         #expect(Defaults[managedModelKey] == retiredManagedModel)
@@ -170,8 +170,8 @@ struct CodexServiceTests {
         let uuid = UUID().uuidString
         service.uuid = uuid
         let modeKey = CodexAccessMode.key(uuid: uuid)
-        let managedModelKey = CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed)
-        let localModelKey = CodexServiceConfiguration.modelKey(uuid: uuid, mode: .localCLI)
+        let managedModelKey = CodexServiceConfig.modelKey(uuid: uuid, mode: .managed)
+        let localModelKey = CodexServiceConfig.modelKey(uuid: uuid, mode: .localCLI)
         defer {
             service.cancelSubscribers()
             Defaults.reset(modeKey, managedModelKey, localModelKey)
@@ -179,7 +179,7 @@ struct CodexServiceTests {
 
         Defaults[modeKey] = .localCLI
         Defaults[localModelKey] = "first-local-model"
-        Defaults[managedModelKey] = CodexManagedRuntime.defaultModel
+        Defaults[managedModelKey] = CodexRuntime.defaultModel
         service.setupCodexSubscribers()
 
         let updates = ServiceUpdateRecorder()
@@ -209,7 +209,7 @@ struct CodexServiceTests {
         Defaults[modeKey] = .managed
         try await Task.sleep(for: .milliseconds(100))
         updates.clear()
-        let differentManagedModel = CodexManagedRuntime.bundledModelNames.first {
+        let differentManagedModel = CodexRuntime.bundledModelNames.first {
             $0 != Defaults[managedModelKey]
         }
         #expect(differentManagedModel != nil)

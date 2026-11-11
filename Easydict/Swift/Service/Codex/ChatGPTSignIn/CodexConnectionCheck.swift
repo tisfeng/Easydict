@@ -1,5 +1,5 @@
 //
-//  CodexManagedConnectionCheck.swift
+//  CodexConnectionCheck.swift
 //  Easydict
 //
 //  Created by Alfred on 2026/09/07.
@@ -8,7 +8,7 @@
 import Foundation
 
 /// Runs and validates the one-shot translation used to check a managed connection.
-final class CodexManagedConnectionCheck: @unchecked Sendable {
+final class CodexConnectionCheck: @unchecked Sendable {
     // MARK: Internal
 
     /// Holds only a completed translation and its reported usage.
@@ -19,39 +19,39 @@ final class CodexManagedConnectionCheck: @unchecked Sendable {
 
     /// Official status exit 1 also covers config/keyring failures; only the exact
     /// signed-out status is classified as unauthenticated. No token data is read.
-    static func isSignedIn(_ output: CodexManagedProcess.Output) throws -> Bool {
+    static func isSignedIn(_ output: CodexCommandProcess.Output) throws -> Bool {
         guard let outputText = String(data: output.stdout + output.stderr, encoding: .utf8) else {
-            throw CodexManagedError.authenticationFailed
+            throw CodexServiceError.authenticationFailed
         }
         let text = outputText.trimmingCharacters(in: .whitespacesAndNewlines)
         if output.exitCode == 0, text == "Logged in using ChatGPT" { return true }
         if output.exitCode == 1, text == "Not logged in" { return false }
         if text.lowercased().contains("keyring") || text.lowercased().contains("keychain") {
-            throw CodexManagedError.keychainUnavailable
+            throw CodexServiceError.keychainUnavailable
         }
-        throw CodexManagedError.authenticationFailed
+        throw CodexServiceError.authenticationFailed
     }
 
-    static func result(_ output: CodexManagedProcess.Output, durationMs: Int = 0) throws -> Result {
+    static func result(_ output: CodexCommandProcess.Output, durationMs: Int = 0) throws -> Result {
         guard let stdout = String(data: output.stdout, encoding: .utf8),
               let stderr = String(data: output.stderr, encoding: .utf8)
-        else { throw CodexManagedError.invalidResponse }
+        else { throw CodexServiceError.invalidResponse }
         guard output.exitCode == 0 else {
             let failure = parseCodexFailure(fromStdout: stdout, stderr: stderr)
             switch failure {
             case let .authentication(message):
                 let message = message.lowercased()
                 if message.contains("keyring") || message.contains("keychain") {
-                    throw CodexManagedError.keychainUnavailable
+                    throw CodexServiceError.keychainUnavailable
                 }
                 if message.contains("not signed in") || message.contains("not logged in")
                     || message.contains("please run `codex login`") || message.contains("please run codex login") {
-                    throw CodexManagedError.loginRequired
+                    throw CodexServiceError.loginRequired
                 }
-                throw CodexManagedError.authenticationFailed
+                throw CodexServiceError.authenticationFailed
             case let .other(message)
                 where message.lowercased().contains("keyring") || message.lowercased().contains("keychain"):
-                throw CodexManagedError.keychainUnavailable
+                throw CodexServiceError.keychainUnavailable
             default:
                 throw failure.localError
             }
@@ -62,41 +62,41 @@ final class CodexManagedConnectionCheck: @unchecked Sendable {
         for line in stdout.split(separator: "\n") {
             guard let object = try? JSONSerialization.jsonObject(with: Data(line.utf8)) as? [String: Any],
                   let type = object["type"] as? String, !completed
-            else { throw CodexManagedError.invalidResponse }
+            else { throw CodexServiceError.invalidResponse }
             switch type {
             case "thread.started": break
             case "error":
                 // Official retry notifications are nonterminal. A later completed
                 // turn is still required; diagnostics alone never imply success.
-                guard object["message"] is String else { throw CodexManagedError.invalidResponse }
+                guard object["message"] is String else { throw CodexServiceError.invalidResponse }
             case "turn.started":
-                guard !started else { throw CodexManagedError.invalidResponse }
+                guard !started else { throw CodexServiceError.invalidResponse }
                 started = true
             case "item.completed", "item.started", "item.updated":
                 guard let item = object["item"] as? [String: Any],
                       let kind = item["type"] as? String
-                else { throw CodexManagedError.invalidResponse }
+                else { throw CodexServiceError.invalidResponse }
                 // Warnings can precede turn.started (for example config notices).
                 if type == "item.completed", kind == "error" {
-                    guard item["message"] is String else { throw CodexManagedError.invalidResponse }
+                    guard item["message"] is String else { throw CodexServiceError.invalidResponse }
                     continue
                 }
                 guard started, ["reasoning", "agent_message"].contains(kind) else {
-                    throw CodexManagedError.invalidResponse
+                    throw CodexServiceError.invalidResponse
                 }
                 if type == "item.completed", kind == "agent_message" {
                     finalText = item["text"] as? String
                 }
             case "turn.completed":
-                guard started else { throw CodexManagedError.invalidResponse }
+                guard started else { throw CodexServiceError.invalidResponse }
                 completed = true
             default:
-                throw CodexManagedError.invalidResponse
+                throw CodexServiceError.invalidResponse
             }
         }
         guard completed, let finalText,
               !finalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        else { throw CodexManagedError.invalidResponse }
+        else { throw CodexServiceError.invalidResponse }
         return Result(text: finalText, usage: parseCodexTokenUsage(from: stdout, durationMs: durationMs))
     }
 
@@ -104,12 +104,12 @@ final class CodexManagedConnectionCheck: @unchecked Sendable {
         prompt: String,
         model: String,
         effort: String?,
-        runtime: CodexManagedRuntime
+        runtime: CodexRuntime
     ) async throws
         -> Result {
         let arguments = try runtime.translationArguments(model: model, effort: effort)
         let status = try await runtime.command(["login", "status"], process: nextProcess())
-        guard try Self.isSignedIn(status) else { throw CodexManagedError.loginRequired }
+        guard try Self.isSignedIn(status) else { throw CodexServiceError.loginRequired }
         let started = Date()
         let output = try await runtime.command(
             arguments,
@@ -131,12 +131,12 @@ final class CodexManagedConnectionCheck: @unchecked Sendable {
 
     private let lock = NSLock()
     private var cancelled = false
-    private var process: CodexManagedProcess?
+    private var process: CodexCommandProcess?
 
-    private func nextProcess() throws -> CodexManagedProcess {
+    private func nextProcess() throws -> CodexCommandProcess {
         try lock.withLock {
             if cancelled { throw CancellationError() }
-            let next = CodexManagedProcess()
+            let next = CodexCommandProcess()
             process = next
             return next
         }

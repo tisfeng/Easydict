@@ -1,5 +1,5 @@
 //
-//  CodexManagedAccount.swift
+//  CodexAccount.swift
 //  Easydict
 //
 //  Created by Alfred on 2026/09/07.
@@ -9,18 +9,18 @@ import AppKit
 import Combine
 import Foundation
 
-// MARK: - CodexManagedAccount
+// MARK: - CodexAccount
 
 /// Serializes the single managed ChatGPT account without inspecting OAuth tokens.
 /// Official status is authoritative; login validation runs once in an independent
 /// request. Operation generations prevent canceled login/reset results reviving UI.
 @MainActor
-final class CodexManagedAccount: ObservableObject {
+final class CodexAccount: ObservableObject {
     // MARK: Lifecycle
 
     init(
         runtimeFactory: @escaping () async throws
-            -> CodexManagedRuntime = { try await CodexManagedRuntime.installed() },
+            -> CodexRuntime = { try await CodexRuntime.installed() },
         coordinator: CodexRequestCoordinator = .shared
     ) {
         self.runtimeFactory = runtimeFactory
@@ -33,7 +33,7 @@ final class CodexManagedAccount: ObservableObject {
         case unknown, checking, signedOut, authorizing, verifying, signedIn, ready
     }
 
-    static let shared = CodexManagedAccount()
+    static let shared = CodexAccount()
 
     @Published private(set) var state: State = .unknown
     @Published private(set) var accountError: Error?
@@ -43,12 +43,12 @@ final class CodexManagedAccount: ObservableObject {
     var isSignedIn: Bool { authenticated }
     var errorMessage: String? { accountError?.localizedDescription }
 
-    func errorMessage(for configuration: CodexServiceConfiguration) -> String? {
+    func errorMessage(for configuration: CodexServiceConfig) -> String? {
         guard !isBusy else { return nil }
         return errorMessage ?? verificationError(for: configuration)?.localizedDescription
     }
 
-    func verificationError(for configuration: CodexServiceConfiguration) -> Error? {
+    func verificationError(for configuration: CodexServiceConfig) -> Error? {
         guard let result = currentVerification(for: configuration),
               case let .failure(error) = result.outcome else { return nil }
         return error
@@ -73,7 +73,7 @@ final class CodexManagedAccount: ObservableObject {
                 let runtime = try await runtimeFactory()
                 let status = try await runtime.command(["login", "status"], process: nextProcess())
                 try check(generation)
-                if try CodexManagedConnectionCheck.isSignedIn(status) {
+                if try CodexConnectionCheck.isSignedIn(status) {
                     authenticationState = true
                     state = .signedIn
                 } else {
@@ -89,11 +89,11 @@ final class CodexManagedAccount: ObservableObject {
                         }
                     }
                     try check(generation)
-                    guard result.exitCode == 0 else { throw CodexManagedError.authenticationFailed }
+                    guard result.exitCode == 0 else { throw CodexServiceError.authenticationFailed }
                     let status = try await runtime.command(["login", "status"], process: nextProcess())
                     try check(generation)
-                    guard try CodexManagedConnectionCheck.isSignedIn(status) else {
-                        throw CodexManagedError.authenticationFailed
+                    guard try CodexConnectionCheck.isSignedIn(status) else {
+                        throw CodexServiceError.authenticationFailed
                     }
                     authenticationState = true
                     authorizationURL = nil
@@ -112,14 +112,14 @@ final class CodexManagedAccount: ObservableObject {
     }
 
     /// Connection verification belongs to the initiating service's saved settings.
-    func validate(configuration: CodexServiceConfiguration) {
+    func validate(configuration: CodexServiceConfig) {
         guard operation == nil else { return }
         let generation = begin(state: .verifying, kind: .verification)
         validationConfiguration = configuration
         operation = Task {
             var release = CodexRuntimeRelease.current
             do {
-                try CodexManagedRuntime.validateSelection(
+                try CodexRuntime.validateSelection(
                     model: configuration.model, effort: configuration.effort.cliValue
                 )
                 let runtime = try await runtimeFactory()
@@ -135,9 +135,9 @@ final class CodexManagedAccount: ObservableObject {
                 if self.generation == generation { state = authenticated ? .signedIn : .unknown }
             } catch {
                 if self.generation == generation, !Task.isCancelled,
-                   configuration == CodexServiceConfiguration(uuid: configuration.uuid) {
+                   configuration == CodexServiceConfig(uuid: configuration.uuid) {
                     setFailureState(error)
-                    if (error as? CodexManagedError) == .loginRequired {
+                    if (error as? CodexServiceError) == .loginRequired {
                         accountError = error
                     } else {
                         verificationResult = VerificationResult(
@@ -152,7 +152,7 @@ final class CodexManagedAccount: ObservableObject {
         }
     }
 
-    func isValidated(configuration: CodexServiceConfiguration) -> Bool {
+    func isValidated(configuration: CodexServiceConfig) -> Bool {
         guard state == .ready, let result = currentVerification(for: configuration),
               case .success = result.outcome else { return false }
         return true
@@ -183,7 +183,7 @@ final class CodexManagedAccount: ObservableObject {
                 let runtime = try await runtimeFactory()
                 let result = try await runtime.command(["logout"], process: nextProcess())
                 try check(generation)
-                guard result.exitCode == 0 else { throw CodexManagedError.authenticationFailed }
+                guard result.exitCode == 0 else { throw CodexServiceError.authenticationFailed }
                 await readStatus(generation: generation)
             } catch is CancellationError {
             } catch {
@@ -231,14 +231,14 @@ final class CodexManagedAccount: ObservableObject {
 
     /// A completed manual check belongs to one configuration and runtime version.
     private struct VerificationResult {
-        let configuration: CodexServiceConfiguration
+        let configuration: CodexServiceConfig
         let release: CodexRuntimeRelease
         let outcome: Result<(), Error>
     }
 
     @Published private var verificationResult: VerificationResult?
 
-    private let runtimeFactory: () async throws -> CodexManagedRuntime
+    private let runtimeFactory: () async throws -> CodexRuntime
     private let coordinator: CodexRequestCoordinator
     // nil means no official authentication status has been established yet.
     private var authenticationState: Bool?
@@ -246,15 +246,15 @@ final class CodexManagedAccount: ObservableObject {
     private var operationKind: OperationKind?
     private var originUUID: String?
     private var operation: Task<(), Never>?
-    private var process: CodexManagedProcess?
-    private var validation: CodexManagedConnectionCheck?
-    private var validationConfiguration: CodexServiceConfiguration?
+    private var process: CodexCommandProcess?
+    private var validation: CodexConnectionCheck?
+    private var validationConfiguration: CodexServiceConfig?
 
     private var authenticated: Bool { authenticationState == true }
 
-    private func currentVerification(for configuration: CodexServiceConfiguration) -> VerificationResult? {
+    private func currentVerification(for configuration: CodexServiceConfig) -> VerificationResult? {
         guard let result = verificationResult, result.configuration == configuration,
-              configuration == CodexServiceConfiguration(uuid: configuration.uuid),
+              configuration == CodexServiceConfig(uuid: configuration.uuid),
               result.release == .current else { return nil }
         return result
     }
@@ -316,7 +316,7 @@ final class CodexManagedAccount: ObservableObject {
 
     /// Only confirmed loss of authentication changes the available account actions.
     private func setFailureState(_ error: Error) {
-        if (error as? CodexManagedError) == .loginRequired {
+        if (error as? CodexServiceError) == .loginRequired {
             authenticationState = false
             verificationResult = nil
             state = .signedOut
@@ -325,8 +325,8 @@ final class CodexManagedAccount: ObservableObject {
         }
     }
 
-    private func nextProcess() -> CodexManagedProcess {
-        let next = CodexManagedProcess()
+    private func nextProcess() -> CodexCommandProcess {
+        let next = CodexCommandProcess()
         process = next
         return next
     }
@@ -337,7 +337,7 @@ final class CodexManagedAccount: ObservableObject {
             try check(generation)
             let output = try await runtime.command(["login", "status"], process: nextProcess())
             try check(generation)
-            authenticationState = try CodexManagedConnectionCheck.isSignedIn(output)
+            authenticationState = try CodexConnectionCheck.isSignedIn(output)
             if !authenticated { verificationResult = nil }
             accountError = nil
             restorePresentation()
@@ -370,15 +370,15 @@ final class CodexManagedAccount: ObservableObject {
     }
 
     private func validateConnection(
-        generation: UInt, runtime: CodexManagedRuntime, configuration: CodexServiceConfiguration? = nil
+        generation: UInt, runtime: CodexRuntime, configuration: CodexServiceConfig? = nil
     ) async throws {
         state = .verifying
-        let request = CodexManagedConnectionCheck()
+        let request = CodexConnectionCheck()
         validation = request
         try check(generation)
         if let configuration {
             guard configuration.mode == .managed,
-                  configuration == CodexServiceConfiguration(uuid: configuration.uuid)
+                  configuration == CodexServiceConfig(uuid: configuration.uuid)
             else { throw CancellationError() }
         }
         let result = try await request.run(
@@ -388,11 +388,11 @@ final class CodexManagedAccount: ObservableObject {
         )
         try check(generation)
         if let configuration,
-           configuration != CodexServiceConfiguration(uuid: configuration.uuid) {
+           configuration != CodexServiceConfig(uuid: configuration.uuid) {
             throw CancellationError()
         }
         let greeting = result.text.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
-        guard ["你好", "您好"].contains(greeting) else { throw CodexManagedError.invalidResponse }
+        guard ["你好", "您好"].contains(greeting) else { throw CodexServiceError.invalidResponse }
         authenticationState = true
         state = .ready
     }

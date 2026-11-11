@@ -77,7 +77,7 @@ struct CodexRuntimeDescriptor: Sendable {
         architecture: CodexRuntimeArchitecture = .current
     ) throws
         -> Self {
-        guard let resources = bundle.resourceURL else { throw CodexManagedError.componentMissing }
+        guard let resources = bundle.resourceURL else { throw CodexServiceError.componentMissing }
         let root = resources.appendingPathComponent("CodexRuntime")
         let manifest = try JSONDecoder().decode(
             Manifest.self,
@@ -87,7 +87,7 @@ struct CodexRuntimeDescriptor: Sendable {
               let package = version.packages[architecture.rawValue],
               version.minimumOS == 13,
               package.target == "\(architecture.rawValue)-apple-darwin"
-        else { throw CodexManagedError.componentMissing }
+        else { throw CodexServiceError.componentMissing }
         return Self(
             release: release,
             architecture: architecture,
@@ -129,7 +129,7 @@ struct CodexModelCatalog: Decodable {
         do {
             return try JSONDecoder().decode(Self.self, from: Data(contentsOf: url))
         } catch {
-            throw CodexManagedError.componentMissing
+            throw CodexServiceError.componentMissing
         }
     }
 
@@ -137,6 +137,6 @@ struct CodexModelCatalog: Decodable {
     func validate(model: String, effort: String?) throws {
         guard let selected = models.first(where: { $0.slug == model.trimmingCharacters(in: .whitespacesAndNewlines) }),
               effort == nil || selected.supported_reasoning_levels.contains(where: { $0.effort == effort })
-        else { throw CodexManagedError.invalidModel }
+        else { throw CodexServiceError.invalidModel }
     }
 }

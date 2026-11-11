@@ -34,7 +34,7 @@ struct CodexCLIServiceConfigurationView: View {
     var body: some View {
         Section {
             if accessMode == .managed {
-                CodexManagedAccountView(configuration: CodexServiceConfiguration(uuid: service.uuid))
+                CodexManagedAccountView(configuration: CodexServiceConfig(uuid: service.uuid))
                 if !isManagedModelSupported || !managedEfforts.contains(managedEffort) {
                     Text("service.codex_cli.managed.unsupported_selection")
                         .font(.caption)
@@ -60,7 +60,7 @@ struct CodexCLIServiceConfigurationView: View {
             )
             if accessMode == .managed {
                 Picker("service.configuration.codex_cli.model.title", selection: managedModelSelection) {
-                    ForEach(CodexManagedRuntime.bundledModelNames, id: \.self) { model in
+                    ForEach(CodexRuntime.bundledModelNames, id: \.self) { model in
                         Text(verbatim: model).tag(Optional(model))
                     }
                 }
@@ -123,7 +123,7 @@ struct CodexCLIServiceConfigurationView: View {
                 try Task.checkCancellation()
                 guard accessMode == .localCLI, localModel == requestedModel else { return }
                 localModels = discovered
-                localEffort = CodexServiceConfiguration.compatibleLocalEffort(
+                localEffort = CodexServiceConfig.compatibleLocalEffort(
                     localEffort, model: localModel, models: discovered
                 )
             } catch {
@@ -146,7 +146,7 @@ struct CodexCLIServiceConfigurationView: View {
     @Default private var localModel: String
 
     private var isManagedModelSupported: Bool {
-        CodexManagedRuntime.bundledModelNames.contains(managedModel)
+        CodexRuntime.bundledModelNames.contains(managedModel)
     }
 
     private var managedModelSelection: Binding<String?> {
@@ -162,7 +162,7 @@ struct CodexCLIServiceConfigurationView: View {
     }
 
     private var localEfforts: [CodexReasoningEffort] {
-        CodexServiceConfiguration.reasoningEfforts(mode: .localCLI, model: localModel, localModels: localModels)
+        CodexServiceConfig.reasoningEfforts(mode: .localCLI, model: localModel, localModels: localModels)
     }
 
     private var localEffortSelection: Binding<CodexReasoningEffort?> {
@@ -172,7 +172,7 @@ struct CodexCLIServiceConfigurationView: View {
     }
 
     private var managedEfforts: [CodexReasoningEffort] {
-        CodexServiceConfiguration.reasoningEfforts(mode: .managed, model: managedModel)
+        CodexServiceConfig.reasoningEfforts(mode: .managed, model: managedModel)
     }
 }
 
@@ -218,7 +218,7 @@ private struct CodexCLIStatusRow: View {
 
     private func detect() {
         Task.detached(priority: .utility) {
-            let path = CodexLocalCLIInstallation.detectBinaryPath()
+            let path = CodexCLIInstallation.detectBinaryPath()
             await MainActor.run { detectedPath = path }
         }
     }

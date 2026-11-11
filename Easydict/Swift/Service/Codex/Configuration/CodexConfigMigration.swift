@@ -1,5 +1,5 @@
 //
-//  CodexConfigurationMigration.swift
+//  CodexConfigMigration.swift
 //  Easydict
 //
 //  Created by Alfred on 2026/09/07.
@@ -10,7 +10,7 @@ import Foundation
 /// Finds legacy Codex instances from a raw persistent-domain snapshot taken before
 /// default initialization. It never constructs services or reads default getters;
 /// callers persist only missing modes, so migration can safely run on every launch.
-enum CodexConfigurationMigration {
+enum CodexConfigMigration {
     // MARK: Internal
 
     static func legacyUUIDs(in snapshot: [String: Any]) -> Set<String> {

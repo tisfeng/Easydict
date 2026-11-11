@@ -1,5 +1,5 @@
 //
-//  CodexManagedConnectionCheckTests.swift
+//  CodexConnectionCheckTests.swift
 //  EasydictTests
 //
 //  Created by Alfred on 2026/09/07.
@@ -9,11 +9,11 @@
 import Foundation
 import Testing
 
-// MARK: - CodexManagedConnectionCheckTests
+// MARK: - CodexConnectionCheckTests
 
 /// Verifies the managed parser accepts only a completed text-only terminal turn.
-@Suite("Codex managed translation")
-struct CodexManagedConnectionCheckTests {
+@Suite("Codex connection check")
+struct CodexConnectionCheckTests {
     @Test("accepts a completed agent message as the terminal translation")
     func acceptsCompletedTextTurn() throws {
         let output = translationOutput(lines: [
@@ -23,7 +23,7 @@ struct CodexManagedConnectionCheckTests {
             #"{"type":"turn.completed"}"#,
         ])
 
-        let result = try CodexManagedConnectionCheck.result(output, durationMs: 12)
+        let result = try CodexConnectionCheck.result(output, durationMs: 12)
 
         #expect(result.text == "你好")
     }
@@ -41,7 +41,7 @@ struct CodexManagedConnectionCheckTests {
             #"{"type":"turn.completed"}"#,
         ])
 
-        let result = try CodexManagedConnectionCheck.result(output)
+        let result = try CodexConnectionCheck.result(output)
 
         #expect(result.text == "你好")
     }
@@ -56,8 +56,8 @@ struct CodexManagedConnectionCheckTests {
             #"{"type":"turn.completed"}"#,
         ])
 
-        #expect(throws: CodexManagedError.invalidResponse) {
-            try CodexManagedConnectionCheck.result(output)
+        #expect(throws: CodexServiceError.invalidResponse) {
+            try CodexConnectionCheck.result(output)
         }
     }
 
@@ -68,7 +68,7 @@ struct CodexManagedConnectionCheckTests {
         ], stderr: "request failed")
 
         #expect(throws: (any Error).self) {
-            try CodexManagedConnectionCheck.result(output)
+            try CodexConnectionCheck.result(output)
         }
     }
 
@@ -80,21 +80,21 @@ struct CodexManagedConnectionCheckTests {
             #"{"type":"item.completed","item":{"type":"agent_message","text":"你好"}}"#,
         ])
 
-        #expect(throws: CodexManagedError.invalidResponse) {
-            try CodexManagedConnectionCheck.result(output)
+        #expect(throws: CodexServiceError.invalidResponse) {
+            try CodexConnectionCheck.result(output)
         }
     }
 
     @Test("distinguishes the exact signed-out status from Keychain failures")
     func statusClassificationPreservesKeychainFailure() throws {
-        #expect(try CodexManagedConnectionCheck.isSignedIn(statusOutput(exitCode: 1, text: "Not logged in")) == false)
+        #expect(try CodexConnectionCheck.isSignedIn(statusOutput(exitCode: 1, text: "Not logged in")) == false)
 
-        #expect(throws: CodexManagedError.keychainUnavailable) {
-            try CodexManagedConnectionCheck.isSignedIn(statusOutput(exitCode: 1, text: "Keychain access denied"))
+        #expect(throws: CodexServiceError.keychainUnavailable) {
+            try CodexConnectionCheck.isSignedIn(statusOutput(exitCode: 1, text: "Keychain access denied"))
         }
 
-        #expect(throws: CodexManagedError.authenticationFailed) {
-            try CodexManagedConnectionCheck.isSignedIn(statusOutput(exitCode: 0, text: "Not logged in"))
+        #expect(throws: CodexServiceError.authenticationFailed) {
+            try CodexConnectionCheck.isSignedIn(statusOutput(exitCode: 0, text: "Not logged in"))
         }
     }
 
@@ -106,13 +106,13 @@ struct CodexManagedConnectionCheckTests {
         var receivedError: Error?
 
         do {
-            _ = try CodexManagedConnectionCheck.result(output)
+            _ = try CodexConnectionCheck.result(output)
             Issue.record("Expected managed authentication failure")
         } catch {
             receivedError = error
         }
 
-        #expect(receivedError as? CodexManagedError == .loginRequired)
+        #expect(receivedError as? CodexServiceError == .loginRequired)
         let message = receivedError?.localizedDescription
         #expect(message?.localizedCaseInsensitiveContains("ChatGPT") == true)
         #expect(message?.localizedCaseInsensitiveContains("codex login") == false)
@@ -120,7 +120,7 @@ struct CodexManagedConnectionCheckTests {
 
     @Test("unconfirmed managed process failures preserve their original classification")
     func unconfirmedProcessFailuresDoNotRequireLogin() {
-        let cases: [(CodexManagedProcess.Output, ManagedFailureExpectation)] = [
+        let cases: [(CodexCommandProcess.Output, ManagedFailureExpectation)] = [
             (
                 translationOutput(exitCode: 1, lines: [
                     #"{"type":"turn.failed","error":"authentication_failed"}"#,
@@ -152,13 +152,13 @@ struct CodexManagedConnectionCheckTests {
         for (output, expected) in cases {
             var receivedError: Error?
             do {
-                _ = try CodexManagedConnectionCheck.result(output)
+                _ = try CodexConnectionCheck.result(output)
                 Issue.record("Expected process failure")
             } catch {
                 receivedError = error
             }
             switch expected {
-            case let .managed(error): #expect(receivedError as? CodexManagedError == error)
+            case let .managed(error): #expect(receivedError as? CodexServiceError == error)
             case let .local(error): #expect(receivedError as? CodexCLIError == error)
             }
         }
@@ -168,7 +168,7 @@ struct CodexManagedConnectionCheckTests {
 // MARK: - ManagedFailureExpectation
 
 private enum ManagedFailureExpectation {
-    case managed(CodexManagedError)
+    case managed(CodexServiceError)
     case local(CodexCLIError)
 }
 
@@ -177,14 +177,14 @@ private func translationOutput(
     lines: [String],
     stderr: String = ""
 )
-    -> CodexManagedProcess.Output {
-    CodexManagedProcess.Output(
+    -> CodexCommandProcess.Output {
+    CodexCommandProcess.Output(
         exitCode: exitCode,
         stdout: Data((lines.joined(separator: "\n") + "\n").utf8),
         stderr: Data(stderr.utf8)
     )
 }
 
-private func statusOutput(exitCode: Int32, text: String) -> CodexManagedProcess.Output {
-    CodexManagedProcess.Output(exitCode: exitCode, stdout: Data(text.utf8), stderr: Data())
+private func statusOutput(exitCode: Int32, text: String) -> CodexCommandProcess.Output {
+    CodexCommandProcess.Output(exitCode: exitCode, stdout: Data(text.utf8), stderr: Data())
 }

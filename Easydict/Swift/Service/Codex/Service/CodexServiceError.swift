@@ -1,5 +1,5 @@
 //
-//  CodexManagedError.swift
+//  CodexServiceError.swift
 //  Easydict
 //
 //  Created by Alfred on 2026/09/07.
@@ -7,12 +7,12 @@
 
 import Foundation
 
-// MARK: - CodexManagedError
+// MARK: - CodexServiceError
 
-/// Errors specific to the bundled runtime, separate from the external CLI's
-/// compatibility behavior. Authentication output is never included in these
-/// messages, since it can contain browser authorization URLs and credential hints.
-enum CodexManagedError: Error, LocalizedError, Equatable {
+/// Errors from the Codex service, including its shared App Server and managed runtime.
+/// Messages omit raw authentication output, which can contain authorization URLs
+/// and credential hints.
+enum CodexServiceError: Error, LocalizedError, Equatable {
     case componentInvalid
     case componentMissing
     case externalConfiguration

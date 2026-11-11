@@ -31,9 +31,9 @@ struct CodexRequestCoordinatorTests {
         }
 
         coordinator.observe(uuid: managedUUID)
-        let managedConfiguration = CodexServiceConfiguration(uuid: managedUUID)
-        let localConfiguration = CodexServiceConfiguration(uuid: localUUID)
-        let otherManagedConfiguration = CodexServiceConfiguration(uuid: otherManagedUUID)
+        let managedConfiguration = CodexServiceConfig(uuid: managedUUID)
+        let localConfiguration = CodexServiceConfig(uuid: localUUID)
+        let otherManagedConfiguration = CodexServiceConfig(uuid: otherManagedUUID)
         let managedToken = UUID()
         let localToken = UUID()
         let otherManagedToken = UUID()
@@ -52,7 +52,7 @@ struct CodexRequestCoordinatorTests {
             cancel: otherManagedCancel.increment
         )
 
-        Defaults[CodexServiceConfiguration.modelKey(uuid: managedUUID, mode: .managed)] = "managed-first-updated"
+        Defaults[CodexServiceConfig.modelKey(uuid: managedUUID, mode: .managed)] = "managed-first-updated"
         await Task.yield()
 
         #expect(managedCancel.count == 1)
@@ -90,17 +90,17 @@ struct CodexRequestCoordinatorTests {
         let otherManagedCancel = InvocationCounter()
         try coordinator.register(
             token: managedToken,
-            configuration: CodexServiceConfiguration(uuid: managedUUID),
+            configuration: CodexServiceConfig(uuid: managedUUID),
             cancel: managedCancel.increment
         )
         try coordinator.register(
             token: localToken,
-            configuration: CodexServiceConfiguration(uuid: localUUID),
+            configuration: CodexServiceConfig(uuid: localUUID),
             cancel: localCancel.increment
         )
         try coordinator.register(
             token: otherManagedToken,
-            configuration: CodexServiceConfiguration(uuid: otherManagedUUID),
+            configuration: CodexServiceConfig(uuid: otherManagedUUID),
             cancel: otherManagedCancel.increment
         )
 
@@ -117,7 +117,7 @@ struct CodexRequestCoordinatorTests {
         let blockedCancel = InvocationCounter()
         let admission = try coordinator.register(
             token: blockedToken,
-            configuration: CodexServiceConfiguration(uuid: managedUUID),
+            configuration: CodexServiceConfig(uuid: managedUUID),
             cancel: blockedCancel.increment
         )
         #expect(admission == .blocked(operation))
@@ -136,7 +136,7 @@ struct CodexRequestCoordinatorTests {
         let retainedToken = UUID()
         let removedCancel = InvocationCounter()
         let retainedCancel = InvocationCounter()
-        let configuration = CodexServiceConfiguration(uuid: uuid)
+        let configuration = CodexServiceConfig(uuid: uuid)
         try coordinator.register(token: removedToken, configuration: configuration, cancel: removedCancel.increment)
         try coordinator.register(token: retainedToken, configuration: configuration, cancel: retainedCancel.increment)
 
@@ -154,35 +154,35 @@ struct CodexRequestCoordinatorTests {
         let managedModel = "gpt-5.4-mini"
         let localModel = "my-local-codex"
         installConfiguration(uuid: uuid, mode: .managed, model: managedModel)
-        Defaults[CodexServiceConfiguration.effortKey(uuid: uuid, mode: .managed)] = .ultra
-        Defaults[CodexServiceConfiguration.modelKey(uuid: uuid, mode: .localCLI)] = localModel
-        Defaults[CodexServiceConfiguration.effortKey(uuid: uuid, mode: .localCLI)] = .max
+        Defaults[CodexServiceConfig.effortKey(uuid: uuid, mode: .managed)] = .ultra
+        Defaults[CodexServiceConfig.modelKey(uuid: uuid, mode: .localCLI)] = localModel
+        Defaults[CodexServiceConfig.effortKey(uuid: uuid, mode: .localCLI)] = .max
         defer { restoreConfiguration(uuid: uuid) }
 
-        let managed = CodexServiceConfiguration(uuid: uuid)
+        let managed = CodexServiceConfig(uuid: uuid)
 
         #expect(managed.mode == .managed)
         #expect(managed.model == managedModel)
         #expect(managed.effort == .ultra)
-        #expect(Defaults[CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed)] == managedModel)
-        #expect(Defaults[CodexServiceConfiguration.effortKey(uuid: uuid, mode: .managed)] == .ultra)
+        #expect(Defaults[CodexServiceConfig.modelKey(uuid: uuid, mode: .managed)] == managedModel)
+        #expect(Defaults[CodexServiceConfig.effortKey(uuid: uuid, mode: .managed)] == .ultra)
 
         Defaults[CodexAccessMode.key(uuid: uuid)] = .localCLI
-        let local = CodexServiceConfiguration(uuid: uuid)
+        let local = CodexServiceConfig(uuid: uuid)
 
         #expect(local.mode == .localCLI)
         #expect(local.model == localModel)
         #expect(local.effort == .max)
-        #expect(Defaults[CodexServiceConfiguration.modelKey(uuid: uuid, mode: .localCLI)] == localModel)
-        #expect(Defaults[CodexServiceConfiguration.effortKey(uuid: uuid, mode: .localCLI)] == .max)
+        #expect(Defaults[CodexServiceConfig.modelKey(uuid: uuid, mode: .localCLI)] == localModel)
+        #expect(Defaults[CodexServiceConfig.effortKey(uuid: uuid, mode: .localCLI)] == .max)
     }
 
     @Test("reasoning effort candidates follow mode and managed model catalog")
     func reasoningEffortCandidatesFollowModeAndManagedModelCatalog() {
         // Without discovered local capabilities, advertise only the CLI default.
-        #expect(CodexServiceConfiguration.reasoningEfforts(mode: .localCLI, model: "gpt-6-astra") == [.default])
+        #expect(CodexServiceConfig.reasoningEfforts(mode: .localCLI, model: "gpt-6-astra") == [.default])
 
-        #expect(CodexServiceConfiguration.reasoningEfforts(mode: .managed, model: "gpt-5.5") == [
+        #expect(CodexServiceConfig.reasoningEfforts(mode: .managed, model: "gpt-5.5") == [
             .default,
             .low,
             .medium,
@@ -190,8 +190,8 @@ struct CodexRequestCoordinatorTests {
             .xhigh,
         ])
 
-        if CodexManagedRuntime.bundledModelNames.contains("gpt-5.6-luna") {
-            let lunaEfforts = CodexServiceConfiguration.reasoningEfforts(
+        if CodexRuntime.bundledModelNames.contains("gpt-5.6-luna") {
+            let lunaEfforts = CodexServiceConfig.reasoningEfforts(
                 mode: .managed,
                 model: "gpt-5.6-luna"
             )
@@ -222,14 +222,14 @@ private final class InvocationCounter: @unchecked Sendable {
 
 private func installConfiguration(uuid: String, mode: CodexAccessMode, model: String) {
     Defaults[CodexAccessMode.key(uuid: uuid)] = mode
-    Defaults[CodexServiceConfiguration.modelKey(uuid: uuid, mode: mode)] = model
-    Defaults[CodexServiceConfiguration.effortKey(uuid: uuid, mode: mode)] = .default
+    Defaults[CodexServiceConfig.modelKey(uuid: uuid, mode: mode)] = model
+    Defaults[CodexServiceConfig.effortKey(uuid: uuid, mode: mode)] = .default
 }
 
 private func restoreConfiguration(uuid: String) {
     Defaults[CodexAccessMode.key(uuid: uuid)] = .managed
-    Defaults[CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed)] = CodexManagedRuntime.defaultModel
-    Defaults[CodexServiceConfiguration.effortKey(uuid: uuid, mode: .managed)] = .default
-    Defaults[CodexServiceConfiguration.modelKey(uuid: uuid, mode: .localCLI)] = ""
-    Defaults[CodexServiceConfiguration.effortKey(uuid: uuid, mode: .localCLI)] = .default
+    Defaults[CodexServiceConfig.modelKey(uuid: uuid, mode: .managed)] = CodexRuntime.defaultModel
+    Defaults[CodexServiceConfig.effortKey(uuid: uuid, mode: .managed)] = .default
+    Defaults[CodexServiceConfig.modelKey(uuid: uuid, mode: .localCLI)] = ""
+    Defaults[CodexServiceConfig.effortKey(uuid: uuid, mode: .localCLI)] = .default
 }

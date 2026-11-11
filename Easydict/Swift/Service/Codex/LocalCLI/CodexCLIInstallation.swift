@@ -1,5 +1,5 @@
 //
-//  CodexLocalCLIInstallation.swift
+//  CodexCLIInstallation.swift
 //  Easydict
 //
 //  Created by long2ice on 2026/05/07.
@@ -9,7 +9,7 @@
 import Foundation
 
 /// Resolves the executable and environment of a user-installed Codex.
-enum CodexLocalCLIInstallation {
+enum CodexCLIInstallation {
     // MARK: Internal
 
     /// Codex feature flags disabled for translation-only subprocess runs.
@@ -81,7 +81,7 @@ enum CodexLocalCLIInstallation {
     /// shebang shims (`#!/usr/bin/env node`) can resolve `node`.
     static func buildProcessEnvironment(
         inheritedEnvironment: [String: String] = ProcessInfo.processInfo.environment,
-        loginShellEnvironment: [String: String]? = CodexLocalCLIInstallation.loginShellEnvironment()
+        loginShellEnvironment: [String: String]? = CodexCLIInstallation.loginShellEnvironment()
     )
         -> [String: String] {
         var environment = inheritedEnvironment

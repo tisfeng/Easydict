@@ -33,7 +33,7 @@ struct CodexComponentStore: Sendable {
     func verifyInstalled() async throws -> URL {
         try Task.checkCancellation()
         guard FileManager.default.fileExists(atPath: installedDirectory.path) else {
-            throw CodexManagedError.componentMissing
+            throw CodexServiceError.componentMissing
         }
         try verifyPackage(at: installedDirectory)
         try Task.checkCancellation()
@@ -57,7 +57,7 @@ struct CodexComponentStore: Sendable {
         do {
             (downloaded, response) = try await session.download(from: descriptor.downloadURL, delegate: delegate)
         } catch {
-            if delegate.exceededSize { throw CodexManagedError.componentInvalid }
+            if delegate.exceededSize { throw CodexServiceError.componentInvalid }
             throw error
         }
         defer { try? manager.removeItem(at: downloaded) }
@@ -65,34 +65,34 @@ struct CodexComponentStore: Sendable {
         guard let http = response as? HTTPURLResponse, (200 ..< 300).contains(http.statusCode),
               try downloaded.resourceValues(forKeys: [.fileSizeKey]).fileSize == Int(descriptor.package.archiveSize),
               try Self.sha256(downloaded) == descriptor.package.archiveSHA256
-        else { throw CodexManagedError.componentInvalid }
+        else { throw CodexServiceError.componentInvalid }
         progress(nil)
         let archive = staging.appendingPathComponent("package.tar.gz")
         try manager.moveItem(at: downloaded, to: archive)
         let unpacked = staging.appendingPathComponent("package")
         try createDirectory(unpacked)
         let environment = ["PATH": "/usr/bin:/bin", "LANG": "C"]
-        let names = try await CodexManagedProcess().run(
+        let names = try await CodexCommandProcess().run(
             executable: URL(fileURLWithPath: "/usr/bin/tar"),
             arguments: ["-tzf", archive.path],
             environment: environment,
             workingDirectory: staging,
             timeout: 30
         )
-        let kinds = try await CodexManagedProcess().run(
+        let kinds = try await CodexCommandProcess().run(
             executable: URL(fileURLWithPath: "/usr/bin/tar"),
             arguments: ["-tvzf", archive.path],
             environment: environment,
             workingDirectory: staging,
             timeout: 30
         )
-        guard names.exitCode == 0, kinds.exitCode == 0 else { throw CodexManagedError.componentInvalid }
+        guard names.exitCode == 0, kinds.exitCode == 0 else { throw CodexServiceError.componentInvalid }
         guard let archiveNames = String(data: names.stdout, encoding: .utf8),
               let archiveDetails = String(data: kinds.stdout, encoding: .utf8)
-        else { throw CodexManagedError.componentInvalid }
+        else { throw CodexServiceError.componentInvalid }
         try validateArchiveEntries(names: archiveNames, details: archiveDetails)
         try Task.checkCancellation()
-        let extraction = try await CodexManagedProcess().run(
+        let extraction = try await CodexCommandProcess().run(
             executable: URL(fileURLWithPath: "/usr/bin/tar"),
             arguments: [
                 "-xzf",
@@ -105,7 +105,7 @@ struct CodexComponentStore: Sendable {
             workingDirectory: staging,
             timeout: 60
         )
-        guard extraction.exitCode == 0 else { throw CodexManagedError.componentInvalid }
+        guard extraction.exitCode == 0 else { throw CodexServiceError.componentInvalid }
         try verifyPackage(at: unpacked)
         try Task.checkCancellation()
         try createDirectory(installedDirectory.deletingLastPathComponent())
@@ -151,14 +151,14 @@ struct CodexComponentStore: Sendable {
             if name.hasSuffix("/") { name.removeLast() }
             guard !name.hasPrefix("/"), !name.split(separator: "/").contains(".."),
                   allowedFiles.contains(name) || allowedDirectories.contains(name)
-            else { throw CodexManagedError.componentInvalid }
+            else { throw CodexServiceError.componentInvalid }
             if allowedFiles.contains(name), !files.insert(name).inserted {
-                throw CodexManagedError.componentInvalid
+                throw CodexServiceError.componentInvalid
             }
         }
         guard files == allowedFiles,
               details.split(separator: "\n").allSatisfy({ $0.first == "-" || $0.first == "d" })
-        else { throw CodexManagedError.componentInvalid }
+        else { throw CodexServiceError.componentInvalid }
     }
 
     func verifyPackage(at directory: URL) throws {
@@ -168,23 +168,23 @@ struct CodexComponentStore: Sendable {
                   at: directory,
                   includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey]
               )
-        else { throw CodexManagedError.componentInvalid }
+        else { throw CodexServiceError.componentInvalid }
         var files = Set<String>()
         for case let file as URL in enumerator {
             try Task.checkCancellation()
             let values = try file.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
-            guard values.isSymbolicLink != true else { throw CodexManagedError.componentInvalid }
+            guard values.isSymbolicLink != true else { throw CodexServiceError.componentInvalid }
             if values.isRegularFile == true {
                 let relative = String(file.path.dropFirst(directory.path.count + 1))
                 guard let expected = descriptor.package.files[relative], try Self.sha256(file) == expected else {
-                    throw CodexManagedError.componentInvalid
+                    throw CodexServiceError.componentInvalid
                 }
                 files.insert(relative)
             }
         }
         guard files == Set(descriptor.package.files.keys),
               manager.isExecutableFile(atPath: directory.appendingPathComponent("bin/codex").path)
-        else { throw CodexManagedError.componentInvalid }
+        else { throw CodexServiceError.componentInvalid }
         for (path, expression) in descriptor.package.signatureRequirements {
             var code: SecStaticCode?
             var requirement: SecRequirement?
@@ -194,7 +194,7 @@ struct CodexComponentStore: Sendable {
                 let code, let requirement,
                 SecStaticCodeCheckValidity(code, SecCSFlags(rawValue: kSecCSStrictValidate), requirement) ==
                 errSecSuccess
-            else { throw CodexManagedError.componentInvalid }
+            else { throw CodexServiceError.componentInvalid }
         }
     }
 
@@ -215,7 +215,7 @@ struct CodexComponentStore: Sendable {
         var ancestor = url
         while true {
             if (try? FileManager.default.destinationOfSymbolicLink(atPath: ancestor.path)) != nil {
-                throw CodexManagedError.componentInvalid
+                throw CodexServiceError.componentInvalid
             }
             if ancestor.path == "/" { break }
             ancestor.deleteLastPathComponent()
@@ -226,7 +226,7 @@ struct CodexComponentStore: Sendable {
             attributes: [.posixPermissions: 0o700]
         )
         guard url.resolvingSymlinksInPath() == url.standardizedFileURL else {
-            throw CodexManagedError.componentInvalid
+            throw CodexServiceError.componentInvalid
         }
     }
 }

@@ -1,5 +1,5 @@
 //
-//  CodexManagedAccountTestSupport.swift
+//  CodexAccountTestSupport.swift
 //  EasydictTests
 //
 //  Created by Alfred on 2026/09/13.
@@ -99,13 +99,13 @@ final class AccountFixture {
     }
 
     @MainActor
-    func account() -> CodexManagedAccount {
+    func account() -> CodexAccount {
         let runtime = runtime()
-        return CodexManagedAccount(runtimeFactory: { runtime }, coordinator: CodexRequestCoordinator())
+        return CodexAccount(runtimeFactory: { runtime }, coordinator: CodexRequestCoordinator())
     }
 
-    func runtime() -> CodexManagedRuntime {
-        CodexManagedRuntime(
+    func runtime() -> CodexRuntime {
+        CodexRuntime(
             executable: executable,
             home: directory.appendingPathComponent("home"),
             codexHome: directory.appendingPathComponent("codex-home"),
@@ -270,7 +270,7 @@ func waitForRuntimeFactory(
 }
 
 @MainActor
-func accountIsSignedOut(_ account: CodexManagedAccount) -> Bool {
+func accountIsSignedOut(_ account: CodexAccount) -> Bool {
     if case .signedOut = account.state { return true }
     return false
 }
@@ -279,15 +279,15 @@ func installManagedConfiguration(
     uuid: String, model: String, effort: CodexReasoningEffort
 ) {
     Defaults[CodexAccessMode.key(uuid: uuid)] = .managed
-    Defaults[CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed)] = model
-    Defaults[CodexServiceConfiguration.effortKey(uuid: uuid, mode: .managed)] = effort
+    Defaults[CodexServiceConfig.modelKey(uuid: uuid, mode: .managed)] = model
+    Defaults[CodexServiceConfig.effortKey(uuid: uuid, mode: .managed)] = effort
 }
 
 func resetManagedConfiguration(uuid: String) {
     Defaults.reset(
         CodexAccessMode.key(uuid: uuid),
-        CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed),
-        CodexServiceConfiguration.effortKey(uuid: uuid, mode: .managed)
+        CodexServiceConfig.modelKey(uuid: uuid, mode: .managed),
+        CodexServiceConfig.effortKey(uuid: uuid, mode: .managed)
     )
 }
 

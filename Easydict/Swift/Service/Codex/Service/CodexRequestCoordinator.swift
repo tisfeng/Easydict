@@ -35,27 +35,27 @@ final class CodexRequestCoordinator: @unchecked Sendable {
             .sink { [weak self] _ in
                 self?.invalidate(uuid: uuid)
                 Task { @MainActor in
-                    CodexManagedAccount.shared.configurationChanged(origin: uuid)
-                    CodexManagedAccount.shared.cancelLogin(origin: uuid)
+                    CodexAccount.shared.configurationChanged(origin: uuid)
+                    CodexAccount.shared.cancelLogin(origin: uuid)
                     if Defaults[CodexAccessMode.key(uuid: uuid)] == .localCLI {
                         CodexComponentManager.shared.modeChanged(origin: uuid)
                     }
                 }
             }.store(in: &subscriptions)
         for mode in CodexAccessMode.allCases {
-            Defaults.publisher(CodexServiceConfiguration.modelKey(uuid: uuid, mode: mode), options: [])
+            Defaults.publisher(CodexServiceConfig.modelKey(uuid: uuid, mode: mode), options: [])
                 .sink { [weak self] _ in
                     self?.invalidate(uuid: uuid, mode: mode)
                     if mode == .managed {
-                        Task { @MainActor in CodexManagedAccount.shared.configurationChanged(origin: uuid) }
+                        Task { @MainActor in CodexAccount.shared.configurationChanged(origin: uuid) }
                     }
                 }
                 .store(in: &subscriptions)
-            Defaults.publisher(CodexServiceConfiguration.effortKey(uuid: uuid, mode: mode), options: [])
+            Defaults.publisher(CodexServiceConfig.effortKey(uuid: uuid, mode: mode), options: [])
                 .sink { [weak self] _ in
                     self?.invalidate(uuid: uuid, mode: mode)
                     if mode == .managed {
-                        Task { @MainActor in CodexManagedAccount.shared.configurationChanged(origin: uuid) }
+                        Task { @MainActor in CodexAccount.shared.configurationChanged(origin: uuid) }
                     }
                 }
                 .store(in: &subscriptions)
@@ -66,12 +66,12 @@ final class CodexRequestCoordinator: @unchecked Sendable {
     @discardableResult
     func register(
         token: UUID,
-        configuration: CodexServiceConfiguration,
+        configuration: CodexServiceConfig,
         cancel: @escaping () -> ()
     ) throws
         -> Admission {
         try lock.withLock {
-            guard configuration == CodexServiceConfiguration(uuid: configuration.uuid) else {
+            guard configuration == CodexServiceConfig(uuid: configuration.uuid) else {
                 throw CancellationError()
             }
             requests[token] = Registration(configuration: configuration, cancel: cancel)
@@ -83,7 +83,7 @@ final class CodexRequestCoordinator: @unchecked Sendable {
     func isCurrent(_ token: UUID) -> Bool {
         lock.withLock {
             guard let request = requests[token] else { return false }
-            return request.configuration == CodexServiceConfiguration(uuid: request.configuration.uuid)
+            return request.configuration == CodexServiceConfig(uuid: request.configuration.uuid)
         }
     }
 
@@ -109,7 +109,7 @@ final class CodexRequestCoordinator: @unchecked Sendable {
     func reset() {
         // The account owns admission and advances its operation generation before
         // an older account task can finish and release the reset's gate.
-        CodexManagedAccount.shared.reset()
+        CodexAccount.shared.reset()
         invalidate(mode: .localCLI)
         CodexComponentManager.shared.cancel()
     }
@@ -117,7 +117,7 @@ final class CodexRequestCoordinator: @unchecked Sendable {
     // MARK: Private
 
     private struct Registration {
-        let configuration: CodexServiceConfiguration
+        let configuration: CodexServiceConfig
         let cancel: () -> ()
     }
 

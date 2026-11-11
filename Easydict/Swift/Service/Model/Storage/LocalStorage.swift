@@ -20,7 +20,7 @@ final class LocalStorage: NSObject {
         super.init()
         if let domain = Bundle.main.bundleIdentifier {
             let snapshot = userDefaults.persistentDomain(forName: domain) ?? [:]
-            for uuid in CodexConfigurationMigration.legacyUUIDs(in: snapshot) {
+            for uuid in CodexConfigMigration.legacyUUIDs(in: snapshot) {
                 Defaults[CodexAccessMode.key(uuid: uuid)] = .localCLI
             }
         }

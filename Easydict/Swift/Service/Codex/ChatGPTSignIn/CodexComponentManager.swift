@@ -19,7 +19,7 @@ final class CodexComponentManager: ObservableObject {
         storeFactory: @escaping () async throws -> CodexComponentStore = {
             try CodexComponentStore.applicationStore(descriptor: .load())
         },
-        account: CodexManagedAccount? = nil
+        account: CodexAccount? = nil
     ) {
         self.storeFactory = storeFactory
         self.account = account ?? .shared
@@ -108,7 +108,7 @@ final class CodexComponentManager: ObservableObject {
     }
 
     private let storeFactory: () async throws -> CodexComponentStore
-    private let account: CodexManagedAccount
+    private let account: CodexAccount
     private var generation: UInt = 0
     private var operation: Task<(), Never>?
     private var operationKind: OperationKind?
@@ -133,7 +133,7 @@ final class CodexComponentManager: ObservableObject {
     /// Publish the result and hand off to the account in one MainActor segment.
     private func applyAvailability(_ state: State, error: Error? = nil) {
         availability = state
-        availabilityError = (error as? CodexManagedError) == .componentMissing ? nil : error?.localizedDescription
+        availabilityError = (error as? CodexServiceError) == .componentMissing ? nil : error?.localizedDescription
         self.state = state
         errorMessage = availabilityError
         if case .ready = state {

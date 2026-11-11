@@ -91,7 +91,7 @@ final class CodexService: StreamService {
             .map { "\($0.role.rawValue): \($0.content)" }
             .joined(separator: "\n\n")
 
-        let configuration = CodexServiceConfiguration(uuid: uuid)
+        let configuration = CodexServiceConfig(uuid: uuid)
         CodexRequestCoordinator.shared.observe(uuid: uuid)
         let token = UUID()
         let generation = updateResultLock.withLock {
@@ -114,7 +114,7 @@ final class CodexService: StreamService {
                         self?.invalidateConfiguration(token: token, generation: generation)
                     }
                 if case let .blocked(reason) = admission {
-                    finish(continuation, error: CodexManagedError.operationInProgress(reason), token: token)
+                    finish(continuation, error: CodexServiceError.operationInProgress(reason), token: token)
                     return
                 }
             } catch {
@@ -137,7 +137,7 @@ final class CodexService: StreamService {
             let task = Task {
                 do {
                     if configuration.mode == .managed {
-                        try CodexManagedRuntime.validateSelection(
+                        try CodexRuntime.validateSelection(
                             model: configuration.model, effort: configuration.effort.cliValue
                         )
                     }
@@ -181,16 +181,16 @@ final class CodexService: StreamService {
     override var synchronizesModelWithSupportedModels: Bool { false }
 
     override var model: String {
-        get { CodexServiceConfiguration(uuid: uuid).model }
+        get { CodexServiceConfig(uuid: uuid).model }
         set {
             let mode = Defaults[accessModeKey]
-            if mode == .managed, !CodexManagedRuntime.bundledModelNames.contains(newValue) { return }
-            Defaults[CodexServiceConfiguration.modelKey(uuid: uuid, mode: mode)] = newValue
+            if mode == .managed, !CodexRuntime.bundledModelNames.contains(newValue) { return }
+            Defaults[CodexServiceConfig.modelKey(uuid: uuid, mode: mode)] = newValue
         }
     }
 
     override var validModels: [String] {
-        Defaults[accessModeKey] == .managed ? CodexManagedRuntime.bundledModelNames : super.validModels
+        Defaults[accessModeKey] == .managed ? CodexRuntime.bundledModelNames : super.validModels
     }
 
     /// Stored reasoning-effort override. `.default` means "do not override
@@ -204,11 +204,11 @@ final class CodexService: StreamService {
     var accessModeKey: Defaults.Key<CodexAccessMode> { CodexAccessMode.key(uuid: uuid) }
 
     var managedModelKey: Defaults.Key<String> {
-        CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed)
+        CodexServiceConfig.modelKey(uuid: uuid, mode: .managed)
     }
 
     var managedReasoningEffortKey: Defaults.Key<CodexReasoningEffort> {
-        CodexServiceConfiguration.effortKey(uuid: uuid, mode: .managed)
+        CodexServiceConfig.effortKey(uuid: uuid, mode: .managed)
     }
 
     override func recognizeImage(_ imageURL: String, prompt: String) async throws -> String {
@@ -219,7 +219,7 @@ final class CodexService: StreamService {
         _ imageURL: String, prompt: String, onDelta: @escaping @Sendable (String) -> ()
     ) async throws
         -> String {
-        let configuration = CodexServiceConfiguration(uuid: uuid)
+        let configuration = CodexServiceConfig(uuid: uuid)
         let coordinator = CodexRequestCoordinator.shared
         let runner = CodexAppServerRequest()
         let token = UUID()
@@ -227,7 +227,7 @@ final class CodexService: StreamService {
         defer { coordinator.remove(token) }
         let admission = try coordinator.register(token: token, configuration: configuration) { runner.cancel() }
         if case let .blocked(reason) = admission {
-            throw CodexManagedError.operationInProgress(reason)
+            throw CodexServiceError.operationInProgress(reason)
         }
         let runtime = configuration.mode == .managed ? try await CodexAppServer.managed.runtime() : nil
         try Task.checkCancellation()

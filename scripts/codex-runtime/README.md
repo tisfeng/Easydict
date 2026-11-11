@@ -37,7 +37,7 @@ Astra、Sol、Terra、Luna 与 gpt-5.5。组件历史目录中的存在不等于
 
 `verify-isolation.py` 启动本机回环 Responses fixture，强制返回工具调用。它只使用
 自建 PNG 和临时文件，不调用真实模型或读取个人凭据。输入 JSON 由当前
-`CodexManagedRuntime.translationArguments` 输出，含 `executable`、`arguments`、`cwd`。
+`CodexRuntime.translationArguments` 输出，含 `executable`、`arguments`、`cwd`。
 运行：
 
 ```sh

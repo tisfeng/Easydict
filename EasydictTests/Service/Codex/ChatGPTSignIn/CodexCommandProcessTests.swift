@@ -1,5 +1,5 @@
 //
-//  CodexManagedProcessTests.swift
+//  CodexCommandProcessTests.swift
 //  EasydictTests
 //
 //  Created by Alfred on 2026/09/07.
@@ -9,10 +9,10 @@
 import Foundation
 import Testing
 
-// MARK: - CodexManagedProcessTests
+// MARK: - CodexCommandProcessTests
 
-@Suite("Codex managed process")
-struct CodexManagedProcessTests {
+@Suite("Codex command process")
+struct CodexCommandProcessTests {
     @Test("drains long stdin and simultaneous stdout and stderr")
     func drainsAllPipesWithoutTruncatingInput() async throws {
         let input = Data(repeating: 0x61, count: 1_048_576)
@@ -31,7 +31,7 @@ struct CodexManagedProcessTests {
 
     @Test("returns timeout after stopping the owned process group")
     func timesOutLongRunningCommand() async throws {
-        await #expect(throws: CodexManagedError.timeout) {
+        await #expect(throws: CodexServiceError.timeout) {
             try await runPython("import time; time.sleep(10)", timeout: 0.1)
         }
     }
@@ -40,7 +40,7 @@ struct CodexManagedProcessTests {
     func cancellationStopsDescendant() async throws {
         try await withTemporaryDirectory { directory in
             let marker = directory.appendingPathComponent("cancelled-child")
-            let process = CodexManagedProcess()
+            let process = CodexCommandProcess()
             let task = Task {
                 try await process.run(
                     executable: URL(fileURLWithPath: "/bin/sh"),
@@ -64,8 +64,8 @@ struct CodexManagedProcessTests {
         try await withTemporaryDirectory { directory in
             let cancelledMarker = directory.appendingPathComponent("cancelled")
             let completedMarker = directory.appendingPathComponent("completed")
-            let cancelledProcess = CodexManagedProcess()
-            let completedProcess = CodexManagedProcess()
+            let cancelledProcess = CodexCommandProcess()
+            let completedProcess = CodexCommandProcess()
             let cancelledTask = Task {
                 try await shellMarkerProcess(cancelledProcess, marker: cancelledMarker, delay: 1, directory: directory)
             }
@@ -138,7 +138,7 @@ struct CodexManagedProcessTests {
         try await withTemporaryDirectory { directory in
             let marker = directory.appendingPathComponent("term-ignoring-cancelled")
             let ready = directory.appendingPathComponent("term-ignoring-ready")
-            let process = CodexManagedProcess()
+            let process = CodexCommandProcess()
             let task = Task {
                 try await runShell(
                     "(trap '' TERM; echo ready > \"$1\"; exec </dev/null >/dev/null 2>/dev/null; sleep 1; echo leaked > \"$0\") & wait",
@@ -158,7 +158,7 @@ struct CodexManagedProcessTests {
 
     @Test("fails before retaining output over the bounded limit")
     func rejectsOversizedOutput() async throws {
-        await #expect(throws: CodexManagedError.outputTooLarge) {
+        await #expect(throws: CodexServiceError.outputTooLarge) {
             try await runPython("import sys; sys.stdout.buffer.write(b'x' * (5 * 1024 * 1024))", timeout: 5)
         }
     }
@@ -182,8 +182,8 @@ private func runPython(
     timeout: TimeInterval = 5,
     stderrReceived: (@Sendable (Data) -> ())? = nil
 ) async throws
-    -> CodexManagedProcess.Output {
-    try await CodexManagedProcess().run(
+    -> CodexCommandProcess.Output {
+    try await CodexCommandProcess().run(
         executable: URL(fileURLWithPath: "/usr/bin/python3"),
         arguments: ["-c", script],
         environment: processEnvironment,
@@ -195,12 +195,12 @@ private func runPython(
 }
 
 private func shellMarkerProcess(
-    _ process: CodexManagedProcess,
+    _ process: CodexCommandProcess,
     marker: URL,
     delay: Double,
     directory: URL
 ) async throws
-    -> CodexManagedProcess.Output {
+    -> CodexCommandProcess.Output {
     try await runShell(
         "sleep $1; echo done > \"$0\"",
         arguments: [marker.path, String(delay)],
@@ -214,9 +214,9 @@ private func runShell(
     arguments: [String],
     directory: URL,
     timeout: TimeInterval = 5,
-    process: CodexManagedProcess = CodexManagedProcess()
+    process: CodexCommandProcess = CodexCommandProcess()
 ) async throws
-    -> CodexManagedProcess.Output {
+    -> CodexCommandProcess.Output {
     try await process.run(
         executable: URL(fileURLWithPath: "/bin/sh"),
         arguments: ["-c", script] + arguments,

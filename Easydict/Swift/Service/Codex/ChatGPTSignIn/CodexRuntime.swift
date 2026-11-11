@@ -1,5 +1,5 @@
 //
-//  CodexManagedRuntime.swift
+//  CodexRuntime.swift
 //  Easydict
 //
 //  Created by Alfred on 2026/09/07.
@@ -8,12 +8,12 @@
 import CoreFoundation
 import Foundation
 
-// MARK: - CodexManagedRuntime
+// MARK: - CodexRuntime
 
 /// Resolves the versioned bundle and stable, application-owned ChatGPT environment.
 /// Every managed command uses official keyring storage and a neutral cwd. Unknown
 /// external configuration is rejected rather than merged into a translation run.
-struct CodexManagedRuntime {
+struct CodexRuntime {
     // MARK: Internal
 
     static let bundledCatalog: CodexModelCatalog? = {
@@ -88,10 +88,10 @@ struct CodexManagedRuntime {
     }
 
     func command(
-        _ arguments: [String], process: CodexManagedProcess, input: Data = Data(),
+        _ arguments: [String], process: CodexCommandProcess, input: Data = Data(),
         timeout: TimeInterval = 30, stderrReceived: (@Sendable (Data) -> ())? = nil
     ) async throws
-        -> CodexManagedProcess.Output {
+        -> CodexCommandProcess.Output {
         try checkConfigurationSources()
         return try await process.run(
             executable: executable, arguments: arguments + authenticationArguments
@@ -241,7 +241,7 @@ struct CodexManagedRuntime {
             .contains(where: {
                 fileManager.fileExists(atPath: $0) || (try? fileManager.destinationOfSymbolicLink(atPath: $0)) != nil
             }) {
-            throw CodexManagedError.externalConfiguration
+            throw CodexServiceError.externalConfiguration
         }
         let skills = codexHome.appendingPathComponent("skills")
         if fileManager.fileExists(atPath: skills.path) {
@@ -252,19 +252,19 @@ struct CodexManagedRuntime {
                   try fileManager.contentsOfDirectory(atPath: skills.path).allSatisfy({ $0 == ".system" }),
                   skills.appendingPathComponent(".system").resolvingSymlinksInPath()
                   == skills.appendingPathComponent(".system").standardizedFileURL
-            else { throw CodexManagedError.externalConfiguration }
+            else { throw CodexServiceError.externalConfiguration }
         }
         for key in ["config_toml_base64", "requirements_toml_base64"]
             where CFPreferencesCopyAppValue(key as CFString, "com.openai.codex" as CFString) != nil {
-            throw CodexManagedError.externalConfiguration
+            throw CodexServiceError.externalConfiguration
         }
         guard try fileManager.contentsOfDirectory(atPath: workingDirectory.path).isEmpty else {
-            throw CodexManagedError.externalConfiguration
+            throw CodexServiceError.externalConfiguration
         }
     }
 }
 
-extension CodexManagedRuntime {
+extension CodexRuntime {
     /// Verification runs off the UI executor before any official command starts.
     static func installed(bundle: Bundle = .main) async throws -> Self {
         let descriptor = try CodexRuntimeDescriptor.load(bundle: bundle)
@@ -273,7 +273,7 @@ extension CodexManagedRuntime {
         // Foundation can preserve the /var alias for NSTemporaryDirectory on
         // macOS. Resolve it with the filesystem before rejecting symlink ancestors.
         guard let temporaryPath = realpath(FileManager.default.temporaryDirectory.path, nil) else {
-            throw CodexManagedError.externalConfiguration
+            throw CodexServiceError.externalConfiguration
         }
         defer { free(temporaryPath) }
         let workingDirectory = URL(fileURLWithPath: String(cString: temporaryPath))
@@ -287,7 +287,7 @@ extension CodexManagedRuntime {
             var ancestor = directory
             while true {
                 if (try? FileManager.default.destinationOfSymbolicLink(atPath: ancestor.path)) != nil {
-                    throw CodexManagedError.externalConfiguration
+                    throw CodexServiceError.externalConfiguration
                 }
                 if ancestor.path == "/" { break }
                 ancestor.deleteLastPathComponent()

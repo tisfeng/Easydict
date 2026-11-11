@@ -80,7 +80,7 @@ enum CodexDirectoryMigration {
               directory.resolvingSymlinksInPath() == directory.standardizedFileURL,
               let permissions = attributes[.posixPermissions] as? NSNumber,
               permissions.intValue & 0o077 == 0
-        else { throw CodexManagedError.externalConfiguration }
+        else { throw CodexServiceError.externalConfiguration }
     }
 
     private static func rejectSymbolicLinkAncestors(
@@ -90,7 +90,7 @@ enum CodexDirectoryMigration {
         var ancestor = directory
         while true {
             if (try? fileManager.destinationOfSymbolicLink(atPath: ancestor.path)) != nil {
-                throw CodexManagedError.externalConfiguration
+                throw CodexServiceError.externalConfiguration
             }
             if ancestor.path == "/" { return }
             ancestor.deleteLastPathComponent()

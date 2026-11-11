@@ -167,15 +167,15 @@ struct CodexStreamInvalidationTests {
         let uuid = UUID().uuidString
         service.uuid = uuid
         let modeKey = CodexAccessMode.key(uuid: uuid)
-        let managedModelKey = CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed)
-        let localModelKey = CodexServiceConfiguration.modelKey(uuid: uuid, mode: .localCLI)
+        let managedModelKey = CodexServiceConfig.modelKey(uuid: uuid, mode: .managed)
+        let localModelKey = CodexServiceConfig.modelKey(uuid: uuid, mode: .localCLI)
         Defaults[modeKey] = .managed
         Defaults[managedModelKey] = "gpt-5.4-mini-untrusted-suffix"
         Defaults[localModelKey] = ""
         defer {
             service.cancelStream()
             Defaults[modeKey] = .managed
-            Defaults[managedModelKey] = CodexManagedRuntime.defaultModel
+            Defaults[managedModelKey] = CodexRuntime.defaultModel
             Defaults[localModelKey] = ""
         }
 
@@ -191,7 +191,7 @@ struct CodexStreamInvalidationTests {
 
         #expect(
             (receivedError as? QueryError)?.message
-                == CodexManagedError.invalidModel.localizedDescription
+                == CodexServiceError.invalidModel.localizedDescription
         )
         #expect(service.resultGeneration == generation)
 
@@ -213,11 +213,11 @@ struct CodexStreamInvalidationTests {
         let uuid = UUID().uuidString
         service.uuid = uuid
         let modeKey = CodexAccessMode.key(uuid: uuid)
-        let modelKey = CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed)
+        let modelKey = CodexServiceConfig.modelKey(uuid: uuid, mode: .managed)
         let result = service.resetServiceResult()
         result.isLoading = true
         Defaults[modeKey] = .managed
-        Defaults[modelKey] = CodexManagedRuntime.defaultModel
+        Defaults[modelKey] = CodexRuntime.defaultModel
         defer {
             service.cancelStream()
             CodexRequestCoordinator.shared.setAccountOperation(nil)
@@ -231,7 +231,7 @@ struct CodexStreamInvalidationTests {
             callbackError = error
         }
 
-        let expectedMessage = CodexManagedError.operationInProgress(operation).localizedDescription
+        let expectedMessage = CodexServiceError.operationInProgress(operation).localizedDescription
         try await waitForResult(result) {
             $0.isStreamFinished && $0.error?.message == expectedMessage
                 && (callbackError as? QueryError)?.message == expectedMessage
@@ -255,9 +255,9 @@ struct CodexStreamInvalidationTests {
         let retryModel = queryModel(text: "retry")
         service.startQueryStream(retryModel) { _, _ in }
         try await waitForResult(retryResult) {
-            $0.isStreamFinished && $0.error?.message == CodexManagedError.invalidModel.localizedDescription
+            $0.isStreamFinished && $0.error?.message == CodexServiceError.invalidModel.localizedDescription
         }
-        #expect(retryResult.error?.message == CodexManagedError.invalidModel.localizedDescription)
+        #expect(retryResult.error?.message == CodexServiceError.invalidModel.localizedDescription)
     }
 
     @Test("a queued blocked callback cannot overwrite a newer configuration query or its stop state")
@@ -266,27 +266,27 @@ struct CodexStreamInvalidationTests {
         let uuid = UUID().uuidString
         service.uuid = uuid
         let modeKey = CodexAccessMode.key(uuid: uuid)
-        let modelKey = CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed)
+        let modelKey = CodexServiceConfig.modelKey(uuid: uuid, mode: .managed)
         let firstModel = queryModel(text: "first")
         let secondModel = queryModel(text: "second")
         let firstResult = service.resetServiceResult()
         firstResult.isLoading = true
         Defaults[modeKey] = .managed
-        Defaults[modelKey] = CodexManagedRuntime.defaultModel
+        Defaults[modelKey] = CodexRuntime.defaultModel
         defer {
             service.cancelStream()
             CodexRequestCoordinator.shared.setAccountOperation(nil)
             Defaults.reset(modeKey, modelKey)
         }
 
-        let differentModel = CodexManagedRuntime.bundledModelNames.first {
-            $0 != CodexManagedRuntime.defaultModel
+        let differentModel = CodexRuntime.bundledModelNames.first {
+            $0 != CodexRuntime.defaultModel
         }
         #expect(differentModel != nil)
         guard let differentModel else { return }
 
         CodexRequestCoordinator.shared.setAccountOperation(.login)
-        let expectedMessage = CodexManagedError.operationInProgress(.login).localizedDescription
+        let expectedMessage = CodexServiceError.operationInProgress(.login).localizedDescription
         let callbacks = CallbackRecorder()
         let firstStart = DispatchSemaphore(value: 0)
         let serviceBox = UncheckedSendable(value: service)

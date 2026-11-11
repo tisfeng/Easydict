@@ -50,7 +50,7 @@ struct CodexComponentStoreTests {
             archiveSHA256: fault == .wrongHash ? String(repeating: "0", count: 64) : nil
         )
 
-        await #expect(throws: CodexManagedError.componentInvalid) {
+        await #expect(throws: CodexServiceError.componentInvalid) {
             try await store.install { _ in }
         }
         #expect(!FileManager.default.fileExists(atPath: store.installedDirectory.path))
@@ -85,19 +85,19 @@ struct CodexComponentStoreTests {
         let archive = try fixture.makeArchive()
         let store = fixture.store(archive: archive, downloadURL: URL(string: "http://127.0.0.1:9/package")!)
 
-        #expect(throws: CodexManagedError.componentInvalid) {
+        #expect(throws: CodexServiceError.componentInvalid) {
             try store.validateArchiveEntries(
                 names: "./bin/codex\n../outside\n",
                 details: "-rwxr-xr-x bin/codex\n-rw-r--r-- ../outside\n"
             )
         }
-        #expect(throws: CodexManagedError.componentInvalid) {
+        #expect(throws: CodexServiceError.componentInvalid) {
             try store.validateArchiveEntries(
                 names: "./bin/codex\n/absolute\n",
                 details: "-rwxr-xr-x bin/codex\n-rw-r--r-- /absolute\n"
             )
         }
-        #expect(throws: CodexManagedError.componentInvalid) {
+        #expect(throws: CodexServiceError.componentInvalid) {
             try store.validateArchiveEntries(
                 names: "./bin/codex\nhashmanifest\n",
                 details: "lrwxr-xr-x bin/codex -> /outside\n-rw-r--r-- hashmanifest\n"
@@ -115,7 +115,7 @@ struct CodexComponentStoreTests {
         let executable = installed.appendingPathComponent("bin/codex")
         try "#!/bin/sh\necho tampered\n".write(to: executable, atomically: true, encoding: .utf8)
 
-        await #expect(throws: CodexManagedError.componentInvalid) {
+        await #expect(throws: CodexServiceError.componentInvalid) {
             try await store.verifyInstalled()
         }
     }
@@ -146,7 +146,7 @@ struct CodexComponentStoreTests {
         let archive = try fixture.makeArchive()
         let server = try fixture.server(archive: archive, behavior: .normal)
         let store = fixture.store(archive: archive, downloadURL: server.url)
-        let account = CodexManagedAccount(
+        let account = CodexAccount(
             runtimeFactory: { throw ComponentManagerFixtureError.unexpectedAccountRuntimeAccess },
             coordinator: CodexRequestCoordinator()
         )
@@ -168,7 +168,7 @@ struct CodexComponentStoreTests {
             let uuid = UUID().uuidString
             installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
             defer { resetManagedConfiguration(uuid: uuid) }
-            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let configuration = CodexServiceConfig(uuid: uuid)
             let fixture = try ComponentFixture()
             let archive = try fixture.makeArchive()
             let server = try fixture.server(archive: archive, behavior: .normal)
@@ -206,7 +206,7 @@ struct CodexComponentStoreTests {
             let uuid = UUID().uuidString
             installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
             defer { resetManagedConfiguration(uuid: uuid) }
-            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let configuration = CodexServiceConfig(uuid: uuid)
             let fixture = try ComponentFixture()
             let archive = try fixture.makeArchive()
             let server = try fixture.server(archive: archive, behavior: .normal)
@@ -224,8 +224,8 @@ struct CodexComponentStoreTests {
             let statusBeforeLoss = runtimeFixture.invocationCount("status")
 
             try runtimeFixture.setSignedIn(false)
-            let translation = CodexManagedConnectionCheck()
-            await #expect(throws: CodexManagedError.loginRequired) {
+            let translation = CodexConnectionCheck()
+            await #expect(throws: CodexServiceError.loginRequired) {
                 try await translation.run(
                     prompt: "Translate Hello into Simplified Chinese.",
                     model: CodexRuntimeRelease.current.defaultModel,
@@ -257,7 +257,7 @@ struct CodexComponentStoreTests {
         let store = fixture.store(archive: archive, downloadURL: server.url)
         let gate = ComponentStoreFactoryGate()
         let calls = ComponentStoreFactoryCounter()
-        let account = CodexManagedAccount(
+        let account = CodexAccount(
             runtimeFactory: { throw ComponentManagerFixtureError.unexpectedAccountRuntimeAccess },
             coordinator: CodexRequestCoordinator()
         )
@@ -292,7 +292,7 @@ struct CodexComponentStoreTests {
         let store = fixture.store(archive: archive, downloadURL: server.url)
         let gate = ComponentStoreFactoryGate()
         let calls = ComponentStoreFactoryCounter()
-        let account = CodexManagedAccount(
+        let account = CodexAccount(
             runtimeFactory: { throw ComponentManagerFixtureError.unexpectedAccountRuntimeAccess },
             coordinator: CodexRequestCoordinator()
         )
@@ -329,7 +329,7 @@ struct CodexComponentStoreTests {
         let server = try fixture.server(archive: archive, behavior: .slow)
         let store = fixture.store(archive: archive, downloadURL: server.url)
         let calls = ComponentStoreFactoryCounter()
-        let account = CodexManagedAccount(
+        let account = CodexAccount(
             runtimeFactory: { throw ComponentManagerFixtureError.unexpectedAccountRuntimeAccess },
             coordinator: CodexRequestCoordinator()
         )
@@ -370,7 +370,7 @@ struct CodexComponentStoreTests {
                 },
                 account: runtimeFixture.account()
             )
-            let translation = CodexManagedConnectionCheck()
+            let translation = CodexConnectionCheck()
             let translationTask = Task {
                 try await translation.run(
                     prompt: "Translate Hello into Simplified Chinese.",

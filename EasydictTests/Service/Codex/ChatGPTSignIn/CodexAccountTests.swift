@@ -1,5 +1,5 @@
 //
-//  CodexManagedAccountTests.swift
+//  CodexAccountTests.swift
 //  EasydictTests
 //
 //  Created by Alfred on 2026/09/07.
@@ -10,13 +10,13 @@ import Defaults
 import Foundation
 import Testing
 
-// MARK: - CodexManagedAccountTests
+// MARK: - CodexAccountTests
 
 /// Exercises the shared-account state machine against a private, temporary CLI.
 /// No test reads real credentials or invokes the bundled Codex executable.
 @MainActor
-@Suite("Codex managed account", .serialized)
-struct CodexManagedAccountTests {
+@Suite("Codex account", .serialized)
+struct CodexAccountTests {
     @Test("a second login tap does not create another browser authorization")
     func duplicateLoginStartsOneAuthorization() async throws {
         try await withAccountFixture { fixture in
@@ -83,13 +83,13 @@ struct CodexManagedAccountTests {
             installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
             defer { resetManagedConfiguration(uuid: uuid) }
             let coordinator = CodexRequestCoordinator()
-            let account = CodexManagedAccount(
+            let account = CodexAccount(
                 runtimeFactory: { fixture.runtime() },
                 coordinator: coordinator
             )
             let resetToken = UUID()
             let finalToken = UUID()
-            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let configuration = CodexServiceConfig(uuid: uuid)
             defer {
                 coordinator.remove(resetToken)
                 coordinator.remove(finalToken)
@@ -194,7 +194,7 @@ struct CodexManagedAccountTests {
 
             #expect(!account.isSignedIn)
             #expect(accountIsSignedOut(account))
-            #expect(account.errorMessage == CodexManagedError.loginRequired.localizedDescription)
+            #expect(account.errorMessage == CodexServiceError.loginRequired.localizedDescription)
         }
     }
 
@@ -203,10 +203,10 @@ struct CodexManagedAccountTests {
         try await withAccountFixture { fixture in
             let runtime = fixture.runtime()
 
-            #expect(throws: CodexManagedError.invalidModel) {
+            #expect(throws: CodexServiceError.invalidModel) {
                 try runtime.translationArguments(model: "gpt-5.4-mini-preview", effort: nil)
             }
-            #expect(throws: CodexManagedError.invalidModel) {
+            #expect(throws: CodexServiceError.invalidModel) {
                 try runtime.translationArguments(model: "gpt-5.4-mini:unsafe", effort: nil)
             }
             let arguments = try runtime.translationArguments(model: runtime.release.defaultModel, effort: nil)
@@ -254,8 +254,8 @@ struct CodexManagedAccountTests {
                 resetManagedConfiguration(uuid: uuid)
                 resetManagedConfiguration(uuid: otherUUID)
             }
-            let configuration = CodexServiceConfiguration(uuid: uuid)
-            let otherConfiguration = CodexServiceConfiguration(uuid: otherUUID)
+            let configuration = CodexServiceConfig(uuid: uuid)
+            let otherConfiguration = CodexServiceConfig(uuid: otherUUID)
             let account = fixture.account()
 
             account.validate(configuration: configuration)
@@ -266,12 +266,12 @@ struct CodexManagedAccountTests {
             #expect(fixture.execArguments.contains("model_reasoning_effort=\"high\""))
             #expect(!account.isValidated(configuration: otherConfiguration))
 
-            Defaults[CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed)] = "gpt-5.6-luna"
-            #expect(!account.isValidated(configuration: CodexServiceConfiguration(uuid: uuid)))
-            Defaults[CodexServiceConfiguration.effortKey(uuid: uuid, mode: .managed)] = .medium
-            #expect(!account.isValidated(configuration: CodexServiceConfiguration(uuid: uuid)))
+            Defaults[CodexServiceConfig.modelKey(uuid: uuid, mode: .managed)] = "gpt-5.6-luna"
+            #expect(!account.isValidated(configuration: CodexServiceConfig(uuid: uuid)))
+            Defaults[CodexServiceConfig.effortKey(uuid: uuid, mode: .managed)] = .medium
+            #expect(!account.isValidated(configuration: CodexServiceConfig(uuid: uuid)))
             Defaults[CodexAccessMode.key(uuid: uuid)] = .localCLI
-            #expect(!account.isValidated(configuration: CodexServiceConfiguration(uuid: uuid)))
+            #expect(!account.isValidated(configuration: CodexServiceConfig(uuid: uuid)))
 
             account.configurationChanged(origin: uuid)
 
@@ -284,9 +284,9 @@ struct CodexManagedAccountTests {
         let uuid = UUID().uuidString
         installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
         defer { resetManagedConfiguration(uuid: uuid) }
-        let configuration = CodexServiceConfiguration(uuid: uuid)
+        let configuration = CodexServiceConfig(uuid: uuid)
         let gate = RuntimeFactoryGate()
-        let account = CodexManagedAccount(
+        let account = CodexAccount(
             runtimeFactory: {
                 await gate.wait()
                 throw DelayedRuntimeFailure()
@@ -296,14 +296,14 @@ struct CodexManagedAccountTests {
 
         account.validate(configuration: configuration)
         try await waitForRuntimeFactory(gate)
-        Defaults[CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed)] = "gpt-5.6-luna"
+        Defaults[CodexServiceConfig.modelKey(uuid: uuid, mode: .managed)] = "gpt-5.6-luna"
         account.configurationChanged(origin: uuid)
         await gate.release()
         try await waitForAccount { !account.isBusy }
 
         #expect(account.errorMessage == nil)
         #expect(!account.isValidated(configuration: configuration))
-        #expect(!account.isValidated(configuration: CodexServiceConfiguration(uuid: uuid)))
+        #expect(!account.isValidated(configuration: CodexServiceConfig(uuid: uuid)))
     }
 
     @Test("a corrected configuration clears an earlier manual validation failure")
@@ -314,18 +314,18 @@ struct CodexManagedAccountTests {
             defer { resetManagedConfiguration(uuid: uuid) }
             let account = fixture.account()
 
-            account.validate(configuration: CodexServiceConfiguration(uuid: uuid))
+            account.validate(configuration: CodexServiceConfig(uuid: uuid))
             try await waitForAccount { !account.isBusy }
             #expect(account.errorMessage == nil)
             #expect(account
-                .verificationError(for: CodexServiceConfiguration(uuid: uuid)) as? CodexManagedError == .invalidModel)
+                .verificationError(for: CodexServiceConfig(uuid: uuid)) as? CodexServiceError == .invalidModel)
 
             installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
             account.configurationChanged(origin: uuid)
 
             #expect(account.errorMessage == nil)
-            #expect(account.errorMessage(for: CodexServiceConfiguration(uuid: uuid)) == nil)
-            #expect(account.verificationError(for: CodexServiceConfiguration(uuid: uuid)) == nil)
+            #expect(account.errorMessage(for: CodexServiceConfig(uuid: uuid)) == nil)
+            #expect(account.verificationError(for: CodexServiceConfig(uuid: uuid)) == nil)
         }
     }
 
@@ -339,12 +339,12 @@ struct CodexManagedAccountTests {
             let uuid = UUID().uuidString
             installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
             defer { resetManagedConfiguration(uuid: uuid) }
-            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let configuration = CodexServiceConfig(uuid: uuid)
             let coordinator = CodexRequestCoordinator()
             let registration = UUID()
             let cancellation = AccountRegistrationCancellation()
-            let translation = CodexManagedConnectionCheck()
-            let account = CodexManagedAccount(
+            let translation = CodexConnectionCheck()
+            let account = CodexAccount(
                 runtimeFactory: { fixture.runtime() },
                 coordinator: coordinator
             )
@@ -396,9 +396,9 @@ struct CodexManagedAccountTests {
             let uuid = UUID().uuidString
             installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
             defer { resetManagedConfiguration(uuid: uuid) }
-            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let configuration = CodexServiceConfig(uuid: uuid)
             let coordinator = CodexRequestCoordinator()
-            let account = CodexManagedAccount(
+            let account = CodexAccount(
                 runtimeFactory: { fixture.runtime() },
                 coordinator: coordinator
             )
@@ -434,9 +434,9 @@ struct CodexManagedAccountTests {
             let uuid = UUID().uuidString
             installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
             defer { resetManagedConfiguration(uuid: uuid) }
-            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let configuration = CodexServiceConfig(uuid: uuid)
             let coordinator = CodexRequestCoordinator()
-            let account = CodexManagedAccount(
+            let account = CodexAccount(
                 runtimeFactory: { fixture.runtime() },
                 coordinator: coordinator
             )
@@ -470,9 +470,9 @@ struct CodexManagedAccountTests {
             let uuid = UUID().uuidString
             installManagedConfiguration(uuid: uuid, model: "gpt-5.5", effort: .high)
             defer { resetManagedConfiguration(uuid: uuid) }
-            let configuration = CodexServiceConfiguration(uuid: uuid)
+            let configuration = CodexServiceConfig(uuid: uuid)
             let coordinator = CodexRequestCoordinator()
-            let account = CodexManagedAccount(
+            let account = CodexAccount(
                 runtimeFactory: { fixture.runtime() },
                 coordinator: coordinator
             )
@@ -510,7 +510,7 @@ struct CodexManagedAccountTests {
     func invalidValidationSelectionsDoNotResolveRuntime() async throws {
         try await withAccountFixture(release: .modern) { fixture in
             let factoryCalls = RuntimeFactoryCallCounter()
-            let account = CodexManagedAccount(
+            let account = CodexAccount(
                 runtimeFactory: {
                     await factoryCalls.record()
                     return fixture.runtime()
@@ -526,7 +526,7 @@ struct CodexManagedAccountTests {
                 let uuid = UUID().uuidString
                 installManagedConfiguration(uuid: uuid, model: selection.model, effort: selection.effort)
                 defer { resetManagedConfiguration(uuid: uuid) }
-                let configuration = CodexServiceConfiguration(uuid: uuid)
+                let configuration = CodexServiceConfig(uuid: uuid)
 
                 account.validate(configuration: configuration)
                 try await waitForAccount { !account.isBusy }
@@ -541,9 +541,9 @@ struct CodexManagedAccountTests {
     @Test("retired models and unsupported effort fail before starting a process")
     func invalidRuntimeSelectionsDoNotStartProcesses() async throws {
         try await withAccountFixture(initiallySignedIn: true) { fixture in
-            let translation = CodexManagedConnectionCheck()
+            let translation = CodexConnectionCheck()
 
-            await #expect(throws: CodexManagedError.invalidModel) {
+            await #expect(throws: CodexServiceError.invalidModel) {
                 try await translation.run(
                     prompt: "Hello",
                     model: "gpt-5.4-mini",
@@ -551,7 +551,7 @@ struct CodexManagedAccountTests {
                     runtime: fixture.runtime()
                 )
             }
-            await #expect(throws: CodexManagedError.invalidModel) {
+            await #expect(throws: CodexServiceError.invalidModel) {
                 try await translation.run(
                     prompt: "Hello",
                     model: CodexRuntimeRelease.legacy.defaultModel,
@@ -564,9 +564,9 @@ struct CodexManagedAccountTests {
             #expect(fixture.invocationCount("exec") == 0)
         }
         try await withAccountFixture(initiallySignedIn: true, release: .modern) { fixture in
-            let translation = CodexManagedConnectionCheck()
+            let translation = CodexConnectionCheck()
 
-            await #expect(throws: CodexManagedError.invalidModel) {
+            await #expect(throws: CodexServiceError.invalidModel) {
                 try await translation.run(
                     prompt: "Hello",
                     model: CodexRuntimeRelease.modern.defaultModel,

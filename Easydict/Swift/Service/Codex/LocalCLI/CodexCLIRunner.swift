@@ -60,7 +60,7 @@ final class CodexCLIRunner: @unchecked Sendable {
             "-C", workingDirectory,
         ]
 
-        for feature in CodexLocalCLIInstallation.disabledToolFeatures {
+        for feature in CodexCLIInstallation.disabledToolFeatures {
             arguments += ["--disable", feature]
         }
 
@@ -120,12 +120,12 @@ final class CodexCLIRunner: @unchecked Sendable {
             }
 
             // Use Task.detached to break out of any inherited actor context (e.g. @MainActor).
-            // CodexLocalCLIInstallation.detectCodexBinary() spawns a login shell on the first invocation, which would
+            // CodexCLIInstallation.detectCodexBinary() spawns a login shell on the first invocation, which would
             // block the UI if scheduled on the main actor.
             Task.detached(priority: .userInitiated) { [weak self] in
                 do {
                     try CodexReasoningEffort.validateLocalOverride(reasoningEffort)
-                    let binaryPath = try CodexLocalCLIInstallation.detectCodexBinary()
+                    let binaryPath = try CodexCLIInstallation.detectCodexBinary()
                     #if AGENT_CLI_DEBUG
                     self?.logger = CodexCLILogger(command: "\(binaryPath) exec --json", prompt: prompt)
                     #endif
@@ -311,7 +311,7 @@ final class CodexCLIRunner: @unchecked Sendable {
         process.standardOutput = configuration.context.stdoutPipe
         process.standardError = configuration.context.stderrPipe
         process.currentDirectoryURL = URL(fileURLWithPath: configuration.workingDirectory)
-        process.environment = CodexLocalCLIInstallation.buildProcessEnvironment()
+        process.environment = CodexCLIInstallation.buildProcessEnvironment()
         return process
     }
 

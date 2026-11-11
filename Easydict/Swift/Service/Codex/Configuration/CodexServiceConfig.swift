@@ -1,5 +1,5 @@
 //
-//  CodexServiceConfiguration.swift
+//  CodexServiceConfig.swift
 //  Easydict
 //
 //  Created by Alfred on 2026/09/07.
@@ -9,11 +9,11 @@ import Combine
 import Defaults
 import Foundation
 
-// MARK: - CodexServiceConfiguration
+// MARK: - CodexServiceConfig
 
 /// Captures mode and model settings without invoking StreamService's model getter.
 /// Fixed storage keys keep managed settings separate from the external CLI values.
-struct CodexServiceConfiguration: Equatable {
+struct CodexServiceConfig: Equatable {
     // MARK: Lifecycle
 
     init(uuid: String) {
@@ -39,7 +39,7 @@ struct CodexServiceConfiguration: Equatable {
         case .localCLI:
             [.default] + (localModel(model, in: localModels)?.efforts.filter { $0 != .default } ?? [])
         case .managed:
-            [.default] + (CodexManagedRuntime.bundledCatalog?.models.first { $0.slug == model }?
+            [.default] + (CodexRuntime.bundledCatalog?.models.first { $0.slug == model }?
                 .supported_reasoning_levels.compactMap { CodexReasoningEffort(rawValue: $0.effort) } ?? [])
         }
     }
@@ -65,7 +65,7 @@ struct CodexServiceConfiguration: Equatable {
             mode == .managed ? .codexManagedModel : .model,
             serviceType: .codexCLI,
             id: uuid,
-            defaultValue: mode == .managed ? CodexManagedRuntime.defaultModel : ""
+            defaultValue: mode == .managed ? CodexRuntime.defaultModel : ""
         )
     }
 

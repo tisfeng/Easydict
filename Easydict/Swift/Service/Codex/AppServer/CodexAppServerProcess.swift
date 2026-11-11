@@ -13,7 +13,7 @@ import Foundation
 final class CodexAppServerProcess: @unchecked Sendable {
     // MARK: Lifecycle
 
-    init(runtime: CodexManagedRuntime?) {
+    init(runtime: CodexRuntime?) {
         self.runtime = runtime
     }
 
@@ -34,14 +34,14 @@ final class CodexAppServerProcess: @unchecked Sendable {
         if let runtime {
             process.executableURL = runtime.executable
             process.arguments = runtime.appServerArguments()
-            process.environment = CodexManagedRuntime.environment(
+            process.environment = CodexRuntime.environment(
                 home: runtime.home,
                 codexHome: runtime.codexHome,
                 executable: runtime.executable
             )
             process.currentDirectoryURL = runtime.workingDirectory
         } else {
-            try CodexLocalCLIInstallation.configureAppServer(process)
+            try CodexCLIInstallation.configureAppServer(process)
         }
         process.standardInput = context.stdinPipe
         process.standardOutput = context.stdoutPipe
@@ -65,7 +65,7 @@ final class CodexAppServerProcess: @unchecked Sendable {
         }
 
         try stateLock.withLock {
-            guard self.process == nil else { throw CodexManagedError.invalidResponse }
+            guard self.process == nil else { throw CodexServiceError.invalidResponse }
             self.process = process
         }
         do {
@@ -83,7 +83,7 @@ final class CodexAppServerProcess: @unchecked Sendable {
         data.append(0x0A)
         let handle = try stateLock.withLock { () -> FileHandle in
             guard process?.isRunning == true, let context else {
-                throw CodexManagedError.invalidResponse
+                throw CodexServiceError.invalidResponse
             }
             return context.stdinPipe.fileHandleForWriting
         }
@@ -116,7 +116,7 @@ final class CodexAppServerProcess: @unchecked Sendable {
     private static let maximumLineSize = 20 * 1024 * 1024
     private static let maximumStderrSize = 1024 * 1024
 
-    private let runtime: CodexManagedRuntime?
+    private let runtime: CodexRuntime?
     private let stateLock = NSLock()
     private let writeLock = NSLock()
     private let ioQueue = DispatchQueue(

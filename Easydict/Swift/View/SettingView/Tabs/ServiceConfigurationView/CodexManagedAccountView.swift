@@ -13,7 +13,7 @@ import SwiftUI
 struct CodexManagedAccountView: View {
     // MARK: Internal
 
-    let configuration: CodexServiceConfiguration
+    let configuration: CodexServiceConfig
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -58,7 +58,7 @@ struct CodexManagedAccountView: View {
 
     @ObservedObject private var component = CodexComponentManager.shared
 
-    @ObservedObject private var account = CodexManagedAccount.shared
+    @ObservedObject private var account = CodexAccount.shared
 
     private var origin: String { configuration.uuid }
 
