@@ -453,7 +453,6 @@
 		04466B8E004E4D1BB65A4570 /* CodexManagedAccountRecoveryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87273B83A46A4319A7995E89 /* CodexManagedAccountRecoveryTests.swift */; };
 		04D7C0A22F00000100D1C7A1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 04D7C0A12F00000100D1C7A1 /* libz.tbd */; };
 		0610BFD2DE5CD00950F314E2 /* CodexManagedTranslation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D13C01013610091563E8C33 /* CodexManagedTranslation.swift */; };
-		083DA060DE9746EBBFF81EDC /* DeepSeekOCRTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84E566B7A384AA7A6F3B8AB /* DeepSeekOCRTests.swift */; };
 		0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A057D6C2B499A000025C51D /* ServiceTab.swift */; };
 		0A057D802F7000000025C51D /* AdvancedTabAnkiSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A057D7F2F7000000025C51D /* AdvancedTabAnkiSection.swift */; };
 		0A1189A22F700001005C51D /* ServiceTabListViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1189A12F700001005C51D /* ServiceTabListViews.swift */; };
@@ -1456,7 +1455,6 @@
 		E34250B52E681A3100CEC295 /* Easydict-26.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Easydict-26.icon"; sourceTree = "<group>"; };
 		E35441A93032BEB2002DB5A6 /* Easydict-27.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Easydict-27.icon"; sourceTree = "<group>"; };
 		E54300FF4F544CC2A180FE53 /* DeviceSystemInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSystemInfo.swift; sourceTree = "<group>"; };
-		E84E566B7A384AA7A6F3B8AB /* DeepSeekOCRTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekOCRTests.swift; sourceTree = "<group>"; };
 		EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyCombo+Defaults.Serializable.swift"; sourceTree = "<group>"; };
 		EA3B81F82B5254AA004C0E8B /* Defaults.Keys+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Defaults.Keys+Extension.swift"; sourceTree = "<group>"; };
 		EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDetectOptimizeExtensions.swift; sourceTree = "<group>"; };
@@ -4019,7 +4017,6 @@
 		F2B3C1DAFB754B5693AF5102 /* DeepSeek */ = {
 			isa = PBXGroup;
 			children = (
-				E84E566B7A384AA7A6F3B8AB /* DeepSeekOCRTests.swift */,
 				91C428CF6D1245C295219E19 /* DeepSeekFormulaImageTests.swift */,
 			);
 			path = DeepSeek;
@@ -4533,7 +4530,6 @@
 				030732D42F24862A0001382A /* OCRTextProcessingTests.swift in Sources */,
 				030732D52F24862A0001382A /* OCRTestSample+Chinese.swift in Sources */,
 				030732D72F24862A0001382A /* OCRQRCodeTests.swift in Sources */,
-				083DA060DE9746EBBFF81EDC /* DeepSeekOCRTests.swift in Sources */,
 				1C647D712E6F41BEAF443672 /* DeepSeekFormulaImageTests.swift in Sources */,
 				1460E92BF8B9455E95020DA2 /* OCRStreamingTests.swift in Sources */,
 				CDA80C110000000000000001 /* OCRFormulaImageTests.swift in Sources */,
