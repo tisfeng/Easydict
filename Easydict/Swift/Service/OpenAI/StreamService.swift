@@ -617,32 +617,6 @@ public class StreamService: QueryService {
 
     // MARK: Private
 
-    private func ocrImageDataURL(_ image: NSImage) throws -> String {
-        guard let cgImage = image.toCGImage() else {
-            throw QueryError(
-                type: .parameter,
-                message: String(localized: "service.codex_cli.screenshot.encoding_failed")
-            )
-        }
-        let bitmap = NSBitmapImageRep(cgImage: cgImage)
-        let maximumBytes = 10 * 1024 * 1024
-        let png = bitmap.representation(using: .png, properties: [:])
-        if let png, png.count <= maximumBytes {
-            return "data:image/png;base64," + png.base64EncodedString()
-        }
-        let jpeg = bitmap.representation(using: .jpeg, properties: [.compressionFactor: 0.94])
-        if let jpeg, jpeg.count <= maximumBytes {
-            return "data:image/jpeg;base64," + jpeg.base64EncodedString()
-        }
-        if png == nil, jpeg == nil {
-            throw QueryError(
-                type: .parameter,
-                message: String(localized: "service.codex_cli.screenshot.encoding_failed")
-            )
-        }
-        throw QueryError(type: .parameter, message: String(localized: "service.codex_cli.screenshot.too_large"))
-    }
-
     private func remoteModelError(statusCode: Int, data: Data?) -> QueryError {
         let message = data.flatMap(remoteModelErrorMessage)?.trim()
         if let message, !message.isEmpty {
@@ -669,5 +643,35 @@ public class StreamService: QueryService {
             return nil
         }
         return String(text.prefix(300))
+    }
+}
+
+// MARK: - OCR image encoding
+
+extension StreamService {
+    private func ocrImageDataURL(_ image: NSImage) throws -> String {
+        guard let cgImage = image.toCGImage() else {
+            throw QueryError(
+                type: .parameter,
+                message: String(localized: "service.codex_cli.screenshot.encoding_failed")
+            )
+        }
+        let bitmap = NSBitmapImageRep(cgImage: cgImage)
+        let maximumBytes = 10 * 1024 * 1024
+        let png = bitmap.representation(using: .png, properties: [:])
+        if let png, png.count <= maximumBytes {
+            return "data:image/png;base64," + png.base64EncodedString()
+        }
+        let jpeg = bitmap.representation(using: .jpeg, properties: [.compressionFactor: 0.94])
+        if let jpeg, jpeg.count <= maximumBytes {
+            return "data:image/jpeg;base64," + jpeg.base64EncodedString()
+        }
+        if png == nil, jpeg == nil {
+            throw QueryError(
+                type: .parameter,
+                message: String(localized: "service.codex_cli.screenshot.encoding_failed")
+            )
+        }
+        throw QueryError(type: .parameter, message: String(localized: "service.codex_cli.screenshot.too_large"))
     }
 }

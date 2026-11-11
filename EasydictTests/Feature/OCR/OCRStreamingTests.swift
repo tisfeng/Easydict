@@ -251,9 +251,9 @@ struct OCRStreamingTests {
         let original = config.autoQueryOCRText
         config.autoQueryOCRText = false
         defer { config.autoQueryOCRText = original }
-        let base = try #require(NSClassFromString("EZBaseQueryViewController"))
+        let base: AnyClass = try #require(NSClassFromString("EZBaseQueryViewController"))
         let name = "OCRRetryProbe_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
-        let subclass = try #require(objc_allocateClassPair(base, name, 0))
+        let subclass: AnyClass = try #require(objc_allocateClassPair(base, name, 0))
         let selector = NSSelectorFromString("startOCRImage:actionType:autoQuery:")
         let originalMethod = try #require(class_getInstanceMethod(base, selector))
         var didStart = false
