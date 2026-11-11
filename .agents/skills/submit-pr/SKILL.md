@@ -27,7 +27,7 @@ PR 正文只使用 Skill 自带的 [固定模板](assets/pull_request_template.m
 
 ## 主流程
 
-1. 读取 [工作流契约](references/workflow.md)，确定英文标题、正文语言、固定正文、Issue 策略、repository
+1. 读取 [工作流契约](references/workflow.md)，确定英文标题、正文语言、固定正文、关联证据、Issue 策略、repository
    拓扑、base/head 分支与恢复规则。
 2. 记录 HEAD、当前分支和 staged、unstaged、untracked 边界。若 checkout 处于 detached 状态：
    - 根据统一命名规范获取用户明确名称或生成任务候选。
@@ -38,19 +38,23 @@ PR 正文只使用 Skill 自带的 [固定模板](assets/pull_request_template.m
    停止并提示用户新建、切换到任务分支后重新运行；即使指定了不同的 `--head-branch` 也不得继续。
    调用 Agent 不自动创建或切换分支、不在保护分支上提交。已有提交会随新分支保留，无需重复创建
    相同提交。显式 head 名称与 base/default 同名时也停止，包括 head 来自 fork 的情况。
-4. `plan` 模式运行 helper `plan` 并展示完整 PR 预览。该模式不 fetch、创建分支、写仓库文件、push
+4. `plan` 模式按第 6 步准备正文并展示完整 PR 预览。该模式不 fetch、创建分支、写仓库文件、push
    或创建 PR。缺少提交或 cached base 时报告预览缺口，不为使 plan 成功而写入。
 5. 默认或 `draft` 模式要求工作树可安全交付：
    - 存在 unstaged 或 untracked 内容时停止，不运行 `git add`。
    - 仅 staged 非空时，按宿主交付规则使用 `git-commit`；工作树干净时复用已有提交。
    - 精确 fetch base ref，检查完整 `<base-remote>/<base>..HEAD` 提交与文件范围。
      范围为空、来源不明或 HEAD 未包含 base 时停止，不自动修正历史。
-6. 根据真实范围起草 Context、Changes 和 Verification；不读取目标仓库中的
-   `pull_request_template` 文件或目录。运行 helper `plan` 并展示语言来源和完整预览。
+6. 根据真实范围补查关联 Issue 和 PR，按[截图交付流程](references/workflow.md#截图交付)主动查找并复用
+   本对话中已有的验证截图，起草 Context、Changes 和 Verification。
+   运行 helper `plan` 并展示语言来源和完整预览。
    默认模式继续；用户要求确认或暂缓时先停止。
 7. 使用相同内容运行 helper `apply`；`draft` 追加 `--draft`。helper 重新发现并校验本地/远程状态，
    精确 push，创建或复用 PR，然后读回验证身份、head SHA、title、body 和 Draft 状态。
-8. 报告 PR URL、base/head repository 与 branch、head SHA、Draft、分支/push/PR 动作和截图提醒。
+   需要补传时保留原始 apply JSON 回执和已验证正文的参数。
+   已有本次交付的已验证 PR 且正在恢复附件时，按下一步读回该 PR 并继续。
+8. 按[截图交付流程](references/workflow.md#截图交付)完成待上传的附件，复验最终正文并检查图片显示。
+   报告 PR URL、base/head repository 与 branch、head SHA、Draft、分支/push/PR 动作和截图结果。
    本轮创建提交时同时保留 `git-commit` 的完整回执。
 
 ## 安全、完成与停止
@@ -60,7 +64,8 @@ PR 正文只使用 Skill 自带的 [固定模板](assets/pull_request_template.m
 - detached checkout 只在 helper `apply` 内从冻结 HEAD 创建或复用命名分支 ref；`plan` 不创建 ref，
   `apply` 后 checkout 仍保持 detached。
 - 不自动添加 reviewer、label、milestone 或 project，不 merge PR、评论或关闭 Issue。
-- 只有 helper `apply` 返回成功且 `pr_verification.status == "passed"` 时才声称 PR 交付完成。
+- `apply` 成功且 `pr_verification.status == "passed"` 后才能报告 PR 已验证；补传截图后以
+  `plan --apply-receipt … --verify-pr …` 的最终回读结果为准。截图显示未确认或仍有缺口时明确报告。
   默认不等待 CI；仅在用户或宿主规则要求时查询或等待 checks。
 - 远程实体或已有 PR 与冻结计划不匹配、范围/身份漂移、授权被拒或写后验证失败时，
   保留已完成动作并停止；不覆盖维护者编辑、创建第二个 PR 或重复已成功的远程写入。
