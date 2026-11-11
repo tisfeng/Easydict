@@ -19,7 +19,7 @@ import SwiftUI
 struct CodexCLIServiceConfigurationView: View {
     // MARK: Lifecycle
 
-    init(service: CodexCLIService) {
+    init(service: CodexService) {
         self.service = service
         self._accessMode = .init(service.accessModeKey)
         self._managedModel = .init(service.managedModelKey)
@@ -119,7 +119,7 @@ struct CodexCLIServiceConfigurationView: View {
             guard accessMode == .localCLI else { return }
             let requestedModel = localModel
             do {
-                let discovered = try await CodexManagedAppServer.local.availableLocalModels()
+                let discovered = try await CodexAppServer.localCLI.availableLocalModels()
                 try Task.checkCancellation()
                 guard accessMode == .localCLI, localModel == requestedModel else { return }
                 localModels = discovered
@@ -136,9 +136,9 @@ struct CodexCLIServiceConfigurationView: View {
 
     // MARK: Private
 
-    @State private var localModels: [CodexManagedAppServer.LocalModel] = []
+    @State private var localModels: [CodexAppServer.LocalModel] = []
 
-    private let service: CodexCLIService
+    private let service: CodexService
     @Default private var accessMode: CodexAccessMode
     @Default private var managedModel: String
     @Default private var managedEffort: CodexReasoningEffort
@@ -218,7 +218,7 @@ private struct CodexCLIStatusRow: View {
 
     private func detect() {
         Task.detached(priority: .utility) {
-            let path = CodexCLIRunner.detectBinaryPath()
+            let path = CodexLocalCLIInstallation.detectBinaryPath()
             await MainActor.run { detectedPath = path }
         }
     }

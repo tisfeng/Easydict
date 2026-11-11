@@ -1,5 +1,5 @@
 //
-//  CodexCLIService.swift
+//  CodexService.swift
 //  Easydict
 //
 //  Created by long2ice on 2026/05/07.
@@ -11,18 +11,18 @@ import Combine
 import Defaults
 import Foundation
 
-// MARK: - CodexCLIService
+// MARK: - CodexService
 
 /// A translation service using either the bundled ChatGPT runtime or the local CLI.
 ///
 /// Both modes stream through their own App Server process with independent
 /// ephemeral threads, so there is no cross-query conversation state.
 @objc(EZCodexCLIService)
-final class CodexCLIService: StreamService {
+final class CodexService: StreamService {
     // MARK: Lifecycle
 
     deinit {
-        managedRunner?.cancel()
+        appServerRequest?.cancel()
         if let registration { CodexRequestCoordinator.shared.remove(registration) }
     }
 
@@ -56,8 +56,8 @@ final class CodexCLIService: StreamService {
 
     public override func cancelStream() {
         let current = runLock.withLock {
-            defer { managedRunner = nil }
-            return managedRunner
+            defer { appServerRequest = nil }
+            return appServerRequest
         }
         current?.cancel()
         // The base stream also calls this to release finished resources before
@@ -122,13 +122,13 @@ final class CodexCLIService: StreamService {
                 continuation.finish(throwing: error)
                 return
             }
-            let managed: CodexManagedTranslation
+            let request: CodexAppServerRequest
             do {
-                managed = try updateResultLock.withLock {
+                request = try updateResultLock.withLock {
                     guard CodexRequestCoordinator.shared.isCurrent(token) else { throw CancellationError() }
-                    let managed = CodexManagedTranslation()
-                    self.runLock.withLock { self.managedRunner = managed }
-                    return managed
+                    let request = CodexAppServerRequest()
+                    self.runLock.withLock { self.appServerRequest = request }
+                    return request
                 }
             } catch {
                 continuation.finish(throwing: error)
@@ -141,9 +141,9 @@ final class CodexCLIService: StreamService {
                             model: configuration.model, effort: configuration.effort.cliValue
                         )
                     }
-                    let runtime = configuration.mode == .managed ? try await CodexManagedAppServer.shared
+                    let runtime = configuration.mode == .managed ? try await CodexAppServer.managed
                         .runtime() : nil
-                    let response = try await managed.runUsingAppServer(
+                    let response = try await request.runUsingAppServer(
                         prompt: combinedPrompt,
                         model: configuration.model,
                         effort: configuration.effort.cliValue,
@@ -155,7 +155,7 @@ final class CodexCLIService: StreamService {
                                 continuation.yield(chunk)
                             }
                         } catch {
-                            managed.cancel()
+                            request.cancel()
                         }
                     }
                     try self.updateResultLock.withLock {
@@ -169,7 +169,7 @@ final class CodexCLIService: StreamService {
             }
             continuation.onTermination = { _ in
                 task.cancel()
-                managed.cancel()
+                request.cancel()
                 // Keep the registration until the next request or deinit: the base stream
                 // may still have queued result updates after this content stream ends.
             }
@@ -221,7 +221,7 @@ final class CodexCLIService: StreamService {
         -> String {
         let configuration = CodexServiceConfiguration(uuid: uuid)
         let coordinator = CodexRequestCoordinator.shared
-        let runner = CodexManagedTranslation()
+        let runner = CodexAppServerRequest()
         let token = UUID()
         coordinator.observe(uuid: uuid)
         defer { coordinator.remove(token) }
@@ -229,7 +229,7 @@ final class CodexCLIService: StreamService {
         if case let .blocked(reason) = admission {
             throw CodexManagedError.operationInProgress(reason)
         }
-        let runtime = configuration.mode == .managed ? try await CodexManagedAppServer.shared.runtime() : nil
+        let runtime = configuration.mode == .managed ? try await CodexAppServer.managed.runtime() : nil
         try Task.checkCancellation()
         let response = try await runner.runUsingAppServer(
             prompt: prompt,
@@ -277,7 +277,7 @@ final class CodexCLIService: StreamService {
     // MARK: Private
 
     private let runLock = NSLock()
-    private var managedRunner: CodexManagedTranslation?
+    private var appServerRequest: CodexAppServerRequest?
     private var registration: UUID?
 
     /// Rejections and execution failures use the same result identity and error boundary.
@@ -296,12 +296,12 @@ final class CodexCLIService: StreamService {
     }
 
     private func invalidateConfiguration(token: UUID, generation: UInt) {
-        let current = updateResultLock.withLock { () -> CodexManagedTranslation? in
+        let current = updateResultLock.withLock { () -> CodexAppServerRequest? in
             runLock.lock()
             defer { runLock.unlock() }
             guard registration == token else { return nil }
-            let current = managedRunner
-            managedRunner = nil
+            let current = appServerRequest
+            appServerRequest = nil
             registration = nil
             if generation == resultGeneration {
                 resultGeneration &+= 1

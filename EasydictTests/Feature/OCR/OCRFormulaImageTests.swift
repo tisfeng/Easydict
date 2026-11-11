@@ -18,7 +18,7 @@ struct OCRFormulaImageTests {
     @Test("Only explicitly supported services expose OCR")
     func advertisedOCRCapabilities() {
         #expect(AppleService.shared.supportsOCR())
-        #expect(CodexCLIService().supportsOCR())
+        #expect(CodexService().supportsOCR())
         #expect(OpenAIService().supportsOCR())
         #expect(DeepSeekService().supportsOCR())
     }

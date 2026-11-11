@@ -69,11 +69,11 @@ final class CodexManagedAccount: ObservableObject {
         originUUID = origin
         operation = Task {
             do {
-                await CodexManagedAppServer.shared.invalidate()
+                await CodexAppServer.managed.invalidate()
                 let runtime = try await runtimeFactory()
                 let status = try await runtime.command(["login", "status"], process: nextProcess())
                 try check(generation)
-                if try CodexManagedTranslation.isSignedIn(status) {
+                if try CodexManagedConnectionCheck.isSignedIn(status) {
                     authenticationState = true
                     state = .signedIn
                 } else {
@@ -92,7 +92,7 @@ final class CodexManagedAccount: ObservableObject {
                     guard result.exitCode == 0 else { throw CodexManagedError.authenticationFailed }
                     let status = try await runtime.command(["login", "status"], process: nextProcess())
                     try check(generation)
-                    guard try CodexManagedTranslation.isSignedIn(status) else {
+                    guard try CodexManagedConnectionCheck.isSignedIn(status) else {
                         throw CodexManagedError.authenticationFailed
                     }
                     authenticationState = true
@@ -170,7 +170,7 @@ final class CodexManagedAccount: ObservableObject {
     /// Component loss invalidates connection evidence, not official credentials.
     func componentUnavailable() {
         verificationResult = nil
-        Task { await CodexManagedAppServer.shared.invalidate() }
+        Task { await CodexAppServer.managed.invalidate() }
         if !isBusy { restorePresentation() }
     }
 
@@ -179,7 +179,7 @@ final class CodexManagedAccount: ObservableObject {
         let generation = begin(state: .checking, kind: .authentication(.logout))
         operation = Task {
             do {
-                await CodexManagedAppServer.shared.invalidate()
+                await CodexAppServer.managed.invalidate()
                 let runtime = try await runtimeFactory()
                 let result = try await runtime.command(["logout"], process: nextProcess())
                 try check(generation)
@@ -247,7 +247,7 @@ final class CodexManagedAccount: ObservableObject {
     private var originUUID: String?
     private var operation: Task<(), Never>?
     private var process: CodexManagedProcess?
-    private var validation: CodexManagedTranslation?
+    private var validation: CodexManagedConnectionCheck?
     private var validationConfiguration: CodexServiceConfiguration?
 
     private var authenticated: Bool { authenticationState == true }
@@ -270,7 +270,7 @@ final class CodexManagedAccount: ObservableObject {
             await previous?.value
             guard self.generation == generation else { return }
             if refreshReason != nil {
-                await CodexManagedAppServer.shared.invalidate()
+                await CodexAppServer.managed.invalidate()
                 await readStatus(generation: generation)
             } else {
                 restorePresentation()
@@ -337,7 +337,7 @@ final class CodexManagedAccount: ObservableObject {
             try check(generation)
             let output = try await runtime.command(["login", "status"], process: nextProcess())
             try check(generation)
-            authenticationState = try CodexManagedTranslation.isSignedIn(output)
+            authenticationState = try CodexManagedConnectionCheck.isSignedIn(output)
             if !authenticated { verificationResult = nil }
             accountError = nil
             restorePresentation()
@@ -373,7 +373,7 @@ final class CodexManagedAccount: ObservableObject {
         generation: UInt, runtime: CodexManagedRuntime, configuration: CodexServiceConfiguration? = nil
     ) async throws {
         state = .verifying
-        let request = CodexManagedTranslation()
+        let request = CodexManagedConnectionCheck()
         validation = request
         try check(generation)
         if let configuration {

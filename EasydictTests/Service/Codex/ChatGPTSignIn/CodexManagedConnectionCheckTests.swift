@@ -1,5 +1,5 @@
 //
-//  CodexManagedTranslationTests.swift
+//  CodexManagedConnectionCheckTests.swift
 //  EasydictTests
 //
 //  Created by Alfred on 2026/09/07.
@@ -9,11 +9,11 @@
 import Foundation
 import Testing
 
-// MARK: - CodexManagedTranslationTests
+// MARK: - CodexManagedConnectionCheckTests
 
 /// Verifies the managed parser accepts only a completed text-only terminal turn.
 @Suite("Codex managed translation")
-struct CodexManagedTranslationTests {
+struct CodexManagedConnectionCheckTests {
     @Test("accepts a completed agent message as the terminal translation")
     func acceptsCompletedTextTurn() throws {
         let output = translationOutput(lines: [
@@ -23,7 +23,7 @@ struct CodexManagedTranslationTests {
             #"{"type":"turn.completed"}"#,
         ])
 
-        let result = try CodexManagedTranslation.result(output, durationMs: 12)
+        let result = try CodexManagedConnectionCheck.result(output, durationMs: 12)
 
         #expect(result.text == "你好")
     }
@@ -41,7 +41,7 @@ struct CodexManagedTranslationTests {
             #"{"type":"turn.completed"}"#,
         ])
 
-        let result = try CodexManagedTranslation.result(output)
+        let result = try CodexManagedConnectionCheck.result(output)
 
         #expect(result.text == "你好")
     }
@@ -57,7 +57,7 @@ struct CodexManagedTranslationTests {
         ])
 
         #expect(throws: CodexManagedError.invalidResponse) {
-            try CodexManagedTranslation.result(output)
+            try CodexManagedConnectionCheck.result(output)
         }
     }
 
@@ -68,7 +68,7 @@ struct CodexManagedTranslationTests {
         ], stderr: "request failed")
 
         #expect(throws: (any Error).self) {
-            try CodexManagedTranslation.result(output)
+            try CodexManagedConnectionCheck.result(output)
         }
     }
 
@@ -81,20 +81,20 @@ struct CodexManagedTranslationTests {
         ])
 
         #expect(throws: CodexManagedError.invalidResponse) {
-            try CodexManagedTranslation.result(output)
+            try CodexManagedConnectionCheck.result(output)
         }
     }
 
     @Test("distinguishes the exact signed-out status from Keychain failures")
     func statusClassificationPreservesKeychainFailure() throws {
-        #expect(try CodexManagedTranslation.isSignedIn(statusOutput(exitCode: 1, text: "Not logged in")) == false)
+        #expect(try CodexManagedConnectionCheck.isSignedIn(statusOutput(exitCode: 1, text: "Not logged in")) == false)
 
         #expect(throws: CodexManagedError.keychainUnavailable) {
-            try CodexManagedTranslation.isSignedIn(statusOutput(exitCode: 1, text: "Keychain access denied"))
+            try CodexManagedConnectionCheck.isSignedIn(statusOutput(exitCode: 1, text: "Keychain access denied"))
         }
 
         #expect(throws: CodexManagedError.authenticationFailed) {
-            try CodexManagedTranslation.isSignedIn(statusOutput(exitCode: 0, text: "Not logged in"))
+            try CodexManagedConnectionCheck.isSignedIn(statusOutput(exitCode: 0, text: "Not logged in"))
         }
     }
 
@@ -106,7 +106,7 @@ struct CodexManagedTranslationTests {
         var receivedError: Error?
 
         do {
-            _ = try CodexManagedTranslation.result(output)
+            _ = try CodexManagedConnectionCheck.result(output)
             Issue.record("Expected managed authentication failure")
         } catch {
             receivedError = error
@@ -152,7 +152,7 @@ struct CodexManagedTranslationTests {
         for (output, expected) in cases {
             var receivedError: Error?
             do {
-                _ = try CodexManagedTranslation.result(output)
+                _ = try CodexManagedConnectionCheck.result(output)
                 Issue.record("Expected process failure")
             } catch {
                 receivedError = error

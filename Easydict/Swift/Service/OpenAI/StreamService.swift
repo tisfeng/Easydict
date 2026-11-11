@@ -452,7 +452,7 @@ public class StreamService: QueryService {
     }
 
     /// Storage key for the shared `off/high/max` reasoning effort. Named
-    /// distinctly from CodexCLIService's CLI-specific `reasoningEffortKey`,
+    /// distinctly from CodexService's CLI-specific `reasoningEffortKey`,
     /// which uses a different effort type, so the two can coexist.
     var reasoningEffortDefaultsKey: Defaults.Key<ReasoningEffort> {
         serviceDefaultsKey(.reasoningEffort, defaultValue: .off)

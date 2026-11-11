@@ -1,5 +1,5 @@
 //
-//  CodexManagedAppServer.swift
+//  CodexAppServer.swift
 //  Easydict
 //
 //  Created by Alfred on 2026/09/14.
@@ -7,17 +7,22 @@
 
 import Foundation
 
-// MARK: - CodexManagedAppServer
+// MARK: - CodexAppServer
 
 /// Reuses one application-owned Codex App Server while keeping every translation
 /// in an independent ephemeral thread. Requests are multiplexed by thread and turn
 /// identifiers so cancellation never terminates work owned by another window.
-actor CodexManagedAppServer {
+actor CodexAppServer {
     // MARK: Lifecycle
 
     private init() {}
 
     // MARK: Internal
+
+    struct Response {
+        let text: String
+        let usage: CodexTokenUsage?
+    }
 
     struct TranslationRequest: @unchecked Sendable {
         let identifier: UUID
@@ -41,8 +46,8 @@ actor CodexManagedAppServer {
         }
     }
 
-    static let shared = CodexManagedAppServer()
-    static let local = CodexManagedAppServer()
+    static let managed = CodexAppServer()
+    static let localCLI = CodexAppServer()
     static let providerID = "easydict"
 
     func runtime() async throws -> CodexManagedRuntime {
@@ -70,7 +75,7 @@ actor CodexManagedAppServer {
     }
 
     func translate(_ translation: TranslationRequest) async throws
-        -> CodexManagedTranslation.Result {
+        -> Response {
         try Task.checkCancellation()
         guard !translation.isCancelled() else { throw CancellationError() }
         let model: String
@@ -229,7 +234,7 @@ actor CodexManagedAppServer {
     private final class Session {
         // MARK: Lifecycle
 
-        init(runtime: CodexManagedRuntime?, process: CodexManagedAppServerProcess) {
+        init(runtime: CodexManagedRuntime?, process: CodexAppServerProcess) {
             self.runtime = runtime
             self.process = process
         }
@@ -238,7 +243,7 @@ actor CodexManagedAppServer {
 
         let identifier = UUID()
         let runtime: CodexManagedRuntime?
-        let process: CodexManagedAppServerProcess
+        let process: CodexAppServerProcess
         let messages = MessageChannel()
         var initialized = false
         var messageTask: Task<(), Never>?
@@ -286,8 +291,8 @@ actor CodexManagedAppServer {
         var completedText: String?
         var usage: CodexTokenUsage?
         var failure: Error?
-        var continuation: CheckedContinuation<CodexManagedTranslation.Result, Error>?
-        var completedResult: Result<CodexManagedTranslation.Result, Error>?
+        var continuation: CheckedContinuation<Response, Error>?
+        var completedResult: Result<Response, Error>?
         var timeoutTask: Task<(), Never>?
         var threadReleased = false
     }
@@ -342,7 +347,7 @@ actor CodexManagedAppServer {
     }
 }
 
-extension CodexManagedAppServer {
+extension CodexAppServer {
     private static func translationError(_ message: String?) -> Error {
         guard let message = message?.trimmingCharacters(in: .whitespacesAndNewlines),
               !message.isEmpty
@@ -383,7 +388,7 @@ extension CodexManagedAppServer {
         }
         if session != nil { stopSession(error: CancellationError()) }
 
-        let process = CodexManagedAppServerProcess(runtime: runtime)
+        let process = CodexAppServerProcess(runtime: runtime)
         let session = Session(runtime: runtime, process: process)
         self.session = session
         cachedRuntime = runtime
@@ -604,7 +609,7 @@ extension CodexManagedAppServer {
             fail(state, error: CodexManagedError.invalidResponse, session: session)
             return
         }
-        let result = CodexManagedTranslation.Result(
+        let result = Response(
             text: finalText,
             usage: state.usage.map {
                 CodexTokenUsage(
@@ -620,7 +625,7 @@ extension CodexManagedAppServer {
     }
 
     private func result(for state: TranslationState) async throws
-        -> CodexManagedTranslation.Result {
+        -> Response {
         if let completedResult = state.completedResult {
             discard(state, releaseThread: false)
             return try completedResult.get()
@@ -684,7 +689,7 @@ extension CodexManagedAppServer {
 
     private func finish(
         _ state: TranslationState,
-        result: Result<CodexManagedTranslation.Result, Error>,
+        result: Result<Response, Error>,
         releaseThread: Bool
     ) {
         guard translations[state.identifier] === state else { return }

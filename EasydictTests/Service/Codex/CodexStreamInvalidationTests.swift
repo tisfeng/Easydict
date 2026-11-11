@@ -163,7 +163,7 @@ struct CodexStreamInvalidationTests {
 
     @Test("an invalid managed model fails before authentication and stays registered for configuration invalidation")
     func invalidManagedModelRetainsRegistrationUntilConfigurationChanges() async throws {
-        let service = CodexCLIService()
+        let service = CodexService()
         let uuid = UUID().uuidString
         service.uuid = uuid
         let modeKey = CodexAccessMode.key(uuid: uuid)
@@ -209,7 +209,7 @@ struct CodexStreamInvalidationTests {
     func accountTransitionReportsReadableManagedQueryError(
         operation: CodexAccountOperation
     ) async throws {
-        let service = CodexCLIService()
+        let service = CodexService()
         let uuid = UUID().uuidString
         service.uuid = uuid
         let modeKey = CodexAccessMode.key(uuid: uuid)
@@ -262,7 +262,7 @@ struct CodexStreamInvalidationTests {
 
     @Test("a queued blocked callback cannot overwrite a newer configuration query or its stop state")
     func queuedBlockedCallbackCannotOverwriteNewerConfigurationQuery() async throws {
-        let service = CodexCLIService()
+        let service = CodexService()
         let uuid = UUID().uuidString
         service.uuid = uuid
         let modeKey = CodexAccessMode.key(uuid: uuid)

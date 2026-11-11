@@ -19,7 +19,7 @@ struct CodexFormulaImageTests {
     @Test
     func testRecognizesFormulaImage() async throws {
         let image = try NSImage.loadTestImage(named: "ocr-en-formula.png")
-        let service = CodexCLIService()
+        let service = CodexService()
         let selected = try await configuredLocalModel()
         #expect(selected.acceptsImages)
         #expect(selected.efforts.contains(.low))
@@ -60,7 +60,7 @@ struct CodexFormulaImageTests {
     @Test
     @MainActor
     func testStreamsTranslationAndRendersClosedFormula() async throws {
-        let service = CodexCLIService()
+        let service = CodexService()
         let selected = try await configuredLocalModel()
         service.uuid = UUID().uuidString
         let modeKey = CodexAccessMode.key(uuid: service.uuid)
@@ -112,9 +112,9 @@ struct CodexFormulaImageTests {
 
     // MARK: Private
 
-    private func configuredLocalModel() async throws -> CodexManagedAppServer.LocalModel {
-        let server = CodexManagedAppServer.local
-        let models: [CodexManagedAppServer.LocalModel]
+    private func configuredLocalModel() async throws -> CodexAppServer.LocalModel {
+        let server = CodexAppServer.localCLI
+        let models: [CodexAppServer.LocalModel]
         do {
             try await server.requireLocalAccountIfNeeded()
             models = try await server.availableLocalModels()

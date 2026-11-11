@@ -1,5 +1,5 @@
 //
-//  CodexCLIServiceTests.swift
+//  CodexServiceTests.swift
 //  EasydictTests
 //
 //  Created by long2ice on 2026/05/07.
@@ -11,46 +11,46 @@ import Defaults
 import Foundation
 import Testing
 
-// MARK: - CodexCLIServiceTests
+// MARK: - CodexServiceTests
 
-@Suite("CodexCLIService", .serialized)
-struct CodexCLIServiceTests {
+@Suite("CodexService", .serialized)
+struct CodexServiceTests {
     @Test("serviceType returns .codexCLI")
     func serviceType() {
-        let service = CodexCLIService()
+        let service = CodexService()
         #expect(service.serviceType() == .codexCLI)
     }
 
     @Test("apiKeyRequirement returns .agentCLI")
     func apiKeyRequirement() {
-        let service = CodexCLIService()
+        let service = CodexService()
         #expect(service.apiKeyRequirement() == .agentCLI)
     }
 
     @Test("hasPrivateAPIKey returns false when no API key is configured")
     func hasPrivateAPIKey() {
-        let service = CodexCLIService()
+        let service = CodexService()
         #expect(service.hasPrivateAPIKey() == false)
     }
 
     @Test("isStream returns true")
     func isStream() {
-        let service = CodexCLIService()
+        let service = CodexService()
         #expect(service.isStream() == true)
     }
 
     @Test("name returns non-empty string")
     func serviceName() {
-        let service = CodexCLIService()
+        let service = CodexService()
         #expect(!service.name().isEmpty)
     }
 
-    @Test("QueryServiceFactory registers CodexCLIService")
+    @Test("QueryServiceFactory registers CodexService")
     func factoryRegistration() {
         let service = QueryServiceFactory.shared.service(
             withTypeId: ServiceType.codexCLI.rawValue
         )
-        #expect(service is CodexCLIService)
+        #expect(service is CodexService)
     }
 
     @Test("local CLI reasoning effort options stay separate from managed values")
@@ -74,7 +74,7 @@ struct CodexCLIServiceTests {
 
     @Test("Local reasoning options follow the selected live model, including default and Max")
     func localModelReasoningCapabilities() {
-        let models: [CodexManagedAppServer.LocalModel] = [
+        let models: [CodexAppServer.LocalModel] = [
             .init(
                 identifier: "vision-fast",
                 isDefault: true,
@@ -114,7 +114,7 @@ struct CodexCLIServiceTests {
 
     @Test("current model interface follows the active mode without rewriting saved selections")
     func currentModelInterfaceFollowsActiveMode() {
-        let service = CodexCLIService()
+        let service = CodexService()
         let uuid = UUID().uuidString
         service.uuid = uuid
         let streamService: StreamService = service
@@ -152,7 +152,7 @@ struct CodexCLIServiceTests {
         #expect(Defaults[managedModelKey] == bundledModel)
 
         Defaults[modeKey] = .localCLI
-        let secondService = CodexCLIService()
+        let secondService = CodexService()
         secondService.uuid = uuid
         #expect(streamService.model == localModel)
         #expect(secondService.model == localModel)
@@ -166,7 +166,7 @@ struct CodexCLIServiceTests {
     @MainActor
     @Test("queued local model update cannot auto-query after switching to managed mode")
     func queuedLocalModelUpdateCannotAutoQueryAfterModeSwitch() async throws {
-        let service = CodexCLIService()
+        let service = CodexService()
         let uuid = UUID().uuidString
         service.uuid = uuid
         let modeKey = CodexAccessMode.key(uuid: uuid)

@@ -224,7 +224,7 @@ struct CodexComponentStoreTests {
             let statusBeforeLoss = runtimeFixture.invocationCount("status")
 
             try runtimeFixture.setSignedIn(false)
-            let translation = CodexManagedTranslation()
+            let translation = CodexManagedConnectionCheck()
             await #expect(throws: CodexManagedError.loginRequired) {
                 try await translation.run(
                     prompt: "Translate Hello into Simplified Chinese.",
@@ -370,7 +370,7 @@ struct CodexComponentStoreTests {
                 },
                 account: runtimeFixture.account()
             )
-            let translation = CodexManagedTranslation()
+            let translation = CodexManagedConnectionCheck()
             let translationTask = Task {
                 try await translation.run(
                     prompt: "Translate Hello into Simplified Chinese.",
@@ -549,7 +549,7 @@ private final class ComponentFixture {
     private func runtimeCatalogURL() -> URL {
         URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-            .deletingLastPathComponent()
+            .deletingLastPathComponent().deletingLastPathComponent()
             .appendingPathComponent("scripts/codex-runtime/0.134.0/translation-models.json")
     }
 }

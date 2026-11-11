@@ -1,5 +1,5 @@
 //
-//  CodexCLIEventParser.swift
+//  CodexExecEventParser.swift
 //  Easydict
 //
 //  Created by long2ice on 2026/05/07.

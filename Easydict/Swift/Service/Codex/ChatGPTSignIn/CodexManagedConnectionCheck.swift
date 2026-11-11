@@ -1,5 +1,5 @@
 //
-//  CodexManagedTranslation.swift
+//  CodexManagedConnectionCheck.swift
 //  Easydict
 //
 //  Created by Alfred on 2026/09/07.
@@ -7,10 +7,8 @@
 
 import Foundation
 
-/// Performs an authenticated managed translation and validates its terminal output.
-/// Production translations use an isolated thread on the shared App Server; the
-/// one-shot exec path remains available for connection validation.
-final class CodexManagedTranslation: @unchecked Sendable {
+/// Runs and validates the one-shot translation used to check a managed connection.
+final class CodexManagedConnectionCheck: @unchecked Sendable {
     // MARK: Internal
 
     /// Holds only a completed translation and its reported usage.
@@ -122,58 +120,11 @@ final class CodexManagedTranslation: @unchecked Sendable {
         return try Self.result(output, durationMs: Int(Date().timeIntervalSince(started) * 1000))
     }
 
-    /// Streams one translation through the shared process without sharing thread state.
-    func runUsingAppServer(
-        prompt: String,
-        model: String,
-        effort: String?,
-        runtime: CodexManagedRuntime?,
-        imageURL: String? = nil,
-        deltaReceived: @escaping @Sendable (String) -> ()
-    ) async throws
-        -> Result {
-        let server = runtime == nil ? CodexManagedAppServer.local : CodexManagedAppServer.shared
-        let requestID = try lock.withLock { () -> UUID in
-            if cancelled { throw CancellationError() }
-            let requestID = UUID()
-            appServerRequest = (requestID, server)
-            return requestID
-        }
-        return try await withTaskCancellationHandler {
-            do {
-                let result = try await server.translate(
-                    CodexManagedAppServer.TranslationRequest(
-                        identifier: requestID,
-                        prompt: prompt,
-                        model: model,
-                        effort: effort,
-                        runtime: runtime,
-                        imageURL: imageURL,
-                        isCancelled: { [weak self] in self?.isCancelled ?? true },
-                        deltaReceived: deltaReceived
-                    )
-                )
-                clearAppServerRequest(requestID)
-                return result
-            } catch {
-                clearAppServerRequest(requestID)
-                if runtime == nil, error as? CodexManagedError == .loginRequired {
-                    throw CodexCLIError.notLoggedIn
-                }
-                throw error
-            }
-        } onCancel: { [weak self] in
-            self?.cancelAppServerRequest(requestID)
-        }
-    }
-
     func cancel() {
-        let request = lock.withLock {
+        lock.withLock {
             cancelled = true
             process?.cancel()
-            return appServerRequest
         }
-        if let request { Task { await request.server.cancel(request.id) } }
     }
 
     // MARK: Private
@@ -181,22 +132,6 @@ final class CodexManagedTranslation: @unchecked Sendable {
     private let lock = NSLock()
     private var cancelled = false
     private var process: CodexManagedProcess?
-    private var appServerRequest: (id: UUID, server: CodexManagedAppServer)?
-
-    private var isCancelled: Bool { lock.withLock { cancelled } }
-
-    private func clearAppServerRequest(_ requestID: UUID) {
-        lock.withLock {
-            if appServerRequest?.id == requestID { appServerRequest = nil }
-        }
-    }
-
-    private func cancelAppServerRequest(_ requestID: UUID) {
-        let request = lock.withLock { appServerRequest }
-        if let request, request.id == requestID {
-            Task { await request.server.cancel(requestID) }
-        }
-    }
 
     private func nextProcess() throws -> CodexManagedProcess {
         try lock.withLock {

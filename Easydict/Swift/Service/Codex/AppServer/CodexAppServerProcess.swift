@@ -1,5 +1,5 @@
 //
-//  CodexManagedAppServerProcess.swift
+//  CodexAppServerProcess.swift
 //  Easydict
 //
 //  Created by Alfred on 2026/09/14.
@@ -8,9 +8,9 @@
 import Foundation
 
 /// Owns one long-lived Codex App Server process and its JSONL transport.
-/// Protocol interpretation stays in `CodexManagedAppServer`; this type only
+/// Protocol interpretation stays in `CodexAppServer`; this type only
 /// frames stdout, bounds diagnostic buffers and serializes stdin writes.
-final class CodexManagedAppServerProcess: @unchecked Sendable {
+final class CodexAppServerProcess: @unchecked Sendable {
     // MARK: Lifecycle
 
     init(runtime: CodexManagedRuntime?) {
@@ -41,7 +41,7 @@ final class CodexManagedAppServerProcess: @unchecked Sendable {
             )
             process.currentDirectoryURL = runtime.workingDirectory
         } else {
-            try configureLocalProcess(process)
+            try CodexLocalCLIInstallation.configureAppServer(process)
         }
         process.standardInput = context.stdinPipe
         process.standardOutput = context.stdoutPipe
@@ -127,25 +127,6 @@ final class CodexManagedAppServerProcess: @unchecked Sendable {
     private var context: Context?
     private var messageReceived: (@Sendable (Data) -> ())?
     private var terminationReceived: (@Sendable (Data) -> ())?
-
-    /// Reuse the installed CLI's account, provider and environment.
-    private func configureLocalProcess(_ process: Process) throws {
-        let executable = try CodexCLIRunner.detectCodexBinary()
-        var environment = CodexCLIRunner.buildProcessEnvironment()
-        environment["RUST_LOG"] = "off"
-        process.executableURL = URL(fileURLWithPath: executable)
-        process.environment = environment
-        process.currentDirectoryURL = FileManager.default.temporaryDirectory
-        process.arguments = [
-            "app-server", "--listen", "stdio://",
-            "-c", #"history.persistence="none""#,
-            "-c", #"web_search="disabled""#,
-            "-c", "mcp_servers={}",
-            "-c", "project_doc_max_bytes=0",
-            "-c", "analytics.enabled=false",
-            "-c", "feedback.enabled=false",
-        ] + CodexCLIRunner.disabledToolFeatures.flatMap { ["--disable", $0] }
-    }
 
     private func appendStdout(_ data: Data) {
         guard let context else { return }

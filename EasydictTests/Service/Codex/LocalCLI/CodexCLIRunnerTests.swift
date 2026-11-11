@@ -362,32 +362,32 @@ struct CodexCLIRunnerTests {
 
     @Test("resolveLoginShellPath accepts executable absolute shell")
     func resolveLoginShellPathAcceptsExecutableAbsolute() {
-        let shell = CodexCLIRunner.resolveLoginShellPath(environmentShell: "/bin/sh")
+        let shell = CodexLocalCLIInstallation.resolveLoginShellPath(environmentShell: "/bin/sh")
         #expect(shell == "/bin/sh")
     }
 
     @Test("resolveLoginShellPath falls back for non-absolute values")
     func resolveLoginShellPathFallsBackForNonAbsolute() {
-        let shell = CodexCLIRunner.resolveLoginShellPath(environmentShell: "fish")
+        let shell = CodexLocalCLIInstallation.resolveLoginShellPath(environmentShell: "fish")
         #expect(shell == "/bin/zsh")
     }
 
     @Test("resolveLoginShellPath falls back for non-executable absolute paths")
     func resolveLoginShellPathFallsBackForNonExecutable() {
-        let shell = CodexCLIRunner.resolveLoginShellPath(environmentShell: "/tmp/not-a-shell")
+        let shell = CodexLocalCLIInstallation.resolveLoginShellPath(environmentShell: "/tmp/not-a-shell")
         #expect(shell == "/bin/zsh")
     }
 
     @Test("runWhich finds /bin/sh which always exists on macOS")
     func runWhichFindsShell() {
-        let path = CodexCLIRunner.runWhich("sh")
+        let path = CodexLocalCLIInstallation.runWhich("sh")
         #expect(path != nil)
         #expect(path?.contains("/sh") == true)
     }
 
     @Test("runWhich returns nil for a binary that does not exist")
     func runWhichMissingBinary() {
-        let path = CodexCLIRunner.runWhich("__nonexistent_codex_xyz__")
+        let path = CodexLocalCLIInstallation.runWhich("__nonexistent_codex_xyz__")
         #expect(path == nil)
     }
 

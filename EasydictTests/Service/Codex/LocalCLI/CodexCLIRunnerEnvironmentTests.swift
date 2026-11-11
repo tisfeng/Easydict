@@ -25,7 +25,7 @@ struct CodexCLIRunnerEnvironmentTests {
 
     @Test("buildProcessEnvironment merges login-shell PATH after inherited PATH")
     func buildEnvMergesLoginShellPath() {
-        let env = CodexCLIRunner.buildProcessEnvironment(
+        let env = CodexLocalCLIInstallation.buildProcessEnvironment(
             inheritedEnvironment: ["PATH": "/usr/bin:/bin", "FOO": "bar"],
             loginShellEnvironment: ["PATH": "/opt/homebrew/bin:/usr/local/bin"]
         )
@@ -35,7 +35,7 @@ struct CodexCLIRunnerEnvironmentTests {
 
     @Test("buildProcessEnvironment dedupes entries shared by inherited and login-shell PATH")
     func buildEnvDedupesPathEntries() {
-        let env = CodexCLIRunner.buildProcessEnvironment(
+        let env = CodexLocalCLIInstallation.buildProcessEnvironment(
             inheritedEnvironment: ["PATH": "/usr/bin:/opt/homebrew/bin"],
             loginShellEnvironment: ["PATH": "/opt/homebrew/bin:/usr/local/bin"]
         )
@@ -44,7 +44,7 @@ struct CodexCLIRunnerEnvironmentTests {
 
     @Test("buildProcessEnvironment leaves PATH unchanged when login-shell PATH is nil")
     func buildEnvKeepsInheritedPathWhenLoginShellMissing() {
-        let env = CodexCLIRunner.buildProcessEnvironment(
+        let env = CodexLocalCLIInstallation.buildProcessEnvironment(
             inheritedEnvironment: ["PATH": "/usr/bin:/bin"],
             loginShellEnvironment: nil
         )
@@ -53,7 +53,7 @@ struct CodexCLIRunnerEnvironmentTests {
 
     @Test("buildProcessEnvironment uses login-shell PATH when inherited has none")
     func buildEnvUsesLoginShellPathWhenMissingInherited() {
-        let env = CodexCLIRunner.buildProcessEnvironment(
+        let env = CodexLocalCLIInstallation.buildProcessEnvironment(
             inheritedEnvironment: ["FOO": "bar"],
             loginShellEnvironment: ["PATH": "/opt/homebrew/bin"]
         )
@@ -63,7 +63,7 @@ struct CodexCLIRunnerEnvironmentTests {
 
     @Test("buildProcessEnvironment omits PATH when both sources are nil or empty")
     func buildEnvOmitsPathWhenBothSourcesAbsent() {
-        let env = CodexCLIRunner.buildProcessEnvironment(
+        let env = CodexLocalCLIInstallation.buildProcessEnvironment(
             inheritedEnvironment: ["FOO": "bar"],
             loginShellEnvironment: nil
         )
@@ -73,7 +73,7 @@ struct CodexCLIRunnerEnvironmentTests {
 
     @Test("buildProcessEnvironment fills allowlisted login-shell variables")
     func buildEnvFillsAllowlistedLoginShellVariables() {
-        let env = CodexCLIRunner.buildProcessEnvironment(
+        let env = CodexLocalCLIInstallation.buildProcessEnvironment(
             inheritedEnvironment: ["PATH": "/usr/bin", "FOO": "bar"],
             loginShellEnvironment: [
                 "PATH": "/opt/homebrew/bin",
@@ -116,7 +116,7 @@ struct CodexCLIRunnerEnvironmentTests {
 
     @Test("buildProcessEnvironment keeps inherited values before login-shell values")
     func buildEnvKeepsInheritedAllowlistedValues() {
-        let env = CodexCLIRunner.buildProcessEnvironment(
+        let env = CodexLocalCLIInstallation.buildProcessEnvironment(
             inheritedEnvironment: [
                 "OPENAI_API_KEY": "parent-key",
                 "CODEX_API_KEY": "parent-codex-key",
@@ -151,7 +151,7 @@ struct CodexCLIRunnerEnvironmentTests {
 
     @Test("loginShellEnvironmentCommand sources zshrc before env sentinels")
     func loginShellEnvironmentCommandSourcesZshrc() {
-        let command = CodexCLIRunner.loginShellEnvironmentCommand(shellPath: "/bin/zsh")
+        let command = CodexLocalCLIInstallation.loginShellEnvironmentCommand(shellPath: "/bin/zsh")
 
         #expect(command.contains(#". "$HOME/.zshrc" >/dev/null 2>/dev/null"#))
         for key in codexCredentialEnvironmentKeys {
@@ -165,7 +165,7 @@ struct CodexCLIRunnerEnvironmentTests {
 
     @Test("loginShellEnvironmentCommand sources bashrc before env sentinels")
     func loginShellEnvironmentCommandSourcesBashrc() {
-        let command = CodexCLIRunner.loginShellEnvironmentCommand(shellPath: "/bin/bash")
+        let command = CodexLocalCLIInstallation.loginShellEnvironmentCommand(shellPath: "/bin/bash")
 
         #expect(command.contains(#". "$HOME/.bashrc" >/dev/null 2>/dev/null"#))
         #expect(!command.contains(".zshrc"))
@@ -177,7 +177,7 @@ struct CodexCLIRunnerEnvironmentTests {
 
     @Test("loginShellEnvironmentCommand does not source rc for unknown shells")
     func loginShellEnvironmentCommandSkipsUnknownShellRc() {
-        let command = CodexCLIRunner.loginShellEnvironmentCommand(shellPath: "/usr/local/bin/fish")
+        let command = CodexLocalCLIInstallation.loginShellEnvironmentCommand(shellPath: "/usr/local/bin/fish")
 
         #expect(!command.contains(".zshrc"))
         #expect(!command.contains(".bashrc"))
@@ -186,7 +186,7 @@ struct CodexCLIRunnerEnvironmentTests {
 
     @Test("mergePathEntries trims empty colon-separated segments")
     func mergePathEntriesTrimsEmptySegments() {
-        let merged = CodexCLIRunner.mergePathEntries("/usr/bin::/bin", ":/opt/homebrew/bin:")
+        let merged = CodexLocalCLIInstallation.mergePathEntries("/usr/bin::/bin", ":/opt/homebrew/bin:")
         #expect(merged == "/usr/bin:/bin:/opt/homebrew/bin")
     }
 
@@ -204,7 +204,7 @@ struct CodexCLIRunnerEnvironmentTests {
             ],
             banner: "Welcome to my zsh init\nSourcing oh-my-zsh plugins..."
         )
-        let env = CodexCLIRunner.extractLoginShellEnvironment(from: stdout)
+        let env = CodexLocalCLIInstallation.extractLoginShellEnvironment(from: stdout)
         #expect(env?["PATH"] == "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin")
         #expect(env?["OPENAI_API_KEY"] == "sk-test=value")
         #expect(env?["CODEX_API_KEY"] == "codex-test-key")
@@ -214,13 +214,13 @@ struct CodexCLIRunnerEnvironmentTests {
 
     @Test("extractLoginShellEnvironment returns nil when sentinels are missing")
     func extractEnvironmentMissingSentinels() {
-        #expect(CodexCLIRunner.extractLoginShellEnvironment(from: "PATH=/usr/bin:/bin") == nil)
+        #expect(CodexLocalCLIInstallation.extractLoginShellEnvironment(from: "PATH=/usr/bin:/bin") == nil)
     }
 
     @Test("extractLoginShellEnvironment returns nil when only one sentinel is present")
     func extractEnvironmentOnlyOneSentinel() {
         let stdout = "noise __EZ_CODEX_ENV_BEGIN__ PATH=/usr/bin"
-        #expect(CodexCLIRunner.extractLoginShellEnvironment(from: stdout) == nil)
+        #expect(CodexLocalCLIInstallation.extractLoginShellEnvironment(from: stdout) == nil)
     }
 
     @Test("extractLoginShellEnvironment ignores non-allowlisted variables")
@@ -229,7 +229,7 @@ struct CodexCLIRunnerEnvironmentTests {
             "SHELL=/bin/zsh",
             "HOME=/Users/test",
         ])
-        let env = CodexCLIRunner.extractLoginShellEnvironment(from: stdout)
+        let env = CodexLocalCLIInstallation.extractLoginShellEnvironment(from: stdout)
         #expect(env?.isEmpty == true)
     }
 
@@ -239,7 +239,7 @@ struct CodexCLIRunnerEnvironmentTests {
             "CODEX_HOME=/Users/test/Codex Home",
             "PATH=/Applications/Some Tool.app/Contents/MacOS:/usr/bin",
         ])
-        let env = CodexCLIRunner.extractLoginShellEnvironment(from: stdout)
+        let env = CodexLocalCLIInstallation.extractLoginShellEnvironment(from: stdout)
         #expect(env?["CODEX_HOME"] == "/Users/test/Codex Home")
         #expect(env?["PATH"] == "/Applications/Some Tool.app/Contents/MacOS:/usr/bin")
     }

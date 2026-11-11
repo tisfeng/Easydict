@@ -343,7 +343,7 @@ struct CodexManagedAccountTests {
             let coordinator = CodexRequestCoordinator()
             let registration = UUID()
             let cancellation = AccountRegistrationCancellation()
-            let translation = CodexManagedTranslation()
+            let translation = CodexManagedConnectionCheck()
             let account = CodexManagedAccount(
                 runtimeFactory: { fixture.runtime() },
                 coordinator: coordinator
@@ -541,7 +541,7 @@ struct CodexManagedAccountTests {
     @Test("retired models and unsupported effort fail before starting a process")
     func invalidRuntimeSelectionsDoNotStartProcesses() async throws {
         try await withAccountFixture(initiallySignedIn: true) { fixture in
-            let translation = CodexManagedTranslation()
+            let translation = CodexManagedConnectionCheck()
 
             await #expect(throws: CodexManagedError.invalidModel) {
                 try await translation.run(
@@ -564,7 +564,7 @@ struct CodexManagedAccountTests {
             #expect(fixture.invocationCount("exec") == 0)
         }
         try await withAccountFixture(initiallySignedIn: true, release: .modern) { fixture in
-            let translation = CodexManagedTranslation()
+            let translation = CodexManagedConnectionCheck()
 
             await #expect(throws: CodexManagedError.invalidModel) {
                 try await translation.run(

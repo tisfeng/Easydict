@@ -63,7 +63,7 @@ final class AccountFixture {
         )
         let catalog = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-            .deletingLastPathComponent()
+            .deletingLastPathComponent().deletingLastPathComponent()
             .appendingPathComponent("scripts/codex-runtime/\(release.rawValue)/translation-models.json")
         try FileManager.default.copyItem(at: catalog, to: directory.appendingPathComponent("translation-models.json"))
         if initiallySignedIn { FileManager.default.createFile(atPath: stateFile.path, contents: Data()) }
