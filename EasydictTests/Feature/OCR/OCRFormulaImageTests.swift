@@ -21,7 +21,7 @@ struct OCRFormulaImageTests {
         #expect(AppleService.shared.supportsOCR())
         #expect(CodexCLIService().supportsOCR())
         #expect(OpenAIService().supportsOCR())
-        #expect(!DeepSeekService().supportsOCR())
+        #expect(DeepSeekService().supportsOCR())
     }
 }
 

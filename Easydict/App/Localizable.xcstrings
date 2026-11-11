@@ -16229,6 +16229,53 @@
         }
       }
     },
+    "service.deepseek.ocr.image_model_required" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepSeek OCR requires an image-capable Flash model. Choose deepseek-flash in the DeepSeek service settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El OCR de DeepSeek requiere un modelo Flash compatible con imágenes. Selecciona deepseek-flash en los ajustes del servicio DeepSeek."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepSeek OCR には画像対応の Flash モデルが必要です。DeepSeek サービス設定で deepseek-flash を選択してください。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR DeepSeek vyžaduje model Flash s podporou obrázkov. V nastaveniach služby DeepSeek vyberte deepseek-flash."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepSeek OCR کے لیے تصاویر قبول کرنے والا Flash ماڈل درکار ہے۔ DeepSeek سروس کی ترتیبات میں deepseek-flash منتخب کریں۔"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepSeek OCR 需要支持图片的 Flash 模型，请在 DeepSeek 服务设置中选择 deepseek-flash。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DeepSeek OCR 需要支援圖片的 Flash 模型，請在 DeepSeek 服務設定中選擇 deepseek-flash。"
+          }
+        }
+      }
+    },
     "service.github_copilot.catalog.default_model" : {
       "localizations" : {
         "en" : {
@@ -21131,43 +21178,43 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Applies to screenshot translation, clipboard images, and silent screenshot OCR. Codex and OpenAI require a vision-capable model. Images are sent to the selected provider."
+            "value" : "Applies to screenshot translation, clipboard images, and silent screenshot OCR. Codex, OpenAI, and DeepSeek require a vision-capable model. Images are sent to the selected provider."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Se aplica a la traducción de capturas e imágenes del portapapeles y al OCR silencioso. Codex y OpenAI requieren un modelo compatible con imágenes. Las imágenes se envían al proveedor seleccionado."
+            "value" : "Se aplica a la traducción de capturas e imágenes del portapapeles y al OCR silencioso. Codex, OpenAI y DeepSeek requieren un modelo compatible con imágenes. Las imágenes se envían al proveedor seleccionado."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "スクリーンショット翻訳、クリップボード画像の翻訳、サイレント OCR に適用されます。Codex と OpenAI には画像対応モデルが必要です。画像は選択したプロバイダーに送信されます。"
+            "value" : "スクリーンショット翻訳、クリップボード画像の翻訳、サイレント OCR に適用されます。Codex、OpenAI、DeepSeek には画像対応モデルが必要です。画像は選択したプロバイダーに送信されます。"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Platí pre preklad snímok obrazovky a obrázkov zo schránky aj pre tiché OCR snímok. Codex a OpenAI vyžadujú model s podporou obrázkov. Obrázky sa odošlú vybranému poskytovateľovi."
+            "value" : "Platí pre preklad snímok obrazovky a obrázkov zo schránky aj pre tiché OCR snímok. Codex, OpenAI a DeepSeek vyžadujú model s podporou obrázkov. Obrázky sa odošlú vybranému poskytovateľovi."
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اسکرین شاٹ کے ترجمے، کلپ بورڈ کی تصاویر اور خاموش اسکرین شاٹ OCR پر لاگو ہوتا ہے۔ Codex اور OpenAI کے لیے تصاویر قبول کرنے والا ماڈل درکار ہے۔ تصاویر منتخب فراہم کنندہ کو بھیجی جاتی ہیں۔"
+            "value" : "اسکرین شاٹ کے ترجمے، کلپ بورڈ کی تصاویر اور خاموش اسکرین شاٹ OCR پر لاگو ہوتا ہے۔ Codex، OpenAI اور DeepSeek کے لیے تصاویر قبول کرنے والا ماڈل درکار ہے۔ تصاویر منتخب فراہم کنندہ کو بھیجی جاتی ہیں۔"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用于截图翻译、剪贴板图片和静默截图 OCR。Codex 和 OpenAI 需要支持图片的模型，图片会发送给所选服务。"
+            "value" : "用于截图翻译、剪贴板图片和静默截图 OCR。Codex、OpenAI 和 DeepSeek 需要支持图片的模型，图片会发送给所选服务。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用於截圖翻譯、剪貼簿圖片和靜默截圖 OCR。Codex 和 OpenAI 需要支援圖片的模型，圖片會傳送給所選服務。"
+            "value" : "用於截圖翻譯、剪貼簿圖片和靜默截圖 OCR。Codex、OpenAI 和 DeepSeek 需要支援圖片的模型，圖片會傳送給所選服務。"
           }
         }
       }

@@ -1,0 +1,23 @@
+{
+  "configurations": [
+    {
+      "id": "3E2CB1DF-A838-41BA-81F8-5629AE81C6D1",
+      "name": "Configuration 1",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {},
+  "testTargets": [
+    {
+      "selectedTests": [
+        "DeepSeekFormulaImageTests/testRecognizesFormulaImage"
+      ],
+      "target": {
+        "containerPath": "container:Easydict.xcodeproj",
+        "identifier": "03022F2D2B370B7100B63209",
+        "name": "EasydictTests"
+      }
+    }
+  ],
+  "version": 1
+}

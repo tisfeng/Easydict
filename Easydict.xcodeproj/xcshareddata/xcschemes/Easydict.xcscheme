@@ -49,6 +49,9 @@
          <TestPlanReference
             reference = "container:EasydictTests/CodexOCR.xctestplan">
          </TestPlanReference>
+         <TestPlanReference
+            reference = "container:EasydictTests/DeepSeekOCR.xctestplan">
+         </TestPlanReference>
       </TestPlans>
    </TestAction>
    <LaunchAction

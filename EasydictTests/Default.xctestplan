@@ -12,7 +12,8 @@
       "skippedTests": [
         "GitHubCopilotServiceTests/validatesLocalCopilotTranslation()",
         "CodexFormulaImageTests/testRecognizesFormulaImage",
-        "TokenHubServiceTests/validatesTokenHubTranslation()"
+        "TokenHubServiceTests/validatesTokenHubTranslation()",
+        "DeepSeekFormulaImageTests/testRecognizesFormulaImage"
       ],
       "target": {
         "containerPath": "container:Easydict.xcodeproj",

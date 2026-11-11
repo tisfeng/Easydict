@@ -6,8 +6,10 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import Alamofire
 import Defaults
 import Foundation
+import OpenAI
 
 // MARK: - DeepSeekService
 
@@ -18,6 +20,8 @@ import Foundation
 @objc(EZDeepSeekService)
 class DeepSeekService: OpenAIService {
     // MARK: Public
+
+    public override func supportsOCR() -> Bool { true }
 
     public override func cancelStream() {
         currentTask?.cancel()
@@ -67,6 +71,27 @@ class DeepSeekService: OpenAIService {
         true
     }
 
+    override func recognizeImage(_ imageURL: String, prompt: String) async throws -> String {
+        try Task.checkCancellation()
+        let request = try imageRecognitionRequest(imageURL, prompt: prompt)
+        let response = await AF.request(request).serializingData().response
+        try Task.checkCancellation()
+        let data = try response.result.get()
+        guard let httpResponse = response.response else {
+            throw QueryError(type: .api, message: "Invalid DeepSeek response")
+        }
+        if !(200 ... 299).contains(httpResponse.statusCode),
+           let apiError = try? JSONDecoder().decode(APIErrorResponse.self, from: data) {
+            throw apiError
+        }
+        try validateHTTPResponse(httpResponse)
+        let result = try JSONDecoder().decode(ChatResult.self, from: data)
+        guard let text = result.choices.first?.message.content, !text.isEmpty else {
+            throw QueryError(type: .noResult)
+        }
+        return text
+    }
+
     override func contentStreamTranslate(
         _ text: String,
         from: Language,
@@ -107,7 +132,7 @@ class DeepSeekService: OpenAIService {
                     )
                     let request = try makeChatRequest(
                         url: url,
-                        messages: chatMessageDicts(chatQueryParam)
+                        messages: chatMessageDicts(chatQueryParam).map(DeepSeekChatMessage.init)
                     )
 
                     let (asyncBytes, response) = try await URLSession.shared.bytes(for: request)
@@ -129,16 +154,37 @@ class DeepSeekService: OpenAIService {
         }
     }
 
+    /// Builds image requests with the same credentials and reasoning policy as text translation.
+    @nonobjc
+    func imageRecognitionRequest(_ imageURL: String, prompt: String) throws -> URLRequest {
+        let endpoint = try validateChatStreamRequest()
+        let imageModels = ["deepseek-flash", "deepseek-v4-flash", "deepseek-v4-flash-vision-exp"]
+        guard imageModels.contains(model) else {
+            throw QueryError(
+                type: .parameter,
+                message: String(localized: "service.deepseek.ocr.image_model_required")
+            )
+        }
+        return try makeChatRequest(
+            url: endpoint,
+            messages: [.init(imageURL: imageURL, prompt: prompt)],
+            stream: false
+        )
+    }
+
     // MARK: Private
 
     private var currentTask: Task<(), Never>?
 
-    private func makeChatRequest(url: URL, messages: [ChatMessage]) throws -> URLRequest {
+    private func makeChatRequest(
+        url: URL, messages: [DeepSeekChatMessage], stream: Bool = true
+    ) throws
+        -> URLRequest {
         let effort = configuredReasoningEffort
         let requestBody = DeepSeekChatRequest(
-            messages: messages.map(DeepSeekChatMessage.init),
+            messages: messages,
             model: model,
-            stream: true,
+            stream: stream,
             thinking: .init(type: effort.isEnabled ? "enabled" : "disabled"),
             reasoningEffort: effort.requestValue
         )
@@ -270,20 +316,66 @@ private struct DeepSeekChatRequest: Encodable {
 
 // MARK: - DeepSeekChatMessage
 
-/// Minimal chat message shape accepted by DeepSeek's OpenAI-compatible
-/// endpoint, built from Easydict's provider-agnostic prompt messages.
+/// Preserves plain-text translation messages while encoding OCR as image content parts.
 private struct DeepSeekChatMessage: Encodable {
     // MARK: Lifecycle
 
     init(_ message: ChatMessage) {
         self.role = message.role.rawValue
         self.content = message.content
+        self.imageURL = nil
+    }
+
+    init(imageURL: String, prompt: String) {
+        self.role = "user"
+        self.content = prompt
+        self.imageURL = imageURL
     }
 
     // MARK: Internal
 
-    let role: String
-    let content: String
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(role, forKey: .role)
+        if let imageURL {
+            let parts = [
+                ContentPart(type: "text", text: content, imageURL: nil),
+                ContentPart(type: "image_url", text: nil, imageURL: .init(url: imageURL)),
+            ]
+            try container.encode(parts, forKey: .content)
+        } else {
+            try container.encode(content, forKey: .content)
+        }
+    }
+
+    // MARK: Private
+
+    private struct ImageURL: Encodable {
+        let url: String
+    }
+
+    private struct ContentPart: Encodable {
+        // MARK: Internal
+
+        let type: String
+        let text: String?
+        let imageURL: ImageURL?
+
+        // MARK: Private
+
+        private enum CodingKeys: String, CodingKey {
+            case type, text
+            case imageURL = "image_url"
+        }
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case role, content
+    }
+
+    private let role: String
+    private let content: String
+    private let imageURL: String?
 }
 
 // MARK: - DeepSeekThinking
