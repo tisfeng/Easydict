@@ -22,7 +22,7 @@ struct OCRStreamingTests {
 
     @Test("Original text is available before recognition completes; final text stays authoritative")
     func incrementalSource() async throws {
-        let model = makeModel()
+        let model = await makeModel()
         let manager = DetectManager(model: model)
         let service = ControlledOCRService()
         var previews: [String] = []
@@ -50,7 +50,7 @@ struct OCRStreamingTests {
         "typing", "clear", "image", "action", "language", "model",
     ])
     func changedInputWins(change: String) async throws {
-        let model = makeModel()
+        let model = await makeModel()
         let manager = DetectManager(model: model)
         let service = ControlledOCRService()
         var previews: [String] = []
@@ -65,7 +65,7 @@ struct OCRStreamingTests {
         case "image": model.ocrImage = NSImage(size: .init(width: 2, height: 2))
         case "action": model.actionType = .inputQuery
         case "language": model.userSourceLanguage = .japanese
-        default: manager.queryModel = makeModel()
+        default: manager.queryModel = await makeModel()
         }
         let expected = manager.queryModel.inputText
         service.emit(" stale")
@@ -79,7 +79,7 @@ struct OCRStreamingTests {
 
     @Test("A newer screenshot keeps its own stream and completion")
     func replacementRequest() async throws {
-        let model = makeModel()
+        let model = await makeModel()
         let manager = DetectManager(model: model)
         let old = ControlledOCRService()
         let current = ControlledOCRService()
@@ -104,7 +104,7 @@ struct OCRStreamingTests {
 
     @Test("A stream error preserves visible partial text and reports failure")
     func failedStream() async throws {
-        let model = makeModel()
+        let model = await makeModel()
         let manager = DetectManager(model: model)
         let service = ControlledOCRService()
         var finished = false
@@ -122,7 +122,7 @@ struct OCRStreamingTests {
 
     @Test("Ordinary OCR still completes once without intermediate previews")
     func ordinaryOCR() async throws {
-        let model = makeModel()
+        let model = await makeModel()
         let manager = DetectManager(model: model)
         var previews: [String] = []
         var finished = false
@@ -136,14 +136,14 @@ struct OCRStreamingTests {
     }
 
     @Test("Closed original formulas render while later formulas are incomplete, preserving source and manual editing")
-    func originalFormulaPreviewDuringStream() throws {
+    func originalFormulaPreviewDuringStream() async throws {
         let configuration = MyConfiguration.shared
         let originalPreference = configuration.enableMarkdownRendering
         configuration.enableMarkdownRendering = true
         defer { configuration.enableMarkdownRendering = originalPreference }
         let viewType = try #require(NSClassFromString("EZQueryView") as? NSView.Type)
         let view = viewType.init(frame: NSRect(x: 0, y: 0, width: 600, height: 260))
-        let model = makeModel()
+        let model = await makeModel()
         func display(_ source: String) {
             model.inputText = source
             view.setValue(model, forKey: "queryModel")
@@ -189,7 +189,7 @@ struct OCRStreamingTests {
 
     @Test("Leading whitespace does not replace the original source before content arrives")
     func leadingWhitespace() async throws {
-        let model = makeModel()
+        let model = await makeModel()
         model.inputText = "previous text"
         let manager = DetectManager(model: model)
         let service = ControlledOCRService()
@@ -210,13 +210,11 @@ struct OCRStreamingTests {
 
     @Test("Selected text cancels pending screenshot loading and rejects late OCR output")
     func selectedTextReplacesPendingOCR() async throws {
-        let controller = try makeController()
+        let controller = try await makeController()
         let view = try #require(controller.perform(NSSelectorFromString("createQueryView"))?
             .takeUnretainedValue() as? NSView)
         controller.setValue(view, forKey: "queryView")
         let model = try #require(controller.value(forKey: "queryModel") as? QueryModel)
-        model.userSourceLanguage = .english
-        model.userTargetLanguage = .simplifiedChinese
         model.ocrImage = NSImage(size: .init(width: 2, height: 2))
         model.actionType = .ocrQuery
         view.setValue(model, forKey: "queryModel")
@@ -269,7 +267,7 @@ struct OCRStreamingTests {
         let implementation = imp_implementationWithBlock(capture)
         try #require(class_addMethod(subclass, selector, implementation, method_getTypeEncoding(originalMethod)))
         objc_registerClassPair(subclass)
-        let controller = try makeController(type: subclass)
+        let controller = try await makeController(type: subclass)
         defer {
             object_setClass(controller, base)
             objc_disposeClassPair(subclass)
@@ -297,8 +295,8 @@ struct OCRStreamingTests {
             Defaults[.queryFromLanguage] = originalFrom
             Defaults[.queryToLanguage] = originalTo
         }
-        let first = try makeController()
-        let second = try makeController()
+        let first = try await makeController()
+        let second = try await makeController()
         let model = try #require(first.value(forKey: "queryModel") as? QueryModel)
         let source = #"Favorite regression \(x_j^2\) "# + UUID().uuidString
         model.inputText = source
@@ -350,11 +348,11 @@ struct OCRStreamingTests {
     }
 
     /// Use the existing nib initializer to avoid unrelated service and window setup.
-    private func makeController(type: AnyClass? = nil) throws -> NSViewController {
+    private func makeController(type: AnyClass? = nil) async throws -> NSViewController {
         let controllerType = try #require((type ?? NSClassFromString("EZBaseQueryViewController")) as? NSViewController
             .Type)
         let controller = controllerType.init(nibName: nil, bundle: nil)
-        let model = makeModel()
+        let model = await makeModel()
         controller.setValue(model, forKey: "queryModel")
         controller.setValue(DetectManager(model: model), forKey: "detectManager")
         controller.setValue(MyConfiguration.shared, forKey: "config")
@@ -362,8 +360,12 @@ struct OCRStreamingTests {
         return controller
     }
 
-    private func makeModel() -> QueryModel {
+    private func makeModel() async -> QueryModel {
         let model = QueryModel()
+        // QueryModel queues its initial language preferences on the main queue.
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
+        }
         model.userSourceLanguage = .english
         model.userTargetLanguage = .simplifiedChinese
         model.actionType = .ocrQuery

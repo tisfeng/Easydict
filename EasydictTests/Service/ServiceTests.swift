@@ -6,6 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import Foundation
 import Testing
 
 @testable import Easydict
@@ -54,10 +55,27 @@ struct ServiceTests {
         let service = try #require(factory.service(withTypeId: serviceType.rawValue))
 
         let result = await validationResult(for: service)
-        #expect(
-            result.error == nil,
-            "Service [\(serviceType.rawValue)] failed validation: \(result.error?.localizedDescription ?? "unknown error")"
-        )
+        if let error = result.error {
+            Issue.record("Service [\(serviceType.rawValue)] failed validation: \(error.localizedDescription)")
+            return
+        }
+
+        func hasText(_ text: String?) -> Bool {
+            text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
+        }
+
+        switch serviceType {
+        case .appleDictionary, .mDict:
+            #expect(hasText(result.htmlString), "Dictionary [\(serviceType.rawValue)] returned no entry")
+        case .youdao:
+            let meanings = result.wordResult?.parts?.flatMap(\.means) ?? []
+            #expect(
+                hasText(result.translatedText) || meanings.contains { hasText($0) },
+                "Service [\(serviceType.rawValue)] returned no translation or definition"
+            )
+        default:
+            #expect(hasText(result.translatedText), "Service [\(serviceType.rawValue)] returned no translation")
+        }
     }
 
     /// Returns the validation result for a service, using dictionary-friendly input when needed.
