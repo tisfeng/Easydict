@@ -678,6 +678,7 @@
 		73169D18840F4C2497864445 /* CodexAppServerRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D777448D5C79452B85E8A640 /* CodexAppServerRequest.swift */; };
 		9E1C686A824E4CA69C2EAFC0 /* CodexServiceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE2835086A04913BCD93989 /* CodexServiceConfiguration.swift */; };
 		160FFB115AB94E47A2E92B32 /* CodexLocalCLIInstallation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B2F627F710741E5A3375395 /* CodexLocalCLIInstallation.swift */; };
+		F4C6EA3FA8C749079032F8DE /* CodexTokenUsage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31403DE83981485E87880B1F /* CodexTokenUsage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1479,6 +1480,7 @@
 		D777448D5C79452B85E8A640 /* CodexAppServerRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexAppServerRequest.swift; sourceTree = "<group>"; };
 		0EE2835086A04913BCD93989 /* CodexServiceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexServiceConfiguration.swift; sourceTree = "<group>"; };
 		2B2F627F710741E5A3375395 /* CodexLocalCLIInstallation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexLocalCLIInstallation.swift; sourceTree = "<group>"; };
+		31403DE83981485E87880B1F /* CodexTokenUsage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexTokenUsage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3773,19 +3775,44 @@
 		C0DEC11E0003000000000001 /* Codex */ = {
 			isa = PBXGroup;
 			children = (
-				C0DEC11E0002000000000004 /* CodexExecEventParser.swift */,
-				C0DEC11E0002000000000001 /* CodexService.swift */,
-				7E3AB5E37663693157897513 /* CodexAccessMode.swift */,
-				B62214DC3E257A25F855FCC6 /* CodexConfigurationMigration.swift */,
-				5EEDCCF9C2FE7BEB020EB6DA /* CodexManagedError.swift */,
-				0EE2835086A04913BCD93989 /* CodexServiceConfiguration.swift */,
-				EB71FF785ED1821858ABF77A /* CodexRequestCoordinator.swift */,
-				C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */,
 				F7D02661998D41359D7081C0 /* ChatGPTSignIn */,
 				A08530701C4A4C0CA7620477 /* LocalCLI */,
 				43744464CB8D4DB89E94A15C /* AppServer */,
+				177DDF8E56E442979C988D66 /* Service */,
+				85561A33A8BF48C5BF3C823F /* Configuration */,
+				469F1E97797D44FBB0BBD906 /* Exec */,
 			);
 			path = Codex;
+			sourceTree = "<group>";
+		};
+		177DDF8E56E442979C988D66 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				C0DEC11E0002000000000001 /* CodexService.swift */,
+				5EEDCCF9C2FE7BEB020EB6DA /* CodexManagedError.swift */,
+				EB71FF785ED1821858ABF77A /* CodexRequestCoordinator.swift */,
+				31403DE83981485E87880B1F /* CodexTokenUsage.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		85561A33A8BF48C5BF3C823F /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				7E3AB5E37663693157897513 /* CodexAccessMode.swift */,
+				B62214DC3E257A25F855FCC6 /* CodexConfigurationMigration.swift */,
+				0EE2835086A04913BCD93989 /* CodexServiceConfiguration.swift */,
+				C0DEC11E0002000000000014 /* CodexReasoningEffort.swift */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		469F1E97797D44FBB0BBD906 /* Exec */ = {
+			isa = PBXGroup;
+			children = (
+				C0DEC11E0002000000000004 /* CodexExecEventParser.swift */,
+			);
+			path = Exec;
 			sourceTree = "<group>";
 		};
 		F7D02661998D41359D7081C0 /* ChatGPTSignIn */ = {
@@ -3828,15 +3855,31 @@
 		C0DEC11E0003000000000002 /* Codex */ = {
 			isa = PBXGroup;
 			children = (
-				62E0DB7EB2C038D421414311 /* CodexConfigurationMigrationTests.swift */,
-				7AD4CBC536A238B7F9B5531D /* CodexStreamInvalidationTests.swift */,
-				C3594F7282DE23CFECAD0C78 /* CodexRequestCoordinatorTests.swift */,
-				C0DEC11E0002000000000010 /* CodexServiceTests.swift */,
 				779A1E2C828E4AE785129EB3 /* ChatGPTSignIn */,
 				70688AE83E3B4CDCB7AC4899 /* LocalCLI */,
 				8A891D86C3D04F46A099216F /* AppServer */,
+				9B65FC7E992A46008F71616B /* Service */,
+				1EA3993CEE92427585354237 /* Configuration */,
 			);
 			path = Codex;
+			sourceTree = "<group>";
+		};
+		9B65FC7E992A46008F71616B /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				7AD4CBC536A238B7F9B5531D /* CodexStreamInvalidationTests.swift */,
+				C3594F7282DE23CFECAD0C78 /* CodexRequestCoordinatorTests.swift */,
+				C0DEC11E0002000000000010 /* CodexServiceTests.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		1EA3993CEE92427585354237 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				62E0DB7EB2C038D421414311 /* CodexConfigurationMigrationTests.swift */,
+			);
+			path = Configuration;
 			sourceTree = "<group>";
 		};
 		779A1E2C828E4AE785129EB3 /* ChatGPTSignIn */ = {
@@ -4896,6 +4939,7 @@
 				C0DEC11E0001000000000004 /* CodexExecEventParser.swift in Sources */,
 				C0DEC11E0001000000000005 /* CodexCLILogger.swift in Sources */,
 				C0DEC11E0001000000000002 /* CodexCLIRunner.swift in Sources */,
+				F4C6EA3FA8C749079032F8DE /* CodexTokenUsage.swift in Sources */,
 				C0DEC11E0001000000000001 /* CodexService.swift in Sources */,
 				72A02E402B9A4327A208E0AE /* CodexAccessMode.swift in Sources */,
 				72BFA6E36F37FD6E49AEEA75 /* CodexConfigurationMigration.swift in Sources */,
