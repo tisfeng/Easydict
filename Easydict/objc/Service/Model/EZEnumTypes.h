@@ -49,6 +49,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeOllama;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypePolishing;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeSummary;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepSeek;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeQianfan;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeGroq;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeZhipu;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeMiniMax;

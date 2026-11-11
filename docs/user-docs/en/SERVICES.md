@@ -44,6 +44,7 @@ The Services settings use these access types:
 | Claude (`Claude`) | User key | Uses the Anthropic Claude API. |
 | Ollama (`Ollama`) | No key | Calls Ollama on this Mac or at a custom server URL. |
 | Custom OpenAI (`CustomOpenAI`) | User key | Configures an OpenAI-compatible endpoint; supports multiple instances. |
+| Baidu Qianfan (`Qianfan`) | User key | Uses Baidu Qianfan's Chat V2 API and available chat models. |
 
 ## AI tools
 
