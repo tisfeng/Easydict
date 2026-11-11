@@ -77,7 +77,7 @@ class QianfanService: OpenAIService {
         return normalizedRemoteModelIDs(
             response.data
                 .filter { $0.type == "chat" }
-                .map(\.id)
+                .compactMap(\.id)
         )
     }
 }
@@ -95,8 +95,8 @@ private enum QianfanModel: String, CaseIterable {
 
 private struct QianfanModelListResponse: Decodable {
     struct Model: Decodable {
-        let id: String
-        let type: String
+        let id: String?
+        let type: String?
     }
 
     let data: [Model]
