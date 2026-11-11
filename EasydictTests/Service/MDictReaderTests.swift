@@ -50,7 +50,7 @@ struct MDictReaderTests {
         #expect(MDictDictionary.decodeResourceText(data, preferredEncoding: encoding) == "发音样式")
     }
 
-    @Test("External MDX and MDD lookup flow")
+    @Test("External MDX and MDD lookup flow", .tags(.requiresLocalEnvironment))
     func testExternalMDictLookupFlow() throws {
         let environment = ProcessInfo.processInfo.environment
         guard let mdxPath = environment["EASYDICT_MDICT_INTEGRATION_MDX"],

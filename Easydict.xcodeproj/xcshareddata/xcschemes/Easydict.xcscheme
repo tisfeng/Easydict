@@ -47,10 +47,7 @@
             default = "YES">
          </TestPlanReference>
          <TestPlanReference
-            reference = "container:EasydictTests/CodexOCR.xctestplan">
-         </TestPlanReference>
-         <TestPlanReference
-            reference = "container:EasydictTests/DeepSeekOCR.xctestplan">
+            reference = "container:EasydictTests/LocalEnvironment.xctestplan">
          </TestPlanReference>
       </TestPlans>
    </TestAction>

@@ -17,20 +17,37 @@ import Testing
 struct ServiceTests {
     // MARK: Internal
 
-    /// Validates that every registered service returns a successful translation result.
-    @Test("Validate All Services Translation", .tags(.integration))
-    func testAllServicesValidateTranslation() async throws {
-        let factory = QueryServiceFactory.shared
-        let serviceTypes = factory.allServiceTypes
+    @Test("Validate translation services without local setup")
+    func testServicesWithoutLocalSetup() async throws {
+        try await validateServices(requiringLocalEnvironment: false)
+    }
 
-        #expect(!serviceTypes.isEmpty, "QueryServiceFactory returned no registered services.")
+    @Test("Validate translation services that require local setup", .tags(.requiresLocalEnvironment))
+    func testServicesRequiringLocalEnvironment() async throws {
+        try await validateServices(requiringLocalEnvironment: true)
+    }
+
+    // MARK: Private
+
+    private func validateServices(requiringLocalEnvironment: Bool) async throws {
+        let factory = QueryServiceFactory.shared
+        let serviceTypes = factory.allServiceTypes.filter { serviceType in
+            switch serviceType {
+            case .apple, .appleDictionary, .mDict, .ollama:
+                // These keyless services still rely on local assets or a local server.
+                return requiringLocalEnvironment
+            default:
+                let apiKeyRequirement = factory.metadata(withTypeId: serviceType.rawValue)?.apiKeyRequirement
+                return (apiKeyRequirement != ServiceAPIKeyRequirement.none) == requiringLocalEnvironment
+            }
+        }
+
+        #expect(!serviceTypes.isEmpty, "QueryServiceFactory returned no matching services.")
 
         for serviceType in serviceTypes {
             try await validate(serviceType: serviceType, factory: factory)
         }
     }
-
-    // MARK: Private
 
     /// Validates a single service type and records a failure if translation fails.
     private func validate(serviceType: ServiceType, factory: QueryServiceFactory) async throws {

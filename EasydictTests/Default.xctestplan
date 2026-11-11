@@ -9,12 +9,11 @@
   "defaultOptions": {},
   "testTargets": [
     {
-      "skippedTests": [
-        "GitHubCopilotServiceTests/validatesLocalCopilotTranslation()",
-        "CodexFormulaImageTests",
-        "TokenHubServiceTests/validatesTokenHubTranslation()",
-        "DeepSeekFormulaImageTests"
-      ],
+      "skippedTags": {
+        "tags": [
+          "requiresLocalEnvironment"
+        ]
+      },
       "target": {
         "containerPath": "container:Easydict.xcodeproj",
         "identifier": "03022F2D2B370B7100B63209",

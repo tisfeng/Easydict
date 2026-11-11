@@ -34,7 +34,10 @@ struct TokenHubServiceTests {
         #expect(service is TokenHubService)
     }
 
-    @Test("validates a TokenHub translation with configured credentials", .tags(.integration))
+    @Test(
+        "validates a TokenHub translation with configured credentials",
+        .tags(.integration, .requiresLocalEnvironment)
+    )
     func validatesTokenHubTranslation() async {
         let result = await TokenHubService().validate()
 

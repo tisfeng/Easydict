@@ -5,8 +5,14 @@
 - 除新增服务外，仅在用户当前明确授权时新增或扩写测试及其配套 fixture、mock、helper 或生产 hook。
   未获授权可运行、分析现有测试，并在交付时建议补充。获授权时优先扩展现有用例，避免为简单实现
   增加生产抽象、mock 或 hook。
-- 新增服务必须有专属验证测试文件，并由实现者在本机运行通过。依赖 CLI、登录态、密钥等本机配置的
-  测试通过非默认 test plan 或 Xcode 精确选择运行，无需所有开发者或 CI 常规执行。
+- 新增服务必须有专属验证测试文件，并由实现者在本机运行通过。依赖 CLI、登录态、密钥、语言包等本机配置的
+  测试标记为 `.tags(.requiresLocalEnvironment)`。测试套件中只有部分用例依赖本机时，将标签加在
+  对应的 `@Test` 上。
+- `Easydict` scheme 的共享默认计划 `Default` 排除该标签。`LocalEnvironment` 只选择该标签。
+  在 Xcode 中通过 **Product > Test Plan > LocalEnvironment** 切换计划，再点击用例旁的运行按钮。
+  完成后切回 `Default`，因为 ⌘U 使用当前选中的计划。
+- 命令行可通过 `-testPlan LocalEnvironment` 选择计划，再用
+  `'-only-testing:EasydictTests/CodexFormulaImageTests/testRecognizesFormulaImage()'` 选择一个用例。
 
 ## 测试与工程文件组织
 
