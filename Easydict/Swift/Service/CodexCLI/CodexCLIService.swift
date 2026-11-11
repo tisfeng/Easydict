@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import AppKit
 import Combine
 import Defaults
 import Foundation
@@ -150,14 +151,15 @@ final class CodexCLIService: StreamService {
                 do {
                     if let managed {
                         try CodexManagedRuntime.validateSelection(
-                            model: configuration.model, effort: configuration.effort.cliValue
+                            model: configuration.model, effort: configuration.effort.cliValue,
+                            customModel: configuration.isCustomModel
                         )
-                        let runtime = try await CodexManagedAppServer.shared.runtime()
                         let result = try await managed.runUsingAppServer(
                             prompt: combinedPrompt,
                             model: configuration.model,
                             effort: configuration.effort.cliValue,
-                            runtime: runtime
+                            customModel: configuration.isCustomModel,
+                            fastMode: configuration.fastMode
                         ) { chunk in
                             do {
                                 try self.updateResultLock.withLock {
@@ -174,6 +176,7 @@ final class CodexCLIService: StreamService {
                             guard CodexRequestCoordinator.shared.isCurrent(token) else { throw CancellationError() }
                             self.tokenUsage = result.usage
                         }
+                        await MainActor.run { configuration.rememberSuccessfulSelection() }
                     } else if let local {
                         for try await chunk in local.run(
                             prompt: combinedPrompt,
@@ -213,13 +216,19 @@ final class CodexCLIService: StreamService {
         get { CodexServiceConfiguration(uuid: uuid).model }
         set {
             let mode = Defaults[accessModeKey]
-            if mode == .managed, !CodexManagedRuntime.bundledModelNames.contains(newValue) { return }
+            if mode == .managed {
+                guard CodexServiceConfiguration.models(uuid: uuid).contains(newValue) else { return }
+                if newValue != Defaults[managedModelKey],
+                   !CodexManagedRuntime.bundledModelNames.contains(newValue) {
+                    Defaults[managedReasoningEffortKey] = .default
+                }
+            }
             Defaults[CodexServiceConfiguration.modelKey(uuid: uuid, mode: mode)] = newValue
         }
     }
 
     override var validModels: [String] {
-        Defaults[accessModeKey] == .managed ? CodexManagedRuntime.bundledModelNames : super.validModels
+        Defaults[accessModeKey] == .managed ? CodexServiceConfiguration.models(uuid: uuid) : super.validModels
     }
 
     /// Stored reasoning-effort override. `.default` means "do not override
@@ -236,14 +245,45 @@ final class CodexCLIService: StreamService {
         CodexServiceConfiguration.modelKey(uuid: uuid, mode: .managed)
     }
 
+    var managedCustomModelsKey: Defaults.Key<[String]> {
+        CodexServiceConfiguration.customModelsKey(uuid: uuid)
+    }
+
+    var managedHiddenModelsKey: Defaults.Key<[String]> {
+        CodexServiceConfiguration.hiddenModelsKey(uuid: uuid)
+    }
+
     var managedReasoningEffortKey: Defaults.Key<CodexReasoningEffort> {
         CodexServiceConfiguration.effortKey(uuid: uuid, mode: .managed)
+    }
+
+    var managedFastModeKey: Defaults.Key<Bool> {
+        CodexServiceConfiguration.fastModeKey(uuid: uuid)
+    }
+
+    /// The translation menu and settings share the same per-service preference.
+    @objc
+    func fastModeMenuItem() -> NSMenuItem? {
+        guard Defaults[accessModeKey] == .managed else { return nil }
+        let item = NSMenuItem(
+            title: String(localized: "service.codex_cli.fast_mode.title"),
+            action: #selector(toggleFastMode), keyEquivalent: ""
+        )
+        item.target = self
+        item.state = Defaults[managedFastModeKey] ? .on : .off
+        return item
     }
 
     /// Keeps fixed subscriptions: local model edits preserve automatic query behavior,
     /// while mode/auth/managed model changes refresh UI without sending current text.
     func setupCodexSubscribers() {
         CodexRequestCoordinator.shared.observe(uuid: uuid)
+        for key in [managedCustomModelsKey, managedHiddenModelsKey] {
+            Defaults.publisher(key, options: [])
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] _ in self?.notifyServiceConfigurationChanged() }
+                .store(in: &cancellables)
+        }
         Defaults.publisher(nameKey, options: [])
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in self?.notifyServiceConfigurationChanged() }
@@ -273,6 +313,12 @@ final class CodexCLIService: StreamService {
     private var runner: CodexCLIRunner?
     private var managedRunner: CodexManagedTranslation?
     private var registration: UUID?
+
+    @objc
+    private func toggleFastMode() {
+        guard Defaults[accessModeKey] == .managed else { return }
+        Defaults[managedFastModeKey].toggle()
+    }
 
     /// Rejections and execution failures use the same result identity and error boundary.
     private func finish(
