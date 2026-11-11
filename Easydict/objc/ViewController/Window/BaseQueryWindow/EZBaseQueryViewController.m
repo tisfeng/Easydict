@@ -550,6 +550,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
+    [self cancelDelayDetectQueryText];
     self.queryModel.actionType = actionType;
     [self.queryView resetFormulaPreview];
     self.queryModel.ocrImage = image;
