@@ -189,6 +189,25 @@ actor CodexManagedAppServer {
         try await localModelList()
     }
 
+    /// Checks whether the active local provider still needs an OpenAI account.
+    func requireLocalAccountIfNeeded() async throws {
+        idleTask?.cancel()
+        idleTask = nil
+        defer { scheduleIdleShutdown() }
+
+        let session = try await ensureSession(runtime: nil)
+        let response = try await request(
+            session: session, method: "account/read", params: ["refreshToken": false]
+        )
+        guard let requiresOpenAIAuth = response.object["requiresOpenaiAuth"] as? Bool,
+              let account = response.object["account"],
+              account is NSNull || account is [String: Any]
+        else { throw CodexManagedError.invalidResponse }
+        if requiresOpenAIAuth, account is NSNull {
+            throw CodexCLIError.notLoggedIn
+        }
+    }
+
     /// Stops the shared process before credentials or managed component identity changes.
     func invalidate() {
         runtimeLoad?.task.cancel()

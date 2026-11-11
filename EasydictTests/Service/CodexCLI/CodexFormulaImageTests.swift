@@ -14,12 +14,14 @@ import Testing
 
 @Suite(.serialized, .tags(.requiresLocalEnvironment))
 struct CodexFormulaImageTests {
+    // MARK: Internal
+
     @Test
     func testRecognizesFormulaImage() async throws {
         let image = try NSImage.loadTestImage(named: "ocr-en-formula.png")
         let service = CodexCLIService()
         let configuredModel = CodexServiceConfiguration(uuid: "").model
-        let available = try await CodexManagedAppServer.local.availableLocalModels()
+        let available = try await availableLocalModels()
         let selected = try #require(CodexServiceConfiguration.localModel(configuredModel, in: available))
         #expect(selected.acceptsImages)
         #expect(selected.efforts.contains(.low))
@@ -62,7 +64,7 @@ struct CodexFormulaImageTests {
     func testStreamsTranslationAndRendersClosedFormula() async throws {
         let service = CodexCLIService()
         let configuredModel = CodexServiceConfiguration(uuid: "").model
-        let available = try await CodexManagedAppServer.local.availableLocalModels()
+        let available = try await availableLocalModels()
         let selected = try #require(CodexServiceConfiguration.localModel(configuredModel, in: available))
         service.uuid = UUID().uuidString
         let modeKey = CodexAccessMode.key(uuid: service.uuid)
@@ -110,5 +112,19 @@ struct CodexFormulaImageTests {
         print(
             "Translation stream timing: first=\(try #require(first))s total=\(Date().timeIntervalSince(started))s updates=\(updates)"
         )
+    }
+
+    // MARK: Private
+
+    private func availableLocalModels() async throws -> [CodexManagedAppServer.LocalModel] {
+        let server = CodexManagedAppServer.local
+        do {
+            try await server.requireLocalAccountIfNeeded()
+            return try await server.availableLocalModels()
+        } catch CodexCLIError.notInstalled {
+            try Test.cancel("Install the Codex CLI before running this test")
+        } catch CodexCLIError.notLoggedIn {
+            try Test.cancel("Run codex login or configure local Codex credentials before running this test")
+        }
     }
 }
