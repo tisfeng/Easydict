@@ -170,13 +170,6 @@ class MWDictService: QueryService, @unchecked Sendable {
             appendPart("", [runOn])
         }
 
-        if let firstKnownUse = entry.firstKnownUse {
-            appendPart("First Known Use", [firstKnownUse])
-        }
-        if let etymology = entry.etymology {
-            appendPart("", ["Etymology: \(etymology)"])
-        }
-
         if !parts.isEmpty {
             wordResult.parts = parts
         }

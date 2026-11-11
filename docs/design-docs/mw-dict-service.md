@@ -50,7 +50,8 @@ flowchart LR
 - 只取第一条词条（同形异义词的第一条），词头取自 `meta.id` 并去掉 `:1` 同形编号。
 - 词形变化取自 `ins`（`de*vel*oped` 去掉 `*`），缺失时回退 `meta.stems` 并去掉词头、去重。
 - 释义遍历 `def[].sseq`：`sense`/`bs` 为义项，`pseq` 为括号子义项；编号规则见下。
-- 定义文本 `dt` 支持 `text` 与 `vis`（例句）；`sdsense` 以 `; 分隔词 …` 续写。
+- 定义文本 `dt` 支持 `text` 与 `vis`（例句）；`sdsense` 以 `; 分隔词 …` 续写；
+  `uns` 为用法说明（官网在箭头 `→` 之后展示），其文本与例句一并保留。
 - 同义词优先取 `syn_list` 的 `wd`，否则从同义词辨析段落 `pt` 中提取 `{sc}…{/sc}` 词头。
 - 派生词取自 `uros`（`ure` + `fl`），如 `developable adjective`。
 - 运行文本标记（`{bc}`、`{it}`、`{wi}`、`{sx|…}`、`{dxt|…}`、`{dx_def}…{/dx_def}` 等）
@@ -83,8 +84,9 @@ API 在每条序列的首个义项给出完整编号（`1 a`、`2 a`、`4`），
 3. 每个动词分节：分节名单独一行（`transitive verb` / `intransitive verb`），随后每个义项
    一行（标签为编号，正文为定义），每条例句单独一行（`— …`）。
 4. 派生词（`developable adjective`）。
-5. `First Known Use` 与 `Etymology`。
-6. 同义词写入原生 `synonyms` 字段，渲染为可点击按钮。
+5. 同义词写入原生 `synonyms` 字段，渲染为可点击按钮。
+
+用法说明以 `→ …` 续写于定义之后；`First Known Use` 与 `Etymology` 不展示。
 
 发音写入 `EZWordPhonetic`（首个发音，`US`）。
 
@@ -104,7 +106,9 @@ API 在每条序列的首个义项给出完整编号（`1 a`、`2 a`、`4`），
 - 需要免费 API Key；未配置时服务不查询，卡片提示配置。
 - 仅英文单词；多词短语与非英文输入返回无结果。
 - 仅第一词条；例句数量随 API 返回，不额外展开。
-- 繁体中文目标语言下正文仍为英文（英英词典内容，不做转换）。
+- 官网「Examples of … in a Sentence」整句例句来自 Learner's Dictionary，需另行订阅；
+  当前 Key 未订阅该库，卡片只展示 Collegiate 自带的短语例句。
+- `First Known Use` 与 `Etymology` 按用户要求不渲染。
 
 ## 验证
 

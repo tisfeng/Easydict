@@ -56,12 +56,6 @@ struct MWDictEntry: Equatable, Sendable {
         if !synonyms.isEmpty {
             lines.append("Synonyms: \(synonyms.joined(separator: ", "))")
         }
-        if let firstKnownUse {
-            lines.append("First Known Use: \(firstKnownUse)")
-        }
-        if let etymology {
-            lines.append("Etymology: \(etymology)")
-        }
         return lines.joined(separator: "\n")
     }
 
@@ -69,8 +63,13 @@ struct MWDictEntry: Equatable, Sendable {
     var bestTranslation: String? {
         for section in sections {
             for sense in section.senses where !sense.definition.isEmpty {
-                return sense.definition
+                let definition = sense.definition
                     .trimmingCharacters(in: CharacterSet(charactersIn: ": "))
+                // The usage note follows the arrow; the summary keeps the definition only.
+                if let arrow = definition.range(of: " → ") {
+                    return String(definition[..<arrow.lowerBound])
+                }
+                return definition
             }
         }
         return nil
@@ -373,6 +372,16 @@ enum MWDictAPIParser {
                     let text = stripMarkup(illustration["t"] as? String ?? "")
                     if !text.isEmpty {
                         examples.append(text)
+                    }
+                }
+            case "uns":
+                // Usage note: the site appends it after an arrow, with its own examples.
+                // Each note is itself an array of defining-text elements.
+                for note in pair[1] as? [Any] ?? [] {
+                    var noteParts: [String] = []
+                    walkDefiningText(note, into: &noteParts, examples: &examples)
+                    if !noteParts.isEmpty {
+                        parts.append("→ " + noteParts.joined(separator: " "))
                     }
                 }
             default:

@@ -38,6 +38,8 @@ struct MWDictAPIParserTests {
         #expect(senses[0].definition == ": to work out the possibilities of")
         #expect(senses[0].examples == ["develop an idea"])
         #expect(senses[1].examples == ["develop software"])
+        #expect(entry.sections.last?.senses.first?.definition.contains("→ used interjectionally in greeting") == true)
+        #expect(entry.sections.last?.senses.first?.examples == ["hello there"])
     }
 
     @Test("Parses synonyms, first known use and best translation")
@@ -116,7 +118,15 @@ struct MWDictAPIParserTests {
             "sseq": [
               [
                 [ "sense", { "sn": "1",
-                  "dt": [ [ "text", " {bc}to become gradually apparent" ] ] } ]
+                  "dt": [
+                    [ "text", " {bc}to become gradually apparent" ],
+                    [ "uns", [
+                      [
+                        [ "text", "used interjectionally in greeting" ],
+                        [ "vis", [ { "t": "{wi}hello{/wi} there" } ] ]
+                      ]
+                    ] ]
+                  ] } ]
               ]
             ]
           }
@@ -161,7 +171,7 @@ struct MWDictServiceTests {
                 ]),
             ],
             synonyms: ["grow", "mature"],
-            firstKnownUse: "1653",
+            firstKnownUse: nil,
             etymology: nil,
             runOns: ["developable adjective"]
         )
@@ -178,14 +188,12 @@ struct MWDictServiceTests {
             "",
             "1",
             "",
-            "First Known Use",
         ])
         #expect(parts[7].means == ["developable adjective"])
         #expect(parts[0].means == ["developed; developing; develops"])
         #expect(parts[1].means == ["transitive verb"])
         #expect(parts[2].means == [": to work out the possibilities of"])
         #expect(parts[3].means == ["— develop an idea"])
-        #expect(parts[8].means == ["1653"])
         #expect(wordResult.phonetics?.first?.value == "di-ˈve-ləp")
         #expect(wordResult.synonyms?.first?.means == ["grow", "mature"])
     }
