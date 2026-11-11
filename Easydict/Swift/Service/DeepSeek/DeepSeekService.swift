@@ -92,6 +92,16 @@ class DeepSeekService: OpenAIService {
         return text
     }
 
+    override func recognizeImage(
+        _ imageURL: String, prompt: String, onDelta: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> String {
+        let request = try imageRecognitionRequest(imageURL, prompt: prompt, stream: true)
+        return try await OpenAIStreamTransport().stream(request: request) { result in
+            if let delta = result.choices.first?.delta.content { onDelta(delta) }
+        }
+    }
+
     override func contentStreamTranslate(
         _ text: String,
         from: Language,
@@ -156,7 +166,7 @@ class DeepSeekService: OpenAIService {
 
     /// Builds image requests with the same credentials and reasoning policy as text translation.
     @nonobjc
-    func imageRecognitionRequest(_ imageURL: String, prompt: String) throws -> URLRequest {
+    func imageRecognitionRequest(_ imageURL: String, prompt: String, stream: Bool = false) throws -> URLRequest {
         let endpoint = try validateChatStreamRequest()
         let imageModels = ["deepseek-flash", "deepseek-v4-flash", "deepseek-v4-flash-vision-exp"]
         guard imageModels.contains(model) else {
@@ -168,7 +178,7 @@ class DeepSeekService: OpenAIService {
         return try makeChatRequest(
             url: endpoint,
             messages: [.init(imageURL: imageURL, prompt: prompt)],
-            stream: false
+            stream: stream
         )
     }
 

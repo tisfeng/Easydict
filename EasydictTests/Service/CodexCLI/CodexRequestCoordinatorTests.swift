@@ -179,14 +179,8 @@ struct CodexRequestCoordinatorTests {
 
     @Test("reasoning effort candidates follow mode and managed model catalog")
     func reasoningEffortCandidatesFollowModeAndManagedModelCatalog() {
-        #expect(CodexServiceConfiguration.reasoningEfforts(mode: .localCLI, model: "gpt-6-astra") == [
-            .default,
-            .minimal,
-            .low,
-            .medium,
-            .high,
-            .xhigh,
-        ])
+        // Without discovered local capabilities, advertise only the CLI default.
+        #expect(CodexServiceConfiguration.reasoningEfforts(mode: .localCLI, model: "gpt-6-astra") == [.default])
 
         #expect(CodexServiceConfiguration.reasoningEfforts(mode: .managed, model: "gpt-5.5") == [
             .default,

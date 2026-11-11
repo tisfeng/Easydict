@@ -643,6 +643,7 @@
 		CAEB481F1E2B475DBB446F8D /* SheetChevronRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6CC260EE5345A88A8DB738 /* SheetChevronRow.swift */; };
 		CB8C42FF2C441B74004EC86F /* BaiduApiTranslate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */; };
 		CB8C43002C441B74004EC86F /* BaiduApiResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */; };
+		1460E92BF8B9455E95020DA2 /* OCRStreamingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDD6BB67A5A4D4786F78427 /* OCRStreamingTests.swift */; };
 		CDA80C110000000000000001 /* OCRFormulaImageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA80C110000000000000002 /* OCRFormulaImageTests.swift */; };
 		CF6AEE1BE2AE4C2C91811949 /* MDictDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30215FF66EE44A0F932E70CF /* MDictDictionary.swift */; };
 		D2ABD8945EA035D6CA456213 /* CodexManagedProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C3650B1BBD12D1980FE6C6 /* CodexManagedProcess.swift */; };
@@ -1438,6 +1439,7 @@
 		CB8C42FD2C441B74004EC86F /* BaiduApiTranslate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiTranslate.swift; sourceTree = "<group>"; };
 		CB8C42FE2C441B74004EC86F /* BaiduApiResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaiduApiResponse.swift; sourceTree = "<group>"; };
 		CCD19E15F95144B0B2CAF66F /* ClaudeCodeDebugWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeDebugWindow.swift; sourceTree = "<group>"; };
+		ABDD6BB67A5A4D4786F78427 /* OCRStreamingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRStreamingTests.swift; sourceTree = "<group>"; };
 		CDA80C110000000000000002 /* OCRFormulaImageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRFormulaImageTests.swift; sourceTree = "<group>"; };
 		CFF517B31357FC07D98440EE /* CodexComponentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexComponentManager.swift; sourceTree = "<group>"; };
 		D2BDD519F8FC435085E73F8F /* GitHubCopilotServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotServiceTests.swift; sourceTree = "<group>"; };
@@ -1613,6 +1615,7 @@
 				030732C62F24862A0001382A /* Support */,
 				030732C72F24862A0001382A /* OCRImageTests.swift */,
 				030732D62F24862A0001382A /* OCRQRCodeTests.swift */,
+				ABDD6BB67A5A4D4786F78427 /* OCRStreamingTests.swift */,
 				CDA80C110000000000000002 /* OCRFormulaImageTests.swift */,
 				030732C82F24862A0001382A /* OCRPunctuationTests.swift */,
 				030732C92F24862A0001382A /* OCRTextProcessingChineseTests.swift */,
@@ -4522,6 +4525,7 @@
 				030732D52F24862A0001382A /* OCRTestSample+Chinese.swift in Sources */,
 				030732D72F24862A0001382A /* OCRQRCodeTests.swift in Sources */,
 				083DA060DE9746EBBFF81EDC /* DeepSeekOCRTests.swift in Sources */,
+				1460E92BF8B9455E95020DA2 /* OCRStreamingTests.swift in Sources */,
 				CDA80C110000000000000001 /* OCRFormulaImageTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

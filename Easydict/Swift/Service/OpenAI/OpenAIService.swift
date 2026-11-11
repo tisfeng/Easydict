@@ -58,6 +58,26 @@ class OpenAIService: BaseOpenAIService {
         let query = makeChatQuery(messages: [message])
         return try await requestChatText(query: query, url: endpoint, apiKey: apiKey)
     }
+
+    override func recognizeImage(
+        _ imageURL: String, prompt: String, onDelta: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> String {
+        let endpoint = try validateChatStreamRequest()
+        let message: ChatQuery.ChatCompletionMessageParam = .user(.init(content: .contentParts([
+            .text(.init(text: prompt)),
+            .image(.init(imageUrl: .init(url: imageURL, detail: nil))),
+        ])))
+        let transport = OpenAIStreamTransport()
+        let request = try transport.makeRequest(
+            query: makeChatQuery(messages: [message]),
+            url: endpoint,
+            apiKey: apiKey
+        )
+        return try await transport.stream(request: request) { result in
+            if let delta = result.choices.first?.delta.content { onDelta(delta) }
+        }
+    }
 }
 
 // MARK: - OpenAIModel

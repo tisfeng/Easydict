@@ -25,6 +25,7 @@ struct CodexCLIServiceConfigurationView: View {
         self._managedModel = .init(service.managedModelKey)
         self._managedEffort = .init(service.managedReasoningEffortKey)
         self._localEffort = .init(service.reasoningEffortKey)
+        self._localModel = .init(service.modelKey)
         CodexRequestCoordinator.shared.observe(uuid: service.uuid)
     }
 
@@ -114,15 +115,35 @@ struct CodexCLIServiceConfigurationView: View {
             showThinkTagContent: false,
             showValidationButton: accessMode == .localCLI
         )
+        .task(id: "\(accessMode.rawValue):\(localModel)") {
+            guard accessMode == .localCLI else { return }
+            let requestedModel = localModel
+            do {
+                let discovered = try await CodexManagedAppServer.local.availableLocalModels()
+                try Task.checkCancellation()
+                guard accessMode == .localCLI, localModel == requestedModel else { return }
+                localModels = discovered
+                localEffort = CodexServiceConfiguration.compatibleLocalEffort(
+                    localEffort, model: localModel, models: discovered
+                )
+            } catch {
+                guard !Task.isCancelled, accessMode == .localCLI, localModel == requestedModel else { return }
+                // A failed scan must not advertise preset capabilities or change saved choices.
+                localModels = []
+            }
+        }
     }
 
     // MARK: Private
+
+    @State private var localModels: [CodexManagedAppServer.LocalModel] = []
 
     private let service: CodexCLIService
     @Default private var accessMode: CodexAccessMode
     @Default private var managedModel: String
     @Default private var managedEffort: CodexReasoningEffort
     @Default private var localEffort: CodexReasoningEffort
+    @Default private var localModel: String
 
     private var isManagedModelSupported: Bool {
         CodexManagedRuntime.bundledModelNames.contains(managedModel)
@@ -141,7 +162,7 @@ struct CodexCLIServiceConfigurationView: View {
     }
 
     private var localEfforts: [CodexReasoningEffort] {
-        CodexServiceConfiguration.reasoningEfforts(mode: .localCLI, model: "")
+        CodexServiceConfiguration.reasoningEfforts(mode: .localCLI, model: localModel, localModels: localModels)
     }
 
     private var localEffortSelection: Binding<CodexReasoningEffort?> {

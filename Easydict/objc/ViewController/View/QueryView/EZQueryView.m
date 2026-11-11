@@ -41,6 +41,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
 @property (nonatomic, strong) id fontSizeObserver;
 @property (nonatomic, strong) EDMarkdownLabel *formulaPreview;
+@property (nonatomic, assign) BOOL didEnableStreamingFormulaPreview;
 @property (nonatomic, strong) EDMarkdownToggleButton *markdownButton;
 
 @end
@@ -378,7 +379,16 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     }
 }
 
+- (void)enableStreamingFormulaPreview {
+    if (!self.didEnableStreamingFormulaPreview && !self.markdownButton.hidden
+        && [EDMarkdownLabel containsMath:self.copiedText]) {
+        self.didEnableStreamingFormulaPreview = YES;
+        [self enableFormulaPreview];
+    }
+}
+
 - (void)resetFormulaPreview {
+    self.didEnableStreamingFormulaPreview = NO;
     if (self.formulaPreview && self.visibleTextView == self.formulaPreview) {
         [self showFormulaPreview:NO];
     }

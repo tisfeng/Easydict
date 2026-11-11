@@ -10,7 +10,8 @@
   "testTargets": [
     {
       "selectedTests": [
-        "CodexFormulaImageTests/testRecognizesFormulaImage"
+        "CodexFormulaImageTests/testRecognizesFormulaImage",
+        "CodexFormulaImageTests/testStreamsTranslationAndRendersClosedFormula"
       ],
       "target": {
         "containerPath": "container:Easydict.xcodeproj",

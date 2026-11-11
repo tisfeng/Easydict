@@ -30,6 +30,17 @@ actor CodexManagedAppServer {
         let deltaReceived: @Sendable (String) -> ()
     }
 
+    struct LocalModel: Sendable {
+        let identifier: String
+        let isDefault: Bool
+        let inputModalities: [String]?
+        let efforts: [CodexReasoningEffort]
+
+        var acceptsImages: Bool {
+            inputModalities?.contains("image") == true
+        }
+    }
+
     static let shared = CodexManagedAppServer()
     static let local = CodexManagedAppServer()
     static let providerID = "easydict"
@@ -173,6 +184,11 @@ actor CodexManagedAppServer {
         }
     }
 
+    /// Returns the same model capabilities used to validate local image requests.
+    func availableLocalModels() async throws -> [LocalModel] {
+        try await localModelList()
+    }
+
     /// Stops the shared process before credentials or managed component identity changes.
     func invalidate() {
         runtimeLoad?.task.cancel()
@@ -182,17 +198,6 @@ actor CodexManagedAppServer {
     }
 
     // MARK: Private
-
-    private struct LocalModel: Sendable {
-        let identifier: String
-        let isDefault: Bool
-        let inputModalities: [String]?
-        let efforts: [CodexReasoningEffort]
-
-        var acceptsImages: Bool {
-            inputModalities?.contains("image") == true
-        }
-    }
 
     private struct RPCResponse: @unchecked Sendable {
         let object: [String: Any]
@@ -757,7 +762,6 @@ extension CodexManagedAppServer {
 
     private func threadParameters(model: String, runtime: CodexManagedRuntime?, isOCR: Bool) -> [String: Any] {
         var parameters: [String: Any] = [
-            "model": model,
             "cwd": (runtime?.workingDirectory ?? FileManager.default.temporaryDirectory).path,
             "approvalPolicy": "never",
             "sandbox": "read-only",
@@ -767,6 +771,7 @@ extension CodexManagedAppServer {
             "ephemeral": true,
             "serviceName": "easydict",
         ]
+        if !model.isEmpty { parameters["model"] = model }
         if runtime != nil { parameters["modelProvider"] = Self.providerID }
         return parameters
     }

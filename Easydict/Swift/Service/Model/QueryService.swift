@@ -492,6 +492,16 @@ open class QueryService: NSObject {
         fatalError("You must override \(#function) in a subclass.")
     }
 
+    /// Streams image transcription deltas when supported; ordinary OCR remains a single result.
+    @nonobjc
+    open func ocr(
+        _ image: NSImage, from: Language, to: Language,
+        onDelta: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> EZOCRResult? {
+        try await ocr(image, from: from, to: to)
+    }
+
     /// Perform OCR for the given query model.
     open func ocr(_ queryModel: QueryModel) async throws -> EZOCRResult? {
         guard let image = queryModel.ocrImage else {

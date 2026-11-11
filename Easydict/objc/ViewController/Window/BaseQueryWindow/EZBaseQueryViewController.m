@@ -559,7 +559,14 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     BOOL saveOCRLocally = MyConfiguration.shared.localAutoSave;
     mm_weakify(self);
-    [self.detectManager ocrAndDetectTextWithCompletion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+    [self.detectManager ocrAndDetectTextWithProgress:^(NSString *text) {
+        mm_strongify(self);
+        if (![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
+            [self.queryView startLoadingAnimation:NO];
+            self.inputText = text;
+            [self.queryView enableStreamingFormulaPreview];
+        }
+    } completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
         if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSUserCancelledError) {
             [self.queryView startLoadingAnimation:NO];
@@ -614,7 +621,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             }
 
             [self.queryView highlightAllLinks];
-            [self.queryView enableFormulaPreview];
+            [self.queryView enableStreamingFormulaPreview];
 
             if ([self.inputText ns_isURL]) {
                 // Append a whitespace to beautify the link.

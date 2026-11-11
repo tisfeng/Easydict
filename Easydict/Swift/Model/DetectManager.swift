@@ -71,56 +71,13 @@ public final class DetectManager: NSObject {
     /// Performs OCR on the query model's image and then detects the language of the OCR result.
     /// - Parameter completion: Callback with the updated query model and optional error.
     public func ocrAndDetectText(completion: @escaping (QueryModel, Error?) -> ()) {
-        cancelOCR()
-        let requestModel = queryModel
-        let requestImage = requestModel.ocrImage
-        let requestAction = requestModel.actionType
-        let requestInput = requestModel.inputText
-        let requestLanguage = requestModel.queryFromLanguage
-        let requestID = UUID()
-        latestOCRRequestID = requestID
-        let service = ocrService
-        ocrTask = performOCR(using: service) { [weak self] ocrResult, error in
-            guard let self else {
-                return
-            }
+        ocrAndDetectText(progress: { _ in }, completion: completion)
+    }
 
-            guard latestOCRRequestID == requestID else { return }
-            ocrTask = nil
-            latestOCRRequestID = nil
-
-            // A superseded OCR request must not replace a newer screenshot preview.
-            guard queryModel === requestModel,
-                  requestModel.ocrImage === requestImage, requestModel.actionType == requestAction,
-                  requestModel.inputText == requestInput else { return }
-
-            // Another window can change the shared language without starting a new request here.
-            guard requestModel.queryFromLanguage == requestLanguage else {
-                completion(requestModel, CocoaError(.userCancelled))
-                return
-            }
-
-            if error is CancellationError {
-                completion(requestModel, CocoaError(.userCancelled))
-                return
-            }
-
-            guard let ocrResult else {
-                completion(queryModel, error)
-                return
-            }
-
-            queryModel.inputText = ocrResult.mergedText
-            let ocrLanguage = ocrResult.from
-            if ocrLanguage != .auto {
-                queryModel.detectedLanguage = ocrLanguage
-                if service is StreamService {
-                    queryModel.needDetectLanguage = false
-                }
-            }
-
-            completion(queryModel, error)
-        }
+    public func ocrAndDetectText(
+        progress: @escaping (String) -> (), completion: @escaping (QueryModel, Error?) -> ()
+    ) {
+        ocrAndDetectText(using: ocrService, progress: progress, completion: completion)
     }
 
     /// Detects the language of the given text using Apple, Google, and/or Baidu services
@@ -221,6 +178,77 @@ public final class DetectManager: NSObject {
         configuredServiceIDs.filter { makeOCRService($0) != nil }.sorted()
     }
 
+    @nonobjc
+    func ocrAndDetectText(
+        using service: QueryService, progress: @escaping (String) -> (),
+        completion: @escaping (QueryModel, Error?) -> ()
+    ) {
+        cancelOCR()
+        let requestModel = queryModel
+        let requestImage = requestModel.ocrImage
+        let requestAction = requestModel.actionType
+        var requestInput = requestModel.inputText
+        var streamedText = ""
+        var lastProgressTime = Date.distantPast
+        let requestLanguage = requestModel.queryFromLanguage
+        let requestID = UUID()
+        latestOCRRequestID = requestID
+        ocrTask = performOCR(using: service, onDelta: { [weak self] delta in
+            guard let self, latestOCRRequestID == requestID,
+                  queryModel === requestModel, requestModel.ocrImage === requestImage,
+                  requestModel.actionType == requestAction,
+                  requestModel.inputText == requestInput,
+                  requestModel.queryFromLanguage == requestLanguage else { return }
+            streamedText += delta
+            guard !streamedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                  Date().timeIntervalSince(lastProgressTime) >= 0.08 else { return }
+            lastProgressTime = Date()
+            requestInput = streamedText
+            requestModel.inputText = streamedText
+            progress(streamedText)
+        }) { [weak self] ocrResult, error in
+            guard let self else {
+                return
+            }
+
+            guard latestOCRRequestID == requestID else { return }
+            ocrTask = nil
+            latestOCRRequestID = nil
+
+            // A superseded OCR request must not replace a newer screenshot preview.
+            guard queryModel === requestModel,
+                  requestModel.ocrImage === requestImage, requestModel.actionType == requestAction,
+                  requestModel.inputText == requestInput else { return }
+
+            // Another window can change the shared language without starting a new request here.
+            guard requestModel.queryFromLanguage == requestLanguage else {
+                completion(requestModel, CocoaError(.userCancelled))
+                return
+            }
+
+            if error is CancellationError {
+                completion(requestModel, CocoaError(.userCancelled))
+                return
+            }
+
+            guard let ocrResult else {
+                completion(queryModel, error)
+                return
+            }
+
+            queryModel.inputText = ocrResult.mergedText
+            let ocrLanguage = ocrResult.from
+            if ocrLanguage != .auto {
+                queryModel.detectedLanguage = ocrLanguage
+                if service is StreamService {
+                    queryModel.needDetectLanguage = false
+                }
+            }
+
+            completion(queryModel, error)
+        }
+    }
+
     // MARK: Private
 
     private static var configuredServiceIDs: Set<String> {
@@ -257,7 +285,8 @@ public final class DetectManager: NSObject {
 
     @discardableResult
     private func performOCR(
-        using service: QueryService, completion: @escaping (EZOCRResult?, Error?) -> ()
+        using service: QueryService, onDelta: @escaping (String) -> () = { _ in },
+        completion: @escaping (EZOCRResult?, Error?) -> ()
     )
         -> Task<(), Never>? {
         guard let image = queryModel.ocrImage else {
@@ -269,13 +298,24 @@ public final class DetectManager: NSObject {
         let sourceLanguage = queryModel.queryFromLanguage
         let targetLanguage = queryModel.queryTargetLanguage
         return Task {
+            let (deltas, continuation) = AsyncStream<String>.makeStream()
+            // Consume on the main actor and drain before completion, preserving provider order.
+            let progressTask = Task { @MainActor in
+                for await delta in deltas { onDelta(delta) }
+            }
             do {
-                let result = try await service.ocr(image, from: sourceLanguage, to: targetLanguage)
+                let result = try await service.ocr(image, from: sourceLanguage, to: targetLanguage, onDelta: {
+                    continuation.yield($0)
+                })
+                continuation.finish()
+                await progressTask.value
                 try Task.checkCancellation()
                 await MainActor.run {
                     completion(result, nil)
                 }
             } catch {
+                continuation.finish()
+                await progressTask.value
                 await MainActor.run {
                     completion(nil, error)
                 }

@@ -10,7 +10,8 @@
   "testTargets": [
     {
       "selectedTests": [
-        "DeepSeekFormulaImageTests/testRecognizesFormulaImage"
+        "DeepSeekFormulaImageTests/testRecognizesFormulaImage",
+        "DeepSeekFormulaImageTests/testStreamsTranslationAndRendersClosedFormula"
       ],
       "target": {
         "containerPath": "container:Easydict.xcodeproj",
