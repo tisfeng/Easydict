@@ -113,7 +113,8 @@ struct CodexCLIServiceConfigurationView: View {
             showSupportedModelsSection: false,
             showUsedModelSection: false,
             showThinkTagContent: false,
-            showValidationButton: accessMode == .localCLI
+            validationAction: accessMode == .managed ? validateManagedConnection : nil,
+            validationDisabled: accessMode == .managed && !canValidateManagedConnection
         )
         .task(id: "\(accessMode.rawValue):\(localModel)") {
             guard accessMode == .localCLI else { return }
@@ -136,6 +137,8 @@ struct CodexCLIServiceConfigurationView: View {
 
     // MARK: Private
 
+    @ObservedObject private var account = CodexAccount.shared
+    @ObservedObject private var component = CodexComponentManager.shared
     @State private var localModels: [CodexAppServer.LocalModel] = []
 
     private let service: CodexService
@@ -144,6 +147,10 @@ struct CodexCLIServiceConfigurationView: View {
     @Default private var managedEffort: CodexReasoningEffort
     @Default private var localEffort: CodexReasoningEffort
     @Default private var localModel: String
+
+    private var canValidateManagedConnection: Bool {
+        component.isReady && !component.isBusy && account.isSignedIn && !account.isBusy
+    }
 
     private var isManagedModelSupported: Bool {
         CodexRuntime.bundledModelNames.contains(managedModel)
@@ -173,6 +180,12 @@ struct CodexCLIServiceConfigurationView: View {
 
     private var managedEfforts: [CodexReasoningEffort] {
         CodexServiceConfig.reasoningEfforts(mode: .managed, model: managedModel)
+    }
+
+    private func validateManagedConnection() {
+        let configuration = CodexServiceConfig(uuid: service.uuid)
+        guard configuration.mode == .managed, canValidateManagedConnection else { return }
+        account.validate(configuration: configuration)
     }
 }
 

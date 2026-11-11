@@ -31,7 +31,6 @@ struct CodexManagedAccountView: View {
                     if account.isBusy {
                         Button("service.codex_cli.managed.cancel") { account.cancelCurrentOperation() }
                     } else if account.isSignedIn {
-                        Button("service.codex_cli.managed.verify") { account.validate(configuration: configuration) }
                         Button("service.codex_cli.managed.logout") { account.logout() }
                     } else {
                         Button("service.codex_cli.managed.login") { account.login(origin: origin) }
