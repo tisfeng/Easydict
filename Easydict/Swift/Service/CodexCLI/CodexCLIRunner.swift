@@ -27,6 +27,30 @@ final class CodexCLIRunner: @unchecked Sendable {
 
     // MARK: Internal
 
+    /// Codex feature flags disabled for translation-only subprocess runs.
+    ///
+    /// Official references:
+    /// - CLI `--disable`: https://developers.openai.com/codex/cli/reference
+    /// - Feature flags: https://developers.openai.com/codex/config-basic#feature-flags
+    /// - Feature list: https://developers.openai.com/codex/cli/reference#codex-features
+    static let disabledToolFeatures = [
+        "shell_tool",
+        "shell_snapshot",
+        "browser_use",
+        "browser_use_external",
+        "in_app_browser",
+        "computer_use",
+        "image_generation",
+        "apps",
+        "plugins",
+        "hooks",
+        "multi_agent",
+        "skill_mcp_dependency_install",
+        "tool_call_mcp_elicitation",
+        "tool_suggest",
+        "workspace_dependencies",
+    ]
+
     /// Token usage populated when the subprocess terminates normally.
     /// `nil` if the process has not yet finished or no `token_count` event was emitted.
     private(set) var tokenUsage: CodexTokenUsage?
@@ -221,6 +245,57 @@ final class CodexCLIRunner: @unchecked Sendable {
         done
         printf '\n%s\n' '\#(environmentSentinelEnd)'
         """#
+    }
+
+    /// Returns the path to the first `codex` binary found on this machine.
+    ///
+    /// The result is cached after the first successful lookup so the login-shell
+    /// invocation only happens once per app session. The cached path is revalidated
+    /// on each call so that uninstall or upgrade is detected automatically.
+    ///
+    /// - Throws: `CodexCLIError.notInstalled` if no binary is found.
+    static func detectCodexBinary() throws -> String {
+        cacheLock.lock()
+        defer { cacheLock.unlock() }
+
+        if let cached = cachedBinaryPath {
+            if FileManager.default.isExecutableFile(atPath: cached) {
+                return cached
+            }
+            cachedBinaryPath = nil
+        }
+
+        var resolvedPath: String?
+
+        if let raw = runViaLoginShell("which codex") {
+            resolvedPath = raw
+                .components(separatedBy: "\n")
+                .map { $0.trimmingCharacters(in: .whitespaces) }
+                .first {
+                    !$0.isEmpty
+                        && URL(fileURLWithPath: $0).lastPathComponent == "codex"
+                        && FileManager.default.isExecutableFile(atPath: $0)
+                }
+        }
+
+        if resolvedPath == nil {
+            let candidates = [
+                "\(NSHomeDirectory())/.local/bin/codex",
+                "\(NSHomeDirectory())/.codex/bin/codex",
+                "/usr/local/bin/codex",
+                "/opt/homebrew/bin/codex",
+            ]
+            for candidate in candidates where FileManager.default.isExecutableFile(atPath: candidate) {
+                resolvedPath = candidate
+                break
+            }
+        }
+
+        if let path = resolvedPath {
+            cachedBinaryPath = path
+            return path
+        }
+        throw CodexCLIError.notInstalled
     }
 
     /// Runs `codex exec --json` and yields the agent's final message text.
@@ -430,30 +505,6 @@ final class CodexCLIRunner: @unchecked Sendable {
         let context: CodexRunContext
     }
 
-    /// Codex feature flags disabled for translation-only subprocess runs.
-    ///
-    /// Official references:
-    /// - CLI `--disable`: https://developers.openai.com/codex/cli/reference
-    /// - Feature flags: https://developers.openai.com/codex/config-basic#feature-flags
-    /// - Feature list: https://developers.openai.com/codex/cli/reference#codex-features
-    private static let disabledToolFeatures = [
-        "shell_tool",
-        "shell_snapshot",
-        "browser_use",
-        "browser_use_external",
-        "in_app_browser",
-        "computer_use",
-        "image_generation",
-        "apps",
-        "plugins",
-        "hooks",
-        "multi_agent",
-        "skill_mcp_dependency_install",
-        "tool_call_mcp_elicitation",
-        "tool_suggest",
-        "workspace_dependencies",
-    ]
-
     /// Cached path from the first successful `detectCodexBinary()` call.
     /// Avoids spawning a login shell on every translation request.
     private static var cachedBinaryPath: String?
@@ -590,57 +641,6 @@ final class CodexCLIRunner: @unchecked Sendable {
         if buffer.count > maxSize {
             buffer = Data(buffer.suffix(maxSize))
         }
-    }
-
-    /// Returns the path to the first `codex` binary found on this machine.
-    ///
-    /// The result is cached after the first successful lookup so the login-shell
-    /// invocation only happens once per app session. The cached path is revalidated
-    /// on each call so that uninstall or upgrade is detected automatically.
-    ///
-    /// - Throws: `CodexCLIError.notInstalled` if no binary is found.
-    private static func detectCodexBinary() throws -> String {
-        cacheLock.lock()
-        defer { cacheLock.unlock() }
-
-        if let cached = cachedBinaryPath {
-            if FileManager.default.isExecutableFile(atPath: cached) {
-                return cached
-            }
-            cachedBinaryPath = nil
-        }
-
-        var resolvedPath: String?
-
-        if let raw = runViaLoginShell("which codex") {
-            resolvedPath = raw
-                .components(separatedBy: "\n")
-                .map { $0.trimmingCharacters(in: .whitespaces) }
-                .first {
-                    !$0.isEmpty
-                        && URL(fileURLWithPath: $0).lastPathComponent == "codex"
-                        && FileManager.default.isExecutableFile(atPath: $0)
-                }
-        }
-
-        if resolvedPath == nil {
-            let candidates = [
-                "\(NSHomeDirectory())/.local/bin/codex",
-                "\(NSHomeDirectory())/.codex/bin/codex",
-                "/usr/local/bin/codex",
-                "/opt/homebrew/bin/codex",
-            ]
-            for candidate in candidates where FileManager.default.isExecutableFile(atPath: candidate) {
-                resolvedPath = candidate
-                break
-            }
-        }
-
-        if let path = resolvedPath {
-            cachedBinaryPath = path
-            return path
-        }
-        throw CodexCLIError.notInstalled
     }
 
     /// Runs a command via the user's login shell, returning trimmed stdout or nil on failure.

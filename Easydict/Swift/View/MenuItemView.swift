@@ -61,8 +61,8 @@ struct MenuItemView: View {
 
             quitItem.keyboardShortcut(.init("q"))
         }
-        .task {
-            latestVersion = await fetchRepoLatestVersion(EZGithubRepoEasydict)
+        .task(id: includeBetaUpdates) {
+            latestVersion = await GitHubReleaseFetcher.latestVersion(includePrerelease: includeBetaUpdates)
         }
     }
 
@@ -86,11 +86,11 @@ struct MenuItemView: View {
     @Default(.showOCRMenuItems) private var showOCRMenuItems
     @Default(.mouseSelectTranslateWindowType) private var mouseSelectTranslateWindowType
     @Default(.shortcutSelectTranslateWindowType) private var shortcutSelectTranslateWindowType
+    @Default(.includeBetaUpdates) private var includeBetaUpdates
 
     private var versionString: String {
         let defaultLabel = "Easydict  \(currentVersion)"
-        if let latestVersion,
-           currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending {
+        if let latestVersion, GitHubReleaseFetcher.isNewer(latestVersion, than: currentVersion) {
             return defaultLabel + "  (✨\(latestVersion) )"
         } else {
             return defaultLabel
@@ -142,10 +142,7 @@ struct MenuItemView: View {
     /// Version item
     @ViewBuilder private var versionItem: some View {
         Button(versionString) {
-            guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/releases") else {
-                return
-            }
-            openURL(versionURL)
+            openURL(AppConstants.releasesURL)
         }
     }
 
@@ -197,10 +194,7 @@ struct MenuItemView: View {
         Menu("Help") {
             Button("Feedback") {
                 logInfo("Open Feedback")
-                guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/issues") else {
-                    return
-                }
-                openURL(versionURL)
+                openURL(AppConstants.issuesURL)
             }
             Button("Export Log") {
                 exportLogAction()

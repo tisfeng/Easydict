@@ -72,25 +72,35 @@ struct CodexCLIServiceTests {
         #expect(CodexReasoningEffort.default.cliValue == nil)
     }
 
-    @Test("local connection validation rejects a retained unsupported effort")
-    func localConnectionValidationRejectsRetainedUnsupportedEffort() async {
-        let service = CodexCLIService()
-        let uuid = UUID().uuidString
-        service.uuid = uuid
-        let modeKey = CodexAccessMode.key(uuid: uuid)
-        let effortKey = CodexServiceConfiguration.effortKey(uuid: uuid, mode: .localCLI)
-        defer {
-            service.cancelStream()
-            Defaults.reset(modeKey, effortKey)
+    @Test("Local reasoning options follow the selected live model, including default and Max")
+    func localModelReasoningCapabilities() {
+        let models: [CodexManagedAppServer.LocalModel] = [
+            .init(
+                identifier: "vision-fast",
+                isDefault: true,
+                inputModalities: ["text", "image"],
+                efforts: [.low, .high, .max]
+            ),
+            .init(identifier: "other", isDefault: false, inputModalities: ["text"], efforts: [.minimal, .medium]),
+        ]
+        #expect(CodexServiceConfiguration.reasoningEfforts(mode: .localCLI, model: "", localModels: models)
+            == [.default, .low, .high, .max])
+        #expect(CodexServiceConfiguration.reasoningEfforts(mode: .localCLI, model: "other", localModels: models)
+            == [.default, .minimal, .medium])
+        #expect(CodexServiceConfiguration
+            .reasoningEfforts(mode: .localCLI, model: "missing", localModels: models) == [.default])
+        #expect(CodexServiceConfiguration.compatibleLocalEffort(.minimal, model: "vision-fast", models: models) == .low)
+        #expect(CodexServiceConfiguration.compatibleLocalEffort(.high, model: "vision-fast", models: models) == .high)
+        #expect(CodexServiceConfiguration
+            .compatibleLocalEffort(.ultra, model: "vision-fast", models: models) == .default)
+        #expect(CodexServiceConfiguration.compatibleLocalEffort(.minimal, model: "missing", models: models) == .minimal)
+        #expect(CodexServiceConfiguration.compatibleLocalEffort(.minimal, model: "vision-fast", models: []) == .minimal)
+        #expect(throws: CodexCLIError.self) {
+            try CodexReasoningEffort.validateLocalOverride("minimal", supportedEfforts: models[0].efforts)
         }
-
-        Defaults[modeKey] = .localCLI
-        Defaults[effortKey] = .max
-
-        let result = await service.validate()
-
-        #expect(Defaults[effortKey] == .max)
-        #expect(result.error?.message == CodexCLIError.unsupportedReasoningEffort.localizedDescription)
+        #expect(throws: Never.self) {
+            try CodexReasoningEffort.validateLocalOverride("max", supportedEfforts: models[0].efforts)
+        }
     }
 
     @Test("Documented reasoning effort values keep CLI values")

@@ -23,6 +23,12 @@
             "value" : "Easydict"
           }
         },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -60,6 +66,12 @@
           }
         },
         "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
+        "ur" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Easydict"
@@ -107,6 +119,12 @@
             "value" : "Easydict vyžaduje povolenie na vykonanie AppleScriptu."
           }
         },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict کو AppleScript چلانے کے لیے اجازت درکار ہے۔"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -147,6 +165,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Autorské práva © 2023-2025 tisfeng. Všetky práva vyhradené."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copyright © 2023-2025 tisfeng. جملہ حقوق محفوظ ہیں۔"
           }
         },
         "zh-Hans" : {

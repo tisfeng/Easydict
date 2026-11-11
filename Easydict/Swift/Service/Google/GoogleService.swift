@@ -345,7 +345,7 @@ class GoogleService: QueryService {
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.timeoutInterval = EZNetWorkTimeoutInterval
+        request.timeoutInterval = AppConstants.networkTimeoutInterval
         request.httpBody = try googleTTSRequestBody(withText: text)
         request.setValue(
             "application/x-www-form-urlencoded;charset=UTF-8",

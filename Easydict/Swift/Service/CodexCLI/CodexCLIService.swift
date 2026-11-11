@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import AppKit
 import Combine
 import Defaults
 import Foundation
@@ -14,15 +15,13 @@ import Foundation
 
 /// A translation service using either the bundled ChatGPT runtime or the local CLI.
 ///
-/// Managed translations reuse one local App Server process but receive independent
-/// ephemeral threads, so there is no cross-query conversation state. Local CLI
-/// mode continues to spawn `codex exec --json` for each translation.
+/// Both modes stream through their own App Server process with independent
+/// ephemeral threads, so there is no cross-query conversation state.
 @objc(EZCodexCLIService)
 final class CodexCLIService: StreamService {
     // MARK: Lifecycle
 
     deinit {
-        runner?.cancel()
         managedRunner?.cancel()
         if let registration { CodexRequestCoordinator.shared.remove(registration) }
     }
@@ -41,6 +40,8 @@ final class CodexCLIService: StreamService {
     /// Token usage from the most recent completed translation.
     public private(set) var tokenUsage: CodexTokenUsage?
 
+    public override func supportsOCR() -> Bool { true }
+
     public override func serviceType() -> ServiceType {
         .codexCLI
     }
@@ -54,14 +55,11 @@ final class CodexCLIService: StreamService {
     }
 
     public override func cancelStream() {
-        let current = runLock.withLock { () -> (CodexCLIRunner?, CodexManagedTranslation?) in
-            let current = (runner, managedRunner)
-            runner = nil
-            managedRunner = nil
-            return current
+        let current = runLock.withLock {
+            defer { managedRunner = nil }
+            return managedRunner
         }
-        current.0?.cancel()
-        current.1?.cancel()
+        current?.cancel()
         // The base stream also calls this to release finished resources before
         // its final main-thread callback. Keep configuration invalidation alive
         // until this service starts another request or is released.
@@ -71,11 +69,7 @@ final class CodexCLIService: StreamService {
         CodexCLIServiceConfigurationView(service: self)
     }
 
-    /// Streams a managed App Server turn or a local `codex exec --json` request.
-    ///
-    /// `codex exec` does not have a separate system-prompt flag, so the system
-    /// instructions and conversation turns are concatenated into a single prompt
-    /// and sent through stdin to avoid argv size limits.
+    /// Streams a translation through the App Server for the selected runtime.
     public override func contentStreamTranslate(
         _ text: String,
         from: Language,
@@ -91,8 +85,7 @@ final class CodexCLIService: StreamService {
             enableSystemPrompt: true
         )
 
-        // Codex has no separate system-prompt flag, so all messages are merged
-        // into one prompt with role prefixes.
+        // Preserve the existing role-prefixed translation prompt in the text turn.
         let messages = chatMessageDicts(chatQueryParam)
         let combinedPrompt = messages
             .map { "\($0.role.rawValue): \($0.content)" }
@@ -129,18 +122,13 @@ final class CodexCLIService: StreamService {
                 continuation.finish(throwing: error)
                 return
             }
-            let local: CodexCLIRunner?
-            let managed: CodexManagedTranslation?
+            let managed: CodexManagedTranslation
             do {
-                (local, managed) = try updateResultLock.withLock {
+                managed = try updateResultLock.withLock {
                     guard CodexRequestCoordinator.shared.isCurrent(token) else { throw CancellationError() }
-                    let local = configuration.mode == .localCLI ? CodexCLIRunner() : nil
-                    let managed = configuration.mode == .managed ? CodexManagedTranslation() : nil
-                    self.runLock.withLock {
-                        self.runner = local
-                        self.managedRunner = managed
-                    }
-                    return (local, managed)
+                    let managed = CodexManagedTranslation()
+                    self.runLock.withLock { self.managedRunner = managed }
+                    return managed
                 }
             } catch {
                 continuation.finish(throwing: error)
@@ -148,47 +136,31 @@ final class CodexCLIService: StreamService {
             }
             let task = Task {
                 do {
-                    if let managed {
+                    if configuration.mode == .managed {
                         try CodexManagedRuntime.validateSelection(
                             model: configuration.model, effort: configuration.effort.cliValue
                         )
-                        let runtime = try await CodexManagedAppServer.shared.runtime()
-                        let result = try await managed.runUsingAppServer(
-                            prompt: combinedPrompt,
-                            model: configuration.model,
-                            effort: configuration.effort.cliValue,
-                            runtime: runtime
-                        ) { chunk in
-                            do {
-                                try self.updateResultLock.withLock {
-                                    guard CodexRequestCoordinator.shared.isCurrent(token) else {
-                                        throw CancellationError()
-                                    }
-                                    continuation.yield(chunk)
-                                }
-                            } catch {
-                                managed.cancel()
-                            }
-                        }
-                        try self.updateResultLock.withLock {
-                            guard CodexRequestCoordinator.shared.isCurrent(token) else { throw CancellationError() }
-                            self.tokenUsage = result.usage
-                        }
-                    } else if let local {
-                        for try await chunk in local.run(
-                            prompt: combinedPrompt,
-                            model: configuration.model,
-                            reasoningEffort: configuration.effort.cliValue
-                        ) {
+                    }
+                    let runtime = configuration.mode == .managed ? try await CodexManagedAppServer.shared
+                        .runtime() : nil
+                    let response = try await managed.runUsingAppServer(
+                        prompt: combinedPrompt,
+                        model: configuration.model,
+                        effort: configuration.effort.cliValue,
+                        runtime: runtime
+                    ) { chunk in
+                        do {
                             try self.updateResultLock.withLock {
                                 guard CodexRequestCoordinator.shared.isCurrent(token) else { throw CancellationError() }
                                 continuation.yield(chunk)
                             }
+                        } catch {
+                            managed.cancel()
                         }
-                        try self.updateResultLock.withLock {
-                            guard CodexRequestCoordinator.shared.isCurrent(token) else { throw CancellationError() }
-                            self.tokenUsage = local.tokenUsage
-                        }
+                    }
+                    try self.updateResultLock.withLock {
+                        guard CodexRequestCoordinator.shared.isCurrent(token) else { throw CancellationError() }
+                        self.tokenUsage = response.usage
                     }
                     continuation.finish()
                 } catch {
@@ -197,8 +169,7 @@ final class CodexCLIService: StreamService {
             }
             continuation.onTermination = { _ in
                 task.cancel()
-                local?.cancel()
-                managed?.cancel()
+                managed.cancel()
                 // Keep the registration until the next request or deinit: the base stream
                 // may still have queued result updates after this content stream ends.
             }
@@ -240,6 +211,42 @@ final class CodexCLIService: StreamService {
         CodexServiceConfiguration.effortKey(uuid: uuid, mode: .managed)
     }
 
+    override func recognizeImage(_ imageURL: String, prompt: String) async throws -> String {
+        try await recognizeImage(imageURL, prompt: prompt, onDelta: { _ in })
+    }
+
+    override func recognizeImage(
+        _ imageURL: String, prompt: String, onDelta: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> String {
+        let configuration = CodexServiceConfiguration(uuid: uuid)
+        let coordinator = CodexRequestCoordinator.shared
+        let runner = CodexManagedTranslation()
+        let token = UUID()
+        coordinator.observe(uuid: uuid)
+        defer { coordinator.remove(token) }
+        let admission = try coordinator.register(token: token, configuration: configuration) { runner.cancel() }
+        if case let .blocked(reason) = admission {
+            throw CodexManagedError.operationInProgress(reason)
+        }
+        let runtime = configuration.mode == .managed ? try await CodexManagedAppServer.shared.runtime() : nil
+        try Task.checkCancellation()
+        let response = try await runner.runUsingAppServer(
+            prompt: prompt,
+            model: configuration.model,
+            effort: configuration.effort.cliValue,
+            runtime: runtime,
+            imageURL: imageURL,
+            deltaReceived: { delta in
+                guard coordinator.isCurrent(token) else { return }
+                onDelta(delta)
+            }
+        )
+        try Task.checkCancellation()
+        guard coordinator.isCurrent(token) else { throw CancellationError() }
+        return response.text
+    }
+
     /// Keeps fixed subscriptions: local model edits preserve automatic query behavior,
     /// while mode/auth/managed model changes refresh UI without sending current text.
     func setupCodexSubscribers() {
@@ -270,7 +277,6 @@ final class CodexCLIService: StreamService {
     // MARK: Private
 
     private let runLock = NSLock()
-    private var runner: CodexCLIRunner?
     private var managedRunner: CodexManagedTranslation?
     private var registration: UUID?
 
@@ -290,12 +296,11 @@ final class CodexCLIService: StreamService {
     }
 
     private func invalidateConfiguration(token: UUID, generation: UInt) {
-        let current = updateResultLock.withLock { () -> (CodexCLIRunner?, CodexManagedTranslation?) in
+        let current = updateResultLock.withLock { () -> CodexManagedTranslation? in
             runLock.lock()
             defer { runLock.unlock() }
-            guard registration == token else { return (nil, nil) }
-            let current = (runner, managedRunner)
-            runner = nil
+            guard registration == token else { return nil }
+            let current = managedRunner
             managedRunner = nil
             registration = nil
             if generation == resultGeneration {
@@ -315,7 +320,6 @@ final class CodexCLIService: StreamService {
             }
             return current
         }
-        current.0?.cancel()
-        current.1?.cancel()
+        current?.cancel()
     }
 }

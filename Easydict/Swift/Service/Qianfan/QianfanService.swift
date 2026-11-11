@@ -17,7 +17,7 @@ class QianfanService: OpenAIService {
     // MARK: Public
 
     public override func name() -> String {
-        NSLocalizedString("qianfan_translate", comment: "The name of Baidu Qianfan Translate")
+        NSLocalizedString("service.qianfan.name", comment: "The name of Baidu Qianfan Translate")
     }
 
     public override func serviceType() -> ServiceType {

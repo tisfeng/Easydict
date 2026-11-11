@@ -56,10 +56,6 @@ public class OCRTextProcessor {
         // Set basic OCR result properties using unified observations
         updateOCRResult(ocrResult, observations: observations)
 
-        log(
-            "\nOriginal unified OCR observations:(\(ocrResult.from)) \(observations.formattedDescription)"
-        )
-
         // If intelligent joining is not enabled, return simple result
         guard smartMerging else { return }
 
@@ -155,10 +151,6 @@ public class OCRTextProcessor {
         for (sectionIndex, section) in band.sections.enumerated() {
             let observations = section.observations
 
-            log(
-                "\nSection observations (\(observations.count)): \(observations.formattedDescription)"
-            )
-
             let language = detectLanguageForSection(
                 observations: observations,
                 ocrResult: ocrResult,
@@ -245,7 +237,7 @@ public class OCRTextProcessor {
         -> String {
         let sectionTextMerger = OCRSectionMerger(section: section)
         let mergedText = sectionTextMerger.performSmartMerging()
-        log("\nMerged section [\(bandIndex + 1).\(sectionIndex + 1)]: \(mergedText)")
+        log("\nMerged section [\(bandIndex + 1).\(sectionIndex + 1)]: \(mergedText.count) characters")
         return mergedText
     }
 
@@ -266,7 +258,7 @@ public class OCRTextProcessor {
         for (bandIndex, band) in processedBands.enumerated() {
             let bandMerger = OCRBandMerger(band: band)
             let bandText = bandMerger.performSmartMerging()
-            log("\nMerged band [\(bandIndex + 1)]: \(bandText)")
+            log("\nMerged band [\(bandIndex + 1)]: \(bandText.count) characters")
             mergedBandTexts.append(bandText)
         }
 
@@ -307,7 +299,7 @@ public class OCRTextProcessor {
 
             if let confidence {
                 ocrResult.confidence = CGFloat(confidence)
-                log("\nOCR text (\(ocrResult.from), \(confidence.string2f)): \(mergedText)\n")
+                log("\nOCR text (\(ocrResult.from), \(confidence.string2f)): \(mergedText.count) characters\n")
             }
         }
     }

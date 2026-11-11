@@ -34,7 +34,7 @@ class MiniMaxService: OpenAIService {
     }
 
     override var defaultModel: String {
-        MiniMaxModel.minimax_m2_5.rawValue
+        MiniMaxModel.minimax_m3_1_flash.rawValue
     }
 
     override var observeKeys: [Defaults.Key<String>] {
@@ -51,9 +51,6 @@ class MiniMaxService: OpenAIService {
 enum MiniMaxModel: String, CaseIterable {
     // Docs: https://platform.minimaxi.com/docs/api-reference/text-openai-api#支持的模型
 
-    case minimax_m2_5 = "MiniMax-M2.5"
-    case minimax_m2_5_highspeed = "MiniMax-M2.5-highspeed"
-    case minimax_m2_1 = "MiniMax-M2.1"
-    case minimax_m2_1_highspeed = "MiniMax-M2.1-highspeed"
-    case minimax_m2 = "MiniMax-M2"
+    case minimax_m3_1_flash = "MiniMax-M3.1-Flash"
+    case minimax_m3 = "MiniMax-M3"
 }

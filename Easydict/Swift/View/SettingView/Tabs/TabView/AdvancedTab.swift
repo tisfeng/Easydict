@@ -57,22 +57,10 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.prefer_youdao_tts_for_english_word_desc"
                     )
                 }
-                // Require macOS 15+
-                if #available(macOS 15.0, *) {
-                    Toggle(isOn: $enableLocalAppleTranslation) {
-                        AdvancedTabItemView(
-                            color: .orange,
-                            icon: .appleLogo,
-                            labelText: "setting.advance.apple_offline_translation",
-                            subtitleText: "setting.advance.apple_offline_translation_desc"
-                        )
-                    }
-                }
-
                 LabeledContent {
                     TextField(
                         text: $minClassicalChineseTextDetectLength,
-                        prompt: Text(verbatim: "\(SharedConstants.minClassicalChineseLength)")
+                        prompt: Text(verbatim: "\(AppConstants.minClassicalChineseLength)")
                     ) {
                         EmptyView()
                     }
@@ -257,6 +245,22 @@ struct AdvancedTab: View {
 
             // OCR settings section
             Section {
+                Picker("setting.advance.ocr_service", selection: $ocrServiceID) {
+                    Text("setting.advance.ocr_service.apple").tag(ServiceType.apple.rawValue)
+                    ForEach(DetectManager.ocrServiceIDs, id: \.self) { identifier in
+                        if let metadata = QueryServiceFactory.shared.metadata(withTypeId: identifier) {
+                            Text(metadata.title).tag(identifier)
+                        }
+                    }
+                }
+                Text("setting.advance.ocr_service.description")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .onAppear {
+                        if !DetectManager.ocrServiceIDs.contains(ocrServiceID) {
+                            ocrServiceID = ServiceType.apple.rawValue
+                        }
+                    }
                 Toggle(isOn: $enableYoudaoOCR) {
                     AdvancedTabItemView(
                         color: .blue,
@@ -471,9 +475,9 @@ struct AdvancedTab: View {
 
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.preferYoudaoTTSForEnglishWord) private var preferYoudaoTTSForEnglishWord
+    @Default(.ocrServiceID) private var ocrServiceID
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
     @Default(.enableCompatibilityReplace) private var enableCompatibilityReplace
-    @Default(.enableAppleOfflineTranslation) private var enableLocalAppleTranslation
     @Default(.minClassicalChineseTextDetectLength) private var minClassicalChineseTextDetectLength
     @Default(.enableOCRTextNormalization) private var enableOCRTextNormalization
     @Default(.showOCRMenuItems) private var showOCRMenuItems

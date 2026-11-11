@@ -359,28 +359,46 @@ open class QueryService: NSObject {
         to: Language
     )
         -> AsyncThrowingStream<QueryResult, Error> {
-        AsyncThrowingStream { [weak self] continuation in
-            Task {
+        let generation = updateResultLock.withLock { resultGeneration }
+        return AsyncThrowingStream { [weak self] continuation in
+            let task = Task {
                 guard let self else {
                     continuation.finish()
                     return
                 }
 
                 do {
-                    let result = try await self.translate(text, from: from, to: to)
-                    continuation.yield(result)
-                    continuation.finish()
+                    try self.updateResultLock.withLock {
+                        try Task.checkCancellation()
+                        guard self.resultGeneration == generation else { throw CancellationError() }
+                    }
+                    let result = try await QueryService.$queryGeneration.withValue(generation) {
+                        try await self.translate(text, from: from, to: to)
+                    }
+                    self.updateResultLock.withLock {
+                        if self.resultGeneration == generation, !Task.isCancelled {
+                            continuation.yield(result)
+                        }
+                        continuation.finish()
+                    }
                 } catch is CancellationError {
                     continuation.finish()
                 } catch {
-                    let errorResult = self.ensureResult()
-                    if errorResult.error == nil {
-                        errorResult.error = QueryError.queryError(from: error)
+                    self.updateResultLock.withLock {
+                        guard self.resultGeneration == generation, !Task.isCancelled else {
+                            continuation.finish()
+                            return
+                        }
+                        let errorResult = self.ensureResult()
+                        if errorResult.error == nil {
+                            errorResult.error = QueryError.queryError(from: error)
+                        }
+                        continuation.yield(errorResult)
+                        continuation.finish(throwing: error)
                     }
-                    continuation.yield(errorResult)
-                    continuation.finish(throwing: error)
                 }
             }
+            continuation.onTermination = { _ in task.cancel() }
         }
     }
 
@@ -462,6 +480,8 @@ open class QueryService: NSObject {
         try await audioPlayer.defaultTTSService.textToAudio(text, fromLanguage: fromLanguage, accent: accent)
     }
 
+    open func supportsOCR() -> Bool { false }
+
     /// Perform OCR for the given image.
     open func ocr(
         _ image: NSImage,
@@ -470,6 +490,16 @@ open class QueryService: NSObject {
     ) async throws
         -> EZOCRResult? {
         fatalError("You must override \(#function) in a subclass.")
+    }
+
+    /// Streams image transcription deltas when supported; ordinary OCR remains a single result.
+    @nonobjc
+    open func ocr(
+        _ image: NSImage, from: Language, to: Language,
+        onDelta: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> EZOCRResult? {
+        try await ocr(image, from: from, to: to)
     }
 
     /// Perform OCR for the given query model.
@@ -497,6 +527,8 @@ open class QueryService: NSObject {
 
     // MARK: Internal
 
+    @nonobjc @TaskLocal static var queryGeneration: UInt?
+
     /// Monotonic token used to drop stale stream chunks after result reset.
     ///
     /// `resetServiceResult()` may reuse the same `QueryResult` instance, so
@@ -522,7 +554,11 @@ open class QueryService: NSObject {
     private var cachedLanguages: [Language]?
     private var languageFromStringDict: [String: Language]?
     private var languageIndexDict: [Language: NSNumber]?
+}
 
+// MARK: - QueryService Private Implementation
+
+extension QueryService {
     /// Keeps preprocessing and stream creation in the originating query generation.
     /// The synchronous prehandle core writes shared result fields, so it uses the
     /// same lock as reset. No lock is held while awaiting stream output.

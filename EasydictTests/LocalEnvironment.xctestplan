@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "id": "317392C9-0934-4DB7-BA73-FC251FCA8499",
+      "name": "Configuration 1",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {},
+  "testTargets": [
+    {
+      "selectedTags": {
+        "tags": [
+          "requiresLocalEnvironment"
+        ]
+      },
+      "target": {
+        "containerPath": "container:Easydict.xcodeproj",
+        "identifier": "03022F2D2B370B7100B63209",
+        "name": "EasydictTests"
+      }
+    }
+  ],
+  "version": 1
+}

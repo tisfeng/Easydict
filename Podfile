@@ -25,9 +25,15 @@ target 'EasydictTests' do
 end
 
 post_install do |installer|
+  # Reviewed Xcode 27.2 recommendations while retaining the Pods compatibility settings.
+  # Do not advance this marker until a newer Xcode's recommendations have been reviewed.
+  installer.pods_project.root_object.attributes['LastUpgradeCheck'] = '2720'
+
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '13.0'
+      # Legacy Pod headers do not satisfy the framework module verifier's checks.
+      config.build_settings['ENABLE_MODULE_VERIFIER'] = 'NO'
       
       xcconfig_path = config.base_configuration_reference.real_path
       xcconfig = File.read(xcconfig_path)

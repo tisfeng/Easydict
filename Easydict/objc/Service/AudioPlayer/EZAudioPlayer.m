@@ -231,7 +231,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
                 designatedService:service
                          forceURL:forceURL];
         } else {
-            MMLogError(@"get audio url error: %@", error);
+            MMLogError(@"Get audio URL failed (%@, %ld)", error.domain, (long)error.code);
 
             // e.g. if service get audio url failed, try to use default tts, such as Google.
             [self playFallbackTTSWithFailedServiceType:service.serviceType];
@@ -324,7 +324,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         return;
     }
 
-    MMLogInfo(@"play remote audio url: %@", audioURLString);
+    MMLogInfo(@"Play remote audio (service: %@)", serviceType);
 
     // Since some of Youdao's audio cannot be played directly, it needs to be downloaded first, such as 'set'.
     BOOL download = self.enableDownload;
@@ -351,11 +351,11 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
               serviceType:(EZServiceType)serviceType {
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
+    configuration.timeoutIntervalForRequest = AppConstants.networkTimeoutInterval;
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:request completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
-            MMLogError(@"downloadWordAudio error: %@", error);
+            MMLogError(@"Download word audio failed (%@, %ld)", error.domain, (long)error.code);
             [session finishTasksAndInvalidate];
             return;
         }
@@ -534,7 +534,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
     // Check URL is valid
     if (!URL || !URL.scheme || !URL.host) {
-        MMLogWarn(@"audio url is invalid: %@", URL);
+        MMLogWarn(@"Audio URL is invalid");
         completion(nil);
         return;
     }
@@ -551,7 +551,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
                 isPlayable = YES;
             }
         } else {
-            MMLogError(@"load playable failed: %@", [error localizedDescription]);
+            MMLogError(@"Load playable audio failed (%@, %ld)", error.domain, (long)error.code);
         }
         MMLogInfo(@"audio url isPlayable: %d", isPlayable);
 

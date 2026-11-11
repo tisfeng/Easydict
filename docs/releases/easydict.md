@@ -89,13 +89,11 @@ Preflight 会检查 `asc`、`cmp`、`codesign`、`create-dmg`、`curl`、`ditto`
 `xmllint` 和 `xcrun`。还需要 Sparkle 的 `generate_appcast`；脚本依次检查
 `GENERATE_APPCAST`、`SPARKLE_BIN_DIR`、`PATH` 和 Xcode 已解析的 Sparkle 包产物。
 
-安装固定的 Python 依赖并检查认证：
+安装固定的 Python 依赖并检查 GitHub 认证；ASC 认证按下方专用配置验证：
 
 ```bash
 python3 -m pip install -r .agents/skills/release-easydict/scripts/requirements.txt
 gh auth status
-asc auth status --validate
-asc auth doctor
 ```
 
 ### `asc` CLI
@@ -105,37 +103,60 @@ asc auth doctor
 ```bash
 brew install asc
 asc version
-asc auth status --validate
-asc auth doctor
 ```
 
 日常发布仍从 `release-easydict` Skill 进入；`--output json` 供脚本解析，`--output table` 供人工查看。
 
 ### App Store Connect API 账号
 
-发布脚本不读取仓库内受 Git 跟踪的 Apple API key，而是使用 `asc` 已配置的 profile。推荐
-在 App Store Connect 的 **Users and Access → Integrations → API** 创建 API key，并把凭据
-保存在 macOS Keychain。需要准备：
+发布入口使用仓库外的专用文件配置，固定选择 `Easydict Release` profile。默认配置为
+`~/.config/easydict/release/asc-config.json`；可用 `EASYDICT_RELEASE_ASC_CONFIG` 指定其他
+绝对路径。Homebrew asc 的 ad-hoc 签名随升级变化，钥匙串对旧程序的授权可能无法继续
+匹配新版；文件认证避免了这类 ASC API 凭据的重复授权。
 
-- `Key ID`；
-- 团队 API key 的 `Issuer ID`，个人 API key 没有该字段；
-- 只能下载一次的 `.p8` 私钥；
-- API Key 访问职能选择 **App 管理（App Manager）**。
+当前发布认证 helper 要求团队 API key，同时提供 `Key ID` 和 `Issuer ID`。在 App Store
+Connect 的 **Users and Access → Integrations → API** 创建 key，访问职能选择
+**App 管理（App Manager）**，下载只能获取一次的 `.p8` 私钥。
 
-团队 API key 的典型配置命令如下，私钥路径应指向仓库外的安全临时位置：
+首次配置时，把私钥复制到 Git 工作树之外的专用目录；目录必须由当前用户持有且权限为
+`700`，配置和私钥必须由当前用户持有且权限为 `600`，文件不能是符号链接。以下命令中的
+源路径和标识使用实际值替换，不要把私钥内容放入命令参数：
 
 ```bash
-asc auth login \
+release_auth_dir="$HOME/.config/easydict/release"
+install -d -m 700 "$release_auth_dir"
+install -m 600 "/secure/path/AuthKey_<KEY_ID>.p8" "$release_auth_dir/AuthKey.p8"
+ASC_CONFIG_PATH="$release_auth_dir/asc-config.json" \
+asc auth login --bypass-keychain \
   --name "Easydict Release" \
   --key-id "<KEY_ID>" \
   --issuer-id "<ISSUER_ID>" \
-  --private-key "/secure/path/AuthKey_<KEY_ID>.p8"
+  --private-key "$release_auth_dir/AuthKey.p8"
+chmod 600 "$release_auth_dir/asc-config.json"
 ```
 
-个人 API key 不传 `--issuer-id`，并增加 `--key-type individual`。CI 或不使用 Keychain 时
-可用 `--bypass-keychain`，但配置文件和 `.p8` 都是敏感凭据，不得提交仓库。如果 Keychain
-被系统阻止，先修复访问；确需绕过时按 `asc` 帮助使用 `ASC_BYPASS_KEYCHAIN=1` 或
-`asc auth login --bypass-keychain`。配置后始终运行 `asc auth status --validate`。
+配置中的该 profile 必须包含 `key_id`、`issuer_id` 和绝对路径 `private_key_path`。
+私钥采用本地文件权限保护，配置和私钥均不得写入仓库、发布日志或提交；不要为消除弹窗
+而允许所有应用访问钥匙串凭据。
+
+`prepare`、`draft`、`publish`、`release` 和 Release `resume` 的入口会先校验文件位置和
+权限，再在发布进程树内设置 `ASC_CONFIG_PATH`、`ASC_PROFILE`、`ASC_BYPASS_KEYCHAIN=1`
+和 `ASC_STRICT_AUTH=1`，并清除继承的 ASC API 凭据字段，避免混用其他认证来源。
+缺失或不安全的配置会直接停止，不回退到钥匙串。全局 Shell 配置和普通 asc 调用保持原样；
+`sync-notes`、Issue 跟进、cleanup 和帮助不加载这份认证配置。
+
+在仓库根目录使用同一 helper 做只读诊断，子 Shell 结束后不会留下认证环境变量。
+配置使用其他路径时，在子 Shell 内设置 `EASYDICT_RELEASE_ASC_CONFIG`：
+
+```bash
+(
+  set -euo pipefail
+  source .agents/skills/release-easydict/scripts/release-auth.sh
+  configure_release_auth
+  asc auth status --validate
+  asc auth doctor
+)
+```
 
 同一个 profile 用于 `asc xcode version view/edit`、`asc xcode archive` 和
 `asc notarization submit --file ... --wait`。认证通过只表示 API 可用；证书、Team ID 和
@@ -190,6 +211,8 @@ Git remote 自己的 SSH 或 HTTPS 凭据。这两者与 Apple API 账号互相�
 ### 1. 准备 changelog
 
 `changelog/<version>.md` 是 GitHub Release 正文和 Sparkle 更新说明的唯一 Markdown 来源。
+准备内容时，按[Release 内容决策](../../.agents/skills/release-easydict/references/release-workflow.md#内容决策)
+核查完整版本提交范围并筛选条目。
 先校验，再把它提交到本地 `dev`：
 
 ```bash
@@ -199,7 +222,9 @@ python3 .agents/skills/release-easydict/scripts/release_notes.py validate \
 ```
 
 GitHub Release 标题不写入 changelog。发布开始后，正文和渲染结果的 SHA-256 会被冻结；
-后续阶段或恢复时发现漂移会停止。
+后续阶段或恢复时发现漂移会停止。用户要求补全已有 Draft 说明时，遵循
+[未发布 Draft 的说明修订](../../.agents/skills/release-easydict/references/release-workflow.md#未发布-draft-的说明修订)，
+同时更新候选 appcast 和冻结状态。
 
 ### 2. 预览或准备产物
 
@@ -265,15 +290,8 @@ Draft 时都传入 `--channel stable`。
 
 ### 6. 发布后 Issue 跟进
 
-Release 远程验证成功后，Skill 执行：
-
-- `issue-followup plan <version>`：收集 GitHub 证据并生成本地计划，不评论或关闭 Issue；
-- `issue-followup apply <version>`：重新生成计划，执行通知并关闭符合策略的 Issue；
-- `issue-followup resume <version>`：恢复中断的 Issue 动作。
-
-这些动作只作用于已公开 Release；PR 只评论、不关闭。参数和汇总格式见
-[`issue-followup.md`](../../.agents/skills/release-easydict/references/issue-followup.md)。Issue
-后续失败不回滚已经发布的 Release 或已完成动作。
+Release 远程验证成功后，发布入口继续处理 Issue、PR 通知和归档清理。证据决策及中断恢复
+见[发布收尾](../../.agents/skills/release-easydict/references/issue-followup.md#发布收尾)。
 
 ### 7. 修订已发布日志
 
@@ -313,11 +331,8 @@ Release ETag、远程 branch head 和 Git push lease 防止覆盖并发修改；
 会清理隔离的 release worktree；远程临时分支仅在完整远程验证后删除。替换 Draft 成功后还会
 清理旧 Draft 的本地备份，失败则保留用于诊断和恢复。
 
-Release 发布和 Issue 跟进全部成功、且已保存最终报告后，使用
-`./.agents/skills/release-easydict/scripts/release-easydict.sh cleanup <version>` 预览，
-再加 `--execute` 移除该版本的归档、产物、DerivedData、状态、日志和相应 ASC run JSON。
-命令会检查完成记录与 Git worktree 状态；清理失败可重复执行。`.tmp/release/cache/`
-是跨版本缓存，保留供后续版本复用。清理完成后旧 run ID 不再可用于 `resume`。
+发布收尾自动清理版本归档。手动检查可运行 `release-easydict.sh cleanup <version>`。
+完成记录保留在 `.tmp/release/asc/completion/`，跨版本缓存保留在 `.tmp/release/cache/`。
 
 长期构建 worktree 使用带 fingerprint 的 Release DerivedData。兼容缓存会被复用；增量
 Archive 失败时，只清理当前 fingerprint 并自动回退一次 clean Archive。缓存命中不降低
@@ -357,6 +372,7 @@ Archive 失败时，只清理当前 fingerprint 并自动回退一次 clean Arch
 - `references/issue-followup*.md`：Issue 跟进流程和决策策略。
 - `scripts/asc-workflow.json`：工作流图和检查点。
 - `scripts/release-easydict.sh`：稳定命令行入口。
+- `scripts/release-auth.sh`：发布专用的 ASC 文件认证环境，以及凭据位置和权限校验。
 - `scripts/release-common.sh`：路径、发布配置和安全辅助函数。
 - `scripts/release-preflight.sh`：环境、凭据和发布状态检查。
 - `scripts/release-branch-sync.sh`：发布源 worktree、Draft 临时分支和 Tag 同步。
@@ -380,6 +396,7 @@ Archive 失败时，只清理当前 fingerprint 并自动回退一次 clean Arch
 
 遇到以下情况，流程必须停止并保留可恢复现场：
 
+- 发布专用 ASC 配置或私钥缺失、位于 Git 工作树内、所有者或权限不符合要求；
 - 发布脚本存在未提交修改，无法证明使用的是可复现工具；
 - changelog 缺失、未提交、格式无效、渲染器不匹配、冻结后漂移或与 Release 正文不一致；
 - detached dev 同步、release worktree 或 Publish 集成发生合并冲突；

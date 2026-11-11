@@ -30,13 +30,34 @@ struct CodexServiceConfiguration: Equatable {
     let model: String
     let effort: CodexReasoningEffort
 
-    static func reasoningEfforts(mode: CodexAccessMode, model: String) -> [CodexReasoningEffort] {
+    static func reasoningEfforts(
+        mode: CodexAccessMode, model: String,
+        localModels: [CodexManagedAppServer.LocalModel] = []
+    )
+        -> [CodexReasoningEffort] {
         switch mode {
-        case .localCLI: CodexReasoningEffort.localOptions
+        case .localCLI:
+            [.default] + (localModel(model, in: localModels)?.efforts.filter { $0 != .default } ?? [])
         case .managed:
             [.default] + (CodexManagedRuntime.bundledCatalog?.models.first { $0.slug == model }?
                 .supported_reasoning_levels.compactMap { CodexReasoningEffort(rawValue: $0.effort) } ?? [])
         }
+    }
+
+    static func localModel(_ model: String, in models: [CodexManagedAppServer.LocalModel])
+        -> CodexManagedAppServer.LocalModel? {
+        let model = model.trimmingCharacters(in: .whitespacesAndNewlines)
+        return models.first { model.isEmpty ? $0.isDefault : $0.identifier == model }
+    }
+
+    /// Repairs only selections disproven by a successfully discovered model.
+    static func compatibleLocalEffort(
+        _ effort: CodexReasoningEffort, model: String, models: [CodexManagedAppServer.LocalModel]
+    )
+        -> CodexReasoningEffort {
+        guard let selected = localModel(model, in: models), effort != .default,
+              !selected.efforts.contains(effort) else { return effort }
+        return effort == .minimal && selected.efforts.contains(.low) ? .low : .default
     }
 
     static func modelKey(uuid: String, mode: CodexAccessMode) -> Defaults.Key<String> {

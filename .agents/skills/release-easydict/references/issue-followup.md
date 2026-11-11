@@ -4,6 +4,20 @@
 进入 Issue 阶段时，读取本文档。关联和解决判断同时遵循
 [issue-followup-policy.md](issue-followup-policy.md)。
 
+## 发布收尾
+
+`release-easydict.sh publish` 和 `release` 在 ASC 完成远程发布验证后进入收尾。收尾按顺序
+收集 Issue 证据、执行通知和关闭、保存完成记录、预览并清理本地归档，最后报告发布完成。
+清理保留跨版本缓存。完成记录位于 `.tmp/release/asc/completion/<run-id>.json`。
+
+存在候选 Issue 且需要证据决策时，脚本保留候选并返回待处理状态。按
+[决策策略](issue-followup-policy.md)审阅并写入脚本提示的 `decisions.json`，执行
+`release-easydict.sh resume <run-id>`。无候选 Issue 时自动生成空决策，仍会执行无关联 PR 通知。
+
+任一步骤失败时用同一 run ID 恢复。已通过的 ASC 发布阶段和已完成的跟进阶段会跳过。
+部分通知成功时沿用冻结证据和决策，刷新 GitHub 状态并按版本标记去重。归档已清理时，
+同一命令读取完成记录并显示结果。
+
 ## 动作与授权
 
 - `issue-followup plan <version>`：重新收集 GitHub 证据并生成计划和固定汇总；允许写入

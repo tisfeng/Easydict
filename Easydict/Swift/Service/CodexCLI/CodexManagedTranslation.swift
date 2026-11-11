@@ -127,25 +127,28 @@ final class CodexManagedTranslation: @unchecked Sendable {
         prompt: String,
         model: String,
         effort: String?,
-        runtime: CodexManagedRuntime,
+        runtime: CodexManagedRuntime?,
+        imageURL: String? = nil,
         deltaReceived: @escaping @Sendable (String) -> ()
     ) async throws
         -> Result {
+        let server = runtime == nil ? CodexManagedAppServer.local : CodexManagedAppServer.shared
         let requestID = try lock.withLock { () -> UUID in
             if cancelled { throw CancellationError() }
             let requestID = UUID()
-            appServerRequestID = requestID
+            appServerRequest = (requestID, server)
             return requestID
         }
         return try await withTaskCancellationHandler {
             do {
-                let result = try await CodexManagedAppServer.shared.translate(
+                let result = try await server.translate(
                     CodexManagedAppServer.TranslationRequest(
                         identifier: requestID,
                         prompt: prompt,
                         model: model,
                         effort: effort,
                         runtime: runtime,
+                        imageURL: imageURL,
                         isCancelled: { [weak self] in self?.isCancelled ?? true },
                         deltaReceived: deltaReceived
                     )
@@ -154,6 +157,9 @@ final class CodexManagedTranslation: @unchecked Sendable {
                 return result
             } catch {
                 clearAppServerRequest(requestID)
+                if runtime == nil, error as? CodexManagedError == .loginRequired {
+                    throw CodexCLIError.notLoggedIn
+                }
                 throw error
             }
         } onCancel: { [weak self] in
@@ -162,12 +168,12 @@ final class CodexManagedTranslation: @unchecked Sendable {
     }
 
     func cancel() {
-        let requestID = lock.withLock { () -> UUID? in
+        let request = lock.withLock {
             cancelled = true
             process?.cancel()
-            return appServerRequestID
+            return appServerRequest
         }
-        if let requestID { Task { await CodexManagedAppServer.shared.cancel(requestID) } }
+        if let request { Task { await request.server.cancel(request.id) } }
     }
 
     // MARK: Private
@@ -175,19 +181,21 @@ final class CodexManagedTranslation: @unchecked Sendable {
     private let lock = NSLock()
     private var cancelled = false
     private var process: CodexManagedProcess?
-    private var appServerRequestID: UUID?
+    private var appServerRequest: (id: UUID, server: CodexManagedAppServer)?
 
     private var isCancelled: Bool { lock.withLock { cancelled } }
 
     private func clearAppServerRequest(_ requestID: UUID) {
         lock.withLock {
-            if appServerRequestID == requestID { appServerRequestID = nil }
+            if appServerRequest?.id == requestID { appServerRequest = nil }
         }
     }
 
     private func cancelAppServerRequest(_ requestID: UUID) {
-        let shouldCancel = lock.withLock { appServerRequestID == requestID }
-        if shouldCancel { Task { await CodexManagedAppServer.shared.cancel(requestID) } }
+        let request = lock.withLock { appServerRequest }
+        if let request, request.id == requestID {
+            Task { await request.server.cancel(requestID) }
+        }
     }
 
     private func nextProcess() throws -> CodexManagedProcess {

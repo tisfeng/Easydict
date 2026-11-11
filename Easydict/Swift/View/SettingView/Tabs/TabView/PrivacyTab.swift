@@ -22,6 +22,12 @@ struct PrivacyTab: View {
                 Text("privacy_statement")
             }
             Section {
+                Toggle("setting.privacy.local_auto_save", isOn: $localAutoSave)
+                Text("setting.privacy.local_auto_save.description")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+            Section {
                 HStack {
                     Text("crash_log")
                     Toggle("allow_collect_crash_log", isOn: $allowCollectCrashLog)
@@ -37,6 +43,7 @@ struct PrivacyTab: View {
 
     // MARK: Private
 
+    @Default(.localAutoSave) private var localAutoSave
     @Default(.allowCrashLog) private var allowCollectCrashLog
     @Default(.allowAnalytics) private var allowCollectAnalytics
 }

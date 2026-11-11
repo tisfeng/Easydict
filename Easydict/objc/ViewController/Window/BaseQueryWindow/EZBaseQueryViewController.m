@@ -15,6 +15,7 @@
 #import "EZEnumTypes.h"
 #import "EZAudioPlayer.h"
 #import "EZTableRowView.h"
+#import "EZQueryTableView.h"
 #import "EZSchemeParser.h"
 #import "EZToast.h"
 #import "DictionaryKit.h"
@@ -26,6 +27,8 @@ static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
 static NSString *const EZResultViewId = @"EZResultViewId";
 
 static NSString *const EZColumnId = @"EZColumnId";
+static NSTimeInterval const EZWindowHeightCoalescingInterval = 0.08;
+static NSTimeInterval const EZWindowHeightAnimationDuration = 0.18;
 
 static NSString *const kDCSActiveDictionariesChangedDistributedNotification = @"kDCSActiveDictionariesChangedDistributedNotification";
 
@@ -70,8 +73,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
 
-@property (nonatomic, assign) BOOL lockResizeWindow;
 @property (nonatomic, assign) BOOL isUpdatingWindowFrameInternally;
+@property (nonatomic, assign) BOOL windowHeightUpdateScheduled;
+@property (nonatomic, assign) BOOL needsWindowHeightUpdate;
+@property (nonatomic, assign) BOOL isUpdatingRowHeights;
+@property (nonatomic, assign) CGFloat lastLayoutWidth;
 
 @property (nonatomic, assign) BOOL isInputFieldCellVisible;
 @property (nonatomic, assign) BOOL isSelectLanguageCellVisible;
@@ -124,6 +130,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)viewWillAppear {
     [super viewWillAppear];
 
+    // The window may still have the frame saved from the last session; fit it before it is on screen.
+    if (!self.isUpdatingWindowFrameInternally) {
+        [self applyWindowHeightAnimated:NO];
+    }
+
     [EZAnalyticsService logWindowAppear:self.windowType];
 }
 
@@ -147,13 +158,17 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self setResizeWindowBlock:^{
         mm_strongify(self);
 
-        // Avoid recycling call, resize window --> update window height --> resize window
-        if (self.lockResizeWindow || self.isUpdatingWindowFrameInternally) {
-            //            MMLogInfo(@"lockResizeWindow");
+        // Height-only animation changes the viewport, not the content layout.
+        // Recheck a deferred width change when the window animation completes.
+        if (self.isUpdatingWindowFrameInternally) {
             return;
         }
-        
-        MMLogInfo(@"resize window, update window height");
+
+        CGFloat width = self.scrollView.contentSize.width;
+        if (fabs(width - self.lastLayoutWidth) < EZLayoutGeometryTolerance_0_5) {
+            return;
+        }
+        self.lastLayoutWidth = width;
 
         [self setNeedUpdateIframeHeightForAllResults];
 
@@ -165,7 +180,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
                 if (self.isInputFieldCellVisible) {
                     NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-                    [self.tableView noteHeightOfRowsWithIndexesChanged:firstIndexSet];
+                    [self updateRowHeightsWithoutAnimation:firstIndexSet];
                 }
             }
 
@@ -314,6 +329,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)boundsDidChangeNotification:(NSNotification *)notification {
+    if (self.isUpdatingWindowFrameInternally || self.isUpdatingRowHeights) {
+        return;
+    }
     // TODO: need to optimize. Manually update the cell height, because the reused cell will not self-adjust the height.
     //    [self updateAllResultCellHeightIfNeed];
     [self updateTableViewHeight];
@@ -356,7 +374,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (NSTableView *)tableView {
     if (!_tableView) {
-        NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
+        NSTableView *tableView = [[EZQueryTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
         tableView.wantsLayer = YES;
         tableView.layer.drawsAsynchronously = YES;
@@ -434,9 +452,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 /// Recreate the query model and rebind dependent managers for background OCR.
 - (void)resetQueryModelForBackgroundOCR {
+    [self.detectManager cancelOCR];
     EZQueryModel *model = [[EZQueryModel alloc] init];
     model.userSourceLanguage = MyConfiguration.shared.fromLanguage;
     model.userTargetLanguage = MyConfiguration.shared.toLanguage;
+    model.queryViewHeight = [self miniQueryViewHeight];
 
     self.queryModel = model;
     self.detectManager = [EZDetectManager managerWithModel:model];
@@ -467,6 +487,14 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
+    [self.detectManager cancelOCR];
+    [self.queryView startLoadingAnimation:NO];
+    if (![text isEqualToString:self.inputText]) {
+        [self.queryView resetFormulaPreview];
+    }
+    if (![actionType isEqualToString:EZActionTypeOCRQuery] && ![actionType isEqualToString:EZActionTypePasteboardOCR]) {
+        self.queryModel.ocrImage = nil;
+    }
     self.inputText = text;
     self.queryModel.actionType = actionType;
     self.queryView.isTypingChinese = NO;
@@ -522,18 +550,35 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
+    [self cancelDelayDetectQueryText];
     self.queryModel.actionType = actionType;
+    [self.queryView resetFormulaPreview];
     self.queryModel.ocrImage = image;
 
     self.queryView.isTypingChinese = NO;
     [self.queryView startLoadingAnimation:YES];
 
+    BOOL saveOCRLocally = MyConfiguration.shared.localAutoSave;
     mm_weakify(self);
-    [self.detectManager ocrAndDetectTextWithCompletion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+    [self.detectManager ocrAndDetectTextWithProgress:^(NSString *text) {
         mm_strongify(self);
+        if (![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
+            [self.queryView startLoadingAnimation:NO];
+            self.inputText = text;
+            [self.queryView enableStreamingFormulaPreview];
+        }
+    } completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+        mm_strongify(self);
+        if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSUserCancelledError) {
+            [self.queryView startLoadingAnimation:NO];
+            return;
+        }
+
         // !!!: inputText should be used here, not queryText, queryText may be modified, such as easydict://query?text=xxx
         NSString *inputText = queryModel.inputText;
-        MMLogInfo(@"ocr result: %@", inputText);
+        if (saveOCRLocally && MyConfiguration.shared.localAutoSave && inputText.length && !error) {
+            MMLogInfo(@"ocr result: %@", inputText);
+        }
 
         NSDictionary *dict = @{
             @"detectedLanguage" : queryModel.detectedLanguage,
@@ -541,8 +586,17 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         };
         [EZAnalyticsService logEventWithName:@"ocr" parameters:dict];
 
+        if (error) {
+            [self.queryView startLoadingAnimation:NO];
 
-        if (actionType == EZActionTypeScreenshotOCR) {
+            NSString *errorMsg = [error localizedDescription];
+            dispatch_block_on_main_safely(^{
+                [EZToast showToast:errorMsg];
+            });
+            return;
+        }
+
+        if ([actionType isEqualToString:EZActionTypeScreenshotOCR]) {
             [inputText copyToPasteboard];
 
             dispatch_block_on_main_safely(^{
@@ -553,7 +607,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         }
 
 
-        if (actionType != EZActionTypeScreenshotOCR) {
+        if (![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
             [self.queryView startLoadingAnimation:NO];
 
             self.inputText = inputText;
@@ -563,19 +617,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
             [self updateQueryTextAndParagraphStyle:inputText actionType:actionType];
 
-            if (error) {
-                NSString *errorMsg = [error localizedDescription];
-                dispatch_block_on_main_safely(^{
-                    [EZToast showToast:errorMsg];
-                });
-                return;
-            }
-
             if (self.config.autoCopyOCRText) {
                 [inputText copyToPasteboard];
             }
 
             [self.queryView highlightAllLinks];
+            [self.queryView enableStreamingFormulaPreview];
 
             if ([self.inputText ns_isURL]) {
                 // Append a whitespace to beautify the link.
@@ -598,11 +645,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     // Reset query view height if we are retrying OCR query
     if (self.queryModel.ocrImage) {
+        [self.detectManager cancelOCR];
         self.inputText = @"";
     }
 
     // If has designated language, we don't need to detect language again.
-    if (language == EZLanguageAuto) {
+    if ([language isEqualToString:EZLanguageAuto]) {
         self.queryModel.detectedLanguage = EZLanguageAuto;
         self.queryModel.needDetectLanguage = YES;
     } else {
@@ -620,9 +668,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (self.queryView.window == self.baseQueryWindow) {
         // Delay to make textView the first responder.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
-            if (self.config.selectQueryTextWhenWindowActivate) {
-                self.queryView.textView.selectedRange = NSMakeRange(0, self.inputText.length);
+            NSTextView *textView = self.queryView.visibleTextView;
+            [self.baseQueryWindow makeFirstResponder:textView];
+            if (self.config.selectQueryTextWhenWindowActivate && textView == self.queryView.textView) {
+                textView.selectedRange = NSMakeRange(0, self.inputText.length);
             }
         });
     }
@@ -633,9 +682,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)clearInput {
+    [self.detectManager cancelOCR];
+    [self.queryView startLoadingAnimation:NO];
     // Clear query text, detect language and clear button right now;
-    self.inputText = @"";
     self.queryModel.ocrImage = nil;
+    self.inputText = @"";
     [self.queryView setAlertTextHidden:YES];
 
     [self.audioPlayer stop];
@@ -645,7 +696,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self clearInput];
 
     [self updateQueryCellWithCompletionHandler:^{
-        // !!!: To show closing animation, we cannot reset result directly.
         [self closeAllResultView:^{
             [self resetQueryAndResults];
         }];
@@ -664,16 +714,14 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 }
 
+- (nullable EZQueryResult *)firstTranslatedResult {
+    EZQueryResult *result = self.firstService.result;
+    return [result.queryText isEqualToString:self.queryModel.queryText] ? result : nil;
+}
+
 - (nullable NSString *)firstTranslatedText {
-    if (self.firstService &&
-        [self.firstService.result.queryText isEqualToString:self.queryModel.queryText]) {
-        NSString *copiedText = self.firstService.result.copiedText;
-        if (copiedText.length > 0) {
-            return copiedText;
-        }
-        return self.firstService.result.translatedText;
-    }
-    return nil;
+    EZQueryResult *result = [self firstTranslatedResult];
+    return result.copiedText.length > 0 ? result.copiedText : result.translatedText;
 }
 
 - (void)toggleTranslationLanguages {
@@ -765,8 +813,17 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 /// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)queryType {
-    [self.queryView.textView updateTextAndParagraphStyle:text];
+    if (![queryType isEqualToString:EZActionTypeOCRQuery]
+        && ![queryType isEqualToString:EZActionTypePasteboardOCR]
+        && ![queryType isEqualToString:EZActionTypeScreenshotOCR]) {
+        [self.detectManager cancelOCR];
+        [self.queryView startLoadingAnimation:NO];
+        self.queryModel.ocrImage = nil;
+        [self.queryView resetFormulaPreview];
+    }
+    // The text update can synchronously notify the query view's input handler.
     self.queryModel.actionType = queryType;
+    [self.queryView.textView updateTextAndParagraphStyle:text];
 
     if (text) {
         // Updating query text programmatically loses input focus, we need to recover it.
@@ -809,9 +866,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)startQueryWithType:(EZActionType)actionType {
     NSImage *ocrImage = self.queryModel.ocrImage;
 
-    if (ocrImage && (actionType == EZActionTypeOCRQuery || actionType == EZActionTypePasteboardOCR)) {
-        BOOL autoQuery = self.config.autoCopyOCRText || self.config.autoQueryPastedText || self.queryModel.autoQuery;
-        [self startOCRImage:ocrImage actionType:actionType autoQuery:autoQuery];
+    if (ocrImage && ([actionType isEqualToString:EZActionTypeOCRQuery]
+                     || [actionType isEqualToString:EZActionTypePasteboardOCR])) {
+        // This path is an explicit retry, independent of initial-capture preferences.
+        [self startOCRImage:ocrImage actionType:actionType autoQuery:YES];
     } else {
         [self startQueryText:self.inputText actionType:actionType];
     }
@@ -824,7 +882,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
-    MMLogInfo(@"query text: %@", self.queryText.truncated);
 
     // !!!: Reset all result before new query.
     [self resetAllResults];
@@ -839,7 +896,17 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel {
+    if (queryModel.queryText.length == 0) {
+        return;
+    }
     MMLogInfo(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
+
+    if (MyConfiguration.shared.localAutoSave && queryModel.queryText.length) {
+        [QueryRecordManager.shared addRecordWithQueryText:queryModel.queryText
+                                             fromLanguage:queryModel.queryFromLanguage
+                                               toLanguage:queryModel.queryTargetLanguage
+                                                       to:RecordTypeHistory];
+    }
 
     self.firstService = nil;
     for (EZQueryService *service in self.services) {
@@ -858,12 +925,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     [[EZLocalStorage shared] increaseQueryCount:self.inputText];
-    
-    // Add to history
-    [QueryRecordManager.shared addRecordWithQueryText:queryModel.queryText
-                                         fromLanguage:queryModel.queryFromLanguage
-                                           toLanguage:queryModel.queryTargetLanguage
-                                                   to:RecordTypeHistory];
 
     // Auto play query text if it is an English word.
     [self autoPlayEnglishWordAudio];
@@ -871,9 +932,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
     NSString *queryText = [queryModel.queryText copy];
+    BOOL saveLocally = MyConfiguration.shared.localAutoSave;
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
         if (error) {
-            MMLogError(@"service: %@, query error: %@", service.serviceType, error);
+            MMLogError(@"service: %@, query error code: %ld", service.serviceType, (long)error.code);
         }
         result.error = [EZQueryError queryErrorFrom:error];
 
@@ -891,15 +953,14 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         //        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
         [self updateCellWithResult:result reloadData:YES];
 
-        // Backfill history record with the first service's translated text.
         if (service == self.firstService) {
             BOOL shouldRecord = !service.isStream || result.isStreamFinished;
-            if (shouldRecord && result.translatedText.length > 0) {
+            if (saveLocally && MyConfiguration.shared.localAutoSave && shouldRecord && result.error == nil
+                && result.translatedText.length && queryText.length) {
                 [QueryRecordManager.shared updateTranslatedResult:result.translatedText
                                                       forQueryText:queryText
                                                                 in:RecordTypeHistory];
             }
-
             // Append the query to the vocabulary notebook when it has content.
             // HTML-only dictionary results (Apple Dictionary, MDict) carry neither a
             // word result nor translated text, so htmlString must count as content too.
@@ -1012,7 +1073,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     CGFloat height;
 
     if ([self isInputFieldCellAtRow:row]) {
-        height = self.queryModel.queryViewHeight;
+        CGFloat queryViewHeight = self.queryModel.queryViewHeight;
+        CGFloat minimumHeight = [self miniQueryViewHeight];
+        height = isfinite(queryViewHeight) ? MAX(queryViewHeight, minimumHeight) : minimumHeight;
     } else if ([self isSelectLanguageCellAtRow:row]) {
         height = 35;
     } else {
@@ -1040,18 +1103,20 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 /// Reset tableView, reloadData
 - (void)resetTableView:(nullable void (^)(void))completion {
     [self resetQueryAndResults];
-    [self reloadTableViewData:completion];
+    [self reloadTableViewDataWithoutWindowHeightUpdate:^{
+        // Callers position the window by its height, so fit it now instead of coalescing the update.
+        [self applyWindowHeightAnimated:NO];
+        if (completion) {
+            completion();
+        }
+    }];
 }
 
 /// TableView reloadData, and update window height.
 - (void)reloadTableViewData:(nullable void (^)(void))completion {
-    [self reloadTableViewDataWithLock:YES completion:completion];
-}
-
-- (void)reloadTableViewDataWithLock:(BOOL)lockFlag completion:(nullable void (^)(void))completion {
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
-        [self updateWindowHeightWithLock:lockFlag];
+        [self updateWindowHeight];
         if (completion) {
             completion();
         }
@@ -1119,20 +1184,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData completionHandler:nil];
 }
 
-/// Update tableView row data, update row height and window height with animation.
-- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
-    [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData animate:YES completionHandler:completionHandler];
-}
-
-/// Update cell row height, and reload cell data with animation.
-/// TODO: we need to optimize the way of updating row height.
+/// Commit row layout immediately; only the enclosing window animates.
 - (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes
                        reloadData:(BOOL)reloadData
-                          animate:(BOOL)animateFlag
                 completionHandler:(void (^)(void))completionHandler {
-    //    MMLogInfo(@"updateTableViewRowIndexes: %@", rowIndexes);
-
-    // !!!: Since the caller may be in non-main thread, we need to dispatch to main thread, but canont always use dispatch_async, it will cause the animation not smooth.
     dispatch_block_on_main_safely(^{
         if (reloadData) {
             // !!!: Note: For NSView-based table views, this method drops the view-cells in the table row, but not the NSTableRowView instances.
@@ -1142,42 +1197,47 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
         }
 
-        CGFloat duration = animateFlag ? EZUpdateTableViewRowHeightAnimationDuration : 0;
-
-        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
-            context.duration = duration;
-            context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-
-            // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
-            //            MMLogInfo(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
-            [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
-            [self updateWindowHeight];
-        } completionHandler:^{
-            //            MMLogInfo(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
-            if (completionHandler) {
-                completionHandler();
-            }
-        }];
+        [self updateRowHeightsWithoutAnimation:rowIndexes];
+        [self updateWindowHeight];
+        if (completionHandler) {
+            completionHandler();
+        }
     });
 }
 
-- (void)updateQueryCell {
-    [self updateQueryCellWithAnimation:NO completionHandler:nil];
+- (void)updateRowHeightsWithoutAnimation:(NSIndexSet *)rowIndexes {
+    if (self.isUpdatingRowHeights) {
+        return;
+    }
+    self.isUpdatingRowHeights = YES;
+    NSMutableIndexSet *changedRows = [NSMutableIndexSet indexSet];
+    [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger row, BOOL *stop) {
+        if (row >= self.tableView.numberOfRows) {
+            return;
+        }
+        CGFloat height = [self tableView:self.tableView heightOfRow:row] + self.tableView.intercellSpacing.height;
+        if (fabs([self.tableView rectOfRow:row].size.height - height) >= EZLayoutGeometryTolerance_0_5) {
+            [changedRows addIndex:row];
+        }
+    }];
+    if (changedRows.count) {
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+            context.duration = 0;
+            [self.tableView noteHeightOfRowsWithIndexesChanged:changedRows];
+        } completionHandler:nil];
+    }
+    self.isUpdatingRowHeights = NO;
 }
 
-- (void)updateQueryCellWithAnimation:(BOOL)animateFlag {
-    [self updateQueryCellWithAnimation:animateFlag completionHandler:nil];
+- (void)updateQueryCell {
+    [self updateQueryCellWithCompletionHandler:nil];
 }
 
 /// Update query cell data and row height.
 - (void)updateQueryCellWithCompletionHandler:(nullable void (^)(void))completionHandler {
-    [self updateQueryCellWithAnimation:YES completionHandler:completionHandler];
-}
-
-- (void)updateQueryCellWithAnimation:(BOOL)animateFlag completionHandler:(nullable void (^)(void))completionHandler {
     if (self.isInputFieldCellVisible) {
         NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:self.inputFieldCellIndex];
-        [self updateTableViewRowIndexes:firstIndexSet reloadData:NO animate:animateFlag completionHandler:completionHandler];
+        [self updateTableViewRowIndexes:firstIndexSet reloadData:NO completionHandler:completionHandler];
     }
 }
 
@@ -1209,13 +1269,13 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)updateTableViewHeight {
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self.tableView numberOfRows])];
-    [self.tableView noteHeightOfRowsWithIndexesChanged:indexSet];
+    [self updateRowHeightsWithoutAnimation:indexSet];
 }
 
 - (void)updateResultCellHeight:(EZQueryResult *)result {
     NSIndexSet *indexSet = [self indexSetOfResult:result];
     if (indexSet) {
-        [self.tableView noteHeightOfRowsWithIndexesChanged:indexSet];
+        [self updateRowHeightsWithoutAnimation:indexSet];
     }
 }
 
@@ -1303,9 +1363,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 #pragma mark - Update Data.
 
 - (void)resetQueryAndResults {
+    [self.detectManager cancelOCR];
+    [self.queryView startLoadingAnimation:NO];
     [self resetAllResults];
 
-    if (self.inputText.length) {
+    if (self.inputText.length || self.queryModel.ocrImage) {
+        self.queryModel.ocrImage = nil;
         self.inputText = @"";
     }
 }
@@ -1391,7 +1454,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {
-    self.queryView.clearButtonHidden = (queryModel.inputText.length == 0) && ([self allShowingResults].count == 0);
+    self.queryView.clearButtonHidden = queryModel.inputText.length == 0
+        && [self allShowingResults].count == 0;
 
     self.queryView.queryModel = queryModel;
     [self updateQueryCell];
@@ -1465,6 +1529,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         // !!!: The code here is a bit messy, so you need to be careful about changing it.
 
         // But, since there are cases where the query text is set manually, such as query selected text, where the query text is set first and then the input text is modified, the query cell must be updated for such cases.
+
+        if ([self.queryModel.actionType isEqualToString:EZActionTypeInputQuery]) {
+            [self.detectManager cancelOCR];
+        }
 
         // Reduce the update frequency, update only when the queryText or height changes.
         if ([self.inputText isEqualToString:text] && self.queryModel.queryViewHeight == queryViewHeight) {
@@ -1659,8 +1727,20 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
-    // Existing matching results only need their expanded/collapsed state redrawn.
-    [self updateCellWithResult:result reloadData:YES];
+    EZResultView *resultView = [self resultCellOfResult:result];
+    // Dictionary HTML still needs its load and measurement lifecycle on expansion.
+    if (resultView.result == result && !EZResultNeedsDictionaryHTMLHeight(result)) {
+        [resultView updateExpandedState];
+        [self updateCellWithResult:result reloadData:NO];
+        // The cell is not reloaded, so sync its loading dots with the updated isLoading state.
+        [resultView updateLoadingAnimation];
+    } else {
+        [self updateCellWithResult:result reloadData:YES];
+    }
+    // Direct interaction does not need the service-response coalescing delay.
+    if (!self.isUpdatingWindowFrameInternally) {
+        [self applyWindowHeight];
+    }
 }
 
 /// Check that a delayed arrow action still targets the same service, result, and query.
@@ -1770,15 +1850,42 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 #pragma mark - Update Window Height
 
 - (void)updateWindowHeight {
-    [self updateWindowHeightWithLock:YES];
+    dispatch_block_on_main_safely(^{
+        self.needsWindowHeightUpdate = YES;
+        if (self.isUpdatingWindowFrameInternally || self.windowHeightUpdateScheduled) {
+            return;
+        }
+
+        NSWindow *window = self.baseQueryWindow ?: self.view.window;
+        if (!window.isVisible || window.inLiveResize) {
+            [self applyWindowHeight];
+            return;
+        }
+
+        // A fixed deadline merges bursts without starving continuous streams.
+        self.windowHeightUpdateScheduled = YES;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZWindowHeightCoalescingInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.windowHeightUpdateScheduled = NO;
+            if (!self.isUpdatingWindowFrameInternally && self.needsWindowHeightUpdate) {
+                [self applyWindowHeight];
+            }
+        });
+    });
 }
 
-- (void)updateWindowHeightWithLock:(BOOL)lockFlag {
-    if (lockFlag) {
-        self.lockResizeWindow = YES;
+- (void)applyWindowHeight {
+    [self applyWindowHeightAnimated:YES];
+}
+
+- (void)applyWindowHeightAnimated:(BOOL)allowsAnimation {
+    self.needsWindowHeightUpdate = NO;
+    NSWindow *window = self.baseQueryWindow ?: self.view.window;
+    if (!window) {
+        return;
     }
 
-        MMLogInfo(@"updateWindowViewHeightWithLock");
+    [self.view layoutSubtreeIfNeeded];
+    [self updateTableViewHeight];
 
     CGFloat tableViewHeight = [self getScrollViewContentHeight];
     CGFloat height = [self getRestrainedScrollViewHeight:tableViewHeight];
@@ -1792,63 +1899,79 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     scrollViewHeight = MIN(scrollViewHeight, maxWindowSize.height - titleBarHeight);
     //    MMLogInfo(@"scrollViewHeight: %@", @(scrollViewHeight));
 
-    // Diable change window height manually.
-    [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.equalTo(@(scrollViewHeight)).priority(MASLayoutPriorityDefaultHigh);
-    }];
+    // The scroll view follows the window edges. Its document keeps its full height
+    // while NSClipView reveals more content during the window animation.
 
     CGFloat showingWindowHeight = scrollViewHeight + titleBarHeight;
     showingWindowHeight = MIN(showingWindowHeight, maxWindowSize.height);
-
-    // Since changing height will cause position change, adjust y to keep top-left coordinate stable.
-    NSWindow *window = self.baseQueryWindow ?: self.view.window;
-    if (!window) {
-        self.lockResizeWindow = NO;
-        return;
-    }
-
-    CGFloat deltaHeight = window.height - showingWindowHeight;
-    CGFloat y = window.y + deltaHeight;
-
-    CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
 
     // Use the window's current screen. The cached one only refreshes on clicks,
     // so on multi-monitor setups it can yank the window back to the old display.
     // window.screen picks the display with the largest overlap, which handles
     // cross-screen drags better than our own first-intersect lookup.
-    NSScreen *currentScreen = window.screen ?: [EZCoordinateUtils screenForRect:newFrame] ?: NSScreen.mainScreen;
+    NSScreen *currentScreen = window.screen ?: [EZCoordinateUtils screenForRect:window.frame] ?: NSScreen.mainScreen;
     CGRect screenVisibleFrame = currentScreen.visibleFrame;
+
+    // Keep the window top fixed: content only extends downward, and scrolls once it reaches the screen bottom,
+    // instead of pushing the whole window up.
+    CGFloat windowTop = NSMaxY(window.frame);
+    CGFloat heightToScreenBottom = windowTop - NSMinY(screenVisibleFrame);
+    CGFloat minimumWindowHeight = [EZLayoutManager.shared minimumWindowSize:self.windowType].height;
+    // The scroll view below the title bar requires at least the minimum height.
+    showingWindowHeight = MIN(showingWindowHeight, MAX(heightToScreenBottom, minimumWindowHeight + titleBarHeight));
+
+    CGRect newFrame = CGRectMake(window.x, windowTop - showingWindowHeight, window.width, showingWindowHeight);
     CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame inScreenVisibleFrame:screenVisibleFrame];
+    CGFloat targetHeight = CGRectGetHeight(safeFrame);
 
     if (ez_frame_equal_with_tolerance(window.frame,
                                       safeFrame,
                                       EZLayoutGeometryTolerance_0_5)) {
-        self.tableView.height = tableViewHeight;
-        self.lockResizeWindow = NO;
-        MMLogInfo(@"Equal frame, no need to update window frame");
+        [self limitHeightOfWindow:window from:targetHeight to:targetHeight];
         return;
     }
 
-    // ???: why set window frame will change tableView height?
-    // ???: why this window animation will block cell rendering?
-    //    [self.window setFrame:safeFrame display:NO animate:animateFlag];
+    // Keep both heights reachable while the frame animates between them.
+    [self limitHeightOfWindow:window
+                         from:MIN(window.height, targetHeight)
+                           to:MAX(window.height, targetHeight)];
+
+    BOOL animate = allowsAnimation && window.isVisible && !window.inLiveResize &&
+        !NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion;
+    self.lastLayoutWidth = self.scrollView.contentSize.width;
     self.isUpdatingWindowFrameInternally = YES;
-    [window setFrame:safeFrame display:YES];
-    [self restoreFirstResponderIfWindowIsKey];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+        context.duration = animate ? EZWindowHeightAnimationDuration : 0;
+        context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+        if (animate) {
+            [[window animator] setFrame:safeFrame display:NO];
+        } else {
+            [window setFrame:safeFrame display:YES];
+        }
+    } completionHandler:^{
+        [self limitHeightOfWindow:window from:targetHeight to:targetHeight];
+
+        // Newly visible cells can measure their content during the window animation.
+        [self updateTableViewHeight];
+        BOOL contentHeightChanged = fabs([self getScrollViewContentHeight] - tableViewHeight) >= EZLayoutGeometryTolerance_0_5;
         self.isUpdatingWindowFrameInternally = NO;
-    });
-
-    // Restore tableView height.
-    self.tableView.height = tableViewHeight;
-
-    // Animation cost time.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZUpdateTableViewRowHeightAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.lockResizeWindow = NO;
         [self restoreFirstResponderIfWindowIsKey];
-    });
+        if (self.resizeWindowBlock) {
+            self.resizeWindowBlock();
+        }
+        if (self.needsWindowHeightUpdate || contentHeightChanged) {
+            // Updates received during the animation have already been coalesced.
+            [self applyWindowHeight];
+        }
+    }];
+}
 
-    //    MMLogInfo(@"window frame: %@", @(window.frame));
+/// Users may only resize the window width; its height follows the content and the maximum window height.
+- (void)limitHeightOfWindow:(NSWindow *)window from:(CGFloat)minHeight to:(CGFloat)maxHeight {
+    CGFloat minimumWidth = [EZLayoutManager.shared minimumWindowSize:self.windowType].width;
+    window.minSize = CGSizeMake(minimumWidth, minHeight);
+    // Keep the system's unlimited default width.
+    window.maxSize = CGSizeMake(FLT_MAX, maxHeight);
 }
 
 - (void)restoreFirstResponderIfWindowIsKey {
@@ -1856,7 +1979,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         NSResponder *curr = self.baseQueryWindow.firstResponder;
         BOOL isFocusEmpty = (curr == nil || curr == self.baseQueryWindow || curr == self.baseQueryWindow.contentView);
         if (isFocusEmpty) {
-            [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
+            [self.baseQueryWindow makeFirstResponder:self.queryView.visibleTextView];
         }
     }
 }
@@ -1918,7 +2041,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
-    MMLogInfo(@"Auto play English word audio: %@", self.queryText);
+    MMLogInfo(@"Auto play English word audio");
     [self togglePlayQueryText:YES];
 }
 

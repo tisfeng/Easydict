@@ -9,6 +9,7 @@ import sys
 import tempfile
 import textwrap
 import unittest
+from unittest.mock import patch
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
@@ -100,6 +101,29 @@ class RenderTests(unittest.TestCase):
                     submit_pr.render_pr_body(self.content(**{field: ""}))
 
 
+    def test_partial_screenshots_keep_uploaded_image_and_notice(self) -> None:
+        body = submit_pr.render_pr_body(
+            self.content(
+                ui_change=True,
+                screenshots=(("Light [README]", "https://example.org/light.png"),),
+                screenshots_incomplete=True,
+            )
+        )
+        self.assertIn(r"![Light \[README\]](<https://example.org/light.png>)", body)
+        self.assertIn(submit_pr.UI_SCREENSHOT_NOTICE, body)
+
+    def test_invalid_evidence_cannot_break_out_of_template_fields(self) -> None:
+        cases = (
+            {"issues": ("#123\n## New heading",)},
+            {"related_prs": (("https://github.com/acme/project/issues/42", "Related"),)},
+            {"related_prs": (("https://github.com/acme/project/pull/42", "\n"),)},
+            {"ui_change": True, "screenshots": (("Light", "/tmp/light.png"),)},
+            {"ui_change": True, "screenshots": (("Light", "https://example.org/a>b"),)},
+        )
+        for overrides in cases:
+            with self.subTest(overrides=overrides), self.assertRaises(submit_pr.SubmitPRError):
+                submit_pr.render_pr_body(self.content(**overrides))
+
 class WorkflowIntegrationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory()
@@ -143,6 +167,10 @@ class WorkflowIntegrationTests(unittest.TestCase):
             env=self.git_environment(),
         )
         self.base_sha = run(["git", "rev-parse", "HEAD"], cwd=self.repo).stdout.strip()
+        run(
+            ["git", "checkout", "-b", "feat/deterministic-pr-submission"],
+            cwd=self.repo,
+        )
 
         (self.repo / "feature.txt").write_text("feature\n", encoding="utf-8")
         run(["git", "add", "feature.txt"], cwd=self.repo)
@@ -334,6 +362,22 @@ class WorkflowIntegrationTests(unittest.TestCase):
             command.extend(("--head-branch", head_branch))
         return [*command, *extra]
 
+    def preflight_command(
+        self,
+        *extra: str,
+        head_branch: str | None = None,
+    ) -> list[str]:
+        command = [
+            sys.executable,
+            str(SCRIPT_PATH),
+            "preflight",
+            "--repo-root",
+            str(self.repo),
+        ]
+        if head_branch is not None:
+            command.extend(("--head-branch", head_branch))
+        return [*command, *extra]
+
     def test_plan_discovers_non_origin_default_branch_and_is_read_only(self) -> None:
         refs_before = run(["git", "show-ref"], cwd=self.repo).stdout
         status_before = run(["git", "status", "--porcelain=v1"], cwd=self.repo).stdout
@@ -347,7 +391,7 @@ class WorkflowIntegrationTests(unittest.TestCase):
         self.assertEqual(payload["base_remote"], "upstream")
         self.assertEqual(payload["base"], "main")
         self.assertEqual(payload["head_remote"], "upstream")
-        self.assertEqual(payload["planned_branch_action"], "would-create")
+        self.assertEqual(payload["planned_branch_action"], "current")
         self.assertNotIn("template", payload)
         self.assertTrue(payload["needs_screenshots"])
         self.assertEqual(
@@ -373,12 +417,16 @@ class WorkflowIntegrationTests(unittest.TestCase):
         status_before = run(["git", "status", "--porcelain=v1"], cwd=self.repo).stdout
 
         payload = json.loads(
-            run(self.command("plan"), cwd=self.repo, env=self.environment()).stdout
+            run(
+                self.command("plan", head_branch="feat/detached-submission"),
+                cwd=self.repo,
+                env=self.environment(),
+            ).stdout
         )
 
         self.assertIsNone(payload["current_branch"])
         self.assertEqual(payload["base"], "main")
-        self.assertEqual(payload["head_branch"], "feat/deterministic-pr-submission")
+        self.assertEqual(payload["head_branch"], "feat/detached-submission")
         self.assertEqual(payload["planned_branch_action"], "would-create")
         self.assertEqual(run(["git", "show-ref"], cwd=self.repo).stdout, refs_before)
         self.assertEqual(
@@ -411,7 +459,7 @@ class WorkflowIntegrationTests(unittest.TestCase):
             [
                 "git",
                 "branch",
-                "feat/deterministic-pr-submission",
+                "feat/detached-submission",
                 divergent_sha,
             ],
             cwd=self.repo,
@@ -421,12 +469,16 @@ class WorkflowIntegrationTests(unittest.TestCase):
         status_before = run(["git", "status", "--porcelain=v1"], cwd=self.repo).stdout
 
         payload = json.loads(
-            run(self.command("plan"), cwd=self.repo, env=self.environment()).stdout
+            run(
+                self.command("plan", head_branch="feat/detached-submission"),
+                cwd=self.repo,
+                env=self.environment(),
+            ).stdout
         )
 
         self.assertEqual(
             payload["head_branch"],
-            "feat/deterministic-pr-submission-2",
+            "feat/detached-submission-2",
         )
         self.assertEqual(payload["planned_branch_action"], "would-create")
         self.assertEqual(run(["git", "show-ref"], cwd=self.repo).stdout, refs_before)
@@ -508,7 +560,7 @@ class WorkflowIntegrationTests(unittest.TestCase):
     def test_plan_rejects_expanded_protected_or_invalid_explicit_branch_without_mutation(self) -> None:
         run(["git", "branch", "feat/previous-checkout", "HEAD"], cwd=self.repo)
         run(["git", "checkout", "feat/previous-checkout"], cwd=self.repo)
-        run(["git", "checkout", "main"], cwd=self.repo)
+        run(["git", "checkout", "feat/deterministic-pr-submission"], cwd=self.repo)
         expansion = run(["git", "check-ref-format", "--branch", "@{-1}"], cwd=self.repo).stdout.strip()
         self.assertNotEqual(expansion, "@{-1}")
 
@@ -535,6 +587,153 @@ class WorkflowIntegrationTests(unittest.TestCase):
                     run(["git", "branch", "--show-current"], cwd=self.repo).stdout,
                     checkout_before,
                 )
+
+    def test_preflight_rejects_current_base_before_commit_or_branch_changes(self) -> None:
+        run(["git", "checkout", "main"], cwd=self.repo)
+        refs_before = run(["git", "show-ref"], cwd=self.repo).stdout
+        fetch_head = self.repo / ".git" / "FETCH_HEAD"
+        self.assertFalse(fetch_head.exists())
+
+        result = subprocess.run(
+            self.preflight_command(head_branch="feat/new-task"),
+            cwd=self.repo,
+            env=self.environment(),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("current branch 'main'", result.stderr)
+        self.assertIn("PR base 'main'", result.stderr)
+        self.assertIn("create and check out a new task branch", result.stderr)
+        self.assertEqual(
+            run(["git", "branch", "--show-current"], cwd=self.repo).stdout.strip(),
+            "main",
+        )
+        self.assertEqual(run(["git", "show-ref"], cwd=self.repo).stdout, refs_before)
+        self.assertFalse(fetch_head.exists())
+
+    def test_preflight_reports_topology_without_writing(self) -> None:
+        refs_before = run(["git", "show-ref"], cwd=self.repo).stdout
+        status_before = run(["git", "status", "--porcelain=v1"], cwd=self.repo).stdout
+        fetch_head = self.repo / ".git" / "FETCH_HEAD"
+        self.assertFalse(fetch_head.exists())
+
+        payload = json.loads(
+            run(
+                self.preflight_command(
+                    head_branch="feat/deterministic-pr-submission"
+                ),
+                cwd=self.repo,
+                env=self.environment(),
+            ).stdout
+        )
+
+        self.assertEqual(payload["mode"], "preflight")
+        self.assertEqual(payload["base"], "main")
+        self.assertEqual(payload["default_branch"], "main")
+        self.assertEqual(payload["current_branch"], "feat/deterministic-pr-submission")
+        self.assertEqual(payload["status"], "passed")
+        self.assertEqual(run(["git", "show-ref"], cwd=self.repo).stdout, refs_before)
+        self.assertEqual(
+            run(["git", "status", "--porcelain=v1"], cwd=self.repo).stdout,
+            status_before,
+        )
+        self.assertFalse(fetch_head.exists())
+
+    def test_preflight_rejects_current_repository_default_branch(self) -> None:
+        state = json.loads(self.state_path.read_text(encoding="utf-8"))
+        state["repos"]["acme/project"]["defaultBranchRef"] = {"name": "trunk"}
+        self.state_path.write_text(json.dumps(state), encoding="utf-8")
+        run(["git", "branch", "trunk", self.base_sha], cwd=self.repo)
+        run(["git", "checkout", "trunk"], cwd=self.repo)
+
+        result = subprocess.run(
+            self.preflight_command("--base", "main"),
+            cwd=self.repo,
+            env=self.environment(),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("current branch 'trunk'", result.stderr)
+        self.assertIn("repository default 'trunk'", result.stderr)
+        self.assertNotIn("PR base 'main'", result.stderr)
+
+    def test_plan_rejects_protected_current_branch_before_commit_range_check(self) -> None:
+        run(["git", "checkout", "main"], cwd=self.repo)
+
+        result = subprocess.run(
+            self.command("plan", head_branch="feat/new-task"),
+            cwd=self.repo,
+            env=self.environment(),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("current branch 'main'", result.stderr)
+        self.assertNotIn("HEAD contains no commits", result.stderr)
+
+    def test_apply_rejects_protected_current_branch_before_fetch_or_pr_write(self) -> None:
+        run(["git", "checkout", "main"], cwd=self.repo)
+        refs_before = run(["git", "show-ref"], cwd=self.repo).stdout
+        fetch_head = self.repo / ".git" / "FETCH_HEAD"
+        self.assertFalse(fetch_head.exists())
+
+        result = subprocess.run(
+            self.command("apply", head_branch="feat/new-task"),
+            cwd=self.repo,
+            env=self.environment(),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("current branch 'main'", result.stderr)
+        self.assertFalse(fetch_head.exists())
+        self.assertEqual(run(["git", "show-ref"], cwd=self.repo).stdout, refs_before)
+        self.assertNotIn("pr", json.loads(self.state_path.read_text(encoding="utf-8")))
+
+    def test_preflight_rejects_same_named_base_head_across_fork(self) -> None:
+        run(
+            ["git", "remote", "add", "fork", "git@github.com:contrib/project.git"],
+            cwd=self.repo,
+        )
+        run(["git", "config", "remote.pushDefault", "fork"], cwd=self.repo)
+
+        result = subprocess.run(
+            self.preflight_command(head_branch="main"),
+            cwd=self.repo,
+            env=self.environment(),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("head branch 'main'", result.stderr)
+        self.assertIn("PR base 'main'", result.stderr)
+        self.assertNotIn("pr", json.loads(self.state_path.read_text(encoding="utf-8")))
+
+    def test_apply_rejects_missing_naming_dependency_before_fetch(self) -> None:
+        args = submit_pr.build_parser().parse_args(self.command("apply")[2:])
+        error = submit_pr.SubmitPRError("Missing git-commit naming dependency")
+        with (
+            patch.object(submit_pr, "require_clean_worktree"),
+            patch.object(submit_pr, "check_github_auth"),
+            patch.object(submit_pr, "resolve_repository_context", return_value=object()),
+            patch.object(submit_pr, "branch_policy", side_effect=error),
+            patch.object(submit_pr, "fetch_base") as fetch,
+        ):
+            with self.assertRaisesRegex(submit_pr.SubmitPRError, "Missing git-commit"):
+                submit_pr.apply_command(args, self.repo)
+            fetch.assert_not_called()
 
     def test_apply_pushes_same_repo_branch_and_reuses_pr(self) -> None:
         environment = self.environment()
@@ -574,7 +773,7 @@ class WorkflowIntegrationTests(unittest.TestCase):
         )
         self.assertEqual(
             run(["git", "branch", "--show-current"], cwd=self.repo).stdout.strip(),
-            "main",
+            "feat/deterministic-pr-submission",
         )
         remote_main = run(
             ["git", "--git-dir", str(self.base_remote), "rev-parse", "refs/heads/main"],
@@ -606,11 +805,86 @@ class WorkflowIntegrationTests(unittest.TestCase):
             1,
         )
 
+    def test_screenshot_urls_and_related_prs_survive_preview_apply_and_retry(self) -> None:
+        options = (
+            "--issue", "#123 Tracks the upstream failure",
+            "--related-pr", "https://github.com/acme/project/pull/124", "Temporary fix",
+            "--related-pr", "https://github.com/acme/project/pull/125", "Introduced the workflow",
+            "--issue-policy", "forbid",
+            "--ui-change",
+            "--screenshot", "Light", "https://github.com/user-attachments/assets/light",
+            "--screenshot", "Dark", "https://github.com/user-attachments/assets/dark",
+        )
+        environment = self.environment()
+        preview = json.loads(run(self.command("plan", *options), cwd=self.repo, env=environment).stdout)
+        body = preview["body"]
+        self.assertIn("- #123 — Tracks the upstream failure", body)
+        self.assertIn("- https://github.com/acme/project/pull/124 — Temporary fix", body)
+        self.assertIn("- https://github.com/acme/project/pull/125 — Introduced the workflow", body)
+        self.assertIn("![Light](<https://github.com/user-attachments/assets/light>)", body)
+        self.assertIn("![Dark](<https://github.com/user-attachments/assets/dark>)", body)
+        self.assertNotIn(submit_pr.UI_SCREENSHOT_NOTICE, body)
+        self.assertFalse(preview["needs_screenshots"])
+
+        for expected_action in ("created", "reused"):
+            result = json.loads(run(self.command("apply", *options), cwd=self.repo, env=environment).stdout)
+            self.assertEqual(result["pr_action"], expected_action)
+            self.assertEqual(result["pr_verification"]["status"], "passed")
+            self.assertFalse(result["needs_screenshots"])
+        state = json.loads(self.state_path.read_text())
+        self.assertEqual(state["pr"]["body"], body)
+        self.assertEqual(state["create_count"], 1)
+
+    def test_post_upload_readback_is_exact_and_retries_without_writes(self) -> None:
+        environment = self.environment()
+        pending = ("--ui-change",)
+        ready = (*pending, "--screenshot", "Light", "https://github.com/user-attachments/assets/light")
+        initial = json.loads(run(self.command("apply", *pending), cwd=self.repo, env=environment).stdout)
+        self.assertTrue(initial["needs_screenshots"])
+
+        receipt_path = self.root / "apply-receipt.json"
+        receipt_path.write_text(json.dumps(initial), encoding="utf-8")
+        verify = self.command(
+            "plan", "--apply-receipt", str(receipt_path), "--verify-pr", str(initial["pr_number"]), *ready,
+        )
+        premature = subprocess.run(verify, cwd=self.repo, env=environment, capture_output=True, text=True)
+        self.assertNotEqual(premature.returncode, 0)
+        self.assertIn("body differs", premature.stderr)
+
+        # Simulate the Agent's screenshot-only edit after obtaining an attachment URL.
+        state = json.loads(self.state_path.read_text())
+        old_body = state["pr"]["body"]
+        state["pr"]["body"] = old_body.replace(
+            submit_pr.UI_SCREENSHOT_NOTICE,
+            "![Light](<https://github.com/user-attachments/assets/light>)",
+        )
+        state["gh_calls"] = []
+        self.state_path.write_text(json.dumps(state))
+        fetch_head = self.repo / ".git" / "FETCH_HEAD"
+        fetch_before = fetch_head.stat().st_mtime_ns
+        for _ in range(2):
+            result = json.loads(run(verify, cwd=self.repo, env=environment).stdout)
+            self.assertEqual(result["pr_verification"]["status"], "passed")
+            self.assertEqual(result["pr_url"], initial["pr_url"])
+            self.assertFalse(result["needs_screenshots"])
+        state_after = json.loads(self.state_path.read_text())
+        self.assertEqual(state_after["pr"]["body"], state["pr"]["body"])
+        self.assertEqual(state_after["create_count"], 1)
+        self.assertEqual(fetch_head.stat().st_mtime_ns, fetch_before)
+        self.assertEqual(
+            {tuple(call[:2]) for call in state_after["gh_calls"]},
+            {("pr", "view")},
+        )
+
     def test_detached_apply_creates_branch_without_attaching_checkout(self) -> None:
         run(["git", "checkout", "--detach", self.head_sha], cwd=self.repo)
 
         payload = json.loads(
-            run(self.command("apply"), cwd=self.repo, env=self.environment()).stdout
+            run(
+                self.command("apply", head_branch="feat/detached-submission"),
+                cwd=self.repo,
+                env=self.environment(),
+            ).stdout
         )
 
         self.assertEqual(payload["branch_action"], "created")
@@ -626,7 +900,7 @@ class WorkflowIntegrationTests(unittest.TestCase):
                 [
                     "git",
                     "rev-parse",
-                    "refs/heads/feat/deterministic-pr-submission",
+                    "refs/heads/feat/detached-submission",
                 ],
                 cwd=self.repo,
             ).stdout.strip(),
@@ -634,7 +908,11 @@ class WorkflowIntegrationTests(unittest.TestCase):
         )
 
         repeated = json.loads(
-            run(self.command("apply"), cwd=self.repo, env=self.environment()).stdout
+            run(
+                self.command("apply", head_branch="feat/detached-submission"),
+                cwd=self.repo,
+                env=self.environment(),
+            ).stdout
         )
         self.assertEqual(repeated["branch_action"], "reused")
         self.assertEqual(repeated["push_action"], "reused")
@@ -652,14 +930,14 @@ class WorkflowIntegrationTests(unittest.TestCase):
             submit_pr.ensure_local_branch(
                 self.repo,
                 None,
-                "feat/deterministic-pr-submission",
+                "feat/local-branch-write",
                 self.head_sha,
             )
 
         self.assertIsNone(
             submit_pr.local_branch_sha(
                 self.repo,
-                "feat/deterministic-pr-submission",
+                "feat/local-branch-write",
             )
         )
 
@@ -688,7 +966,7 @@ class WorkflowIntegrationTests(unittest.TestCase):
         planned = json.loads(
             run(self.command("plan"), cwd=self.repo, env=self.environment()).stdout
         )
-        self.assertEqual(planned["planned_branch_action"], "would-update")
+        self.assertEqual(planned["planned_branch_action"], "current")
 
         second = json.loads(
             run(self.command("apply"), cwd=self.repo, env=self.environment()).stdout
@@ -696,7 +974,7 @@ class WorkflowIntegrationTests(unittest.TestCase):
 
         self.assertEqual(second["push_action"], "updated")
         self.assertEqual(second["pr_action"], "reused")
-        self.assertEqual(second["branch_action"], "updated")
+        self.assertEqual(second["branch_action"], "current")
         state = json.loads(self.state_path.read_text(encoding="utf-8"))
         self.assertEqual(state["create_count"], 1)
         self.assertEqual(state["pr"]["headRefOid"], self.head_sha)

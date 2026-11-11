@@ -37,7 +37,10 @@ struct QianfanServiceTests {
         #expect(service is QianfanService)
     }
 
-    @Test("configured Qianfan API key validates a translation")
+    @Test(
+        "configured Qianfan API key validates a translation",
+        .tags(.integration, .requiresLocalEnvironment)
+    )
     func validatesQianfanTranslation() async {
         let service = QianfanService()
         let result = await service.validate()

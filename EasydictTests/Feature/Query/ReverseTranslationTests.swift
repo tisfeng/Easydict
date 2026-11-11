@@ -188,6 +188,39 @@ struct ReverseTranslationTests {
         }
     }
 
+    @Test("Expanding an existing result preserves the rendered text views")
+    func resultExpansionPreservesContent() throws {
+        let cellType = try #require(NSClassFromString("EZResultView") as? NSView.Type)
+        let cell = cellType.init(frame: NSRect(x: 0, y: 0, width: 504, height: 300))
+        let service = AppleService()
+        let result = QueryResult()
+        service.result = result
+        result.translatedResults = ["A long translation.\n译文内容应保持原样。"]
+        result.isShowing = true
+        cell.setValue(service, forKey: "service")
+        cell.setValue(result, forKey: "result")
+        let body = try #require(cell.value(forKey: "wordResultView") as? NSView)
+        let views = body.subviews.map(ObjectIdentifier.init)
+        let expandedHeight = result.viewHeight
+        #expect(expandedHeight > 30)
+        #expect(!views.isEmpty)
+
+        result.isShowing = false
+        cell.perform(NSSelectorFromString("updateExpandedState"))
+        #expect(result.viewHeight == 30)
+        #expect(body.subviews.map(ObjectIdentifier.init) == views)
+
+        result.isShowing = true
+        cell.perform(NSSelectorFromString("updateExpandedState"))
+        #expect(result.viewHeight == expandedHeight)
+        #expect(body.subviews.map(ObjectIdentifier.init) == views)
+
+        result.translatedResults = ["Updated output."]
+        cell.setValue(result, forKey: "result")
+        let renderedTexts = body.subviews.compactMap { ($0 as? NSTextView)?.string }
+        #expect(renderedTexts.contains("Updated output."))
+    }
+
     // MARK: Private
 
     private func makeResultUnavailable(

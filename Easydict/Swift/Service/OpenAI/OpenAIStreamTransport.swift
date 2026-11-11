@@ -30,6 +30,14 @@ struct OpenAIStreamTransport: Sendable {
         onResult: @escaping @Sendable (ChatStreamResult) -> ()
     ) async throws {
         let request = try makeRequest(query: query, url: url, apiKey: apiKey)
+        _ = try await stream(request: request, onResult: onResult)
+    }
+
+    /// Consumes a provider-specific image request and returns its complete text.
+    func stream(
+        request: URLRequest, onResult: @escaping @Sendable (ChatStreamResult) -> ()
+    ) async throws
+        -> String {
         let (bytes, response) = try await session.bytes(for: request)
 
         if let httpResponse = response as? HTTPURLResponse,
@@ -46,19 +54,28 @@ struct OpenAIStreamTransport: Sendable {
 
         try validate(response: response)
 
+        var text = ""
         var eventBuffer = Data()
         for try await byte in bytes {
             try Task.checkCancellation()
             eventBuffer.append(byte)
-            if let eventData = completedEvent(from: &eventBuffer),
-               try emitEvent(eventData, onResult: onResult) {
-                return
+            if let eventData = completedEvent(from: &eventBuffer) {
+                let event = try decodeSSEEvent(eventData)
+                if event.done { return text }
+                if let result = event.result {
+                    text += result.choices.first?.delta.content ?? ""
+                    onResult(result)
+                }
             }
         }
 
         if !eventBuffer.isEmpty {
-            _ = try emitEvent(eventBuffer, onResult: onResult)
+            if let result = try decodeSSEEvent(eventBuffer).result {
+                text += result.choices.first?.delta.content ?? ""
+                onResult(result)
+            }
         }
+        return text
     }
 
     func makeRequest(query: ChatQuery, url: URL, apiKey: String) throws -> URLRequest {
@@ -66,7 +83,7 @@ struct OpenAIStreamTransport: Sendable {
         query.stream = true
 
         var request = URLRequest(
-            url: url, timeoutInterval: SharedConstants.llmRequestTimeoutInterval
+            url: url, timeoutInterval: AppConstants.llmRequestTimeoutInterval
         )
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -150,24 +167,17 @@ struct OpenAIStreamTransport: Sendable {
         return line.dropFirst("data:".count).trimmingCharacters(in: .whitespaces)
     }
 
-    /// Emits one complete SSE event and returns whether it was the terminal `[DONE]` event.
-    private func emitEvent(
-        _ event: Data,
-        onResult: @escaping @Sendable (ChatStreamResult) -> ()
-    ) throws
-        -> Bool {
+    /// Decodes one SSE event while keeping terminal and content events distinct.
+    private func decodeSSEEvent(_ event: Data) throws -> (done: Bool, result: ChatStreamResult?) {
         guard let eventString = String(data: event, encoding: .utf8) else {
             throw QueryError(type: .api, message: "Invalid UTF-8 in OpenAI stream response")
         }
         let dataLines = eventString.components(separatedBy: .newlines).compactMap(eventData)
         let payload = dataLines.joined(separator: "\n").trim()
         if payload == "[DONE]" {
-            return true
+            return (true, nil)
         }
-        if let result = try decodeEvent(dataLines: dataLines) {
-            onResult(result)
-        }
-        return false
+        return (false, try decodeEvent(dataLines: dataLines))
     }
 }
 
