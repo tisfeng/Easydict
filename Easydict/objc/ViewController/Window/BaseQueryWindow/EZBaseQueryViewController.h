@@ -49,6 +49,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)copyFirstTranslatedText;
 
+/// Returns the first service result only when it belongs to the current query.
+- (nullable EZQueryResult *)firstTranslatedResult;
+
 /// Returns the translated text of the first service result, if available.
 - (nullable NSString *)firstTranslatedText;
 

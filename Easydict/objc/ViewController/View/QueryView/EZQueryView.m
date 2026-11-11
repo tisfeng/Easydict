@@ -41,7 +41,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
 @property (nonatomic, strong) id fontSizeObserver;
 @property (nonatomic, strong) EDMarkdownLabel *formulaPreview;
-@property (nonatomic, assign) BOOL didEnableStreamingFormulaPreview;
+@property (nonatomic, assign) BOOL didChooseFormulaView;
 @property (nonatomic, strong) EDMarkdownToggleButton *markdownButton;
 
 @end
@@ -380,15 +380,15 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 }
 
 - (void)enableStreamingFormulaPreview {
-    if (!self.didEnableStreamingFormulaPreview && !self.markdownButton.hidden
+    if (!self.didChooseFormulaView && !self.markdownButton.hidden
         && [EDMarkdownLabel containsMath:self.copiedText]) {
-        self.didEnableStreamingFormulaPreview = YES;
+        self.didChooseFormulaView = YES;
         [self enableFormulaPreview];
     }
 }
 
 - (void)resetFormulaPreview {
-    self.didEnableStreamingFormulaPreview = NO;
+    self.didChooseFormulaView = NO;
     if (self.formulaPreview && self.visibleTextView == self.formulaPreview) {
         [self showFormulaPreview:NO];
     }
@@ -418,6 +418,8 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 }
 
 - (void)toggleFormulaPreview:(id)sender {
+    // A manual choice also wins when it precedes the first streamed equation.
+    self.didChooseFormulaView = YES;
     [self showFormulaPreview:self.visibleTextView != self.formulaPreview];
     if (self.updateInputTextBlock) {
         self.updateInputTextBlock(self.copiedText, self.heightOfQueryView);

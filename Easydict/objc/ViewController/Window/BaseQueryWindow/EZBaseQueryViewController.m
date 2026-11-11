@@ -713,16 +713,14 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 }
 
+- (nullable EZQueryResult *)firstTranslatedResult {
+    EZQueryResult *result = self.firstService.result;
+    return [result.queryText isEqualToString:self.queryModel.queryText] ? result : nil;
+}
+
 - (nullable NSString *)firstTranslatedText {
-    if (self.firstService &&
-        [self.firstService.result.queryText isEqualToString:self.queryModel.queryText]) {
-        NSString *copiedText = self.firstService.result.copiedText;
-        if (copiedText.length > 0) {
-            return copiedText;
-        }
-        return self.firstService.result.translatedText;
-    }
-    return nil;
+    EZQueryResult *result = [self firstTranslatedResult];
+    return result.copiedText.length > 0 ? result.copiedText : result.translatedText;
 }
 
 - (void)toggleTranslationLanguages {
@@ -814,8 +812,17 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 /// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)queryType {
-    [self.queryView.textView updateTextAndParagraphStyle:text];
+    if (![queryType isEqualToString:EZActionTypeOCRQuery]
+        && ![queryType isEqualToString:EZActionTypePasteboardOCR]
+        && ![queryType isEqualToString:EZActionTypeScreenshotOCR]) {
+        [self.detectManager cancelOCR];
+        [self.queryView startLoadingAnimation:NO];
+        self.queryModel.ocrImage = nil;
+        [self.queryView resetFormulaPreview];
+    }
+    // The text update can synchronously notify the query view's input handler.
     self.queryModel.actionType = queryType;
+    [self.queryView.textView updateTextAndParagraphStyle:text];
 
     if (text) {
         // Updating query text programmatically loses input focus, we need to recover it.
@@ -860,8 +867,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     if (ocrImage && ([actionType isEqualToString:EZActionTypeOCRQuery]
                      || [actionType isEqualToString:EZActionTypePasteboardOCR])) {
-        BOOL autoQuery = self.config.autoQueryOCRText;
-        [self startOCRImage:ocrImage actionType:actionType autoQuery:autoQuery];
+        // This path is an explicit retry, independent of initial-capture preferences.
+        [self startOCRImage:ocrImage actionType:actionType autoQuery:YES];
     } else {
         [self startQueryText:self.inputText actionType:actionType];
     }
