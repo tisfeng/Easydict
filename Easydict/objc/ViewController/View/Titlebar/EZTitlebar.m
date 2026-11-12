@@ -441,9 +441,13 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
                                                                             in:RecordTypeFavorites];
     if (!isFavorited) {
         NSString *translatedResult = [viewController firstTranslatedText];
+        EZQueryResult *result = [viewController firstTranslatedResult];
+        // Save the direction captured by the displayed translation, not shared selectors.
+        EZLanguage from = translatedResult.length && result.from.length ? result.from : queryModel.queryFromLanguage;
+        EZLanguage to = translatedResult.length && result.to.length ? result.to : queryModel.queryTargetLanguage;
         [QueryRecordManager.shared addRecordWithQueryText:queryText
-                                             fromLanguage:queryModel.queryFromLanguage
-                                               toLanguage:queryModel.queryTargetLanguage
+                                             fromLanguage:from
+                                               toLanguage:to
                                          translatedResult:translatedResult
                                                       to:RecordTypeFavorites];
     }

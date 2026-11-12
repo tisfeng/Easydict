@@ -19,11 +19,13 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         service: QueryService,
         observeKeys: [Defaults.Key<String>],
         requiredKeys: [Defaults.Key<String>]? = nil,
-        showValidationButton: Bool = true,
+        validationAction: (() -> ())? = nil,
+        validationDisabled: Bool = false,
         @ViewBuilder content: () -> Content
     ) {
         self.service = service
-        self.showValidationButton = showValidationButton
+        self.validationAction = validationAction
+        self.validationDisabled = validationDisabled
         self.content = content()
         self.viewModel = ServiceValidationViewModel(
             service: service,
@@ -36,7 +38,8 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     var service: QueryService
     let content: Content
-    let showValidationButton: Bool
+    let validationAction: (() -> ())?
+    let validationDisabled: Bool
 
     var header: some View {
         HStack(alignment: .lastTextBaseline) {
@@ -50,7 +53,11 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
             Spacer()
 
             Button {
-                validate()
+                if let validationAction {
+                    validationAction()
+                } else {
+                    validate()
+                }
             } label: {
                 Group {
                     if viewModel.isValidating {
@@ -62,7 +69,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
                     }
                 }
             }
-            .disabled(viewModel.isValidateBtnDisabled || viewModel.isValidating)
+            .disabled(validationDisabled || viewModel.isValidateBtnDisabled || viewModel.isValidating)
         }
     }
 
@@ -72,7 +79,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         } header: {
             header
         } footer: {
-            if showValidationButton { footer }
+            footer
         }
         .alert(viewModel.alertTitle, isPresented: $viewModel.isAlertPresented) {
             Button("ok") {

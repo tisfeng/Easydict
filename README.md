@@ -137,10 +137,10 @@ Thanks to all sponsors for their generous support. For details, please see the [
 
 ## Star History
 
-<a href="https://tisfeng.github.io/Easydict/star-history/#tisfeng/easydict&Date">
+<a href="https://www.star-history.com/?repos=tisfeng%2Feasydict&amp;type=date&amp;legend=top-left">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./docs/assets/star-history/star-history-dark.svg" />
-    <source media="(prefers-color-scheme: light)" srcset="./docs/assets/star-history/star-history-light.svg" />
-    <img alt="Star History Chart" src="./docs/assets/star-history/star-history-light.svg" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=tisfeng%2Feasydict&amp;type=Date&amp;theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=tisfeng%2Feasydict&amp;type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=tisfeng%2Feasydict&amp;type=Date" />
   </picture>
 </a>

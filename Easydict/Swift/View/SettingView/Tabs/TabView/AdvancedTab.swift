@@ -245,6 +245,22 @@ struct AdvancedTab: View {
 
             // OCR settings section
             Section {
+                Picker("setting.advance.ocr_service", selection: $ocrServiceID) {
+                    Text("setting.advance.ocr_service.apple").tag(ServiceType.apple.rawValue)
+                    ForEach(DetectManager.ocrServiceIDs, id: \.self) { identifier in
+                        if let metadata = QueryServiceFactory.shared.metadata(withTypeId: identifier) {
+                            Text(metadata.title).tag(identifier)
+                        }
+                    }
+                }
+                Text("setting.advance.ocr_service.description")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .onAppear {
+                        if !DetectManager.ocrServiceIDs.contains(ocrServiceID) {
+                            ocrServiceID = ServiceType.apple.rawValue
+                        }
+                    }
                 Toggle(isOn: $enableYoudaoOCR) {
                     AdvancedTabItemView(
                         color: .blue,
@@ -459,6 +475,7 @@ struct AdvancedTab: View {
 
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
     @Default(.preferYoudaoTTSForEnglishWord) private var preferYoudaoTTSForEnglishWord
+    @Default(.ocrServiceID) private var ocrServiceID
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
     @Default(.enableCompatibilityReplace) private var enableCompatibilityReplace
     @Default(.minClassicalChineseTextDetectLength) private var minClassicalChineseTextDetectLength

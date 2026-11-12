@@ -33,7 +33,7 @@ enum MarkdownMathRenderer {
             formula = cached
         } else {
             var renderer = MathImage(
-                latex: normalizedEnvironments(latex),
+                latex: normalizedLatex(latex, display: display),
                 fontSize: font.pointSize,
                 textColor: rgb,
                 labelMode: display ? .display : .text
@@ -80,8 +80,25 @@ enum MarkdownMathRenderer {
     }()
 
     /// SwiftMath's aligned/gather environments provide the unnumbered layout used in result cards.
-    private static func normalizedEnvironments(_ latex: String) -> String {
-        var result = latex
+    private static func normalizedLatex(_ latex: String, display: Bool) -> String {
+        // SwiftMath supports bold Greek letters through \bm and uses \frac for both fraction styles.
+        var result = latex.replacingOccurrences(
+            of: #"(?<!\\)((?:\\\\)*)\\boldsymbol(?![A-Za-z])"#,
+            with: #"$1\\bm"#,
+            options: .regularExpression
+        ).replacingOccurrences(
+            of: #"(?<!\\)((?:\\\\)*)\\[dt]frac(?![A-Za-z])"#,
+            with: #"$1\\frac"#,
+            options: .regularExpression
+        )
+        if display {
+            // Keep a simple equation number visible when SwiftMath cannot parse \tag.
+            result = result.replacingOccurrences(
+                of: #"(?<!\\)((?:\\\\)*)\\tag\{([A-Za-z0-9.\-]+)\}"#,
+                with: #"$1\\qquad ($2)"#,
+                options: .regularExpression
+            )
+        }
         for (environment, replacement) in [
             ("align", "aligned"), ("align*", "aligned"), ("gather*", "gather"),
             ("equation", ""), ("equation*", ""),

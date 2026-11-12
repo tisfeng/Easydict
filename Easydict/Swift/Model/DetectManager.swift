@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 import SystemConfiguration
 
@@ -24,8 +25,6 @@ public final class DetectManager: NSObject {
     public init(model: QueryModel) {
         self.queryModel = model
 
-        self.ocrService = AppleService.shared
-
         super.init()
     }
 
@@ -35,13 +34,21 @@ public final class DetectManager: NSObject {
         self.allowsDetachedDetection = true
     }
 
+    deinit { ocrTask?.cancel() }
+
     // MARK: Public
 
     /// The query model containing text and image data to be processed.
     public var queryModel: QueryModel
 
     /// The OCR service used for text recognition (defaults to AppleService).
-    public private(set) var ocrService: QueryService
+    public var ocrService: QueryService {
+        let identifier = Defaults[.ocrServiceID]
+        if let service = Self.selectedOCRService(identifier) {
+            return service
+        }
+        return AppleService.shared
+    }
 
     // MARK: - Static Factory
 
@@ -53,30 +60,24 @@ public final class DetectManager: NSObject {
         DetectManager(model: model)
     }
 
+    public func cancelOCR() {
+        latestOCRRequestID = nil
+        ocrTask?.cancel()
+        ocrTask = nil
+    }
+
     // MARK: - Public Methods
 
     /// Performs OCR on the query model's image and then detects the language of the OCR result.
     /// - Parameter completion: Callback with the updated query model and optional error.
     public func ocrAndDetectText(completion: @escaping (QueryModel, Error?) -> ()) {
-        ocr { [weak self] ocrResult, error in
-            guard let self else {
-                completion(QueryModel(), error)
-                return
-            }
+        ocrAndDetectText(progress: { _ in }, completion: completion)
+    }
 
-            guard let ocrResult else {
-                completion(queryModel, error)
-                return
-            }
-
-            queryModel.inputText = ocrResult.mergedText
-            let ocrLanguage = ocrResult.from
-            if ocrLanguage != .auto {
-                queryModel.detectedLanguage = ocrLanguage
-            }
-
-            completion(queryModel, error)
-        }
+    public func ocrAndDetectText(
+        progress: @escaping (String) -> (), completion: @escaping (QueryModel, Error?) -> ()
+    ) {
+        ocrAndDetectText(using: ocrService, progress: progress, completion: completion)
     }
 
     /// Detects the language of the given text using Apple, Google, and/or Baidu services
@@ -154,29 +155,7 @@ public final class DetectManager: NSObject {
     /// Performs OCR on the query model's image.
     /// - Parameter completion: Callback with the OCR result and optional error.
     public func ocr(completion: @escaping (EZOCRResult?, Error?) -> ()) {
-        guard queryModel.ocrImage != nil else {
-            let error = QueryError.error(type: .parameter, message: "ocr image cannot be nil")
-            completion(nil, error)
-            return
-        }
-
-        Task { [weak self] in
-            guard let self else {
-                completion(nil, nil)
-                return
-            }
-
-            do {
-                let result = try await ocrService.ocr(queryModel)
-                await MainActor.run {
-                    completion(result, nil)
-                }
-            } catch {
-                await MainActor.run {
-                    completion(nil, error)
-                }
-            }
-        }
+        performOCR(using: ocrService, completion: completion)
     }
 
     /// Checks if a system proxy is configured.
@@ -193,9 +172,94 @@ public final class DetectManager: NSObject {
         return (httpProxy == true) || (httpEnable == 1)
     }
 
+    // MARK: Internal
+
+    @nonobjc static var ocrServiceIDs: [String] {
+        configuredServiceIDs.filter { makeOCRService($0) != nil }.sorted()
+    }
+
+    @nonobjc
+    func ocrAndDetectText(
+        using service: QueryService, progress: @escaping (String) -> (),
+        completion: @escaping (QueryModel, Error?) -> ()
+    ) {
+        cancelOCR()
+        let requestModel = queryModel
+        let requestImage = requestModel.ocrImage
+        let requestAction = requestModel.actionType
+        var requestInput = requestModel.inputText
+        var streamedText = ""
+        var lastProgressTime = Date.distantPast
+        let requestLanguage = requestModel.queryFromLanguage
+        let requestID = UUID()
+        latestOCRRequestID = requestID
+        ocrTask = performOCR(using: service, onDelta: { [weak self] delta in
+            guard let self, latestOCRRequestID == requestID,
+                  queryModel === requestModel, requestModel.ocrImage === requestImage,
+                  requestModel.actionType == requestAction,
+                  requestModel.inputText == requestInput,
+                  requestModel.queryFromLanguage == requestLanguage else { return }
+            streamedText += delta
+            guard !streamedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                  Date().timeIntervalSince(lastProgressTime) >= 0.08 else { return }
+            lastProgressTime = Date()
+            requestInput = streamedText
+            requestModel.inputText = streamedText
+            progress(streamedText)
+        }) { [weak self] ocrResult, error in
+            guard let self else {
+                return
+            }
+
+            guard latestOCRRequestID == requestID else { return }
+            ocrTask = nil
+            latestOCRRequestID = nil
+
+            // A superseded OCR request must not replace a newer screenshot preview.
+            guard queryModel === requestModel,
+                  requestModel.ocrImage === requestImage, requestModel.actionType == requestAction,
+                  requestModel.inputText == requestInput else { return }
+
+            // Another window can change the shared language without starting a new request here.
+            guard requestModel.queryFromLanguage == requestLanguage else {
+                completion(requestModel, CocoaError(.userCancelled))
+                return
+            }
+
+            if error is CancellationError {
+                completion(requestModel, CocoaError(.userCancelled))
+                return
+            }
+
+            guard let ocrResult else {
+                completion(queryModel, error)
+                return
+            }
+
+            queryModel.inputText = ocrResult.mergedText
+            let ocrLanguage = ocrResult.from
+            if ocrLanguage != .auto {
+                queryModel.detectedLanguage = ocrLanguage
+                if service is StreamService {
+                    queryModel.needDetectLanguage = false
+                }
+            }
+
+            completion(queryModel, error)
+        }
+    }
+
     // MARK: Private
 
+    private static var configuredServiceIDs: Set<String> {
+        let storage = LocalStorage.shared()
+        return Set([EZWindowType.fixed, .main, .mini].flatMap { storage.allServiceTypes($0) })
+    }
+
     // MARK: - Private Properties
+
+    private var latestOCRRequestID: UUID?
+    private var ocrTask: Task<(), Never>?
 
     private var allowsDetachedDetection = false
 
@@ -206,6 +270,58 @@ public final class DetectManager: NSObject {
     private lazy var baiduService: BaiduService = .init()
 
     private lazy var youdaoService: YoudaoService = .init()
+
+    private static func makeOCRService(_ identifier: String) -> QueryService? {
+        guard identifier != ServiceType.apple.rawValue,
+              let service = QueryServiceFactory.shared.service(withTypeId: identifier),
+              service.supportsOCR() else { return nil }
+        return service
+    }
+
+    private static func selectedOCRService(_ identifier: String) -> QueryService? {
+        guard identifier != ServiceType.apple.rawValue, configuredServiceIDs.contains(identifier) else { return nil }
+        return makeOCRService(identifier)
+    }
+
+    @discardableResult
+    private func performOCR(
+        using service: QueryService, onDelta: @escaping (String) -> () = { _ in },
+        completion: @escaping (EZOCRResult?, Error?) -> ()
+    )
+        -> Task<(), Never>? {
+        guard let image = queryModel.ocrImage else {
+            let error = QueryError.error(type: .parameter, message: "ocr image cannot be nil")
+            completion(nil, error)
+            return nil
+        }
+
+        let sourceLanguage = queryModel.queryFromLanguage
+        let targetLanguage = queryModel.queryTargetLanguage
+        return Task {
+            let (deltas, continuation) = AsyncStream<String>.makeStream()
+            // Consume on the main actor and drain before completion, preserving provider order.
+            let progressTask = Task { @MainActor in
+                for await delta in deltas { onDelta(delta) }
+            }
+            do {
+                let result = try await service.ocr(image, from: sourceLanguage, to: targetLanguage, onDelta: {
+                    continuation.yield($0)
+                })
+                continuation.finish()
+                await progressTask.value
+                try Task.checkCancellation()
+                await MainActor.run {
+                    completion(result, nil)
+                }
+            } catch {
+                continuation.finish()
+                await progressTask.value
+                await MainActor.run {
+                    completion(nil, error)
+                }
+            }
+        }
+    }
 
     // MARK: - Private Methods
 

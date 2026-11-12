@@ -277,13 +277,19 @@ private struct AddServiceSheet: View {
                     }
                     .padding(.trailing, 2)
                 }
+                .disabled(additionTask != nil)
             }
 
             Divider()
 
             HStack {
                 Spacer()
+                if additionTask != nil {
+                    ProgressView().controlSize(.small)
+                        .accessibilityLabel(Text("setting.service.add"))
+                }
                 Button("cancel") {
+                    additionTask?.cancel()
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
@@ -293,17 +299,19 @@ private struct AddServiceSheet: View {
                     addSelectedServices()
                 }
                 .keyboardShortcut(.defaultAction)
-                .disabled(selectedServiceItems.isEmpty)
+                .disabled(selectedServiceItems.isEmpty || additionTask != nil)
                 .frame(width: 76)
             }
         }
         .padding(18)
         .frame(width: 640, height: 540)
+        .onDisappear { additionTask?.cancel() }
     }
 
     // MARK: Private
 
     @State private var selectedTypeIds: Set<String> = []
+    @State private var additionTask: Task<(), Never>?
 
     @Environment(\.dismiss) private var dismiss
 
@@ -340,8 +348,14 @@ private struct AddServiceSheet: View {
     }
 
     private func addSelectedServices() {
-        viewModel.addServices(selectedServiceItems)
-        dismiss()
+        guard additionTask == nil else { return }
+        let items = selectedServiceItems
+        additionTask = Task { @MainActor in
+            await viewModel.addServices(items)
+            guard !Task.isCancelled else { return }
+            additionTask = nil
+            dismiss()
+        }
     }
 }
 

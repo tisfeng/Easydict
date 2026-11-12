@@ -107,6 +107,15 @@ System OCR also extracts QR code payloads. When an image contains both text and 
 For better results, capture a smaller area, improve text/background contrast, and select the correct
 recognition language in settings.
 
+### OCR service
+
+Apple OCR is the default. To use Codex or OpenAI for screenshot translation, clipboard images,
+or silent screenshot OCR, configure a vision-capable model in Settings → Services. Select that
+service in Settings → Advanced → OCR Settings. The image is sent to the selected provider.
+Codex OCR supports Local CLI and ChatGPT sign-in with the managed component on macOS 13 or later.
+Formulas are transcribed as editable LaTeX. Translation uses the services enabled for the window.
+The screenshot OCR preview uses Apple OCR.
+
 ## Text to speech
 
 Easydict supports Apple, Baidu, Bing, Google, and Youdao TTS, with Youdao selected by default. TTS
@@ -172,7 +181,7 @@ its behavior, so please report it.
 
 ## History and results
 
-- Query history keeps recent items for re-querying, favoriting, exporting, or clearing.
+- **Save locally** in Settings → Privacy enables query history, saving the latest screenshot, and logging recognized OCR text. It defaults to off. Turning it off stops new saves and retains existing files and history.
 - Favorites keep entries you want to revisit.
 - Markdown returned by AI services is rendered as rich text; copied content remains available as text.
 - Service cards can be retried, copied, or collapsed depending on the current window and state.

@@ -8,6 +8,7 @@
 
 import Defaults
 import Foundation
+import OpenAI
 import SwiftUI
 
 // MARK: - OpenAIService
@@ -15,6 +16,8 @@ import SwiftUI
 @objc(EZOpenAIService)
 class OpenAIService: BaseOpenAIService {
     // MARK: Public
+
+    public override func supportsOCR() -> Bool { serviceType() == .openAI }
 
     public override func serviceType() -> ServiceType {
         .openAI
@@ -44,6 +47,36 @@ class OpenAIService: BaseOpenAIService {
 
     override var observeKeys: [Defaults.Key<String>] {
         [apiKeyKey, supportedModelsKey]
+    }
+
+    override func recognizeImage(_ imageURL: String, prompt: String) async throws -> String {
+        let endpoint = try validateChatStreamRequest()
+        let message: ChatQuery.ChatCompletionMessageParam = .user(.init(content: .contentParts([
+            .text(.init(text: prompt)),
+            .image(.init(imageUrl: .init(url: imageURL, detail: nil))),
+        ])))
+        let query = makeChatQuery(messages: [message])
+        return try await requestChatText(query: query, url: endpoint, apiKey: apiKey)
+    }
+
+    override func recognizeImage(
+        _ imageURL: String, prompt: String, onDelta: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> String {
+        let endpoint = try validateChatStreamRequest()
+        let message: ChatQuery.ChatCompletionMessageParam = .user(.init(content: .contentParts([
+            .text(.init(text: prompt)),
+            .image(.init(imageUrl: .init(url: imageURL, detail: nil))),
+        ])))
+        let transport = OpenAIStreamTransport()
+        let request = try transport.makeRequest(
+            query: makeChatQuery(messages: [message]),
+            url: endpoint,
+            apiKey: apiKey
+        )
+        return try await transport.stream(request: request) { result in
+            if let delta = result.choices.first?.delta.content { onDelta(delta) }
+        }
     }
 }
 

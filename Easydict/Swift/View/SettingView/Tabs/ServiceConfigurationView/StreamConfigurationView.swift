@@ -30,7 +30,8 @@ struct StreamConfigurationView: View {
         showUsageStatusPicker: Bool = true,
         showThinkTagContent: Bool = true,
         showStreamingToggle: Bool = false,
-        showValidationButton: Bool = true
+        validationAction: (() -> ())? = nil,
+        validationDisabled: Bool = false
     ) {
         self.service = service
 
@@ -46,7 +47,8 @@ struct StreamConfigurationView: View {
         self.showUsageStatusPicker = showUsageStatusPicker
         self.showThinkTagSection = showThinkTagContent
         self.showStreamingToggle = showStreamingToggle
-        self.showValidationButton = showValidationButton
+        self.validationAction = validationAction
+        self.validationDisabled = validationDisabled
 
         // Disable user to edit built-in supported models.
         self.isEditable = service.serviceType() != .builtInAI
@@ -72,7 +74,8 @@ struct StreamConfigurationView: View {
     let showUsageStatusPicker: Bool
     let showThinkTagSection: Bool
     let showStreamingToggle: Bool
-    let showValidationButton: Bool
+    let validationAction: (() -> ())?
+    let validationDisabled: Bool
 
     var isEditable = true
 
@@ -86,7 +89,8 @@ struct StreamConfigurationView: View {
         ServiceConfigurationSecretSectionView(
             service: service,
             observeKeys: service.observeKeys,
-            showValidationButton: showValidationButton
+            validationAction: validationAction,
+            validationDisabled: validationDisabled
         ) {
             if showCustomNameSection {
                 InputCell(

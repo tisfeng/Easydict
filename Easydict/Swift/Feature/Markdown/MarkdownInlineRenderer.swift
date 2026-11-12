@@ -13,18 +13,28 @@ struct MarkdownInlineRenderer {
 
     let codeBackground: NSColor
 
+    func containsMath(_ source: String) -> Bool {
+        !protectMath(source, prefix: "").formulas.isEmpty
+    }
+
+    func containsMarkdown(_ source: String) -> Bool {
+        guard source.contains(where: { "*_[<`~$\\".contains($0) }) else { return false }
+        if source.contains("$") || source.contains("\\(") || source.contains("\\["), containsMath(source) {
+            return true
+        }
+        return parseInline(source)?.runs.contains { run in
+            run.link != nil || run.inlinePresentationIntent?.isEmpty == false
+        } ?? false
+    }
+
     func render(_ source: String, attributes: [NSAttributedString.Key: Any]) -> NSAttributedString {
         // Choose a prefix absent from the source so literal private-use characters remain literal.
         var prefix = "\u{E000}"
         while source.contains(prefix) { prefix += "\u{E000}" }
         let protected = protectMath(source, prefix: prefix)
-        guard let parsed = try? AttributedString(
-            markdown: protected.text,
-            options: .init(
-                interpretedSyntax: .inlineOnlyPreservingWhitespace,
-                failurePolicy: .returnPartiallyParsedIfPossible
-            )
-        ) else { return NSAttributedString(string: source, attributes: attributes) }
+        guard let parsed = parseInline(protected.text) else {
+            return NSAttributedString(string: source, attributes: attributes)
+        }
         let output = NSMutableAttributedString()
         for run in parsed.runs {
             var attrs = attributes
@@ -65,6 +75,16 @@ struct MarkdownInlineRenderer {
         let source: String
         let latex: String?
         let display: Bool
+    }
+
+    private func parseInline(_ source: String) -> AttributedString? {
+        try? AttributedString(
+            markdown: source,
+            options: .init(
+                interpretedSyntax: .inlineOnlyPreservingWhitespace,
+                failurePolicy: .returnPartiallyParsedIfPossible
+            )
+        )
     }
 
     private func append(

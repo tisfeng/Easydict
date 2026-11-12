@@ -101,6 +101,29 @@ class RenderTests(unittest.TestCase):
                     submit_pr.render_pr_body(self.content(**{field: ""}))
 
 
+    def test_partial_screenshots_keep_uploaded_image_and_notice(self) -> None:
+        body = submit_pr.render_pr_body(
+            self.content(
+                ui_change=True,
+                screenshots=(("Light [README]", "https://example.org/light.png"),),
+                screenshots_incomplete=True,
+            )
+        )
+        self.assertIn(r"![Light \[README\]](<https://example.org/light.png>)", body)
+        self.assertIn(submit_pr.UI_SCREENSHOT_NOTICE, body)
+
+    def test_invalid_evidence_cannot_break_out_of_template_fields(self) -> None:
+        cases = (
+            {"issues": ("#123\n## New heading",)},
+            {"related_prs": (("https://github.com/acme/project/issues/42", "Related"),)},
+            {"related_prs": (("https://github.com/acme/project/pull/42", "\n"),)},
+            {"ui_change": True, "screenshots": (("Light", "/tmp/light.png"),)},
+            {"ui_change": True, "screenshots": (("Light", "https://example.org/a>b"),)},
+        )
+        for overrides in cases:
+            with self.subTest(overrides=overrides), self.assertRaises(submit_pr.SubmitPRError):
+                submit_pr.render_pr_body(self.content(**overrides))
+
 class WorkflowIntegrationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory()
@@ -780,6 +803,77 @@ class WorkflowIntegrationTests(unittest.TestCase):
         self.assertEqual(
             sum(call[:2] == ["pr", "view"] for call in state["gh_calls"]),
             1,
+        )
+
+    def test_screenshot_urls_and_related_prs_survive_preview_apply_and_retry(self) -> None:
+        options = (
+            "--issue", "#123 Tracks the upstream failure",
+            "--related-pr", "https://github.com/acme/project/pull/124", "Temporary fix",
+            "--related-pr", "https://github.com/acme/project/pull/125", "Introduced the workflow",
+            "--issue-policy", "forbid",
+            "--ui-change",
+            "--screenshot", "Light", "https://github.com/user-attachments/assets/light",
+            "--screenshot", "Dark", "https://github.com/user-attachments/assets/dark",
+        )
+        environment = self.environment()
+        preview = json.loads(run(self.command("plan", *options), cwd=self.repo, env=environment).stdout)
+        body = preview["body"]
+        self.assertIn("- #123 — Tracks the upstream failure", body)
+        self.assertIn("- https://github.com/acme/project/pull/124 — Temporary fix", body)
+        self.assertIn("- https://github.com/acme/project/pull/125 — Introduced the workflow", body)
+        self.assertIn("![Light](<https://github.com/user-attachments/assets/light>)", body)
+        self.assertIn("![Dark](<https://github.com/user-attachments/assets/dark>)", body)
+        self.assertNotIn(submit_pr.UI_SCREENSHOT_NOTICE, body)
+        self.assertFalse(preview["needs_screenshots"])
+
+        for expected_action in ("created", "reused"):
+            result = json.loads(run(self.command("apply", *options), cwd=self.repo, env=environment).stdout)
+            self.assertEqual(result["pr_action"], expected_action)
+            self.assertEqual(result["pr_verification"]["status"], "passed")
+            self.assertFalse(result["needs_screenshots"])
+        state = json.loads(self.state_path.read_text())
+        self.assertEqual(state["pr"]["body"], body)
+        self.assertEqual(state["create_count"], 1)
+
+    def test_post_upload_readback_is_exact_and_retries_without_writes(self) -> None:
+        environment = self.environment()
+        pending = ("--ui-change",)
+        ready = (*pending, "--screenshot", "Light", "https://github.com/user-attachments/assets/light")
+        initial = json.loads(run(self.command("apply", *pending), cwd=self.repo, env=environment).stdout)
+        self.assertTrue(initial["needs_screenshots"])
+
+        receipt_path = self.root / "apply-receipt.json"
+        receipt_path.write_text(json.dumps(initial), encoding="utf-8")
+        verify = self.command(
+            "plan", "--apply-receipt", str(receipt_path), "--verify-pr", str(initial["pr_number"]), *ready,
+        )
+        premature = subprocess.run(verify, cwd=self.repo, env=environment, capture_output=True, text=True)
+        self.assertNotEqual(premature.returncode, 0)
+        self.assertIn("body differs", premature.stderr)
+
+        # Simulate the Agent's screenshot-only edit after obtaining an attachment URL.
+        state = json.loads(self.state_path.read_text())
+        old_body = state["pr"]["body"]
+        state["pr"]["body"] = old_body.replace(
+            submit_pr.UI_SCREENSHOT_NOTICE,
+            "![Light](<https://github.com/user-attachments/assets/light>)",
+        )
+        state["gh_calls"] = []
+        self.state_path.write_text(json.dumps(state))
+        fetch_head = self.repo / ".git" / "FETCH_HEAD"
+        fetch_before = fetch_head.stat().st_mtime_ns
+        for _ in range(2):
+            result = json.loads(run(verify, cwd=self.repo, env=environment).stdout)
+            self.assertEqual(result["pr_verification"]["status"], "passed")
+            self.assertEqual(result["pr_url"], initial["pr_url"])
+            self.assertFalse(result["needs_screenshots"])
+        state_after = json.loads(self.state_path.read_text())
+        self.assertEqual(state_after["pr"]["body"], state["pr"]["body"])
+        self.assertEqual(state_after["create_count"], 1)
+        self.assertEqual(fetch_head.stat().st_mtime_ns, fetch_before)
+        self.assertEqual(
+            {tuple(call[:2]) for call in state_after["gh_calls"]},
+            {("pr", "view")},
         )
 
     def test_detached_apply_creates_branch_without_attaching_checkout(self) -> None:

@@ -480,6 +480,8 @@ open class QueryService: NSObject {
         try await audioPlayer.defaultTTSService.textToAudio(text, fromLanguage: fromLanguage, accent: accent)
     }
 
+    open func supportsOCR() -> Bool { false }
+
     /// Perform OCR for the given image.
     open func ocr(
         _ image: NSImage,
@@ -488,6 +490,16 @@ open class QueryService: NSObject {
     ) async throws
         -> EZOCRResult? {
         fatalError("You must override \(#function) in a subclass.")
+    }
+
+    /// Streams image transcription deltas when supported; ordinary OCR remains a single result.
+    @nonobjc
+    open func ocr(
+        _ image: NSImage, from: Language, to: Language,
+        onDelta: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> EZOCRResult? {
+        try await ocr(image, from: from, to: to)
     }
 
     /// Perform OCR for the given query model.

@@ -50,15 +50,16 @@ struct MDictReaderTests {
         #expect(MDictDictionary.decodeResourceText(data, preferredEncoding: encoding) == "发音样式")
     }
 
-    @Test("External MDX and MDD lookup flow")
+    @Test(
+        "External MDX and MDD lookup flow",
+        .tags(.requiresLocalEnvironment),
+        .enabled(
+            if: MDictReaderTests.externalDictionaryURLs != nil,
+            "Set EASYDICT_MDICT_INTEGRATION_MDX and EASYDICT_MDICT_INTEGRATION_MDD to local dictionary paths."
+        )
+    )
     func testExternalMDictLookupFlow() throws {
-        let environment = ProcessInfo.processInfo.environment
-        guard let mdxPath = environment["EASYDICT_MDICT_INTEGRATION_MDX"],
-              let mddPath = environment["EASYDICT_MDICT_INTEGRATION_MDD"]
-        else { return }
-
-        let mdxURL = URL(fileURLWithPath: mdxPath)
-        let mddURL = URL(fileURLWithPath: mddPath)
+        let (mdxURL, mddURL) = try #require(Self.externalDictionaryURLs)
         let reader = try MDictReader(url: mdxURL)
         let words = ["hello", "apple", "good", "test", "dictionary"]
         let definitions = try words.compactMap { try reader.lookup($0) }
@@ -279,6 +280,15 @@ struct MDictReaderTests {
     }
 
     // MARK: Private
+
+    private static var externalDictionaryURLs: (mdx: URL, mdd: URL)? {
+        let environment = ProcessInfo.processInfo.environment
+        guard let mdxPath = environment["EASYDICT_MDICT_INTEGRATION_MDX"], !mdxPath.isEmpty,
+              let mddPath = environment["EASYDICT_MDICT_INTEGRATION_MDD"], !mddPath.isEmpty
+        else { return nil }
+
+        return (URL(fileURLWithPath: mdxPath), URL(fileURLWithPath: mddPath))
+    }
 
     private static func firstResourceKey(in html: String) -> String? {
         let patterns = [

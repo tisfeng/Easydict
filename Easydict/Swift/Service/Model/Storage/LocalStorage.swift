@@ -20,7 +20,7 @@ final class LocalStorage: NSObject {
         super.init()
         if let domain = Bundle.main.bundleIdentifier {
             let snapshot = userDefaults.persistentDomain(forName: domain) ?? [:]
-            for uuid in CodexConfigurationMigration.legacyUUIDs(in: snapshot) {
+            for uuid in CodexConfigMigration.legacyUUIDs(in: snapshot) {
                 Defaults[CodexAccessMode.key(uuid: uuid)] = .localCLI
             }
         }
@@ -133,27 +133,35 @@ final class LocalStorage: NSObject {
         }
     }
 
+    @MainActor
     @discardableResult
-    func addServiceType(_ serviceTypeId: String, windowType: EZWindowType) -> Bool {
-        guard let metadata = QueryServiceFactory.shared.metadata(withTypeId: serviceTypeId) else {
-            return false
+    func addServiceType(_ serviceTypeId: String, windowType: EZWindowType) async -> Bool {
+        guard !Task.isCancelled,
+              let metadata = QueryServiceFactory.shared.metadata(withTypeId: serviceTypeId)
+        else { return false }
+
+        let modeKey = metadata.serviceType == .codexCLI ? CodexAccessMode.key(uuid: metadata.uuid) : nil
+        let initialMode: CodexAccessMode?
+        if let modeKey, !hasStoredAccessMode(modeKey) {
+            // CLI discovery can block while the user's login shell runs.
+            let hasCLI = await Task.detached(priority: .utility) {
+                CodexCLIInstallation.detectBinaryPath() != nil
+            }.value
+            initialMode = hasCLI ? .localCLI : .managed
+        } else {
+            initialMode = nil
         }
 
+        // Read both settings again after suspension so a concurrent addition or
+        // manual mode change takes precedence.
+        guard !Task.isCancelled else { return false }
         var serviceTypeIds = allServiceTypes(windowType)
-        let alreadyAdded = containsServiceType(
-            serviceTypeId,
-            in: serviceTypeIds,
-            metadata: metadata
-        )
-        guard !alreadyAdded else {
+        guard !containsServiceType(serviceTypeId, in: serviceTypeIds, metadata: metadata) else {
             return false
         }
-
-        if metadata.serviceType == .codexCLI {
-            // Persist the mode before membership: an interrupted addition must not
-            // look like a legacy installation on the next launch.
-            let modeKey = CodexAccessMode.key(uuid: metadata.uuid)
-            Defaults[modeKey] = Defaults[modeKey]
+        if let modeKey, let initialMode, !hasStoredAccessMode(modeKey) {
+            // Persist before membership so startup migration sees an initialized instance.
+            Defaults[modeKey] = initialMode
         }
         serviceTypeIds.append(serviceTypeId)
         setAllServiceTypes(serviceTypeIds, windowType: windowType)
@@ -430,6 +438,13 @@ final class LocalStorage: NSObject {
         set {
             userDefaults.set(newValue, forKey: Constants.queryServiceRecordKey)
         }
+    }
+
+    private func hasStoredAccessMode(_ key: Defaults.Key<CodexAccessMode>) -> Bool {
+        guard let domain = Bundle.main.bundleIdentifier else {
+            return userDefaults.object(forKey: key.name) != nil
+        }
+        return userDefaults.persistentDomain(forName: domain)?[key.name] != nil
     }
 
     /// Ensures all known services have stored defaults for each window type.

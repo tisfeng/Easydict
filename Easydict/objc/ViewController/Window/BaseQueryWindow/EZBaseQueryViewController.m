@@ -452,6 +452,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 /// Recreate the query model and rebind dependent managers for background OCR.
 - (void)resetQueryModelForBackgroundOCR {
+    [self.detectManager cancelOCR];
     EZQueryModel *model = [[EZQueryModel alloc] init];
     model.userSourceLanguage = MyConfiguration.shared.fromLanguage;
     model.userTargetLanguage = MyConfiguration.shared.toLanguage;
@@ -486,6 +487,14 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
+    [self.detectManager cancelOCR];
+    [self.queryView startLoadingAnimation:NO];
+    if (![text isEqualToString:self.inputText]) {
+        [self.queryView resetFormulaPreview];
+    }
+    if (![actionType isEqualToString:EZActionTypeOCRQuery] && ![actionType isEqualToString:EZActionTypePasteboardOCR]) {
+        self.queryModel.ocrImage = nil;
+    }
     self.inputText = text;
     self.queryModel.actionType = actionType;
     self.queryView.isTypingChinese = NO;
@@ -541,18 +550,35 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
+    [self cancelDelayDetectQueryText];
     self.queryModel.actionType = actionType;
+    [self.queryView resetFormulaPreview];
     self.queryModel.ocrImage = image;
 
     self.queryView.isTypingChinese = NO;
     [self.queryView startLoadingAnimation:YES];
 
+    BOOL saveOCRLocally = MyConfiguration.shared.localAutoSave;
     mm_weakify(self);
-    [self.detectManager ocrAndDetectTextWithCompletion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+    [self.detectManager ocrAndDetectTextWithProgress:^(NSString *text) {
         mm_strongify(self);
+        if (![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
+            [self.queryView startLoadingAnimation:NO];
+            self.inputText = text;
+            [self.queryView enableStreamingFormulaPreview];
+        }
+    } completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+        mm_strongify(self);
+        if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSUserCancelledError) {
+            [self.queryView startLoadingAnimation:NO];
+            return;
+        }
+
         // !!!: inputText should be used here, not queryText, queryText may be modified, such as easydict://query?text=xxx
         NSString *inputText = queryModel.inputText;
-        MMLogInfo(@"ocr result: %@", inputText);
+        if (saveOCRLocally && MyConfiguration.shared.localAutoSave && inputText.length && !error) {
+            MMLogInfo(@"ocr result: %@", inputText);
+        }
 
         NSDictionary *dict = @{
             @"detectedLanguage" : queryModel.detectedLanguage,
@@ -570,7 +596,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             return;
         }
 
-        if (actionType == EZActionTypeScreenshotOCR) {
+        if ([actionType isEqualToString:EZActionTypeScreenshotOCR]) {
             [inputText copyToPasteboard];
 
             dispatch_block_on_main_safely(^{
@@ -581,7 +607,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         }
 
 
-        if (actionType != EZActionTypeScreenshotOCR) {
+        if (![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
             [self.queryView startLoadingAnimation:NO];
 
             self.inputText = inputText;
@@ -596,6 +622,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             }
 
             [self.queryView highlightAllLinks];
+            [self.queryView enableStreamingFormulaPreview];
 
             if ([self.inputText ns_isURL]) {
                 // Append a whitespace to beautify the link.
@@ -618,11 +645,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     // Reset query view height if we are retrying OCR query
     if (self.queryModel.ocrImage) {
+        [self.detectManager cancelOCR];
         self.inputText = @"";
     }
 
     // If has designated language, we don't need to detect language again.
-    if (language == EZLanguageAuto) {
+    if ([language isEqualToString:EZLanguageAuto]) {
         self.queryModel.detectedLanguage = EZLanguageAuto;
         self.queryModel.needDetectLanguage = YES;
     } else {
@@ -640,9 +668,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (self.queryView.window == self.baseQueryWindow) {
         // Delay to make textView the first responder.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
-            if (self.config.selectQueryTextWhenWindowActivate) {
-                self.queryView.textView.selectedRange = NSMakeRange(0, self.inputText.length);
+            NSTextView *textView = self.queryView.visibleTextView;
+            [self.baseQueryWindow makeFirstResponder:textView];
+            if (self.config.selectQueryTextWhenWindowActivate && textView == self.queryView.textView) {
+                textView.selectedRange = NSMakeRange(0, self.inputText.length);
             }
         });
     }
@@ -653,9 +682,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)clearInput {
+    [self.detectManager cancelOCR];
+    [self.queryView startLoadingAnimation:NO];
     // Clear query text, detect language and clear button right now;
-    self.inputText = @"";
     self.queryModel.ocrImage = nil;
+    self.inputText = @"";
     [self.queryView setAlertTextHidden:YES];
 
     [self.audioPlayer stop];
@@ -683,16 +714,14 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 }
 
+- (nullable EZQueryResult *)firstTranslatedResult {
+    EZQueryResult *result = self.firstService.result;
+    return [result.queryText isEqualToString:self.queryModel.queryText] ? result : nil;
+}
+
 - (nullable NSString *)firstTranslatedText {
-    if (self.firstService &&
-        [self.firstService.result.queryText isEqualToString:self.queryModel.queryText]) {
-        NSString *copiedText = self.firstService.result.copiedText;
-        if (copiedText.length > 0) {
-            return copiedText;
-        }
-        return self.firstService.result.translatedText;
-    }
-    return nil;
+    EZQueryResult *result = [self firstTranslatedResult];
+    return result.copiedText.length > 0 ? result.copiedText : result.translatedText;
 }
 
 - (void)toggleTranslationLanguages {
@@ -784,8 +813,17 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 /// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)queryType {
-    [self.queryView.textView updateTextAndParagraphStyle:text];
+    if (![queryType isEqualToString:EZActionTypeOCRQuery]
+        && ![queryType isEqualToString:EZActionTypePasteboardOCR]
+        && ![queryType isEqualToString:EZActionTypeScreenshotOCR]) {
+        [self.detectManager cancelOCR];
+        [self.queryView startLoadingAnimation:NO];
+        self.queryModel.ocrImage = nil;
+        [self.queryView resetFormulaPreview];
+    }
+    // The text update can synchronously notify the query view's input handler.
     self.queryModel.actionType = queryType;
+    [self.queryView.textView updateTextAndParagraphStyle:text];
 
     if (text) {
         // Updating query text programmatically loses input focus, we need to recover it.
@@ -828,9 +866,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 - (void)startQueryWithType:(EZActionType)actionType {
     NSImage *ocrImage = self.queryModel.ocrImage;
 
-    if (ocrImage && (actionType == EZActionTypeOCRQuery || actionType == EZActionTypePasteboardOCR)) {
-        BOOL autoQuery = self.config.autoCopyOCRText || self.config.autoQueryPastedText || self.queryModel.autoQuery;
-        [self startOCRImage:ocrImage actionType:actionType autoQuery:autoQuery];
+    if (ocrImage && ([actionType isEqualToString:EZActionTypeOCRQuery]
+                     || [actionType isEqualToString:EZActionTypePasteboardOCR])) {
+        // This path is an explicit retry, independent of initial-capture preferences.
+        [self startOCRImage:ocrImage actionType:actionType autoQuery:YES];
     } else {
         [self startQueryText:self.inputText actionType:actionType];
     }
@@ -843,7 +882,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
-    MMLogInfo(@"query text: %@", self.queryText.truncated);
 
     // !!!: Reset all result before new query.
     [self resetAllResults];
@@ -858,7 +896,17 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel {
+    if (queryModel.queryText.length == 0) {
+        return;
+    }
     MMLogInfo(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
+
+    if (MyConfiguration.shared.localAutoSave && queryModel.queryText.length) {
+        [QueryRecordManager.shared addRecordWithQueryText:queryModel.queryText
+                                             fromLanguage:queryModel.queryFromLanguage
+                                               toLanguage:queryModel.queryTargetLanguage
+                                                       to:RecordTypeHistory];
+    }
 
     self.firstService = nil;
     for (EZQueryService *service in self.services) {
@@ -877,12 +925,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     [[EZLocalStorage shared] increaseQueryCount:self.inputText];
-    
-    // Add to history
-    [QueryRecordManager.shared addRecordWithQueryText:queryModel.queryText
-                                         fromLanguage:queryModel.queryFromLanguage
-                                           toLanguage:queryModel.queryTargetLanguage
-                                                   to:RecordTypeHistory];
 
     // Auto play query text if it is an English word.
     [self autoPlayEnglishWordAudio];
@@ -890,9 +932,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 - (void)queryWithModel:(EZQueryModel *)queryModel service:(EZQueryService *)service {
     NSString *queryText = [queryModel.queryText copy];
+    BOOL saveLocally = MyConfiguration.shared.localAutoSave;
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
         if (error) {
-            MMLogError(@"service: %@, query error: %@", service.serviceType, error);
+            MMLogError(@"service: %@, query error code: %ld", service.serviceType, (long)error.code);
         }
         result.error = [EZQueryError queryErrorFrom:error];
 
@@ -910,15 +953,14 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         //        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
         [self updateCellWithResult:result reloadData:YES];
 
-        // Backfill history record with the first service's translated text.
         if (service == self.firstService) {
             BOOL shouldRecord = !service.isStream || result.isStreamFinished;
-            if (shouldRecord && result.translatedText.length > 0) {
+            if (saveLocally && MyConfiguration.shared.localAutoSave && shouldRecord && result.error == nil
+                && result.translatedText.length && queryText.length) {
                 [QueryRecordManager.shared updateTranslatedResult:result.translatedText
                                                       forQueryText:queryText
                                                                 in:RecordTypeHistory];
             }
-
             // Append the query to the vocabulary notebook when it has content.
             // HTML-only dictionary results (Apple Dictionary, MDict) carry neither a
             // word result nor translated text, so htmlString must count as content too.
@@ -1321,9 +1363,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 #pragma mark - Update Data.
 
 - (void)resetQueryAndResults {
+    [self.detectManager cancelOCR];
+    [self.queryView startLoadingAnimation:NO];
     [self resetAllResults];
 
-    if (self.inputText.length) {
+    if (self.inputText.length || self.queryModel.ocrImage) {
+        self.queryModel.ocrImage = nil;
         self.inputText = @"";
     }
 }
@@ -1409,7 +1454,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {
-    self.queryView.clearButtonHidden = (queryModel.inputText.length == 0) && ([self allShowingResults].count == 0);
+    self.queryView.clearButtonHidden = queryModel.inputText.length == 0
+        && [self allShowingResults].count == 0;
 
     self.queryView.queryModel = queryModel;
     [self updateQueryCell];
@@ -1483,6 +1529,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         // !!!: The code here is a bit messy, so you need to be careful about changing it.
 
         // But, since there are cases where the query text is set manually, such as query selected text, where the query text is set first and then the input text is modified, the query cell must be updated for such cases.
+
+        if ([self.queryModel.actionType isEqualToString:EZActionTypeInputQuery]) {
+            [self.detectManager cancelOCR];
+        }
 
         // Reduce the update frequency, update only when the queryText or height changes.
         if ([self.inputText isEqualToString:text] && self.queryModel.queryViewHeight == queryViewHeight) {
@@ -1929,7 +1979,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         NSResponder *curr = self.baseQueryWindow.firstResponder;
         BOOL isFocusEmpty = (curr == nil || curr == self.baseQueryWindow || curr == self.baseQueryWindow.contentView);
         if (isFocusEmpty) {
-            [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
+            [self.baseQueryWindow makeFirstResponder:self.queryView.visibleTextView];
         }
     }
 }
@@ -1991,7 +2041,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
-    MMLogInfo(@"Auto play English word audio: %@", self.queryText);
+    MMLogInfo(@"Auto play English word audio");
     [self togglePlayQueryText:YES];
 }
 
