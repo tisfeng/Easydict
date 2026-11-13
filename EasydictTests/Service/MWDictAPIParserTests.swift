@@ -72,6 +72,33 @@ struct MWDictAPIParserTests {
         #expect(MWDictAPIParser.parse(data) == nil)
     }
 
+    @Test("Extracts learner sentence examples and ignores invalid responses")
+    func extractSentences() {
+        let learnersJSON = """
+        [
+          {
+            "meta": { "id": "hello" },
+            "def": [
+              { "sseq": [ [ [ "sense", { "dt": [
+                [ "text", "{bc}an expression of greeting" ],
+                [ "vis", [
+                  { "t": "They welcomed us with a warm {wi}hello{/wi}." },
+                  { "t": "we said our {wi}hellos{/wi} and got right down to business" }
+                ] ]
+              ] } ] ] ] }
+            ]
+          }
+        ]
+        """
+        #expect(MWDictAPIParser.extractSentences(Data(learnersJSON.utf8)) == [
+            "They welcomed us with a warm hello.",
+            "we said our hellos and got right down to business",
+        ])
+
+        let invalid = Data("Invalid API key. Not subscribed for this reference.".utf8)
+        #expect(MWDictAPIParser.extractSentences(invalid).isEmpty)
+    }
+
     @Test("Converts running-text markup to plain text")
     func stripMarkup() {
         let raw = "{bc}to {it}grow{/it} {sx|bigger|bigger||} and {a_link|stronger}"
@@ -176,7 +203,11 @@ struct MWDictServiceTests {
             runOns: ["developable adjective"]
         )
 
-        let wordResult = MWDictService().makeWordResult(entry: entry, word: "develop")
+        let wordResult = MWDictService().makeWordResult(
+            entry: entry,
+            word: "develop",
+            sentences: ["They welcomed us with a warm hello."]
+        )
         let parts = wordResult.parts ?? []
 
         #expect(parts.map(\.part) == [
@@ -188,8 +219,12 @@ struct MWDictServiceTests {
             "",
             "1",
             "",
+            "",
+            "",
         ])
         #expect(parts[7].means == ["developable adjective"])
+        #expect(parts[8].means == ["Examples in a Sentence"])
+        #expect(parts[9].means == ["— They welcomed us with a warm hello."])
         #expect(parts[0].means == ["developed; developing; develops"])
         #expect(parts[1].means == ["transitive verb"])
         #expect(parts[2].means == [": to work out the possibilities of"])

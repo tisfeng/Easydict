@@ -24,12 +24,17 @@ enum MWDictRequest {
     static func fetchEntryJSON(
         for word: String,
         apiKey: String,
-        timeout: TimeInterval = 30
+        timeout: TimeInterval = 30,
+        reference: String = "collegiate"
     ) async throws
         -> Data {
         let encodedWord = DictionarySupport.percentEncodedQueryValue(word)
         let encodedKey = DictionarySupport.percentEncodedQueryValue(apiKey)
-        guard let url = URL(string: "\(baseURLString)/\(encodedWord)?key=\(encodedKey)") else {
+        guard let url =
+            URL(
+                string: "https://dictionaryapi.com/api/v3/references/\(reference)/json/\(encodedWord)?key=\(encodedKey)"
+            )
+        else {
             throw QueryError.error(
                 type: .api,
                 message: "Merriam-Webster URL is invalid: \(word)"

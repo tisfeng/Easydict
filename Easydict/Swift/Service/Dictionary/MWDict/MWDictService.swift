@@ -110,7 +110,9 @@ class MWDictService: QueryService, @unchecked Sendable {
             throw QueryError(type: .noResult)
         }
 
-        result?.wordResult = makeWordResult(entry: entry, word: text)
+        let sentences = await fetchLearnerSentences(word: text)
+
+        result?.wordResult = makeWordResult(entry: entry, word: text, sentences: sentences)
 
         let plainText = entry.plainText
         result?.innerTexts = [plainText]
@@ -122,7 +124,12 @@ class MWDictService: QueryService, @unchecked Sendable {
 
     /// Mirrors the official entry order: part of speech → inflections → sections
     /// and numbered senses → first known use → etymology.
-    func makeWordResult(entry: MWDictEntry, word: String) -> EZTranslateWordResult {
+    func makeWordResult(
+        entry: MWDictEntry,
+        word: String,
+        sentences: [String] = []
+    )
+        -> EZTranslateWordResult {
         let wordResult = EZTranslateWordResult()
 
         if let pronunciation = entry.pronunciations.first {
@@ -170,6 +177,15 @@ class MWDictService: QueryService, @unchecked Sendable {
             appendPart("", [runOn])
         }
 
+        // The site's "Examples of … in a Sentence" block comes from the Learner's
+        // Dictionary; it appears only when that reference is subscribed.
+        if !sentences.isEmpty {
+            appendPart("", ["Examples in a Sentence"])
+            for sentence in sentences {
+                appendPart("", ["— \(sentence)"])
+            }
+        }
+
         if !parts.isEmpty {
             wordResult.parts = parts
         }
@@ -188,5 +204,20 @@ class MWDictService: QueryService, @unchecked Sendable {
 
     private var apiKey: String {
         Defaults[.mwDictAPIKey]
+    }
+
+    /// Best-effort fetch of the site's full-sentence examples. The reference is a
+    /// separate subscription; an invalid key or missing reference yields no block.
+    private func fetchLearnerSentences(word: String) async -> [String] {
+        do {
+            let data = try await MWDictRequest.fetchEntryJSON(
+                for: word,
+                apiKey: apiKey,
+                reference: "learners"
+            )
+            return MWDictAPIParser.extractSentences(data)
+        } catch {
+            return []
+        }
     }
 }

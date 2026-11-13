@@ -198,6 +198,46 @@ enum MWDictAPIParser {
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    /// Extract example sentences from a Learner's Dictionary response.
+    ///
+    /// Returns an empty array for suggestions, invalid keys and responses without
+    /// verbal illustrations, so the caller can treat the block as optional.
+    static func extractSentences(_ data: Data) -> [String] {
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [Any] else {
+            return []
+        }
+
+        var sentences: [String] = []
+
+        func walk(_ node: Any) {
+            // Verbal illustrations are `[ "vis", [ { "t": … } ] ]` pairs.
+            if let pair = node as? [Any], pair.count == 2,
+               let tag = pair[0] as? String, tag == "vis" {
+                for illustration in pair[1] as? [[String: Any]] ?? [] {
+                    let text = stripMarkup(illustration["t"] as? String ?? "")
+                    if !text.isEmpty, !sentences.contains(text) {
+                        sentences.append(text)
+                    }
+                }
+                return
+            }
+            if let dictionary = node as? [String: Any] {
+                for (_, value) in dictionary {
+                    walk(value)
+                }
+                return
+            }
+            if let array = node as? [Any] {
+                for item in array {
+                    walk(item)
+                }
+            }
+        }
+
+        walk(json)
+        return sentences
+    }
+
     // MARK: Private
 
     /// Numbering state for one sense sequence.
