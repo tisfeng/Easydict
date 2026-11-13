@@ -40,6 +40,8 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeCustomOpenAI;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeBuiltInAI;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeAppleDictionary;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeBing;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeBingDict;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeMerriamWebster;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeNiuTrans;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeCaiyun;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeTokenHub;

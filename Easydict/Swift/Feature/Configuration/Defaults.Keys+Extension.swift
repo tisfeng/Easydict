@@ -374,6 +374,9 @@ extension Defaults.Keys {
     // Bing
     static let bingCookieKey = Key<String>(EZBingCookieKey, default: "")
 
+    // Merriam-Webster
+    static let mwDictAPIKey = Key<String>(EZMWDictAPIKey, default: "")
+
     // niu
     static let niuTransAPIKey = Key<String>(EZNiuTransAPIKey, default: "")
 

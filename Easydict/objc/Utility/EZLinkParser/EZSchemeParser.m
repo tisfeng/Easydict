@@ -193,6 +193,7 @@
         EZNiuTransAPIKey,
         EZCaiyunToken,
         EZBingCookieKey,
+        EZMWDictAPIKey,
         
         EZAliAccessKeyId,
         EZAliAccessKeySecret,

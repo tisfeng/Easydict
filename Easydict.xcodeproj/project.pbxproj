@@ -283,6 +283,8 @@
 		03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884732F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift */; };
 		03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */; };
 		03A8847A2F14000100D5C0DE /* BingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884792F14000100D5C0DE /* BingServiceTests.swift */; };
+		9EDE3CCE99239093EAA21D0F /* BingDictHTMLParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F69448D4EB81BB1CABF0B32 /* BingDictHTMLParserTests.swift */; };
+		B7A1C0D2E3F4051627384954 /* MWDictAPIParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A1C0D2E3F4051627384964 /* MWDictAPIParserTests.swift */; };
 		03A9BE952E70631B0013E645 /* SystemUtility+Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */; };
 		03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
@@ -662,6 +664,13 @@
 		F02EB0F1EC964084A816E36F /* ClaudeCodeRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223DDDB5B2984382B5744C3C /* ClaudeCodeRunner.swift */; };
 		F12CD76026B145FDBD7A3880 /* DeepLWebAppVersionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D93A5FA4FE7473C8950EA07 /* DeepLWebAppVersionProvider.swift */; };
 		F24D63E3FB144383A9B80386 /* MDictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983925DCBA81465EAE22415B /* MDictService.swift */; };
+		5F4BA53822792668332194FD /* BingDictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3B56A778396FE8FA226995 /* BingDictService.swift */; };
+		CCC05B5B81FE5374D0708393 /* BingDictRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B112E1B5A3E1E028406B3F86 /* BingDictRequest.swift */; };
+		50C689C479CEB45AE2A25D37 /* BingDictHTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A127A8FE075B00D2666315D /* BingDictHTMLParser.swift */; };
+		B7A1C0D2E3F4051627384950 /* DictionarySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A1C0D2E3F4051627384960 /* DictionarySupport.swift */; };
+		B7A1C0D2E3F4051627384951 /* MWDictService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A1C0D2E3F4051627384961 /* MWDictService.swift */; };
+		B7A1C0D2E3F4051627384952 /* MWDictRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A1C0D2E3F4051627384962 /* MWDictRequest.swift */; };
+		B7A1C0D2E3F4051627384953 /* MWDictAPIParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A1C0D2E3F4051627384963 /* MWDictAPIParser.swift */; };
 		F5467B113D285C01338E3C55 /* CodexComponentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF5306040D79B1D50487C1E /* CodexComponentStore.swift */; };
 		F75B6CC4141600C1B89E350C /* CodexStreamInvalidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AD4CBC536A238B7F9B5531D /* CodexStreamInvalidationTests.swift */; };
 		F955D7120AD72EFC6429A79A /* CodexComponentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB3E639236DC6875625F110 /* CodexComponentStoreTests.swift */; };
@@ -1002,6 +1011,8 @@
 		03A884732F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptProcessExecutorTests.swift; sourceTree = "<group>"; };
 		03A884772F13000100D5C0DE /* AppleScriptExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScriptExecutorTests.swift; sourceTree = "<group>"; };
 		03A884792F14000100D5C0DE /* BingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingServiceTests.swift; sourceTree = "<group>"; };
+		3F69448D4EB81BB1CABF0B32 /* BingDictHTMLParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingDictHTMLParserTests.swift; sourceTree = "<group>"; };
+		B7A1C0D2E3F4051627384964 /* MWDictAPIParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MWDictAPIParserTests.swift; sourceTree = "<group>"; };
 		03A91F142E63E1FB00896B17 /* FocusedElementInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusedElementInfo.swift; sourceTree = "<group>"; };
 		03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Selection.swift"; sourceTree = "<group>"; };
 		03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationRequest.swift; sourceTree = "<group>"; };
@@ -1353,6 +1364,13 @@
 		9643D94B2B71F74D000FBEA6 /* MainMenuShortcutCommandItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuShortcutCommandItem.swift; sourceTree = "<group>"; };
 		96B2F1C42C07782400AD3126 /* GitHubReleaseFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubReleaseFetcher.swift; sourceTree = "<group>"; };
 		983925DCBA81465EAE22415B /* MDictService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDictService.swift; sourceTree = "<group>"; };
+		BA3B56A778396FE8FA226995 /* BingDictService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingDictService.swift; sourceTree = "<group>"; };
+		B112E1B5A3E1E028406B3F86 /* BingDictRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingDictRequest.swift; sourceTree = "<group>"; };
+		2A127A8FE075B00D2666315D /* BingDictHTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingDictHTMLParser.swift; sourceTree = "<group>"; };
+		B7A1C0D2E3F4051627384960 /* DictionarySupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionarySupport.swift; sourceTree = "<group>"; };
+		B7A1C0D2E3F4051627384961 /* MWDictService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MWDictService.swift; sourceTree = "<group>"; };
+		B7A1C0D2E3F4051627384962 /* MWDictRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MWDictRequest.swift; sourceTree = "<group>"; };
+		B7A1C0D2E3F4051627384963 /* MWDictAPIParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MWDictAPIParser.swift; sourceTree = "<group>"; };
 		9D62DA53787E49EC9011BB14 /* GitHubCopilotModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotModelStore.swift; sourceTree = "<group>"; };
 		A12760012026090500000002 /* ReverseTranslationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseTranslationTests.swift; sourceTree = "<group>"; };
 		A13180012026091600000001 /* AppleDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionaryTests.swift; sourceTree = "<group>"; };
@@ -1766,6 +1784,9 @@
 			isa = PBXGroup;
 			children = (
 				031C66D72ED9F9F20025D190 /* AppleDictionary */,
+				6472C7FEEEB3392FEF59BC2B /* BingDict */,
+				B7A1C0D2E3F4051627384960 /* DictionarySupport.swift */,
+				B7A1C0D2E3F4051627384970 /* MWDict */,
 				3A6EB576721647E4A13E445C /* MDict */,
 				031C66E42EDB00100025D190 /* DictionaryRendering */,
 				031C66E52EDB00200025D190 /* dictionary-overview.md */,
@@ -2964,6 +2985,8 @@
 				03C408F82EF5CB830025A1F0 /* ServiceTests.swift */,
 				A20908020000000000000021 /* OpenAI */,
 				03A884792F14000100D5C0DE /* BingServiceTests.swift */,
+				3F69448D4EB81BB1CABF0B32 /* BingDictHTMLParserTests.swift */,
+				B7A1C0D2E3F4051627384964 /* MWDictAPIParserTests.swift */,
 				A5D1E5B50000000000000001 /* DeepLServiceTests.swift */,
 				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
 				A13180012026091600000001 /* AppleDictionaryTests.swift */,
@@ -3496,6 +3519,26 @@
 				031C66EC2EDB02000025D190 /* MDictReader */,
 			);
 			path = MDict;
+			sourceTree = "<group>";
+		};
+		6472C7FEEEB3392FEF59BC2B /* BingDict */ = {
+			isa = PBXGroup;
+			children = (
+				BA3B56A778396FE8FA226995 /* BingDictService.swift */,
+				B112E1B5A3E1E028406B3F86 /* BingDictRequest.swift */,
+				2A127A8FE075B00D2666315D /* BingDictHTMLParser.swift */,
+			);
+			path = BingDict;
+			sourceTree = "<group>";
+		};
+		B7A1C0D2E3F4051627384970 /* MWDict */ = {
+			isa = PBXGroup;
+			children = (
+				B7A1C0D2E3F4051627384961 /* MWDictService.swift */,
+				B7A1C0D2E3F4051627384962 /* MWDictRequest.swift */,
+				B7A1C0D2E3F4051627384963 /* MWDictAPIParser.swift */,
+			);
+			path = MWDict;
 			sourceTree = "<group>";
 		};
 		40F5D52A2D65B1A200EDB997 /* DeepSeek */ = {
@@ -4446,6 +4489,8 @@
 				03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */,
 				03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */,
 				03A8847A2F14000100D5C0DE /* BingServiceTests.swift in Sources */,
+				9EDE3CCE99239093EAA21D0F /* BingDictHTMLParserTests.swift in Sources */,
+				B7A1C0D2E3F4051627384954 /* MWDictAPIParserTests.swift in Sources */,
 				A5D1E5B60000000000000001 /* DeepLServiceTests.swift in Sources */,
 				03D486532E3F2190009313B3 /* ListRegexTests.swift in Sources */,
 				0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */,
@@ -4522,6 +4567,13 @@
 				5F8B9C012F1D4E5A9C730401 /* MDictSearchIndex.swift in Sources */,
 				5DA8E7A2234D4AFDBC264218 /* MDictManager.swift in Sources */,
 				F24D63E3FB144383A9B80386 /* MDictService.swift in Sources */,
+				5F4BA53822792668332194FD /* BingDictService.swift in Sources */,
+				CCC05B5B81FE5374D0708393 /* BingDictRequest.swift in Sources */,
+				50C689C479CEB45AE2A25D37 /* BingDictHTMLParser.swift in Sources */,
+				B7A1C0D2E3F4051627384950 /* DictionarySupport.swift in Sources */,
+				B7A1C0D2E3F4051627384951 /* MWDictService.swift in Sources */,
+				B7A1C0D2E3F4051627384952 /* MWDictRequest.swift in Sources */,
+				B7A1C0D2E3F4051627384953 /* MWDictAPIParser.swift in Sources */,
 				031C66E02EDB00010025D190 /* DictionaryHTMLRenderer.swift in Sources */,
 				B8D793EA87784E0B9D82C7FC /* MDictConfigurationView.swift in Sources */,
 				02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */,
