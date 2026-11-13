@@ -42,6 +42,33 @@ public class StreamService: QueryService {
 
     // MARK: Public
 
+    public override func supportsOCRAndTranslation() -> Bool {
+        supportsOCR() && !enableCustomPrompt
+            && (queryType.isEmpty || queryType == .translation)
+    }
+
+    public override func ocrAndTranslate(
+        _ image: NSImage, from: Language, to: Language,
+        ocrSuccess: @escaping (EZOCRResult, Bool) -> ()
+    ) async throws
+        -> (EZOCRResult?, QueryResult?) {
+        var pair: (EZOCRResult?, QueryResult?) = (nil, nil)
+        var deliveredSource = false
+        for try await event in ocrTranslationStream(image, from: from, to: to) {
+            switch event {
+            case let .original(text, complete) where complete && !deliveredSource:
+                let result = ocrTranslationResults(.init(original: text, translation: ""), from: from, to: to).0
+                deliveredSource = true
+                ocrSuccess(result, false)
+            case let .finished(original, translated):
+                if !deliveredSource { ocrSuccess(original, false) }
+                pair = (original, translated)
+            default: break
+            }
+        }
+        return pair
+    }
+
     public override func ocr(_ image: NSImage, from: Language, to _: Language) async throws -> EZOCRResult? {
         try await ocr(image, from: from, to: .auto, onDelta: { _ in })
     }
@@ -233,6 +260,24 @@ public class StreamService: QueryService {
         !apiKey.isEmpty
     }
 
+    /// Preserve dictionary, sentence-analysis and intelligent-query behavior after the source is known.
+    @objc(canReuseOCRTranslationForModel:)
+    public func canReuseOCRTranslation(for model: QueryModel) -> Bool {
+        supportsOCRAndTranslation() && enabledQuery && enabledAutoQuery
+            && model.queryText == model.inputText
+            && queryType(text: model.queryText, from: model.queryFromLanguage, to: model.queryTargetLanguage) ==
+            .translation
+    }
+
+    /// Merge only the same configured service, including its actual model and transport settings.
+    @objc(canCombineOCRWithService:)
+    public func canCombineOCR(with other: QueryService) -> Bool {
+        guard let other = other as? StreamService else { return false }
+        return supportsOCRAndTranslation() && other.supportsOCRAndTranslation()
+            && serviceTypeWithUniqueIdentifier() == other.serviceTypeWithUniqueIdentifier()
+            && ocrTranslationConfiguration == other.ocrTranslationConfiguration
+    }
+
     // MARK: Internal
 
     let mustOverride = "This property or method must be overridden by a subclass"
@@ -240,6 +285,21 @@ public class StreamService: QueryService {
     var cancellables: Set<AnyCancellable> = []
 
     var hideThinkTagContent: Bool = true
+
+    /// Compared only in memory; credentials must never be logged or persisted in request records.
+    @nonobjc
+    var ocrTranslationConfiguration: [String] {
+        [
+            String(reflecting: type(of: self)),
+            serviceTypeWithUniqueIdentifier(),
+            uuid,
+            endpoint,
+            model,
+            apiKey,
+            configuredReasoningEffort.rawValue,
+            String(enableCustomPrompt), String(enableStreaming),
+        ]
+    }
 
     /// The optional OpenAI-compatible reasoning mode for stream services.
     /// Subclasses can override this when the selected provider supports the parameter.
@@ -466,6 +526,16 @@ public class StreamService: QueryService {
     @MainActor
     var modelSelectionHint: String? { nil }
 
+    /// Providers can constrain the combined response without changing ordinary OCR requests.
+    @nonobjc
+    func recognizeJSONImage(
+        _ imageURL: String, prompt: String, onDelta: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> String {
+        if enableStreaming { return try await recognizeImage(imageURL, prompt: prompt, onDelta: onDelta) }
+        return try await recognizeImage(imageURL, prompt: prompt)
+    }
+
     @nonobjc
     func recognizeImage(_ imageURL: String, prompt: String) async throws -> String {
         throw QueryError(type: .parameter, message: "OCR is not supported")
@@ -649,7 +719,7 @@ public class StreamService: QueryService {
 // MARK: - OCR image encoding
 
 extension StreamService {
-    private func ocrImageDataURL(_ image: NSImage) throws -> String {
+    func ocrImageDataURL(_ image: NSImage) throws -> String {
         guard let cgImage = image.toCGImage() else {
             throw QueryError(
                 type: .parameter,

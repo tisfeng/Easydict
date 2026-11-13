@@ -31,6 +31,7 @@ actor CodexAppServer {
         let effort: String?
         let runtime: CodexRuntime?
         var imageURL: String?
+        var outputSchema: [String: Any]?
         let isCancelled: @Sendable () -> Bool
         let deltaReceived: @Sendable (String) -> ()
     }
@@ -142,6 +143,7 @@ actor CodexAppServer {
             if let effort = translation.effort {
                 turnParameters["effort"] = effort
             }
+            if let schema = translation.outputSchema { turnParameters["outputSchema"] = schema }
             let turnResponse = try await request(
                 session: session,
                 method: "turn/start",

@@ -79,7 +79,8 @@ final class CodexAppServerProcess: @unchecked Sendable {
     }
 
     func send(_ message: [String: Any]) throws {
-        var data = try JSONSerialization.data(withJSONObject: message)
+        // Keep schema property order deterministic so structured output emits original before translation.
+        var data = try JSONSerialization.data(withJSONObject: message, options: [.sortedKeys])
         data.append(0x0A)
         let handle = try stateLock.withLock { () -> FileHandle in
             guard process?.isRunning == true, let context else {
