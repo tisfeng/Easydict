@@ -482,6 +482,9 @@ open class QueryService: NSObject {
 
     open func supportsOCR() -> Bool { false }
 
+    /// Whether one image request can return both the complete original and translation.
+    open func supportsOCRAndTranslation() -> Bool { false }
+
     /// Perform OCR for the given image.
     open func ocr(
         _ image: NSImage,

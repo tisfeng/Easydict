@@ -18,6 +18,7 @@ final class CodexAppServerRequest: @unchecked Sendable {
         effort: String?,
         runtime: CodexRuntime?,
         imageURL: String? = nil,
+        outputSchema: [String: Any]? = nil,
         deltaReceived: @escaping @Sendable (String) -> ()
     ) async throws
         -> CodexAppServer.Response {
@@ -38,6 +39,7 @@ final class CodexAppServerRequest: @unchecked Sendable {
                         effort: effort,
                         runtime: runtime,
                         imageURL: imageURL,
+                        outputSchema: outputSchema,
                         isCancelled: { [weak self] in self?.isCancelled ?? true },
                         deltaReceived: deltaReceived
                     )

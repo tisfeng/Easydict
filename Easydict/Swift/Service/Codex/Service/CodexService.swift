@@ -178,6 +178,19 @@ final class CodexService: StreamService {
 
     // MARK: Internal
 
+    override var ocrTranslationConfiguration: [String] {
+        let configuration = CodexServiceConfig(uuid: uuid)
+        return [
+            String(reflecting: type(of: self)),
+            serviceTypeWithUniqueIdentifier(),
+            uuid,
+            configuration.mode.rawValue,
+            configuration.model,
+            configuration.effort.rawValue,
+            String(enableCustomPrompt), String(enableStreaming),
+        ]
+    }
+
     override var synchronizesModelWithSupportedModels: Bool { false }
 
     override var model: String {
@@ -219,32 +232,20 @@ final class CodexService: StreamService {
         _ imageURL: String, prompt: String, onDelta: @escaping @Sendable (String) -> ()
     ) async throws
         -> String {
-        let configuration = CodexServiceConfig(uuid: uuid)
-        let coordinator = CodexRequestCoordinator.shared
-        let runner = CodexAppServerRequest()
-        let token = UUID()
-        coordinator.observe(uuid: uuid)
-        defer { coordinator.remove(token) }
-        let admission = try coordinator.register(token: token, configuration: configuration) { runner.cancel() }
-        if case let .blocked(reason) = admission {
-            throw CodexServiceError.operationInProgress(reason)
-        }
-        let runtime = configuration.mode == .managed ? try await CodexAppServer.managed.runtime() : nil
-        try Task.checkCancellation()
-        let response = try await runner.runUsingAppServer(
-            prompt: prompt,
-            model: configuration.model,
-            effort: configuration.effort.cliValue,
-            runtime: runtime,
-            imageURL: imageURL,
-            deltaReceived: { delta in
-                guard coordinator.isCurrent(token) else { return }
-                onDelta(delta)
-            }
-        )
-        try Task.checkCancellation()
-        guard coordinator.isCurrent(token) else { throw CancellationError() }
-        return response.text
+        try await recognizeImage(imageURL, prompt: prompt, outputSchema: nil, onDelta: onDelta)
+    }
+
+    override func recognizeJSONImage(
+        _ imageURL: String, prompt: String, onDelta: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> String {
+        let schema: [String: Any] = [
+            "type": "object",
+            "properties": ["original": ["type": "string"], "translation": ["type": "string"]],
+            "required": ["original", "translation"],
+            "additionalProperties": false,
+        ]
+        return try await recognizeImage(imageURL, prompt: prompt, outputSchema: schema, onDelta: onDelta)
     }
 
     /// Keeps fixed subscriptions: local model edits preserve automatic query behavior,
@@ -279,6 +280,44 @@ final class CodexService: StreamService {
     private let runLock = NSLock()
     private var appServerRequest: CodexAppServerRequest?
     private var registration: UUID?
+
+    private func recognizeImage(
+        _ imageURL: String, prompt: String, outputSchema: [String: Any]?,
+        onDelta: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> String {
+        updateResultLock.withLock { tokenUsage = nil }
+        let configuration = CodexServiceConfig(uuid: uuid)
+        let coordinator = CodexRequestCoordinator.shared
+        let runner = CodexAppServerRequest()
+        let token = UUID()
+        coordinator.observe(uuid: uuid)
+        defer { coordinator.remove(token) }
+        let admission = try coordinator.register(token: token, configuration: configuration) { runner.cancel() }
+        if case let .blocked(reason) = admission {
+            throw CodexServiceError.operationInProgress(reason)
+        }
+        let runtime = configuration.mode == .managed ? try await CodexAppServer.managed.runtime() : nil
+        try Task.checkCancellation()
+        let response = try await runner.runUsingAppServer(
+            prompt: prompt,
+            model: configuration.model,
+            effort: configuration.effort.cliValue,
+            runtime: runtime,
+            imageURL: imageURL,
+            outputSchema: outputSchema,
+            deltaReceived: { delta in
+                guard coordinator.isCurrent(token) else { return }
+                onDelta(delta)
+            }
+        )
+        try Task.checkCancellation()
+        try updateResultLock.withLock {
+            guard coordinator.isCurrent(token) else { throw CancellationError() }
+            tokenUsage = response.usage
+        }
+        return response.text
+    }
 
     /// Rejections and execution failures use the same result identity and error boundary.
     private func finish(
