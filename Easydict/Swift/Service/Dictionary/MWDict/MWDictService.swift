@@ -18,7 +18,7 @@ import SwiftUI
 /// The dictionary website is protected by a Cloudflare bot challenge, so the
 /// service uses the official API with a user-provided free key. The card mirrors
 /// the site: headword part of speech, pronunciation, inflections, one section per
-/// verb divider, numbered senses with examples, synonyms and first known use.
+/// verb divider, nested senses with examples and synonyms.
 @objc(EZMWDictService)
 @objcMembers
 class MWDictService: QueryService, @unchecked Sendable {
@@ -123,7 +123,7 @@ class MWDictService: QueryService, @unchecked Sendable {
     }
 
     /// Mirrors the official entry order: part of speech → inflections → sections
-    /// and numbered senses → first known use → etymology.
+    /// and nested senses with their examples.
     func makeWordResult(
         entry: MWDictEntry,
         word: String,
@@ -166,9 +166,13 @@ class MWDictService: QueryService, @unchecked Sendable {
                 appendPart("", [section.label])
             }
             for sense in section.senses {
-                appendPart(sense.number, [sense.definition])
+                let layout = Self.senseLayout(sense.number)
+                let labelIndent = String(repeating: " ", count: layout.level * 4)
+                appendPart(labelIndent + layout.label, [sense.definition])
+
+                let exampleIndent = labelIndent + String(repeating: " ", count: 8)
                 for example in sense.examples {
-                    appendPart("", ["— \(example)"])
+                    appendPart(exampleIndent + "│", [example])
                 }
             }
         }
@@ -182,7 +186,7 @@ class MWDictService: QueryService, @unchecked Sendable {
         if !sentences.isEmpty {
             appendPart("", ["Examples in a Sentence"])
             for sentence in sentences {
-                appendPart("", ["— \(sentence)"])
+                appendPart("        │", [sentence])
             }
         }
 
@@ -204,6 +208,27 @@ class MWDictService: QueryService, @unchecked Sendable {
 
     private var apiKey: String {
         Defaults[.mwDictAPIKey]
+    }
+
+    /// Turns the fully-qualified number into the site's nested layout:
+    /// `1 a` at the top level, `b` one level in, `(2)` one level deeper.
+    private static func senseLayout(_ number: String) -> (label: String, level: Int) {
+        let components = number.split(separator: " ").map(String.init)
+
+        if let parenthesized = components.last, parenthesized.hasPrefix("(") {
+            if parenthesized == "(1)" {
+                let isQualified = components.first?.first?.isNumber == true
+                let label = isQualified ? components.dropFirst().joined(separator: " ") : number
+                return (label, 1)
+            }
+            return (parenthesized, 2)
+        }
+
+        if components.count == 2, components[1].count == 1, components[1] != "a" {
+            return (components[1], 1)
+        }
+
+        return (number, 0)
     }
 
     /// Best-effort fetch of the site's full-sentence examples. The reference is a

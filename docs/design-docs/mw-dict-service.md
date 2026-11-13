@@ -88,6 +88,9 @@ API 在每条序列的首个义项给出完整编号（`1 a`、`2 a`、`4`），
 
 用法说明以 `→ …` 续写于定义之后；`First Known Use` 与 `Etymology` 不展示。
 
+义项按官网层级缩进：主编号顶格，字母子义项缩进一级，括号子义项再缩进一级；例句使用
+竖线 `│` 作为标签列，使折行后仍与例句正文对齐，而不是回到卡片左边距。
+
 ### 整句例句（Learner's Dictionary）
 
 官网「Examples of … in a Sentence」整句例句来自 Learner's Dictionary（另一订阅）。服务在
@@ -117,7 +120,7 @@ Sentence」区块；未订阅该引用时接口返回错误文本，区块静默
 
 ## 验证
 
-- `EasydictTests/Service/MWDictAPIParserTests.swift`：8 个用例覆盖词头/词性/发音/词形、
+- `EasydictTests/Service/MWDictAPIParserTests.swift`：解析与服务层用例覆盖词头/词性/发音/词形、
   动词分节与编号（含 `2 b (1)`）、同义词/首次使用/最佳译文、纯文本、拼写建议返回 `nil`、
   标记转换，以及服务层 part 顺序与原生同义词字段。
 - `xcodebuild test`：韦氏与必应共 19 项用例通过。
