@@ -1,6 +1,6 @@
 ## 2026-11-13 | 任务：单次图片请求顺序流式识图与翻译
 
-**Links:** [上游建议](https://github.com/tisfeng/Easydict/pull/1391#issuecomment-6786692042)、[计划](../../exec-plans/active/2026-11-13-sequential-ocr-translation.md)
+**Links:** [PR #1403](https://github.com/tisfeng/Easydict/pull/1403)、[上游建议](https://github.com/tisfeng/Easydict/pull/1391#issuecomment-6786692042)、[计划](../../exec-plans/completed/2026-11/2026-11-13-sequential-ocr-translation.md)
 
 ### 执行上下文
 
@@ -43,4 +43,4 @@
 
 ### 后续事项
 
-创建并核验独立 PR 后归档计划。需要长论文、多栏、混合语言、复杂公式、弱网断流、长时间取消重试、前台双窗口及其他视觉模型验证；Release、Intel 和全量默认测试尚未覆盖。模型准确性与协议/界面稳定性分别衡量。
+功能提交 e27cff2f 已推送并创建、读回核验 PR #1403，计划已归档。正文含八组测速/token、已知准确性问题和两张固定图片的真实服务排版截图，截图托管在 fork 的独立文档分支。GitHub 当前 mergeable=true，后续检查与维护者审查以 PR 为准。需要长论文、多栏、混合语言、复杂公式、弱网断流、长时间取消重试、前台双窗口及其他视觉模型验证；Release、Intel 和全量默认测试尚未覆盖。模型准确性与协议/界面稳定性分别衡量。

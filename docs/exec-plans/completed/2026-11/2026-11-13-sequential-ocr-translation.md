@@ -1,6 +1,6 @@
 # 单次截图请求顺序流式提取与翻译
 
-- 状态：active
+- 状态：completed
 - 创建日期：2026-11-13
 - 负责人：Unknown
 - 关联 Issue/PR：https://github.com/tisfeng/Easydict/pull/1391
@@ -42,7 +42,7 @@
 - [x] 冻结原分支与最新 dev，建立干净功能分支。
 - [x] 实现与验证：最终 84 项回归与 14 项真实服务检查通过。
 - [x] 审查并修复语言保留/重新检测边界、补齐真实服务可用性条件。
-- [ ] 提交与发布，核验远程 PR 后归档。
+- [x] 功能提交 e27cff2f 已推送并创建 [PR #1403](https://github.com/tisfeng/Easydict/pull/1403)，正文、分支、提交与两张验证图已核验。
 
 ## 验证
 
@@ -53,3 +53,7 @@ Debug arm64 `build-for-testing` 成功；Default 的 10 个相关套件共 84 �
 ## 完成条件
 
 范围内检查通过；真实服务和可见结果证据如实记录；更新 history 并归档计划；核验新 PR 内容与提交。
+
+## 交付
+
+[PR #1403](https://github.com/tisfeng/Easydict/pull/1403) 为正式开放 PR，base 为 tisfeng/Easydict:dev，head 为 Box-Chen/Easydict:perf/sequential-ocr-translation。GitHub 报告 mergeable=true；受保护分支检查/审查仍以远程结果为准。图片托管在个人 fork 独立文档分支，验证过的生产源码保持不变。
