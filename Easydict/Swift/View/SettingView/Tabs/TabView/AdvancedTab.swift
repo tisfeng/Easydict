@@ -188,6 +188,24 @@ struct AdvancedTab: View {
                         subtitleText: "setting.advance.enable_compatibility_replace_desc"
                     )
                 }
+                Picker("setting.advance.translate_and_replace.service", selection: $translateAndReplaceServiceID) {
+                    ForEach(translateAndReplaceServiceIDs, id: \.self) { identifier in
+                        if let metadata = QueryServiceFactory.shared.metadata(withTypeId: identifier) {
+                            Text(metadata.title).tag(identifier)
+                        }
+                    }
+                    if !translateAndReplaceServiceIDs.contains(translateAndReplaceServiceID) {
+                        Text("setting.advance.translate_and_replace.service_unavailable")
+                            .tag(translateAndReplaceServiceID)
+                    }
+                }
+                Text("setting.advance.translate_and_replace.description")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .onAppear(perform: reloadTranslationReplacementServices)
+                    .onReceive(NotificationCenter.default.publisher(for: .serviceHasUpdated)) { _ in
+                        reloadTranslationReplacementServices()
+                    }
                 Toggle(isOn: $autoSelectAllTextFieldText) {
                     AdvancedTabItemView(
                         color: .red,
@@ -471,6 +489,8 @@ struct AdvancedTab: View {
 
     // MARK: Private
 
+    @State private var translateAndReplaceServiceIDs: [String] = []
+
     @Default(.enableBetaFeature) private var enableBetaFeature
 
     @Default(.defaultTTSServiceType) private var defaultTTSServiceType
@@ -478,6 +498,7 @@ struct AdvancedTab: View {
     @Default(.ocrServiceID) private var ocrServiceID
     @Default(.enableYoudaoOCR) private var enableYoudaoOCR
     @Default(.enableCompatibilityReplace) private var enableCompatibilityReplace
+    @Default(.translateAndReplaceServiceID) private var translateAndReplaceServiceID
     @Default(.minClassicalChineseTextDetectLength) private var minClassicalChineseTextDetectLength
     @Default(.enableOCRTextNormalization) private var enableOCRTextNormalization
     @Default(.showOCRMenuItems) private var showOCRMenuItems
@@ -519,6 +540,10 @@ struct AdvancedTab: View {
         vocabularyNotebookDirectory.isEmpty
             ? String(localized: "setting.advance.vocabulary_notebook_directory_placeholder")
             : vocabularyNotebookDirectory
+    }
+
+    private func reloadTranslationReplacementServices() {
+        translateAndReplaceServiceIDs = ActionManager.shared.translateAndReplaceServiceIDs
     }
 
     /// Returns Color.green if `enableHTTPServer` is true, returns Color.red otherwise.
