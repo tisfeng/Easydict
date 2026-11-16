@@ -22,6 +22,8 @@
   支持自动源语言、简繁中文及 Lite 的语言限制。
 - Flash/Lite 复用增量 SSE transport，Plus 使用完整 JSON 响应；复用既有取消
   控制与结果处理。
+- Qwen-MT 保留接口返回的引号、标签及空白，不执行通用聊天包装清理；
+  其他流服务沿用原有清理行为。
 - 增加服务注册、七种语言的名称、图标和 Xcode 源码/测试引用。
 - 增加专属测试及中英文配置说明，覆盖地域 Endpoint 与翻译专用行为。
 - 已构建并安装可日常使用的个人版本，保留官方 bundle ID。
@@ -43,8 +45,12 @@ Qwen-MT 的翻译参数和消息契约不同于通用聊天服务。独立服务
   其中传输策略的参数化用例覆盖三个默认模型。
 - `LocalEnvironment` 真实译文测试通过：Flash、Plus、Lite 英文转简体中文，
   Flash 英文转繁体中文；使用本机已配置凭据，对实际返回的关键文字做断言。
+- 自动审查指出的合法引号和 `<think>` 内容丢失问题已修正。Lite、Plus 的 4 个
+  真实响应回归用例通过，逐块与最终结果均等于接口原始内容；共 8 个真实接口用例通过。
 - 设置界面“验证”成功；正常输入 `The world is changing.`，分别切换三个模型，
   均显示正确译文。脱敏的设置和翻译截图保存在仓库外，用于 PR 交付。
+- 最终安装版通过 URL scheme 输入带引号的句子，Lite 译文完整保留引号；
+  回归截图已保存，所选模型恢复为 Flash。
 - 最终代码 review 未发现有证据支持的阻断缺陷；UI 取消操作未单独实测。
 - 本机 Release 测试使用命令行 ad hoc 签名与显式 Release 测试宿主。
   上游 `MDictReaderTests.swift` 引用了只在 Debug 编译的 helper，本次定向测试
@@ -58,6 +64,8 @@ Qwen-MT 的翻译参数和消息契约不同于通用聊天服务。独立服务
 
 - `Easydict/Swift/Service/QwenMT/`
 - `Easydict/Swift/Service/Model/QueryServiceFactory.swift`
+- `Easydict/Swift/Service/OpenAI/StreamService.swift`
+- `Easydict/Swift/Service/OpenAI/StreamService+UpdateResult.swift`
 - `Easydict/objc/Service/Model/EZEnumTypes.h`
 - `Easydict/objc/Service/Model/EZEnumTypes.m`
 - `Easydict/App/Assets.xcassets/service-icon/QwenMT.imageset/`

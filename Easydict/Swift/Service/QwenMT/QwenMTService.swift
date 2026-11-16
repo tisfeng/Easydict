@@ -65,6 +65,10 @@ class QwenMTService: StreamService {
         model.hasPrefix("qwen-mt-flash") || model.hasPrefix("qwen-mt-lite")
     }
 
+    override var preservesResponseContent: Bool {
+        true
+    }
+
     override func contentStreamTranslate(
         _ text: String,
         from: Language,

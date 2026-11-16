@@ -12,6 +12,8 @@ import RegexBuilder
 extension StreamService {
     /// Get final result text, remove redundant content, like tag and qoutes.
     func getFinalResultText(_ text: String) -> String {
+        guard !preservesResponseContent else { return text }
+
         var resultText = text.trim()
 
         // Remove last </s>, fix Groq model mixtral-8x7b-32768
@@ -114,10 +116,13 @@ extension StreamService {
         // throttle deliveries of stale snapshots cannot overwrite the final value.
         resultToUpdate.isStreamFinished = markStreamFinished || (error != nil)
 
-        var finalText = resultText?.trim() ?? ""
+        var finalText = resultText ?? ""
 
-        if hideThinkTagContent {
-            finalText = finalText.filterThinkTagContent().trim()
+        if !preservesResponseContent {
+            finalText = finalText.trim()
+            if hideThinkTagContent {
+                finalText = finalText.filterThinkTagContent().trim()
+            }
         }
 
         // When this call is the one that marks the stream as finished (markStreamFinished: true),
@@ -125,7 +130,7 @@ extension StreamService {
         // Without this, a stream that completes with no output and no error would surface as
         // success with translatedResults = [""] instead of a .noResult failure.
         var completionError: Error? = error
-        if markStreamFinished, finalText.isEmpty, error == nil {
+        if markStreamFinished, finalText.trim().isEmpty, error == nil {
             completionError = QueryError(type: .noResult)
         }
 

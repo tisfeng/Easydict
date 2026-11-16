@@ -26,6 +26,7 @@ struct QwenMTServiceTests {
         #expect(service.defaultEndpoint == "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions")
         #expect(!service.supportsOCR())
         #expect(!service.canFetchRemoteModels)
+        #expect(service.preservesResponseContent)
         #expect(QueryServiceFactory.shared.service(withTypeId: "QwenMT") is QwenMTService)
         #expect(QueryServiceFactory.shared.metadata(withTypeId: "QwenMT")?.apiKeyRequirement == .userProvided)
     }
@@ -121,5 +122,55 @@ struct QwenMTServiceTests {
         let translatedText = try #require(result.translatedText)
         #expect(translatedText.contains("世界"))
         #expect(translatedText.contains(target == .traditionalChinese ? "變" : "变"))
+    }
+
+    @Test(
+        "preserves quotes and think markup from actual provider responses",
+        .tags(.integration, .requiresLocalEnvironment),
+        .enabled(
+            if: !QwenMTService().apiKey.trim().isEmpty,
+            "Configure a Qwen-MT API key in Easydict on this Mac before running this test"
+        ),
+        arguments: ["qwen-mt-lite", "qwen-mt-plus"],
+        ["\"The world is changing.\"", "<think>The world is changing.</think>"]
+    )
+    func preservesProviderResponse(model: String, input: String) async throws {
+        let service = QwenMTService()
+        let originalModel = service.model
+        defer { service.model = originalModel }
+        service.model = model
+        service.hideThinkTagContent = true
+        service.resetServiceResult().isStreamFinished = false
+
+        var providerText = ""
+        for try await content in service.contentStreamTranslate(
+            input, from: .english, to: .simplifiedChinese
+        ) {
+            providerText += content
+            service.updateResultText(providerText, queryType: .translation, error: nil) { result in
+                #expect(result.error == nil)
+                #expect(result.translatedText == providerText)
+            }
+        }
+
+        #expect(providerText.contains("世界"))
+        #expect(providerText.contains("变"))
+        if input.hasPrefix("<think>") {
+            #expect(providerText.hasPrefix("<think>"))
+            #expect(providerText.hasSuffix("</think>"))
+        } else {
+            #expect(providerText.hasPrefix("\"") || providerText.hasPrefix("“"))
+            #expect(providerText.hasSuffix("\"") || providerText.hasSuffix("”"))
+        }
+
+        let finalText = service.getFinalResultText(providerText)
+        #expect(finalText == providerText)
+        service.updateResultText(
+            finalText, queryType: .translation, error: nil, markStreamFinished: true
+        ) { result in
+            #expect(result.error == nil)
+            #expect(result.isStreamFinished)
+            #expect(result.translatedText == providerText)
+        }
     }
 }
