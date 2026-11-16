@@ -42,6 +42,7 @@ macOS 版本、网络环境、账号权限和上游接口状态。
 | Ollama (`Ollama`) | 无需密钥 | 调用本机或自定义地址上的 Ollama 服务。 |
 | 自定义 OpenAI (`CustomOpenAI`) | 用户密钥 | 配置 OpenAI 兼容接口；支持多个实例。 |
 | 百度千帆 (`Qianfan`) | 用户密钥 | 使用百度千帆 Chat V2 API 和账号可用的对话模型。 |
+| 通义千问翻译 (`QwenMT`) | 用户密钥 | 使用阿里云百炼 Qwen-MT 专用翻译模型，默认 `qwen-mt-flash`。 |
 
 ## AI 工具
 
@@ -66,6 +67,25 @@ macOS 版本、网络环境、账号权限和上游接口状态。
 | 豆包翻译 (`Doubao`) | 用户密钥 | 需要豆包翻译服务凭据。 |
 
 ## 配置建议
+
+### 通义千问翻译（Qwen-MT）
+
+1. 在“设置 → 服务”添加“通义千问翻译”，填写自己的阿里云百炼 API Key。
+2. 默认 Endpoint 为北京地域的
+   `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`。
+   新加坡地域可使用
+   `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions`；
+   也可填写百炼控制台提供的业务空间专属完整 Chat Completions URL，
+   并确认与 API Key 所属地域一致。
+3. 选择模型并点击“验证”。`qwen-mt-flash` 和 `qwen-mt-lite` 使用增量流式输出，
+   `qwen-mt-plus` 返回完整译文。Lite 的语言覆盖较少，不支持的语种会显示错误。
+
+此服务只提供翻译，直接发送原文和源/目标语种，不附加聊天提示词、词典或例句分析。
+源语言支持自动检测；目标语言需要明确指定。简体中文和繁体中文分别映射到 `zh` 和
+`zh_tw`。模型可用性、语言和地区限制参见
+[Qwen-MT 官方文档](https://help.aliyun.com/zh/model-studio/machine-translation)。
+
+### 通用建议
 
 1. 先保留少量常用服务，避免一次查询产生过多网络请求。
 2. 需要隐私或离线能力时，优先考虑 Apple Dictionary、MDict、Apple 离线翻译或 Ollama。
