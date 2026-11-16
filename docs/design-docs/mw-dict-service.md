@@ -97,6 +97,9 @@ API 在每条序列的首个义项给出完整编号（`1 a`、`2 a`、`4`），
 Collegiate 结果之外，额外以 `learners` 引用拉取整句例句，并在存在时追加「Examples in a
 Sentence」区块；未订阅该引用时接口返回错误文本，区块静默省略，不影响 Collegiate 卡片。
 
+两个引用使用独立 Key：Collegiate 读取 `mwDictAPIKey`，Learner's 读取 `mwLearnersAPIKey`；
+后者未配置时回退到 Collegiate Key，以兼容两个引用共用同一 Key 的账号。设置页分别提供输入框。
+
 发音写入 `EZWordPhonetic`（首个发音，`US`）。
 
 ## 取舍
@@ -115,7 +118,7 @@ Sentence」区块；未订阅该引用时接口返回错误文本，区块静默
 - 需要免费 API Key；未配置时服务不查询，卡片提示配置。
 - 仅英文单词；多词短语与非英文输入返回无结果。
 - 仅第一词条；例句数量随 API 返回，不额外展开。
-- 官网整句例句需 Learner's Dictionary 订阅；未订阅时仅展示 Collegiate 自带例句。
+- 官网整句例句需 Learner's Dictionary 订阅及独立 Key；未订阅或未配置时仅展示 Collegiate 例句。
 - `First Known Use` 与 `Etymology` 按用户要求不渲染。
 
 ## 验证

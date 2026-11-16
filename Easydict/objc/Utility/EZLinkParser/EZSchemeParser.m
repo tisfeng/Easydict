@@ -194,6 +194,7 @@
         EZCaiyunToken,
         EZBingCookieKey,
         EZMWDictAPIKey,
+        EZMWLearnersAPIKey,
         
         EZAliAccessKeyId,
         EZAliAccessKeySecret,

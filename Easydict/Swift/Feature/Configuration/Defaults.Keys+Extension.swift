@@ -376,6 +376,7 @@ extension Defaults.Keys {
 
     // Merriam-Webster
     static let mwDictAPIKey = Key<String>(EZMWDictAPIKey, default: "")
+    static let mwLearnersAPIKey = Key<String>(EZMWLearnersAPIKey, default: "")
 
     // niu
     static let niuTransAPIKey = Key<String>(EZNiuTransAPIKey, default: "")

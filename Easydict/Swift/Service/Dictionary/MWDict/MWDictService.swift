@@ -78,10 +78,14 @@ class MWDictService: QueryService, @unchecked Sendable {
     }
 
     override func configurationListItems() -> Any? {
-        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.mwDictAPIKey]) {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.mwDictAPIKey, .mwLearnersAPIKey]) {
             SecureInputCell(
                 textFieldTitleKey: "service.configuration.mw_dict.api_key.title",
                 key: .mwDictAPIKey
+            )
+            SecureInputCell(
+                textFieldTitleKey: "service.configuration.mw_dict.learners_api_key.title",
+                key: .mwLearnersAPIKey
             )
         }
     }
@@ -210,6 +214,10 @@ class MWDictService: QueryService, @unchecked Sendable {
         Defaults[.mwDictAPIKey]
     }
 
+    private var learnerAPIKey: String {
+        Defaults[.mwLearnersAPIKey]
+    }
+
     /// Turns the fully-qualified number into the site's nested layout:
     /// `1 a` at the top level, `b` one level in, `(2)` one level deeper.
     private static func senseLayout(_ number: String) -> (label: String, level: Int) {
@@ -237,7 +245,7 @@ class MWDictService: QueryService, @unchecked Sendable {
         do {
             let data = try await MWDictRequest.fetchEntryJSON(
                 for: word,
-                apiKey: apiKey,
+                apiKey: learnerAPIKey.isEmpty ? apiKey : learnerAPIKey,
                 reference: "learners"
             )
             return MWDictAPIParser.extractSentences(data)

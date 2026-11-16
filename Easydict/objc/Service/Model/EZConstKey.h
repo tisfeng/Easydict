@@ -18,6 +18,7 @@ static NSString *const EZDeepLTranslateEndPointKey = @"EZDeepLTranslateEndPointK
 
 static NSString *const EZBingCookieKey = @"EZBingCookieKey";
 static NSString *const EZMWDictAPIKey = @"EZMWDictAPIKey";
+static NSString *const EZMWLearnersAPIKey = @"EZMWLearnersAPIKey";
 static NSString *const EZNiuTransAPIKey = @"EZNiuTransAPIKey";
 static NSString *const EZCaiyunToken = @"EZCaiyunToken";
 static NSString *const EZGeminiAPIKey = @"EZGeminiAPIKey";
