@@ -176,7 +176,7 @@ class MWDictService: QueryService, @unchecked Sendable {
 
                 let exampleIndent = labelIndent + String(repeating: " ", count: 8)
                 for example in sense.examples {
-                    appendPart(exampleIndent + "│", [example])
+                    appendPart(exampleIndent + "•", [example])
                 }
             }
         }
@@ -188,9 +188,9 @@ class MWDictService: QueryService, @unchecked Sendable {
         // The site's "Examples of … in a Sentence" block comes from the Learner's
         // Dictionary; it appears only when that reference is subscribed.
         if !sentences.isEmpty {
-            appendPart("", ["Examples in a Sentence"])
+            appendPart("", ["𝗘𝘅𝗮𝗺𝗽𝗹𝗲𝘀 𝗶𝗻 𝗮 𝗦𝗲𝗻𝘁𝗲𝗻𝗰𝗲"])
             for sentence in sentences {
-                appendPart("        │", [sentence])
+                appendPart("        •", [sentence])
             }
         }
 

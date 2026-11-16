@@ -221,16 +221,16 @@ struct MWDictServiceTests {
             "",
             "",
             "1",
-            "        │",
+            "        •",
             "2",
             "",
             "1",
             "",
             "",
-            "        │",
+            "        •",
         ])
         #expect(parts[7].means == ["developable adjective"])
-        #expect(parts[8].means == ["Examples in a Sentence"])
+        #expect(parts[8].means == ["𝗘𝘅𝗮𝗺𝗽𝗹𝗲𝘀 𝗶𝗻 𝗮 𝗦𝗲𝗻𝘁𝗲𝗻𝗰𝗲"])
         #expect(parts[9].means == ["They welcomed us with a warm hello."])
         #expect(parts[0].means == ["developed; developing; develops"])
         #expect(parts[1].means == ["transitive verb"])
@@ -266,13 +266,13 @@ struct MWDictServiceTests {
         #expect(parts.map(\.part) == [
             "",
             "1 a",
-            "        │",
+            "        •",
             "    b",
-            "            │",
+            "            •",
             "    b (1)",
-            "            │",
+            "            •",
             "        (2)",
-            "                │",
+            "                •",
         ])
         #expect(parts[2].means == ["top example"])
         #expect(parts[4].means == ["lettered example"])
