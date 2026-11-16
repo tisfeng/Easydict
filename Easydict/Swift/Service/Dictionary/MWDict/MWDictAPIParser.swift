@@ -209,33 +209,58 @@ enum MWDictAPIParser {
 
         var sentences: [String] = []
 
-        func walk(_ node: Any) {
-            // Verbal illustrations are `[ "vis", [ { "t": … } ] ]` pairs.
-            if let pair = node as? [Any], pair.count == 2,
-               let tag = pair[0] as? String, tag == "vis" {
+        func hasDefinitionText(_ dt: Any?) -> Bool {
+            for element in dt as? [Any] ?? [] {
+                guard let pair = element as? [Any], pair.count >= 2,
+                      let tag = pair[0] as? String, tag == "text"
+                else { continue }
+                if !stripMarkup(pair[1] as? String ?? "").isEmpty {
+                    return true
+                }
+            }
+            return false
+        }
+
+        func appendExamples(from dt: Any?) {
+            for element in dt as? [Any] ?? [] {
+                guard let pair = element as? [Any], pair.count >= 2,
+                      let tag = pair[0] as? String, tag == "vis"
+                else { continue }
                 for illustration in pair[1] as? [[String: Any]] ?? [] {
-                    let text = stripMarkup(illustration["t"] as? String ?? "")
+                    var text = stripMarkup(illustration["t"] as? String ?? "")
+                    text = text.replacingOccurrences(
+                        of: #"\[=.*?\]"#,
+                        with: "",
+                        options: .regularExpression
+                    ).trimmingCharacters(in: .whitespaces)
                     if !text.isEmpty, !sentences.contains(text) {
                         sentences.append(text)
                     }
                 }
-                return
             }
-            if let dictionary = node as? [String: Any] {
-                for (_, value) in dictionary {
-                    walk(value)
-                }
-                return
-            }
-            if let array = node as? [Any] {
-                for item in array {
-                    walk(item)
+        }
+
+        for entry in json {
+            guard let dictionary = entry as? [String: Any] else { continue }
+            for definition in dictionary["def"] as? [[String: Any]] ?? [] {
+                for sequence in definition["sseq"] as? [[Any]] ?? [] {
+                    for element in sequence {
+                        guard let pair = element as? [Any], pair.count >= 2,
+                              let tag = pair[0] as? String
+                        else { continue }
+                        let payload = tag == "bs"
+                            ? (pair[1] as? [String: Any])?["sense"]
+                            : pair[1]
+                        guard let sense = payload as? [String: Any],
+                              hasDefinitionText(sense["dt"])
+                        else { continue }
+                        appendExamples(from: sense["dt"])
+                    }
                 }
             }
         }
 
-        walk(json)
-        return sentences
+        return Array(sentences.prefix(2))
     }
 
     // MARK: Private

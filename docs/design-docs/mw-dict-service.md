@@ -100,6 +100,9 @@ Sentence」区块；未订阅该引用时接口返回错误文本，区块静默
 两个引用使用独立 Key：Collegiate 读取 `mwDictAPIKey`，Learner's 读取 `mwLearnersAPIKey`；
 后者未配置时回退到 Collegiate Key，以兼容两个引用共用同一 Key 的账号。设置页分别提供输入框。
 
+整句例句只取「有定义文本」的义项（跳过仅含用法说明的义项），去掉 `[=…]` 注释，最多展示
+两条，与官网「Examples of … in a Sentence」的篇幅一致。
+
 发音写入 `EZWordPhonetic`（首个发音，`US`）。
 
 ## 取舍

@@ -79,20 +79,27 @@ struct MWDictAPIParserTests {
           {
             "meta": { "id": "hello" },
             "def": [
-              { "sseq": [ [ [ "sense", { "dt": [
-                [ "text", "{bc}an expression of greeting" ],
-                [ "vis", [
-                  { "t": "They welcomed us with a warm {wi}hello{/wi}." },
-                  { "t": "we said our {wi}hellos{/wi} and got right down to business" }
-                ] ]
-              ] } ] ] ] }
+              { "sseq": [
+                [ [ "sense", { "dt": [
+                  [ "uns", [ [ [ "text", "used as a greeting" ],
+                    [ "vis", [ { "t": "{wi}Hello{/wi} there! How are you?" } ] ] ] ] ]
+                ] } ] ],
+                [ [ "sense", { "dt": [
+                  [ "text", "{bc}the act of saying hello" ],
+                  [ "vis", [
+                    { "t": "We exchanged {wi}hellos{/wi}. [=we said hello to each other]" },
+                    { "t": "They welcomed us with a warm {wi}hello{/wi}." },
+                    { "t": "Well, {wi}hello{/wi}! What do we have here?" }
+                  ] ]
+                ] } ] ]
+              ] }
             ]
           }
         ]
         """
         #expect(MWDictAPIParser.extractSentences(Data(learnersJSON.utf8)) == [
+            "We exchanged hellos.",
             "They welcomed us with a warm hello.",
-            "we said our hellos and got right down to business",
         ])
 
         let invalid = Data("Invalid API key. Not subscribed for this reference.".utf8)
