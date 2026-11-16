@@ -26,8 +26,12 @@ Easydict is ready to use out of the box, can automatically recognize the languag
 
 **Supported services:** 20+ dictionary, translation, AI, local-model, and CLI services, including
 Apple Dictionary, MDict, Apple Translate, OpenAI, Gemini, Claude, DeepSeek, Ollama, Claude Code,
-Codex CLI, DeepL, Google, and Bing. See the [services overview](./docs/user-docs/en/SERVICES.md) for
+Codex, DeepL, Google, and Bing. See the [services overview](./docs/user-docs/en/SERVICES.md) for
 the complete list and access requirements.
+
+[**Codex**](./docs/user-docs/en/GUIDE.md#codex-translation) supports two modes: **Local Codex CLI**
+uses the CLI you installed and authenticated; **ChatGPT sign-in (built-in)** downloads the Codex
+component in Easydict and lets you sign in without installing the CLI yourself.
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
