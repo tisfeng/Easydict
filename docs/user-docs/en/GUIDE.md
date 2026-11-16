@@ -142,6 +142,15 @@ Focused setup guides:
 - [MDict](./How-to-use-MDict-in-Easydict.md)
 - [Apple Translate](./How-to-use-macOS-system-translation-in-Easydict.md)
 
+### Codex translation
+
+In Settings → Services, add Codex and choose a mode in Advanced Settings:
+
+- **Local Codex CLI**: Use the Codex CLI you installed and authenticated, with its existing configuration.
+- **ChatGPT sign-in (built-in)**: Download the Codex component in Easydict, then sign in to your
+  ChatGPT account in the browser. You do not need to install the CLI yourself. Availability and
+  usage limits depend on your account.
+
 ### GitHub Copilot translate
 
 The GitHub Copilot service uses the official `copilot` CLI installed on your machine, so install and
