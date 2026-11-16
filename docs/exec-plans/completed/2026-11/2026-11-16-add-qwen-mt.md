@@ -1,9 +1,10 @@
 # 增加 Qwen-MT 翻译服务
 
-- 状态：active
+- 状态：completed
 - 创建日期：2026-11-16
 - 负责人：nu11b1ade
-- 关联 Issue/PR：https://github.com/tisfeng/Easydict/issues/1114
+- 关联 Issue/PR：https://github.com/tisfeng/Easydict/issues/1114、
+  https://github.com/tisfeng/Easydict/pull/1406
 
 ## 执行上下文
 
@@ -53,7 +54,7 @@ Qwen-MT 要求单条 user 消息及独立的 `translation_options`，现有自�
 - [x] 完成专属测试、中英文文档和 Release 构建。
 - [x] 使用本机凭据通过真实 API 测试。
 - [x] 实测设置与三种模型的翻译界面，完成最终代码 review。
-- [ ] 提交上游 PR，归档计划并完成交付回执。
+- [x] 提交上游正式 PR，归档计划并准备交付回执。
 
 ## 验证
 
@@ -82,6 +83,8 @@ Qwen-MT 要求单条 user 消息及独立的 `translation_options`，现有自�
   并正常启动安装副本。当前只运行一个安装版实例，所选模型恢复为 Flash。
 - 最终 review 覆盖服务注册、配置、请求编码、语言校验、流与完整响应、错误处理、
   取消控制、资源及文档；未发现已证实的遗留缺陷。未单独执行 UI 取消操作。
+- 正式 PR #1406 已从 fork 任务分支提交至上游 `dev`；创建后回读核对
+  repository、分支、head、标题和正文通过。截图由交付流程从仓库外补传。
 - 官方接口参考：<https://help.aliyun.com/zh/model-studio/machine-translation>、
   <https://www.alibabacloud.com/help/en/model-studio/qwen-mt-api>。
 

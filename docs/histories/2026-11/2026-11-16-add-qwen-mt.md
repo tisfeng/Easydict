@@ -1,7 +1,8 @@
 ## 2026-11-16 | 任务：增加 Qwen-MT 翻译服务
 
 **Links:** [Issue #1114](https://github.com/tisfeng/Easydict/issues/1114)、
-[执行计划](../../exec-plans/active/2026-11-16-add-qwen-mt.md)
+[PR #1406](https://github.com/tisfeng/Easydict/pull/1406)、
+[执行计划](../../exec-plans/completed/2026-11/2026-11-16-add-qwen-mt.md)
 
 ### 执行上下文
 
@@ -51,6 +52,7 @@ Qwen-MT 的翻译参数和消息契约不同于通用聊天服务。独立服务
   未修改仓库测试或持久工程配置。
 - 构建产物与安装副本均通过 `codesign --verify --deep --strict`。
   界面验收后已恢复临时偏好，并正常启动唯一安装版实例。
+- 正式 PR #1406 已提交至上游 `dev`，创建后的身份、head 和正文回读验证通过。
 
 ### 受影响文件
 
@@ -68,6 +70,5 @@ Qwen-MT 的翻译参数和消息契约不同于通用聊天服务。独立服务
 
 ### 后续事项
 
-- 完成本次 PR 交付并归档执行计划。
 - 上游发布包含该支持的正式版本后，可使用官方应用替换个人构建；
   相同 bundle ID 保留现有服务配置。
