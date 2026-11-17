@@ -327,6 +327,7 @@ public class QueryResult: NSObject {
     /// Converts translated results to Traditional Chinese.
     func convertToTraditionalChineseResult() {
         translatedResults = translatedResults?.toTraditionalChineseTexts()
+        innerTexts = innerTexts?.toTraditionalChineseTexts()
         storedCopiedText = storedCopiedText?.toTraditionalChinese()
         wordResult?.convertToTraditionalChinese()
     }

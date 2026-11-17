@@ -62,16 +62,14 @@ struct BingDictServiceTests {
         let wordResult = BingDictService().makeWordResult(entry: entry, word: "run")
         let parts = wordResult.parts ?? []
 
-        // The word-form heading is localized UI text, so compare against the
-        // catalog lookup rather than pinning one locale's wording.
-        let wordFormsLabel = NSLocalizedString("service.bing_dict.section.word_forms", comment: "")
-        #expect(parts.map(\.part) == ["v.", "n.", wordFormsLabel, "v.+n.", "v. 1.", "n. 1."])
-        #expect(parts[2].means == ["复数: formulas, formulae"])
-        #expect(parts[4].means == ["[t] ~ sth  跑  to move fast"])
+        #expect(parts.map(\.part) == ["v.", "n.", "v. 1.", "n. 1."])
+        #expect(parts[2].means == ["[t] ~ sth  跑  to move fast"])
         #expect(wordResult.phonetics?.count == 1)
 
-        // Synonyms and antonyms use the native sections, which supply their own
-        // localized headings and clickable words.
+        #expect(wordResult.exchanges?.map(\.name) == ["复数"])
+        #expect(wordResult.exchanges?.first?.words == ["formulas", "formulae"])
+        #expect(wordResult.collocation?.map(\.part) == ["v.+n."])
+        #expect(wordResult.collocation?.first?.means == ["run a business"])
         #expect(wordResult.synonyms?.map(\.part) == ["v."])
         #expect(wordResult.synonyms?.first?.means == ["sprint"])
         #expect(wordResult.antonyms?.map(\.part) == ["v."])

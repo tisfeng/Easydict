@@ -88,3 +88,22 @@
 - 界面验证（同义词/反义词原生区块、英文 locale 标题）待重新可签名构建后补做。
 - 本地重新构建部署版时需要处理上游新增的 restricted entitlement，不能沿用旧的
   ad-hoc 构建命令。
+
+### 第二轮补充（核对全部 44 个线程）
+
+- 首轮暂缓项本次全部处理：`QueryService` 新增可覆写 `shouldAutoQuery(withText:)`，
+  两个词典按自身英文词头规则放行智能查询；Bing 改为查词成功后由服务完成繁体转换，
+  `autoConvertTraditionalChinese()` 返回 `false`，中文输入不再走通用预处理，HTTP 与 UI
+  均返回繁体结果，转换同时覆盖 `innerTexts`。
+- Anki：两个服务的 `full_result` 只采用 `innerTexts` 的完整纯文本，不再拼接摘要和结构化
+  表示；Bing 词形、搭配分别写入 `exchanges`、`collocation`，韦氏词形也写入 `exchanges`，
+  `{exchange}`、`{related}` 与 `{definition}` 不再互相丢失或混入。
+- 两个服务在 `updateResultLock` 内检查取消和 `queryGeneration` 后才写入结果，避免同步解析
+  期间旧查询污染复用的 `QueryResult`；音标 accent 改为 TTS 需要的小写 `us`/`uk`。
+- 韦氏纯文本在无分节标签时包含词性；Learner 例句只取第一条词条，标题改用本地化 key
+  `service.mw_dict.section.examples_in_a_sentence`，拉丁字母仍保持 Unicode 粗体。
+- 新增/调整本地化：`service.dictionary.section.word_forms`、
+  `service.mw_dict.section.examples_in_a_sentence`，覆盖 7 个 locale。
+- 验证：四个词典 suite 21/21 通过；`QueryModelCancellationTests`、`AppleDictionaryTests`、
+  `LocalizationTests` 共 17 项通过；`git diff --check` 无空白错误，xcstrings JSON 有效。
+  本轮仍未重新部署应用，未做界面截图和全服务联网验证。

@@ -308,6 +308,15 @@ enum AnkiTemplateRenderer {
                 .joined(separator: "<br><br>")
         }
 
+        // These native dictionary services already provide one complete plain
+        // text entry. Appending their structured and summary representations
+        // would repeat the same definitions on the card.
+        if [ServiceType.bingDict.rawValue, ServiceType.merriamWebster.rawValue]
+            .contains(result.serviceTypeWithUniqueIdentifier),
+            let canonicalText = dictionaryContentForBack(from: result)?.trimmed.nonEmpty {
+            return canonicalText
+        }
+
         let candidates = [
             wordResultText(from: result.wordResult),
             result.translatedText,

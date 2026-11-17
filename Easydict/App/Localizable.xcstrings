@@ -1421,7 +1421,7 @@
         }
       }
     },
-    "service.bing_dict.section.word_forms" : {
+    "service.dictionary.section.word_forms" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6388,6 +6388,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Merriam-Webster 請求失敗：%@"
+          }
+        }
+      }
+    },
+    "service.mw_dict.section.examples_in_a_sentence" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Examples in a Sentence"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejemplos en una oración"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "例文"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Príklady vo vetách"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جملوں میں مثالیں"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "例句"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "例句"
           }
         }
       }

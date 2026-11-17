@@ -45,6 +45,10 @@ class BingDictService: QueryService, @unchecked Sendable {
         [.dictionary]
     }
 
+    override func shouldAutoQuery(withText text: String) -> Bool {
+        DictionarySupport.isSingleEnglishWord(text)
+    }
+
     /// Validation uses an English headword; the default Chinese sample is
     /// rejected by the English-only guard below.
     override func validationQuery() -> (text: String, from: Language, to: Language) {
@@ -70,10 +74,10 @@ class BingDictService: QueryService, @unchecked Sendable {
         return ordered
     }
 
-    /// The page content is simplified Chinese; let the app convert it for
-    /// traditional Chinese targets.
+    /// Conversion happens after a successful English lookup, so Chinese input
+    /// is rejected instead of being handled by the generic Chinese prehandler.
     override func autoConvertTraditionalChinese() -> Bool {
-        true
+        false
     }
 
     override func wordLink(_ queryModel: QueryModel) -> String? {
@@ -102,30 +106,42 @@ class BingDictService: QueryService, @unchecked Sendable {
             throw QueryError(type: .noResult)
         }
 
-        result?.wordResult = makeWordResult(entry: entry, word: text)
-
+        let wordResult = makeWordResult(entry: entry, word: text)
         let plainText = entry.plainText
-        result?.innerTexts = [plainText]
-        result?.copiedText = plainText
-        result?.translatedResults = entry.bestTranslation.map { [$0] } ?? []
+
+        try updateResultLock.withLock {
+            try Task.checkCancellation()
+            if let generation = Self.queryGeneration, generation != resultGeneration {
+                throw CancellationError()
+            }
+
+            result?.wordResult = wordResult
+            result?.innerTexts = [plainText]
+            result?.copiedText = plainText
+            result?.translatedResults = entry.bestTranslation.map { [$0] } ?? []
+
+            // Convert here rather than only in the view controller so direct
+            // callers such as /translate receive the same Traditional result.
+            if to == .traditionalChinese {
+                result?.convertToTraditionalChineseResult()
+            }
+        }
 
         return result ?? QueryResult()
     }
 
-    /// Mirrors the official page structure and order:
-    /// quick senses → word forms → collocations → synonyms/antonyms → numbered senses.
-    /// Every section is a separate `EZTranslatePart` because the native card joins
-    /// one part's lines with "; " — one part per numbered sense keeps them on
-    /// their own lines.
+    /// Maps quick and numbered senses into `parts`, and word forms, collocations,
+    /// synonyms and antonyms into the native structured fields used by the card
+    /// and Anki. One part per numbered sense keeps senses on separate lines.
     func makeWordResult(entry: BingDictWordEntry, word: String) -> EZTranslateWordResult {
         let wordResult = EZTranslateWordResult()
 
         var phonetics: [EZWordPhonetic] = []
         if let value = entry.phoneticUS, !value.isEmpty {
-            phonetics.append(Self.phonetic(name: "us_phonetic", value: value, word: word, accent: "US"))
+            phonetics.append(Self.phonetic(name: "us_phonetic", value: value, word: word, accent: "us"))
         }
         if let value = entry.phoneticUK, !value.isEmpty {
-            phonetics.append(Self.phonetic(name: "uk_phonetic", value: value, word: word, accent: "UK"))
+            phonetics.append(Self.phonetic(name: "uk_phonetic", value: value, word: word, accent: "uk"))
         }
         if !phonetics.isEmpty {
             wordResult.phonetics = phonetics
@@ -142,17 +158,6 @@ class BingDictService: QueryService, @unchecked Sendable {
 
         for row in entry.quickRows {
             appendPart(row.label, [row.values])
-        }
-
-        if !entry.wordForms.isEmpty {
-            let forms = Self.groupedWordForms(entry.wordForms)
-                .map { "\($0.label): \($0.values.joined(separator: ", "))" }
-                .joined(separator: "    ")
-            appendPart(NSLocalizedString("service.bing_dict.section.word_forms", comment: ""), [forms])
-        }
-
-        for collocation in entry.collocations {
-            appendPart(collocation.label, [collocation.items.joined(separator: ", ")])
         }
 
         let showsPos = entry.senseGroups.count > 1
@@ -173,10 +178,18 @@ class BingDictService: QueryService, @unchecked Sendable {
             wordResult.parts = parts
         }
 
-        // Native synonym/antonym sections: the result view supplies the
-        // localized headings and renders the words as clickable links, matching
-        // the site's linked lists. Keeping them out of `parts` also stops the
-        // part-of-speech abbreviation from rewriting the heading text.
+        if !entry.wordForms.isEmpty {
+            wordResult.exchanges = Self.groupedWordForms(entry.wordForms).map { group in
+                let exchange = EZTranslateExchange()
+                exchange.name = group.label
+                exchange.words = group.values
+                return exchange
+            }
+        }
+
+        // Native related-word sections supply localized headings and clickable
+        // links, and keep these values available to structured Anki fields.
+        wordResult.collocation = Self.collocationParts(entry.collocations)
         wordResult.synonyms = Self.collocationParts(entry.synonyms)
         wordResult.antonyms = Self.collocationParts(entry.antonyms)
 

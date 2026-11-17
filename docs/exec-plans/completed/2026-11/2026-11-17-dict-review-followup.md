@@ -23,6 +23,10 @@ Validate 按钮对英文专用词典永远失败、Learner 例句请求阻塞卡
 
 ## 目标与范围
 
+第二轮（用户要求再次核对全部 44 个线程）继续处理首轮暂缓的三类问题及 Codex 对 `197b72dd`
+新增的四个问题：智能查询放行、Bing 中文预处理与 HTTP 繁体转换、Anki 去重与结构化字段、
+结果写入的 generation 防护、TTS accent、复制文本词性、Learner 首词条与本地化标题。
+
 - 目标结果：修复本次评审中可确认且改动可控的问题，保持卡片展示与既有行为不回退，
   全部词典单测通过，推送后 PR 保持可评审状态。
 - 允许修改路径：
@@ -35,10 +39,7 @@ Validate 按钮对英文专用词典永远失败、Learner 例句请求阻塞卡
   - `docs/**`（设计文档、plan、history）
 - 同任务 history：`docs/histories/2026-11/2026-11-17-dict-review-followup.md`
 - 用户限制：不提交 API Key；不安装 Xcode；不使用有道词典。
-- 非目标：
-  - 智能查询模式分类器对 `well-known`、`don't`、超长单词的放行（属框架分类逻辑）。
-  - Bing 对 zh→zh 输入的简体转换预处理（需要把“结果繁体转换”与“中文预处理”两个开关拆开）。
-  - Anki `full_result` 去重与 `{exchange}`/`{related}` 结构化字段扩展。
+- 非目标：与本次词典评审无关的框架重构、其他服务行为调整。
 - 验收标准：词典 4 个 suite 21 项用例通过；工程可编译；新增 key 覆盖 7 个 locale；
   `project.pbxproj` 通过 `plutil -lint`。
 
@@ -60,6 +61,12 @@ Validate 按钮对英文专用词典永远失败、Learner 例句请求阻塞卡
 - `QueryService.validationQuery()` 新增可覆写采样，默认仍是中文例句，其他服务零改动。
 - Merriam-Webster 为单语英文词典，按 MDict 的既有做法放开全部目标语言，
   避免非中文默认目标语言的用户被共享预处理拒绝。
+- 第二轮 Bing 改为服务内完成繁体转换，`autoConvertTraditionalChinese()` 返回 `false`，
+  避免中文输入走通用转换预处理，同时让 HTTP 调用也拿到转换后的完整结果。
+- 词形与搭配改用原生 `exchanges`/`collocation` 字段；Anki `full_result` 对这两个新服务
+  只采用 `innerTexts` 的完整纯文本，避免结构化表示与摘要重复。
+- 结果写入在 `updateResultLock` 内同时检查任务取消和 `queryGeneration`，防止同步解析期间
+  旧查询污染复用的 `QueryResult`。
 
 ## 进度
 
@@ -68,12 +75,15 @@ Validate 按钮对英文专用词典永远失败、Learner 例句请求阻塞卡
 - [x] Alamofire 迁移与本地化 key。
 - [x] 测试文件拆分与工程引用。
 - [x] 测试与构建验证。
-- [x] 文档、提交与推送。
+- [x] 文档、提交与推送（第一轮 `197b72dd`）。
+- [x] 第二轮剩余评审项修复。
+- [x] 第二轮测试、文档、提交与推送。
 
 ## 验证
 
 - `xcodebuild build-for-testing`（合并后基线，`CODE_SIGNING_ALLOWED=NO`）：成功。
 - `xcodebuild test`（四个词典 suite）：21/21 通过。
+- 第二轮：四个词典 suite 21/21，相关 cancellation/Apple Dictionary/localization 17/17 通过。
 - 界面截图未执行，原因见 history 的验证节。
 
 ## 完成条件

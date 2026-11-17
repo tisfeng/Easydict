@@ -36,6 +36,9 @@ struct MWDictEntry: Equatable, Sendable {
         for pronunciation in pronunciations {
             lines.append("[\(pronunciation)]")
         }
+        if sections.allSatisfy({ $0.label.isEmpty }), !partOfSpeech.isEmpty {
+            lines.append(partOfSpeech)
+        }
         if !wordForms.isEmpty {
             lines.append("Inflections: \(wordForms.joined(separator: "; "))")
         }
@@ -261,12 +264,12 @@ enum MWDictAPIParser {
             }
         }
 
-        for entry in json {
-            guard let dictionary = entry as? [String: Any] else { continue }
-            for definition in dictionary["def"] as? [[String: Any]] ?? [] {
-                for sequence in definition["sseq"] as? [[Any]] ?? [] {
-                    walkSequence(sequence)
-                }
+        // The card renders only the first entry, so examples must not come from
+        // later homographs in the same response.
+        guard let dictionary = json.first as? [String: Any] else { return [] }
+        for definition in dictionary["def"] as? [[String: Any]] ?? [] {
+            for sequence in definition["sseq"] as? [[Any]] ?? [] {
+                walkSequence(sequence)
             }
         }
 

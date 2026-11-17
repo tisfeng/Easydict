@@ -72,7 +72,8 @@ flowchart LR
 - 服务元数据：服务类型 `.bingDict`、名称 `service.bing_dict.name`（七语言本地化）、无需 API Key、
   `supportedQueryType` 与 `intelligentQueryTextType` 均为 `.dictionary`、图标复用 `Bing` 资源。
 - 语言边界：`supportLanguagesDictionary` 只登记 auto、英语、简体中文、繁体中文，避免为其他
-  语言对提供必然失败的入口；`autoConvertTraditionalChinese` 返回 `true`，繁体目标由结果层转换。
+  语言对提供必然失败的入口；`autoConvertTraditionalChinese` 返回 `false`，繁体转换在成功查词后
+  由服务完成，因此中文输入不会落入通用中文预处理，HTTP 调用也能取得繁体结果。
 - 查询约束：仅接受英文单词（`from == .english`、`to` 为简体或繁体中文、单个词条），否则抛
   `QueryError(.noResult)`，不发起网络请求。单词判定允许字母、数字、连字符和撇号
   （`well-known`、`don't`），拒绝空格分隔的多词与符号词（`C++`）；变音符号按拉丁字母折叠后
@@ -81,11 +82,14 @@ flowchart LR
   单词门槛拒绝。
 - 结果写入：`wordResult`（原生卡片）、`innerTexts`/`copiedText`（`plainText`）、
   `translatedResults`（`bestTranslation`）。
-- 词形变化标题使用本地化 key `service.bing_dict.section.word_forms`；同义词与反义词写入原生
-  `synonyms` / `antonyms` 字段，由结果视图提供本地化标题与可点击词条，而不是作为文本行
-  拼进 `parts`（那样英文标题会被词性缩写逻辑改成 `Synonyms.`）。
-- 复制与繁体：`QueryResult.copiedText` 优先返回服务写入的完整复制载荷；繁体转换覆盖原生卡片
-  的 part、词形、同义词等字段，不再只转换摘要行。
+- 词形变化写入原生 `exchanges`，搭配写入 `collocation`，同义词与反义词写入
+  `synonyms` / `antonyms`；这些结构化字段同时供原生卡片和 Anki 使用，避免把不相关内容
+  全部混入 `parts` 的 `{definition}`。
+- 复制与繁体：`QueryResult.copiedText` 优先返回服务写入的完整复制载荷；繁体转换覆盖原生卡片、
+  `innerTexts`、复制文本与摘要。Anki `full_result` 对本服务只采用完整纯文本，避免结构化表示
+  与摘要重复。
+- 智能查询通过 `shouldAutoQuery(withText:)` 使用与手动查询一致的单词判定，连字符、撇号和
+  长词头不会被共享分类器提前拦截；结果写入在 `updateResultLock` 内核对 generation 与取消。
 
 ### 注册点
 
@@ -155,7 +159,7 @@ flowchart LR
 - 语法标签（`[i]`/`[t]`）与搭配模式（`~ sth`）来自服务端 HTML，可用；但例句、词频、
   短语板块不解析。
 - 仅支持英文单词；多词短语、非英文输入、非中文目标语言直接返回无结果。
-- 页面文本为简体中文；繁体目标由结果层转换，HTTP 等非 UI 调用方拿到的是简体内容。
+- 页面文本为简体中文；繁体目标由服务在返回前转换，UI 与 HTTP 调用方取得一致内容。
 - 依赖页面结构：必应调整 class 或片段布局时解析会失败，表现为无结果而非错误提示。
 
 ## 验证

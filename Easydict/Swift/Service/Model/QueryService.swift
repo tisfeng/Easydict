@@ -93,12 +93,7 @@ open class QueryService: NSObject {
             }
 
             if MyConfiguration.shared.intelligentQueryModeForWindowType(windowType) {
-                let queryType = queryModel.queryText.queryType(
-                    withLanguage: queryModel.queryFromLanguage,
-                    maxWordCount: 1
-                )
-
-                return intelligentQueryTextType().contains(queryType)
+                return shouldAutoQuery(withText: queryModel.queryText)
             }
 
             return true
@@ -426,6 +421,16 @@ open class QueryService: NSObject {
 
     open func intelligentQueryTextType() -> EZQueryTextType {
         [.translation, .sentence]
+    }
+
+    /// Whether intelligent mode should start a query for this text. Services
+    /// with a narrower headword contract can override the shared classifier.
+    open func shouldAutoQuery(withText text: String) -> Bool {
+        let queryType = text.queryType(
+            withLanguage: queryModel.queryFromLanguage,
+            maxWordCount: 1
+        )
+        return intelligentQueryTextType().contains(queryType)
     }
 
     open func hasPrivateAPIKey() -> Bool {

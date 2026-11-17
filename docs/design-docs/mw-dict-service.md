@@ -70,6 +70,8 @@ flowchart LR
   （允许连字符、撇号与 `café`、`naïve` 一类带变音符号的词头）。
 - 设置页 Validate 使用 `validationQuery()` 返回的英文样例（`hello`），默认中文样例会被英文
   单词门槛拒绝；`requiredKeys` 只要求 Collegiate Key，Learner's Key 保持可选。
+- 智能查询通过 `shouldAutoQuery(withText:)` 使用与手动查询一致的单词判定，长词头不会被共享
+  分类器提前拦截；结果写入在 `updateResultLock` 内核对 generation 与取消。
 - `wordLink` 指向官网词条页。
 - 设置页通过 `ServiceConfigurationSecretSectionView` 提供 API Key 输入。
 
@@ -84,15 +86,14 @@ API 在每条序列的首个义项给出完整编号（`1 a`、`2 a`、`4`），
 
 ## 渲染映射
 
-`makeWordResult` 按官网顺序输出 `EZTranslatePart`：
+`makeWordResult` 将释义写入 `EZTranslatePart`，相关词汇写入原生结构化字段：
 
 1. 词性（仅当各分节没有动词分节标签时，如形容词条目显示 `adjective`）。
-2. 词形变化：单独一行 `developed; developing; develops`（不加标签，避免模型把单词标签
-   转成缩写形式）。
-3. 每个动词分节：分节名单独一行（`transitive verb` / `intransitive verb`），随后每个义项
+2. 每个动词分节：分节名单独一行（`transitive verb` / `intransitive verb`），随后每个义项
    一行（标签为编号，正文为定义），每条例句单独一行（`— …`）。
-4. 派生词（`developable adjective`）。
-5. 同义词写入原生 `synonyms` 字段，渲染为可点击按钮。
+3. 派生词（`developable adjective`）。
+4. 词形变化写入 `exchanges`（标题使用本地化 `service.dictionary.section.word_forms`），
+   同义词写入 `synonyms`，均由结果视图渲染为可点击词条，并供 Anki 结构化字段使用。
 
 用法说明以 `→ …` 续写于定义之后；`First Known Use` 与 `Etymology` 不展示。
 
@@ -111,12 +112,14 @@ Collegiate 卡片拖到完整请求超时。
 两个引用使用独立 Key：Collegiate 读取 `mwDictAPIKey`，Learner's 读取 `mwLearnersAPIKey`；
 后者未配置时回退到 Collegiate Key，以兼容两个引用共用同一 Key 的账号。设置页分别提供输入框。
 
-整句例句只取「有定义文本」的义项（跳过仅含用法说明的义项），去掉 `[=…]` 注释，最多展示
-两条，与官网「Examples of … in a Sentence」的篇幅一致。
+整句例句只取第一条词条中「有定义文本」的义项（跳过仅含用法说明的义项），去掉 `[=…]` 注释，
+最多展示两条，与官网「Examples of … in a Sentence」的篇幅一致；标题使用
+`service.mw_dict.section.examples_in_a_sentence` 的本地化文本，拉丁字母仍以 Unicode 粗体显示。
 
-发音写入 `EZWordPhonetic`（首个发音，标签取 `us_phonetic` 的本地化值）。
+发音写入 `EZWordPhonetic`（首个发音，标签取 `us_phonetic` 的本地化值，TTS accent 为小写 `us`）。
 复制动作使用完整纯文本：`QueryResult.copiedText` 优先返回服务写入的复制载荷，不再退回
-单行摘要；繁体转换同时覆盖原生卡片的 part、词形、同义词等字段。
+单行摘要；无动词分节标签时纯文本也包含词性。Anki `full_result` 对本服务只采用完整纯文本，
+避免结构化表示与摘要重复。
 
 ## 取舍
 

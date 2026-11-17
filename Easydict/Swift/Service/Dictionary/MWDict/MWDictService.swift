@@ -55,6 +55,10 @@ class MWDictService: QueryService, @unchecked Sendable {
         [.dictionary]
     }
 
+    override func shouldAutoQuery(withText text: String) -> Bool {
+        DictionarySupport.isSingleEnglishWord(text)
+    }
+
     /// Validation uses an English headword; the default Chinese sample is
     /// rejected by the English-only guard below.
     override func validationQuery() -> (text: String, from: Language, to: Language) {
@@ -121,12 +125,20 @@ class MWDictService: QueryService, @unchecked Sendable {
 
         let sentences = try await fetchLearnerSentences(word: text)
 
-        result?.wordResult = makeWordResult(entry: entry, word: text, sentences: sentences)
-
+        let wordResult = makeWordResult(entry: entry, word: text, sentences: sentences)
         let plainText = entry.plainText
-        result?.innerTexts = [plainText]
-        result?.copiedText = plainText
-        result?.translatedResults = entry.bestTranslation.map { [$0] }
+
+        try updateResultLock.withLock {
+            try Task.checkCancellation()
+            if let generation = Self.queryGeneration, generation != resultGeneration {
+                throw CancellationError()
+            }
+
+            result?.wordResult = wordResult
+            result?.innerTexts = [plainText]
+            result?.copiedText = plainText
+            result?.translatedResults = entry.bestTranslation.map { [$0] }
+        }
 
         return result ?? QueryResult()
     }
@@ -147,7 +159,7 @@ class MWDictService: QueryService, @unchecked Sendable {
             phonetic.language = .english
             phonetic.name = NSLocalizedString("us_phonetic", comment: "")
             phonetic.value = pronunciation
-            phonetic.accent = "US"
+            phonetic.accent = "us"
             wordResult.phonetics = [phonetic]
         }
 
@@ -162,12 +174,6 @@ class MWDictService: QueryService, @unchecked Sendable {
 
         if entry.sections.allSatisfy({ $0.label.isEmpty }), !entry.partOfSpeech.isEmpty {
             appendPart("", [entry.partOfSpeech])
-        }
-
-        // The site lists the inflections as a bare line under the headword;
-        // a part label would be turned into an abbreviation by the model.
-        if !entry.wordForms.isEmpty {
-            appendPart("", [entry.wordForms.joined(separator: "; ")])
         }
 
         for section in entry.sections {
@@ -193,7 +199,8 @@ class MWDictService: QueryService, @unchecked Sendable {
         // The site's "Examples of … in a Sentence" block comes from the Learner's
         // Dictionary; it appears only when that reference is subscribed.
         if !sentences.isEmpty {
-            appendPart("", ["𝗘𝘅𝗮𝗺𝗽𝗹𝗲𝘀 𝗶𝗻 𝗮 𝗦𝗲𝗻𝘁𝗲𝗻𝗰𝗲"])
+            let heading = NSLocalizedString("service.mw_dict.section.examples_in_a_sentence", comment: "")
+            appendPart("", [Self.boldLatinText(heading)])
             for sentence in sentences {
                 appendPart("        ⦁", [sentence])
             }
@@ -201,6 +208,13 @@ class MWDictService: QueryService, @unchecked Sendable {
 
         if !parts.isEmpty {
             wordResult.parts = parts
+        }
+
+        if !entry.wordForms.isEmpty {
+            let inflections = EZTranslateExchange()
+            inflections.name = NSLocalizedString("service.dictionary.section.word_forms", comment: "")
+            inflections.words = entry.wordForms
+            wordResult.exchanges = [inflections]
         }
 
         if !entry.synonyms.isEmpty {
@@ -221,6 +235,22 @@ class MWDictService: QueryService, @unchecked Sendable {
 
     private var learnerAPIKey: String {
         Defaults[.mwLearnersAPIKey]
+    }
+
+    /// The native card has no bold text style for section headings, so Latin
+    /// letters use mathematical bold glyphs; other scripts stay unchanged.
+    private static func boldLatinText(_ text: String) -> String {
+        let scalars = text.unicodeScalars.map { scalar -> UnicodeScalar in
+            switch scalar.value {
+            case 65 ... 90:
+                return UnicodeScalar(0x1D5D4 + scalar.value - 65) ?? scalar
+            case 97 ... 122:
+                return UnicodeScalar(0x1D5EE + scalar.value - 97) ?? scalar
+            default:
+                return scalar
+            }
+        }
+        return String(String.UnicodeScalarView(scalars))
     }
 
     /// Turns the fully-qualified number into the site's nested layout:
