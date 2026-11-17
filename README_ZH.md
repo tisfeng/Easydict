@@ -25,8 +25,11 @@
 Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译、划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果。
 
 **支持的服务：** 覆盖 Apple Dictionary、MDict、Apple 翻译、OpenAI、Gemini、Claude、
-DeepSeek、Ollama、Claude Code、Codex CLI、DeepL、Google、Bing 等 20+ 词典、翻译、AI、
+DeepSeek、Ollama、Claude Code、Codex、DeepL、Google、Bing 等 20+ 词典、翻译、AI、
 本地模型和 CLI 服务。完整清单和配置条件见[服务总览](./docs/user-docs/zh/SERVICES.md)。
+
+[**Codex**](./docs/user-docs/zh/GUIDE.md#codex-翻译)支持两种方式：**本机 Codex CLI** 使用已安装并登录的 CLI；
+**ChatGPT 登录（内置）** 在 Easydict 中下载 Codex 组件后登录，无需自行安装 CLI。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
