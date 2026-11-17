@@ -22719,6 +22719,12 @@
             "value" : "Režim priebežného kopírovania"
           }
         },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسلسل کاپی موڈ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25072,6 +25078,12 @@
             "value" : "Prepnúť režim priebežného kopírovania"
           }
         },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسلسل کاپی موڈ فعال یا غیر فعال کریں"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25113,6 +25125,12 @@
             "value" : "Režim priebežného kopírovania vypnutý"
           }
         },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسلسل کاپی موڈ غیر فعال کر دیا گیا"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25152,6 +25170,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Režim priebežného kopírovania zapnutý"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسلسل کاپی موڈ فعال کر دیا گیا"
           }
         },
         "zh-Hans" : {

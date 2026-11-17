@@ -601,6 +601,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         }
         if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSUserCancelledError) {
             [self.queryView startLoadingAnimation:NO];
+            if (MyConfiguration.shared.enableAppendMode && self.ocrPrefixText.length > 0
+                && ![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
+                self.inputText = self.ocrPrefixText;
+            }
             return;
         }
 
@@ -618,6 +622,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
         if (error) {
             [self.queryView startLoadingAnimation:NO];
+            if (MyConfiguration.shared.enableAppendMode && self.ocrPrefixText.length > 0
+                && ![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
+                self.inputText = self.ocrPrefixText;
+            }
 
             NSString *errorMsg = [error localizedDescription];
             dispatch_block_on_main_safely(^{
