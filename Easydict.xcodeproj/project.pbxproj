@@ -64,6 +64,7 @@
 		0320411E2E44DABA0065A05B /* ocr-ja-text-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 0320411D2E44DABA0065A05B /* ocr-ja-text-3.png */; };
 		032041202E478BD20065A05B /* ocr-ja-text-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 0320411F2E478BD20065A05B /* ocr-ja-text-4.png */; };
 		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
+		2210AC46040448348911D2B1 /* QueryUsageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42C7E80B650424CB13CBF01 /* QueryUsageStore.swift */; };
 		0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320DFF62C54A11300C516A7 /* StreamService+Request.swift */; };
 		03220E282E11A199002C7F3F /* OCRLineAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */; };
 		03220E2A2E11A1A0002C7F3F /* OCRObservationPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E292E11A1A0002C7F3F /* OCRObservationPair.swift */; };
@@ -773,6 +774,7 @@
 		0320411D2E44DABA0065A05B /* ocr-ja-text-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-ja-text-3.png"; sourceTree = "<group>"; };
 		0320411F2E478BD20065A05B /* ocr-ja-text-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-ja-text-4.png"; sourceTree = "<group>"; };
 		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
+		E42C7E80B650424CB13CBF01 /* QueryUsageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryUsageStore.swift; sourceTree = "<group>"; };
 		0320DFF62C54A11300C516A7 /* StreamService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Request.swift"; sourceTree = "<group>"; };
 		03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineAnalyzer.swift; sourceTree = "<group>"; };
 		03220E292E11A1A0002C7F3F /* OCRObservationPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRObservationPair.swift; sourceTree = "<group>"; };
@@ -2369,6 +2371,7 @@
 			children = (
 				0396D613292CC4C3006A11D9 /* LocalStorage.swift */,
 				0320C5862B29F35700861B3D /* QueryServiceRecord.swift */,
+				E42C7E80B650424CB13CBF01 /* QueryUsageStore.swift */,
 				03F60B4F2F4C123400123456 /* QueryServiceConfiguration.swift */,
 			);
 			path = Storage;
@@ -5035,6 +5038,7 @@
 				03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */,
 				0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */,
 				0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */,
+				2210AC46040448348911D2B1 /* QueryUsageStore.swift in Sources */,
 				033A8EAE2BDFE09B00030C08 /* String+Extension.swift in Sources */,
 				03FF0D5F2E1959EC00ABBF17 /* String+Removing.swift in Sources */,
 				FA0D2894537C47E1AF63D495 /* QueryServiceFactory.swift in Sources */,
