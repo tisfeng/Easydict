@@ -171,6 +171,8 @@ flowchart LR
   共 11 项。
 - `xcodebuild build` 与 `xcodebuild test -only-testing:EasydictTests/BingDictHTMLParserTests`：
   通过（构建环境注意事项见 `docs/agents/build-and-test.md` 与对应 history）。
+- `EasydictTests/Service/Dictionary/BingDict/BingDictValidationTests.swift`：匿名英文样例的
+  独立联网验证，通过。
 - 运行中 dev 应用 HTTP `/translate`（`serviceType=BingDict`）核对 `develop`、`run`、`formula`、
   `good` 的 `dictionaryEntry`：顺序、语法标签、多词性标签、重复词形合并、实体解码均与官网一致；
   非中文目标语言与多词输入被拒绝。

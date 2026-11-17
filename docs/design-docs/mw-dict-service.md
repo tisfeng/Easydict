@@ -147,6 +147,8 @@ Collegiate 卡片拖到完整请求超时。
   动词分节与编号（含 `2 b (1)`）、同义词/首次使用/最佳译文、纯文本、拼写建议返回 `nil`、
   标记转换，以及服务层 part 顺序与原生同义词字段。
 - `xcodebuild test`：韦氏与必应共 21 项用例通过。
+- `EasydictTests/Service/Dictionary/MWDict/MWDictValidationTests.swift`：使用本机 Collegiate Key
+  的独立英文样例联网验证，通过。
 - 真实 API（develop / run / happy）逐项对照官网：分节、编号、例句、派生词、首次使用、
   词源一致。
 - 运行中应用 HTTP `/translate` 与窗口截图核对：原生卡片按官网顺序渲染。

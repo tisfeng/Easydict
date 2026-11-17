@@ -287,6 +287,8 @@
 		B7A1C0D2E3F4051627384954 /* MWDictAPIParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A1C0D2E3F4051627384964 /* MWDictAPIParserTests.swift */; };
 		B1B1B1B10000000000000002 /* BingDictServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B1B1B10000000000000001 /* BingDictServiceTests.swift */; };
 		B2B2B2B20000000000000002 /* MWDictServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B2B2B20000000000000001 /* MWDictServiceTests.swift */; };
+		C1C1C1C10000000000000002 /* BingDictValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C1C1C10000000000000001 /* BingDictValidationTests.swift */; };
+		C2C2C2C20000000000000002 /* MWDictValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C2C2C20000000000000001 /* MWDictValidationTests.swift */; };
 		03A9BE952E70631B0013E645 /* SystemUtility+Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */; };
 		03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
@@ -1017,6 +1019,8 @@
 		B7A1C0D2E3F4051627384964 /* MWDictAPIParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MWDictAPIParserTests.swift; sourceTree = "<group>"; };
 		B1B1B1B10000000000000001 /* BingDictServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingDictServiceTests.swift; sourceTree = "<group>"; };
 		B2B2B2B20000000000000001 /* MWDictServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MWDictServiceTests.swift; sourceTree = "<group>"; };
+		C1C1C1C10000000000000001 /* BingDictValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingDictValidationTests.swift; sourceTree = "<group>"; };
+		C2C2C2C20000000000000001 /* MWDictValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MWDictValidationTests.swift; sourceTree = "<group>"; };
 		03A91F142E63E1FB00896B17 /* FocusedElementInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusedElementInfo.swift; sourceTree = "<group>"; };
 		03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Selection.swift"; sourceTree = "<group>"; };
 		03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationRequest.swift; sourceTree = "<group>"; };
@@ -3018,6 +3022,7 @@
 			children = (
 				3F69448D4EB81BB1CABF0B32 /* BingDictHTMLParserTests.swift */,
 				B1B1B1B10000000000000001 /* BingDictServiceTests.swift */,
+				C1C1C1C10000000000000001 /* BingDictValidationTests.swift */,
 			);
 			path = BingDict;
 			sourceTree = "<group>";
@@ -3027,6 +3032,7 @@
 			children = (
 				B7A1C0D2E3F4051627384964 /* MWDictAPIParserTests.swift */,
 				B2B2B2B20000000000000001 /* MWDictServiceTests.swift */,
+				C2C2C2C20000000000000001 /* MWDictValidationTests.swift */,
 			);
 			path = MWDict;
 			sourceTree = "<group>";
@@ -4523,6 +4529,8 @@
 				B7A1C0D2E3F4051627384954 /* MWDictAPIParserTests.swift in Sources */,
 				B1B1B1B10000000000000002 /* BingDictServiceTests.swift in Sources */,
 				B2B2B2B20000000000000002 /* MWDictServiceTests.swift in Sources */,
+				C1C1C1C10000000000000002 /* BingDictValidationTests.swift in Sources */,
+				C2C2C2C20000000000000002 /* MWDictValidationTests.swift in Sources */,
 				A5D1E5B60000000000000001 /* DeepLServiceTests.swift in Sources */,
 				03D486532E3F2190009313B3 /* ListRegexTests.swift in Sources */,
 				0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */,

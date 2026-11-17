@@ -106,4 +106,6 @@
   `service.mw_dict.section.examples_in_a_sentence`，覆盖 7 个 locale。
 - 验证：四个词典 suite 21/21 通过；`QueryModelCancellationTests`、`AppleDictionaryTests`、
   `LocalizationTests` 共 17 项通过；`git diff --check` 无空白错误，xcstrings JSON 有效。
+  另新增两个专属联网验证 suite：`BingDictValidationTests` 与 `MWDictValidationTests`，
+  使用英文样例分别验证匿名必应查询和已配置 Key 的韦氏查询，2/2 通过。
   本轮仍未重新部署应用，未做界面截图和全服务联网验证。
