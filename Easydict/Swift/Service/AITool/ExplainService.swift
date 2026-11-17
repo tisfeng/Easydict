@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 
 // swiftlint:disable line_length
@@ -23,6 +24,10 @@ class ExplainService: AIToolService {
     }
 
     // MARK: Internal
+
+    override var serviceUsageStatusKey: Defaults.Key<ServiceUsageStatus> {
+        serviceDefaultsKey(.serviceUsageStatus, defaultValue: .default)
+    }
 
     override func chatMessageDicts(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
         let (text, _, _, _, _) = chatQuery.unpack()
