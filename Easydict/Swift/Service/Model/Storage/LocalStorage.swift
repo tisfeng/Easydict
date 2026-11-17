@@ -12,7 +12,6 @@ import Foundation
 
 /// Local persistence layer for service metadata and usage stats.
 @objc(EZLocalStorage)
-@objcMembers
 final class LocalStorage: NSObject {
     // MARK: Lifecycle
 
@@ -58,7 +57,7 @@ final class LocalStorage: NSObject {
         set { queryUsageStore.queryCharacterCount = newValue }
     }
 
-    var queryCount: Int {
+    @objc var queryCount: Int {
         get { queryUsageStore.queryCount }
         set { queryUsageStore.queryCount = newValue }
     }
@@ -66,7 +65,7 @@ final class LocalStorage: NSObject {
     // MARK: Singleton
 
     /// Shared storage instance matching the Objective-C API.
-    @objc(shared)
+    @objc
     static func shared() -> LocalStorage {
         if let instance = sharedInstance {
             return instance
@@ -77,7 +76,7 @@ final class LocalStorage: NSObject {
     }
 
     /// Destroys the shared storage instance (used for testing or hard resets).
-    @objc(destroySharedInstance)
+    @objc
     static func destroySharedInstance() {
         sharedInstance = nil
     }
@@ -85,7 +84,6 @@ final class LocalStorage: NSObject {
     /// Returns added service type identifiers for the given window.
     /// - Parameter windowType: Window type to query.
     /// - Returns: Ordered service type identifiers.
-    @objc(allServiceTypes:)
     func allServiceTypes(_ windowType: EZWindowType) -> [String] {
         let allServiceTypesKey = serviceTypesKey(of: windowType)
 
@@ -101,7 +99,6 @@ final class LocalStorage: NSObject {
     /// - Parameters:
     ///   - allServiceTypes: Ordered service type identifiers.
     ///   - windowType: Target window type.
-    @objc(setAllServiceTypes:windowType:)
     func setAllServiceTypes(_ allServiceTypes: [String], windowType: EZWindowType) {
         let allServiceTypesKey = serviceTypesKey(of: windowType)
         userDefaults.set(allServiceTypes, forKey: allServiceTypesKey)
@@ -200,14 +197,13 @@ final class LocalStorage: NSObject {
     /// Returns configured services for the given window with persisted flags applied.
     /// - Parameter windowType: Target window type.
     /// - Returns: Service instances with persisted state applied.
-    @objc(allServices:)
     func allServices(_ windowType: EZWindowType) -> [QueryService] {
         let services = QueryServiceFactory.shared.services(fromTypes: allServiceTypes(windowType))
         services.forEach { updateServiceInfo($0, windowType: windowType) }
         return services
     }
 
-    @objc(enabledServices:)
+    @objc
     func enabledServices(_ windowType: EZWindowType) -> [QueryService] {
         let typeIds = enabledServiceTypeIDs(windowType)
         var result: [QueryService] = []
@@ -259,7 +255,7 @@ final class LocalStorage: NSObject {
     ///   - serviceTypeId: Service type identifier, possibly containing a UUID suffix.
     ///   - windowType: Target window type.
     /// - Returns: Configured service instance, or `nil` for unrecognized types.
-    @objc(service:windowType:)
+    @objc
     func service(_ serviceTypeId: String, windowType: EZWindowType) -> QueryService? {
         guard let service = QueryServiceFactory.shared.service(withTypeId: serviceTypeId) else {
             assertionFailure("Unsupported service type: \(serviceTypeId)")
@@ -276,7 +272,6 @@ final class LocalStorage: NSObject {
     ///   - serviceId: Unique service identifier.
     ///   - windowType: Target window type.
     /// - Returns: Persisted service info when available.
-    @objc(serviceInfoWithType:serviceId:windowType:)
     func serviceInfo(
         withType type: ServiceType,
         serviceId: String,
@@ -307,7 +302,6 @@ final class LocalStorage: NSObject {
     /// - Parameters:
     ///   - serviceInfo: Service info to persist.
     ///   - windowType: Target window type.
-    @objc(setServiceInfo:windowType:)
     func setServiceInfo(_ serviceInfo: QueryServiceConfiguration, windowType: EZWindowType) {
         let normalizedInfo = normalized(
             serviceInfo,
@@ -332,7 +326,6 @@ final class LocalStorage: NSObject {
     /// - Parameters:
     ///   - service: Service whose state should be saved.
     ///   - windowType: Target window type.
-    @objc(setService:windowType:)
     func setService(_ service: QueryService, windowType: EZWindowType) {
         let serviceInfo = QueryServiceConfiguration.serviceInfo(with: service)
         setServiceInfo(serviceInfo, windowType: windowType)
@@ -344,7 +337,6 @@ final class LocalStorage: NSObject {
     ///   - serviceType: Service type identifier.
     ///   - serviceId: Unique service identifier.
     ///   - windowType: Target window type.
-    @objc(setEnabledQuery:serviceType:serviceId:windowType:)
     func setEnabledQuery(_ enabledQuery: Bool, serviceType: ServiceType, serviceId: String, windowType: EZWindowType) {
         let info = serviceInfo(withType: serviceType, serviceId: serviceId, windowType: windowType) ??
             QueryServiceConfiguration(
@@ -359,17 +351,16 @@ final class LocalStorage: NSObject {
         setServiceInfo(info, windowType: windowType)
     }
 
-    @objc(increaseQueryCount:)
+    @objc
     func increaseQueryCount(_ queryText: String) {
         queryUsageStore.increaseQueryCount(queryText)
     }
 
-    @objc(increaseQueryService:)
+    @objc
     func increaseQueryService(_ service: QueryService) {
         queryUsageStore.increaseQueryService(service)
     }
 
-    @objc(hasFreeQuotaLeft:)
     func hasFreeQuotaLeft(_ service: QueryService) -> Bool {
         queryUsageStore.hasFreeQuotaLeft(service)
     }
