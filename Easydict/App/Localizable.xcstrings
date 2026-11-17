@@ -25740,6 +25740,12 @@
             "value" : "Tencent TokenHub"
           }
         },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tencent TokenHub"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",

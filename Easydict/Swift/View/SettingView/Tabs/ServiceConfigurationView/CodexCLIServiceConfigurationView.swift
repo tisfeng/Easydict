@@ -74,7 +74,7 @@ struct CodexCLIServiceConfigurationView: View {
                             .disabled(true)
                     }
                     ForEach(managedEfforts, id: \.self) { effort in
-                        Text(effort == .default ? "service.codex_cli.managed.reasoning_default" : effort.localizedTitle)
+                        Text(effort == .default ? "service.codex_cli.managed.reasoning_default" : effort.title)
                             .tag(Optional(effort))
                     }
                 }
@@ -92,7 +92,7 @@ struct CodexCLIServiceConfigurationView: View {
                             .disabled(true)
                     }
                     ForEach(localEfforts, id: \.self) { effort in
-                        Text(effort.localizedTitle).tag(Optional(effort))
+                        Text(effort.title).tag(Optional(effort))
                     }
                 }
             }

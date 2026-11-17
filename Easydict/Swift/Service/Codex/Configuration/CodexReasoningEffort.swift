@@ -8,6 +8,7 @@
 
 import Defaults
 import Foundation
+import SwiftUI
 
 // MARK: - CodexReasoningEffort
 
@@ -47,10 +48,10 @@ enum CodexReasoningEffort: String, CaseIterable, Codable, Defaults.Serializable,
     }
 }
 
-// MARK: - Localization
+// MARK: EnumLocalizedStringConvertible
 
-extension CodexReasoningEffort {
-    var localizedTitle: LocalizedStringResource {
+extension CodexReasoningEffort: EnumLocalizedStringConvertible {
+    var title: LocalizedStringKey {
         switch self {
         case .default:
             "service.codex_cli.reasoning_effort.default"
