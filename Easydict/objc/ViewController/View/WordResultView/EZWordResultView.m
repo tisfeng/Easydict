@@ -25,6 +25,8 @@
 #import "TTTDictionary.h"
 #import "EZEnumTypes.h"
 #import "EZReplaceTextButton.h"
+#import "EZSymbolImageButton.h"
+#import "EZToast.h"
 #import "EZWrapView.h"
 #import "NSObject+EZDarkMode.h"
 #import "EZWebViewManager.h"
@@ -37,6 +39,73 @@ static const CGFloat kBlueTextButtonVerticalPadding_2 = 2;
 
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 static NSString *const kMDictEntryURIScheme = @"mdict-entry";
+
+static BOOL EZStringHasText(NSString *text) {
+    return [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet].length > 0;
+}
+
+static BOOL EZStringArrayHasText(NSArray<NSString *> *texts) {
+    for (NSString *text in texts) {
+        if (EZStringHasText(text)) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+static BOOL EZTranslatePartsHaveAnkiContent(NSArray<EZTranslatePart *> *parts) {
+    for (EZTranslatePart *part in parts) {
+        if (EZStringHasText(part.part) || EZStringArrayHasText(part.means)) {
+            return YES;
+        }
+    }
+
+    return NO;
+}
+
+static BOOL EZWordResultHasAnkiContent(EZTranslateWordResult *wordResult) {
+    if (!wordResult) {
+        return NO;
+    }
+
+    if (EZStringHasText(wordResult.etymology)) {
+        return YES;
+    }
+
+    for (EZWordPhonetic *phonetic in wordResult.phonetics) {
+        if (EZStringHasText(phonetic.value)) {
+            return YES;
+        }
+    }
+
+    for (EZTranslateExchange *exchange in wordResult.exchanges) {
+        if (EZStringHasText(exchange.name) || EZStringArrayHasText(exchange.words)) {
+            return YES;
+        }
+    }
+
+    for (EZTranslateSimpleWord *simpleWord in wordResult.simpleWords) {
+        if (EZStringHasText(simpleWord.word) ||
+            EZStringHasText(simpleWord.part) ||
+            EZStringArrayHasText(simpleWord.means)) {
+            return YES;
+        }
+    }
+
+    return EZTranslatePartsHaveAnkiContent(wordResult.parts) ||
+           EZTranslatePartsHaveAnkiContent(wordResult.synonyms) ||
+           EZTranslatePartsHaveAnkiContent(wordResult.antonyms) ||
+           EZTranslatePartsHaveAnkiContent(wordResult.collocation);
+}
+
+static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
+    return EZWordResultHasAnkiContent(result.wordResult) ||
+           EZStringHasText(result.translatedText) ||
+           EZStringHasText(result.copiedText) ||
+           EZStringHasText(result.htmlString) ||
+           EZStringArrayHasText(result.innerTexts) ||
+           EZStringArrayHasText(result.htmlStrings);
+}
 
 @interface EZWordResultView () <NSTextViewDelegate>
 
@@ -82,6 +151,13 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
         }];
     }
     return self;
+}
+
+/// Only result text opts into paragraph-direction handling; window chrome is unchanged.
+- (EZTranslationResultLabel *)makeResultTextLabel {
+    EZTranslationResultLabel *label = [[EZTranslationResultLabel alloc] init];
+    label.markdownEnabled = NO;
+    return label;
 }
 
 // TODO: This method is too long, need to refactor.
@@ -155,7 +231,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
         BOOL showBigWord = result.wordResult || result.showBigWord;
         if (isShortWordLength && showBigWord) {
-            EZLabel *bigWordLabel = [[EZLabel alloc] init];
+            EZLabel *bigWordLabel = [self makeResultTextLabel];
             [self addSubview:bigWordLabel];
             bigWordLabel.font = [NSFont systemFontOfSize:24 * self.fontSizeRatio weight:NSFontWeightSemibold];
             bigWordLabel.text = result.queryText;
@@ -197,15 +273,9 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
             }
 
             if (text) {
-                EZLabel *resultLabel;
-                BOOL serviceIsStreaming = [self.service isStream];
-                if (serviceIsStreaming && errorMessage.length == 0) {
-                    EDMarkdownLabel *markdownLabel = [[EDMarkdownLabel alloc] init];
-                    markdownLabel.markdownEnabled = result.isMarkdownRenderingEnabled;
-                    resultLabel = markdownLabel;
-                } else {
-                    resultLabel = [[EZLabel alloc] init];
-                }
+                EZTranslationResultLabel *resultLabel = [self makeResultTextLabel];
+                resultLabel.markdownEnabled = errorMessage.length == 0 && result.isMarkdownRenderingEnabled
+                    && ([self.service isStream] || [EDMarkdownLabel containsMath:text]);
                 resultLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
                 [self addSubview:resultLabel];
 
@@ -301,7 +371,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
 
 
         [wordResult.phonetics enumerateObjectsUsingBlock:^(EZWordPhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-            EZLabel *phoneticTagLabel = [[EZLabel alloc] init];
+            EZLabel *phoneticTagLabel = [self makeResultTextLabel];
             [self addSubview:phoneticTagLabel];
             phoneticTagLabel.font = typeTextFont;
             phoneticTagLabel.textForegroundColor = typeTextColor;
@@ -335,7 +405,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
             // Fix: SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x7ff85c514b40
             NSString *phonetic = obj.value;
             if ([phonetic isKindOfClass:NSString.class] && phonetic.length) {
-                phoneticLabel = [[EZLabel alloc] init];
+                phoneticLabel = [self makeResultTextLabel];
                 [self addSubview:phoneticLabel];
                 phoneticLabel.textContainer.lineFragmentPadding = 0;
                 phoneticLabel.font = [NSFont systemFontOfSize:textFont.pointSize * self.fontSizeRatio];
@@ -456,7 +526,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
             EZLabel *partLabel = nil;
             __block CGFloat exceptedWidth = 0;
             if (obj.part.length) {
-                partLabel = [[EZLabel alloc] init];
+                partLabel = [self makeResultTextLabel];
                 [self addSubview:partLabel];
                 partLabel.font = typeTextFont;
                 partLabel.textForegroundColor = typeTextColor;
@@ -486,7 +556,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
                 partLabel.mas_key = @"partLabel";
             }
 
-            EZLabel *meanLabel = [[EZLabel alloc] init];
+            EZLabel *meanLabel = [self makeResultTextLabel];
             meanLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
             [self addSubview:meanLabel];
             NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
@@ -534,7 +604,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
         }];
 
         [wordResult.exchanges enumerateObjectsUsingBlock:^(EZTranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-            EZLabel *exchangeLabel = [[EZLabel alloc] init];
+            EZLabel *exchangeLabel = [self makeResultTextLabel];
             [self addSubview:exchangeLabel];
             exchangeLabel.font = typeTextFont;
             exchangeLabel.textForegroundColor = typeTextColor;
@@ -623,7 +693,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
         [showingSimpleWords enumerateObjectsUsingBlock:^(EZTranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             EZLabel *partLabel = nil;
             if (!obj.showPartMeans && obj.part.length && (!lastSimpleWordPart || ![obj.part isEqualToString:lastSimpleWordPart])) {
-                partLabel = [[EZLabel alloc] init];
+                partLabel = [self makeResultTextLabel];
                 [self addSubview:partLabel];
                 partLabel.font = typeTextFont;
                 partLabel.textForegroundColor = typeTextColor;
@@ -700,7 +770,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
             wordButton.mas_key = @"wordButton_simpleWords";
 
 
-            EZLabel *meanLabel = [[EZLabel alloc] init];
+            EZLabel *meanLabel = [self makeResultTextLabel];
             meanLabel.text = obj.meansText;
             meanLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
             [self addSubview:meanLabel];
@@ -743,7 +813,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
         if (wordResult.etymology.length) {
             __block CGFloat exceptedWidth = 0;
 
-            EZLabel *etymologyLabel = [[EZLabel alloc] init];
+            EZLabel *etymologyLabel = [self makeResultTextLabel];
             [self addSubview:etymologyLabel];
             etymologyLabel.font = typeTextFont;
             etymologyLabel.textForegroundColor = typeTextColor;
@@ -767,7 +837,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
             lastView = etymologyLabel;
 
 
-            EZLabel *resultLabel = [[EZLabel alloc] init];
+            EZLabel *resultLabel = [self makeResultTextLabel];
             [self addSubview:resultLabel];
             resultLabel.text = wordResult.etymology;
             resultLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
@@ -938,8 +1008,44 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
         make.width.height.bottom.equalTo(audioButton);
     }];
 
-    // Markdown rendering toggle, only on streaming (AI/LLM) services.
-    if ([self.service isStream]) {
+    NSView *rightmostButton = result.showReplaceButton ? (NSView *)replaceTextButton : (NSView *)linkButton;
+
+    BOOL shouldShowAnkiButton = MyConfiguration.shared.enableAnkiConnect &&
+                                EZResultHasAnkiContent(result) &&
+                                (result.wordResult || EZResultNeedsDictionaryHTMLHeight(result));
+    if (shouldShowAnkiButton) {
+        EZSymbolImageButton *ankiButton = [EZSymbolImageButton buttonWithSybolImageName:AnkiConnectClient.addNoteButtonSymbolName];
+        [self addSubview:ankiButton];
+        ankiButton.enabled = YES;
+        ankiButton.toolTip = NSLocalizedString(@"anki.connect.add_button", nil);
+        ankiButton.mas_key = @"result_ankiButton";
+
+        mm_weakify(ankiButton);
+        [ankiButton setClickBlock:^(EZButton *_Nonnull button) {
+            button.enabled = NO;
+            MMLogInfo(@"AnkiConnect add button clicked: %@", result.queryText);
+            [AnkiConnectClient.shared addNoteWith:result completion:^(BOOL success, NSString *_Nonnull message) {
+                mm_strongify(ankiButton);
+                ankiButton.enabled = !success;
+                if (success) {
+                    MMLogInfo(@"AnkiConnect add note success: %@", result.queryText);
+                } else {
+                    MMLogError(@"AnkiConnect add note failed: %@", message);
+                }
+                [EZToast showText:message toastPostion:CTPositionMouse];
+            }];
+        }];
+
+        [ankiButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(rightmostButton.mas_right).offset(buttonPadding);
+            make.width.height.bottom.equalTo(audioButton);
+        }];
+
+        rightmostButton = ankiButton;
+    }
+
+    if ([self.service isStream] || (hasTranslatedText && !result.errorMessage.length
+                                   && [EDMarkdownLabel containsMath:result.translatedText])) {
         EDMarkdownToggleButton *markdownToggleButton = [[EDMarkdownToggleButton alloc] init];
         [self addSubview:markdownToggleButton];
         markdownToggleButton.markdownEnabled = result.isMarkdownRenderingEnabled;
@@ -965,8 +1071,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
         };
 
         [markdownToggleButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            NSView *leftAnchor = result.showReplaceButton ? (NSView *)replaceTextButton : (NSView *)linkButton;
-            make.left.equalTo(leftAnchor.mas_right).offset(buttonPadding);
+            make.left.equalTo(rightmostButton.mas_right).offset(buttonPadding);
             make.width.height.bottom.equalTo(audioButton);
         }];
     }
@@ -998,7 +1103,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
                                             height:(CGFloat *)height
                                           lastView:(NSView *)lastView {
     __block NSView *rtnView = lastView;
-    EZLabel *synonymsTitle = [[EZLabel alloc] init];
+    EZLabel *synonymsTitle = [self makeResultTextLabel];
     [self addSubview:synonymsTitle];
     synonymsTitle.font = typeTextFont;
     synonymsTitle.textForegroundColor = typeTextColor;
@@ -1024,7 +1129,7 @@ static NSString *const kMDictEntryURIScheme = @"mdict-entry";
     [parts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         if (obj.means.count == 0)
             return;
-        EZLabel *partLabel = [[EZLabel alloc] init];
+        EZLabel *partLabel = [self makeResultTextLabel];
         partLabel.font = typeTextFont;
         partLabel.textForegroundColor = typeTextColor;
         partLabel.text = obj.part;

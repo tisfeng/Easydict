@@ -42,7 +42,7 @@
       }
     },
     "0.153.4": {
-      "minimumOS": 15,
+      "minimumOS": 13,
       "packages": {
         "aarch64": {
           "target": "aarch64-apple-darwin",

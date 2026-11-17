@@ -7,37 +7,37 @@ import argparse
 from contextlib import contextmanager
 from dataclasses import dataclass
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
 import time
 from typing import Any, Iterator, Sequence
+from urllib.parse import urlsplit
 
 
-# Default headings are used only when a repository template does not provide a
-# semantic destination for the required PR content.
-CANONICAL_HEADINGS = (
-    "## 变更说明 / Summary",
-    "## 关联 Issue / Linked Issues",
-    "## 验证 / Verification",
-    "## 截图 / Screenshots",
+PR_BODY_TEMPLATE_PATH = (
+    Path(__file__).resolve().parents[1] / "assets" / "pull_request_template.md"
 )
-# Public alias retained for callers of the first implementation.
-REQUIRED_HEADINGS = CANONICAL_HEADINGS
-SECTION_ALIASES = (
-    {"变更说明 / summary", "summary", "description", "changes"},
-    {"关联 issue / linked issues", "linked issues", "related issues", "issues"},
-    {"验证 / verification", "verification", "testing", "tests"},
-    {"截图 / screenshots", "screenshots", "screenshot"},
+PR_BODY_TEMPLATE_FIELDS = (
+    "context",
+    "changes",
+    "issues",
+    "verification",
+    "screenshots",
 )
+PR_BODY_TEMPLATE_PLACEHOLDER = re.compile(r"\{\{(?P<name>[a-z_]+)\}\}")
 UI_SCREENSHOT_NOTICE = (
     "请在 GitHub PR 页面补充截图。 / "
     "Please add screenshots on the GitHub PR page."
 )
+GITHUB_ASSET_URL = r"https://github\.com/user-attachments/assets/[A-Za-z0-9-]+"
+IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"}
 ISSUE_PATTERNS = (
     re.compile(r"^#[1-9]\d*$"),
     re.compile(
@@ -45,6 +45,9 @@ ISSUE_PATTERNS = (
         r"issues/[1-9]\d*/?$"
     ),
     re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+#[1-9]\d*$"),
+)
+RELATED_PR_PATTERN = re.compile(
+    r"https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/pull/[1-9]\d*/?"
 )
 AUTO_CLOSE_PATTERN = re.compile(
     r"(?i)\b(?:fix(?:e[sd])?|close[sd]?|resolve[sd]?)\s*:?[ \t]+"
@@ -58,16 +61,24 @@ CONVENTIONAL_TYPES = (
 TITLE_PATTERN = re.compile(
     rf"^(?:{CONVENTIONAL_TYPES})(?:\([a-z0-9][a-z0-9._/-]*\))?!?:\s+\S.*$"
 )
-BRANCH_PATTERN = re.compile(
-    rf"^(?:{CONVENTIONAL_TYPES})/[a-z0-9]+(?:-[a-z0-9]+)*$"
-)
-TEMPLATE_PARENT_DIRECTORIES = ("", "docs", ".github")
-TEMPLATE_EXTENSIONS = {".md", ".txt"}
 MINIMUM_PYTHON = (3, 10)
 
 
 class SubmitPRError(RuntimeError):
     """Raised when PR planning or submission is unsafe."""
+
+
+def branch_policy():
+    """Load the installed git-commit naming dependency, never a host checkout."""
+
+    path = Path(__file__).resolve().parents[2] / "git-commit" / "scripts" / "branch_name.py"
+    if not path.is_file():
+        raise SubmitPRError("Missing git-commit naming dependency; install the complete git-commit skill beside this skill")
+    spec = importlib.util.spec_from_file_location("shared_branch_naming", path)
+    module = importlib.util.module_from_spec(spec)
+    # Loading policy must not write __pycache__ into a managed skill snapshot.
+    exec(compile(path.read_bytes(), str(path), "exec"), module.__dict__)
+    return module
 
 
 def require_supported_python(
@@ -98,13 +109,20 @@ def measure_phase(
 @dataclass(frozen=True)
 class PRContent:
     title: str
-    summary: str
+    context: str
+    changes: str
     verification: str
     issues: tuple[str, ...]
     ui_change: bool
     draft: bool
     issue_policy: str = "neutral"
-    extra_body: str = ""
+    related_prs: tuple[tuple[str, str], ...] = ()
+    screenshots: tuple[tuple[str, str], ...] = ()
+    screenshots_incomplete: bool = False
+
+    @property
+    def needs_screenshots(self) -> bool:
+        return self.screenshots_incomplete or (self.ui_change and not self.screenshots)
 
 
 @dataclass(frozen=True)
@@ -127,6 +145,7 @@ class RepositoryContext:
     head_repository: str
     head_remote: str
     default_branch: str
+    current_branch: str | None
 
     @property
     def cross_repository(self) -> bool:
@@ -284,11 +303,9 @@ def select_unique(candidates: Sequence[str], description: str) -> str:
     return unique[0]
 
 
-def current_branch(repo_root: Path) -> str:
+def current_branch(repo_root: Path) -> str | None:
     branch = git_output(repo_root, "branch", "--show-current")
-    if not branch:
-        raise SubmitPRError("detached HEAD is not supported")
-    return branch
+    return branch or None
 
 
 def resolve_repository_context(
@@ -345,8 +362,10 @@ def resolve_repository_context(
         )
 
     current = current_branch(repo_root)
-    upstream = config_value(repo_root, f"branch.{current}.remote")
-    push_remote = config_value(repo_root, f"branch.{current}.pushRemote")
+    upstream = config_value(repo_root, f"branch.{current}.remote") if current else None
+    push_remote = (
+        config_value(repo_root, f"branch.{current}.pushRemote") if current else None
+    )
     remote_default = config_value(repo_root, "remote.pushDefault")
     if args.head_remote:
         head_candidates = [args.head_remote]
@@ -383,7 +402,12 @@ def resolve_repository_context(
             f"{base_repository} fork network"
         )
 
-    base_branch = args.base or config_value(repo_root, f"branch.{current}.gh-merge-base")
+    configured_base = (
+        config_value(repo_root, f"branch.{current}.gh-merge-base")
+        if current
+        else None
+    )
+    base_branch = args.base or configured_base
     base_branch = base_branch or base_info.default_branch
     return RepositoryContext(
         base_repository,
@@ -392,6 +416,7 @@ def resolve_repository_context(
         head_repository.name_with_owner,
         head_remote,
         base_info.default_branch,
+        current,
     )
 
 
@@ -403,167 +428,114 @@ def validate_content(content: PRContent) -> None:
         raise SubmitPRError("PR title exceeds 256 characters")
     if TITLE_PATTERN.fullmatch(title) is None:
         raise SubmitPRError("PR title must use Angular-style type(scope): subject")
-    if not content.summary.strip():
-        raise SubmitPRError("PR summary must not be empty")
+    if not content.context.strip():
+        raise SubmitPRError("PR context must not be empty")
+    if not content.changes.strip():
+        raise SubmitPRError("PR changes must not be empty")
     if not content.verification.strip():
         raise SubmitPRError("PR verification must not be empty")
-    if len(set(content.issues)) != len(content.issues):
-        raise SubmitPRError("duplicate linked Issue reference")
+    references = set()
     for issue in content.issues:
-        if not any(pattern.fullmatch(issue.strip()) for pattern in ISSUE_PATTERNS):
+        validate_single_line(issue.strip(), "linked Issue")
+        parts = issue.split(maxsplit=1)
+        if not any(pattern.fullmatch(parts[0]) for pattern in ISSUE_PATTERNS):
             raise SubmitPRError(f"unsupported linked Issue reference: {issue!r}")
-
-
-def section_index(heading: str) -> int | None:
-    normalized = heading.strip().removeprefix("##").strip().casefold()
-    for index, aliases in enumerate(SECTION_ALIASES):
-        if normalized in aliases:
-            return index
-    return None
-
-
-def clean_template_body(text: str) -> str:
-    text = re.sub(r"<!--[\s\S]*?-->", "", text)
-    lines = [line.rstrip() for line in text.strip().splitlines()]
-    while lines and not lines[0].strip():
-        lines.pop(0)
-    while lines and not lines[-1].strip():
-        lines.pop()
-    if lines == ["-"]:
-        return ""
-    return "\n".join(lines).strip()
-
-
-def parse_template(template_text: str) -> tuple[list[str], list[tuple[str, str]]]:
-    sections: list[tuple[str, str]] = []
-    preamble: list[str] = []
-    current_heading: str | None = None
-    current_lines: list[str] = []
-    for line in template_text.splitlines():
-        if line.startswith("## "):
-            if current_heading is None:
-                preamble = current_lines
-            else:
-                sections.append((current_heading, "\n".join(current_lines)))
-            current_heading = line
-            current_lines = []
-        else:
-            current_lines.append(line)
-    if current_heading is None:
-        preamble = current_lines
-    else:
-        sections.append((current_heading, "\n".join(current_lines)))
-    return preamble, sections
-
-
-def render_pr_body(template_text: str, content: PRContent) -> str:
-    validate_content(content)
-    preamble, template_sections = parse_template(template_text)
-    seen: set[int] = set()
-    generated = (
-        content.summary.strip(),
-        "\n".join(f"- {issue.strip()}" for issue in content.issues),
-        content.verification.strip(),
-        UI_SCREENSHOT_NOTICE if content.ui_change else "N/A",
-    )
-    rendered: list[str] = []
-    preamble_text = clean_template_body("\n".join(preamble))
-    if preamble_text:
-        rendered.append(preamble_text)
-    for heading, body in template_sections:
-        index = section_index(heading)
-        cleaned = clean_template_body(body)
-        if index is None:
-            rendered.append(f"{heading}\n\n{cleaned}".rstrip())
-            continue
-        if index in seen:
-            raise SubmitPRError(f"PR template repeats semantic section: {heading}")
-        seen.add(index)
-        body_parts = [part for part in (generated[index], cleaned) if part]
-        rendered.append(f"{heading}\n\n" + "\n\n".join(body_parts))
-
-    for index, (heading, value) in enumerate(
-        zip(CANONICAL_HEADINGS, generated, strict=True)
-    ):
-        if index not in seen:
-            rendered.append(f"{heading}\n\n{value}")
-
-    if content.extra_body.strip():
-        for line in content.extra_body.splitlines():
-            if line.startswith("## ") and section_index(line) is not None:
-                raise SubmitPRError("extra PR body repeats a canonical section")
-        rendered.append(content.extra_body.strip())
-    body = "\n\n".join(part.rstrip() for part in rendered if part.strip()) + "\n"
-    if content.issue_policy == "forbid" and AUTO_CLOSE_PATTERN.search(body):
-        raise SubmitPRError("PR body contains a GitHub auto-closing Issue reference")
-    return body
-
-
-def discover_template(repo_root: Path, requested: str | None) -> tuple[str, str | None]:
-    if requested:
-        path = Path(requested)
-        path = path if path.is_absolute() else repo_root / path
+        reference = parts[0].rstrip("/").casefold()
+        if reference in references:
+            raise SubmitPRError("duplicate linked Issue reference")
+        references.add(reference)
+    references.clear()
+    for url, relationship in content.related_prs:
+        if RELATED_PR_PATTERN.fullmatch(url) is None:
+            raise SubmitPRError(f"expected a GitHub pull request URL: {url!r}")
+        validate_single_line(relationship, "PR relationship")
+        reference = url.rstrip("/").casefold()
+        if reference in references:
+            raise SubmitPRError("duplicate related PR reference")
+        references.add(reference)
+    for label, url in content.screenshots:
+        validate_single_line(label, "screenshot label")
         try:
-            return path.read_text(encoding="utf-8"), str(path)
-        except OSError as error:
-            raise SubmitPRError(f"cannot read PR template: {path}") from error
-    candidates: list[Path] = []
-    for relative in TEMPLATE_PARENT_DIRECTORIES:
-        parent = repo_root / relative
-        if not parent.is_dir():
-            continue
-        for path in sorted(parent.iterdir(), key=lambda item: item.name.casefold()):
-            name = path.stem.casefold()
-            extension = path.suffix.casefold()
-            if (
-                path.is_file()
-                and name == "pull_request_template"
-                and extension in TEMPLATE_EXTENSIONS
-            ):
-                candidates.append(path)
-            elif path.is_dir() and path.name.casefold() == "pull_request_template":
-                candidates.extend(
-                    sorted(
-                        (
-                            child
-                            for child in path.iterdir()
-                            if child.is_file()
-                            and child.suffix.casefold() in TEMPLATE_EXTENSIONS
-                        ),
-                        key=lambda item: item.name.casefold(),
-                    )
-                )
-    existing: list[Path] = []
-    seen_files: set[tuple[int, int]] = set()
-    for path in candidates:
-        if not path.is_file():
-            continue
-        stat = path.stat()
-        identity = (stat.st_dev, stat.st_ino)
-        if identity not in seen_files:
-            existing.append(path)
-            seen_files.add(identity)
-    if len(existing) > 1:
-        raise SubmitPRError(
-            "multiple PR templates found; select one with --template: "
-            + ", ".join(str(path.relative_to(repo_root)) for path in existing)
-        )
-    if existing:
-        return existing[0].read_text(encoding="utf-8"), str(existing[0])
-    return "\n\n".join(CANONICAL_HEADINGS) + "\n", None
+            parsed = urlsplit(url)
+            valid_url = (
+                parsed.scheme == "https"
+                and bool(parsed.hostname)
+                and parsed.username is None
+                and parsed.password is None
+            )
+        except ValueError:
+            valid_url = False
+        if not valid_url or re.search(r"[\s\x00-\x1f\x7f<>\\]", url):
+            raise SubmitPRError("screenshot URL must be a valid HTTPS image URL")
 
 
-def read_extra_body(repo_root: Path, requested: str | None) -> str:
-    if not requested:
-        return ""
-    if requested == "-":
-        return sys.stdin.read()
-    path = Path(requested)
-    path = path if path.is_absolute() else repo_root / path
+def validate_single_line(value: str, label: str) -> None:
+    if not value.strip() or len(value.splitlines()) != 1 or re.search(r"[\x00-\x1f\x7f]", value):
+        raise SubmitPRError(f"{label} must be a non-empty single line")
+
+
+def load_pr_body_template() -> str:
     try:
-        return path.read_text(encoding="utf-8")
-    except OSError as error:
-        raise SubmitPRError(f"cannot read extra PR body: {path}") from error
+        template_text = PR_BODY_TEMPLATE_PATH.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise SubmitPRError(
+            f"cannot read bundled PR body template: {PR_BODY_TEMPLATE_PATH}"
+        ) from error
+    placeholders = PR_BODY_TEMPLATE_PLACEHOLDER.findall(template_text)
+    if sorted(placeholders) != sorted(PR_BODY_TEMPLATE_FIELDS):
+        expected = ", ".join(PR_BODY_TEMPLATE_FIELDS)
+        raise SubmitPRError(
+            "bundled PR body template must contain each required placeholder "
+            f"exactly once: {expected}"
+        )
+    return template_text
+
+
+def escape_image_label(label: str) -> str:
+    return re.sub(r"([\\\[\]])", r"\\\1", label)
+
+
+def render_pr_body_parts(
+    content: PRContent,
+    *,
+    attach_on_create: bool = False,
+) -> tuple[str, str]:
+    """Return the immutable template prefix and its final screenshot section."""
+    validate_content(content)
+    links = []
+    for issue in content.issues:
+        parts = issue.split(maxsplit=1)
+        links.append("- " + " — ".join(parts))
+    links.extend(f"- {url} — {relationship}" for url, relationship in content.related_prs)
+    screenshots = []
+    for label, url in content.screenshots:
+        screenshots.append(f"![{escape_image_label(label)}](<{url}>)")
+    if content.screenshots_incomplete or (content.needs_screenshots and not attach_on_create):
+        screenshots.append(UI_SCREENSHOT_NOTICE)
+    generated = {
+        "context": content.context.strip(),
+        "changes": content.changes.strip(),
+        "issues": "\n".join(links),
+        "verification": content.verification.strip(),
+    }
+    template_prefix, _, suffix = load_pr_body_template().partition("{{screenshots}}")
+    if suffix.strip():
+        raise SubmitPRError("the screenshot placeholder must end the bundled PR body template")
+    prefix = PR_BODY_TEMPLATE_PLACEHOLDER.sub(
+        lambda match: generated[match.group("name")],
+        template_prefix,
+    )
+    screenshot_section = "\n\n".join(screenshots)
+    if not screenshot_section and not attach_on_create:
+        screenshot_section = "N/A"
+    if content.issue_policy == "forbid" and AUTO_CLOSE_PATTERN.search(prefix + screenshot_section):
+        raise SubmitPRError("PR body contains a GitHub auto-closing Issue reference")
+    return prefix, screenshot_section
+
+
+def render_pr_body(content: PRContent) -> str:
+    prefix, screenshots = render_pr_body_parts(content)
+    return (prefix + screenshots).rstrip() + "\n"
 
 
 def parse_status(status_text: str) -> dict[str, list[str]]:
@@ -587,11 +559,10 @@ def parse_status(status_text: str) -> dict[str, list[str]]:
 
 
 def validate_branch_name(repo_root: Path, branch: str) -> None:
-    result = git_result(repo_root, "check-ref-format", "--branch", branch)
-    # --branch accepts shortcuts such as @{-1}; subsequent ref operations need
-    # the exact literal name supplied by the caller, not an expanded revision.
-    if result.returncode != 0 or result.stdout.strip() != branch:
-        raise SubmitPRError(f"invalid head branch name: {branch!r}")
+    try:
+        branch_policy().validate_literal(branch)
+    except (ValueError, OSError) as error:
+        raise SubmitPRError(f"invalid head branch name: {branch!r}: {error}") from error
 
 
 def local_branch_sha(repo_root: Path, branch: str) -> str | None:
@@ -608,6 +579,33 @@ def local_branch_sha(repo_root: Path, branch: str) -> str | None:
         detail = result.stderr.strip() or result.stdout.strip()
         raise SubmitPRError(f"cannot inspect local branch {branch}: {detail}")
     return result.stdout.strip()
+
+
+def local_branch_action(
+    repo_root: Path,
+    current: str | None,
+    branch: str,
+    head_sha: str,
+) -> str:
+    if current == branch:
+        return "current"
+    existing_sha = local_branch_sha(repo_root, branch)
+    if existing_sha is None:
+        return "created"
+    if existing_sha == head_sha:
+        return "reused"
+    ancestry = git_result(
+        repo_root,
+        "merge-base",
+        "--is-ancestor",
+        existing_sha,
+        head_sha,
+    )
+    if ancestry.returncode == 0:
+        return "updated"
+    raise SubmitPRError(
+        f"local branch {branch} changed while planning: {existing_sha}"
+    )
 
 
 def remote_branch_sha(
@@ -641,7 +639,7 @@ def choose_branch_name(
     if requested in protected:
         raise SubmitPRError(f"head branch is protected: {requested!r}")
     for suffix in range(1, 101):
-        candidate = requested if suffix == 1 else f"{requested}-{suffix}"
+        candidate = branch_policy().candidate_name(requested, suffix)
         if candidate in protected:
             continue
         validate_branch_name(repo_root, candidate)
@@ -745,16 +743,19 @@ def ensure_commit_range(
     return head_sha, commits, files_output.splitlines() if files_output else []
 
 
-def prepare_content(args: argparse.Namespace, repo_root: Path) -> PRContent:
+def prepare_content(args: argparse.Namespace) -> PRContent:
     return PRContent(
         title=args.title,
-        summary=args.summary,
+        context=args.context,
+        changes=args.changes,
         verification=args.verification,
         issues=tuple(issue.strip() for issue in args.issue),
         ui_change=args.ui_change,
         draft=args.draft,
         issue_policy=args.issue_policy,
-        extra_body=read_extra_body(repo_root, args.extra_body_file),
+        related_prs=tuple((url.strip(), reason.strip()) for url, reason in args.related_pr),
+        screenshots=tuple((label.strip(), url.strip()) for label, url in args.screenshot),
+        screenshots_incomplete=args.screenshots_incomplete,
     )
 
 
@@ -769,9 +770,53 @@ def protected_branches(
     }
 
 
+def protected_branch_description(
+    context: RepositoryContext,
+    branch: str,
+) -> str:
+    matches: list[str] = []
+    if branch == context.base_branch:
+        matches.append(f"PR base {context.base_branch!r}")
+    if branch == context.default_branch:
+        matches.append(f"repository default {context.default_branch!r}")
+    return " and ".join(matches) if matches else "a protected branch"
+
+
+def preflight_branch_safety(
+    repo_root: Path,
+    context: RepositoryContext,
+    args: argparse.Namespace,
+) -> None:
+    # This dependency is required even without an explicit --head-branch.
+    # Check it before apply can fetch or callers can commit staged changes.
+    branch_policy()
+    branch = current_branch(repo_root)
+    if branch != context.current_branch:
+        raise SubmitPRError(
+            "checkout branch changed during branch preflight: "
+            f"expected {context.current_branch!r}, got {branch!r}"
+        )
+    if branch in {context.base_branch, context.default_branch}:
+        description = protected_branch_description(context, branch)
+        raise SubmitPRError(
+            f"current branch {branch!r} matches protected {description}; "
+            "create and check out a new task branch from the current commit, "
+            "then rerun submit-pr. Existing commits will be preserved."
+        )
+
+    if args.head_branch:
+        validate_branch_name(repo_root, args.head_branch)
+        if args.head_branch in protected_branches(context, args.protected_branch):
+            description = protected_branch_description(context, args.head_branch)
+            raise SubmitPRError(
+                f"head branch {args.head_branch!r} matches protected {description}; "
+                "choose a different task branch"
+            )
+
+
 def resolve_head_branch(
     repo_root: Path,
-    current: str,
+    current: str | None,
     protected: set[str],
     requested: str | None,
     head_sha: str,
@@ -784,8 +829,8 @@ def resolve_head_branch(
         validate_branch_name(repo_root, requested)
         if requested in protected:
             raise SubmitPRError(f"head branch is protected: {requested!r}")
-    current_is_task = current not in protected and (
-        BRANCH_PATTERN.fullmatch(current) or requested == current
+    current_is_task = current is not None and current not in protected and (
+        branch_policy().is_task_name(current) or requested == current
     )
     if current_is_task:
         if requested and requested != current:
@@ -795,9 +840,12 @@ def resolve_head_branch(
         validate_branch_name(repo_root, current)
         return current, "current"
     if not requested:
-        raise SubmitPRError(
-            "--head-branch is required on a protected or non-Conventional branch"
+        reason = (
+            "when HEAD is detached"
+            if current is None
+            else "on a protected or non-Conventional branch"
         )
+        raise SubmitPRError(f"--head-branch is required {reason}")
     selected = choose_branch_name(
         repo_root,
         remote,
@@ -807,7 +855,7 @@ def resolve_head_branch(
         push_url=push_url,
         protected=protected,
     )
-    action = "created" if local_branch_sha(repo_root, selected) is None else "reused"
+    action = local_branch_action(repo_root, current, selected, head_sha)
     return selected, action
 
 
@@ -819,10 +867,16 @@ def build_plan(
     include_remote_branch_check: bool,
     push_url: str | None = None,
 ) -> tuple[dict[str, Any], str]:
-    content = prepare_content(args, repo_root)
-    template_text, template_path = discover_template(repo_root, args.template)
-    body = render_pr_body(template_text, content)
     branch = current_branch(repo_root)
+    if branch != context.current_branch:
+        raise SubmitPRError(
+            "checkout branch changed during planning: "
+            f"expected {context.current_branch!r}, got {branch!r}"
+        )
+    preflight_branch_safety(repo_root, context, args)
+    content = prepare_content(args)
+    body_prefix, screenshots = render_pr_body_parts(content)
+    body = (body_prefix + screenshots).rstrip() + "\n"
     status = parse_status(git_status_output(repo_root))
     head_sha, commits, files = ensure_commit_range(
         repo_root,
@@ -863,11 +917,11 @@ def build_plan(
         "issue_policy": content.issue_policy,
         "title": content.title.strip(),
         "body": body,
-        "template": template_path,
+        "body_prefix": body_prefix,
         "commits": commits,
         "files": files,
         "working_tree": status,
-        "needs_screenshots": content.ui_change,
+        "needs_screenshots": content.needs_screenshots,
     }
     return plan, body
 
@@ -902,10 +956,18 @@ def check_github_auth(repo_root: Path) -> None:
 
 def ensure_local_branch(
     repo_root: Path,
-    current: str,
+    current: str | None,
     head_branch: str,
     head_sha: str,
 ) -> str:
+    actual_current = current_branch(repo_root)
+    actual_head = git_output(repo_root, "rev-parse", "HEAD")
+    if actual_current != current or actual_head != head_sha:
+        raise SubmitPRError(
+            "checkout changed after planning: "
+            f"expected branch {current!r} at {head_sha}, "
+            f"got {actual_current!r} at {actual_head}"
+        )
     if current == head_branch:
         return "current"
     existing_sha = local_branch_sha(repo_root, head_branch)
@@ -1031,11 +1093,70 @@ def push_head_branch(
     return action
 
 
-def create_pr(repo_root: Path, plan: dict[str, Any]) -> str:
-    descriptor, body_name = tempfile.mkstemp(prefix="submit-pr-", suffix=".md")
-    try:
-        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-            handle.write(plan["body"])
+def screenshot_files(args: argparse.Namespace) -> tuple[tuple[str, Path], ...]:
+    files = tuple((label.strip(), Path(path).absolute()) for label, path in args.screenshot_file)
+    if len(files) > 50:
+        raise SubmitPRError("--screenshot-file accepts at most 50 images")
+    for label, path in files:
+        validate_single_line(label, "screenshot label")
+        if args.issue_policy == "forbid" and AUTO_CLOSE_PATTERN.search(label):
+            raise SubmitPRError("screenshot label contains a GitHub auto-closing Issue reference")
+        if path.suffix.lower() not in IMAGE_EXTENSIONS:
+            raise SubmitPRError(f"unsupported screenshot file type: {path}")
+    if len({label for label, _ in files}) != len(files):
+        raise SubmitPRError("--screenshot-file labels must be distinct")
+    return files
+
+
+def validate_creation_attachments(repo_root: Path, files: Sequence[tuple[str, Path]]) -> None:
+    if len({path.resolve() for _, path in files}) != len(files):
+        raise SubmitPRError("the same screenshot file cannot be attached twice")
+    for _, path in files:
+        if not path.is_file():
+            raise SubmitPRError(f"screenshot file is not accessible: {path}")
+    help_text = run_command(["gh", "pr", "create", "--help"], cwd=repo_root).stdout
+    if "--attach" not in help_text:
+        raise SubmitPRError(
+            "this GitHub CLI does not support gh pr create --attach; "
+            "upgrade gh or upload the screenshots in GitHub and pass their URLs"
+        )
+
+
+def read_creation_attachments(
+    pr: dict[str, Any],
+    upload_body: str,
+    files: Sequence[tuple[str, Path]],
+    content: PRContent,
+) -> list[dict[str, str]]:
+    """Accept only the ordered image suffix GitHub CLI can append to the frozen body."""
+    body = pr.get("body")
+    prefix = upload_body.rstrip() + "\n\n"
+    if not isinstance(body, str) or not body.startswith(prefix):
+        raise SubmitPRError("PR body differs from the planned body for screenshot creation")
+    paragraphs = body[len(prefix):].rstrip().split("\n\n")
+    if len(paragraphs) > len(files):
+        raise SubmitPRError("PR body contains more attachments than requested")
+    urls = {url for _, url in content.screenshots}
+    uploaded = []
+    for paragraph, (label, _) in zip(paragraphs, files):
+        alt = re.escape(escape_image_label(label))
+        match = re.fullmatch(rf"!\[{alt}\]\(({GITHUB_ASSET_URL})\)", paragraph)
+        if not match or match[1] in urls:
+            raise SubmitPRError(f"PR body does not contain the expected GitHub attachment for {label!r}")
+        urls.add(match[1])
+        uploaded.append({"label": label, "url": match[1]})
+    return uploaded
+
+
+def create_pr(
+    repo_root: Path,
+    plan: dict[str, Any],
+    body: str,
+    files: Sequence[tuple[str, Path]],
+) -> tuple[str, str]:
+    with tempfile.TemporaryDirectory(prefix="submit-pr-") as directory:
+        body_file = Path(directory) / "body.md"
+        body_file.write_text(body, encoding="utf-8")
         command = [
             "gh",
             "pr",
@@ -1049,20 +1170,28 @@ def create_pr(repo_root: Path, plan: dict[str, Any]) -> str:
             "--title",
             plan["title"],
             "--body-file",
-            body_name,
+            str(body_file),
         ]
         if plan["draft"]:
             command.append("--draft")
-        result = run_command(command, cwd=repo_root)
-    finally:
-        try:
-            os.unlink(body_name)
-        except FileNotFoundError:
-            pass
+        for index, (label, path) in enumerate(files, start=1):
+            # Keep original file paths out of Markdown's attachment rewrite scope.
+            staged_image = Path(directory) / f"screenshot-{index}{path.suffix.lower()}"
+            try:
+                shutil.copyfile(path, staged_image)
+            except OSError as error:
+                raise SubmitPRError(f"cannot prepare screenshot {path}: {error}") from error
+            command.extend(("--attach", f"{staged_image}#{label}"))
+        result = run_command(command, cwd=repo_root, check=not files)
     url = result.stdout.strip().splitlines()[-1] if result.stdout.strip() else ""
-    if not url.startswith("https://github.com/"):
-        raise SubmitPRError("gh pr create did not return a GitHub PR URL")
-    return url
+    repository = re.escape(plan["repository"])
+    if not re.fullmatch(rf"https://github\.com/{repository}/pull/[1-9]\d*", url):
+        detail = result.stderr.strip()
+        raise SubmitPRError(
+            "gh pr create did not return a PR URL for the target repository; "
+            f"check for an existing PR before retrying{': ' + detail if detail else ''}"
+        )
+    return url, result.stderr.strip() if result.returncode else ""
 
 
 def view_pr(repo_root: Path, repository: str, reference: str) -> dict[str, Any]:
@@ -1091,6 +1220,7 @@ def verify_pr(
     plan: dict[str, Any],
     *,
     require_head_sha: bool = True,
+    allow_cli_image_syntax: bool = False,
 ) -> None:
     expected = {
         "state": "OPEN",
@@ -1109,6 +1239,23 @@ def verify_pr(
                 f"{field}: expected {expected_value!r}, got {pr.get(field)!r}"
             )
     actual_body = pr.get("body")
+    if (
+        allow_cli_image_syntax
+        and isinstance(actual_body, str)
+        and actual_body.startswith(plan["body_prefix"])
+    ):
+        prefix = plan["body_prefix"]
+        screenshots = re.sub(
+            rf"^(!\[(?:\\.|[^\]\\\n])*\])\(({GITHUB_ASSET_URL})\)$",
+            r"\1(<\2>)",
+            actual_body[len(prefix):],
+            flags=re.MULTILINE,
+        )
+        paragraphs = screenshots.rstrip().split("\n\n")
+        if paragraphs.count(UI_SCREENSHOT_NOTICE) == 1:
+            paragraphs.remove(UI_SCREENSHOT_NOTICE)
+            paragraphs.append(UI_SCREENSHOT_NOTICE)
+        actual_body = prefix + "\n\n".join(paragraphs)
     if not isinstance(actual_body, str) or actual_body.rstrip() != plan["body"].rstrip():
         mismatches.append("body differs from the generated PR body")
     if plan["issue_policy"] == "forbid" and pr.get("closingIssuesReferences") != []:
@@ -1145,7 +1292,97 @@ def pr_verification_receipt(pr: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def plan_from_apply_receipt(
+    args: argparse.Namespace,
+    repo_root: Path,
+) -> dict[str, Any]:
+    """Render and optionally verify against the original delivery's identity."""
+    try:
+        receipt = json.loads(Path(args.apply_receipt).read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
+        raise SubmitPRError(f"cannot read apply receipt: {error}") from error
+    if not isinstance(receipt, dict) or receipt.get("mode") != "apply":
+        raise SubmitPRError("--apply-receipt requires the JSON output of a successful apply")
+    verification = receipt.get("pr_verification")
+    number = receipt.get("pr_number")
+    head_sha = receipt.get("head_sha")
+    repository = receipt.get("repository")
+    head_repository = receipt.get("head_repository")
+    if (
+        not isinstance(verification, dict)
+        or verification.get("status") != "passed"
+        or type(number) is not int
+        or number < 1
+        or not isinstance(head_sha, str)
+        or re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", head_sha) is None
+        or verification.get("head_sha") != head_sha
+        or not all(
+            isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", value)
+            for value in (repository, head_repository)
+        )
+        or receipt.get("pr_url") != f"https://github.com/{repository}/pull/{number}"
+        or not all(isinstance(receipt.get(key), str) and receipt[key] for key in ("base", "head"))
+    ):
+        raise SubmitPRError("apply receipt is missing a verified PR identity or head SHA")
+    if args.verify_pr is not None and args.verify_pr != number:
+        raise SubmitPRError("--verify-pr must match the PR number in the apply receipt")
+    topology = {
+        "repo": "repository",
+        "base": "base",
+        "base_remote": "base_remote",
+        "head_branch": "head",
+        "head_remote": "head_remote",
+    }
+    for option, key in topology.items():
+        value = getattr(args, option)
+        if value is not None and value != receipt.get(key):
+            raise SubmitPRError(f"--{option.replace('_', '-')} must match the apply receipt")
+
+    content = prepare_content(args)
+    if (
+        content.title.strip() != verification.get("title")
+        or content.draft is not receipt.get("draft")
+        or content.issue_policy != receipt.get("issue_policy")
+    ):
+        raise SubmitPRError("title, Draft state, and Issue policy must match the apply receipt")
+    body_prefix, screenshots = render_pr_body_parts(content)
+    non_screenshot_sha256 = receipt.get("non_screenshot_sha256")
+    if non_screenshot_sha256 is None:
+        raise SubmitPRError("apply receipt lacks a non-screenshot body digest; use an updated apply receipt")
+    if hashlib.sha256(body_prefix.encode("utf-8")).hexdigest() != non_screenshot_sha256:
+        raise SubmitPRError("non-screenshot PR body differs from the original apply receipt")
+    plan = {
+        "mode": "plan",
+        "repository": repository,
+        "base": receipt["base"],
+        "head_repository": head_repository,
+        "head_branch": receipt["head"],
+        "head_sha": head_sha,
+        "pr_number": number,
+        "pr_url": receipt["pr_url"],
+        "is_cross_repository": repository.casefold() != head_repository.casefold(),
+        "draft": content.draft,
+        "issue_policy": content.issue_policy,
+        "title": content.title.strip(),
+        "body": (body_prefix + screenshots).rstrip() + "\n",
+        "body_prefix": body_prefix,
+        "needs_screenshots": content.needs_screenshots,
+    }
+    if args.verify_pr is not None:
+        pr = view_pr(repo_root, repository, str(number))
+        if pr.get("number") != number or pr.get("url") != plan["pr_url"]:
+            raise SubmitPRError("gh pr view returned a different PR than the apply receipt")
+        verify_pr(pr, plan, allow_cli_image_syntax=True)
+        plan["pr_verification"] = pr_verification_receipt(pr)
+    del plan["body_prefix"]
+    return plan
+
+
 def plan_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
+    if args.apply_receipt is not None:
+        return plan_from_apply_receipt(args, repo_root)
+    if args.verify_pr is not None:
+        raise SubmitPRError("--verify-pr requires --apply-receipt from the original delivery")
     previous_locks = os.environ.get("GIT_OPTIONAL_LOCKS")
     os.environ["GIT_OPTIONAL_LOCKS"] = "0"
     try:
@@ -1164,22 +1401,57 @@ def plan_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
     branch_action = plan.pop("branch_action")
     plan["planned_branch_action"] = {
         "created": "would-create",
+        "updated": "would-update",
         "reused": "would-reuse",
         "current": "current",
     }[branch_action]
     plan["mode"] = "plan"
+    del plan["body_prefix"]
     return plan
+
+
+def preflight_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
+    previous_locks = os.environ.get("GIT_OPTIONAL_LOCKS")
+    os.environ["GIT_OPTIONAL_LOCKS"] = "0"
+    try:
+        context = resolve_repository_context(args, repo_root)
+        preflight_branch_safety(repo_root, context, args)
+    finally:
+        if previous_locks is None:
+            os.environ.pop("GIT_OPTIONAL_LOCKS", None)
+        else:
+            os.environ["GIT_OPTIONAL_LOCKS"] = previous_locks
+    return {
+        "mode": "preflight",
+        "repository": context.base_repository,
+        "base_remote": context.base_remote,
+        "base": context.base_branch,
+        "default_branch": context.default_branch,
+        "head_repository": context.head_repository,
+        "head_remote": context.head_remote,
+        "head_branch": args.head_branch,
+        "current_branch": context.current_branch,
+        "protected_branches": sorted(
+            protected_branches(context, args.protected_branch)
+        ),
+        "status": "passed",
+    }
 
 
 def apply_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
     started = time.monotonic()
     timings_ms: dict[str, float] = {}
+    files = screenshot_files(args)
+    content = prepare_content(args)
+    uploaded: list[dict[str, str]] = []
+    attachment_warning = ""
     with measure_phase(timings_ms, "worktree_check"):
         require_clean_worktree(repo_root)
     with measure_phase(timings_ms, "github_auth"):
         check_github_auth(repo_root)
     with measure_phase(timings_ms, "topology"):
         context = resolve_repository_context(args, repo_root)
+        preflight_branch_safety(repo_root, context, args)
         push_url = unique_push_url(repo_root, context.head_remote)
     with measure_phase(timings_ms, "fetch_base"):
         fetch_base(repo_root, context.base_remote, context.base_branch)
@@ -1200,9 +1472,21 @@ def apply_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
         )
     if len(open_prs) > 1:
         raise SubmitPRError("multiple open PRs exist for the same head/base")
+    upload_body = plan["body"]
+    if files:
+        prefix, screenshots = render_pr_body_parts(content, attach_on_create=True)
+        upload_body = (prefix + screenshots).rstrip() + "\n"
+        if not open_prs:
+            validate_creation_attachments(repo_root, files)
     if open_prs:
         with measure_phase(timings_ms, "existing_pr_validation"):
-            verify_pr(open_prs[0], plan, require_head_sha=False)
+            existing_body = open_prs[0].get("body")
+            if files and (
+                not isinstance(existing_body, str) or existing_body.rstrip() != plan["body"].rstrip()
+            ):
+                uploaded = read_creation_attachments(open_prs[0], upload_body, files, content)
+                plan["body"] = open_prs[0]["body"]
+            verify_pr(open_prs[0], plan, require_head_sha=bool(files))
     with measure_phase(timings_ms, "local_branch"):
         branch_action = ensure_local_branch(
             repo_root,
@@ -1223,13 +1507,18 @@ def apply_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
         pr_action = "reused"
     else:
         with measure_phase(timings_ms, "pr_create"):
-            pr_reference = create_pr(repo_root, plan)
+            pr_reference, attachment_warning = create_pr(repo_root, plan, upload_body, files)
         pr_action = "created"
     with measure_phase(timings_ms, "final_pr_verification"):
         pr = view_pr(repo_root, plan["repository"], pr_reference)
+        if pr_action == "created" and files:
+            if pr.get("url") != pr_reference:
+                raise SubmitPRError("gh pr view returned a different PR than gh pr create")
+            uploaded = read_creation_attachments(pr, upload_body, files, content)
+            plan["body"] = pr["body"]
         verify_pr(pr, plan)
     timings_ms["total"] = round((time.monotonic() - started) * 1000, 3)
-    return {
+    result = {
         "mode": "apply",
         "repository": plan["repository"],
         "base_remote": plan["base_remote"],
@@ -1247,9 +1536,18 @@ def apply_command(args: argparse.Namespace, repo_root: Path) -> dict[str, Any]:
         "pr_number": pr.get("number"),
         "pr_url": pr.get("url"),
         "pr_verification": pr_verification_receipt(pr),
+        "non_screenshot_sha256": hashlib.sha256(plan["body_prefix"].encode("utf-8")).hexdigest(),
         "timings_ms": timings_ms,
         "needs_screenshots": plan["needs_screenshots"],
     }
+    if files:
+        missing = [label for label, _ in files[len(uploaded):]]
+        result["uploaded_screenshots"] = uploaded
+        result["missing_screenshots"] = missing
+        result["needs_screenshots"] = content.screenshots_incomplete or bool(missing)
+        if attachment_warning:
+            result["attachment_warning"] = attachment_warning
+    return result
 
 
 def resolve_repo_root(path: str | None) -> Path:
@@ -1260,10 +1558,12 @@ def resolve_repo_root(path: str | None) -> Path:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Plan or submit a GitHub pull request from the current checkout.",
+        description=(
+            "Preflight, plan, or submit a GitHub pull request from the current checkout."
+        ),
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
-    for command in ("plan", "apply"):
+    for command in ("preflight", "plan", "apply"):
         subparser = subparsers.add_parser(command)
         subparser.add_argument("--repo")
         subparser.add_argument("--repo-root")
@@ -1272,18 +1572,33 @@ def build_parser() -> argparse.ArgumentParser:
         subparser.add_argument("--head-remote")
         subparser.add_argument("--head-branch")
         subparser.add_argument("--protected-branch", action="append", default=[])
-        subparser.add_argument("--template")
-        subparser.add_argument("--extra-body-file")
+        if command == "preflight":
+            continue
         subparser.add_argument("--title", required=True)
-        subparser.add_argument("--summary", required=True)
+        subparser.add_argument("--context", required=True)
+        subparser.add_argument("--changes", required=True)
         subparser.add_argument("--verification", required=True)
-        subparser.add_argument("--issue", action="append", default=[])
+        subparser.add_argument("--issue", action="append", default=[], metavar="REF [RELATION]")
+        subparser.add_argument(
+            "--related-pr", action="append", nargs=2, default=[], metavar=("URL", "RELATION"),
+        )
         subparser.add_argument(
             "--issue-policy",
             choices=("neutral", "allow", "forbid"),
             default="neutral",
         )
         subparser.add_argument("--ui-change", action="store_true")
+        subparser.add_argument(
+            "--screenshot", action="append", nargs=2, default=[], metavar=("LABEL", "URL"),
+        )
+        subparser.add_argument("--screenshots-incomplete", action="store_true")
+        if command == "plan":
+            subparser.add_argument("--verify-pr", type=int, metavar="NUMBER")
+            subparser.add_argument("--apply-receipt", metavar="PATH")
+        else:
+            subparser.add_argument(
+                "--screenshot-file", action="append", nargs=2, default=[], metavar=("LABEL", "PATH"),
+            )
         subparser.add_argument("--draft", action="store_true")
     return parser
 
@@ -1293,11 +1608,12 @@ def main() -> int:
         require_supported_python()
         args = build_parser().parse_args()
         repo_root = resolve_repo_root(args.repo_root)
-        result = (
-            plan_command(args, repo_root)
-            if args.command == "plan"
-            else apply_command(args, repo_root)
-        )
+        if args.command == "preflight":
+            result = preflight_command(args, repo_root)
+        elif args.command == "plan":
+            result = plan_command(args, repo_root)
+        else:
+            result = apply_command(args, repo_root)
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
     except SubmitPRError as error:

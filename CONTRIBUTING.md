@@ -35,9 +35,10 @@ review。建议选择当前最新、适合复杂编程任务的 GPT 或 Claude �
 
 ## 提交 Pull Request
 
-- 默认向 `dev` 提交；维护者指定其他目标分支时以其为准。
-- 分支使用 `类型/简短描述` 的 kebab-case 格式，例如 `feat/openai-translation` 或
-  `fix/ocr-window-focus`；请勿直接在 `dev` 或 `main` 上提交。
+- PR 默认以 `dev` 为目标分支；维护者指定其他目标时以其为准。
+- 提交 PR 时使用独立任务分支作为来源分支，不直接使用 `dev` 或 `main`。
+  这项要求仅适用于 PR 来源分支，不限制日常本地提交。
+- 分支命名统一遵循 [`git-commit` 分支命名规范](.agents/skills/git-commit/references/branch-naming.md)。
 - 提交使用 Angular-style 格式，并保持单个提交语义聚焦。
 - 请在 PR 模板的“关联 Issue”区域填写相关 Issue；请勿使用 GitHub 自动关闭关键字或
   Development 侧栏的自动关闭关联。

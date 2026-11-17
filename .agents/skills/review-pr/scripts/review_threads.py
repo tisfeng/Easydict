@@ -8,7 +8,7 @@ import subprocess
 import sys
 
 
-COMMENT_FIELDS = "id databaseId url body updatedAt createdAt author { login } commit { oid }"
+COMMENT_FIELDS = "id databaseId url body updatedAt createdAt state viewerDidAuthor author { login } commit { oid }"
 PAGE = "pageInfo { hasNextPage endCursor }"
 THREAD_FIELDS = "id isResolved isOutdated viewerCanResolve path line originalLine"
 
@@ -17,7 +17,7 @@ def graphql(query, **variables):
     args = ["gh", "api", "graphql", "-f", "query=" + query]
     for key, value in variables.items():
         if value is not None:
-            args += ["-F", f"{key}={value}"]
+            args += ["-f" if isinstance(value, str) else "-F", f"{key}={value}"]
     result = subprocess.run(args, check=True, capture_output=True, text=True, timeout=60)
     payload = json.loads(result.stdout)
     if payload.get("errors") or not payload.get("data"):
@@ -150,7 +150,7 @@ def collect_thread(repo, number, thread_id):
 
 
 def validate_plan(plan):
-    if plan.get("version") != 1:
+    if plan.get("version") != 2:
         raise ValueError("Unsupported plan version")
     for key in ("repo", "number", "id", "headRefOid", "decisions"):
         if key not in plan:
@@ -162,7 +162,7 @@ def validate_plan(plan):
         seen.add(decision["thread_id"])
         if decision["assessment"] not in ("fixed", "not_applicable"):
             raise ValueError("Only fixed/not_applicable can be resolved")
-        for key in ("fingerprint", "evidence", "permalink"):
+        for key in ("fingerprint", "evidence", "permalink", "reply_body"):
             if not isinstance(decision.get(key), str) or not decision[key].strip():
                 raise ValueError("Missing decision field: " + key)
         if decision.get("evidence_head") != plan["headRefOid"]:
@@ -173,7 +173,7 @@ def apply_plan(plan):
     validate_plan(plan)
     results = []
     for decision in plan["decisions"]:
-        record = dict(decision)
+        record = dict(decision, reply_status="not_attempted")
         results.append(record)
         attempted = False
         try:
@@ -194,6 +194,33 @@ def apply_plan(plan):
             if not thread["viewerCanResolve"]:
                 record["status"] = "cannot_resolve"
                 continue
+            # A refreshed plan may resume after a successful reply and failed resolve.
+            reply = next((item for item in reversed(thread["comments"])
+                          if item.get("viewerDidAuthor") and item.get("state") == "SUBMITTED"
+                          and item["body"] == decision["reply_body"]), None)
+            if reply is not None:
+                record.update(reply_status="reused", reply_id=reply["id"], reply_url=reply["url"])
+            else:
+                attempted = True
+                record["reply_status"] = "unknown"
+                payload = graphql("""mutation($id:ID!,$body:String!){
+                  addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$id,body:$body}){
+                    comment { %s }
+                  }
+                }""" % COMMENT_FIELDS, id=thread["id"], body=decision["reply_body"])
+                reply = payload["addPullRequestReviewThreadReply"]["comment"]
+                if (not reply or not reply["viewerDidAuthor"] or reply["state"] != "SUBMITTED"
+                        or reply["body"] != decision["reply_body"]):
+                    raise ValueError("Reply was not confirmed; refresh before retrying")
+                record.update(reply_status="posted", reply_id=reply["id"], reply_url=reply["url"])
+                after_reply = collect_thread(plan["repo"], plan["number"], thread["id"])
+                actual = next((item for item in after_reply["threads"] if item["id"] == thread["id"]), None)
+                expected = dict(thread, comments=thread["comments"] + [reply])
+                if (after_reply["id"] != plan["id"] or after_reply["headRefOid"] != plan["headRefOid"]
+                        or after_reply["state"] != "OPEN" or actual != expected):
+                    record["status"] = "changed_after_reply"
+                    break
+                thread = actual
             attempted = True
             graphql("mutation($id:ID!){resolveReviewThread(input:{threadId:$id}){thread{id isResolved}}}", id=thread["id"])
             after = collect_thread(plan["repo"], plan["number"], thread["id"])
@@ -214,7 +241,7 @@ def apply_plan(plan):
             record["error"] = str(error)
             break
     for decision in plan["decisions"][len(results):]:
-        results.append(dict(decision, status="not_attempted"))
+        results.append(dict(decision, status="not_attempted", reply_status="not_attempted"))
     return results
 
 
@@ -227,6 +254,7 @@ def main():
     apply = sub.add_parser("apply")
     apply.add_argument("--plan", required=True)
     apply.add_argument("--allow-resolve", action="store_true")
+    apply.add_argument("--allow-reply", action="store_true")
     args = parser.parse_args()
     try:
         if args.command == "collect":
@@ -235,8 +263,8 @@ def main():
                 thread["fingerprint"] = fingerprint(thread)
             failed = False
         else:
-            if not args.allow_resolve:
-                parser.error("apply requires --allow-resolve after workflow authorization")
+            if not args.allow_resolve or not args.allow_reply:
+                parser.error("apply requires --allow-reply and --allow-resolve after workflow authorization")
             with open(args.plan, encoding="utf-8") as stream:
                 result = apply_plan(json.load(stream))
             failed = any(r["status"] not in ("resolved", "already_resolved") for r in result)

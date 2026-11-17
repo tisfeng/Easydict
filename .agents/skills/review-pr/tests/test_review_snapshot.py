@@ -29,6 +29,7 @@ def pr_payload(*, head: str = "head-1") -> dict[str, object]:
         "title": "fix(review): preserve exact snapshots",
         "url": "https://github.com/owner/repo/pull/42",
         "body": "Body",
+        "author": {"login": "owner"},
         "baseRefName": "main",
         "baseRefOid": "base-1",
         "headRefName": "fix/review-snapshots",

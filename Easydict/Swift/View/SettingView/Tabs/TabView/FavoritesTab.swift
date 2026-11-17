@@ -94,10 +94,16 @@ struct FavoritesTab: View {
         }
         .borderedCard()
         .padding(20)
-        .onReceive(Defaults.publisher(.favorites)) { change in
+        .onReceive(
+            Defaults.publisher(.favorites)
+                .receive(on: DispatchQueue.main)
+        ) { change in
             favorites = change.newValue
         }
-        .onReceive(Defaults.publisher(.queryHistory)) { change in
+        .onReceive(
+            Defaults.publisher(.queryHistory)
+                .receive(on: DispatchQueue.main)
+        ) { change in
             history = change.newValue
         }
         .onAppear {
@@ -317,9 +323,4 @@ struct QueryRecordRow: View {
         let windowManager = EZWindowManager.shared()
         windowManager.showFloating(windowType, queryText: record.queryText, autoQuery: true, actionType: .inputQuery)
     }
-}
-
-#Preview {
-    FavoritesTab()
-        .frame(width: 900, height: 640)
 }

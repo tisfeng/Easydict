@@ -34,14 +34,7 @@ final class MDictMetadataCache {
     // MARK: Lifecycle
 
     private init() {
-        let bundleID = Bundle.main.bundleIdentifier ?? "com.izual.Easydict"
-        let baseURL = fileManager.urls(
-            for: .applicationSupportDirectory,
-            in: .userDomainMask
-        )[0]
-        self.cacheDirectory = baseURL
-            .appendingPathComponent(bundleID, isDirectory: true)
-            .appendingPathComponent("mdict-metadata-cache", isDirectory: true)
+        self.cacheDirectory = AppPathManager.current.mdictMetadataCacheDirectory
     }
 
     // MARK: Internal

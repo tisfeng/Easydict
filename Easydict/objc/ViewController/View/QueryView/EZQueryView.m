@@ -40,6 +40,9 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
 @property (nonatomic, strong) id fontSizeObserver;
+@property (nonatomic, strong) EDMarkdownLabel *formulaPreview;
+@property (nonatomic, assign) BOOL didChooseFormulaView;
+@property (nonatomic, strong) EDMarkdownToggleButton *markdownButton;
 
 @end
 
@@ -73,6 +76,8 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.bounds];
     self.scrollView = scrollView;
     [self addSubview:scrollView];
+    // Let the query view supply the background when the formula preview is visible.
+    scrollView.drawsBackground = NO;
     scrollView.hasVerticalScroller = YES;
     scrollView.hasHorizontalScroller = NO;
     scrollView.autohidesScrollers = YES;
@@ -112,6 +117,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
                                                   usingBlock:^(NSNotification * _Nonnull notification) {
         mm_strongify(self);
         self.textView.font = [NSFont systemFontOfSize:14 * MyConfiguration.shared.fontSizeRatio];
+        self.formulaPreview.font = self.textView.font;
     }];
     
     // When programatically setting the text, like auto select text, or OCR text.
@@ -125,8 +131,8 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     self.loadingAnimationView = loadingAnimationView;
     
     [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(textView).offset(5);
-        make.left.equalTo(textView).offset(10);
+        make.top.equalTo(scrollView).offset(5);
+        make.left.equalTo(scrollView).offset(10);
         make.height.mas_equalTo(30);
     }];
     
@@ -164,6 +170,22 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         }
     }];
     textCopyButton.mas_key = @"queryView_copyButton";
+
+    EDMarkdownToggleButton *markdownButton = [[EDMarkdownToggleButton alloc] init];
+    markdownButton.hidden = YES;
+    markdownButton.markdownEnabled = NO;
+    markdownButton.mas_key = @"queryView_markdownButton";
+    [self addSubview:markdownButton];
+    self.markdownButton = markdownButton;
+    markdownButton.clickAction = ^{
+        mm_strongify(self);
+        [self toggleFormulaPreview:nil];
+    };
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(markdownPreferenceDidChange:)
+                                                 name:NSUserDefaultsDidChangeNotification
+                                               object:NSUserDefaults.standardUserDefaults];
     
     
     EZDetectLanguageButton *detectButton = [[EZDetectLanguageButton alloc] initWithFrame:self.bounds];
@@ -250,6 +272,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     if (isLoading) {
         // Avoid to show placeholder.
         self.textView.string = @" ";
+        [self updateButtonsDisplayState:@""];
     }
     [self setAlertTextHidden:YES];
     self.textView.editable = !isLoading;
@@ -293,9 +316,13 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         make.width.height.bottom.equalTo(self.audioButton);
     }];
     
+    [self.markdownButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.textCopyButton.mas_right).offset(EZAudioButtonRightPadding_1);
+        make.width.height.bottom.equalTo(self.audioButton);
+    }];
+
     [self updateDetectButton];
-    
-    
+
     [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
         // Add a padding to audio button, avoid making users feel that there is still text below that has not been fully displayed.
@@ -317,6 +344,9 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 
 - (void)setQueryModel:(EZQueryModel *)model {
     NSString *queryText = model.inputText;
+    if (_queryModel != model || !queryText.length) {
+        [self resetFormulaPreview];
+    }
     _queryModel = model;
     
     // !!!: Set queryModel may trigger didChangeText.
@@ -336,6 +366,89 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     }
     
     [self updateButtonsDisplayState:queryText];
+}
+
+- (NSTextView *)visibleTextView {
+    return (NSTextView *)self.scrollView.documentView;
+}
+
+- (void)enableFormulaPreview {
+    if (!self.markdownButton.hidden && [EDMarkdownLabel containsMath:self.copiedText]
+        && self.visibleTextView != self.formulaPreview) {
+        [self toggleFormulaPreview:nil];
+    }
+}
+
+- (void)enableStreamingFormulaPreview {
+    if (!self.didChooseFormulaView && !self.markdownButton.hidden
+        && [EDMarkdownLabel containsMath:self.copiedText]) {
+        self.didChooseFormulaView = YES;
+        [self enableFormulaPreview];
+    }
+}
+
+- (void)resetFormulaPreview {
+    self.didChooseFormulaView = NO;
+    if (self.formulaPreview && self.visibleTextView == self.formulaPreview) {
+        [self showFormulaPreview:NO];
+    }
+}
+
+- (void)markdownPreferenceDidChange:(NSNotification *)notification {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        BOOL wasPreviewing = self.formulaPreview && self.visibleTextView == self.formulaPreview;
+        [self updateButtonsDisplayState:self.copiedText];
+        if (wasPreviewing && self.visibleTextView != self.formulaPreview && self.updateInputTextBlock) {
+            self.updateInputTextBlock(self.copiedText, self.heightOfQueryView);
+        }
+    });
+}
+
+- (NSMenu *)textView:(NSTextView *)textView menu:(NSMenu *)menu forEvent:(NSEvent *)event atIndex:(NSUInteger)index {
+    if (!self.markdownButton.hidden) {
+        NSString *title = textView == self.formulaPreview
+            ? NSLocalizedString(@"query.formula.edit_source", nil)
+            : NSLocalizedString(@"query.formula.show_preview", nil);
+        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:title action:@selector(toggleFormulaPreview:) keyEquivalent:@""];
+        item.target = self;
+        [menu insertItem:NSMenuItem.separatorItem atIndex:0];
+        [menu insertItem:item atIndex:0];
+    }
+    return menu;
+}
+
+- (void)toggleFormulaPreview:(id)sender {
+    // A manual choice also wins when it precedes the first streamed equation.
+    self.didChooseFormulaView = YES;
+    [self showFormulaPreview:self.visibleTextView != self.formulaPreview];
+    if (self.updateInputTextBlock) {
+        self.updateInputTextBlock(self.copiedText, self.heightOfQueryView);
+    }
+}
+
+- (void)showFormulaPreview:(BOOL)show {
+    BOOL hadFocus = self.window.firstResponder == self.visibleTextView;
+    if (show) {
+        if (!self.formulaPreview) {
+            EDMarkdownLabel *preview = [[EDMarkdownLabel alloc] initWithFrame:self.scrollView.contentView.bounds];
+            preview.delegate = self;
+            preview.selectable = YES;
+            preview.verticallyResizable = YES;
+            preview.textContainer.widthTracksTextView = YES;
+            preview.textContainerInset = self.textView.textContainerInset;
+            self.formulaPreview = preview;
+        }
+        self.formulaPreview.font = self.textView.font;
+        self.formulaPreview.text = self.copiedText;
+    }
+    NSTextView *next = show ? self.formulaPreview : self.textView;
+    next.frame = self.scrollView.contentView.bounds;
+    self.scrollView.documentView = next;
+    self.markdownButton.markdownEnabled = show;
+    [next scrollRangeToVisible:NSMakeRange(show ? 0 : next.selectedRange.location, 0)];
+    if (hadFocus || show) {
+        [self.window makeFirstResponder:next];
+    }
 }
 
 - (void)setAssociatedWindowType:(EZWindowType)windowType {
@@ -498,6 +611,9 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 //    NSString *text = [self copiedText];
 //    MMLogInfo(@"textDidChange: %@", text);
 
+    if (self.queryModel.ocrImage) {
+        [self startLoadingAnimation:NO];
+    }
     self.queryModel.actionType = EZActionTypeInputQuery;
     self.queryModel.needDetectLanguage = YES;
 
@@ -566,6 +682,10 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         text = [self copiedText];
     }
     
+    if (self.visibleTextView == self.formulaPreview && ![self.formulaPreview.text isEqualToString:text]) {
+        self.formulaPreview.text = text;
+    }
+
     // Set `self.isTypingChinese` to NO when textView string is changed.
     self.isTypingChinese = NO;
     
@@ -578,7 +698,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 }
 
 - (CGFloat)heightOfTextView {
-    CGFloat height = [self.textView ez_getTextViewHeightDesignatedWidth:self.width];
+    CGFloat height = [self.visibleTextView ez_getTextViewHeightDesignatedWidth:self.width];
 //    MMLogInfo(@"text: %@, height: %@", self.textView.string, @(height));
     
     height = MAX(height, self.textViewMinHeight);
@@ -597,7 +717,13 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];
 }
 
-- (void)updateButtonsDisplayState:(NSString *)text {    
+- (void)updateButtonsDisplayState:(NSString *)text {
+    self.markdownButton.hidden = !MyConfiguration.shared.enableMarkdownRendering
+        || ![EDMarkdownLabel containsMarkdown:text ?: @""];
+    if (self.markdownButton.hidden) {
+        [self resetFormulaPreview];
+    }
+
     if (self.clearButtonHidden && self.alertText.length) {
         [self.clearButton setAnimatedHidden:NO];
     }
@@ -630,8 +756,9 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     
     CGFloat height = 20;
     self.detectButton.cornerRadius = height / 2;
+    CGFloat markdownWidth = self.markdownButton.hidden ? 0 : EZAudioButtonWidthHeight_24 + EZAudioButtonRightPadding_1;
     [self.detectButton mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.textCopyButton.mas_right).offset(6.5);
+        make.left.equalTo(self.textCopyButton.mas_right).offset(6.5 + markdownWidth);
         make.centerY.equalTo(self.textCopyButton).offset(-0.5);
         make.height.mas_equalTo(height);
     }];
@@ -677,7 +804,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 }
 
 - (void)scrollToEndOfTextView {
-    [self.textView scrollToEndOfDocument:nil];
+    [self.visibleTextView scrollToEndOfDocument:nil];
 }
 
 #pragma mark - Undo

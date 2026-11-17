@@ -6,7 +6,6 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import MJExtension
 import OpenAI
 import SelectedTextKit
 import Vapor
@@ -49,19 +48,15 @@ func routes(_ app: Application) throws {
         )
 
         // Decode word result to DictionaryEntry
-        if let jsonData = result.wordResult?.mj_JSONData() {
-            do {
-                let decoder = JSONDecoder()
-                let entry = try decoder.decode(DictionaryEntry.self, from: jsonData)
-                response.dictionaryEntry = entry
-            } catch {
-                print("Decode DictionaryEntry failed: \(error)")
-            }
+        if let entry = DictionaryEntry(wordResult: result.wordResult) {
+            response.dictionaryEntry = entry
         }
 
         if service is AppleDictionary {
             response.HTMLStrings = result.htmlStrings
         }
+
+        recordVocabularyEntry(service: service, result: result)
 
         return response
     }
@@ -90,17 +85,35 @@ func routes(_ app: Application) throws {
         ])
 
         let chatStream = try await streamService.streamTranslate(request: request)
-        let jsonStream = chatStreamToJSONStream(
-            chatStream: chatStream,
-            fallbackModel: streamService.model
-        )
+        let fallbackModel = streamService.model
 
         let asyncBodyStream: @Sendable (AsyncBodyStreamWriter) async throws -> () = { writer in
-            for await json in jsonStream {
-                // SSE format https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using-server-sent_events
-                let data = "data: \(json)\n\n"
-                try await writer.write(.buffer(.init(string: data)))
+            var accumulatedText = ""
+            var streamError: Error?
+            do {
+                for try await chatResult in chatStream {
+                    if let content = chatResult.content {
+                        accumulatedText += content
+                    }
+                    if let json = chatResult.jsonString {
+                        // SSE format https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using-server-sent_events
+                        let data = "data: \(json)\n\n"
+                        try await writer.write(.buffer(.init(string: data)))
+                    }
+                }
+            } catch {
+                streamError = error
+                if let errorJson = makeJSONErrorMessage(error, fallbackModel: fallbackModel) {
+                    let data = "data: \(errorJson)\n\n"
+                    try await writer.write(.buffer(.init(string: data)))
+                }
             }
+
+            // `streamError == nil` after the loop proves normal completion.
+            if streamError == nil, let result = streamService.result {
+                recordStreamedVocabularyEntry(result: result, accumulatedText: accumulatedText)
+            }
+
             try await writer.write(.end)
         }
 
@@ -147,29 +160,37 @@ func routes(_ app: Application) throws {
     }
 }
 
-/// Convert chat stream to JSON messages, wrapping errors in a chunk-compatible
-/// JSON object so chunk-based stream clients can still decode the payload.
-private func chatStreamToJSONStream(
-    chatStream: AsyncThrowingStream<ChatStreamResult, Error>,
-    fallbackModel: String
-)
-    -> AsyncStream<String> {
-    AsyncStream<String> { continuation in
-        Task {
-            defer { continuation.finish() }
-            do {
-                for try await chatResult in chatStream {
-                    if let json = chatResult.jsonString {
-                        continuation.yield(json)
-                    }
-                }
-            } catch {
-                if let errorJson = makeJSONErrorMessage(error, fallbackModel: fallbackModel) {
-                    continuation.yield(errorJson)
-                }
-            }
-        }
+/// Appends a completed non-streaming query to the vocabulary notebook when it has
+/// content. HTML-only dictionary results (Apple Dictionary, MDict) carry neither a word
+/// result nor translated text, so a non-empty `htmlString` counts as content too.
+private func recordVocabularyEntry(service: QueryService, result: QueryResult) {
+    guard result.error == nil else {
+        return
     }
+    let text = result.queryText
+    let shouldRecord = !service.isStream() || result.isStreamFinished
+    let hasContent = !text.isEmpty
+        && (result.wordResult != nil
+            || !(result.translatedText ?? "").isEmpty
+            || !(result.htmlString ?? "").isEmpty)
+    guard shouldRecord, hasContent else {
+        return
+    }
+    VocabularyNotebookService.shared.append(queryModel: result.queryModel, result: result)
+}
+
+/// Appends a completed HTTP stream to the vocabulary notebook. The SSE route consumes
+/// `ChatStreamResult` directly, so it never restores `result.isStreamFinished` (left
+/// false by the raw `contentStream`) nor fills `result.translatedResults`; the caller
+/// supplies the accumulated text after proving normal completion.
+private func recordStreamedVocabularyEntry(result: QueryResult, accumulatedText: String) {
+    guard result.error == nil, !accumulatedText.isEmpty else {
+        return
+    }
+    result.translatedResults = accumulatedText
+        .split(separator: "\n", omittingEmptySubsequences: false)
+        .map(String.init)
+    VocabularyNotebookService.shared.append(queryModel: result.queryModel, result: result)
 }
 
 private func makeJSONErrorMessage(_ error: Error, fallbackModel: String) -> String? {

@@ -18,15 +18,19 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
     init(
         service: QueryService,
         observeKeys: [Defaults.Key<String>],
-        showValidationButton: Bool = true,
+        requiredKeys: [Defaults.Key<String>]? = nil,
+        validationAction: (() -> ())? = nil,
+        validationDisabled: Bool = false,
         @ViewBuilder content: () -> Content
     ) {
         self.service = service
-        self.showValidationButton = showValidationButton
+        self.validationAction = validationAction
+        self.validationDisabled = validationDisabled
         self.content = content()
         self.viewModel = ServiceValidationViewModel(
             service: service,
-            observing: observeKeys
+            observing: observeKeys,
+            requiredKeys: requiredKeys ?? observeKeys
         )
     }
 
@@ -34,7 +38,8 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 
     var service: QueryService
     let content: Content
-    let showValidationButton: Bool
+    let validationAction: (() -> ())?
+    let validationDisabled: Bool
 
     var header: some View {
         HStack(alignment: .lastTextBaseline) {
@@ -48,7 +53,11 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
             Spacer()
 
             Button {
-                validate()
+                if let validationAction {
+                    validationAction()
+                } else {
+                    validate()
+                }
             } label: {
                 Group {
                     if viewModel.isValidating {
@@ -60,7 +69,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
                     }
                 }
             }
-            .disabled(viewModel.isValidateBtnDisabled)
+            .disabled(validationDisabled || viewModel.isValidateBtnDisabled || viewModel.isValidating)
         }
     }
 
@@ -70,7 +79,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         } header: {
             header
         } footer: {
-            if showValidationButton { footer }
+            footer
         }
         .alert(viewModel.alertTitle, isPresented: $viewModel.isAlertPresented) {
             Button("ok") {
@@ -85,7 +94,8 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
     }
 
     func validate() {
-        viewModel.isValidating.toggle()
+        guard !viewModel.isValidating else { return }
+        viewModel.isValidating = true
 
         Task {
             do {
@@ -129,18 +139,23 @@ extension LocalizedStringKey {
 private class ServiceValidationViewModel: ObservableObject {
     // MARK: Lifecycle
 
-    init(service: QueryService, observing keys: [Defaults.Key<String>]) {
+    /// Observed fields can be optional; only required fields prevent validation when empty.
+    init(
+        service: QueryService,
+        observing keys: [Defaults.Key<String>],
+        requiredKeys: [Defaults.Key<String>]
+    ) {
         self.service = service
         self.name = service.name()
-        self.isValidateBtnDisabled = keys.contains(where: { Defaults[$0].isEmpty })
+        self.isValidateBtnDisabled = requiredKeys.contains(where: { Defaults[$0].isEmpty })
 
-        // check secret key empty input
-        Defaults.publisher(keys: keys)
+        // Include required fields even if the caller does not explicitly observe them.
+        Defaults.publisher(keys: Array(Set(keys + requiredKeys)))
             .throttle(for: 0.5, scheduler: DispatchQueue.main, latest: true)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 guard let self else { return }
-                let hasEmptyInput = keys.contains(where: { Defaults[$0].isEmpty })
+                let hasEmptyInput = requiredKeys.contains(where: { Defaults[$0].isEmpty })
                 guard isValidateBtnDisabled != hasEmptyInput else { return }
                 self.isValidateBtnDisabled = hasEmptyInput
             }
@@ -196,7 +211,7 @@ private class ServiceValidationViewModel: ObservableObject {
 }
 
 #Preview {
-    ServiceConfigurationSecretSectionView(service: BingService(), observeKeys: [.bingCookieKey]) {
+    ServiceConfigurationSecretSectionView(service: BingService(), observeKeys: [.bingCookieKey], requiredKeys: []) {
         SecureInputCell(
             textFieldTitleKey: "service.configuration.bing.cookie.title",
             key: .bingCookieKey

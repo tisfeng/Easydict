@@ -26,7 +26,7 @@ struct ServiceTab: View {
                     List(
                         selection: Binding(
                             get: { viewModel.selectedItems },
-                            set: { viewModel.selectItems($0) }
+                            set: { viewModel.scheduleSelectionUpdate($0) }
                         )
                     ) {
                         WindowConfigurationItem()
@@ -64,6 +64,7 @@ struct ServiceTab: View {
 
     private let serviceHasUpdatedNotification = NotificationCenter.default
         .publisher(for: .serviceHasUpdated)
+        .receive(on: DispatchQueue.main)
 }
 
 // MARK: - ServiceTabSelection
@@ -134,17 +135,19 @@ class ServiceTabViewModel: ObservableObject {
         updateServices()
     }
 
-    func addServices(_ items: [ServiceListItem]) {
+    func addServices(_ items: [ServiceListItem]) async {
+        let targetWindow = windowType
         var addedTypeIds: [String] = []
         var addedItems: [ServiceListItem] = []
 
         for item in items {
+            guard !Task.isCancelled else { break }
             let serviceTypeId = item.createsNewInstance
                 ? "\(item.type.rawValue)#\(UUID().uuidString)"
                 : item.id
-            guard LocalStorage.shared().addServiceType(
+            guard await LocalStorage.shared().addServiceType(
                 serviceTypeId,
-                windowType: windowType
+                windowType: targetWindow
             ) else {
                 continue
             }
@@ -153,8 +156,10 @@ class ServiceTabViewModel: ObservableObject {
         }
 
         guard let selectedTypeId = addedTypeIds.last else { return }
-        setSelection([.service(selectedTypeId)])
-        postUpdateServiceNotification()
+        if windowType == targetWindow {
+            setSelection([.service(selectedTypeId)])
+        }
+        NotificationCenter.default.postServiceUpdateNotification(windowType: targetWindow)
         reloadLLMSubscribersIfNeeded(for: addedItems)
         updateServices()
     }
@@ -193,6 +198,16 @@ class ServiceTabViewModel: ObservableObject {
         setSelection(selection, preferred: preferredItem)
     }
 
+    /// Defers selection changes until the current SwiftUI update has completed.
+    func scheduleSelectionUpdate(_ items: Set<ServiceTabSelection>) {
+        selectionUpdateGeneration += 1
+        let generation = selectionUpdateGeneration
+        DispatchQueue.main.async { [weak self] in
+            guard let self, selectionUpdateGeneration == generation else { return }
+            selectItems(items)
+        }
+    }
+
     func setServiceEnabled(_ enabled: Bool, for item: ServiceListItem) {
         if selectedService?.serviceTypeWithUniqueIdentifier() == item.id {
             selectedService?.enabled = enabled
@@ -219,6 +234,7 @@ class ServiceTabViewModel: ObservableObject {
     // MARK: Private
 
     private var selectedItem: ServiceTabSelection? = .windowConfiguration
+    private var selectionUpdateGeneration = 0
 
     private var selectedServiceItems: [ServiceListItem] {
         serviceItems.filter {
@@ -298,6 +314,7 @@ class ServiceTabViewModel: ObservableObject {
         _ selection: Set<ServiceTabSelection>,
         preferred: ServiceTabSelection? = nil
     ) {
+        selectionUpdateGeneration += 1
         let selection = selection.isEmpty
             ? Set([ServiceTabSelection.windowConfiguration])
             : selection

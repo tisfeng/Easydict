@@ -336,7 +336,10 @@ static EZWindowManager *_instance;
      */
     queryText = [[queryText ns_removeInvisibleChar] ns_trim];
     if (queryText.length == 0) {
-        queryText = MyConfiguration.shared.keepPrevResultWhenEmpty ? nil : @"";
+        BOOL isSelectionQuery = actionType == EZActionTypeShortcutQuery || actionType == EZActionTypeAutoSelectQuery;
+        if (isSelectionQuery) {
+            queryText = MyConfiguration.shared.keepPrevResultWhenEmpty ? nil : @"";
+        }
     }
     // Remove the excerpt info of the books only when the frontmost app is Books.app
     else {
@@ -346,7 +349,7 @@ static EZWindowManager *_instance;
     self.selectedText = queryText;
     self.actionType = actionType;
 
-    MMLogInfo(@"show floating windowType: %ld, queryText: %@, autoQuery: %d, actionType: %@, atPoint: %@", windowType, queryText.truncated, autoQuery, actionType, @(point));
+    MMLogInfo(@"show floating windowType: %ld, autoQuery: %d, actionType: %@, atPoint: %@", windowType, autoQuery, actionType, @(point));
 
     // Update isTextEditable value when using invoke query, such as open URL Scheme by PopClip.
     if (actionType == EZActionTypeInvokeQuery) {
@@ -364,15 +367,6 @@ static EZWindowManager *_instance;
 
     // If text is nil, means we don't need to query anything, just show the window.
     if (!queryText) {
-        /**
-         In some applications, in extreme cases, using shortcut to get the text fails causing text is nil, in which case we display a tips view.
-
-         https://github.com/tisfeng/Easydict/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8%E6%9F%90%E4%BA%9B%E5%BA%94%E7%94%A8%E4%B8%AD%E5%8F%96%E8%AF%8D%E6%96%87%E6%9C%AC%E4%B8%BA%E7%A9%BA
-         */
-        if (!MyConfiguration.shared.disableTipsView && !MyConfiguration.shared.keepPrevResultWhenEmpty && actionType == EZActionTypeShortcutQuery) {
-            [queryViewController showTipsView:YES];
-        }
-
         // !!!: location is top-left point, so we need to change it to bottom-left point.
         CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
         [self showFloatingWindow:window atPoint:newPoint];
@@ -870,8 +864,8 @@ static EZWindowManager *_instance;
     // Close non-main floating window if not pinned. Fix https://github.com/tisfeng/Easydict/issues/126
     [self closeFloatingWindowIfNotPinnedOrMain];
 
-    [self captureWithRestorePreviousApp:NO completion:^(NSImage *_Nullable image) {
-        BOOL autoQuery = [MyConfiguration.shared autoQueryOCRText];
+    [self captureWithCompletion:^(NSImage *_Nullable image) {
+        BOOL autoQuery = MyConfiguration.shared.autoQueryOCRText;
         [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:EZActionTypeOCRQuery];
     }];
 }
@@ -880,7 +874,7 @@ static EZWindowManager *_instance;
 - (void)silentScreenshotOCR {
     MMLogInfo(@"Silent screenshot and OCR");
 
-    [self captureWithRestorePreviousApp:YES completion:^(NSImage *_Nullable image) {
+    [self captureWithCompletion:^(NSImage *_Nullable image) {
         if (!image) {
             return;
         }
@@ -895,7 +889,7 @@ static EZWindowManager *_instance;
 - (void)screenshotOCR {
     MMLogInfo(@"Screenshot OCR");
 
-    [self captureWithRestorePreviousApp:YES completion:^(NSImage *_Nullable image) {
+    [self captureWithCompletion:^(NSImage *_Nullable image) {
         if (!image) {
             MMLogWarn(@"Screenshot OCR skipped: captured image is nil");
             return;
@@ -914,30 +908,28 @@ static EZWindowManager *_instance;
     MMLogInfo(@"Pasteboard Translate with windowType: %@", @(windowType));
 
     self.actionType = EZActionTypePasteboardTranslate;
-    BOOL autoQuery = [MyConfiguration.shared autoQueryPastedText];
 
     // Try to read image from pasteboard first.
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSImage *image = pasteboard.image;
     if (image) {
-        [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:self.actionType];
+        BOOL autoQuery = [MyConfiguration.shared autoQueryOCRText];
+        [self showFloatingWindowWithOCRImage:image autoQuery:autoQuery actionType:EZActionTypePasteboardOCR];
         return;
     }
 
-    // If no image, read string from pasteboard.
+    // Explicit text translation always queries, regardless of the ordinary paste preference.
     NSString *queryText = pasteboard.string;
     if (queryText.length > 0) {
-        [self showFloatingWindowType:windowType queryText:queryText autoQuery:autoQuery actionType:self.actionType];
+        [self showFloatingWindowType:windowType queryText:queryText autoQuery:YES actionType:self.actionType];
     }
 }
 
 /**
- * Capture screenshot with options for app restoration
- * @param restorePreviousApp Whether to restore the previous application after capture
+ * Capture without changing the frontmost application
  * @param imageHandler Block to handle the captured image
  */
-- (void)captureWithRestorePreviousApp:(BOOL)restorePreviousApp
-                           completion:(void (^)(NSImage *_Nullable image))imageHandler {
+- (void)captureWithCompletion:(void (^)(NSImage *_Nullable image))imageHandler {
     MMLogInfo(@"Starting capture");
 
     [self saveFrontmostApplication];
@@ -946,9 +938,6 @@ static EZWindowManager *_instance;
         MMLogWarn(@"Already snapshotting, ignoring request");
         return;
     }
-
-    // Set whether to restore previous app
-    Screenshot.shared.shouldRestorePreviousApp = restorePreviousApp;
 
     void (^captureCompletion)(NSImage *_Nullable) = ^(NSImage *_Nullable image) {
         if (!image) {
@@ -959,7 +948,7 @@ static EZWindowManager *_instance;
             return;
         }
 
-        MMLogInfo(@"Screenshot captured: %@", image);
+        MMLogInfo(@"Screenshot captured");
 
         if (imageHandler) {
             imageHandler(image);
@@ -1111,9 +1100,9 @@ static EZWindowManager *_instance;
 
 /// For easy debugging, when Easydict is running in debug mode, we don't show Easydict release App.
 - (BOOL)hasEasydictRunningInDebugMode {
-    BOOL isDebugRunning = [self isAppRunningWithBundleId:EZDebugBundleId];
+    BOOL isDebugRunning = [self isAppRunningWithBundleId:AppConstants.debugBundleID];
     NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
-    BOOL isReleasedEasydict = [bundleId isEqualToString:EZBundleId];
+    BOOL isReleasedEasydict = [bundleId isEqualToString:AppConstants.bundleID];
     if (isDebugRunning && isReleasedEasydict) {
         MMLogInfo(@"Easydict is running in debug mode, so do not show release App.");
         return YES;

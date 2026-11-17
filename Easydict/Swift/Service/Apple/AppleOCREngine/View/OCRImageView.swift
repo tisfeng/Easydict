@@ -29,7 +29,7 @@ struct OCRImageView: View {
                 // Note: padding() will disturb observation bounding boxes
                 Image(nsImage: image)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .scaledToFit()
                     .border(Color.gray.opacity(0.5))
 
                 // Overlay with bounding boxes

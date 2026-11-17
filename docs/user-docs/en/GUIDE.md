@@ -102,8 +102,19 @@ systems generally offer more languages.
 - **Silent screenshot OCR**: recognizes and copies text without showing translation results.
 - **Screenshot/clipboard OCR and OCR window**: use them from the menu or assign global shortcuts.
 
+System OCR also extracts QR code payloads. When an image contains both text and QR codes, the QR code content is appended after the recognized text.
+
 For better results, capture a smaller area, improve text/background contrast, and select the correct
 recognition language in settings.
+
+### OCR service
+
+Apple OCR is the default. To use Codex or OpenAI for screenshot translation, clipboard images,
+or silent screenshot OCR, configure a vision-capable model in Settings → Services. Select that
+service in Settings → Advanced → OCR Settings. The image is sent to the selected provider.
+Codex OCR supports Local CLI and ChatGPT sign-in with the managed component on macOS 13 or later.
+Formulas are transcribed as editable LaTeX. Translation uses the services enabled for the window.
+The screenshot OCR preview uses Apple OCR.
 
 ## Text to speech
 
@@ -131,9 +142,55 @@ Focused setup guides:
 - [MDict](./How-to-use-MDict-in-Easydict.md)
 - [Apple Translate](./How-to-use-macOS-system-translation-in-Easydict.md)
 
+### Codex translation
+
+In Settings → Services, add Codex and choose a mode in Advanced Settings:
+
+- **Local Codex CLI**: Use the Codex CLI you installed and authenticated, with its existing configuration.
+- **ChatGPT sign-in (built-in)**: Download the Codex component in Easydict, then sign in to your
+  ChatGPT account in the browser. You do not need to install the CLI yourself. Availability and
+  usage limits depend on your account.
+
+### GitHub Copilot translate
+
+The GitHub Copilot service uses the official `copilot` CLI installed on your machine, so install and
+sign in to it first:
+
+1. Install it via Homebrew (`brew install --cask copilot-cli`) or another official method.
+2. Run `copilot login` in a terminal to authorize GitHub.
+3. In Settings → Services, add GitHub Copilot and confirm the status row shows the detected CLI path.
+
+This service does not use OAuth, private endpoints, or proxy workarounds, and it never reads, stores,
+or logs your Copilot token. The official CLI keeps your credentials in the system keychain, and your
+available usage depends on your Copilot plan.
+
+Each translation spawns an independent CLI process, so no conversation state carries over. To reduce
+risk, Easydict runs it with isolation flags: no tools are available, built-in MCP is disabled, custom
+instructions from the working directory are not loaded, remote control is off, and CLI auto-update is
+disabled. It also runs with a disposable configuration directory, so translated text does not remain
+in the session records under `~/.copilot`. That directory holds only this request's temporary data
+and is deleted once the process exits.
+
+Use the refresh button in GitHub Copilot service settings to retrieve and save the available models
+and their reasoning levels. When Copilot is enabled in any query window, Easydict also refreshes
+in the background about five seconds after launch, then every 24 hours while the app is running.
+Settings and query windows use the saved list immediately, including after restarting Easydict;
+opening a menu or starting a translation does not refresh it. You can refresh manually after
+upgrading the CLI or changing accounts. A failed refresh keeps the previous list until the next
+scheduled or manual refresh. Quitting the app stops the timer; the next launch schedules it again.
+
+Selecting "CLI default model" uses the model saved in the CLI's current local settings. The reasoning
+picker offers the levels saved for the selected model; "Default" leaves the choice to the CLI.
+If a model or reasoning level is no longer available, refresh the list in settings. If the service
+reports that the CLI is missing or not signed in, complete the install and login steps above.
+
+If the CLI requests a tool during a translation, Easydict aborts that request immediately and reports
+an error. That indicates the isolation guarantee no longer holds, which usually means the CLI changed
+its behavior, so please report it.
+
 ## History and results
 
-- Query history keeps recent items for re-querying, favoriting, exporting, or clearing.
+- **Save locally** in Settings → Privacy enables query history, saving the latest screenshot, and logging recognized OCR text. It defaults to off. Turning it off stops new saves and retains existing files and history.
 - Favorites keep entries you want to revisit.
 - Markdown returned by AI services is rendered as rich text; copied content remains available as text.
 - Service cards can be retried, copied, or collapsed depending on the current window and state.

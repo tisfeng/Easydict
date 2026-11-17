@@ -45,6 +45,13 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 @property (nonatomic, copy) void (^selectedLanguageBlock)(EZLanguage language);
 
 
+@property (nonatomic, readonly) NSTextView *visibleTextView;
+
+- (void)enableFormulaPreview;
+/// Render completed formulas during OCR, respecting a manual switch back to source.
+- (void)enableStreamingFormulaPreview;
+- (void)resetFormulaPreview;
+
 - (CGFloat)heightOfQueryView;
 
 - (void)initializeAimatedButtonAlphaValue:(EZQueryModel *)queryModel;

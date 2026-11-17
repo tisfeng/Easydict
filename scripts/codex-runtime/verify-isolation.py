@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run the official executable against a loopback-only Responses fixture.
 
-Input JSON is emitted from CodexManagedRuntime.translationArguments and contains
+Input JSON is emitted from CodexRuntime.translationArguments and contains
 executable, arguments and cwd. No real login, credentials or model is used.
 """
 import argparse

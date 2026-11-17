@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import MJExtension
 
 // MARK: - DictionaryEntry
 
@@ -130,4 +131,21 @@ struct SimpleWordEntry: Codable {
     var part: String? // 单词或短语属性，例如 "adj."、"adv." 等
     var word: String // 单词或短语
     var means: [String]? // 单词或短语意思
+}
+
+// MARK: - DictionaryEntry + Mapping
+
+extension DictionaryEntry {
+    /// Maps an Objective-C `EZTranslateWordResult` to its Codable counterpart using the
+    /// same MJExtension JSON bridge as the HTTP API. Returns `nil` when no word result
+    /// is present or decoding fails.
+    init?(wordResult: EZTranslateWordResult?) {
+        guard let wordResult,
+              let jsonData = wordResult.mj_JSONData(),
+              let decoded = try? JSONDecoder().decode(DictionaryEntry.self, from: jsonData)
+        else {
+            return nil
+        }
+        self = decoded
+    }
 }

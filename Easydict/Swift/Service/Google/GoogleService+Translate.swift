@@ -49,7 +49,7 @@ extension GoogleService {
                 "User-Agent": kGoogleUserAgent,
             ]),
             requestModifier: { request in
-                request.timeoutInterval = EZNetWorkTimeoutInterval
+                request.timeoutInterval = AppConstants.networkTimeoutInterval
             }
         )
         .validate(statusCode: 200 ..< 300)

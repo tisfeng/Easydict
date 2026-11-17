@@ -13,6 +13,14 @@ SKILL_ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = SKILL_ROOT.parents[2]
 SCRIPT_PATH = SKILL_ROOT / "scripts" / "release_issues.py"
 PR_TEMPLATE_PATH = REPOSITORY_ROOT / ".github" / "pull_request_template.md"
+SUBMIT_PR_TEMPLATE_PATH = (
+    REPOSITORY_ROOT
+    / ".agents"
+    / "skills"
+    / "submit-pr"
+    / "assets"
+    / "pull_request_template.md"
+)
 SPEC = importlib.util.spec_from_file_location("release_issues", SCRIPT_PATH)
 assert SPEC is not None and SPEC.loader is not None
 release_issues = importlib.util.module_from_spec(SPEC)
@@ -62,7 +70,7 @@ def release_payload() -> dict[str, object]:
 class ReleaseIssueFollowupTests(unittest.TestCase):
     def candidates(self) -> dict[str, object]:
         payload: dict[str, object] = {
-            "schema_version": 2,
+            "schema_version": 3,
             "repository": "tisfeng/Easydict",
             "version": "2.22.0",
             "generated_at": "2026-08-23T00:00:00Z",
@@ -100,7 +108,7 @@ class ReleaseIssueFollowupTests(unittest.TestCase):
         negative_evidence: list[dict[str, str]] | None = None,
     ) -> dict[str, object]:
         return {
-            "schema_version": 2,
+            "schema_version": 3,
             "source_sha256": candidates["source_sha256"],
             "decisions": [
                 {
@@ -202,17 +210,28 @@ Regression context: #1300
 
         self.assertEqual(references, [])
 
-    def test_repository_pr_template_contains_no_issue_candidate(self) -> None:
+    def test_repository_pr_template_matches_submit_pr_structure(self) -> None:
         template = PR_TEMPLATE_PATH.read_text(encoding="utf-8")
+        submit_pr_template = SUBMIT_PR_TEMPLATE_PATH.read_text(encoding="utf-8")
 
         references = release_issues.extract_text_references(
             template,
             "tisfeng/Easydict",
             "pr_body",
         )
+        headings = [
+            line for line in template.splitlines() if line.startswith("## ")
+        ]
+        submit_pr_headings = [
+            line
+            for line in submit_pr_template.splitlines()
+            if line.startswith("## ")
+        ]
 
         self.assertEqual(references, [])
         self.assertEqual(len(release_issues.linked_issue_ranges(template)), 1)
+        self.assertEqual(headings, submit_pr_headings)
+        self.assertNotRegex(template, r"\{\{[^{}]+\}\}")
 
     def test_linked_issue_formats_share_one_candidate(self) -> None:
         prs = [
@@ -396,7 +415,7 @@ Regression context: #1300
 
         self.assertEqual(plan["items"][0]["category"], "unresolved_related")
         summary = release_issues.render_summary(plan)
-        self.assertEqual(summary.count("## "), 3)
+        self.assertEqual(summary.count("## "), 4)
         self.assertIn("未执行关闭", summary)
 
     def test_rejected_reference_is_machine_audit_only(self) -> None:
@@ -538,6 +557,65 @@ Regression context: #1300
         self.assertIn("Include Beta versions", english)
         self.assertIn("包括 Beta 版本", chinese)
         self.assertIn("easydict-release-notification:2.22.0", english)
+
+    def test_bot_pr_is_ignored_and_recorded_for_audit(self) -> None:
+        prs = [
+            {
+                "number": 1280,
+                "title": "chore(star-history): update generated assets",
+                "author": {"login": "app/github-actions", "is_bot": True},
+                "body": "Related to #1201",
+                "mergedAt": "2026-08-02T00:00:00Z",
+                "url": "https://github.com/tisfeng/Easydict/pull/1280",
+                "closingIssuesReferences": [],
+                "commits": [],
+                "files": [],
+            }
+        ]
+        payload = release_issues.build_candidates(
+            "tisfeng/Easydict",
+            "2.22.0",
+            prs,
+            issue_loader=lambda _repository, _number: issue_payload(1201),
+        )
+        self.assertEqual(payload["candidates"], [])
+        self.assertEqual(payload["ignored_prs"][0]["number"], 1280)
+
+    def test_unlinked_human_pr_gets_separate_notification(self) -> None:
+        candidates = self.candidates()
+        candidates["prs"].append(
+            {
+                "number": 1305,
+                "title": "Refactor streaming",
+                "url": "https://github.com/tisfeng/Easydict/pull/1305",
+                "comments": [],
+                "release_decision": "included",
+            }
+        )
+        candidates["source_sha256"] = release_issues.stable_hash(candidates)
+        decisions = self.decision(candidates)
+        plan = release_issues.build_plan(
+            candidates,
+            decisions,
+            release_payload(),
+            issue_loader=lambda _repo, number: issue_payload(number),
+        )
+        self.assertEqual([item["pr_number"] for item in plan["pr_notifications"]], [1305])
+        self.assertEqual(release_issues.plan_counts(plan)["pr_notifications"], 1)
+        self.assertIn("无关联 issue 的 PR 通知", release_issues.render_summary(plan))
+
+    def test_pr_comment_uses_target_marker_and_release_wording(self) -> None:
+        comment = release_issues.release_comment(
+            "2.22.0",
+            "beta",
+            "https://example.com/release",
+            "en",
+            "implemented",
+            target="pr",
+            target_number=1305,
+        )
+        self.assertIn("This change has been released", comment)
+        self.assertIn("easydict-release-notification:2.22.0:pr:1305", comment)
 
 
 if __name__ == "__main__":

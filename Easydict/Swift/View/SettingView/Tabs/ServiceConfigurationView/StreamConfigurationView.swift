@@ -29,10 +29,9 @@ struct StreamConfigurationView: View {
         showDictionaryToggle: Bool = true,
         showUsageStatusPicker: Bool = true,
         showThinkTagContent: Bool = true,
-        showTemperatureSlider: Bool = true,
-        temperatureMaxValue: Double = 2,
         showStreamingToggle: Bool = false,
-        showValidationButton: Bool = true
+        validationAction: (() -> ())? = nil,
+        validationDisabled: Bool = false
     ) {
         self.service = service
 
@@ -47,10 +46,9 @@ struct StreamConfigurationView: View {
         self.showDictionaryToggle = showDictionaryToggle
         self.showUsageStatusPicker = showUsageStatusPicker
         self.showThinkTagSection = showThinkTagContent
-        self.showTemperatureSlider = showTemperatureSlider
         self.showStreamingToggle = showStreamingToggle
-        self.temperatureMaxValue = temperatureMaxValue
-        self.showValidationButton = showValidationButton
+        self.validationAction = validationAction
+        self.validationDisabled = validationDisabled
 
         // Disable user to edit built-in supported models.
         self.isEditable = service.serviceType() != .builtInAI
@@ -75,10 +73,9 @@ struct StreamConfigurationView: View {
     let showDictionaryToggle: Bool
     let showUsageStatusPicker: Bool
     let showThinkTagSection: Bool
-    let showTemperatureSlider: Bool
-    let temperatureMaxValue: Double
     let showStreamingToggle: Bool
-    let showValidationButton: Bool
+    let validationAction: (() -> ())?
+    let validationDisabled: Bool
 
     var isEditable = true
 
@@ -92,7 +89,8 @@ struct StreamConfigurationView: View {
         ServiceConfigurationSecretSectionView(
             service: service,
             observeKeys: service.observeKeys,
-            showValidationButton: showValidationButton
+            validationAction: validationAction,
+            validationDisabled: validationDisabled
         ) {
             if showCustomNameSection {
                 InputCell(
@@ -121,7 +119,7 @@ struct StreamConfigurationView: View {
             }
 
             if showSupportedModelsSection {
-                VStack(alignment: .trailing, spacing: 0) {
+                VStack(alignment: .trailing, spacing: 8) {
                     TextEditorCell(
                         titleKey: "service.configuration.custom_openai.supported_models.title",
                         storedValueKey: service.supportedModelsKey,
@@ -220,14 +218,6 @@ struct StreamConfigurationView: View {
                 ToggleCell(
                     titleKey: "service.configuration.openai.hide_think_tag_content.title",
                     key: service.thinkTagKey
-                )
-            }
-
-            if showTemperatureSlider {
-                SliderCell(
-                    titleKey: "service.configuration.openai.temperature.title",
-                    storedValueKey: service.temperatureKey,
-                    maxValue: temperatureMaxValue
                 )
             }
 

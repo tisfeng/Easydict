@@ -7,6 +7,7 @@
 //
 
 #import "MMLog.h"
+#import "Easydict-Swift.h"
 #import "MMConsoleLogFormatter.h"
 #import "MMFileLogFormatter.h"
 
@@ -82,10 +83,7 @@ BOOL MMDefaultLogAsyncEnabled = YES;
     static NSString *_path = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSString *cachesDirectory = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
-        // 加上 identifier，兼容关闭沙盒的情况
-        NSString *identifier = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
-        _path = [cachesDirectory stringByAppendingFormat:@"/%@/MMLogs", identifier];
+        _path = AppPathManager.current.appLogDirectory.path;
     });
     return _path;
 }

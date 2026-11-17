@@ -28,15 +28,16 @@ struct MenuItemView: View {
             Divider()
 
             inputItem.keyboardShortcut(.inputTranslate)
-            screenshotItem.keyboardShortcut(.snipTranslate)
             selectWordItem.keyboardShortcut(.selectTranslate)
             pasteboardTranslateItem.keyboardShortcut(.pasteboardTranslate)
-            polishAndReplaceItem.keyboardShortcut(.polishAndReplace)
-            translateAndReplaceItem.keyboardShortcut(.translateAndReplace)
-            miniWindowItem.keyboardShortcut(.showMiniWindow)
+
+            if mouseSelectTranslateWindowType != shortcutSelectTranslateWindowType {
+                miniWindowItem.keyboardShortcut(.showMiniWindow)
+            }
 
             Divider()
 
+            screenshotItem.keyboardShortcut(.snipTranslate)
             silentScreenshotOCRItem.keyboardShortcut(.silentScreenshotOCR)
 
             if showOCRMenuItems {
@@ -44,6 +45,11 @@ struct MenuItemView: View {
                 pasteboardOCRItem
                 showOCRWindowItem
             }
+
+            Divider()
+
+            translateAndReplaceItem.keyboardShortcut(.translateAndReplace)
+            polishAndReplaceItem.keyboardShortcut(.polishAndReplace)
 
             Divider()
 
@@ -55,8 +61,8 @@ struct MenuItemView: View {
 
             quitItem.keyboardShortcut(.init("q"))
         }
-        .task {
-            latestVersion = await fetchRepoLatestVersion(EZGithubRepoEasydict)
+        .task(id: includeBetaUpdates) {
+            latestVersion = await GitHubReleaseFetcher.latestVersion(includePrerelease: includeBetaUpdates)
         }
     }
 
@@ -78,11 +84,13 @@ struct MenuItemView: View {
     @Environment(\.openURL) private var openURL
 
     @Default(.showOCRMenuItems) private var showOCRMenuItems
+    @Default(.mouseSelectTranslateWindowType) private var mouseSelectTranslateWindowType
+    @Default(.shortcutSelectTranslateWindowType) private var shortcutSelectTranslateWindowType
+    @Default(.includeBetaUpdates) private var includeBetaUpdates
 
     private var versionString: String {
         let defaultLabel = "Easydict  \(currentVersion)"
-        if let latestVersion,
-           currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending {
+        if let latestVersion, GitHubReleaseFetcher.isNewer(latestVersion, than: currentVersion) {
             return defaultLabel + "  (✨\(latestVersion) )"
         } else {
             return defaultLabel
@@ -134,10 +142,7 @@ struct MenuItemView: View {
     /// Version item
     @ViewBuilder private var versionItem: some View {
         Button(versionString) {
-            guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/releases") else {
-                return
-            }
-            openURL(versionURL)
+            openURL(AppConstants.releasesURL)
         }
     }
 
@@ -189,18 +194,16 @@ struct MenuItemView: View {
         Menu("Help") {
             Button("Feedback") {
                 logInfo("Open Feedback")
-                guard let versionURL = URL(string: "\(EZGithubRepoEasydictURL)/issues") else {
-                    return
-                }
-                openURL(versionURL)
+                openURL(AppConstants.issuesURL)
             }
             Button("Export Log") {
                 exportLogAction()
             }
             Button("Log Directory") {
                 logInfo("Open Log Directory")
-                let logPath = MMManagerForLog.rootLogDirectory() ?? ""
-                let directoryURL = URL(fileURLWithPath: logPath)
+                let pathManager = AppPathManager.current
+                let directoryURL = pathManager.appLogDirectory
+                try? pathManager.ensureDirectoryExists(at: directoryURL)
                 NSWorkspace.shared.open(directoryURL)
             }
         }
@@ -208,7 +211,9 @@ struct MenuItemView: View {
 
     private func exportLogAction() {
         logInfo("Export Log")
-        let logPath = MMManagerForLog.rootLogDirectory() ?? ""
+        let pathManager = AppPathManager.current
+        let directoryURL = pathManager.logsDirectory
+        try? pathManager.ensureDirectoryExists(at: directoryURL)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH-mm-ss-SSS"
         let dataString = dateFormatter.string(from: Date())
@@ -219,7 +224,7 @@ struct MenuItemView: View {
             .path(percentEncoded: false)
         let success = SSZipArchive.createZipFile(
             atPath: zipPath,
-            withContentsOfDirectory: logPath,
+            withContentsOfDirectory: directoryURL.path(percentEncoded: false),
             keepParentDirectory: false
         )
         if success {

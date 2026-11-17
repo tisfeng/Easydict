@@ -67,7 +67,7 @@ class ChineseGenreAnalyzer {
 
     /// Minimum length for classical Chinese text detection, default is 20
     private var minUserClassicalChineseLength: Int {
-        let minLength = SharedConstants.minClassicalChineseLength
+        let minLength = AppConstants.minClassicalChineseLength
         let length = Int(Defaults[.minClassicalChineseTextDetectLength]) ?? minLength
         return max(length, minLength)
     }

@@ -99,6 +99,9 @@ extension Tag {
     /// 集成测试：测试多个组件协作，可能有外部依赖，较慢
     @Tag static var integration: Self
 
+    /// Tests that require developer credentials, an installed CLI, or external local files.
+    @Tag static var requiresLocalEnvironment: Self
+
     /// Performance tests: test execution speed, memory usage, etc., usually takes longer time
     /// 性能测试：测试执行速度、内存等性能指标，通常需要较长时间
     @Tag static var performance: Self

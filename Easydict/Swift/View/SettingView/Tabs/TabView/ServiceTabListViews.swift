@@ -99,18 +99,33 @@ private struct ServiceItemView: View {
         } message: {
             Text(codexAccessMode.enableMessage)
         }
+        .alert(
+            "service.github_copilot.enable_risk_alert.title",
+            isPresented: $showGitHubCopilotRiskAlert
+        ) {
+            Button("cancel", role: .cancel) {
+                showGitHubCopilotRiskAlert = false
+            }
+            Button("ok") {
+                showGitHubCopilotRiskAlert = false
+                viewModel.setServiceEnabled(true, for: item)
+            }
+        } message: {
+            Text("service.github_copilot.enable_risk_alert.message")
+        }
     }
 
     // MARK: Private
 
     @State private var showClaudeCodeRiskAlert = false
     @State private var showCodexCLIRiskAlert = false
+    @State private var showGitHubCopilotRiskAlert = false
     @State private var codexAccessMode: CodexAccessMode = .managed
 
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
-    /// Toggles the service on or off. Enabling Claude Code or Codex CLI first
-    /// prompts a risk confirmation; other services enable directly.
+    /// Toggles the service on or off. Enabling Claude Code, Codex CLI, or GitHub Copilot
+    /// first prompts a risk confirmation; other services enable directly.
     private func toggleEnabled() {
         guard !item.enabled else {
             viewModel.setServiceEnabled(false, for: item)
@@ -123,6 +138,8 @@ private struct ServiceItemView: View {
             guard let metadata = QueryServiceFactory.shared.metadata(withTypeId: item.id) else { return }
             codexAccessMode = Defaults[CodexAccessMode.key(uuid: metadata.uuid)]
             showCodexCLIRiskAlert = true
+        } else if item.type == .gitHubCopilot {
+            showGitHubCopilotRiskAlert = true
         } else {
             viewModel.setServiceEnabled(true, for: item)
         }
@@ -260,13 +277,19 @@ private struct AddServiceSheet: View {
                     }
                     .padding(.trailing, 2)
                 }
+                .disabled(additionTask != nil)
             }
 
             Divider()
 
             HStack {
                 Spacer()
+                if additionTask != nil {
+                    ProgressView().controlSize(.small)
+                        .accessibilityLabel(Text("setting.service.add"))
+                }
                 Button("cancel") {
+                    additionTask?.cancel()
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
@@ -276,17 +299,19 @@ private struct AddServiceSheet: View {
                     addSelectedServices()
                 }
                 .keyboardShortcut(.defaultAction)
-                .disabled(selectedServiceItems.isEmpty)
+                .disabled(selectedServiceItems.isEmpty || additionTask != nil)
                 .frame(width: 76)
             }
         }
         .padding(18)
         .frame(width: 640, height: 540)
+        .onDisappear { additionTask?.cancel() }
     }
 
     // MARK: Private
 
     @State private var selectedTypeIds: Set<String> = []
+    @State private var additionTask: Task<(), Never>?
 
     @Environment(\.dismiss) private var dismiss
 
@@ -323,8 +348,14 @@ private struct AddServiceSheet: View {
     }
 
     private func addSelectedServices() {
-        viewModel.addServices(selectedServiceItems)
-        dismiss()
+        guard additionTask == nil else { return }
+        let items = selectedServiceItems
+        additionTask = Task { @MainActor in
+            await viewModel.addServices(items)
+            guard !Task.isCancelled else { return }
+            additionTask = nil
+            dismiss()
+        }
     }
 }
 
@@ -463,8 +494,8 @@ private struct ServiceGroup: Identifiable {
 extension ServiceAPIKeyRequirement {
     fileprivate static let addSheetOrder: [ServiceAPIKeyRequirement] = [
         .builtIn,
-        .userProvided,
-        .agentCLI,
         .none,
+        .agentCLI,
+        .userProvided,
     ]
 }

@@ -48,6 +48,8 @@ extension Defaults.Keys {
         default: EnglishPronunciation.us
     )
     static let hideMainWindow = Key<Bool>("EZConfiguration_kHideMainWindowKey", default: true)
+    static let ocrServiceID = Key<String>("EZConfiguration_kOCRServiceID", default: ServiceType.apple.rawValue)
+    static let localAutoSave = Key<Bool>("EZConfiguration_kLocalAutoSave", default: false)
     static let autoQueryOCRText = Key<Bool>("EZConfiguration_kAutoQueryOCTTextKey", default: true)
     static let autoQuerySelectedText = Key<Bool>(
         "EZConfiguration_kAutoQuerySelectedTextKey", default: true
@@ -151,7 +153,6 @@ extension Defaults.Keys {
     )
 
     static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
-    static var disableTipsView = Key<Bool>("disableTipsViewKey", default: false)
     static var enableYoudaoOCR = Key<Bool>("enableYoudaoOCR", default: false)
     static var enableCompatibilityReplace = Key<Bool>(
         "replaceWithTranslationInCompatibilityMode",
@@ -159,6 +160,23 @@ extension Defaults.Keys {
     )
     static var enableHTTPServer = Key<Bool>("enableHTTPServer", default: false)
     static var httpPort = Key<String>("httpPort", default: "8080")
+
+    static var enableAnkiConnect = Key<Bool>("enableAnkiConnect", default: false)
+    static var ankiConnectEndpoint = Key<String>(
+        "ankiConnectEndpoint",
+        default: "http://127.0.0.1:8765"
+    )
+    static var ankiConnectDeck = Key<String>("ankiConnectDeck", default: "Default")
+    static var ankiConnectModel = Key<String>("ankiConnectModel", default: "Basic")
+    static var ankiConnectFrontField = Key<String>("ankiConnectFrontField", default: "Front")
+    static var ankiConnectBackField = Key<String>("ankiConnectBackField", default: "Back")
+    static var ankiConnectModelFields = Key<[String]>("ankiConnectModelFields", default: [])
+    static var ankiConnectFieldMappings = Key<[AnkiFieldMapping]>(
+        "ankiConnectFieldMappings",
+        default: []
+    )
+    static var enableVocabularyNotebook = Key<Bool>("enableVocabularyNotebook", default: false)
+    static var vocabularyNotebookDirectory = Key<String>("vocabularyNotebookDirectory", default: "")
 
     static var enableAppleOfflineTranslation = Key<Bool>(
         "enableAppleOfflineTranslation", default: false
@@ -176,7 +194,7 @@ extension Defaults.Keys {
 
     static var minClassicalChineseTextDetectLength = Key<String>(
         "minClassicalChineseTextDetectLength",
-        default: "\(SharedConstants.minClassicalChineseLength)"
+        default: "\(AppConstants.minClassicalChineseLength)"
     )
 
     static let enableForceGetSelectedText = Key<Bool>(
@@ -348,6 +366,10 @@ private let EZDeepLTranslationAPIKey = "EZDeepLTranslationAPIKey"
 extension Defaults.Keys {
     // DeepL
     static let deepLAuth = Key<String>(EZDeepLAuthKey, default: "")
+    static let deepLWebAppVersionCache = Key<String>(
+        "EZDeepLWebAppVersionCacheKey",
+        default: ""
+    )
     static let deepLTranslation = Key<DeepLAPIUsagePriority>(
         EZDeepLTranslationAPIKey,
         default: DeepLAPIUsagePriority.webFirst
@@ -362,10 +384,6 @@ extension Defaults.Keys {
 
     // Caiyun
     static let caiyunToken = Key<String>(EZCaiyunToken, default: "")
-
-    // tencent
-    static let tencentSecretId = Key<String>(EZTencentSecretId, default: "")
-    static let tencentSecretKey = Key<String>(EZTencentSecretKey, default: "")
 
     // Ali
     static let aliAccessKeyId = Key<String>(EZAliAccessKeyId, default: "")
