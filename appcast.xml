@@ -3,6 +3,32 @@
     <channel>
         <title>Easydict</title>
         <item>
+            <title>2.27.0</title>
+            <pubDate>Mon, 09 Nov 2026 00:52:49 +0800</pubDate>
+            <description>&lt;h1&gt;🐞 fix: prevent a query window crash after background OCR&lt;/h1&gt;
+&lt;h2&gt;What's Changed&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Prevent a crash when a query window opens after the background OCR model reloads by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/57f3ad4d28e3d380ff8f90a49b5e32b4b9098c40"&gt;commit&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Render LaTeX formulas and improve Markdown tables and lists in translation results by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1375"&gt;#1375&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Add Tencent TokenHub as a translation provider by @Jerry23011 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1346"&gt;#1346&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Retry OCR with a fallback when Apple Vision stalls on macOS 27 by @hengstchon in &lt;a href="https://github.com/tisfeng/Easydict/pull/1382"&gt;#1382&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Improve QR code detection during screenshot recognition by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/3fce1a81056bf220583a85ced33800d889693c42"&gt;commit&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Keep the current app focused during screenshot capture by @tisfeng in &lt;a href="https://github.com/tisfeng/Easydict/commit/d8dcfd332cbadd9c5858387f62c270ceb7654cb7"&gt;focus fix&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Prevent stale selection popups when dragging in another app or in Control Center by @MoonMao42 in &lt;a href="https://github.com/tisfeng/Easydict/pull/1325"&gt;#1325&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;New Contributors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;@hengstchon made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1382"&gt;#1382&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/tisfeng/Easydict/compare/2.26.0...2.27.0"&gt;2.26.0...2.27.0&lt;/a&gt;&lt;/p&gt;</description>
+            <sparkle:channel>beta</sparkle:channel>
+            <sparkle:version>70</sparkle:version>
+            <sparkle:shortVersionString>2.27.0</sparkle:shortVersionString>
+            <sparkle:fullReleaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.27.0</sparkle:fullReleaseNotesLink>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.27.0/Easydict.zip" length="41016884" type="application/octet-stream" sparkle:edSignature="AWcB5uXMkQUvpTlS+gFE1YdPgZTOj6ZsFyoH8UeTc8FpzLIpxEj8iSqNzke1hceUAU9hKoh8Bcg1EF2PGcDrDw==" />
+        </item>
+        <item>
             <title>2.26.0</title>
             <pubDate>Tue, 27 Oct 2026 22:33:47 +0800</pubDate>
             <description>&lt;h1&gt;🐞 fix: prevent crashes during repeated translations&lt;/h1&gt;
@@ -24,7 +50,6 @@
 &lt;li&gt;@AlleyNawaz made their first contribution in &lt;a href="https://github.com/tisfeng/Easydict/pull/1374"&gt;#1374&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/tisfeng/Easydict/compare/2.25.0...2.26.0"&gt;2.25.0...2.26.0&lt;/a&gt;&lt;/p&gt;</description>
-            <sparkle:channel>beta</sparkle:channel>
             <sparkle:version>69</sparkle:version>
             <sparkle:shortVersionString>2.26.0</sparkle:shortVersionString>
             <sparkle:fullReleaseNotesLink>https://github.com/tisfeng/Easydict/releases/tag/2.26.0</sparkle:fullReleaseNotesLink>

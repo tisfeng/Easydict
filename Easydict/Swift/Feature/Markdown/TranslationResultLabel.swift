@@ -35,7 +35,9 @@ final class TranslationResultLabel: MarkdownLabel {
                 in: text,
                 range: paragraphRange
             )
-            style.alignment = direction == .rightToLeft ? .right : .left
+            if style.alignment == .natural {
+                style.alignment = direction == .rightToLeft ? .right : .left
+            }
             style.baseWritingDirection = direction
             textStorage.addAttribute(.paragraphStyle, value: style, range: paragraphRange)
         }

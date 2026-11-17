@@ -455,6 +455,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     EZQueryModel *model = [[EZQueryModel alloc] init];
     model.userSourceLanguage = MyConfiguration.shared.fromLanguage;
     model.userTargetLanguage = MyConfiguration.shared.toLanguage;
+    model.queryViewHeight = [self miniQueryViewHeight];
 
     self.queryModel = model;
     self.detectManager = [EZDetectManager managerWithModel:model];
@@ -559,6 +560,15 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         };
         [EZAnalyticsService logEventWithName:@"ocr" parameters:dict];
 
+        if (error) {
+            [self.queryView startLoadingAnimation:NO];
+
+            NSString *errorMsg = [error localizedDescription];
+            dispatch_block_on_main_safely(^{
+                [EZToast showToast:errorMsg];
+            });
+            return;
+        }
 
         if (actionType == EZActionTypeScreenshotOCR) {
             [inputText copyToPasteboard];
@@ -580,14 +590,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             self.queryModel.showAutoLanguage = YES;
 
             [self updateQueryTextAndParagraphStyle:inputText actionType:actionType];
-
-            if (error) {
-                NSString *errorMsg = [error localizedDescription];
-                dispatch_block_on_main_safely(^{
-                    [EZToast showToast:errorMsg];
-                });
-                return;
-            }
 
             if (self.config.autoCopyOCRText) {
                 [inputText copyToPasteboard];
@@ -1029,7 +1031,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     CGFloat height;
 
     if ([self isInputFieldCellAtRow:row]) {
-        height = self.queryModel.queryViewHeight;
+        CGFloat queryViewHeight = self.queryModel.queryViewHeight;
+        CGFloat minimumHeight = [self miniQueryViewHeight];
+        height = isfinite(queryViewHeight) ? MAX(queryViewHeight, minimumHeight) : minimumHeight;
     } else if ([self isSelectLanguageCellAtRow:row]) {
         height = 35;
     } else {

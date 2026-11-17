@@ -43,10 +43,6 @@ enum EasydictCmpatibilityEntry {
             )
         }
 
-        // Move the one-time Vision OCR network compilation off the first user query.
-        // See `AppleOCREngine+WarmUp.swift` for why a cold cache costs 60–120 seconds.
-        AppleOCREngine.warmUpVisionOCRIfNeeded()
-
         // app launch
         EasydictApp.main()
     }

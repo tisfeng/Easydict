@@ -1,5 +1,5 @@
 {
-  "originHash" : "5b6d36d0226a819cae0ec056bceda7d92d06df5947e831763554abcae765382c",
+  "originHash" : "c621f484c67d0003fbfb8e603ed0b275ba05c50fd8ad8ec1deb1646401ec3c9b",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -538,6 +538,15 @@
       "state" : {
         "revision" : "ef7d692fc6706e8f5628e26bcafaefa445c58a97",
         "version" : "0.65.1"
+      }
+    },
+    {
+      "identity" : "swiftmath",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mgriebling/SwiftMath.git",
+      "state" : {
+        "revision" : "fa8244ed032f4a1ade4cb0571bf87d2f1a9fd2d7",
+        "version" : "1.7.3"
       }
     },
     {
