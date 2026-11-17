@@ -99,11 +99,12 @@ extension AnkiConnectSettingsView {
     }
 
     private var previewServiceTypes: [ServiceType] {
+        var types: [ServiceType] = [.youdao, .appleDictionary, .bingDict, .merriamWebster]
         if Defaults[.mdictDictionaries].contains(where: \.enabled) {
-            return [.youdao, .appleDictionary, .mDict, .google]
+            types.append(.mDict)
         }
-
-        return [.youdao, .appleDictionary, .google]
+        types.append(.google)
+        return types
     }
 
     private var endpointRow: some View {

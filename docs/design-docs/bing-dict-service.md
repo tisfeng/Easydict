@@ -2,7 +2,7 @@
 
 - 状态：adopted
 - 初次记录：2026-11-04
-- 最近更新：2026-11-06
+- 最近更新：2026-11-17
 
 ## 背景
 
@@ -44,9 +44,9 @@ flowchart LR
 
 - 位置：`Easydict/Swift/Service/Dictionary/BingDict/BingDictRequest.swift`
 - 职责：对 `https://cn.bing.com/dict/search?q={word}` 发起单次匿名 GET。
-- 约束：浏览器 User-Agent、`Accept: text/html`、30 秒超时；使用 ephemeral `URLSession`
+- 约束：浏览器 User-Agent、`Accept: text/html`、30 秒超时；使用 ephemeral Alamofire `Session`
   （无 Cookie 存储、无缓存、忽略本地缓存策略），取消错误原样抛出，其余非 2xx、空响应体和
-  网络错误统一转换为 `QueryError`，不重试。
+  网络错误统一转换为 `QueryError`，不重试；错误文案走 String Catalog。
 - 查询值使用严格白名单编码（字母数字与 `-._~`），保证 `+`、`&`、`=` 等字符不被站点重新解释。
 - 不解析内容，也不感知 UI。
 
@@ -69,22 +69,30 @@ flowchart LR
 
 - 位置：`Easydict/Swift/Service/Dictionary/BingDict/BingDictService.swift`
 - 职责：`QueryService` 子类，声明服务元数据并编排“请求 → 解析 → 原生结果映射”。
-- 服务元数据：服务类型 `.bingDict`、名称 `bing_dict`（七语言本地化）、无需 API Key、
+- 服务元数据：服务类型 `.bingDict`、名称 `service.bing_dict.name`（七语言本地化）、无需 API Key、
   `supportedQueryType` 与 `intelligentQueryTextType` 均为 `.dictionary`、图标复用 `Bing` 资源。
 - 语言边界：`supportLanguagesDictionary` 只登记 auto、英语、简体中文、繁体中文，避免为其他
   语言对提供必然失败的入口；`autoConvertTraditionalChinese` 返回 `true`，繁体目标由结果层转换。
 - 查询约束：仅接受英文单词（`from == .english`、`to` 为简体或繁体中文、单个词条），否则抛
   `QueryError(.noResult)`，不发起网络请求。单词判定允许字母、数字、连字符和撇号
-  （`well-known`、`don't`），拒绝空格分隔的多词与符号词（`C++`）。
+  （`well-known`、`don't`），拒绝空格分隔的多词与符号词（`C++`）；变音符号按拉丁字母折叠后
+  判定，因此 `café`、`naïve` 也可查询。
+- 设置页 Validate 使用 `validationQuery()` 返回的英文样例（`hello`），默认中文样例会被英文
+  单词门槛拒绝。
 - 结果写入：`wordResult`（原生卡片）、`innerTexts`/`copiedText`（`plainText`）、
   `translatedResults`（`bestTranslation`）。
+- 词形变化标题使用本地化 key `service.bing_dict.section.word_forms`；同义词与反义词写入原生
+  `synonyms` / `antonyms` 字段，由结果视图提供本地化标题与可点击词条，而不是作为文本行
+  拼进 `parts`（那样英文标题会被词性缩写逻辑改成 `Synonyms.`）。
+- 复制与繁体：`QueryResult.copiedText` 优先返回服务写入的完整复制载荷；繁体转换覆盖原生卡片
+  的 part、词形、同义词等字段，不再只转换摘要行。
 
 ### 注册点
 
 - `Easydict/objc/Service/Model/EZEnumTypes.h` / `.m`：`EZServiceTypeBingDict = "BingDict"`。
 - `Easydict/Swift/Service/Model/QueryServiceFactory.swift`：工厂条目 `bing_dict`，
   `apiKeyRequirement: .none`。
-- `Easydict/App/Localizable.xcstrings`：`bing_dict` 的六语言名称。
+- `Easydict/App/Localizable.xcstrings`：`service.bing_dict.name` 与词形变化、错误文案的七语言条目。
 - `Easydict.xcodeproj/project.pbxproj`：新文件与测试文件的 group、build phase 引用。
 
 ## 页面结构与解析约定
@@ -152,10 +160,11 @@ flowchart LR
 
 ## 验证
 
-- `EasydictTests/Service/BingDictHTMLParserTests.swift`：9 个解析用例（词头/音标/快速释义、
-  快速释义切分、词形变化与搭配、重复标签词形、同义词/反义词、语法标签与搭配模式、实体解码、
-  纯文本输出、无释义返回 `nil`）与 `BingDictServiceTests` 的 2 个用例（单词判定、原生 part
-  顺序与标签），共 11 项。
+- `EasydictTests/Service/Dictionary/BingDict/BingDictHTMLParserTests.swift`：9 个解析用例
+  （词头/音标/快速释义、快速释义切分、词形变化与搭配、重复标签词形、同义词/反义词、
+  语法标签与搭配模式、实体解码、纯文本输出、无释义返回 `nil`）与同目录
+  `BingDictServiceTests.swift` 的 2 个用例（单词判定、原生 part 顺序与同义词/反义词字段），
+  共 11 项。
 - `xcodebuild build` 与 `xcodebuild test -only-testing:EasydictTests/BingDictHTMLParserTests`：
   通过（构建环境注意事项见 `docs/agents/build-and-test.md` 与对应 history）。
 - 运行中 dev 应用 HTTP `/translate`（`serviceType=BingDict`）核对 `develop`、`run`、`formula`、

@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import Alamofire
 import Foundation
 
 // MARK: - BingDictRequest
@@ -30,54 +31,66 @@ enum BingDictRequest {
         guard let url = URL(string: "\(baseURLString)?q=\(DictionarySupport.percentEncodedQueryValue(word))") else {
             throw QueryError.error(
                 type: .api,
-                message: "Bing dictionary URL is invalid: \(word)"
+                message: String(
+                    format: String(localized: "service.bing_dict.error.invalid_url %@"),
+                    word
+                )
             )
         }
 
-        var urlRequest = URLRequest(url: url)
-        urlRequest.timeoutInterval = timeout
-        urlRequest.setValue(AppConstants.userAgent, forHTTPHeaderField: "User-Agent")
-        urlRequest.setValue("text/html", forHTTPHeaderField: "Accept")
-        urlRequest.httpShouldHandleCookies = false
+        let response = await session.request(
+            url,
+            headers: [
+                "User-Agent": AppConstants.userAgent,
+                "Accept": "text/html",
+            ]
+        ) { $0.timeoutInterval = timeout }
+            .serializingData(automaticallyCancelling: true)
+            .response
 
-        do {
-            let (data, response) = try await session.data(for: urlRequest)
-            if let httpResponse = response as? HTTPURLResponse,
-               !(200 ..< 300).contains(httpResponse.statusCode) {
-                throw QueryError.error(
-                    type: .api,
-                    message: "Bing dictionary HTTP \(httpResponse.statusCode)"
-                )
+        if let error = response.error {
+            if DictionarySupport.isCancellation(error) {
+                throw CancellationError()
             }
-            guard let html = String(data: data, encoding: .utf8), !html.isEmpty else {
-                throw QueryError.error(
-                    type: .api,
-                    message: "Bing dictionary page data is empty"
-                )
-            }
-            return html
-        } catch is CancellationError {
-            throw CancellationError()
-        } catch let error as URLError where error.code == .cancelled {
-            throw CancellationError()
-        } catch let error as QueryError {
-            throw error
-        } catch {
             throw QueryError.error(
                 type: .api,
-                message: "Bing dictionary request failed: \(error.localizedDescription)"
+                message: String(
+                    format: String(localized: "service.bing_dict.error.request_failed %@"),
+                    error.localizedDescription
+                )
             )
         }
+
+        if let httpResponse = response.response, !(200 ..< 300).contains(httpResponse.statusCode) {
+            throw QueryError.error(
+                type: .api,
+                message: String(
+                    format: String(localized: "service.dictionary.error.http_status %ld"),
+                    httpResponse.statusCode
+                )
+            )
+        }
+
+        guard let data = response.data,
+              let html = String(data: data, encoding: .utf8),
+              !html.isEmpty
+        else {
+            throw QueryError.error(
+                type: .api,
+                message: String(localized: "service.bing_dict.error.empty_page")
+            )
+        }
+        return html
     }
 
     // MARK: Private
 
-    private static let session: URLSession = {
+    private static let session: Session = {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.httpCookieStorage = nil
         configuration.httpShouldSetCookies = false
         configuration.urlCache = nil
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-        return URLSession(configuration: configuration)
+        return Session(configuration: configuration)
     }()
 }

@@ -29,7 +29,7 @@ class BingDictService: QueryService, @unchecked Sendable {
     }
 
     override func name() -> String {
-        NSLocalizedString("bing_dict", comment: "")
+        NSLocalizedString("service.bing_dict.name", comment: "")
     }
 
     override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
@@ -43,6 +43,12 @@ class BingDictService: QueryService, @unchecked Sendable {
 
     override func intelligentQueryTextType() -> EZQueryTextType {
         [.dictionary]
+    }
+
+    /// Validation uses an English headword; the default Chinese sample is
+    /// rejected by the English-only guard below.
+    override func validationQuery() -> (text: String, from: Language, to: Language) {
+        ("hello", .english, .simplifiedChinese)
     }
 
     /// Only English source and Chinese targets are served; listing more
@@ -142,18 +148,11 @@ class BingDictService: QueryService, @unchecked Sendable {
             let forms = Self.groupedWordForms(entry.wordForms)
                 .map { "\($0.label): \($0.values.joined(separator: ", "))" }
                 .joined(separator: "    ")
-            appendPart("变形", [forms])
+            appendPart(NSLocalizedString("service.bing_dict.section.word_forms", comment: ""), [forms])
         }
 
         for collocation in entry.collocations {
             appendPart(collocation.label, [collocation.items.joined(separator: ", ")])
-        }
-
-        if !entry.synonyms.isEmpty {
-            appendPart("同义词", entry.synonyms.map { "\($0.label)  \($0.items.joined(separator: ", "))" })
-        }
-        if !entry.antonyms.isEmpty {
-            appendPart("反义词", entry.antonyms.map { "\($0.label)  \($0.items.joined(separator: ", "))" })
         }
 
         let showsPos = entry.senseGroups.count > 1
@@ -174,6 +173,13 @@ class BingDictService: QueryService, @unchecked Sendable {
             wordResult.parts = parts
         }
 
+        // Native synonym/antonym sections: the result view supplies the
+        // localized headings and renders the words as clickable links, matching
+        // the site's linked lists. Keeping them out of `parts` also stops the
+        // part-of-speech abbreviation from rewriting the heading text.
+        wordResult.synonyms = Self.collocationParts(entry.synonyms)
+        wordResult.antonyms = Self.collocationParts(entry.antonyms)
+
         return wordResult
     }
 
@@ -193,6 +199,16 @@ class BingDictService: QueryService, @unchecked Sendable {
             }
         }
         return grouped
+    }
+
+    private static func collocationParts(_ groups: [BingDictCollocation]) -> [EZTranslatePart]? {
+        guard !groups.isEmpty else { return nil }
+        return groups.map { group in
+            let part = EZTranslatePart()
+            part.part = group.label
+            part.means = group.items
+            return part
+        }
     }
 
     private static func phonetic(

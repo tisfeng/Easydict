@@ -285,6 +285,8 @@
 		03A8847A2F14000100D5C0DE /* BingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A884792F14000100D5C0DE /* BingServiceTests.swift */; };
 		9EDE3CCE99239093EAA21D0F /* BingDictHTMLParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F69448D4EB81BB1CABF0B32 /* BingDictHTMLParserTests.swift */; };
 		B7A1C0D2E3F4051627384954 /* MWDictAPIParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A1C0D2E3F4051627384964 /* MWDictAPIParserTests.swift */; };
+		B1B1B1B10000000000000002 /* BingDictServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B1B1B10000000000000001 /* BingDictServiceTests.swift */; };
+		B2B2B2B20000000000000002 /* MWDictServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B2B2B20000000000000001 /* MWDictServiceTests.swift */; };
 		03A9BE952E70631B0013E645 /* SystemUtility+Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */; };
 		03AE328F2C5D3C460094FA5D /* TranslationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
@@ -1013,6 +1015,8 @@
 		03A884792F14000100D5C0DE /* BingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingServiceTests.swift; sourceTree = "<group>"; };
 		3F69448D4EB81BB1CABF0B32 /* BingDictHTMLParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingDictHTMLParserTests.swift; sourceTree = "<group>"; };
 		B7A1C0D2E3F4051627384964 /* MWDictAPIParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MWDictAPIParserTests.swift; sourceTree = "<group>"; };
+		B1B1B1B10000000000000001 /* BingDictServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingDictServiceTests.swift; sourceTree = "<group>"; };
+		B2B2B2B20000000000000001 /* MWDictServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MWDictServiceTests.swift; sourceTree = "<group>"; };
 		03A91F142E63E1FB00896B17 /* FocusedElementInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusedElementInfo.swift; sourceTree = "<group>"; };
 		03A9BE942E70631B0013E645 /* SystemUtility+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemUtility+Selection.swift"; sourceTree = "<group>"; };
 		03AE328E2C5D3C460094FA5D /* TranslationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationRequest.swift; sourceTree = "<group>"; };
@@ -2985,8 +2989,7 @@
 				03C408F82EF5CB830025A1F0 /* ServiceTests.swift */,
 				A20908020000000000000021 /* OpenAI */,
 				03A884792F14000100D5C0DE /* BingServiceTests.swift */,
-				3F69448D4EB81BB1CABF0B32 /* BingDictHTMLParserTests.swift */,
-				B7A1C0D2E3F4051627384964 /* MWDictAPIParserTests.swift */,
+				D1D1D1D10000000000000001 /* Dictionary */,
 				A5D1E5B50000000000000001 /* DeepLServiceTests.swift */,
 				0652043BE29F4DEC887CAA78 /* AppleServiceTests.swift */,
 				A13180012026091600000001 /* AppleDictionaryTests.swift */,
@@ -2999,6 +3002,33 @@
 				A0A000010000000000000006 /* TokenHub */,
 			);
 			path = Service;
+			sourceTree = "<group>";
+		};
+		D1D1D1D10000000000000001 /* Dictionary */ = {
+			isa = PBXGroup;
+			children = (
+				D1D1D1D10000000000000002 /* BingDict */,
+				D1D1D1D10000000000000003 /* MWDict */,
+			);
+			path = Dictionary;
+			sourceTree = "<group>";
+		};
+		D1D1D1D10000000000000002 /* BingDict */ = {
+			isa = PBXGroup;
+			children = (
+				3F69448D4EB81BB1CABF0B32 /* BingDictHTMLParserTests.swift */,
+				B1B1B1B10000000000000001 /* BingDictServiceTests.swift */,
+			);
+			path = BingDict;
+			sourceTree = "<group>";
+		};
+		D1D1D1D10000000000000003 /* MWDict */ = {
+			isa = PBXGroup;
+			children = (
+				B7A1C0D2E3F4051627384964 /* MWDictAPIParserTests.swift */,
+				B2B2B2B20000000000000001 /* MWDictServiceTests.swift */,
+			);
+			path = MWDict;
 			sourceTree = "<group>";
 		};
 		03CA1CF02EDE089E001908D0 /* Appearance */ = {
@@ -4491,6 +4521,8 @@
 				03A8847A2F14000100D5C0DE /* BingServiceTests.swift in Sources */,
 				9EDE3CCE99239093EAA21D0F /* BingDictHTMLParserTests.swift in Sources */,
 				B7A1C0D2E3F4051627384954 /* MWDictAPIParserTests.swift in Sources */,
+				B1B1B1B10000000000000002 /* BingDictServiceTests.swift in Sources */,
+				B2B2B2B20000000000000002 /* MWDictServiceTests.swift in Sources */,
 				A5D1E5B60000000000000001 /* DeepLServiceTests.swift in Sources */,
 				03D486532E3F2190009313B3 /* ListRegexTests.swift in Sources */,
 				0305E7432E1D2B3E000A23A0 /* NSImage+Test.swift in Sources */,

@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import Alamofire
 import Foundation
 
 // MARK: - MWDictRequest
@@ -37,63 +38,94 @@ enum MWDictRequest {
         else {
             throw QueryError.error(
                 type: .api,
-                message: "Merriam-Webster URL is invalid: \(word)"
+                message: String(
+                    format: String(localized: "service.mw_dict.error.invalid_url %@"),
+                    word
+                )
             )
         }
 
-        var urlRequest = URLRequest(url: url)
-        urlRequest.timeoutInterval = timeout
-        urlRequest.setValue(AppConstants.userAgent, forHTTPHeaderField: "User-Agent")
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
-        urlRequest.httpShouldHandleCookies = false
+        let response = await session.request(
+            url,
+            headers: [
+                "User-Agent": AppConstants.userAgent,
+                "Accept": "application/json",
+            ]
+        ) { $0.timeoutInterval = timeout }
+            .serializingData(automaticallyCancelling: true)
+            .response
 
-        do {
-            let (data, response) = try await session.data(for: urlRequest)
-            if let httpResponse = response as? HTTPURLResponse {
-                switch httpResponse.statusCode {
-                case 200 ..< 300:
-                    break
-                case 401, 403:
-                    throw QueryError.error(
-                        type: .api,
-                        message: "Merriam-Webster API key is invalid or expired"
-                    )
-                default:
-                    throw QueryError.error(
-                        type: .api,
-                        message: "Merriam-Webster HTTP \(httpResponse.statusCode)"
-                    )
-                }
+        if let error = response.error {
+            if DictionarySupport.isCancellation(error) {
+                throw CancellationError()
             }
-            guard !data.isEmpty else {
-                throw QueryError.error(
-                    type: .api,
-                    message: "Merriam-Webster response is empty"
-                )
-            }
-            return data
-        } catch is CancellationError {
-            throw CancellationError()
-        } catch let error as URLError where error.code == .cancelled {
-            throw CancellationError()
-        } catch let error as QueryError {
-            throw error
-        } catch {
             throw QueryError.error(
                 type: .api,
-                message: "Merriam-Webster request failed: \(error.localizedDescription)"
+                message: String(
+                    format: String(localized: "service.mw_dict.error.request_failed %@"),
+                    error.localizedDescription
+                )
             )
         }
+
+        if let httpResponse = response.response {
+            switch httpResponse.statusCode {
+            case 200 ..< 300:
+                break
+            case 401, 403:
+                throw QueryError.error(
+                    type: .api,
+                    message: String(localized: "service.mw_dict.error.invalid_key")
+                )
+            default:
+                throw QueryError.error(
+                    type: .api,
+                    message: String(
+                        format: String(localized: "service.dictionary.error.http_status %ld"),
+                        httpResponse.statusCode
+                    )
+                )
+            }
+        }
+
+        guard let data = response.data, !data.isEmpty else {
+            throw QueryError.error(
+                type: .api,
+                message: String(localized: "service.mw_dict.error.empty_response")
+            )
+        }
+
+        // An invalid key or an unsubscribed reference is reported as a plain
+        // text body with a 2xx status, not as a JSON array.
+        let body = String(data: data, encoding: .utf8)?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        guard body.hasPrefix("[") else {
+            if body.localizedCaseInsensitiveContains("api key") {
+                throw QueryError.error(
+                    type: .api,
+                    message: String(localized: "service.mw_dict.error.invalid_key")
+                )
+            }
+            throw QueryError.error(
+                type: .api,
+                message: String(
+                    format: String(localized: "service.mw_dict.error.request_failed %@"),
+                    body
+                )
+            )
+        }
+
+        return data
     }
 
     // MARK: Private
 
-    private static let session: URLSession = {
+    private static let session: Session = {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.httpCookieStorage = nil
         configuration.httpShouldSetCookies = false
         configuration.urlCache = nil
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-        return URLSession(configuration: configuration)
+        return Session(configuration: configuration)
     }()
 }

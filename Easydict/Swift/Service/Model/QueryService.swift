@@ -404,6 +404,14 @@ open class QueryService: NSObject {
 
     // MARK: - Optional subclass overrides
 
+    /// Sample used by the settings Validate button.
+    ///
+    /// The default Chinese sentence keeps validation cheap for translation
+    /// services; services that only accept English headwords override it.
+    open func validationQuery() -> (text: String, from: Language, to: Language) {
+        ("曾经沧海难为水", .simplifiedChinese, .english)
+    }
+
     open func autoConvertTraditionalChinese() -> Bool {
         false
     }

@@ -142,7 +142,7 @@ enum MWDictAPIParser {
         var seenForms = Set<String>()
         wordForms = wordForms.filter { seenForms.insert($0.lowercased()).inserted }
 
-        let sections = parseSections(entry)
+        let sections = parseSections(entry) + parseDefinedRunOns(entry["dros"])
         guard !sections.isEmpty else { return nil }
 
         let firstKnownUse = stripMarkup(entry["date"] as? String ?? "")
@@ -165,7 +165,7 @@ enum MWDictAPIParser {
     /// into plain display text.
     static func stripMarkup(_ raw: String) -> String {
         let replacements: [(String, String)] = [
-            (#"\{dx_def\}.*?\{/dx_def\}"#, ""),
+            (#"\{dx_def\}(.*?)\{/dx_def\}"#, "$1"),
             (#"\{dxt\|([^|}]*)[^}]*\}"#, "$1"),
             (#"\{bc\}"#, ": "),
             (#"\{ldquo\}"#, "“"),
@@ -240,22 +240,32 @@ enum MWDictAPIParser {
             }
         }
 
+        func walkSequence(_ sequence: [Any]) {
+            for element in sequence {
+                guard let pair = element as? [Any], pair.count >= 2,
+                      let tag = pair[0] as? String
+                else { continue }
+
+                if tag == "pseq" {
+                    walkSequence(pair[1] as? [Any] ?? [])
+                    continue
+                }
+
+                let payload = tag == "bs"
+                    ? (pair[1] as? [String: Any])?["sense"]
+                    : pair[1]
+                guard let sense = payload as? [String: Any],
+                      hasDefinitionText(sense["dt"])
+                else { continue }
+                appendExamples(from: sense["dt"])
+            }
+        }
+
         for entry in json {
             guard let dictionary = entry as? [String: Any] else { continue }
             for definition in dictionary["def"] as? [[String: Any]] ?? [] {
                 for sequence in definition["sseq"] as? [[Any]] ?? [] {
-                    for element in sequence {
-                        guard let pair = element as? [Any], pair.count >= 2,
-                              let tag = pair[0] as? String
-                        else { continue }
-                        let payload = tag == "bs"
-                            ? (pair[1] as? [String: Any])?["sense"]
-                            : pair[1]
-                        guard let sense = payload as? [String: Any],
-                              hasDefinitionText(sense["dt"])
-                        else { continue }
-                        appendExamples(from: sense["dt"])
-                    }
+                    walkSequence(sequence)
                 }
             }
         }
@@ -297,8 +307,18 @@ enum MWDictAPIParser {
     /// Walk one sense sequence: top-level senses get `1`, `2`, … while binding
     /// substitutes (`bs`) get `a`, `b`, … unless the payload already carries `sn`.
     private static func parseSequence(_ sequence: [Any]) -> [MWDictSense] {
-        var senses: [MWDictSense] = []
         var numbering = SenseNumbering()
+        return parseSequenceElements(sequence, numbering: &numbering)
+    }
+
+    /// Parenthesized sequences (`pseq`) nest, so their senses share the
+    /// enclosing sequence's numbering instead of restarting at `1`.
+    private static func parseSequenceElements(
+        _ sequence: [Any],
+        numbering: inout SenseNumbering
+    )
+        -> [MWDictSense] {
+        var senses: [MWDictSense] = []
 
         for element in sequence {
             guard let pair = element as? [Any], pair.count >= 2,
@@ -322,25 +342,10 @@ enum MWDictAPIParser {
                     ))
                 }
             case "pseq":
-                for subElement in pair[1] as? [Any] ?? [] {
-                    guard let subPair = subElement as? [Any], subPair.count >= 2,
-                          let subTag = subPair[0] as? String
-                    else { continue }
-                    let payload = subTag == "bs"
-                        ? (subPair[1] as? [String: Any])?["sense"]
-                        : subPair[1]
-                    let rawNumber = stripMarkup(
-                        (payload as? [String: Any])?["sn"] as? String ?? ""
-                    ).trimmingCharacters(in: .whitespaces)
-                    let label = senseLabel(rawNumber, numbering: &numbering)
-                    if let sense = parseSense(payload, fallbackNumber: label) {
-                        senses.append(MWDictSense(
-                            number: label,
-                            definition: sense.definition,
-                            examples: sense.examples
-                        ))
-                    }
-                }
+                senses.append(contentsOf: parseSequenceElements(
+                    pair[1] as? [Any] ?? [],
+                    numbering: &numbering
+                ))
             default:
                 continue
             }
@@ -387,6 +392,16 @@ enum MWDictAPIParser {
 
         var definitionParts: [String] = []
         var examples: [String] = []
+
+        // Sense status labels (`sls`: slang, obsolete, regional qualifiers)
+        // restrict the definition, so they belong in the rendered text.
+        let statusLabels = (sense["sls"] as? [String] ?? [])
+            .map { stripMarkup($0) }
+            .filter { !$0.isEmpty }
+        if !statusLabels.isEmpty {
+            definitionParts.append("(\(statusLabels.joined(separator: ", ")))")
+        }
+
         walkDefiningText(sense["dt"], into: &definitionParts, examples: &examples)
 
         // A divided sense continues the definition inline: "; specifically …".
@@ -509,6 +524,26 @@ enum MWDictAPIParser {
             walk(raw)
         }
         return synonyms
+    }
+
+    /// Defined run-ons (`dros`): a run-on headword carrying its own `def`
+    /// sections. They become sections of their own so their senses are not
+    /// dropped, unlike the undefined run-ons in `uros`.
+    private static func parseDefinedRunOns(_ raw: Any?) -> [MWDictSection] {
+        guard let items = raw as? [[String: Any]] else { return [] }
+
+        var sections: [MWDictSection] = []
+        for item in items {
+            let headword = stripMarkup(item["drp"] as? String ?? "")
+                .replacingOccurrences(of: "*", with: "")
+            for section in parseSections(item) {
+                sections.append(MWDictSection(
+                    label: headword.isEmpty ? section.label : headword,
+                    senses: section.senses
+                ))
+            }
+        }
+        return sections
     }
 
     /// Undefined run-ons: `developable adjective`.

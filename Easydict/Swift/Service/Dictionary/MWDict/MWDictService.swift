@@ -31,7 +31,7 @@ class MWDictService: QueryService, @unchecked Sendable {
     }
 
     override func name() -> String {
-        NSLocalizedString("merriam_webster", comment: "")
+        NSLocalizedString("service.mw_dict.name", comment: "")
     }
 
     override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
@@ -55,19 +55,20 @@ class MWDictService: QueryService, @unchecked Sendable {
         [.dictionary]
     }
 
+    /// Validation uses an English headword; the default Chinese sample is
+    /// rejected by the English-only guard below.
+    override func validationQuery() -> (text: String, from: Language, to: Language) {
+        ("hello", .english, .simplifiedChinese)
+    }
+
+    /// The API serves monolingual English definitions and ignores the target
+    /// language, so every app language pair is accepted — otherwise users whose
+    /// default target is Japanese or Spanish would get an unsupported-language
+    /// error before the lookup runs.
     override func supportLanguagesDictionary() -> MMOrderedDictionary {
-        let languages: [Any] = [
-            Language.auto, "auto-detect",
-            Language.simplifiedChinese, "zh-Hans",
-            Language.traditionalChinese, "zh-Hant",
-            Language.english, "en",
-        ]
         let ordered = MMOrderedDictionary()
-        for index in stride(from: 0, to: languages.count, by: 2) {
-            if let key = languages[index] as? NSObject,
-               let value = languages[index + 1] as? NSObject {
-                ordered.setObject(value, forKey: key)
-            }
+        for language in EZLanguageManager.shared().allLanguages {
+            ordered.setObject(language as NSString, forKey: language as NSString)
         }
         return ordered
     }
@@ -78,7 +79,11 @@ class MWDictService: QueryService, @unchecked Sendable {
     }
 
     override func configurationListItems() -> Any? {
-        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.mwDictAPIKey, .mwLearnersAPIKey]) {
+        ServiceConfigurationSecretSectionView(
+            service: self,
+            observeKeys: [.mwDictAPIKey, .mwLearnersAPIKey],
+            requiredKeys: [.mwDictAPIKey]
+        ) {
             SecureInputCell(
                 textFieldTitleKey: "service.configuration.mw_dict.api_key.title",
                 key: .mwDictAPIKey
@@ -114,7 +119,7 @@ class MWDictService: QueryService, @unchecked Sendable {
             throw QueryError(type: .noResult)
         }
 
-        let sentences = await fetchLearnerSentences(word: text)
+        let sentences = try await fetchLearnerSentences(word: text)
 
         result?.wordResult = makeWordResult(entry: entry, word: text, sentences: sentences)
 
@@ -140,7 +145,7 @@ class MWDictService: QueryService, @unchecked Sendable {
             let phonetic = EZWordPhonetic()
             phonetic.word = word
             phonetic.language = .english
-            phonetic.name = "US"
+            phonetic.name = NSLocalizedString("us_phonetic", comment: "")
             phonetic.value = pronunciation
             phonetic.accent = "US"
             wordResult.phonetics = [phonetic]
@@ -241,14 +246,21 @@ class MWDictService: QueryService, @unchecked Sendable {
 
     /// Best-effort fetch of the site's full-sentence examples. The reference is a
     /// separate subscription; an invalid key or missing reference yields no block.
-    private func fetchLearnerSentences(word: String) async -> [String] {
+    ///
+    /// The short timeout keeps this optional request off the result critical
+    /// path: without it a slow Learner endpoint would hold back the already
+    /// parsed Collegiate card for the full request timeout.
+    private func fetchLearnerSentences(word: String) async throws -> [String] {
         do {
             let data = try await MWDictRequest.fetchEntryJSON(
                 for: word,
                 apiKey: learnerAPIKey.isEmpty ? apiKey : learnerAPIKey,
+                timeout: 5,
                 reference: "learners"
             )
             return MWDictAPIParser.extractSentences(data)
+        } catch is CancellationError {
+            throw CancellationError()
         } catch {
             return []
         }

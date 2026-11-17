@@ -261,7 +261,9 @@ public class QueryResult: NSObject {
     var copiedText: String? {
         get {
             guard htmlString?.isEmpty == false else {
-                return translatedText
+                // Native dictionary cards set a full copy payload; without it the
+                // copy action would fall back to the one-line translation summary.
+                return storedCopiedText ?? translatedText
             }
             return storedCopiedText
         }
@@ -325,6 +327,8 @@ public class QueryResult: NSObject {
     /// Converts translated results to Traditional Chinese.
     func convertToTraditionalChineseResult() {
         translatedResults = translatedResults?.toTraditionalChineseTexts()
+        storedCopiedText = storedCopiedText?.toTraditionalChinese()
+        wordResult?.convertToTraditionalChinese()
     }
 
     // MARK: Private
@@ -332,4 +336,28 @@ public class QueryResult: NSObject {
     private let translatedResultsLock = NSLock()
     private var translatedResultsStorage: [String]?
     private var storedCopiedText: String?
+}
+
+// MARK: - EZTranslateWordResult + TraditionalChinese
+
+extension EZTranslateWordResult {
+    /// Converts the Chinese content of a native dictionary card; the app-level
+    /// Traditional Chinese conversion otherwise only touches the summary text.
+    func convertToTraditionalChinese() {
+        func convert(_ part: EZTranslatePart) {
+            part.part = part.part?.toTraditionalChinese()
+            part.means = part.means.map { $0.toTraditionalChinese() }
+        }
+
+        parts?.forEach(convert)
+        synonyms?.forEach(convert)
+        antonyms?.forEach(convert)
+        collocation?.forEach(convert)
+        exchanges?.forEach { exchange in
+            exchange.name = exchange.name.toTraditionalChinese()
+            exchange.words = exchange.words.map { $0.toTraditionalChinese() }
+        }
+        etymology = etymology?.toTraditionalChinese()
+        tags = tags?.map { $0.toTraditionalChinese() }
+    }
 }

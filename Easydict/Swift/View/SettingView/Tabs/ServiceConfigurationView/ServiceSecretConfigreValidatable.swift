@@ -27,11 +27,11 @@ extension QueryService: ServiceSecretConfigreValidatable {
          2. if Chinese text length > 5, it won't query dict.
          */
 
-        let text = "曾经沧海难为水"
+        let query = validationQuery()
         var latestResult = result ?? QueryResult()
 
         do {
-            for try await result in translateStream(text, from: .simplifiedChinese, to: .english) {
+            for try await result in translateStream(query.text, from: query.from, to: query.to) {
                 latestResult = result
             }
         } catch {

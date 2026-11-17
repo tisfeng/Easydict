@@ -2,7 +2,7 @@
 
 - 状态：adopted
 - 初次记录：2026-11-09
-- 最近更新：2026-11-09
+- 最近更新：2026-11-17
 
 ## 背景
 
@@ -40,16 +40,21 @@ flowchart LR
 ### `MWDictRequest`
 
 - `GET https://dictionaryapi.com/api/v3/references/collegiate/json/{word}?key={key}`。
-- ephemeral `URLSession`：不落 Cookie、不缓存；查询值与 Key 使用严格白名单编码。
-- 401/403 映射为“Key 无效或过期”，其余非 2xx、空响应与网络错误映射为 `QueryError`；
-  取消错误原样抛出。
+- ephemeral Alamofire `Session`：不落 Cookie、不缓存；查询值与 Key 使用严格白名单编码。
+- 401/403 映射为“Key 无效或过期”；2xx 但正文不是 JSON 数组时按 API 错误处理（无效 Key 或
+  未订阅的引用会以纯文本返回，不能当作词条解析）；其余非 2xx、空响应与网络错误映射为
+  `QueryError`；取消错误原样抛出。错误文案走 String Catalog。
 
 ### `MWDictAPIParser`
 
 - 输入为 JSON 数组：对象是词条，字符串数组是拼写建议（返回 `nil`，表现为无结果）。
 - 只取第一条词条（同形异义词的第一条），词头取自 `meta.id` 并去掉 `:1` 同形编号。
 - 词形变化取自 `ins`（`de*vel*oped` 去掉 `*`），缺失时回退 `meta.stems` 并去掉词头、去重。
-- 释义遍历 `def[].sseq`：`sense`/`bs` 为义项，`pseq` 为括号子义项；编号规则见下。
+- 释义遍历 `def[].sseq`：`sense`/`bs` 为义项，`pseq` 为括号子义项（可嵌套，递归共享同一
+  编号状态）；编号规则见下。义项状态标签 `sls`（如 slang、obsolete、地区限定）以 `(标签)`
+  前缀保留在定义中，避免把受限释义显示为无条件释义。
+- `dros`（带定义的派生词，如词条正文只有派生词定义时）按派生词词头单独成分节解析，
+  不再只保留 `uros` 的未定义派生词。
 - 定义文本 `dt` 支持 `text` 与 `vis`（例句）；`sdsense` 以 `; 分隔词 …` 续写；
   `uns` 为用法说明（官网在箭头 `→` 之后展示），其文本与例句一并保留。
 - 同义词优先取 `syn_list` 的 `wd`，否则从同义词辨析段落 `pt` 中提取 `{sc}…{/sc}` 词头。
@@ -59,9 +64,12 @@ flowchart LR
 
 ### `MWDictService`
 
-- 服务类型 `.merriamWebster`，名称 `merriam_webster`，`apiKeyRequirement = .userProvided`，
+- 服务类型 `.merriamWebster`，名称 `service.mw_dict.name`，`apiKeyRequirement = .userProvided`，
   `hasPrivateAPIKey` 由 `EZMWDictAPIKey` 是否为空决定。
-- 语言边界：auto / 英语 / 简体中文 / 繁体中文；仅接受英文单词（允许连字符与撇号）。
+- 语言边界：单语英文词典且忽略目标语言，因此与 MDict 一样接受全部语言对；只查询英文单词
+  （允许连字符、撇号与 `café`、`naïve` 一类带变音符号的词头）。
+- 设置页 Validate 使用 `validationQuery()` 返回的英文样例（`hello`），默认中文样例会被英文
+  单词门槛拒绝；`requiredKeys` 只要求 Collegiate Key，Learner's Key 保持可选。
 - `wordLink` 指向官网词条页。
 - 设置页通过 `ServiceConfigurationSecretSectionView` 提供 API Key 输入。
 
@@ -97,6 +105,8 @@ Markdown，因此标题 `Examples in a Sentence` 以 Unicode 粗体呈现，圆�
 官网「Examples of … in a Sentence」整句例句来自 Learner's Dictionary（另一订阅）。服务在
 Collegiate 结果之外，额外以 `learners` 引用拉取整句例句，并在存在时追加「Examples in a
 Sentence」区块；未订阅该引用时接口返回错误文本，区块静默省略，不影响 Collegiate 卡片。
+该请求使用 5 秒短超时并向上传递取消：它是可选补充，不能因为 Learner 端点缓慢而把已解析好的
+Collegiate 卡片拖到完整请求超时。
 
 两个引用使用独立 Key：Collegiate 读取 `mwDictAPIKey`，Learner's 读取 `mwLearnersAPIKey`；
 后者未配置时回退到 Collegiate Key，以兼容两个引用共用同一 Key 的账号。设置页分别提供输入框。
@@ -104,7 +114,9 @@ Sentence」区块；未订阅该引用时接口返回错误文本，区块静默
 整句例句只取「有定义文本」的义项（跳过仅含用法说明的义项），去掉 `[=…]` 注释，最多展示
 两条，与官网「Examples of … in a Sentence」的篇幅一致。
 
-发音写入 `EZWordPhonetic`（首个发音，`US`）。
+发音写入 `EZWordPhonetic`（首个发音，标签取 `us_phonetic` 的本地化值）。
+复制动作使用完整纯文本：`QueryResult.copiedText` 优先返回服务写入的复制载荷，不再退回
+单行摘要；繁体转换同时覆盖原生卡片的 part、词形、同义词等字段。
 
 ## 取舍
 
@@ -127,10 +139,11 @@ Sentence」区块；未订阅该引用时接口返回错误文本，区块静默
 
 ## 验证
 
-- `EasydictTests/Service/MWDictAPIParserTests.swift`：解析与服务层用例覆盖词头/词性/发音/词形、
+- `EasydictTests/Service/Dictionary/MWDict/MWDictAPIParserTests.swift` 与
+  `MWDictServiceTests.swift`：解析与服务层用例覆盖词头/词性/发音/词形、
   动词分节与编号（含 `2 b (1)`）、同义词/首次使用/最佳译文、纯文本、拼写建议返回 `nil`、
   标记转换，以及服务层 part 顺序与原生同义词字段。
-- `xcodebuild test`：韦氏与必应共 19 项用例通过。
+- `xcodebuild test`：韦氏与必应共 21 项用例通过。
 - 真实 API（develop / run / happy）逐项对照官网：分节、编号、例句、派生词、首次使用、
   词源一致。
 - 运行中应用 HTTP `/translate` 与窗口截图核对：原生卡片按官网顺序渲染。
