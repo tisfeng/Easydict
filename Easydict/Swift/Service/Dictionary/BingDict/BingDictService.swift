@@ -148,16 +148,49 @@ class BingDictService: QueryService, @unchecked Sendable {
         }
 
         var parts: [EZTranslatePart] = []
-        func appendPart(_ label: String, _ means: [String]) {
-            guard !means.isEmpty else { return }
+        var orderedParts: [EZTranslatePart] = []
+        func makePart(_ label: String, _ means: [String]) -> EZTranslatePart {
             let part = EZTranslatePart()
             part.part = label
             part.means = means
+            return part
+        }
+
+        func appendPart(_ label: String, _ means: [String]) {
+            guard !means.isEmpty else { return }
+            let part = makePart(label, means)
             parts.append(part)
+            orderedParts.append(part)
+        }
+
+        func appendOrderedOnly(_ label: String, _ means: [String]) {
+            guard !means.isEmpty else { return }
+            orderedParts.append(makePart(label, means))
         }
 
         for row in entry.quickRows {
             appendPart(row.label, [row.values])
+        }
+
+        if !entry.wordForms.isEmpty {
+            let forms = Self.groupedWordForms(entry.wordForms)
+                .map { "\($0.label): \($0.values.joined(separator: ", "))" }
+                .joined(separator: "    ")
+            appendOrderedOnly(NSLocalizedString("service.dictionary.section.word_forms", comment: ""), [forms])
+        }
+
+        for collocation in entry.collocations {
+            appendOrderedOnly(collocation.label, [collocation.items.joined(separator: ", ")])
+        }
+
+        for (heading, groups) in [
+            (NSLocalizedString("synonyms", comment: ""), entry.synonyms),
+            (NSLocalizedString("antonyms", comment: ""), entry.antonyms),
+        ] where !groups.isEmpty {
+            appendOrderedOnly("", [heading])
+            for group in groups {
+                appendOrderedOnly(group.label, [group.items.joined(separator: ", ")])
+            }
         }
 
         let showsPos = entry.senseGroups.count > 1
@@ -176,6 +209,9 @@ class BingDictService: QueryService, @unchecked Sendable {
 
         if !parts.isEmpty {
             wordResult.parts = parts
+        }
+        if !orderedParts.isEmpty {
+            wordResult.orderedParts = orderedParts
         }
 
         if !entry.wordForms.isEmpty {

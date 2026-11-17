@@ -93,7 +93,8 @@ API 在每条序列的首个义项给出完整编号（`1 a`、`2 a`、`4`），
    一行（标签为编号，正文为定义），每条例句单独一行（`— …`）。
 3. 派生词（`developable adjective`）。
 4. 词形变化写入 `exchanges`（标题使用本地化 `service.dictionary.section.word_forms`），
-   同义词写入 `synonyms`，均由结果视图渲染为可点击词条，并供 Anki 结构化字段使用。
+   同义词写入 `synonyms`，供 Anki 结构化字段使用；另用 `orderedParts` 保留词性与词形在释义前、
+   同义词在释义后的展示顺序，结果视图只渲染该字段，避免固定分节顺序造成重排或重复。
 
 用法说明以 `→ …` 续写于定义之后；`First Known Use` 与 `Etymology` 不展示。
 
@@ -118,8 +119,8 @@ Collegiate 卡片拖到完整请求超时。
 
 发音写入 `EZWordPhonetic`（首个发音，标签取 `us_phonetic` 的本地化值，TTS accent 为小写 `us`）。
 复制动作使用完整纯文本：`QueryResult.copiedText` 优先返回服务写入的复制载荷，不再退回
-单行摘要；无动词分节标签时纯文本也包含词性。Anki `full_result` 对本服务只采用完整纯文本，
-避免结构化表示与摘要重复。
+单行摘要；无动词分节标签时纯文本也包含词性，Learner 整句例句存在时同样附加到复制载荷。
+Anki `full_result` 对本服务只采用完整纯文本，避免结构化表示与摘要重复。
 
 ## 取舍
 

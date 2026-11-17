@@ -109,3 +109,14 @@
   另新增两个专属联网验证 suite：`BingDictValidationTests` 与 `MWDictValidationTests`，
   使用英文样例分别验证匿名必应查询和已配置 Key 的韦氏查询，2/2 通过。
   本轮仍未重新部署应用，未做界面截图和全服务联网验证。
+
+### 第三轮补充（Codex 对 cd2a1280 的三条新意见）
+
+- `MWDictAPIParser.parseSense` 始终使用 `senseLabel` 计算出的完整义项编号，删除冗余的原始
+  `sn` 回退，避免后续误用未补全的 `b`、`(2)` 标签。
+- 新增 `EZTranslateWordResult.orderedParts` 作为展示专用字段：Bing 恢复快速释义 → 词形 →
+  搭配 → 同义/反义 → 编号释义，韦氏恢复词性/词形在释义前、同义词在释义后；`parts` 与
+  `exchanges`/`collocation`/`synonyms`/`antonyms` 保持 Anki 语义，结果视图只渲染
+  `orderedParts`，避免重复。繁体转换同步覆盖该字段。
+- Learner 整句例句存在时，复制文本与 Anki 的 canonical `full_result` 同样附加该区块。
+- 验证：四个词典 suite 21/21 通过；专属联网验证此前 2/2 通过；`git diff --check` 无空白错误。

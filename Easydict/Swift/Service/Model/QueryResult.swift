@@ -145,6 +145,11 @@ class EZTranslateSimpleWord: NSObject {
 class EZTranslateWordResult: NSObject {
     var phonetics: [EZWordPhonetic]?
     var parts: [EZTranslatePart]?
+
+    /// Presentation-only parts in provider order. When set, the native card
+    /// renders these instead of `parts` and the structured related sections.
+    var orderedParts: [EZTranslatePart]?
+
     var exchanges: [EZTranslateExchange]?
     var simpleWords: [EZTranslateSimpleWord]?
     var tags: [String]?
@@ -351,6 +356,7 @@ extension EZTranslateWordResult {
         }
 
         parts?.forEach(convert)
+        orderedParts?.forEach(convert)
         synonyms?.forEach(convert)
         antonyms?.forEach(convert)
         collocation?.forEach(convert)

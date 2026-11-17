@@ -26,7 +26,7 @@ struct BingDictServiceTests {
     }
 
     @Test("Maps the entry into site-ordered native parts")
-    func makeWordResultOrderAndLabels() {
+    func makeWordResultOrderAndLabels() throws {
         let entry = BingDictWordEntry(
             headword: "run",
             phoneticUS: "rʌn",
@@ -74,5 +74,13 @@ struct BingDictServiceTests {
         #expect(wordResult.synonyms?.first?.means == ["sprint"])
         #expect(wordResult.antonyms?.map(\.part) == ["v."])
         #expect(wordResult.antonyms?.first?.means == ["walk"])
+
+        let orderedParts = try #require(wordResult.orderedParts)
+        #expect(orderedParts.count == 10)
+        #expect(orderedParts[2].means == ["复数: formulas, formulae"])
+        #expect(orderedParts[3].means == ["run a business"])
+        #expect(orderedParts[4].means == [NSLocalizedString("synonyms", comment: "")])
+        #expect(orderedParts[6].means == [NSLocalizedString("antonyms", comment: "")])
+        #expect(orderedParts[8].means == ["[t] ~ sth  跑  to move fast"])
     }
 }

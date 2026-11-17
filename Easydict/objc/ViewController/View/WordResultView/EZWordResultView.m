@@ -521,7 +521,15 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             }];
         }
 
-        [wordResult.parts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+        NSArray<EZTranslatePart *> *orderedParts = wordResult.orderedParts;
+        BOOL usesOrderedParts = orderedParts != nil;
+        NSArray<EZTranslatePart *> *displayParts = usesOrderedParts ? orderedParts : wordResult.parts;
+        NSArray<EZTranslateExchange *> *exchanges = usesOrderedParts ? nil : wordResult.exchanges;
+        NSArray<EZTranslatePart *> *synonyms = usesOrderedParts ? nil : wordResult.synonyms;
+        NSArray<EZTranslatePart *> *antonyms = usesOrderedParts ? nil : wordResult.antonyms;
+        NSArray<EZTranslatePart *> *collocation = usesOrderedParts ? nil : wordResult.collocation;
+
+        [displayParts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             EZLabel *partLabel = nil;
             __block CGFloat exceptedWidth = 0;
             if (obj.part.length) {
@@ -602,7 +610,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             lastView = meanLabel;
         }];
 
-        [wordResult.exchanges enumerateObjectsUsingBlock:^(EZTranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+        [exchanges enumerateObjectsUsingBlock:^(EZTranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             EZLabel *exchangeLabel = [self makeResultTextLabel];
             [self addSubview:exchangeLabel];
             exchangeLabel.font = typeTextFont;
@@ -658,9 +666,9 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
         }];
 
         // 同义词
-        if (result.wordResult.synonyms.count) {
+        if (synonyms.count) {
             lastView = [self createSectionViewForSynonymsOrAntonyms:NSLocalizedString(@"synonyms", nil)
-                                                              parts:result.wordResult.synonyms
+                                                              parts:synonyms
                                                           textColor:typeTextColor
                                                        typeTextFont:typeTextFont
                                                              height:&height
@@ -668,9 +676,9 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
         }
 
         // 反义词
-        if (result.wordResult.antonyms.count) {
+        if (antonyms.count) {
             lastView = [self createSectionViewForSynonymsOrAntonyms:NSLocalizedString(@"antonyms", nil)
-                                                              parts:result.wordResult.antonyms
+                                                              parts:antonyms
                                                           textColor:typeTextColor
                                                        typeTextFont:typeTextFont
                                                              height:&height
@@ -678,9 +686,9 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
         }
 
         // 搭配
-        if (result.wordResult.collocation.count) {
+        if (collocation.count) {
             lastView = [self createSectionViewForSynonymsOrAntonyms:NSLocalizedString(@"collocation", nil)
-                                                              parts:result.wordResult.collocation
+                                                              parts:collocation
                                                           textColor:typeTextColor
                                                        typeTextFont:typeTextFont
                                                              height:&height

@@ -425,10 +425,8 @@ enum MWDictAPIParser {
             .trimmingCharacters(in: .whitespacesAndNewlines)
         guard !definition.isEmpty || !examples.isEmpty else { return nil }
 
-        let number = stripMarkup(sense["sn"] as? String ?? "")
-            .trimmingCharacters(in: .whitespaces)
         return MWDictSense(
-            number: number.isEmpty ? fallbackNumber : number,
+            number: fallbackNumber,
             definition: definition,
             examples: examples
         )

@@ -22,7 +22,7 @@ struct MWDictServiceTests {
     }
 
     @Test("Maps the entry into site-ordered native parts")
-    func makeWordResultOrder() {
+    func makeWordResultOrder() throws {
         let entry = MWDictEntry(
             headword: "develop",
             partOfSpeech: "verb",
@@ -74,6 +74,15 @@ struct MWDictServiceTests {
         #expect(wordResult.exchanges?.first?.words == ["developed", "developing", "develops"])
         #expect(wordResult.phonetics?.first?.value == "di-ˈve-ləp")
         #expect(wordResult.synonyms?.first?.means == ["grow", "mature"])
+
+        let orderedParts = try #require(wordResult.orderedParts)
+        #expect(orderedParts.count == 12)
+        #expect(orderedParts[0].means == ["developed; developing; develops"])
+        #expect(orderedParts[1].means == ["transitive verb"])
+        #expect(orderedParts[7].means == ["developable adjective"])
+        #expect(orderedParts[8].means == ["𝗘𝘅𝗮𝗺𝗽𝗹𝗲𝘀 𝗶𝗻 𝗮 𝗦𝗲𝗻𝘁𝗲𝗻𝗰𝗲"])
+        #expect(orderedParts[10].means == [NSLocalizedString("synonyms", comment: "")])
+        #expect(orderedParts[11].means == ["grow, mature"])
     }
 
     @Test("Indents subsenses and examples like the official page")

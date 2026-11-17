@@ -126,7 +126,11 @@ class MWDictService: QueryService, @unchecked Sendable {
         let sentences = try await fetchLearnerSentences(word: text)
 
         let wordResult = makeWordResult(entry: entry, word: text, sentences: sentences)
-        let plainText = entry.plainText
+        var plainText = entry.plainText
+        if !sentences.isEmpty {
+            let heading = NSLocalizedString("service.mw_dict.section.examples_in_a_sentence", comment: "")
+            plainText += "\n" + heading + "\n" + sentences.map { "— \($0)" }.joined(separator: "\n")
+        }
 
         try updateResultLock.withLock {
             try Task.checkCancellation()
@@ -164,16 +168,32 @@ class MWDictService: QueryService, @unchecked Sendable {
         }
 
         var parts: [EZTranslatePart] = []
-        func appendPart(_ label: String, _ means: [String]) {
-            guard !means.isEmpty else { return }
+        var orderedParts: [EZTranslatePart] = []
+        func makePart(_ label: String, _ means: [String]) -> EZTranslatePart {
             let part = EZTranslatePart()
             part.part = label
             part.means = means
+            return part
+        }
+
+        func appendPart(_ label: String, _ means: [String]) {
+            guard !means.isEmpty else { return }
+            let part = makePart(label, means)
             parts.append(part)
+            orderedParts.append(part)
+        }
+
+        func appendOrderedOnly(_ label: String, _ means: [String]) {
+            guard !means.isEmpty else { return }
+            orderedParts.append(makePart(label, means))
         }
 
         if entry.sections.allSatisfy({ $0.label.isEmpty }), !entry.partOfSpeech.isEmpty {
             appendPart("", [entry.partOfSpeech])
+        }
+
+        if !entry.wordForms.isEmpty {
+            appendOrderedOnly("", [entry.wordForms.joined(separator: "; ")])
         }
 
         for section in entry.sections {
@@ -206,8 +226,16 @@ class MWDictService: QueryService, @unchecked Sendable {
             }
         }
 
+        if !entry.synonyms.isEmpty {
+            appendOrderedOnly("", [NSLocalizedString("synonyms", comment: "")])
+            appendOrderedOnly("", [entry.synonyms.joined(separator: ", ")])
+        }
+
         if !parts.isEmpty {
             wordResult.parts = parts
+        }
+        if !orderedParts.isEmpty {
+            wordResult.orderedParts = orderedParts
         }
 
         if !entry.wordForms.isEmpty {

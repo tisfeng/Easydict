@@ -83,8 +83,9 @@ flowchart LR
 - 结果写入：`wordResult`（原生卡片）、`innerTexts`/`copiedText`（`plainText`）、
   `translatedResults`（`bestTranslation`）。
 - 词形变化写入原生 `exchanges`，搭配写入 `collocation`，同义词与反义词写入
-  `synonyms` / `antonyms`；这些结构化字段同时供原生卡片和 Anki 使用，避免把不相关内容
-  全部混入 `parts` 的 `{definition}`。
+  `synonyms` / `antonyms`；这些结构化字段供 Anki 使用，避免把不相关内容全部混入
+  `parts` 的 `{definition}`。另用 `orderedParts` 保存官网展示顺序，结果视图只渲染该字段，
+  不再按“parts → exchanges → related”的固定顺序重排或重复显示。
 - 复制与繁体：`QueryResult.copiedText` 优先返回服务写入的完整复制载荷；繁体转换覆盖原生卡片、
   `innerTexts`、复制文本与摘要。Anki `full_result` 对本服务只采用完整纯文本，避免结构化表示
   与摘要重复。
