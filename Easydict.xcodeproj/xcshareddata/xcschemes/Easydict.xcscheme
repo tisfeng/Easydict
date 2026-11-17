@@ -56,9 +56,15 @@
                <Test
                   Identifier = "GitHubCopilotServiceTests/validatesLocalCopilotTranslation()">
                </Test>
-               <Test
-                  Identifier = "TokenHubServiceTests/validatesTokenHubTranslation()">
-               </Test>
+                <Test
+                   Identifier = "TokenHubServiceTests/validatesTokenHubTranslation()">
+                </Test>
+                <Test
+                   Identifier = "BingDictValidationTests/validateService()">
+                </Test>
+                <Test
+                   Identifier = "MWDictValidationTests/validateService()">
+                </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

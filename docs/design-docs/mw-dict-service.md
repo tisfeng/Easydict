@@ -50,9 +50,10 @@ flowchart LR
 - 输入为 JSON 数组：对象是词条，字符串数组是拼写建议（返回 `nil`，表现为无结果）。
 - 只取第一条词条（同形异义词的第一条），词头取自 `meta.id` 并去掉 `:1` 同形编号。
 - 词形变化取自 `ins`（`de*vel*oped` 去掉 `*`），缺失时回退 `meta.stems` 并去掉词头、去重。
-- 释义遍历 `def[].sseq`：`sense`/`bs` 为义项，`pseq` 为括号子义项（可嵌套，递归共享同一
-  编号状态）；编号规则见下。义项状态标签 `sls`（如 slang、obsolete、地区限定）以 `(标签)`
-  前缀保留在定义中，避免把受限释义显示为无条件释义。
+- 释义遍历 `def[].sseq`：`sense`/`bs` 为义项，`pseq` 为括号子义项；其 payload 是“义项序列
+  的数组”而非扁平 tagged pair 数组，需逐序列递归并共享编号状态。编号规则见下。义项状态标签
+  `sls`（如 slang、obsolete、地区限定）以 `(标签)` 前缀保留在定义中。
+- `parseSense` 始终使用 `senseLabel` 补全后的编号，避免裸 `b`、`(2)` 丢失父编号。
 - `dros`（带定义的派生词，如词条正文只有派生词定义时）按派生词词头单独成分节解析，
   不再只保留 `uros` 的未定义派生词。
 - 定义文本 `dt` 支持 `text` 与 `vis`（例句）；`sdsense` 以 `; 分隔词 …` 续写；
@@ -149,7 +150,8 @@ Anki `full_result` 对本服务只采用完整纯文本，避免结构化表示�
   标记转换，以及服务层 part 顺序与原生同义词字段。
 - `xcodebuild test`：韦氏与必应共 21 项用例通过。
 - `EasydictTests/Service/Dictionary/MWDict/MWDictValidationTests.swift`：使用本机 Collegiate Key
-  的独立英文样例联网验证，通过。
+  的独立英文样例联网验证，通过。共享 scheme 的 `SkippedTests` 精确跳过该联网用例及对应的
+  Bing 用例，默认 `xcodebuild test` 不要求本机 Key；需要时以 `-only-testing` 显式运行。
 - 真实 API（develop / run / happy）逐项对照官网：分节、编号、例句、派生词、首次使用、
   词源一致。
 - 运行中应用 HTTP `/translate` 与窗口截图核对：原生卡片按官网顺序渲染。

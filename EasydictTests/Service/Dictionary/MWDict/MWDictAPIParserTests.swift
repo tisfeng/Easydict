@@ -106,6 +106,39 @@ struct MWDictAPIParserTests {
         #expect(MWDictAPIParser.extractSentences(invalid).isEmpty)
     }
 
+    @Test("Recurses nested parenthesized sense sequences")
+    func nestedParenthesizedSequences() throws {
+        let json = """
+        [
+          {
+            "def": [
+              { "sseq": [
+                [
+                  [ "sense", { "sn": "1 a", "dt": [ [ "text", "top level" ] ] } ],
+                  [ "pseq", [
+                    [
+                      [ "sense", { "sn": "(1)", "dt": [
+                        [ "text", "nested definition" ],
+                        [ "vis", [ { "t": "nested example" } ] ]
+                      ] } ]
+                    ]
+                  ] ]
+                ]
+              ] }
+            ]
+          }
+        ]
+        """
+        let data = Data(json.utf8)
+        let entry = try #require(MWDictAPIParser.parse(data))
+        let senses = try #require(entry.sections.first?.senses)
+
+        #expect(senses.map(\.number) == ["1 a", "1 a (1)"])
+        #expect(senses.last?.definition == "nested definition")
+        #expect(senses.last?.examples == ["nested example"])
+        #expect(MWDictAPIParser.extractSentences(data) == ["nested example"])
+    }
+
     @Test("Converts running-text markup to plain text")
     func stripMarkup() {
         let raw = "{bc}to {it}grow{/it} {sx|bigger|bigger||} and {a_link|stronger}"

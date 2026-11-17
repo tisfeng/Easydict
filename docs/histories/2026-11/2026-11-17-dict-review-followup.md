@@ -120,3 +120,10 @@
   `orderedParts`，避免重复。繁体转换同步覆盖该字段。
 - Learner 整句例句存在时，复制文本与 Anki 的 canonical `full_result` 同样附加该区块。
 - 验证：四个词典 suite 21/21 通过；专属联网验证此前 2/2 通过；`git diff --check` 无空白错误。
+
+### 第四轮补充（嵌套 pseq 与默认测试排除）
+
+- 修正 `pseq` 的递归层级：其 payload 是嵌套义项序列数组，Collegiate 与 Learner 都逐序列遍历，
+  不再把内部序列误当作 `[tag, payload]`；新增嵌套回归用例，词典单测总数 22/22 通过。
+- 共享 `Easydict.xcscheme` 的 `SkippedTests` 精确跳过两个专属联网验证，避免无 Key 环境下默认
+  测试失败；随后用 `-only-testing` 显式重跑两个 suite，2/2 通过。

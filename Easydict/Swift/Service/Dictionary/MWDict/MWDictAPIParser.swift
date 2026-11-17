@@ -250,7 +250,9 @@ enum MWDictAPIParser {
                 else { continue }
 
                 if tag == "pseq" {
-                    walkSequence(pair[1] as? [Any] ?? [])
+                    for nestedSequence in pair[1] as? [[Any]] ?? [] {
+                        walkSequence(nestedSequence)
+                    }
                     continue
                 }
 
@@ -345,10 +347,14 @@ enum MWDictAPIParser {
                     ))
                 }
             case "pseq":
-                senses.append(contentsOf: parseSequenceElements(
-                    pair[1] as? [Any] ?? [],
-                    numbering: &numbering
-                ))
+                // A pseq contains an array of nested sense sequences, not one
+                // flat sequence of tagged pairs.
+                for nestedSequence in pair[1] as? [[Any]] ?? [] {
+                    senses.append(contentsOf: parseSequenceElements(
+                        nestedSequence,
+                        numbering: &numbering
+                    ))
+                }
             default:
                 continue
             }
