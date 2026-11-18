@@ -135,3 +135,13 @@
   保留给历史记录与复制，其他服务不受影响。
 - 验证：词典 suite 22/22 通过；用当前 Debug 构建打开 `easydict://query?text=exploitation`，
   实测卡片顺序为词头 → US 音标 → noun → exploitations → 义项 1 → 例句，摘要行已消失。
+
+### 部署（2026-11-18）
+
+- Release 2.27.0（build 70）构建成功，已覆盖 `/Applications/Easydict.app`；原 2.26.0 应用备份为
+  `/tmp/easydict-agent/Easydict-2.26.0-backup.zip`。
+- 覆盖后用稳定 designated requirement 重新 ad-hoc 签名：
+  `designated => identifier "com.izual.Easydict"`，`codesign --verify --deep --strict` 通过。
+- 启动安装版并以 `easydict://query?text=exploitation` 实测：卡片从词头直接进入 US 音标、noun、
+  exploitations、义项 1 与例句，摘要行不再出现；截图
+  `/tmp/easydict-agent/deployed-mw-card2.png`。
