@@ -48,6 +48,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeGemini;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeOllama;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypePolishing;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeSummary;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeExplain;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepSeek;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeQianfan;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeGroq;
