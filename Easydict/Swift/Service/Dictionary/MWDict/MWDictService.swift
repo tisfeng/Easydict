@@ -142,6 +142,7 @@ class MWDictService: QueryService, @unchecked Sendable {
             result?.innerTexts = [plainText]
             result?.copiedText = plainText
             result?.translatedResults = entry.bestTranslation.map { [$0] }
+            result?.showsTranslatedSummary = false
         }
 
         return result ?? QueryResult()

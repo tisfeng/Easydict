@@ -216,6 +216,11 @@ public class QueryResult: NSObject {
 
     var showReplaceButton: Bool = false
 
+    /// Whether the native card renders `translatedResults` as a summary line
+    /// above the word result. Dictionary services whose source page has no such
+    /// summary turn this off while keeping the text for history and copy.
+    var showsTranslatedSummary: Bool = true
+
     /// Optional message set during validation to provide extra context (e.g. streaming auto-disabled).
     var validationMessage: String?
 
@@ -326,6 +331,7 @@ public class QueryResult: NSObject {
         didFinishLoadingHTMLBlock = nil
         webViewManager.reset()
         showReplaceButton = false
+        showsTranslatedSummary = true
         markdownRenderingOverride = nil
     }
 

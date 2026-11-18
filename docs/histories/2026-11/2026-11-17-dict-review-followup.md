@@ -127,3 +127,11 @@
   不再把内部序列误当作 `[tag, payload]`；新增嵌套回归用例，词典单测总数 22/22 通过。
 - 共享 `Easydict.xcscheme` 的 `SkippedTests` 精确跳过两个专属联网验证，避免无 Key 环境下默认
   测试失败；随后用 `-only-testing` 显式重跑两个 suite，2/2 通过。
+
+### 第五轮补充（Merriam-Webster 摘要行）
+
+- 用户指出卡片在词头与音标之间多出 `an act or instance of exploiting`，官网无此行且与下方义项 1
+  重复。新增 `QueryResult.showsTranslatedSummary`（默认 true），韦氏服务关闭该展示；摘要数据仍
+  保留给历史记录与复制，其他服务不受影响。
+- 验证：词典 suite 22/22 通过；用当前 Debug 构建打开 `easydict://query?text=exploitation`，
+  实测卡片顺序为词头 → US 音标 → noun → exploitations → 义项 1 → 例句，摘要行已消失。

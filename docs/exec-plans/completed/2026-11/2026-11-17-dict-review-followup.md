@@ -87,6 +87,7 @@ Validate 按钮对英文专用词典永远失败、Learner 例句请求阻塞卡
 - 专属联网验证 `BingDictValidationTests` / `MWDictValidationTests`：2/2 通过。
 - 第三轮展示顺序、义项编号与复制内容修复后，四个词典 suite 再次 21/21 通过。
 - 第四轮嵌套 pseq 回归用例加入后 22/22 通过；scheme 跳过联网用例后显式验证仍 2/2 通过。
+- 第五轮隐藏韦氏摘要行后 22/22 通过，并用当前 Debug 构建截图核对 exploitation 卡片。
 - 界面截图未执行，原因见 history 的验证节。
 
 ## 完成条件

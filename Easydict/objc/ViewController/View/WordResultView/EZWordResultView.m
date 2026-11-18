@@ -254,7 +254,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             lastView = bigWordLabel;
         }
 
-        if (result.translatedResults.count || errorMessage.length > 0) {
+        if (errorMessage.length > 0 || (result.showsTranslatedSummary && result.translatedResults.count)) {
             EZLabel *explainLabel;
             __block CGFloat exceptedWidth = 0;
             CGFloat explainTextFieldTopOffset = 9;
