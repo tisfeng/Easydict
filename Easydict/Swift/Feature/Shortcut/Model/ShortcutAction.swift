@@ -157,7 +157,7 @@ extension ShortcutAction {
                 }
             ),
             .toggleAppendMode: .init(
-                titleKey: "shortcut.append_mode.title",
+                titleKey: "shortcut.append_mode.action.title",
                 icon: .textBadgePlus,
                 defaultsKey: .toggleAppendModeShortcut,
                 action: {

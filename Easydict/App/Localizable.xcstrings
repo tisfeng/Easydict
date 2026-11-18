@@ -25089,7 +25089,7 @@
         }
       }
     },
-    "shortcut.append_mode.title" : {
+    "shortcut.append_mode.action.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
