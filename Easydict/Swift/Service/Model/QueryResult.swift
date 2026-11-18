@@ -145,6 +145,11 @@ class EZTranslateSimpleWord: NSObject {
 class EZTranslateWordResult: NSObject {
     var phonetics: [EZWordPhonetic]?
     var parts: [EZTranslatePart]?
+
+    /// Presentation-only parts in provider order. When set, the native card
+    /// renders these instead of `parts` and the structured related sections.
+    var orderedParts: [EZTranslatePart]?
+
     var exchanges: [EZTranslateExchange]?
     var simpleWords: [EZTranslateSimpleWord]?
     var tags: [String]?
@@ -211,6 +216,11 @@ public class QueryResult: NSObject {
 
     var showReplaceButton: Bool = false
 
+    /// Whether the native card renders `translatedResults` as a summary line
+    /// above the word result. Dictionary services whose source page has no such
+    /// summary turn this off while keeping the text for history and copy.
+    var showsTranslatedSummary: Bool = true
+
     /// Optional message set during validation to provide extra context (e.g. streaming auto-disabled).
     var validationMessage: String?
 
@@ -261,7 +271,9 @@ public class QueryResult: NSObject {
     var copiedText: String? {
         get {
             guard htmlString?.isEmpty == false else {
-                return translatedText
+                // Native dictionary cards set a full copy payload; without it the
+                // copy action would fall back to the one-line translation summary.
+                return storedCopiedText ?? translatedText
             }
             return storedCopiedText
         }
@@ -319,12 +331,16 @@ public class QueryResult: NSObject {
         didFinishLoadingHTMLBlock = nil
         webViewManager.reset()
         showReplaceButton = false
+        showsTranslatedSummary = true
         markdownRenderingOverride = nil
     }
 
     /// Converts translated results to Traditional Chinese.
     func convertToTraditionalChineseResult() {
         translatedResults = translatedResults?.toTraditionalChineseTexts()
+        innerTexts = innerTexts?.toTraditionalChineseTexts()
+        storedCopiedText = storedCopiedText?.toTraditionalChinese()
+        wordResult?.convertToTraditionalChinese()
     }
 
     // MARK: Private
@@ -332,4 +348,29 @@ public class QueryResult: NSObject {
     private let translatedResultsLock = NSLock()
     private var translatedResultsStorage: [String]?
     private var storedCopiedText: String?
+}
+
+// MARK: - EZTranslateWordResult + TraditionalChinese
+
+extension EZTranslateWordResult {
+    /// Converts the Chinese content of a native dictionary card; the app-level
+    /// Traditional Chinese conversion otherwise only touches the summary text.
+    func convertToTraditionalChinese() {
+        func convert(_ part: EZTranslatePart) {
+            part.part = part.part?.toTraditionalChinese()
+            part.means = part.means.map { $0.toTraditionalChinese() }
+        }
+
+        parts?.forEach(convert)
+        orderedParts?.forEach(convert)
+        synonyms?.forEach(convert)
+        antonyms?.forEach(convert)
+        collocation?.forEach(convert)
+        exchanges?.forEach { exchange in
+            exchange.name = exchange.name.toTraditionalChinese()
+            exchange.words = exchange.words.map { $0.toTraditionalChinese() }
+        }
+        etymology = etymology?.toTraditionalChinese()
+        tags = tags?.map { $0.toTraditionalChinese() }
+    }
 }
