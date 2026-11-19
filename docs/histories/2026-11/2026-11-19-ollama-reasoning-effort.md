@@ -6,7 +6,7 @@
 
 - **Agent Name:** `Claude Code`
 - **Model:** `claude-opus-5-5`
-- **Environment:** `macOS 26.6.2 / Xcode Unknown (Unknown)`
+- **Environment:** `macOS 26.6.2 / Xcode 27.2 (27B52)`（首轮实现时无 Xcode，验证轮已安装）
 
 ### 用户请求
 
@@ -36,7 +36,20 @@ Ollama 默认关闭思考。
 - 将 `off` 对应的流式请求发送到本地 Ollama 0.34.2（`qwen3.6-35b-a3b`）：10 秒完成，0 个
   reasoning chunk。直接请求实测：`none` 对思考模型和非思考模型（`qwen3-coder-30b`）均正常；
   `high`/`max` 在非思考模型上返回 `does not support thinking`。
-- 未执行：本机无 Xcode，未运行 `xcodebuild` 构建、单元测试、SwiftFormat/SwiftLint 和界面验证。
+- `xcodebuild build-for-testing`（Debug，`DEVELOPER_DIR` 指向 Xcode 27.2）：通过。本机无签名证书，
+  ad-hoc 签名无法携带 Debug entitlements 中受限的
+  `com.apple.developer.background-tasks.continued-processing.inference`，因此构建时以命令行
+  `CODE_SIGN_ENTITLEMENTS=<本地空 entitlements，经 .git/info/exclude 排除>` 覆盖；未修改任何跟踪文件。构建中
+  SwiftFormat 调整了 `OllamaService` 成员顺序，已随本记录提交。
+- `xcodebuild test-without-building`（Default 计划）：487 个测试中 12 个失败，集中在
+  `OCRImageTests`、`AppleScriptExecutorTests`、`CodexCommandProcessTests` 和
+  `SystemUtilitiesTests.testAlertVolume`；这些用例不经过 `OllamaService`，但未在基线提交上
+  对照重跑，是否为既有失败未确认。
+- App 实测（Debug 构建，经 HTTP `/streamTranslate` 调用 Ollama 服务，Ollama 前置本地日志代理）：
+  设置为 off/high/max 时，实际发出的请求体分别为 `reasoning_effort` `"none"`/`"high"`/`"max"`，
+  model 为所选模型。查词模式（`queryType: 2`）下 off 为 5.3–6.7 秒，high 为 99.7 秒。
+- 直连 Ollama 流式请求 `reasoning_effort: "high"`：HTTP 200，16 秒，先输出思考内容再输出译文。
+- 未执行：设置页界面截图（验证时用户正在使用桌面，未做 UI 自动化）。
 
 ### 受影响文件
 
@@ -45,6 +58,6 @@ Ollama 默认关闭思考。
 
 ### 后续事项
 
-- 安装 Xcode 后完成完整构建、测试和设置页截图验证。
+- 设置页截图验证待补；在基线提交上对照上述 12 个失败用例。
 - 对非思考模型选择 `high`/`max` 会收到 Ollama 报错；如需更友好的提示，可按模型的
   `thinking` capability 隐藏或禁用该选项。

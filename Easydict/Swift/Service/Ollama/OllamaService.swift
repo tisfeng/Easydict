@@ -55,10 +55,6 @@ class OllamaService: BaseOpenAIService {
         [supportedModelsKey]
     }
 
-    override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
-        .none
-    }
-
     /// Thinking models such as Qwen3 reason by default when the request omits
     /// `reasoning_effort`, which can add tens of seconds to a dictionary lookup.
     override var supportsReasoningEffort: Bool {
@@ -78,6 +74,10 @@ class OllamaService: BaseOpenAIService {
         case .max:
             .customValue(ReasoningEffort.max.rawValue)
         }
+    }
+
+    override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
+        .none
     }
 
     override func configurationListItems() -> Any {
