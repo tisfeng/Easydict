@@ -9,6 +9,7 @@
 import Alamofire
 import Defaults
 import Foundation
+import OpenAI
 
 // MARK: - OllamaService
 
@@ -56,6 +57,27 @@ class OllamaService: BaseOpenAIService {
 
     override func apiKeyRequirement() -> ServiceAPIKeyRequirement {
         .none
+    }
+
+    /// Thinking models such as Qwen3 reason by default when the request omits
+    /// `reasoning_effort`, which can add tens of seconds to a dictionary lookup.
+    override var supportsReasoningEffort: Bool {
+        true
+    }
+
+    /// `off` sends `none`, which disables thinking and is accepted by both
+    /// thinking and non-thinking models. Enabled levels are only valid for
+    /// models with the `thinking` capability; others return an error.
+    @nonobjc
+    override var reasoningEffort: ChatQuery.ReasoningEffort? {
+        switch configuredReasoningEffort {
+        case .off:
+            ChatQuery.ReasoningEffort.none
+        case .high:
+            .high
+        case .max:
+            .customValue(ReasoningEffort.max.rawValue)
+        }
     }
 
     override func configurationListItems() -> Any {
