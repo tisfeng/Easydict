@@ -4032,6 +4032,52 @@
         }
       }
     },
+    "explain_service" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explain"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicación"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解説"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vysvetlenie"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وضاحت"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这是什么"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這是什麼"
+          }
+        }
+      }
+    },
     "Export Log" : {
       "localizations" : {
         "es" : {
@@ -12487,7 +12533,6 @@
     },
     "service.codex_cli.reasoning_effort.default" : {
       "comment" : "Default option means: do not override ~/.codex/config.toml",
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12534,7 +12579,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.high" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12581,7 +12625,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.low" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12628,7 +12671,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.max" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12675,7 +12717,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.medium" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12722,7 +12763,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.minimal" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12769,7 +12809,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.ultra" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12816,7 +12855,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.xhigh" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -25715,6 +25753,12 @@
           }
         },
         "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tencent TokenHub"
+          }
+        },
+        "ur" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tencent TokenHub"
