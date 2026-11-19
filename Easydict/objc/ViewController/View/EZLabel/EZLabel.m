@@ -9,6 +9,7 @@
 #import "EZLabel.h"
 #import "NSTextView+Height.h"
 #import "NSObject+EZDarkMode.h"
+#import "Easydict-Swift.h"
 
 @interface EZLabel ()
 
@@ -85,11 +86,13 @@
     if (displayText.length > 0) {
         NSDictionary *attributes = @{
             NSParagraphStyleAttributeName : paragraphStyle,
-            NSKernAttributeName : @(0.2),
             NSFontAttributeName : self.font,
             NSForegroundColorAttributeName : textColor,
         };
         [attributedString addAttributes:attributes range:NSMakeRange(0, displayText.length)];
+        // Tracking is a Latin typographic adjustment; Core Text fills it on
+        // cursive scripts with tatweel glyphs and breaks Arabic shaping.
+        [attributedString mm_applyKernExcludingCursiveScripts:0.2];
     }
 
     self.textStorage.attributedString = attributedString;
