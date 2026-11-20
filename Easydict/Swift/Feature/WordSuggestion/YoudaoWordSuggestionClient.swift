@@ -63,7 +63,10 @@ final class YoudaoWordSuggestionClient {
             return cached
         }
         let entries = await suggestions(for: word, limit: 1)
-        if let definition = entries.first(where: { $0.word == word })?.definition {
+        // Exact spelling first; otherwise accept a case variant, e.g. `Warcraft` for `warcraft`.
+        let entry = entries.first { $0.word == word }
+            ?? entries.first { $0.word.lowercased() == word.lowercased() }
+        if let definition = entry?.definition {
             return definition
         }
 

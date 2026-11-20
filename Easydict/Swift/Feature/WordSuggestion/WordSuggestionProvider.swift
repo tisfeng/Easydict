@@ -45,9 +45,9 @@ final class WordSuggestionProvider {
     func suggestions(for input: String) async -> [WordSuggestion] {
         let check = spellCheck(for: input)
 
-        // While typing, complete what was typed; for a typo, Youdao's fuzzy matches
-        // on the raw input are mostly noise, so complete the best correction instead.
-        let onlineQuery = check.isTypingPrefix ? input : check.guesses.first
+        // While typing or for a real word, look up what was typed; for a typo, Youdao's
+        // fuzzy matches on the raw input are mostly noise, so use the best correction instead.
+        let onlineQuery = check.isTypingPrefix || check.isCorrect ? input : check.guesses.first
         let online = if let onlineQuery {
             await client.suggestions(for: onlineQuery, limit: onlineLimit)
         } else {
@@ -175,7 +175,9 @@ final class WordSuggestionProvider {
     /// corrections, so `upgr` leads with `upgrade`, not `upper`.
     private func orderedCandidates(for input: String, check: SpellCheck, onlineWords: [String]) -> [String] {
         guard check.isTypingPrefix else {
-            let ranked = ranker.rank(check.guesses + onlineWords, for: input, preferred: check.guesses)
+            // A complete word with nothing to complete, such as `Warcraft`, still leads with itself.
+            let pool = (check.isCorrect ? [input] : []) + check.guesses + onlineWords
+            let ranked = ranker.rank(pool, for: input, preferred: check.guesses)
             return filter(ranked, input: input, isCorrect: check.isCorrect)
         }
 
@@ -195,14 +197,18 @@ final class WordSuggestionProvider {
             .map(\.element)
     }
 
-    /// Drops phrases, capitalized names for lowercase input, and plain inflections:
+    /// Drops phrases, unrelated capitalized names for lowercase input, and plain inflections:
     /// of a correct input, or of another candidate such as `promises` next to `promise`.
+    /// A capitalized word that the input spells out, like `Warcraft` for `warcraf`, is kept.
     private func filter(_ words: [String], input: String, isCorrect: Bool) -> [String] {
         let inputIsLowercase = input == input.lowercased()
         let candidates = words.filter { word in
             guard !word.contains(" "), !word.hasSuffix("'"), !word.hasSuffix("'s"), !word.hasSuffix("’s")
             else { return false }
-            if inputIsLowercase, word.first?.isUppercase == true { return false }
+            if inputIsLowercase, word.first?.isUppercase == true,
+               !word.lowercased().hasPrefix(input) {
+                return false
+            }
             if isCorrect, ranker.isInflection(word, of: input) { return false }
             return true
         }
