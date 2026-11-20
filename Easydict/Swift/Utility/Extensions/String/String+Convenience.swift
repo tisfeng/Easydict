@@ -104,10 +104,7 @@ extension String {
             return
         }
         DispatchQueue.main.async {
-            EZToast.showText(
-                String(localized: "copy.copied"),
-                toastPostion: .mouse
-            )
+            EZToast.showText(String(localized: "copy.copied"))
         }
     }
 
