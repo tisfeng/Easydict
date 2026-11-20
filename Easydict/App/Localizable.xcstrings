@@ -18461,43 +18461,43 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Youdao adds glosses, same-root words, phrases and English words for Chinese input; what you type is sent to Youdao. This Mac only uses the spell checker and the Oxford English-Chinese dictionary, which you can download in Dictionary > Settings."
+            "value" : "Youdao adds glosses, same-root words and phrases; what you type is sent to Youdao. This Mac only uses the spell checker and the Oxford Chinese-English dictionary, which you can download in Dictionary > Settings. Both look up English words for Chinese input."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Youdao añade definiciones, palabras de la misma raíz, frases y palabras en inglés para texto en chino; lo que escribes se envía a Youdao. Solo este Mac usa el corrector ortográfico y el diccionario Oxford inglés-chino, que puedes descargar en Diccionario > Ajustes."
+            "value" : "Youdao añade definiciones, palabras de la misma raíz y frases; lo que escribes se envía a Youdao. Solo este Mac usa el corrector ortográfico y el diccionario Oxford chino-inglés, que puedes descargar en Diccionario > Ajustes. Ambos buscan palabras en inglés para texto en chino."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Youdao では訳語、同根語、フレーズ、中国語入力に対応する英単語を表示し、入力内容は Youdao に送信されます。「このMacのみ」はスペルチェッカーと Oxford 英中辞典だけを使います。辞典は「辞書」App の設定でダウンロードできます。"
+            "value" : "Youdao では訳語、同根語、フレーズを表示し、入力内容は Youdao に送信されます。「このMacのみ」はスペルチェッカーと Oxford 中英辞典だけを使います。辞典は「辞書」App の設定でダウンロードできます。どちらも中国語入力に対応する英単語を表示します。"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Youdao pridáva významy, slová s rovnakým koreňom, frázy a anglické slová pre čínsky vstup; napísaný text sa odosiela do Youdao. Iba tento Mac používa kontrolu pravopisu a Oxfordský anglicko-čínsky slovník, ktorý si stiahnete v Slovník > Nastavenia."
+            "value" : "Youdao pridáva významy, slová s rovnakým koreňom a frázy; napísaný text sa odosiela do Youdao. Iba tento Mac používa kontrolu pravopisu a Oxfordský čínsko-anglický slovník, ktorý si stiahnete v Slovník > Nastavenia. Oba hľadajú anglické slová pre čínsky vstup."
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Youdao معانی، ہم جڑ الفاظ، جملے اور چینی ان پٹ کے انگریزی الفاظ دکھاتا ہے؛ آپ کا لکھا ہوا متن Youdao کو بھیجا جاتا ہے۔ صرف یہ Mac ہجے جانچ اور Oxford انگریزی-چینی لغت استعمال کرتا ہے، جسے لغت > سیٹنگز میں ڈاؤن لوڈ کیا جا سکتا ہے۔"
+            "value" : "Youdao معانی، ہم جڑ الفاظ اور جملے دکھاتا ہے؛ آپ کا لکھا ہوا متن Youdao کو بھیجا جاتا ہے۔ صرف یہ Mac ہجے جانچ اور Oxford چینی-انگریزی لغت استعمال کرتا ہے، جسے لغت > سیٹنگز میں ڈاؤن لوڈ کیا جا سکتا ہے۔ دونوں چینی ان پٹ کے انگریزی الفاظ دکھاتے ہیں۔"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有道模式显示释义、同根词、短语，并支持中文反查，输入内容会发送到有道。仅本地模式只用系统拼写检查和「牛津英汉汉英词典」，该词典需要在「词典」App 的设置中勾选下载。"
+            "value" : "有道模式显示释义、同根词和短语，输入内容会发送到有道。仅本地模式只用系统拼写检查和「牛津英汉汉英词典」，该词典需要在「词典」App 的设置中勾选下载。两种模式都支持输入中文反查英文单词。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有道模式顯示釋義、同根詞、片語，並支援中文反查，輸入內容會傳送到有道。僅本機模式只使用系統拼字檢查和「牛津英漢漢英詞典」，該詞典需要在「辭典」App 的設定中勾選下載。"
+            "value" : "有道模式顯示釋義、同根詞和片語，輸入內容會傳送到有道。僅本機模式只使用系統拼字檢查和「牛津英漢漢英詞典」，該詞典需要在「辭典」App 的設定中勾選下載。兩種模式都支援輸入中文反查英文單字。"
           }
         }
       }

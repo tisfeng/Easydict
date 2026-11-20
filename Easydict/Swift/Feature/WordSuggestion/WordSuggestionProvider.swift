@@ -24,11 +24,14 @@ final class WordSuggestionProvider {
 
     /// Whether `text` is one English word, or a short Chinese term when Youdao is the source.
     func isSuggestible(_ text: String) -> Bool {
-        isEnglishWord(text) || (source == .youdao && isChineseTerm(text))
+        isEnglishWord(text) || (isChineseTerm(text) && (source == .youdao || appleDictionary.isAvailable))
     }
 
     /// Spell-checker candidates in display order; available synchronously and offline.
     func localSuggestions(for input: String) -> [WordSuggestion] {
+        if isChineseTerm(input), source == .local {
+            return localTranslations(for: input)
+        }
         guard isEnglishWord(input) else { return [] }
         let check = spellCheck(for: input)
         return orderedCandidates(for: input, check: check, onlineWords: [])
@@ -39,7 +42,10 @@ final class WordSuggestionProvider {
     /// Full list with glosses; for a correctly spelled word also same-root words and phrases.
     func suggestions(for input: String) async -> [WordSuggestion] {
         if isChineseTerm(input) {
-            return source == .youdao ? await translations(for: input) : []
+            guard source == .youdao else { return localTranslations(for: input) }
+            let online = await translations(for: input)
+            // Offline, or a term Youdao lacks: the system dictionary may still know it.
+            return online.isEmpty ? localTranslations(for: input) : online
         }
 
         let check = spellCheck(for: input)
@@ -163,6 +169,23 @@ final class WordSuggestionProvider {
             origin: .similar,
             matchedOffsets: ranker.matchedOffsets(of: word, input: input)
         )
+    }
+
+    /// English words for Chinese input from the system Oxford Chinese-English dictionary,
+    /// each glossed from its own English-Chinese entry.
+    private func localTranslations(for input: String) -> [WordSuggestion] {
+        appleDictionary.translations(for: input)
+            .prefix(maxTranslations)
+            .map { item in
+                let definition = appleDictionary.definition(for: item.word, mentioning: input)
+                    ?? appleDictionary.definition(for: item.word)
+                return WordSuggestion(
+                    word: item.word,
+                    partOfSpeech: item.partOfSpeech ?? definition?.partOfSpeech,
+                    meaning: definition?.meaning,
+                    origin: .translation
+                )
+            }
     }
 
     /// English words for Chinese input in Youdao's order, each with a part of speech from

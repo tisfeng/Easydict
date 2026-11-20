@@ -91,6 +91,11 @@
   `YoudaoService+Dict` 相同的网页签名 POST 请求（从 `YoudaoService` 抽出 `webDictParameters(text:foreignLanguage:)` 两处共用，
   签名常量只保留在原处），并统一丢弃 `input` 与查询不一致的回答（不缓存）。复测：
   `modesty`→modest，`stubborn`→stubbornly/stubbornness，`银行`、`一石二鸟` 稳定返回 `ce`。
+- 用户发现切到“仅本地”后输入中文没有推荐列表：本地模式原先不支持中文反查。系统「牛津英汉汉英词典」的汉英条目格式为
+  `固执 ɡùzhí A. adjective stubborn▸ 例句… B. verb stick to`，查询 1–3 ms，因此新增 `translations(for:)` 解析词性分段与
+  ①② 义项、去掉例句与 `→` 交叉引用，英文词的释义取提到该中文的英汉条目（`bank` 取“银行”而非“岸”）。仅本地模式用它做
+  中文反查（结果同步返回），有道模式在有道无结果时回退到它；设置页说明同步更新。复测：`固执`→stubborn/stick to，
+  `银行`→bank（银行；库），`打`→dozen/beat/break…，`坚持不懈`→persistent（adj.）；词典没有的 `一石二鸟` 本地无结果，有道模式不变。
 - 未执行：界面截图；窄窗口点击、失焦时关闭列表、深色模式、中文输入法组字等清单未逐项确认。
   脚本无法把 Debug 版切到前台，界面交互只能由用户手动验证。
 - 经用户授权新增 `EasydictTests/Feature/WordSuggestion/` 测试（Swift Testing）：排序与对齐加粗、屈折识别、

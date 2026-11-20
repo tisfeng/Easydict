@@ -81,6 +81,72 @@ final class AppleDictionaryGlossClient {
         return WordDefinition(partOfSpeech: partOfSpeech, meaning: senses.joined(separator: "；"))
     }
 
+    /// The gloss of the entry for `word` whose senses mention `chinese`, such as the
+    /// `银行` entry of `bank` rather than its `岸` entry; `nil` when no entry does.
+    func definition(for word: String, mentioning chinese: String) -> WordDefinition? {
+        guard let dictionary else { return nil }
+        return dictionary.entries(forSearchTerm: word)
+            .filter { $0.headword.caseInsensitiveCompare(word) == .orderedSame }
+            .lazy
+            .compactMap { self.parse($0.text) }
+            .first { $0.meaning.contains(chinese) }
+    }
+
+    /// English words for Chinese `text` from the Chinese-English half of the dictionary,
+    /// such as `stubborn` (adj.) and `stick to` (v.) for `固执`, in the dictionary's order.
+    func translations(for text: String) -> [(word: String, partOfSpeech: String?)] {
+        guard let dictionary else { return [] }
+        // Chinese headwords carry their pinyin, such as `固执  gùzhí`.
+        let entries = dictionary.entries(forSearchTerm: text)
+            .filter { $0.headword.split(separator: " ").first.map(String.init) == text }
+        var seen = Set<String>()
+        return entries.flatMap { parseChinese($0.text) }
+            .filter { seen.insert($0.word.lowercased()).inserted }
+    }
+
+    /// Parses Chinese entry text such as
+    /// `固执 ɡùzhí A. adjective stubborn▸ 例句… B. verb stick to→ 固执己见`
+    /// or `打 1 dǎ verb ① （击打） beat▸ … ② （打碎） break▸ …`
+    /// into English translations with their parts of speech, leaving out examples and cross-references.
+    func parseChinese(_ text: String) -> [(word: String, partOfSpeech: String?)] {
+        let names = chinesePartsOfSpeech.map(\.name).joined(separator: "|")
+        guard let regex = try? NSRegularExpression(pattern: "(?:^|\\s)(?:[A-H]\\.\\s+)?(\(names))\\s")
+        else { return [] }
+        let nsText = text as NSString
+        let sections = regex.matches(in: text, range: NSRange(location: 0, length: nsText.length))
+        var results: [(word: String, partOfSpeech: String?)] = []
+        for (index, match) in sections.enumerated() {
+            let name = nsText.substring(with: match.range(at: 1))
+            let partOfSpeech = chinesePartsOfSpeech.first { $0.name == name }?.abbreviation
+            let start = match.range.location + match.range.length
+            let end = index + 1 < sections.count ? sections[index + 1].range.location : nsText.length
+            let body = nsText.substring(with: NSRange(location: start, length: max(end - start, 0)))
+
+            let senseTexts = body.components(separatedBy: CharacterSet(charactersIn: "①②③④⑤⑥⑦⑧⑨⑩"))
+            let senses = senseTexts.count > 1 ? Array(senseTexts.dropFirst()) : senseTexts
+            for sense in senses {
+                var gloss = sense.components(separatedBy: "▸").first ?? sense
+                gloss = gloss.components(separatedBy: "→").first ?? gloss
+                gloss = gloss
+                    .replacingOccurrences(of: #"（[^）]*）"#, with: "", options: .regularExpression)
+                    .replacingOccurrences(of: #"\([^)]*\)"#, with: "", options: .regularExpression)
+                    .replacingOccurrences(of: #"‹[^›]*›"#, with: "", options: .regularExpression)
+                for item in gloss.components(separatedBy: CharacterSet(charactersIn: ";,；，")) {
+                    var word = item.trimmingCharacters(in: .whitespaces)
+                    // Register labels such as `informal` come before the translation.
+                    for label in registerLabels where word.hasPrefix(label + " ") {
+                        word = String(word.dropFirst(label.count + 1))
+                    }
+                    let isEnglish = word.range(of: #"^[A-Za-z][A-Za-z'’ \-]*$"#, options: .regularExpression) != nil
+                    if isEnglish, word.split(separator: " ").count <= 4 {
+                        results.append((word, partOfSpeech))
+                    }
+                }
+            }
+        }
+        return results
+    }
+
     // MARK: Private
 
     private let dictionaryName = "牛津英汉汉英词典"
@@ -96,6 +162,13 @@ final class AppleDictionaryGlossClient {
         ("conjunction", "conj."), ("pronoun", "pron."), ("interjection", "int."),
         ("abbreviation", "abbr."), ("determiner", "det."), ("prefix", "prefix"), ("suffix", "suffix"),
     ]
+
+    private let chinesePartsOfSpeech: [(name: String, abbreviation: String?)] = [
+        ("measure word", "n."), ("adjective", "adj."), ("adverb", "adv."), ("noun", "n."), ("verb", "v."),
+        ("idiom", nil), ("preposition", "prep."), ("conjunction", "conj."), ("pronoun", "pron."),
+        ("numeral", "num."), ("interjection", "int."), ("particle", nil), ("phrase", nil),
+    ]
+    private let registerLabels = ["informal", "formal", "literary", "figurative", "literal", "dialect", "written"]
 
     private var cache: [String: WordDefinition] = [:]
     private var loadedDictionary: TTTDictionary?
