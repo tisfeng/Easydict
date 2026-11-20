@@ -72,7 +72,12 @@ final class WordSuggestionController: NSObject {
                 return
             }
 
-            show(provider.localSuggestions(for: input))
+            // Showing an empty list hides the panel, and hiding cancels this task; with no
+            // local candidates (Chinese input, or a word only Youdao knows) wait for the full list.
+            let localSuggestions = provider.localSuggestions(for: input)
+            if !localSuggestions.isEmpty {
+                show(localSuggestions)
+            }
             let suggestions = await provider.suggestions(for: input)
             guard !Task.isCancelled, currentGeneration == generation else { return }
             show(suggestions)
