@@ -43,6 +43,8 @@ struct WordSuggestionRankerTests {
             ("decided", "decide", true),
             ("stopping", "stop", true),
             ("decision", "decide", false),
+            ("teacher", "teach", false),
+            ("builder", "build", false),
             ("decide", "decide", false),
         ]
     )

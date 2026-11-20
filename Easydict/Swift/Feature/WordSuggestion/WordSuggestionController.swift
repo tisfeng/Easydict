@@ -169,7 +169,7 @@ final class WordSuggestionController: NSObject {
         panel.setFrame(
             NSRect(
                 x: anchorRect.minX,
-                y: anchorRect.minY - gapBelowAnchor - height,
+                y: panelOriginY(below: anchorRect, height: height, screen: window.screen),
                 width: anchorRect.width,
                 height: height
             ),
@@ -190,6 +190,18 @@ final class WordSuggestionController: NSObject {
         fillHandler?(word)
         // Suggest again for the filled word, such as its same-root words and phrases.
         textDidChange(word)
+    }
+
+    /// Places the list under the input, or above it when a window near the bottom of the screen
+    /// leaves too little room; as a last resort it is pinned to the bottom of the visible area.
+    private func panelOriginY(below anchorRect: NSRect, height: CGFloat, screen: NSScreen?) -> CGFloat {
+        let below = anchorRect.minY - gapBelowAnchor - height
+        guard let visible = screen?.visibleFrame, below < visible.minY else { return below }
+        let above = anchorRect.maxY + gapBelowAnchor
+        if above + height <= visible.maxY {
+            return above
+        }
+        return visible.minY
     }
 
     private func choose(at index: Int) {

@@ -98,6 +98,13 @@
   `银行`→bank（银行；库），`打`→dozen/beat/break…，`坚持不懈`→persistent（adj.）；词典没有的 `一石二鸟` 本地无结果，有道模式不变。
 - 用户发现用鼠标点击推荐行会关闭查询窗口，回车选择正常：`EventMonitor` 用全局鼠标按下判断是否点在浮动窗口外，点击位置最上层
   是推荐列表子窗口而非浮动窗口本身，被判为窗口外并关闭未固定的窗口。改为浮动窗口的子窗口也算窗口内。点击验证由用户进行。
+- 按 PR #1414 的 Codex 审查意见修复 5 处：
+  - 屈折识别不再把 `-er`/`-est` 当后缀，动词派生名词 `teacher`、`builder`、`decider` 恢复显示（复测 `teach`、`build`）。
+  - `TTTDictionary` 的可用词典列表在首次使用时缓存，60 秒重试无效；新增 `rescannedDictionaryNamed:` 每次重新扫描，词典装好后无需重启。
+  - 有道可达性改为看本次查询是否收到过有道的 HTTP 响应（`hasReachedYoudao(since:)`），不再用缓存命中判断，断网时不误删无释义的候选。
+  - 查询被取消（用户继续输入）后不再发起补充释义和单词详情请求。
+  - 推荐列表放不下时改到输入框上方，再放不下则贴住可见区域底部。
+  测试：16 个用例通过（屈折用例新增 `teacher`、`builder`）；断网与屏幕底部的情形未实测。
 - 未执行：界面截图；窄窗口点击、失焦时关闭列表、深色模式、中文输入法组字等清单未逐项确认。
   脚本无法把 Debug 版切到前台，界面交互只能由用户手动验证。
 - 经用户授权新增 `EasydictTests/Feature/WordSuggestion/` 测试（Swift Testing）：排序与对齐加粗、屈折识别、
@@ -114,6 +121,7 @@
 - `Easydict/Swift/Feature/Configuration/Defaults.Keys+Extension.swift`
 - `Easydict/Swift/View/SettingView/Tabs/TabView/GeneralTab.swift`
 - `Easydict/Swift/Utility/EventMonitor/Core/EventMonitor.swift`
+- `Easydict/objc/Libraries/DictionaryKit/TTTDictionary.h`、`TTTDictionary.m`
 - `Easydict/App/Localizable.xcstrings`
 - `Easydict.xcodeproj/project.pbxproj`
 - `docs/exec-plans/active/2026-11-20-word-suggestions.md`

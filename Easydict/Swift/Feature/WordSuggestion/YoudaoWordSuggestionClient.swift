@@ -199,6 +199,14 @@ final class YoudaoWordSuggestionClient {
         return meaning.isEmpty ? nil : WordDefinition(partOfSpeech: nil, meaning: meaning)
     }
 
+    /// Whether any request reached Youdao at or after `date`, even one that found nothing.
+    ///
+    /// Cached answers say nothing about the network right now, so callers that need to know
+    /// whether Youdao is reachable check this instead of whether they got data.
+    func hasReachedYoudao(since date: Date) -> Bool {
+        lastReachedAt.map { $0 >= date } ?? false
+    }
+
     // MARK: Private
 
     private let suggestURL = "https://dict.youdao.com/suggest"
@@ -218,18 +226,27 @@ final class YoudaoWordSuggestionClient {
     private var relatedCache: [String: [WordSuggestion]] = [:]
     private var wordDetailCache: [String: YoudaoWordResponse] = [:]
     private var wordDetailTasks: [String: Task<YoudaoWordResponse?, Never>] = [:]
+    private var lastReachedAt: Date?
 
     private func suggestResponse(for query: String, limit: Int) async -> YoudaoSuggestResponse? {
         let parameters: [String: Any] = [
             "q": query, "num": limit, "ver": "3.0", "doctype": "json", "cache": "false", "le": "en",
         ]
-        return try? await AF.request(
+        let response = await AF.request(
             suggestURL,
             parameters: parameters,
             requestModifier: { [timeout] in $0.timeoutInterval = timeout }
         )
         .serializingDecodable(YoudaoSuggestResponse.self)
-        .value
+        .response
+        noteReached(response.response)
+        return try? response.result.get()
+    }
+
+    private func noteReached(_ response: HTTPURLResponse?) {
+        if response != nil {
+            lastReachedAt = Date()
+        }
     }
 
     /// A whole sentence, such as Youdao's machine translation of a Chinese sentence, is not a
@@ -251,19 +268,23 @@ final class YoudaoWordSuggestionClient {
         if let pending = wordDetailTasks[word] {
             return await pending.value
         }
+        // A lookup for text the user already changed should not start new requests.
+        guard !Task.isCancelled else { return nil }
         let task = Task { [
             wordURL,
             timeout,
             parameters = YoudaoService.webDictParameters(text: word, foreignLanguage: "en")
         ] in
-            try? await AF.request(
+            let response = await AF.request(
                 wordURL,
                 method: .post,
                 parameters: parameters,
                 requestModifier: { $0.timeoutInterval = timeout }
             )
             .serializingDecodable(YoudaoWordResponse.self)
-            .value
+            .response
+            noteReached(response.response)
+            return try? response.result.get()
         }
         wordDetailTasks[word] = task
         let answer = await task.value

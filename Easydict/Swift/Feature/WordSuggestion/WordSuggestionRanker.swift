@@ -63,23 +63,26 @@ struct WordSuggestionRanker {
 
     /// Whether `candidate` is only an inflected form of `word`,
     /// such as a plural, past tense or present participle.
+    ///
+    /// `-er` and `-est` are left out: for verbs they make other words (`teacher`, `singer`,
+    /// `builder`), which are exactly the other-part-of-speech suggestions the list is for.
     func isInflection(_ candidate: String, of word: String) -> Bool {
         let word = word.lowercased()
         let candidate = candidate.lowercased()
         guard candidate != word else { return false }
 
-        var forms = ["s", "es", "ed", "d", "ing", "er", "est"].map { word + $0 }
+        var forms = ["s", "es", "ed", "d", "ing"].map { word + $0 }
         if word.hasSuffix("e") {
             let stem = String(word.dropLast())
-            forms += ["ing", "ed", "er", "est"].map { stem + $0 }
+            forms += ["ing", "ed"].map { stem + $0 }
         }
         if word.hasSuffix("y") {
             let stem = String(word.dropLast())
-            forms += ["ies", "ied", "ier", "iest"].map { stem + $0 }
+            forms += ["ies", "ied"].map { stem + $0 }
         }
         if let last = word.last, !"aeiouy".contains(last) {
             let doubled = word + String(last)
-            forms += ["ed", "ing", "er", "est"].map { doubled + $0 }
+            forms += ["ed", "ing"].map { doubled + $0 }
         }
         return forms.contains(candidate)
     }

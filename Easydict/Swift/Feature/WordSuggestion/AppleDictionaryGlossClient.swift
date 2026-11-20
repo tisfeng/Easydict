@@ -181,8 +181,13 @@ final class AppleDictionaryGlossClient {
         if let lastLoadAttempt, Date().timeIntervalSince(lastLoadAttempt) < recheckInterval {
             return nil
         }
+        let isFirstCheck = lastLoadAttempt == nil
         lastLoadAttempt = Date()
-        loadedDictionary = TTTDictionary(named: dictionaryName)
+        // The first check can use the app-wide cached list; later ones rescan, because that list is
+        // read once per launch and would never show a dictionary installed while the app runs.
+        loadedDictionary = isFirstCheck
+            ? TTTDictionary(named: dictionaryName)
+            : TTTDictionary.rescanned(named: dictionaryName)
         return loadedDictionary
     }
 

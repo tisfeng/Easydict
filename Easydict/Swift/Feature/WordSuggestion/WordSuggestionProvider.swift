@@ -50,6 +50,7 @@ final class WordSuggestionProvider {
 
         let check = spellCheck(for: input)
         let usesYoudao = source == .youdao
+        let lookupStart = Date()
 
         // While typing or for a real word, look up what was typed; for a typo, Youdao's
         // fuzzy matches on the raw input are mostly noise, so use the best correction instead.
@@ -67,6 +68,9 @@ final class WordSuggestionProvider {
 
         // Youdao also returns rare or misspelled headwords; keep words the spell checker accepts,
         // except spellings of the input itself, such as `anne` for a name.
+        // The user typed on while Youdao answered; the controller drops this result anyway.
+        guard !Task.isCancelled else { return [] }
+
         let onlineWords = online.map(\.word).filter { word in
             word.lowercased() == input.lowercased() || isCorrectlySpelled(word)
         }
@@ -75,7 +79,10 @@ final class WordSuggestionProvider {
         // Always try: the suggest endpoint returns nothing for some words Youdao still defines.
         var lookedUp = usesYoudao ? await fetchMissingDefinitions(for: words) : []
         // Some gloss arrived, so Youdao is reachable and a missing one means a rare word, not an outage.
-        let isYoudaoReachable = usesYoudao && (!online.isEmpty || words.contains { cachedDefinitions[$0] != nil })
+        guard !Task.isCancelled else { return [] }
+        // Only a request made for this lookup proves Youdao is reachable now; cached answers do not,
+        // and treating them as proof would drop unglossed candidates while offline.
+        let isYoudaoReachable = usesYoudao && client.hasReachedYoudao(since: lookupStart)
         if appleDictionary.isAvailable {
             for word in words where cachedDefinitions[word] == nil {
                 cachedDefinitions[word] = appleDictionary.definition(for: word)
@@ -222,7 +229,8 @@ final class WordSuggestionProvider {
         let fetched = await withTaskGroup(of: (String, WordDefinition?).self) { group in
             for word in missing {
                 group.addTask { @MainActor in
-                    await (word, client.definition(for: word))
+                    guard !Task.isCancelled else { return (word, nil) }
+                    return await (word, client.definition(for: word))
                 }
             }
             var results: [(String, WordDefinition?)] = []
