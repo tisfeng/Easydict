@@ -86,6 +86,11 @@
 - 用户在正式版中发现中文反查没有反应：防抖后先显示本地候选，中文没有本地候选时显示空列表会关闭面板，而关闭面板
   会取消正在等待有道结果的任务并作废请求编号，有道结果因此被丢弃（英文只有有道认识的词同样受影响）。改为本地候选
   为空时不显示，直接等完整结果。此前的接口测试只覆盖数据层，没有经过控制器。
+- 用户发现 `modesty` 下出现 indignant/indign/indignantly：有道 `jsonapi_s` 的未签名请求对许多词（不只中文）返回
+  随机词条，实测 `modesty`、`stubborn` 几乎每次都是 `locoism`、`R` 之类，`give`、`decide` 则正常。改为与
+  `YoudaoService+Dict` 相同的网页签名 POST 请求（从 `YoudaoService` 抽出 `webDictParameters(text:foreignLanguage:)` 两处共用，
+  签名常量只保留在原处），并统一丢弃 `input` 与查询不一致的回答（不缓存）。复测：
+  `modesty`→modest，`stubborn`→stubbornly/stubbornness，`银行`、`一石二鸟` 稳定返回 `ce`。
 - 未执行：界面截图；窄窗口点击、失焦时关闭列表、深色模式、中文输入法组字等清单未逐项确认。
   脚本无法把 Debug 版切到前台，界面交互只能由用户手动验证。
 - 未新增单元测试：仓库规定新增测试需用户授权；排序与释义解析为纯函数，建议补充。

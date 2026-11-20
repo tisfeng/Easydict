@@ -43,7 +43,7 @@
 - 用户输入会发送到有道；只在手动输入单个英文单词时请求，并加防抖与缓存。
 - 使用系统拼写检查而非自建词表，离线可用且纠错质量已实测（fonetic→phonetic、sycology→psychology）。
 - 偏好键 `enableWordSuggestion` 默认开启，`wordSuggestionSource` 默认有道；设置页「通用」可关闭或改为仅本地。
-- 有道 `jsonapi_s` 对部分中文查询返回无关词条，中文反查须校验 `input` 并回退到联想接口。
+- 有道 `jsonapi_s` 未签名请求会对许多词返回随机词条，须使用网页签名请求并校验返回的 `input`。
 
 ## 进度
 

@@ -146,11 +146,10 @@ final class YoudaoWordSuggestionClient {
     /// English words for Chinese `text`, such as `obstinate` and `stubborn` for `固执`,
     /// each with its gloss for that Chinese sense when Youdao gives one.
     ///
-    /// The word detail endpoint answers some Chinese queries with an unrelated word
-    /// (`银行` comes back as `R` or `convoy`), so its answer is used only when it echoes
-    /// the query; otherwise the suggest endpoint's exact entry lists the words.
+    /// When the word detail endpoint has no Chinese-English entry, or fails, the suggest
+    /// endpoint's exact entry lists the words.
     func translations(for text: String) async -> [(word: String, meaning: String?)] {
-        if let detail = await wordDetail(for: text), detail.input == text,
+        if let detail = await wordDetail(for: text),
            let items = detail.ce?.word?.trs, !items.isEmpty {
             return items.compactMap { item in
                 guard let word = item.text?.trimmingCharacters(in: .whitespaces), !word.isEmpty,
@@ -197,7 +196,7 @@ final class YoudaoWordSuggestionClient {
     // MARK: Private
 
     private let suggestURL = "https://dict.youdao.com/suggest"
-    private let wordURL = "https://dict.youdao.com/jsonapi_s"
+    private let wordURL = "https://dict.youdao.com/jsonapi_s?doctype=json&jsonversion=4"
     private let timeout: TimeInterval = 4
     private let maxSenses = 2
     private let phraseParticles: Set = [
@@ -234,6 +233,10 @@ final class YoudaoWordSuggestionClient {
     }
 
     /// The word detail response, shared by glosses, same-root words, phrases and Chinese lookups.
+    ///
+    /// Unsigned requests are answered with a random entry for many words (`modesty` comes back
+    /// as `locoism` or `R`, `银行` as `convoy`), so the request is signed with
+    /// `YoudaoService.webDictParameters`, like the dictionary service, and any answer for another word is dropped.
     private func wordDetail(for word: String) async -> YoudaoWordResponse? {
         if let cached = wordDetailCache[word] {
             return cached
@@ -242,10 +245,14 @@ final class YoudaoWordSuggestionClient {
         if let pending = wordDetailTasks[word] {
             return await pending.value
         }
-        let parameters: [String: Any] = ["q": word, "doctype": "json", "jsonversion": "4", "le": "en"]
-        let task = Task { [wordURL, timeout] in
+        let task = Task { [
+            wordURL,
+            timeout,
+            parameters = YoudaoService.webDictParameters(text: word, foreignLanguage: "en")
+        ] in
             try? await AF.request(
                 wordURL,
+                method: .post,
                 parameters: parameters,
                 requestModifier: { $0.timeoutInterval = timeout }
             )
@@ -253,12 +260,11 @@ final class YoudaoWordSuggestionClient {
             .value
         }
         wordDetailTasks[word] = task
-        let response = await task.value
+        let answer = await task.value
         wordDetailTasks[word] = nil
-        if let response {
-            wordDetailCache[word] = response
-        }
-        return response
+        guard let answer, answer.input?.lowercased() == word.lowercased() else { return nil }
+        wordDetailCache[word] = answer
+        return answer
     }
 
     /// Keeps the first senses and drops register labels such as `<美>`.
