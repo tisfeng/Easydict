@@ -103,16 +103,22 @@ final class YoudaoWordSuggestionClient {
     }
 
     /// Common phrases built on `word`, such as `give up` and `give in` for `give`.
+    func phrases(for word: String) async -> [WordSuggestion] {
+        guard let response = await wordDetail(for: word) else { return [] }
+        let items = (response.phrs?.phrs ?? []).map { (headword: $0.headword, translation: $0.translation) }
+        return rankPhrases(items, for: word)
+    }
+
+    /// Orders Youdao's phrases for `word` and turns them into suggestions.
     ///
     /// Youdao's order is not by frequency (`take some` comes first for `take`), so
     /// phrasal verbs (`take on`, `take up`) lead, then other two-word phrases, then longer
-    /// ones; phrases with placeholders such as `one's` go last.
-    func phrases(for word: String) async -> [WordSuggestion] {
-        guard let response = await wordDetail(for: word) else { return [] }
+    /// ones; phrases with placeholders such as `one's` go last. Truncated, duplicate and
+    /// unglossed phrases, and phrases not containing `word`, are dropped.
+    func rankPhrases(_ items: [(headword: String, translation: String?)], for word: String) -> [WordSuggestion] {
         let key = word.lowercased()
-
         var seen = Set<String>()
-        let candidates = (response.phrs?.phrs ?? []).compactMap { item -> (suggestion: WordSuggestion, tier: Int)? in
+        let candidates = items.compactMap { item -> (suggestion: WordSuggestion, tier: Int)? in
             let headword = item.headword.trimmingCharacters(in: .whitespaces)
             let parts = headword.lowercased().split(separator: " ").map(String.init)
             guard parts.count > 1, parts.contains(key), !headword.contains("…"), !headword.contains("..."),

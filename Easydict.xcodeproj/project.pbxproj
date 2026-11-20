@@ -573,6 +573,9 @@
 		A0A000010000000000000004 /* TokenHubServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A000010000000000000005 /* TokenHubServiceTests.swift */; };
 		A0CCFCC574EE46559C7C6E39 /* ClaudeCodeDebugWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD19E15F95144B0B2CAF66F /* ClaudeCodeDebugWindow.swift */; };
 		A12760012026090500000001 /* ReverseTranslationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12760012026090500000002 /* ReverseTranslationTests.swift */; };
+		C4A2F84DD928CD0B09AF8977 /* WordSuggestionRankerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FB303E5C1A4DF14ABFD028 /* WordSuggestionRankerTests.swift */; };
+		706EC7A4260748098AE174B6 /* YoudaoWordSuggestionClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E57B6FC2EA3DFAB1545D51DD /* YoudaoWordSuggestionClientTests.swift */; };
+		ED4909FFF8008016DF0EAEA2 /* AppleDictionaryGlossClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8BE633251648CE4B1487FF /* AppleDictionaryGlossClientTests.swift */; };
 		A13180022026091600000001 /* AppleDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13180012026091600000001 /* AppleDictionaryTests.swift */; };
 		A13F30938343423C89FB9B4C /* ClaudeCodeCLIRunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF157E4DBC341E1BC49A9C6 /* ClaudeCodeCLIRunnerTests.swift */; };
 		A1B2C3D4E5F6000000000002 /* VocabularyEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000001 /* VocabularyEntry.swift */; };
@@ -1389,6 +1392,9 @@
 		A0A000010000000000000002 /* TokenHubService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenHubService.swift; sourceTree = "<group>"; };
 		A0A000010000000000000005 /* TokenHubServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenHubServiceTests.swift; sourceTree = "<group>"; };
 		A12760012026090500000002 /* ReverseTranslationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseTranslationTests.swift; sourceTree = "<group>"; };
+		35FB303E5C1A4DF14ABFD028 /* WordSuggestionRankerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordSuggestionRankerTests.swift; sourceTree = "<group>"; };
+		E57B6FC2EA3DFAB1545D51DD /* YoudaoWordSuggestionClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoWordSuggestionClientTests.swift; sourceTree = "<group>"; };
+		5E8BE633251648CE4B1487FF /* AppleDictionaryGlossClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionaryGlossClientTests.swift; sourceTree = "<group>"; };
 		A13180012026091600000001 /* AppleDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionaryTests.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000000000001 /* VocabularyEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyEntry.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6000000000003 /* VocabularyNotebookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyNotebookService.swift; sourceTree = "<group>"; };
@@ -3838,6 +3844,16 @@
 			path = TokenHub;
 			sourceTree = "<group>";
 		};
+		E4AD80F6EE4A84F14AE5E9CF /* WordSuggestion */ = {
+			isa = PBXGroup;
+			children = (
+				35FB303E5C1A4DF14ABFD028 /* WordSuggestionRankerTests.swift */,
+				E57B6FC2EA3DFAB1545D51DD /* YoudaoWordSuggestionClientTests.swift */,
+				5E8BE633251648CE4B1487FF /* AppleDictionaryGlossClientTests.swift */,
+			);
+			path = WordSuggestion;
+			sourceTree = "<group>";
+		};
 		A12760012026090500000003 /* Query */ = {
 			isa = PBXGroup;
 			children = (
@@ -3901,6 +3917,7 @@
 			children = (
 				A73120261023000000000003 /* Localization */,
 				A12760012026090500000003 /* Query */,
+				E4AD80F6EE4A84F14AE5E9CF /* WordSuggestion */,
 				02DEDC0420260430000000C1 /* Markdown */,
 				030732CB2F24862A0001382A /* OCR */,
 			);
@@ -4630,6 +4647,9 @@
 				1CC83D91B3954BE7894CC2C8 /* MDictReaderTests.swift in Sources */,
 				02DEDC0420260430000000BE /* MarkdownRendererTests.swift in Sources */,
 				A12760012026090500000001 /* ReverseTranslationTests.swift in Sources */,
+				C4A2F84DD928CD0B09AF8977 /* WordSuggestionRankerTests.swift in Sources */,
+				706EC7A4260748098AE174B6 /* YoudaoWordSuggestionClientTests.swift in Sources */,
+				ED4909FFF8008016DF0EAEA2 /* AppleDictionaryGlossClientTests.swift in Sources */,
 				C09AC0F264D246FC90F9A277 /* AppleServiceTests.swift in Sources */,
 				03A884782F13000100D5C0DE /* AppleScriptExecutorTests.swift in Sources */,
 				03A884742F13000100D5C0DE /* AppleScriptProcessExecutorTests.swift in Sources */,

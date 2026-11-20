@@ -93,11 +93,16 @@
   `modesty`→modest，`stubborn`→stubbornly/stubbornness，`银行`、`一石二鸟` 稳定返回 `ce`。
 - 未执行：界面截图；窄窗口点击、失焦时关闭列表、深色模式、中文输入法组字等清单未逐项确认。
   脚本无法把 Debug 版切到前台，界面交互只能由用户手动验证。
-- 未新增单元测试：仓库规定新增测试需用户授权；排序与释义解析为纯函数，建议补充。
+- 经用户授权新增 `EasydictTests/Feature/WordSuggestion/` 测试（Swift Testing）：排序与对齐加粗、屈折识别、
+  有道释义解析与短语排序、系统词典条目解析为单元测试；签名后的同根词（`modesty`→modest，不含 indignant）与
+  中文反查（`固执`、`银行`）请求真实有道接口；已安装词典的查询标记 `.requiresLocalEnvironment`。为便于测试，
+  短语排序抽成 `rankPhrases`，词典解析改为 internal `parse`。`test-without-building`：Default 计划 16 个用例通过，
+  LocalEnvironment 计划 1 个用例通过。控制器中“空本地列表取消在线结果”的回归依赖窗口，未覆盖。
 
 ### 受影响文件
 
 - `Easydict/Swift/Feature/WordSuggestion/*.swift`
+- `EasydictTests/Feature/WordSuggestion/*.swift`
 - `Easydict/objc/ViewController/View/QueryView/EZQueryView.m`
 - `Easydict/Swift/Feature/Configuration/Defaults.Keys+Extension.swift`
 - `Easydict/Swift/View/SettingView/Tabs/TabView/GeneralTab.swift`
@@ -108,5 +113,4 @@
 ### 后续事项
 
 - 补齐界面验证清单与截图。
-- 经授权后为 `WordSuggestionRanker` 和释义解析补单元测试。
 - 暂缓：列表防闪烁、Ollama 描述找词与近义辨析。

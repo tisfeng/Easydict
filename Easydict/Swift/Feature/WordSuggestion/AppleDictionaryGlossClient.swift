@@ -31,47 +31,15 @@ final class AppleDictionaryGlossClient {
         guard let dictionary else { return nil }
         let entry = dictionary.entries(forSearchTerm: word)
             .first { $0.headword.caseInsensitiveCompare(word) == .orderedSame }
-        guard let text = entry?.text, let definition = parse(text, headword: word) else { return nil }
+        guard let text = entry?.text, let definition = parse(text) else { return nil }
         cache[word] = definition
         return definition
-    }
-
-    // MARK: Private
-
-    private let dictionaryName = "牛津英汉汉英词典"
-    private let maxSenses = 2
-    private let maxTermsPerSense = 3
-    /// How long a missing dictionary is remembered before checking again, so a
-    /// dictionary installed while the app runs is picked up without a restart.
-    private let recheckInterval: TimeInterval = 60
-
-    private let partsOfSpeech: [(name: String, abbreviation: String)] = [
-        ("transitive verb", "v."), ("intransitive verb", "v."), ("verb", "v."),
-        ("noun", "n."), ("adjective", "adj."), ("adverb", "adv."), ("preposition", "prep."),
-        ("conjunction", "conj."), ("pronoun", "pron."), ("interjection", "int."),
-        ("abbreviation", "abbr."), ("determiner", "det."), ("prefix", "prefix"), ("suffix", "suffix"),
-    ]
-
-    private var cache: [String: WordDefinition] = [:]
-    private var loadedDictionary: TTTDictionary?
-    private var lastLoadAttempt: Date?
-
-    private var dictionary: TTTDictionary? {
-        if let loadedDictionary {
-            return loadedDictionary
-        }
-        if let lastLoadAttempt, Date().timeIntervalSince(lastLoadAttempt) < recheckInterval {
-            return nil
-        }
-        lastLoadAttempt = Date()
-        loadedDictionary = TTTDictionary(named: dictionaryName)
-        return loadedDictionary
     }
 
     /// Parses entry text such as
     /// `stubborn | BrE ˈstʌb(ə)n, AmE … | adjective ① (difficult to influence) 执拗的 zhíniù de ‹person›; 倔强的 …▸ example ② …`
     /// into `adj.` and `执拗的，倔强的；难开的`: the Chinese terms of the first senses, without pinyin or examples.
-    private func parse(_ text: String, headword: String) -> WordDefinition? {
+    func parse(_ text: String) -> WordDefinition? {
         let fields = text.components(separatedBy: " | ")
         guard fields.count >= 3 else { return nil }
         var body = fields.dropFirst(2).joined(separator: " | ").trimmingCharacters(in: .whitespaces)
@@ -111,6 +79,38 @@ final class AppleDictionaryGlossClient {
         }
         guard !senses.isEmpty else { return nil }
         return WordDefinition(partOfSpeech: partOfSpeech, meaning: senses.joined(separator: "；"))
+    }
+
+    // MARK: Private
+
+    private let dictionaryName = "牛津英汉汉英词典"
+    private let maxSenses = 2
+    private let maxTermsPerSense = 3
+    /// How long a missing dictionary is remembered before checking again, so a
+    /// dictionary installed while the app runs is picked up without a restart.
+    private let recheckInterval: TimeInterval = 60
+
+    private let partsOfSpeech: [(name: String, abbreviation: String)] = [
+        ("transitive verb", "v."), ("intransitive verb", "v."), ("verb", "v."),
+        ("noun", "n."), ("adjective", "adj."), ("adverb", "adv."), ("preposition", "prep."),
+        ("conjunction", "conj."), ("pronoun", "pron."), ("interjection", "int."),
+        ("abbreviation", "abbr."), ("determiner", "det."), ("prefix", "prefix"), ("suffix", "suffix"),
+    ]
+
+    private var cache: [String: WordDefinition] = [:]
+    private var loadedDictionary: TTTDictionary?
+    private var lastLoadAttempt: Date?
+
+    private var dictionary: TTTDictionary? {
+        if let loadedDictionary {
+            return loadedDictionary
+        }
+        if let lastLoadAttempt, Date().timeIntervalSince(lastLoadAttempt) < recheckInterval {
+            return nil
+        }
+        lastLoadAttempt = Date()
+        loadedDictionary = TTTDictionary(named: dictionaryName)
+        return loadedDictionary
     }
 
     private func matches(of pattern: String, in text: String) -> [String] {
