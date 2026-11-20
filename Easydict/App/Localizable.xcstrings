@@ -10689,6 +10689,53 @@
         }
       }
     },
+    "service.codex_cli.isolation_failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codex isolation checks failed. No text or image was sent."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudieron verificar las restricciones de Codex. No se envió ningún texto ni imagen."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codex の隔離状態を確認できませんでした。テキストや画像は送信されていません。"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontrola izolácie Codexu zlyhala. Nebol odoslaný žiadny text ani obrázok."
+          }
+        },
+        "ur": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codex کی علیحدگی کی جانچ ناکام ہو گئی۔ کوئی متن یا تصویر نہیں بھیجی گئی۔"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codex 隔离检查未通过，未发送文本或图片。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codex 隔離檢查未通過，未傳送文字或圖片。"
+          }
+        }
+      }
+    },
     "service.codex_cli.local.unsupported_effort" : {
       "localizations" : {
         "en" : {
