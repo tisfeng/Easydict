@@ -55,12 +55,26 @@ final class YoudaoWordSuggestionClient {
     }
 
     /// The gloss for exactly `word`, if Youdao knows it.
+    ///
+    /// The suggest endpoint refuses some words outright (it answers `not found`
+    /// for `dictator` and `democracy`), so the word detail endpoint is the fallback.
     func definition(for word: String) async -> WordDefinition? {
         if let cached = definitionCache[word] {
             return cached
         }
         let entries = await suggestions(for: word, limit: 1)
-        return entries.first { $0.word == word }?.definition
+        if let definition = entries.first(where: { $0.word == word })?.definition {
+            return definition
+        }
+
+        guard let translation = await wordDetail(for: word)?.ec?.word?.trs?.first,
+              let text = translation.tran
+        else { return nil }
+        let meaning = mainMeaning(of: text)
+        guard !meaning.isEmpty else { return nil }
+        let definition = WordDefinition(partOfSpeech: translation.pos, meaning: meaning)
+        definitionCache[word] = definition
+        return definition
     }
 
     /// Words that share a root with `word` but are not just its inflections,
@@ -71,15 +85,7 @@ final class YoudaoWordSuggestionClient {
             return cached
         }
 
-        let parameters: [String: Any] = ["q": word, "doctype": "json", "jsonversion": "4", "le": "en"]
-        guard let response = try? await AF.request(
-            wordURL,
-            parameters: parameters,
-            requestModifier: { [timeout] in $0.timeoutInterval = timeout }
-        )
-        .serializingDecodable(YoudaoWordResponse.self)
-        .value
-        else {
+        guard let response = await wordDetail(for: word) else {
             return []
         }
 
@@ -137,6 +143,26 @@ final class YoudaoWordSuggestionClient {
     private var suggestionCache: [String: [(word: String, definition: WordDefinition?)]] = [:]
     private var definitionCache: [String: WordDefinition] = [:]
     private var relatedCache: [String: [WordSuggestion]] = [:]
+    private var wordDetailCache: [String: YoudaoWordResponse] = [:]
+
+    /// The word detail response, shared by the gloss fallback and same-root words.
+    private func wordDetail(for word: String) async -> YoudaoWordResponse? {
+        if let cached = wordDetailCache[word] {
+            return cached
+        }
+        let parameters: [String: Any] = ["q": word, "doctype": "json", "jsonversion": "4", "le": "en"]
+        let response = try? await AF.request(
+            wordURL,
+            parameters: parameters,
+            requestModifier: { [timeout] in $0.timeoutInterval = timeout }
+        )
+        .serializingDecodable(YoudaoWordResponse.self)
+        .value
+        if let response {
+            wordDetailCache[word] = response
+        }
+        return response
+    }
 
     /// Keeps the first senses and drops register labels such as `<美>`.
     /// Only a trailing truncation ellipsis is removed; `……` inside a sense is a placeholder.
@@ -196,9 +222,24 @@ private struct YoudaoWordResponse: Decodable {
         let tran: String?
     }
 
+    struct Glossary: Decodable {
+        let word: GlossaryWord?
+    }
+
+    struct GlossaryWord: Decodable {
+        let trs: [Translation]?
+    }
+
+    struct Translation: Decodable {
+        let pos: String?
+        let tran: String?
+    }
+
     enum CodingKeys: String, CodingKey {
         case relWord = "rel_word"
+        case ec
     }
 
     let relWord: RelatedWords?
+    let ec: Glossary?
 }

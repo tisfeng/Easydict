@@ -53,7 +53,6 @@ final class WordSuggestionProvider {
         } else {
             [(word: String, definition: WordDefinition?)]()
         }
-        let isOnline = !online.isEmpty
         for entry in online {
             if let definition = entry.definition {
                 cachedDefinitions[entry.word] = definition
@@ -64,13 +63,16 @@ final class WordSuggestionProvider {
         let onlineWords = online.map(\.word).filter(isCorrectlySpelled)
         let words = orderedCandidates(for: input, check: check, onlineWords: onlineWords).prefix(maxSimilar)
 
-        let lookedUp = isOnline ? await fetchMissingDefinitions(for: Array(words)) : []
+        // Always try: the suggest endpoint returns nothing for some words Youdao still defines.
+        let lookedUp = await fetchMissingDefinitions(for: Array(words))
+        // Some gloss arrived, so Youdao is reachable and a missing one means a rare word, not an outage.
+        let isYoudaoReachable = !online.isEmpty || words.contains { cachedDefinitions[$0] != nil }
 
         var similar: [WordSuggestion] = []
         for word in words {
             let definition = cachedDefinitions[word]
             // A word Youdao was asked about but cannot gloss is usually a name or a rare form.
-            if definition == nil, lookedUp.contains(word), word.lowercased() != input.lowercased() {
+            if definition == nil, isYoudaoReachable, lookedUp.contains(word), word.lowercased() != input.lowercased() {
                 continue
             }
             similar.append(WordSuggestion(
@@ -81,7 +83,7 @@ final class WordSuggestionProvider {
             ))
         }
 
-        guard check.isCorrect, isOnline else { return similar }
+        guard check.isCorrect else { return similar }
 
         let shown = Set(similar.map { $0.word.lowercased() })
         let related = await client.relatedWords(for: input)

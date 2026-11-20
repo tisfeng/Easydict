@@ -49,6 +49,10 @@
   从少到多排序，等长时保持词频顺序；先取常用词是为了避免 `testy`、`comped` 这类短而生僻的词把 `competition`
   挤出列表。复测：`inves`→invest/investor/investment/investigate…，`compe`→…compete/competent/…/competition，
   `sugg`→suggest/suggestion/suggestive…；过滤 `analysis'` 这类撇号结尾的条目。
+- 用户发现 `dictator` 整列没有释义：有道 `suggest` 对部分词（`dictator`、`democracy`）直接返回 `not found`，
+  代码据此判定有道不可用并跳过了释义与同根词查询。改为释义查询总是尝试，`suggest` 缺词时回退到 `jsonapi_s`
+  的 `ec.word.trs`（与同根词共用一次请求与缓存）；只有确认有道可达时才丢弃查不到释义的词，断网时保留。
+  复测：`dictator`、`democracy` 均显示词性、释义与同根词。
 - 未执行：界面截图；窄窗口点击、失焦时关闭列表、深色模式、中文输入法组字等清单未逐项确认。
   脚本无法把 Debug 版切到前台，界面交互只能由用户手动验证。
 - 未新增单元测试：仓库规定新增测试需用户授权；排序与释义解析为纯函数，建议补充。
