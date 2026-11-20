@@ -303,11 +303,12 @@ final class YoudaoWordSuggestionClient {
             .serializingDecodable(YoudaoWordResponse.self)
             .response
             let value = try? response.result.get()
-            // Every section is optional, so an error body such as `{}` still decodes; a real
-            // answer always echoes the query it answered, even when that is another word.
-            noteReached(response.response, decoded: value?.input != nil)
-            // An answer for another word is Youdao's random fallback, not this word's entry.
-            guard let value, value.input?.lowercased() == word.lowercased() else { return nil }
+            // Every section is optional, so an error body such as `{}` still decodes, and an answer
+            // for another word is Youdao's random fallback. Only an answer for this word counts as
+            // Youdao answering, both for reachability and for the cache.
+            let isAnswerForWord = value?.input?.lowercased() == word.lowercased()
+            noteReached(response.response, decoded: isAnswerForWord)
+            guard let value, isAnswerForWord else { return nil }
             trimCachesIfNeeded()
             wordDetailCache[word] = value
             return value
