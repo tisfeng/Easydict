@@ -25,61 +25,52 @@ final class WordSuggestionProvider {
         text.range(of: #"^[A-Za-z][A-Za-z'\-]{1,39}$"#, options: .regularExpression) != nil
     }
 
-    /// Spell-checker candidates ranked by similarity; available synchronously and offline.
+    /// Spell-checker candidates in display order; available synchronously and offline.
     func localSuggestions(for input: String) -> [WordSuggestion] {
-        let isCorrect = isCorrectlySpelled(input)
-        let local = spellCheckerCandidates(for: input)
-        let candidates = filter(
-            ranker.rank(local.words, for: input, preferred: local.corrections),
-            input: input,
-            isCorrect: isCorrect
-        )
-        return candidates.prefix(maxSimilar).map { word in
-            let definition = cachedDefinitions[word.lowercased()]
-            return WordSuggestion(
-                word: word,
-                partOfSpeech: definition?.partOfSpeech,
-                meaning: definition?.meaning,
-                origin: .similar
-            )
-        }
+        let check = spellCheck(for: input)
+        return orderedCandidates(for: input, check: check, onlineWords: [])
+            .prefix(maxSimilar)
+            .map { word in
+                let definition = cachedDefinitions[word]
+                return WordSuggestion(
+                    word: word,
+                    partOfSpeech: definition?.partOfSpeech,
+                    meaning: definition?.meaning,
+                    origin: .similar
+                )
+            }
     }
 
     /// Full list with glosses and, for correctly spelled input, same-root words.
     func suggestions(for input: String) async -> [WordSuggestion] {
-        let isCorrect = isCorrectlySpelled(input)
-        let local = spellCheckerCandidates(for: input)
+        let check = spellCheck(for: input)
 
-        // For a typo, Youdao's fuzzy matches on the raw input are mostly noise,
-        // so complete the spell checker's best correction instead.
-        let online: [(word: String, definition: WordDefinition?)]
-        if isCorrect {
-            online = await client.suggestions(for: input, limit: onlineLimit)
-        } else if let correction = local.corrections.first {
-            online = await client.suggestions(for: correction, limit: onlineLimit)
+        // While typing, complete what was typed; for a typo, Youdao's fuzzy matches
+        // on the raw input are mostly noise, so complete the best correction instead.
+        let onlineQuery = check.isTypingPrefix ? input : check.guesses.first
+        let online = if let onlineQuery {
+            await client.suggestions(for: onlineQuery, limit: onlineLimit)
         } else {
-            online = []
+            [(word: String, definition: WordDefinition?)]()
         }
         let isOnline = !online.isEmpty
         for entry in online {
             if let definition = entry.definition {
-                cachedDefinitions[entry.word.lowercased()] = definition
+                cachedDefinitions[entry.word] = definition
             }
         }
 
-        // Youdao's fuzzy matches for a typo include rare or misspelled headwords;
-        // keep only words the spell checker accepts.
+        // Youdao also returns rare or misspelled headwords; keep words the spell checker accepts.
         let onlineWords = online.map(\.word).filter(isCorrectlySpelled)
-        let ranked = ranker.rank(local.words + onlineWords, for: input, preferred: local.corrections)
-        let words = filter(ranked, input: input, isCorrect: isCorrect).prefix(maxSimilar)
+        let words = orderedCandidates(for: input, check: check, onlineWords: onlineWords).prefix(maxSimilar)
 
         let lookedUp = isOnline ? await fetchMissingDefinitions(for: Array(words)) : []
 
         var similar: [WordSuggestion] = []
         for word in words {
-            let definition = cachedDefinitions[word.lowercased()]
+            let definition = cachedDefinitions[word]
             // A word Youdao was asked about but cannot gloss is usually a name or a rare form.
-            if definition == nil, lookedUp.contains(word.lowercased()), word.lowercased() != input.lowercased() {
+            if definition == nil, lookedUp.contains(word), word.lowercased() != input.lowercased() {
                 continue
             }
             similar.append(WordSuggestion(
@@ -90,7 +81,7 @@ final class WordSuggestionProvider {
             ))
         }
 
-        guard isCorrect, isOnline else { return similar }
+        guard check.isCorrect, isOnline else { return similar }
 
         let shown = Set(similar.map { $0.word.lowercased() })
         let related = await client.relatedWords(for: input)
@@ -116,9 +107,9 @@ final class WordSuggestionProvider {
     private var cachedDefinitions: [String: WordDefinition] = [:]
 
     /// Looks up glosses for the top words the prefix suggestions did not cover, concurrently.
-    /// - Returns: The lowercased words that were looked up.
+    /// - Returns: The words that were looked up.
     private func fetchMissingDefinitions(for words: [String]) async -> Set<String> {
-        let missing = words.filter { cachedDefinitions[$0.lowercased()] == nil }.prefix(maxDefinitionLookups)
+        let missing = words.filter { cachedDefinitions[$0] == nil }.prefix(maxDefinitionLookups)
         guard !missing.isEmpty else { return [] }
 
         let client = client
@@ -136,10 +127,10 @@ final class WordSuggestionProvider {
         }
         for (word, definition) in fetched {
             if let definition {
-                cachedDefinitions[word.lowercased()] = definition
+                cachedDefinitions[word] = definition
             }
         }
-        return Set(missing.map { $0.lowercased() })
+        return Set(missing)
     }
 
     private func isCorrectlySpelled(_ word: String) -> Bool {
@@ -154,27 +145,43 @@ final class WordSuggestionProvider {
         return range.location == NSNotFound
     }
 
-    /// Candidate words, plus the corrections among them when the input is misspelled.
-    private func spellCheckerCandidates(for input: String) -> (words: [String], corrections: [String]) {
+    private func spellCheck(for input: String) -> SpellCheck {
         let range = NSRange(location: 0, length: (input as NSString).length)
-        let guesses = spellChecker.guesses(
-            forWordRange: range,
-            in: input,
-            language: language,
-            inSpellDocumentWithTag: 0
-        ) ?? []
+        let isCorrect = isCorrectlySpelled(input)
         let completions = spellChecker.completions(
             forPartialWordRange: range,
             in: input,
             language: language,
             inSpellDocumentWithTag: 0
         ) ?? []
-        // A correctly spelled input is usually a prefix being typed; near-miss
-        // corrections such as `decade` for `decide` would crowd out completions.
-        if isCorrectlySpelled(input) {
-            return ([input] + completions, [])
+        let guesses = isCorrect ? [] : spellChecker.guesses(
+            forWordRange: range,
+            in: input,
+            language: language,
+            inSpellDocumentWithTag: 0
+        ) ?? []
+        return SpellCheck(isCorrect: isCorrect, completions: completions, guesses: guesses)
+    }
+
+    /// Candidates in display order, before glosses are attached.
+    ///
+    /// While the input is a prefix being typed, the exact word comes first, then
+    /// completions in the spell checker's frequency order, then Youdao's extra
+    /// completions. Only a typo with no completions is ranked by similarity to
+    /// the spell checker's corrections, so `upgr` leads with `upgrade`, not `upper`.
+    private func orderedCandidates(for input: String, check: SpellCheck, onlineWords: [String]) -> [String] {
+        let ordered: [String]
+        if check.isTypingPrefix {
+            let query = input.lowercased()
+            let onlineCompletions = onlineWords.filter { $0.lowercased().hasPrefix(query) }
+            ordered = (check.isCorrect ? [input] : []) + check.completions + onlineCompletions
+        } else {
+            ordered = ranker.rank(check.guesses + onlineWords, for: input, preferred: check.guesses)
         }
-        return (guesses + completions, guesses)
+
+        var seen = Set<String>()
+        let unique = ordered.filter { seen.insert($0.lowercased()).inserted }
+        return filter(unique, input: input, isCorrect: check.isCorrect)
     }
 
     /// Drops phrases, capitalized names for lowercase input, and plain inflections:
@@ -182,7 +189,7 @@ final class WordSuggestionProvider {
     private func filter(_ words: [String], input: String, isCorrect: Bool) -> [String] {
         let inputIsLowercase = input == input.lowercased()
         let candidates = words.filter { word in
-            guard !word.contains(" ") else { return false }
+            guard !word.contains(" "), !word.hasSuffix("'s"), !word.hasSuffix("’s") else { return false }
             if inputIsLowercase, word.first?.isUppercase == true { return false }
             if isCorrect, ranker.isInflection(word, of: input) { return false }
             return true
@@ -190,5 +197,19 @@ final class WordSuggestionProvider {
         return candidates.filter { word in
             !candidates.contains { ranker.isInflection(word, of: $0) }
         }
+    }
+}
+
+// MARK: - SpellCheck
+
+/// What the spell checker says about the typed text.
+private struct SpellCheck {
+    let isCorrect: Bool
+    let completions: [String]
+    let guesses: [String]
+
+    /// Completions exist, so the text is most likely an unfinished word rather than a typo.
+    var isTypingPrefix: Bool {
+        !completions.isEmpty
     }
 }

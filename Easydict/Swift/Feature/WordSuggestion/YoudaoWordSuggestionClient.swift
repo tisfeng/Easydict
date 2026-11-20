@@ -41,9 +41,11 @@ final class YoudaoWordSuggestionClient {
         let entries = (response?.data?.entries ?? []).map { entry in
             (word: entry.entry, definition: entry.explain.flatMap(parseExplain))
         }
+        // Keyed by exact spelling: `Upper` (a surname) and `YES` (an acronym)
+        // must not overwrite the glosses of `upper` and `yes`.
         for entry in entries {
             if let definition = entry.definition {
-                definitionCache[entry.word.lowercased()] = definition
+                definitionCache[entry.word] = definition
             }
         }
         if response != nil {
@@ -54,12 +56,11 @@ final class YoudaoWordSuggestionClient {
 
     /// The gloss for exactly `word`, if Youdao knows it.
     func definition(for word: String) async -> WordDefinition? {
-        let key = word.lowercased()
-        if let cached = definitionCache[key] {
+        if let cached = definitionCache[word] {
             return cached
         }
         let entries = await suggestions(for: word, limit: 1)
-        return entries.first { $0.word.lowercased() == key }?.definition
+        return entries.first { $0.word == word }?.definition
     }
 
     /// Words that share a root with `word` but are not just its inflections,
@@ -144,10 +145,11 @@ final class YoudaoWordSuggestionClient {
             .replacingOccurrences(of: #"<[^>]*>"#, with: "", options: .regularExpression)
             .replacingOccurrences(of: #"(\.\.\.|…)$"#, with: "", options: .regularExpression)
             .trimmingCharacters(in: .whitespaces)
+        var seen = Set<String>()
         let senses = cleaned
             .components(separatedBy: "；")
             .map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { !$0.isEmpty }
+            .filter { !$0.isEmpty && seen.insert($0).inserted }
         return senses.prefix(maxSenses).joined(separator: "；")
     }
 
