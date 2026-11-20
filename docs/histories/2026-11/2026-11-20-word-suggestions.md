@@ -45,6 +45,10 @@
   仅无补全时按纠错排序；释义缓存区分大小写并去掉重复义项。复测：`tes`→test/testimony/testament，
   `upgr`→upgrade/upgradable，`pron`→pronounce/pronunciation，`acco`→account/accordingly/accord，
   `upper`、`yes` 释义正确，`recieve`、`fonetic` 纠错不变。
+- 用户要求前缀补全按匹配长度排序（`inves` 应以 `invest` 开头）。改为先按词频取最常用的 8 个补全，再按补出的字母数
+  从少到多排序，等长时保持词频顺序；先取常用词是为了避免 `testy`、`comped` 这类短而生僻的词把 `competition`
+  挤出列表。复测：`inves`→invest/investor/investment/investigate…，`compe`→…compete/competent/…/competition，
+  `sugg`→suggest/suggestion/suggestive…；过滤 `analysis'` 这类撇号结尾的条目。
 - 未执行：界面截图；窄窗口点击、失焦时关闭列表、深色模式、中文输入法组字等清单未逐项确认。
   脚本无法把 Debug 版切到前台，界面交互只能由用户手动验证。
 - 未新增单元测试：仓库规定新增测试需用户授权；排序与释义解析为纯函数，建议补充。

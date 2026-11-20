@@ -165,23 +165,32 @@ final class WordSuggestionProvider {
 
     /// Candidates in display order, before glosses are attached.
     ///
-    /// While the input is a prefix being typed, the exact word comes first, then
-    /// completions in the spell checker's frequency order, then Youdao's extra
-    /// completions. Only a typo with no completions is ranked by similarity to
-    /// the spell checker's corrections, so `upgr` leads with `upgrade`, not `upper`.
+    /// While the input is a prefix being typed, the most frequent completions are
+    /// kept and then ordered by how few letters they add (`inves` → `invest` before
+    /// `investment`); equal lengths keep frequency order. Keeping only frequent ones
+    /// first stops rare short words such as `testy` from pushing out common ones.
+    /// Only a typo with no completions is ranked by similarity to the spell checker's
+    /// corrections, so `upgr` leads with `upgrade`, not `upper`.
     private func orderedCandidates(for input: String, check: SpellCheck, onlineWords: [String]) -> [String] {
-        let ordered: [String]
-        if check.isTypingPrefix {
-            let query = input.lowercased()
-            let onlineCompletions = onlineWords.filter { $0.lowercased().hasPrefix(query) }
-            ordered = (check.isCorrect ? [input] : []) + check.completions + onlineCompletions
-        } else {
-            ordered = ranker.rank(check.guesses + onlineWords, for: input, preferred: check.guesses)
+        guard check.isTypingPrefix else {
+            let ranked = ranker.rank(check.guesses + onlineWords, for: input, preferred: check.guesses)
+            return filter(ranked, input: input, isCorrect: check.isCorrect)
         }
 
+        let query = input.lowercased()
+        let onlineCompletions = onlineWords.filter { $0.lowercased().hasPrefix(query) }
+        let frequencyOrdered = (check.isCorrect ? [input] : []) + check.completions + onlineCompletions
         var seen = Set<String>()
-        let unique = ordered.filter { seen.insert($0.lowercased()).inserted }
-        return filter(unique, input: input, isCorrect: check.isCorrect)
+        let unique = frequencyOrdered.filter { seen.insert($0.lowercased()).inserted }
+        let frequent = filter(unique, input: input, isCorrect: check.isCorrect).prefix(maxSimilar)
+
+        return frequent.enumerated()
+            .sorted { lhs, rhs in
+                lhs.element.count == rhs.element.count
+                    ? lhs.offset < rhs.offset
+                    : lhs.element.count < rhs.element.count
+            }
+            .map(\.element)
     }
 
     /// Drops phrases, capitalized names for lowercase input, and plain inflections:
@@ -189,7 +198,8 @@ final class WordSuggestionProvider {
     private func filter(_ words: [String], input: String, isCorrect: Bool) -> [String] {
         let inputIsLowercase = input == input.lowercased()
         let candidates = words.filter { word in
-            guard !word.contains(" "), !word.hasSuffix("'s"), !word.hasSuffix("’s") else { return false }
+            guard !word.contains(" "), !word.hasSuffix("'"), !word.hasSuffix("'s"), !word.hasSuffix("’s")
+            else { return false }
             if inputIsLowercase, word.first?.isUppercase == true { return false }
             if isCorrect, ranker.isInflection(word, of: input) { return false }
             return true
