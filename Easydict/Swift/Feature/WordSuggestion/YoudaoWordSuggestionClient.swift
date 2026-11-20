@@ -74,10 +74,11 @@ final class YoudaoWordSuggestionClient {
     /// Words that share a root with `word` but are not just its inflections,
     /// such as `decision` and `decisive` for `decide`.
     func relatedWords(for word: String) async -> [WordSuggestion] {
-        let key = word.lowercased()
-        if let cached = relatedCache[key] {
+        // Cached by exact spelling, like the detail request: `polish` and `Polish` differ.
+        if let cached = relatedCache[word] {
             return cached
         }
+        let key = word.lowercased()
 
         guard let response = await wordDetail(for: word) else {
             return []
@@ -100,7 +101,7 @@ final class YoudaoWordSuggestionClient {
                 ))
             }
         }
-        relatedCache[key] = related
+        relatedCache[word] = related
         return related
     }
 

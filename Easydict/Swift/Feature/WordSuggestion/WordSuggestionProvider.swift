@@ -33,6 +33,7 @@ final class WordSuggestionProvider {
             return localTranslations(for: input)
         }
         guard isEnglishWord(input) else { return [] }
+        resetDefinitionsIfSourceChanged()
         let input = Self.straightApostrophes(input)
         let check = spellCheck(for: input)
         return orderedCandidates(for: input, check: check, onlineWords: [])
@@ -49,6 +50,7 @@ final class WordSuggestionProvider {
             return online.isEmpty ? localTranslations(for: input) : online
         }
 
+        resetDefinitionsIfSourceChanged()
         let input = Self.straightApostrophes(input)
         let check = spellCheck(for: input)
         let usesYoudao = source == .youdao
@@ -147,6 +149,8 @@ final class WordSuggestionProvider {
     private let maxDefinitionLookups = 5
 
     private var cachedDefinitions: [String: WordDefinition] = [:]
+    /// The source `cachedDefinitions` was filled from, so local mode never shows glosses fetched from Youdao.
+    private var cachedDefinitionsSource: WordSuggestionSource?
 
     private var source: WordSuggestionSource {
         Defaults[.wordSuggestionSource]
@@ -156,6 +160,12 @@ final class WordSuggestionProvider {
     /// `don’t` is looked up as `don't` instead of listing the two spellings separately.
     private static func straightApostrophes(_ text: String) -> String {
         text.replacingOccurrences(of: "’", with: "'")
+    }
+
+    private func resetDefinitionsIfSourceChanged() {
+        guard cachedDefinitionsSource != source else { return }
+        cachedDefinitions.removeAll()
+        cachedDefinitionsSource = source
     }
 
     private func isEnglishWord(_ text: String) -> Bool {

@@ -547,6 +547,11 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 
     // The suggestion list takes arrow keys, Enter and Escape while it is open.
     if (!(flags & NSEventModifierFlagShift) && [self.wordSuggestionController handleCommand:commandSelector]) {
+        // Browsing rows means the user is choosing; a pending auto query would replace the pick
+        // with the typed text, so drop it.
+        if (commandSelector == @selector(moveUp:) || commandSelector == @selector(moveDown:)) {
+            [self cancelAutoQuery];
+        }
         return YES;
     }
     
