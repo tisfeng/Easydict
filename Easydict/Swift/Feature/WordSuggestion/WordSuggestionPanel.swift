@@ -84,6 +84,9 @@ final class WordSuggestionListView: NSVisualEffectView {
     /// Called with the row index under the mouse.
     var onHover: ((Int) -> ())?
 
+    /// Called with the row index the mouse left.
+    var onHoverEnd: ((Int) -> ())?
+
     var fontSizeRatio: CGFloat = 1
 
     var suggestions: [WordSuggestion] = [] {
@@ -152,6 +155,7 @@ final class WordSuggestionListView: NSVisualEffectView {
             )
             row.onClick = { [weak self] in self?.onClick?(index) }
             row.onHover = { [weak self] in self?.onHover?(index) }
+            row.onHoverEnd = { [weak self] in self?.onHoverEnd?(index) }
             addSubview(row)
             return row
         }
@@ -198,6 +202,7 @@ final class WordSuggestionRowView: NSView {
 
     var onClick: (() -> ())?
     var onHover: (() -> ())?
+    var onHoverEnd: (() -> ())?
 
     var isSelected = false {
         didSet { updateText() }
@@ -237,6 +242,10 @@ final class WordSuggestionRowView: NSView {
 
     override func mouseEntered(with event: NSEvent) {
         onHover?()
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        onHoverEnd?()
     }
 
     override func mouseDown(with event: NSEvent) {

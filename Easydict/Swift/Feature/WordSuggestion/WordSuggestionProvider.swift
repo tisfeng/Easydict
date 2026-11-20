@@ -33,6 +33,7 @@ final class WordSuggestionProvider {
             return localTranslations(for: input)
         }
         guard isEnglishWord(input) else { return [] }
+        let input = Self.straightApostrophes(input)
         let check = spellCheck(for: input)
         return orderedCandidates(for: input, check: check, onlineWords: [])
             .prefix(maxSimilar)
@@ -48,6 +49,7 @@ final class WordSuggestionProvider {
             return online.isEmpty ? localTranslations(for: input) : online
         }
 
+        let input = Self.straightApostrophes(input)
         let check = spellCheck(for: input)
         let usesYoudao = source == .youdao
         let lookupStart = Date()
@@ -59,6 +61,9 @@ final class WordSuggestionProvider {
             await client.suggestions(for: onlineQuery, limit: onlineLimit)
         } else {
             [(word: String, definition: WordDefinition?)]()
+        }
+        if cachedDefinitions.count > maxCachedDefinitions {
+            cachedDefinitions.removeAll()
         }
         for entry in online {
             if let definition = entry.definition {
@@ -136,6 +141,7 @@ final class WordSuggestionProvider {
     private let maxPhrases = 3
     private let maxTranslations = 6
     private let maxChineseLength = 12
+    private let maxCachedDefinitions = 1000
     private let onlineLimit = 8
     /// Caps extra gloss requests per lookup; prefix suggestions usually cover most rows.
     private let maxDefinitionLookups = 5
@@ -146,8 +152,14 @@ final class WordSuggestionProvider {
         Defaults[.wordSuggestionSource]
     }
 
+    /// The input field turns `'` into `’` as the user types; both spell the same word, so
+    /// `don’t` is looked up as `don't` instead of listing the two spellings separately.
+    private static func straightApostrophes(_ text: String) -> String {
+        text.replacingOccurrences(of: "’", with: "'")
+    }
+
     private func isEnglishWord(_ text: String) -> Bool {
-        text.range(of: #"^[A-Za-z][A-Za-z'\-]{1,39}$"#, options: .regularExpression) != nil
+        text.range(of: #"^[A-Za-z][A-Za-z'’\-]{1,39}$"#, options: .regularExpression) != nil
     }
 
     /// A short run of Chinese characters, such as `固执`; sentences are left to the normal query.

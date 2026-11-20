@@ -38,7 +38,9 @@ final class YoudaoWordSuggestionClient {
                 definitionCache[entry.word] = definition
             }
         }
+        // Only a real answer is cached; an error body would otherwise hide this prefix for the session.
         if response != nil {
+            trimCachesIfNeeded()
             suggestionCache[cacheKey] = entries
         }
         return entries
@@ -213,6 +215,7 @@ final class YoudaoWordSuggestionClient {
     private let wordURL = "https://dict.youdao.com/jsonapi_s?doctype=json&jsonversion=4"
     private let timeout: TimeInterval = 4
     private let maxSenses = 2
+    private let maxCachedAnswers = 500
     private let phraseParticles: Set = [
         "up", "out", "in", "on", "off", "away", "back", "down", "over", "for", "at", "into",
         "after", "through", "about", "around", "by", "with", "from", "to", "of",
@@ -239,12 +242,26 @@ final class YoudaoWordSuggestionClient {
         )
         .serializingDecodable(YoudaoSuggestResponse.self)
         .response
-        noteReached(response.response)
-        return try? response.result.get()
+        // `suggest` answers HTTP 200 with its own status: 200 with entries, 404 for an unknown word.
+        // Anything else, such as a rate-limit body, is neither an answer nor proof of reachability.
+        let value = (try? response.result.get()).flatMap { $0.isAnswer ? $0 : nil }
+        noteReached(response.response, decoded: value != nil)
+        return value
     }
 
-    private func noteReached(_ response: HTTPURLResponse?) {
-        if response != nil {
+    /// Keeps the session caches bounded; clearing them only costs a few repeated requests.
+    private func trimCachesIfNeeded() {
+        guard suggestionCache.count + wordDetailCache.count > maxCachedAnswers else { return }
+        suggestionCache.removeAll()
+        definitionCache.removeAll()
+        relatedCache.removeAll()
+        wordDetailCache.removeAll()
+    }
+
+    /// Records that Youdao answered, but only for a successful status with a body that decodes:
+    /// rate limiting, server errors and captive portal pages also produce an HTTP response.
+    private func noteReached(_ response: HTTPURLResponse?, decoded: Bool) {
+        if let response, (200 ..< 300).contains(response.statusCode), decoded {
             lastReachedAt = Date()
         }
     }
@@ -264,7 +281,8 @@ final class YoudaoWordSuggestionClient {
         if let cached = wordDetailCache[word] {
             return cached
         }
-        // Same-root words and phrases ask for the same word at once; share one request.
+        // Same-root words and phrases ask for the same word at once; share one request, whose
+        // value is already checked against the query, so every caller gets the same validated answer.
         if let pending = wordDetailTasks[word] {
             return await pending.value
         }
@@ -274,7 +292,7 @@ final class YoudaoWordSuggestionClient {
             wordURL,
             timeout,
             parameters = YoudaoService.webDictParameters(text: word, foreignLanguage: "en")
-        ] in
+        ] () -> YoudaoWordResponse? in
             let response = await AF.request(
                 wordURL,
                 method: .post,
@@ -283,14 +301,19 @@ final class YoudaoWordSuggestionClient {
             )
             .serializingDecodable(YoudaoWordResponse.self)
             .response
-            noteReached(response.response)
-            return try? response.result.get()
+            let value = try? response.result.get()
+            // Every section is optional, so an error body such as `{}` still decodes; a real
+            // answer always echoes the query it answered, even when that is another word.
+            noteReached(response.response, decoded: value?.input != nil)
+            // An answer for another word is Youdao's random fallback, not this word's entry.
+            guard let value, value.input?.lowercased() == word.lowercased() else { return nil }
+            trimCachesIfNeeded()
+            wordDetailCache[word] = value
+            return value
         }
         wordDetailTasks[word] = task
         let answer = await task.value
         wordDetailTasks[word] = nil
-        guard let answer, answer.input?.lowercased() == word.lowercased() else { return nil }
-        wordDetailCache[word] = answer
         return answer
     }
 
@@ -319,6 +342,10 @@ final class YoudaoWordSuggestionClient {
 // MARK: - YoudaoSuggestResponse
 
 private struct YoudaoSuggestResponse: Decodable {
+    struct Status: Decodable {
+        let code: Int?
+    }
+
     struct Payload: Decodable {
         let entries: [Entry]?
     }
@@ -328,7 +355,13 @@ private struct YoudaoSuggestResponse: Decodable {
         let explain: String?
     }
 
+    let result: Status?
     let data: Payload?
+
+    /// A found (200) or not-found (404) answer, as opposed to an error body.
+    var isAnswer: Bool {
+        result?.code == 200 || result?.code == 404
+    }
 }
 
 // MARK: - YoudaoWordResponse

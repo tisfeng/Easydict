@@ -29,8 +29,16 @@ final class WordSuggestionController: NSObject {
         panel.listView.onClick = { [weak self] index in
             self?.choose(at: index)
         }
+        // Hovering only highlights a row; Enter picks a row only after ↑↓, so a pointer resting
+        // over the list never changes what Enter queries.
         panel.listView.onHover = { [weak self] index in
-            self?.panel.listView.selectedIndex = index
+            guard let self else { return }
+            self.isKeyboardSelection = false
+            panel.listView.selectedIndex = index
+        }
+        panel.listView.onHoverEnd = { [weak self] index in
+            guard let self, !isKeyboardSelection, panel.listView.selectedIndex == index else { return }
+            panel.listView.selectedIndex = noSelection
         }
     }
 
@@ -92,16 +100,18 @@ final class WordSuggestionController: NSObject {
 
         switch selector {
         case #selector(NSResponder.moveDown(_:)):
+            isKeyboardSelection = true
             let next = panel.listView.selectedIndex + 1
             panel.listView.selectedIndex = next < suggestions.count ? next : 0
             return true
         case #selector(NSResponder.moveUp(_:)):
+            isKeyboardSelection = true
             let previous = panel.listView.selectedIndex - 1
             panel.listView.selectedIndex = previous >= 0 ? previous : suggestions.count - 1
             return true
         case #selector(NSResponder.insertNewline(_:)):
             // Without an explicit pick, Enter keeps its usual meaning: look up the typed text.
-            guard suggestions.indices.contains(panel.listView.selectedIndex) else {
+            guard isKeyboardSelection, suggestions.indices.contains(panel.listView.selectedIndex) else {
                 hide()
                 return false
             }
@@ -125,9 +135,14 @@ final class WordSuggestionController: NSObject {
         lookupTask?.cancel()
         generation &+= 1
         suggestions = []
-        guard panel.isVisible else { return }
+        isKeyboardSelection = false
+        stopObservingParentWindow()
+        // Detach even when already hidden: closing the parent orders the panel out with it, and a
+        // panel left attached would come back with stale rows when the window shows again.
         panel.parent?.removeChildWindow(panel)
-        panel.orderOut(nil)
+        if panel.isVisible {
+            panel.orderOut(nil)
+        }
     }
 
     // MARK: Private
@@ -142,6 +157,9 @@ final class WordSuggestionController: NSObject {
     private let noSelection = -1
 
     private var suggestions: [WordSuggestion] = []
+    /// Whether the highlighted row was picked with ↑↓ rather than only hovered.
+    private var isKeyboardSelection = false
+    private var resignKeyObserver: NSObjectProtocol?
     private var lookupTask: Task<(), Never>?
     private var generation: UInt = 0
 
@@ -153,7 +171,8 @@ final class WordSuggestionController: NSObject {
             return
         }
 
-        let previousWord = suggestions.indices.contains(panel.listView.selectedIndex)
+        // Keep a keyboard pick across refreshes; a hover highlight is not carried over.
+        let previousWord = isKeyboardSelection && suggestions.indices.contains(panel.listView.selectedIndex)
             ? suggestions[panel.listView.selectedIndex].word
             : nil
         suggestions = newSuggestions
@@ -179,6 +198,7 @@ final class WordSuggestionController: NSObject {
         if panel.parent !== window {
             panel.parent?.removeChildWindow(panel)
             window.addChildWindow(panel, ordered: .above)
+            observeParentWindow(window)
         }
         panel.orderFront(nil)
     }
@@ -202,6 +222,28 @@ final class WordSuggestionController: NSObject {
             return above
         }
         return visible.minY
+    }
+
+    /// Hides the list when its window stops being key, such as a pinned window left open while
+    /// the user works in another app; the list itself never becomes key, so clicking it does not count.
+    private func observeParentWindow(_ window: NSWindow) {
+        stopObservingParentWindow()
+        resignKeyObserver = NotificationCenter.default.addObserver(
+            forName: NSWindow.didResignKeyNotification,
+            object: window,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.hide()
+            }
+        }
+    }
+
+    private func stopObservingParentWindow() {
+        if let resignKeyObserver {
+            NotificationCenter.default.removeObserver(resignKeyObserver)
+        }
+        resignKeyObserver = nil
     }
 
     private func choose(at index: Int) {
