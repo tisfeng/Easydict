@@ -2983,7 +2983,7 @@
         }
       }
     },
-    "copy.copied" : {
+    "copy.action.toast.copied" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
