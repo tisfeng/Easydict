@@ -29,8 +29,7 @@ final class AppleDictionaryGlossClient {
             return cached
         }
         guard let dictionary else { return nil }
-        let entry = dictionary.entries(forSearchTerm: word)
-            .first { $0.headword.caseInsensitiveCompare(word) == .orderedSame }
+        let entry = matchingEntries(in: dictionary, for: word).first
         guard let text = entry?.text, let definition = parse(text) else { return nil }
         cache[word] = definition
         return definition
@@ -85,8 +84,7 @@ final class AppleDictionaryGlossClient {
     /// `银行` entry of `bank` rather than its `岸` entry; `nil` when no entry does.
     func definition(for word: String, mentioning chinese: String) -> WordDefinition? {
         guard let dictionary else { return nil }
-        return dictionary.entries(forSearchTerm: word)
-            .filter { $0.headword.caseInsensitiveCompare(word) == .orderedSame }
+        return matchingEntries(in: dictionary, for: word)
             .lazy
             .compactMap { self.parse($0.text) }
             .first { $0.meaning.contains(chinese) }
@@ -189,6 +187,14 @@ final class AppleDictionaryGlossClient {
             ? TTTDictionary(named: dictionaryName)
             : TTTDictionary.rescanned(named: dictionaryName)
         return loadedDictionary
+    }
+
+    /// Entries whose headword is `word` ignoring case, exact spellings first: the search is
+    /// case-insensitive, and `polish` and `Polish` are distinct rows with different glosses.
+    private func matchingEntries(in dictionary: TTTDictionary, for word: String) -> [TTTDictionaryEntry] {
+        let entries = dictionary.entries(forSearchTerm: word)
+            .filter { $0.headword.caseInsensitiveCompare(word) == .orderedSame }
+        return entries.filter { $0.headword == word } + entries.filter { $0.headword != word }
     }
 
     private func matches(of pattern: String, in text: String) -> [String] {

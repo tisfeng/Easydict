@@ -241,32 +241,39 @@ final class WordSuggestionProvider {
     }
 
     /// Looks up glosses for the top words the prefix suggestions did not cover, concurrently.
-    /// - Returns: The words that were looked up.
+    /// - Returns: The words Youdao answered for, with or without a gloss.
     @discardableResult
     private func fetchMissingDefinitions(for words: [String], limit: Int? = nil) async -> Set<String> {
         let missing = words.filter { cachedDefinitions[$0] == nil }.prefix(limit ?? maxDefinitionLookups)
         guard !missing.isEmpty else { return [] }
 
         let client = client
-        let fetched = await withTaskGroup(of: (String, WordDefinition?).self) { group in
+        let fetched = await withTaskGroup(of: (String, WordDefinition?, Bool).self) { group in
             for word in missing {
                 group.addTask { @MainActor in
-                    guard !Task.isCancelled else { return (word, nil) }
-                    return await (word, client.definition(for: word))
+                    guard !Task.isCancelled else { return (word, nil, false) }
+                    let lookup = await client.definitionLookup(for: word)
+                    return (word, lookup.definition, lookup.answered)
                 }
             }
-            var results: [(String, WordDefinition?)] = []
+            var results: [(String, WordDefinition?, Bool)] = []
             for await result in group {
                 results.append(result)
             }
             return results
         }
-        for (word, definition) in fetched {
+        // Only words Youdao answered for count as looked up: a request that timed out or was
+        // rate-limited says nothing about the word, and dropping it would shrink the list.
+        var answered = Set<String>()
+        for (word, definition, didAnswer) in fetched {
             if let definition {
                 cachedDefinitions[word] = definition
             }
+            if didAnswer {
+                answered.insert(word)
+            }
         }
-        return Set(missing)
+        return answered
     }
 
     private func isCorrectlySpelled(_ word: String) -> Bool {

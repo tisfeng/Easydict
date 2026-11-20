@@ -51,24 +51,33 @@ final class YoudaoWordSuggestionClient {
     /// The suggest endpoint refuses some words outright (it answers `not found`
     /// for `dictator` and `democracy`), so the word detail endpoint is the fallback.
     func definition(for word: String) async -> WordDefinition? {
+        await definitionLookup(for: word).definition
+    }
+
+    /// The gloss for exactly `word`, and whether Youdao actually answered for it.
+    ///
+    /// `answered` is false when the requests failed (timeout, rate limit, error body), so a
+    /// missing gloss then says nothing about the word, unlike a missing gloss Youdao answered.
+    func definitionLookup(for word: String) async -> (definition: WordDefinition?, answered: Bool) {
         if let cached = definitionCache[word] {
-            return cached
+            return (cached, true)
         }
         // Exact spelling only: `john` (toilet) and `John` (a name) have different glosses.
         // The word detail endpoint below is queried with the exact spelling as well.
         let entries = await suggestions(for: word, limit: 1)
         if let definition = entries.first(where: { $0.word == word })?.definition {
-            return definition
+            return (definition, true)
         }
 
-        guard let translation = await wordDetail(for: word)?.ec?.word?.trs?.first,
+        guard let detail = await wordDetail(for: word) else { return (nil, false) }
+        guard let translation = detail.ec?.word?.trs?.first,
               let text = translation.tran
-        else { return nil }
+        else { return (nil, true) }
         let meaning = mainMeaning(of: text)
-        guard !meaning.isEmpty else { return nil }
+        guard !meaning.isEmpty else { return (nil, true) }
         let definition = WordDefinition(partOfSpeech: translation.pos, meaning: meaning)
         definitionCache[word] = definition
-        return definition
+        return (definition, true)
     }
 
     /// Words that share a root with `word` but are not just its inflections,
@@ -305,8 +314,10 @@ final class YoudaoWordSuggestionClient {
             let value = try? response.result.get()
             // Every section is optional, so an error body such as `{}` still decodes, and an answer
             // for another word is Youdao's random fallback. Only an answer for this word counts as
-            // Youdao answering, both for reachability and for the cache.
-            let isAnswerForWord = value?.input?.lowercased() == word.lowercased()
+            // Youdao answering, both for reachability and for the cache; so does a successful status,
+            // since an error status can still carry a body that echoes the word.
+            let isSuccess = response.response.map { (200 ..< 300).contains($0.statusCode) } ?? false
+            let isAnswerForWord = isSuccess && value?.input?.lowercased() == word.lowercased()
             noteReached(response.response, decoded: isAnswerForWord)
             guard let value, isAnswerForWord else { return nil }
             trimCachesIfNeeded()
