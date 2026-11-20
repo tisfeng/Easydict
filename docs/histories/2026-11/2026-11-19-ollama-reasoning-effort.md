@@ -43,8 +43,11 @@ Ollama 默认关闭思考。
   SwiftFormat 调整了 `OllamaService` 成员顺序，已随本记录提交。
 - `xcodebuild test-without-building`（Default 计划）：487 个测试中 12 个失败，集中在
   `OCRImageTests`、`AppleScriptExecutorTests`、`CodexCommandProcessTests` 和
-  `SystemUtilitiesTests.testAlertVolume`；这些用例不经过 `OllamaService`，但未在基线提交上
-  对照重跑，是否为既有失败未确认。
+  `SystemUtilitiesTests.testAlertVolume`；这些用例不经过 `OllamaService`。
+- 基线对照：在基线提交 `4ca55a25` 与本分支上分别只运行上述 4 个 suite（各 22 个测试）。基线失败
+  `OCRImageTests` 4 个与 `AppleScriptExecutorTests` 1 个；本分支失败 `OCRImageTests` 5 个，其余通过。
+  失败集合在两次运行间波动，集中在依赖本机 Vision OCR 与系统自动化环境的用例，判定为既有的
+  环境相关失败，与本次改动无关。
 - App 实测（Debug 构建，经 HTTP `/streamTranslate` 调用 Ollama 服务，Ollama 前置本地日志代理）：
   设置为 off/high/max 时，实际发出的请求体分别为 `reasoning_effort` `"none"`/`"high"`/`"max"`，
   model 为所选模型。查词模式（`queryType: 2`）下 off 为 5.3–6.7 秒，high 为 99.7 秒。
@@ -58,6 +61,6 @@ Ollama 默认关闭思考。
 
 ### 后续事项
 
-- 设置页截图验证待补；在基线提交上对照上述 12 个失败用例。
+- 设置页截图验证待补。
 - 对非思考模型选择 `high`/`max` 会收到 Ollama 报错；如需更友好的提示，可按模型的
   `thinking` capability 隐藏或禁用该选项。
