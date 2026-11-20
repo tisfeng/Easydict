@@ -59,6 +59,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 @property (nonatomic, strong) EZSelectLanguageCell *selectLanguageCell;
 
 // queryText is self.queryModel.queryText;
+@property (nonatomic, copy, nullable) NSString *ocrPrefixText;
+@property (nonatomic, assign) NSInteger ocrRequestToken;
 @property (nonatomic, copy, readonly) NSString *queryText;
 @property (nonatomic, strong) NSArray<NSString *> *serviceTypeIds;
 @property (nonatomic, strong) NSArray<EZQueryService *> *services;
@@ -474,6 +476,23 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 }
 
+- (NSString *)combinePreviousText:(NSString *)oldText withNewText:(NSString *)newText {
+    if (oldText.length == 0) {
+        return newText ?: @"";
+    }
+    if (newText.length == 0) {
+        return oldText ?: @"";
+    }
+
+    NSString *trimmedOld = [oldText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *trimmedNew = [newText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+    if (trimmedOld.length == 0) return trimmedNew;
+    if (trimmedNew.length == 0) return trimmedOld;
+
+    return [NSString stringWithFormat:@"%@\n%@", trimmedOld, trimmedNew];
+}
+
 /// Before starting query text, close all result view.
 - (void)startQueryText:(NSString *)text {
     [self startQueryText:text actionType:self.queryModel.actionType];
@@ -550,6 +569,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
+    if (image != self.queryModel.ocrImage) {
+        self.ocrPrefixText = MyConfiguration.shared.enableAppendMode ? self.inputText : nil;
+    }
+
     [self cancelDelayDetectQueryText];
     self.queryModel.actionType = actionType;
     [self.queryView resetFormulaPreview];
@@ -559,9 +582,13 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self.queryView startLoadingAnimation:YES];
 
     BOOL saveOCRLocally = MyConfiguration.shared.localAutoSave;
+    NSInteger ocrToken = ++self.ocrRequestToken;
     mm_weakify(self);
     [self.detectManager ocrAndDetectTextWithProgress:^(NSString *text) {
         mm_strongify(self);
+        if (ocrToken != self.ocrRequestToken) {
+            return;
+        }
         if (![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
             [self.queryView startLoadingAnimation:NO];
             self.inputText = text;
@@ -569,8 +596,15 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         }
     } completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
+        if (ocrToken != self.ocrRequestToken) {
+            return;
+        }
         if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSUserCancelledError) {
             [self.queryView startLoadingAnimation:NO];
+            if (MyConfiguration.shared.enableAppendMode && self.ocrPrefixText.length > 0
+                && ![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
+                self.inputText = self.ocrPrefixText;
+            }
             return;
         }
 
@@ -588,6 +622,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
         if (error) {
             [self.queryView startLoadingAnimation:NO];
+            if (MyConfiguration.shared.enableAppendMode && self.ocrPrefixText.length > 0
+                && ![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
+                self.inputText = self.ocrPrefixText;
+            }
 
             NSString *errorMsg = [error localizedDescription];
             dispatch_block_on_main_safely(^{
@@ -610,12 +648,16 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         if (![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
             [self.queryView startLoadingAnimation:NO];
 
-            self.inputText = inputText;
+            NSString *finalText = inputText;
+            if (MyConfiguration.shared.enableAppendMode && self.ocrPrefixText.length > 0) {
+                finalText = [self combinePreviousText:self.ocrPrefixText withNewText:inputText];
+            }
+            self.inputText = finalText;
 
             // Show detected language, even auto
             self.queryModel.showAutoLanguage = YES;
 
-            [self updateQueryTextAndParagraphStyle:inputText actionType:actionType];
+            [self updateQueryTextAndParagraphStyle:finalText actionType:actionType];
 
             if (self.config.autoCopyOCRText) {
                 [inputText copyToPasteboard];
@@ -685,6 +727,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self.detectManager cancelOCR];
     [self.queryView startLoadingAnimation:NO];
     // Clear query text, detect language and clear button right now;
+    self.ocrPrefixText = nil;
     self.queryModel.ocrImage = nil;
     self.inputText = @"";
     [self.queryView setAlertTextHidden:YES];
@@ -1367,9 +1410,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self.queryView startLoadingAnimation:NO];
     [self resetAllResults];
 
-    if (self.inputText.length || self.queryModel.ocrImage) {
-        self.queryModel.ocrImage = nil;
+    self.queryModel.ocrImage = nil;
+    if (self.inputText.length && !MyConfiguration.shared.enableAppendMode) {
         self.inputText = @"";
+        self.ocrPrefixText = nil;
     }
 }
 
