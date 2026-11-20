@@ -275,15 +275,15 @@ extension EventMonitor {
     }
 
     private func handleMonitorEvent(_ event: NSEvent, scope: EventScope) {
-        #if DEBUG
-        let eventStart = CFAbsoluteTimeGetCurrent()
+        let eventStart = BuildConfig.isDebug ? CFAbsoluteTimeGetCurrent() : nil
         defer {
-            let elapsed = (CFAbsoluteTimeGetCurrent() - eventStart) * 1000
-            if elapsed > 16 {
-                logInfo("Slow event handler: \(event.type.rawValue) took \(String(format: "%.1f", elapsed))ms")
+            if let eventStart {
+                let elapsed = (CFAbsoluteTimeGetCurrent() - eventStart) * 1000
+                if elapsed > 16 {
+                    logInfo("Slow event handler: \(event.type.rawValue) took \(String(format: "%.1f", elapsed))ms")
+                }
             }
         }
-        #endif
 
         lastEvent = event
         popButtonController.lastEvent = event
