@@ -608,6 +608,7 @@
 		C0DE13030002000000000001 /* CodexRuntimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DE13030001000000000001 /* CodexRuntimeTests.swift */; };
 		C0DE13030004000000000001 /* CodexAppServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DE13030003000000000001 /* CodexAppServer.swift */; };
 		C0DE13030004000000000002 /* CodexAppServerProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DE13030003000000000002 /* CodexAppServerProcess.swift */; };
+		A92011200000000000000002 /* CodexMCPIsolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92011200000000000000001 /* CodexMCPIsolation.swift */; };
 		C0DE13032026091400000001 /* CodexDirectoryMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DE13032026091400000002 /* CodexDirectoryMigration.swift */; };
 		C0DEC11E0001000000000001 /* CodexService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000001 /* CodexService.swift */; };
 		C0DEC11E0001000000000002 /* CodexCLIRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000002 /* CodexCLIRunner.swift */; };
@@ -1420,6 +1421,7 @@
 		C0DE13030001000000000001 /* CodexRuntimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexRuntimeTests.swift; sourceTree = "<group>"; };
 		C0DE13030003000000000001 /* CodexAppServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexAppServer.swift; sourceTree = "<group>"; };
 		C0DE13030003000000000002 /* CodexAppServerProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexAppServerProcess.swift; sourceTree = "<group>"; };
+		A92011200000000000000001 /* CodexMCPIsolation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexMCPIsolation.swift; sourceTree = "<group>"; };
 		C0DE13032026091400000002 /* CodexDirectoryMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexDirectoryMigration.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000001 /* CodexService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexService.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000002 /* CodexCLIRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIRunner.swift; sourceTree = "<group>"; };
@@ -3580,6 +3582,7 @@
 			children = (
 				C0DE13030003000000000001 /* CodexAppServer.swift */,
 				C0DE13030003000000000002 /* CodexAppServerProcess.swift */,
+				A92011200000000000000001 /* CodexMCPIsolation.swift */,
 				D777448D5C79452B85E8A640 /* CodexAppServerRequest.swift */,
 			);
 			path = AppServer;
@@ -4995,6 +4998,7 @@
 				0C93675282708F04BAEBDFB6 /* CodexRuntime.swift in Sources */,
 				C0DE13030004000000000001 /* CodexAppServer.swift in Sources */,
 				C0DE13030004000000000002 /* CodexAppServerProcess.swift in Sources */,
+				A92011200000000000000002 /* CodexMCPIsolation.swift in Sources */,
 				C0DE13032026091400000001 /* CodexDirectoryMigration.swift in Sources */,
 				C4BB908FFBD2D1A171F74CBC /* CodexComponentManager.swift in Sources */,
 				F5467B113D285C01338E3C55 /* CodexComponentStore.swift in Sources */,

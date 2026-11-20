@@ -13,8 +13,9 @@ import Foundation
 final class CodexAppServerProcess: @unchecked Sendable {
     // MARK: Lifecycle
 
-    init(runtime: CodexRuntime?) {
+    init(runtime: CodexRuntime?, disablingMCPServers serverNames: [String] = []) {
         self.runtime = runtime
+        self.disabledMCPServers = serverNames
     }
 
     deinit {
@@ -41,7 +42,7 @@ final class CodexAppServerProcess: @unchecked Sendable {
             )
             process.currentDirectoryURL = runtime.workingDirectory
         } else {
-            try CodexCLIInstallation.configureAppServer(process)
+            try CodexCLIInstallation.configureAppServer(process, disablingMCPServers: disabledMCPServers)
         }
         process.standardInput = context.stdinPipe
         process.standardOutput = context.stdoutPipe
@@ -118,6 +119,7 @@ final class CodexAppServerProcess: @unchecked Sendable {
     private static let maximumStderrSize = 1024 * 1024
 
     private let runtime: CodexRuntime?
+    private let disabledMCPServers: [String]
     private let stateLock = NSLock()
     private let writeLock = NSLock()
     private let ioQueue = DispatchQueue(

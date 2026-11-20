@@ -8,6 +8,7 @@
 
 import Foundation
 import Testing
+import zlib
 
 @testable import Easydict
 
@@ -131,7 +132,7 @@ struct MDictReaderTests {
     @Test("Zlib decompression round-trip")
     func testZlibDecompression() throws {
         let original = Data("Hello, MDict decompression test!".utf8)
-        let compressed = try MDictReader.zlibCompress(original)
+        let compressed = try zlibCompress(original)
 
         var block = Data([0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
         block.append(compressed)
@@ -399,6 +400,25 @@ struct MDictReaderTests {
         var data = Data([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
         data.append(payload)
         return data
+    }
+
+    private func zlibCompress(_ source: Data) throws -> Data {
+        var outputSize = compressBound(uLong(source.count))
+        var output = Data(count: Int(outputSize))
+        let status = source.withUnsafeBytes { sourceBytes in
+            output.withUnsafeMutableBytes { outputBytes in
+                compress2(
+                    outputBytes.baseAddress!.assumingMemoryBound(to: Bytef.self),
+                    &outputSize,
+                    sourceBytes.baseAddress!.assumingMemoryBound(to: Bytef.self),
+                    uLong(source.count),
+                    Z_DEFAULT_COMPRESSION
+                )
+            }
+        }
+        guard status == Z_OK else { throw MDictError.decompressionFailed }
+        output.count = Int(outputSize)
+        return output
     }
 
     private func hex(_ bytes: [UInt8]) -> String {

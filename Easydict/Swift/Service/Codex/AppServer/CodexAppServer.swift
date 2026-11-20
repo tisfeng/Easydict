@@ -116,6 +116,21 @@ actor CodexAppServer {
         }
 
         do {
+            // A reused connection can outlive edits to the CLI's configuration.
+            // Recheck the same cwd before each new thread without interrupting
+            // translations already running on the connection.
+            let configuration = try await request(
+                session: session,
+                method: "config/read",
+                params: ["cwd": (translation.runtime?.workingDirectory ?? FileManager.default.temporaryDirectory).path],
+                translationIdentifier: translation.identifier
+            )
+            guard let enabledServers = CodexMCPIsolation().enabledServers(in: configuration.object),
+                  enabledServers.isEmpty else { throw CodexServiceError.isolationFailed }
+            try Task.checkCancellation()
+            guard translations[translation.identifier] === state, !translation.isCancelled() else {
+                throw CancellationError()
+            }
             let response = try await request(
                 session: session,
                 method: "thread/start",
@@ -128,13 +143,15 @@ actor CodexAppServer {
             )
             guard translations[translation.identifier] === state,
                   let thread = response.object["thread"] as? [String: Any],
-                  let threadID = thread["id"] as? String,
-                  thread["ephemeral"] as? Bool == true
+                  let threadID = thread["id"] as? String, !threadID.isEmpty
             else { throw state.failure ?? CodexServiceError.invalidResponse }
             state.threadID = threadID
             requestByThread[threadID] = translation.identifier
             if let failure = state.failure { throw failure }
+            guard CodexMCPIsolation().acceptsThread(response.object) else { throw CodexServiceError.isolationFailed }
 
+            try Task.checkCancellation()
+            guard !translation.isCancelled() else { throw CancellationError() }
             var input = [["type": "text", "text": translation.prompt]]
             if let imageURL = translation.imageURL {
                 input.append(["type": "image", "url": imageURL])
@@ -377,20 +394,23 @@ extension CodexAppServer {
         return CodexCLIError.cliError(message: message)
     }
 
-    private func ensureSession(runtime: CodexRuntime?) async throws -> Session {
+    private func ensureSession(
+        runtime: CodexRuntime?, disablingMCPServers serverNames: [String] = []
+    ) async throws
+        -> Session {
         if let session, runtimeMatches(runtime, session.runtime) {
             if session.initialized { return session }
             try await withCheckedThrowingContinuation { continuation in
                 session.readiness.append(continuation)
             }
-            guard self.session === session, session.initialized else {
-                throw CodexServiceError.invalidResponse
-            }
-            return session
+            // Isolation may have replaced the initial connection while waiting.
+            guard let readySession = self.session, readySession.initialized,
+                  runtimeMatches(runtime, readySession.runtime) else { throw CodexServiceError.invalidResponse }
+            return readySession
         }
         if session != nil { stopSession(error: CancellationError()) }
 
-        let process = CodexAppServerProcess(runtime: runtime)
+        let process = CodexAppServerProcess(runtime: runtime, disablingMCPServers: serverNames)
         let session = Session(runtime: runtime, process: process)
         self.session = session
         cachedRuntime = runtime
@@ -428,7 +448,31 @@ extension CodexAppServer {
                 ]
             )
             try process.send(["method": "initialized"])
+            let configuration = try await request(
+                session: session,
+                method: "config/read",
+                params: ["cwd": (runtime?.workingDirectory ?? FileManager.default.temporaryDirectory).path]
+            )
+            guard let enabledServers = CodexMCPIsolation().enabledServers(in: configuration.object) else {
+                throw CodexServiceError.isolationFailed
+            }
             guard self.session === session else { throw CancellationError() }
+            if !enabledServers.isEmpty {
+                guard runtime == nil, serverNames.isEmpty else { throw CodexServiceError.isolationFailed }
+                // Keep concurrent callers waiting until the replacement connection
+                // has passed the same checks. No thread exists on this connection.
+                let readiness = session.readiness
+                session.readiness.removeAll()
+                failSession(session, error: CodexServiceError.isolationFailed, terminate: true)
+                do {
+                    let replacement = try await ensureSession(runtime: runtime, disablingMCPServers: enabledServers)
+                    readiness.forEach { $0.resume() }
+                    return replacement
+                } catch {
+                    readiness.forEach { $0.resume(throwing: error) }
+                    throw error
+                }
+            }
             session.initialized = true
             let readiness = session.readiness
             session.readiness.removeAll()
