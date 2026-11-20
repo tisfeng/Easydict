@@ -118,10 +118,10 @@ def split_paragraphs(block: str) -> list[str]:
     return [paragraph for paragraph in re.split(r"\n[ \t]*\n+", block) if paragraph]
 
 
-def strip_and_validate_references(message: str) -> str:
-    """Remove one final global references section after validating its entries."""
+def strip_and_validate_references(block: str) -> tuple[str, list[str]]:
+    """Remove a language block's final references section and return ordered URLs."""
 
-    lines = message.rstrip("\n").split("\n")
+    lines = block.rstrip("\n").split("\n")
     malformed_headings = [
         line
         for line in lines
@@ -132,10 +132,10 @@ def strip_and_validate_references(message: str) -> str:
 
     positions = [index for index, line in enumerate(lines) if line == REFERENCES_HEADER]
     if not positions:
-        return message.rstrip("\n")
+        return block.rstrip("\n"), []
     if len(positions) != 1:
         raise ValidationError(
-            f"commit message allows at most 1 References section, found {len(positions)}"
+            f"language block allows at most 1 References section, found {len(positions)}"
         )
 
     index = positions[0]
@@ -151,7 +151,7 @@ def strip_and_validate_references(message: str) -> str:
     if not entries:
         raise ValidationError("References section requires at least 1 entry")
 
-    urls: set[str] = set()
+    urls: list[str] = []
     for entry in entries:
         match = REFERENCE_ITEM_PATTERN.fullmatch(entry)
         if match is None:
@@ -171,9 +171,9 @@ def strip_and_validate_references(message: str) -> str:
             )
         if url in urls:
             raise ValidationError(f"References section contains duplicate URL '{url}'")
-        urls.add(url)
+        urls.append(url)
 
-    return "\n".join(lines[: index - 1])
+    return "\n".join(lines[: index - 1]), urls
 
 
 def validate_header(text: str, block_name: str) -> Header:
@@ -350,9 +350,8 @@ def validate_message(message: str, mode: str) -> None:
     if "```" in message:
         raise ValidationError("commit message must not contain Markdown code fences")
 
-    message_without_references = strip_and_validate_references(message)
-
     if mode == "english":
+        message_without_references, _ = strip_and_validate_references(message)
         if any(
             DIVIDER_PATTERN.fullmatch(line)
             for line in message_without_references.splitlines()
@@ -367,8 +366,9 @@ def validate_message(message: str, mode: str) -> None:
         )
         return
 
-    blocks = split_bilingual_message(message_without_references)
+    blocks = split_bilingual_message(message)
     headers: list[Header | None] = []
+    reference_urls: list[list[str]] = []
     errors: list[str] = []
     block_specs = (
         ("Local-language block", (CHINESE_BODY_LABELS, ENGLISH_BODY_LABELS)),
@@ -379,7 +379,9 @@ def validate_message(message: str, mode: str) -> None:
         block_specs,
     ):
         try:
-            headers.append(validate_block(block, block_name, allowed_label_sets))
+            body, urls = strip_and_validate_references(block)
+            headers.append(validate_block(body, block_name, allowed_label_sets))
+            reference_urls.append(urls)
         except ValidationError as error:
             headers.append(None)
             errors.append(str(error))
@@ -393,6 +395,11 @@ def validate_message(message: str, mode: str) -> None:
             "and BREAKING CHANGE footer presence"
         )
     validate_bilingual_subject_languages(local_header, english_header)
+    if reference_urls[0] != reference_urls[1]:
+        raise ValidationError(
+            "language blocks must use matching References URLs in the same order "
+            "or both omit References"
+        )
 
 
 def parse_arguments() -> argparse.Namespace:

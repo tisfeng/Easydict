@@ -10,9 +10,9 @@ description: 将当前 worktree 的任务提交 rebase 到本地目标分支，�
 
 ## 依赖与授权
 
-完整交付依赖 `git-commit` 的提交、分支命名和已有提交回执能力。从当前 Skill 清单
-定位实际入口，未提供位置时才检查 [同级安装位置](../git-commit/SKILL.md)。缺失时可完成
-只读预检，但在首次分支、暂存、提交、rebase 或 merge 写入前停止。
+完整交付依赖同级完整安装的 [`git-commit`](../git-commit/SKILL.md)，复用其提交、
+[统一分支命名](../git-commit/references/branch-naming.md)和已有提交回执能力。
+依赖缺失时可报告已知事实，但无法完成 helper 预检，在任何 Git 写入前停止。
 
 本 Skill 只在用户明确要求本地集成时执行 Git 写入。仅预览或只读请求不创建分支/
 worktree、不暂存、提交、rebase 或 merge。除非用户明确要求，不 fetch、pull 或 push。

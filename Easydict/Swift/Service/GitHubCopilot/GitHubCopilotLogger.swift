@@ -5,6 +5,7 @@
 //  Created by tisfeng on 2026/09/24.
 //
 
+import Defaults
 import Foundation
 
 // MARK: - GitHubCopilotLogger
@@ -18,6 +19,7 @@ final class GitHubCopilotLogger: @unchecked Sendable {
     // MARK: Lifecycle
 
     init(command: String, prompt: String) {
+        self.saveLocally = Defaults[.localAutoSave]
         self.command = command
         self.prompt = prompt
 
@@ -69,6 +71,7 @@ final class GitHubCopilotLogger: @unchecked Sendable {
     /// Maximum number of log files to keep; oldest are deleted when exceeded.
     private static let maxLogFiles = 50
 
+    private let saveLocally: Bool
     private let command: String
     private let prompt: String
     private let timestamp: String
@@ -84,7 +87,8 @@ final class GitHubCopilotLogger: @unchecked Sendable {
 
     /// Deletes the oldest log files once the directory holds more than `maxLogFiles`.
     private func pruneOldLogs() {
-        guard let logDirectory = fileURL?.deletingLastPathComponent() else { return }
+        guard saveLocally, Defaults[.localAutoSave],
+              let logDirectory = fileURL?.deletingLastPathComponent() else { return }
         queue.async {
             let manager = FileManager.default
             guard let urls = try? manager.contentsOfDirectory(
@@ -110,8 +114,9 @@ final class GitHubCopilotLogger: @unchecked Sendable {
     }
 
     private func write(_ text: String) {
-        guard let url = fileURL else { return }
+        guard saveLocally, Defaults[.localAutoSave], let url = fileURL else { return }
         queue.async {
+            guard Defaults[.localAutoSave] else { return }
             guard let data = text.data(using: .utf8) else { return }
             if FileManager.default.fileExists(atPath: url.path) {
                 if let handle = try? FileHandle(forWritingTo: url) {

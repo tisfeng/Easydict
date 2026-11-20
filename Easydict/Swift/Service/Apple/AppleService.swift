@@ -20,6 +20,8 @@ import Vision
 public class AppleService: QueryService {
     // MARK: Public
 
+    public override func supportsOCR() -> Bool { true }
+
     public override func serviceType() -> ServiceType {
         .apple
     }
@@ -80,18 +82,7 @@ public class AppleService: QueryService {
     ) async throws
         -> EZOCRResult? {
         _ = to
-        return try await withCheckedThrowingContinuation { continuation in
-            ocrEnginee.recognizeText(
-                image: image,
-                language: from
-            ) { result, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: result)
-                }
-            }
-        }
+        return try await ocrEnginee.recognizeText(image: image, language: from)
     }
 
     public override func autoConvertTraditionalChinese() -> Bool {
@@ -169,7 +160,7 @@ public class AppleService: QueryService {
 
     private let ocrEnginee = AppleOCREngine()
     private let languageMapper = AppleLanguageMapper.shared
-    private let languageDetector = AppleLanguageDetector(enableDebugLog: true)
+    private let languageDetector = AppleLanguageDetector()
     private let speechService = AppleSpeechService()
 
     private var translationService: Any? // Use Any to avoid compile-time type checking

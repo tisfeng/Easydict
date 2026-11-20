@@ -20,8 +20,9 @@ def prepare(output):
                          '0.153.4': {'gpt-6-astra', 'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna', 'gpt-5.5'}}
             if {model['slug'] for model in models} != supported[version]:
                 raise ValueError('Unexpected ChatGPT model selection in ' + version)
+            modalities = ['text'] if version == '0.134.0' else ['text', 'image']
             for model in models:
-                if (model['input_modalities'] != ['text'] or model['apply_patch_tool_type'] is not None
+                if (model['input_modalities'] != modalities or model['apply_patch_tool_type'] is not None
                         or model['experimental_supported_tools']):
                     raise ValueError('Unexpected translation capability in ' + version)
                 if version == '0.153.4' and (model['tool_mode'] != 'direct' or model['multi_agent_version'] is not None):

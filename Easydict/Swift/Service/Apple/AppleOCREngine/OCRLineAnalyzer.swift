@@ -62,8 +62,6 @@ class OCRLineAnalyzer {
 
         if hasRequestedIndentation {
             print("\nIndentation detected: \(indentationInfo)")
-            print("\nCurrent observation: \(observation)")
-            print("Compared against: \(comparedObservation)\n")
         }
 
         return hasRequestedIndentation
@@ -219,7 +217,6 @@ class OCRLineAnalyzer {
             print(
                 "\nBig line spacing detected (confidence: \(confidence)), gap = \(pair.verticalGap.string3f), threshold = \(threshold.string3f), gapRatio = \(gapRatio.string3f) > \(confidence.multiplier)"
             )
-            print("Current: \(pair.current)\n")
         }
 
         return isBigSpacing
@@ -253,7 +250,6 @@ class OCRLineAnalyzer {
             print(
                 "\nDifferent font detected (confidence: \(confidence)): diff = \(differentFontSize.string1f), threshold = \(finalThreshold) (base: \(baseThreshold) × \(confidence.multiplier))"
             )
-            print("Pair: \(pair)\n")
         }
         return isDifferent
     }
@@ -350,7 +346,6 @@ class OCRLineAnalyzer {
             print(
                 "\nVertical gap: \(verticalGap.string2f), Threshold: \(threshold.string2f)"
             )
-            print("Same line detected: \(pair)")
         }
 
         return isNewLine

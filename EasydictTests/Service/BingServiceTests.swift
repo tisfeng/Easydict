@@ -5,117 +5,112 @@
 //  Created by tisfeng on 2026/4/12.
 //
 
+import Alamofire
+@testable import Easydict
 import Foundation
 import Testing
 
-@testable import Easydict
-
 // MARK: - BingRequestStub
 
-/// Supplies deterministic translate callback values so Bing service aggregation can be tested
-/// without network traffic. The stub only overrides the standard translate endpoint because these
-/// tests intentionally exercise the non-dictionary branch.
 private final class BingRequestStub: BingRequest {
-    // MARK: Lifecycle
+    var translations: [BingTranslateCompletion] = []
 
-    /// Creates a stub that immediately completes `translateText` with the provided callback values.
-    init(
-        translateData: Data?,
-        lookupData: Data?,
-        translateError: Error?,
-        lookupError: Error?
-    ) {
-        self.translateData = translateData
-        self.lookupData = lookupData
-        self.translateError = translateError
-        self.lookupError = lookupError
-        super.init()
-    }
-
-    // MARK: Internal
-
-    /// Returns the preconfigured callback payload without performing any network request.
     override func translateText(
         text _: String,
         from _: String,
         to _: String,
         completionHandler completion: @escaping BingTranslateCompletion
     ) {
-        completion(translateData, lookupData, translateError, lookupError)
+        translations.append(completion)
     }
-
-    // MARK: Private
-
-    private let translateData: Data?
-    private let lookupData: Data?
-    private let translateError: Error?
-    private let lookupError: Error?
 }
 
 // MARK: - BingServiceTests
 
-/// Verifies the service-layer aggregation rules for Bing translate callbacks. These tests focus on
-/// how successful translate payloads are combined with lookup follow-up outcomes so cancellation
-/// does not leak stale UI results while non-fatal lookup failures still preserve translated text.
-@Suite("Bing Service", .tags(.unit))
+@MainActor
+@Suite("Bing Service", .tags(.unit), .timeLimit(.minutes(1)))
 struct BingServiceTests {
     // MARK: Internal
 
-    /// Verifies that a cancelled lookup turns the whole non-dictionary query into cancellation.
-    @Test("Cancels non-dictionary translate when lookup is cancelled", .tags(.unit))
+    @Test("Cancels non-dictionary translate when lookup is cancelled")
     func cancelsNonDictionaryTranslateWhenLookupIsCancelled() throws {
-        let translateData = try makeTranslateData(translatedText: "你好")
-        let service = makeService(
-            request: BingRequestStub(
-                translateData: translateData,
-                lookupData: nil,
-                translateError: nil,
-                lookupError: CancellationError()
-            )
-        )
-
+        let request = BingRequestStub()
+        let service = makeService(request: request)
         var completionResult: QueryResult?
-        var completionError: (any Error)?
+        var completionError: Error?
 
         service.bingTranslate("hello", useDictQuery: false, from: .english, to: .simplifiedChinese) { result, error in
             completionResult = result
             completionError = error
         }
+        request.translations[0](try makeTranslateData("你好"), nil, nil, CancellationError())
 
         #expect(completionError is CancellationError)
         #expect(completionResult?.translatedText == nil)
+        #expect(service.result.translatedText == nil)
+        #expect(service.result.error == nil)
     }
 
-    /// Verifies that a normal lookup failure does not discard an already successful translation.
-    @Test("Keeps translated result when lookup fails without cancellation", .tags(.unit))
+    @Test("Keeps translated result when lookup fails without cancellation")
     func keepsTranslatedResultWhenLookupFailsWithoutCancellation() throws {
-        let translateData = try makeTranslateData(translatedText: "你好")
-        let service = makeService(
-            request: BingRequestStub(
-                translateData: translateData,
-                lookupData: nil,
-                translateError: nil,
-                lookupError: QueryError(type: .api, message: "lookup failed")
-            )
-        )
-
+        let request = BingRequestStub()
+        let service = makeService(request: request)
         var completionResult: QueryResult?
-        var completionError: (any Error)?
+        var completionError: Error?
 
         service.bingTranslate("hello", useDictQuery: false, from: .english, to: .simplifiedChinese) { result, error in
             completionResult = result
             completionError = error
         }
+        request.translations[0](try makeTranslateData("你好"), nil, nil, QueryError(type: .api, message: "lookup failed"))
 
-        if let completionError {
-            Issue.record("Expected translated result without completion error, got: \(completionError)")
-        }
+        #expect(completionError == nil)
         #expect(completionResult?.translatedText == "你好")
+    }
+
+    @Test("Overlapping network queries each complete once and the last succeeds")
+    func overlappingNetworkQueries() async throws {
+        let (request, session, host, channel) = makeNetworkRequest()
+        defer {
+            session.session.invalidateAndCancel()
+            BingURLProtocol.removeChannel(for: host)
+        }
+        var incoming = channel.requests.makeAsyncIterator()
+        var completions: [Int] = []
+        let results = AsyncStream<(Int, Data?, Error?)>.makeStream()
+        defer { results.continuation.finish() }
+        let expected = try makeTranslateData("最后结果")
+
+        for index in 0 ..< 3 {
+            request.translateText(text: "query \(index)", from: "en", to: "zh-Hans") { data, _, error, _ in
+                completions.append(index)
+                results.continuation.yield((index, data, error))
+            }
+            let first = try #require(await incoming.next())
+            let second = try #require(await incoming.next())
+            if index == 2 {
+                for endpoint in [first, second] {
+                    #expect(["/ttranslatev3", "/tlookupv3"].contains(endpoint.request.url?.path ?? ""))
+                    endpoint.respond(with: endpoint.request.url?.path == "/ttranslatev3" ? expected : Data("[]".utf8))
+                }
+            }
+        }
+
+        var finished = results.stream.makeAsyncIterator()
+        for _ in 0 ..< 3 {
+            let (index, data, error) = try #require(await finished.next())
+            if index == 2 {
+                #expect(error == nil)
+                #expect(data == expected)
+            } else {
+                #expect(error is CancellationError)
+            }
+        }
+        #expect(completions.sorted() == [0, 1, 2])
     }
 
     // MARK: Private
 
-    /// Creates a Bing service with a stubbed request dependency and initialized result state.
     private func makeService(request: BingRequest) -> BingService {
         let service = BingService()
         service.bingRequest = request
@@ -127,23 +122,100 @@ struct BingServiceTests {
         return service
     }
 
-    /// Builds the minimal successful Bing translate payload required by the service parser.
-    private func makeTranslateData(translatedText: String) throws -> Data {
-        let payload: [[String: Any]] = [
+    private func makeTranslateData(_ translatedText: String) throws -> Data {
+        try JSONSerialization.data(withJSONObject: [
             [
-                "detectedLanguage": [
-                    "language": "en",
-                    "score": 1.0,
-                ],
-                "translations": [
-                    [
-                        "text": translatedText,
-                        "to": "zh-Hans",
-                    ],
-                ],
+                "detectedLanguage": ["language": "en", "score": 1.0],
+                "translations": [["text": translatedText, "to": "zh-Hans"]],
             ],
-        ]
-
-        return try JSONSerialization.data(withJSONObject: payload)
+        ])
     }
+
+    private func makeNetworkRequest() -> (BingRequest, Session, String, BingRequestChannel) {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [BingURLProtocol.self]
+        let session = Session(configuration: configuration)
+        let request = BingRequest(session: session)
+        let host = "\(UUID().uuidString.lowercased()).test"
+        let channel = BingRequestChannel()
+        BingURLProtocol.addChannel(channel, for: host)
+        request.bingConfig.host = host
+        request.bingConfig.key = String(Int64(Date().timeIntervalSince1970 * 1000))
+        request.bingConfig.token = "test-token"
+        request.bingConfig.IG = "test-ig"
+        request.bingConfig.IID = "test-iid"
+        request.bingConfig.expirationInterval = "3600000"
+        return (request, session, host, channel)
+    }
+}
+
+// MARK: - BingRequestChannel
+
+private final class BingRequestChannel {
+    // MARK: Lifecycle
+
+    init() {
+        let stream = AsyncStream<BingURLProtocol>.makeStream()
+        self.requests = stream.stream
+        self.continuation = stream.continuation
+    }
+
+    // MARK: Internal
+
+    let requests: AsyncStream<BingURLProtocol>
+    let continuation: AsyncStream<BingURLProtocol>.Continuation
+}
+
+// MARK: - BingURLProtocol
+
+private final class BingURLProtocol: URLProtocol, @unchecked Sendable {
+    // MARK: Internal
+
+    override static func canInit(with _: URLRequest) -> Bool { true }
+
+    override static func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+
+    override func startLoading() {
+        Self.channelLock.lock()
+        let channel = Self.channels[request.url?.host ?? ""]
+        Self.channelLock.unlock()
+        guard let channel else {
+            client?.urlProtocol(self, didFailWithError: URLError(.unsupportedURL))
+            return
+        }
+        channel.continuation.yield(self)
+    }
+
+    override func stopLoading() {}
+
+    static func addChannel(_ channel: BingRequestChannel, for host: String) {
+        channelLock.lock()
+        defer { channelLock.unlock() }
+        channels[host] = channel
+    }
+
+    static func removeChannel(for host: String) {
+        channelLock.lock()
+        defer { channelLock.unlock() }
+        channels.removeValue(forKey: host)?.continuation.finish()
+    }
+
+    func respond(with data: Data) {
+        guard let url = request.url,
+              let response = HTTPURLResponse(
+                  url: url,
+                  statusCode: 200,
+                  httpVersion: nil,
+                  headerFields: ["Content-Type": "application/json"]
+              )
+        else { return }
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: data)
+        client?.urlProtocolDidFinishLoading(self)
+    }
+
+    // MARK: Private
+
+    private static let channelLock = NSLock()
+    private static var channels: [String: BingRequestChannel] = [:]
 }

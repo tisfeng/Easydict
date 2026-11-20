@@ -169,7 +169,7 @@ run_id = result.get("run_id", "unknown")
 
 print("发布工作流结果")
 print(f"- 工作流：{workflow}")
-print(f"- 状态：{status}")
+print(f"- ASC 状态：{status}")
 if failed_step:
     print(f"- 失败步骤：{failed_step}")
 if error:
@@ -239,9 +239,17 @@ if version:
 PY
 }
 
+finish_publication() {
+    RELEASE_SOURCE_ROOT="$ROOT_DIR" \
+        python3 "$SCRIPT_DIR/release-completion.py" "$1" \
+        --repo "${RELEASE_REPOSITORY:-tisfeng/Easydict}"
+}
+
 run_workflow() {
     local version="$1"
-    shift
+    local workflow_name="$2"
+    local dry_run="$3"
+    shift 3
     local log_dir="$ROOT_DIR/.tmp/release/$version/logs"
     local work_dir
     local result_tmp
@@ -300,6 +308,14 @@ PY
     rmdir "$work_dir"
 
     format_result "$result_file" "$log_file" "$version"
+    if [[ "$exit_code" == 0 && "$dry_run" == 0 && \
+        ( "$workflow_name" == publish || "$workflow_name" == release ) ]]; then
+        [[ -n "$run_id" ]] || fail "successful ASC publication has no run ID"
+        local completion_status=0
+        finish_publication "$run_id" || completion_status=$?
+        [[ "$completion_status" != 3 ]] || fail "cannot verify ASC publication run: $run_id"
+        return "$completion_status"
+    fi
     return "$exit_code"
 }
 
@@ -326,6 +342,16 @@ main() {
                     ;;
             esac
 
+            [[ "$run_id" =~ ^[[:alnum:]][[:alnum:]_.-]*$ ]] \
+                || fail "invalid run ID: $run_id"
+            if [[ "$workflow_name" == publish || "$workflow_name" == release ]]; then
+                local completion_status=0
+                finish_publication "$run_id" || completion_status=$?
+                if [[ "$completion_status" != 3 ]]; then
+                    return "$completion_status"
+                fi
+            fi
+
             resume_version="$(resolve_resume_version "$run_id")" \
                 || fail "cannot determine version from run file: $run_id"
 
@@ -334,7 +360,7 @@ main() {
             prepare_workflow_runtime
             asc workflow validate --file "$WORKFLOW_PATH" >/dev/null
             export RELEASE_RUN_MODE=resume
-            run_workflow "$resume_version" asc workflow run \
+            run_workflow "$resume_version" "$workflow_name" 0 asc workflow run \
                 --pretty \
                 --file "$WORKFLOW_PATH" \
                 "$workflow_name" \
@@ -455,7 +481,7 @@ main() {
     )
 
     export RELEASE_RUN_MODE=new
-    run_workflow "$version" "${command[@]}"
+    run_workflow "$version" "$action" "$dry_run" "${command[@]}"
 }
 
 main "$@"

@@ -33,14 +33,15 @@ macOS 版本、网络环境、账号权限和上游接口状态。
 | Groq (`Groq`) | 用户密钥 | 使用 Groq API。 |
 | 智谱 AI (`Zhipu`) | 用户密钥 | 使用智谱开放平台 API。 |
 | MiniMax (`MiniMax`) | 用户密钥 | 使用 MiniMax API。 |
-| GitHub Models (`GitHub`) | 用户密钥 | 使用 GitHub Models。 |
+| 腾讯 TokenHub (`TokenHub`) | 用户密钥 | 使用腾讯 TokenHub API。 |
 | 内置 AI (`BuiltInAI`) | 项目内置 | 无需单独配置 API Key 的 AI 查询服务。 |
 | Claude Code (`ClaudeCode`) | CLI | 调用已安装并登录的 Claude Code CLI。 |
-| Codex CLI (`CodexCLI`) | CLI | 调用已安装并登录的 Codex CLI。 |
+| Codex (`CodexCLI`) | 本机 CLI 或 ChatGPT 登录 | 使用已安装并登录的 Codex CLI，或在 Easydict 内下载组件并使用 ChatGPT 登录。见 [Codex 翻译](./GUIDE.md#codex-翻译)。 |
 | Gemini (`Gemini`) | 用户密钥 | 使用 Gemini API。 |
 | Claude (`Claude`) | 用户密钥 | 使用 Anthropic Claude API。 |
 | Ollama (`Ollama`) | 无需密钥 | 调用本机或自定义地址上的 Ollama 服务。 |
 | 自定义 OpenAI (`CustomOpenAI`) | 用户密钥 | 配置 OpenAI 兼容接口；支持多个实例。 |
+| 百度千帆 (`Qianfan`) | 用户密钥 | 使用百度千帆 Chat V2 API 和账号可用的对话模型。 |
 
 ## AI 工具
 
@@ -61,7 +62,6 @@ macOS 版本、网络环境、账号权限和上游接口状态。
 | 火山翻译 (`Volcano`) | 用户密钥 | 需要火山翻译服务凭据。 |
 | 小牛翻译 (`NiuTrans`) | 项目内置 | 使用项目内置访问方式。 |
 | 彩云小译 (`Caiyun`) | 项目内置 | 使用项目内置访问方式。 |
-| 腾讯翻译 (`Tencent`) | 用户密钥 | 需要腾讯翻译服务凭据。 |
 | 阿里翻译 (`Alibaba`) | 用户密钥 | 需要阿里翻译服务凭据。 |
 | 豆包翻译 (`Doubao`) | 用户密钥 | 需要豆包翻译服务凭据。 |
 

@@ -8,6 +8,7 @@
 
 import Defaults
 import Foundation
+import OpenAI
 import SwiftUI
 
 // MARK: - OpenAIService
@@ -15,6 +16,8 @@ import SwiftUI
 @objc(EZOpenAIService)
 class OpenAIService: BaseOpenAIService {
     // MARK: Public
+
+    public override func supportsOCR() -> Bool { serviceType() == .openAI }
 
     public override func serviceType() -> ServiceType {
         .openAI
@@ -35,7 +38,7 @@ class OpenAIService: BaseOpenAIService {
     }
 
     override var defaultModel: String {
-        OpenAIModel.gpt_5_mini.rawValue
+        OpenAIModel.gpt_6_luna.rawValue
     }
 
     override var defaultEndpoint: String {
@@ -45,6 +48,36 @@ class OpenAIService: BaseOpenAIService {
     override var observeKeys: [Defaults.Key<String>] {
         [apiKeyKey, supportedModelsKey]
     }
+
+    override func recognizeImage(_ imageURL: String, prompt: String) async throws -> String {
+        let endpoint = try validateChatStreamRequest()
+        let message: ChatQuery.ChatCompletionMessageParam = .user(.init(content: .contentParts([
+            .text(.init(text: prompt)),
+            .image(.init(imageUrl: .init(url: imageURL, detail: nil))),
+        ])))
+        let query = makeChatQuery(messages: [message])
+        return try await requestChatText(query: query, url: endpoint, apiKey: apiKey)
+    }
+
+    override func recognizeImage(
+        _ imageURL: String, prompt: String, onDelta: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> String {
+        let endpoint = try validateChatStreamRequest()
+        let message: ChatQuery.ChatCompletionMessageParam = .user(.init(content: .contentParts([
+            .text(.init(text: prompt)),
+            .image(.init(imageUrl: .init(url: imageURL, detail: nil))),
+        ])))
+        let transport = OpenAIStreamTransport()
+        let request = try transport.makeRequest(
+            query: makeChatQuery(messages: [message]),
+            url: endpoint,
+            apiKey: apiKey
+        )
+        return try await transport.stream(request: request) { result in
+            if let delta = result.choices.first?.delta.content { onDelta(delta) }
+        }
+    }
 }
 
 // MARK: - OpenAIModel
@@ -53,9 +86,7 @@ enum OpenAIModel: String, CaseIterable {
     // Models: https://platform.openai.com/docs/models
     // Pricing https://platform.openai.com/docs/pricing
 
-    case gpt_5 = "gpt-5" // gpt-5-2025-08-07  Input: $1.25 | Output: $10
-    case gpt_5_mini = "gpt-5-mini" // gpt-5-mini-2025-08-07  Input: $0.125 | Output: $2
-    case gpt_5_nano = "gpt-5-nano" // gpt-5-nano-2025-08-07  Input: $0.05 | Output: $0.4
-
-    case gpt_4_1 = "gpt-4.1" // gpt-4.1-2025-04-14  Input: $2 | Output: $8
+    case gpt_6_luna = "gpt-6-luna" // Input: $0.10 | Output: $0.50
+    case gpt_6_1_sol = "gpt-6.1-sol" // Input: $2 | Output: $10
+    case gpt_6_astra = "gpt-6-astra" // Input: $10 | Output: $50
 }

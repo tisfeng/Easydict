@@ -49,12 +49,11 @@ class BuiltInAIService: BaseOpenAIService {
 
     override var defaultModels: [String] {
         [
-            // GML free models
-            ZhipuModel.glm_4_5_flash.rawValue,
+            // GLM free models. The first entry is both the list order users see and the
+            // fallback for a saved-but-removed model ID (`StreamService.model`), so it must
+            // stay the declared `defaultModel` below.
             ZhipuModel.glm_4_flash_250414.rawValue,
-
-            // Groq free models
-            GroqModel.llama3_1_8b_instant.rawValue,
+            ZhipuModel.glm_4_5_flash.rawValue,
         ]
     }
 

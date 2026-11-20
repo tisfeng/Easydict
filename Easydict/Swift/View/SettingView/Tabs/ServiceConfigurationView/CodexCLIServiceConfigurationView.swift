@@ -14,12 +14,12 @@ import SwiftUI
 
 /// Configuration view for the Codex CLI translation service.
 ///
-/// Hides API key, endpoint, model, temperature, and think-tag sections
+/// Hides API key, endpoint, model and think-tag sections
 /// since they are not applicable to CLI tools.
 struct CodexCLIServiceConfigurationView: View {
     // MARK: Lifecycle
 
-    init(service: CodexCLIService) {
+    init(service: CodexService) {
         self.service = service
         self._accessMode = .init(service.accessModeKey)
         self._managedModel = .init(service.managedModelKey)
@@ -28,6 +28,7 @@ struct CodexCLIServiceConfigurationView: View {
         self._hiddenModels = .init(service.managedHiddenModelsKey)
         self._managedFastMode = .init(service.managedFastModeKey)
         self._localEffort = .init(service.reasoningEffortKey)
+        self._localModel = .init(service.modelKey)
         CodexRequestCoordinator.shared.observe(uuid: service.uuid)
     }
 
@@ -36,7 +37,7 @@ struct CodexCLIServiceConfigurationView: View {
     var body: some View {
         Section {
             if accessMode == .managed {
-                CodexManagedAccountView(configuration: CodexServiceConfiguration(uuid: service.uuid))
+                CodexManagedAccountView(configuration: CodexServiceConfig(uuid: service.uuid))
                 if !managedModel.isEmpty, !isManagedModelSupported || !managedEfforts.contains(managedEffort) {
                     Text("service.codex_cli.managed.unsupported_selection")
                         .font(.caption)
@@ -59,56 +60,24 @@ struct CodexCLIServiceConfigurationView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Divider()
                     StaticPickerCell(
-                        titleKey: "service.codex_cli.mode.title",
-                        key: service.accessModeKey,
+                        titleKey: "service.codex_cli.mode.title", key: service.accessModeKey,
                         values: CodexAccessMode.allCases
                     )
                     Divider()
                     if accessMode == .managed {
-                        if CodexRuntimeRelease.current == .modern {
-                            CodexManagedModelPicker(
-                                models: managedModels, selection: managedModelSelection, isBusy: account.isBusy
-                            ) { model in
-                                CodexServiceConfiguration(uuid: service.uuid).removeModel(model)
-                                additionResult = nil
-                                effortError = nil
-                            }
-                        } else {
-                            Picker("service.configuration.codex_cli.model.title", selection: managedModelSelection) {
-                                if managedModelSelection.wrappedValue == nil {
-                                    Text("service.codex_cli.custom_models.select_model")
-                                        .tag(nil as String?).disabled(true)
-                                }
-                                ForEach(managedModels, id: \.self) { model in
-                                    Text(verbatim: model).tag(Optional(model))
-                                }
-                            }
+                        CodexManagedModelPicker(
+                            models: managedModels, selection: managedModelSelection, isBusy: account.isBusy
+                        ) { model in
+                            CodexServiceConfig(uuid: service.uuid).removeModel(model)
+                            additionResult = nil
+                            effortError = nil
                         }
-                        Picker(
-                            "service.configuration.codex_cli.reasoning_effort.title",
-                            selection: managedEffortSelection
-                        ) {
-                            if managedEffortSelection.wrappedValue == nil {
-                                Text("service.codex_cli.managed.select_effort")
-                                    .tag(nil as CodexReasoningEffort?)
-                                    .disabled(true)
-                            }
-                            ForEach(managedEfforts, id: \.self) { effort in
-                                Text(effortTitle(effort))
-                                    .tag(Optional(effort))
-                            }
-                        }
-                        .disabled(!isManagedModelSupported || account.isBusy)
-                        .help("service.codex_cli.custom_models.verify_effort")
-                        if let effortError {
-                            Text(verbatim: effortError)
-                                .font(.caption).foregroundStyle(.red).textSelection(.enabled)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        if CodexRuntimeRelease.current == .modern {
-                            Divider()
-                            customModelControls
-                        }
+                        effortPicker
+                            .disabled(!isManagedModelSupported || account.isBusy)
+                            .help("service.codex_cli.custom_models.verify_effort")
+                        if let effortError { errorMessage(effortError) }
+                        Divider()
+                        customModelControls
                         Divider()
                         Toggle("service.codex_cli.fast_mode.title", isOn: $managedFastMode)
                         Text("service.codex_cli.fast_mode.description")
@@ -116,23 +85,10 @@ struct CodexCLIServiceConfigurationView: View {
                             .foregroundStyle(.secondary)
                     } else {
                         InputCell(
-                            textFieldTitleKey: "service.configuration.codex_cli.model.title",
-                            key: service.modelKey,
+                            textFieldTitleKey: "service.configuration.codex_cli.model.title", key: service.modelKey,
                             placeholder: "service.configuration.codex_cli.model.placeholder"
                         )
-                        Picker(
-                            "service.configuration.codex_cli.reasoning_effort.title",
-                            selection: localEffortSelection
-                        ) {
-                            if localEffortSelection.wrappedValue == nil {
-                                Text("service.codex_cli.managed.select_effort")
-                                    .tag(nil as CodexReasoningEffort?)
-                                    .disabled(true)
-                            }
-                            ForEach(localEfforts, id: \.self) { effort in
-                                Text(effort.title).tag(Optional(effort))
-                            }
-                        }
+                        effortPicker
                     }
                 }
                 .padding(.top, 8)
@@ -156,39 +112,57 @@ struct CodexCLIServiceConfigurationView: View {
             showSupportedModelsSection: false,
             showUsedModelSection: false,
             showThinkTagContent: false,
-            showTemperatureSlider: false,
-            showValidationButton: accessMode == .localCLI
+            validationAction: accessMode == .managed ? validateManagedConnection : nil,
+            validationDisabled: accessMode == .managed && !canValidateManagedConnection
         )
+        .task(id: "\(accessMode.rawValue):\(localModel)") {
+            guard accessMode == .localCLI else { return }
+            let requestedModel = localModel
+            do {
+                let discovered = try await CodexAppServer.localCLI.availableLocalModels()
+                try Task.checkCancellation()
+                guard accessMode == .localCLI, localModel == requestedModel else { return }
+                localModels = discovered
+                localEffort = CodexServiceConfig.compatibleLocalEffort(
+                    localEffort, model: localModel, models: discovered
+                )
+            } catch {
+                guard !Task.isCancelled, accessMode == .localCLI, localModel == requestedModel else { return }
+                // A failed scan must not advertise preset capabilities or change saved choices.
+                localModels = []
+            }
+        }
     }
 
     // MARK: Private
 
-    @ObservedObject private var account = CodexManagedAccount.shared
+    @ObservedObject private var account = CodexAccount.shared
     @ObservedObject private var component = CodexComponentManager.shared
     @State private var newModelID = ""
     @State private var additionResult: Result<(), Error>?
     @State private var effortError: String?
+    @State private var localModels: [CodexAppServer.LocalModel] = []
 
-    private let service: CodexCLIService
+    private let service: CodexService
     @Default private var accessMode: CodexAccessMode
     @Default private var managedModel: String
     @Default private var managedEffort: CodexReasoningEffort
-    @Default private var managedFastMode: Bool
     @Default private var localEffort: CodexReasoningEffort
+    @Default private var localModel: String
     @Default private var customModels: [String]
     @Default private var hiddenModels: [String]
+    @Default private var managedFastMode: Bool
 
     private var managedModels: [String] {
-        let hidden = Set(hiddenModels)
-        let saved = customModels.filter { CodexModelCatalog.isValidModelID($0) }
-        let models = CodexManagedRuntime.bundledModelNames
-            + (CodexRuntimeRelease.current == .modern
-                ? saved.filter { !CodexManagedRuntime.bundledModelNames.contains($0) } : [])
-        return CodexRuntimeRelease.current == .modern ? models.filter { !hidden.contains($0) } : models
+        CodexServiceConfig.models(customModels: customModels, hiddenModels: hiddenModels)
     }
 
     private var isCustomModel: Bool {
-        customModels.contains(managedModel) && !CodexManagedRuntime.bundledModelNames.contains(managedModel)
+        CodexServiceConfig(uuid: service.uuid).isCustomModel
+    }
+
+    private var canValidateManagedConnection: Bool {
+        component.isReady && !component.isBusy && account.isSignedIn && !account.isBusy
     }
 
     private var isManagedModelSupported: Bool {
@@ -201,31 +175,37 @@ struct CodexCLIServiceConfigurationView: View {
         })
     }
 
-    private var managedEffortSelection: Binding<CodexReasoningEffort?> {
-        Binding(get: { managedEfforts.contains(managedEffort) ? managedEffort : nil }, set: { effort in
-            if let effort { selectManagedEffort(effort) }
-        })
-    }
-
     private var localEfforts: [CodexReasoningEffort] {
-        CodexServiceConfiguration.reasoningEfforts(mode: .localCLI, model: "")
-    }
-
-    private var localEffortSelection: Binding<CodexReasoningEffort?> {
-        Binding(get: { localEfforts.contains(localEffort) ? localEffort : nil }, set: { effort in
-            if let effort { localEffort = effort }
-        })
+        CodexServiceConfig.reasoningEfforts(mode: .localCLI, model: localModel, localModels: localModels)
     }
 
     private var managedEfforts: [CodexReasoningEffort] {
-        CodexServiceConfiguration.reasoningEfforts(mode: .managed, model: managedModel)
+        CodexServiceConfig.reasoningEfforts(mode: .managed, model: managedModel)
     }
 
     private var candidateModel: String { newModelID.trimmingCharacters(in: .whitespacesAndNewlines) }
 
     private var canAddModel: Bool {
         CodexModelCatalog.isValidModelID(candidateModel) && !managedModels.contains(candidateModel)
-            && !account.isBusy && account.isSignedIn && component.isReady
+            && canValidateManagedConnection
+    }
+
+    private var effortPicker: some View {
+        let managed = accessMode == .managed
+        let options = managed ? managedEfforts : localEfforts
+        let value = managed ? managedEffort : localEffort
+        let selection = Binding<CodexReasoningEffort?>(get: { options.contains(value) ? value : nil }, set: { effort in
+            guard let effort else { return }
+            if managed { selectManagedEffort(effort) } else { localEffort = effort }
+        })
+        return Picker("service.configuration.codex_cli.reasoning_effort.title", selection: selection) {
+            if selection.wrappedValue == nil {
+                Text("service.codex_cli.managed.select_effort").tag(nil as CodexReasoningEffort?).disabled(true)
+            }
+            ForEach(options, id: \.self) { effort in
+                Text(managed ? effortTitle(effort) : effort.title).tag(Optional(effort))
+            }
+        }
     }
 
     @ViewBuilder private var customModelControls: some View {
@@ -256,11 +236,15 @@ struct CodexCLIServiceConfigurationView: View {
                 Text("service.codex_cli.custom_models.added")
                     .font(.caption).foregroundStyle(.green)
             case let .failure(error):
-                Text(verbatim: error.localizedDescription)
-                    .font(.caption).foregroundStyle(.red).textSelection(.enabled)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                errorMessage(error.localizedDescription)
             }
         }
+    }
+
+    private func errorMessage(_ message: String) -> some View {
+        Text(verbatim: message)
+            .font(.caption).foregroundStyle(.red).textSelection(.enabled)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func effortTitle(_ effort: CodexReasoningEffort) -> LocalizedStringKey {
@@ -276,13 +260,13 @@ struct CodexCLIServiceConfigurationView: View {
             managedEffort = effort
             return
         }
-        let configuration = CodexServiceConfiguration(uuid: service.uuid)
-        account.verifyCustomEffort(effort, configuration: configuration) { result in
+        let configuration = CodexServiceConfig(uuid: service.uuid)
+        account.verify(.effort(effort), configuration: configuration) { result in
             switch result {
             case .success:
-                guard configuration == CodexServiceConfiguration(uuid: service.uuid) else { return }
+                guard configuration == CodexServiceConfig(uuid: service.uuid) else { return }
                 managedEffort = effort
-                CodexServiceConfiguration(uuid: service.uuid).rememberSuccessfulSelection()
+                CodexServiceConfig(uuid: service.uuid).rememberSuccessfulSelection()
             case let .failure(error):
                 if !(error is CancellationError) { effortError = error.localizedDescription }
             }
@@ -294,18 +278,24 @@ struct CodexCLIServiceConfigurationView: View {
         additionResult = nil
         let model = candidateModel
         let selectAddedModel = !isManagedModelSupported || !managedEfforts.contains(managedEffort)
-        account.addCustomModel(model, configuration: CodexServiceConfiguration(uuid: service.uuid)) { result in
+        account.verify(.model(model), configuration: CodexServiceConfig(uuid: service.uuid)) { result in
             if case .success = result {
                 newModelID = ""
                 if selectAddedModel {
                     service.model = model
                     managedEffort = .default
-                    CodexServiceConfiguration(uuid: service.uuid).rememberSuccessfulSelection()
+                    CodexServiceConfig(uuid: service.uuid).rememberSuccessfulSelection()
                 }
             }
             if case let .failure(error) = result, error is CancellationError { return }
             additionResult = result
         }
+    }
+
+    private func validateManagedConnection() {
+        let configuration = CodexServiceConfig(uuid: service.uuid)
+        guard configuration.mode == .managed, canValidateManagedConnection else { return }
+        account.validate(configuration: configuration)
     }
 }
 
@@ -351,7 +341,7 @@ private struct CodexCLIStatusRow: View {
 
     private func detect() {
         Task.detached(priority: .utility) {
-            let path = CodexCLIRunner.detectBinaryPath()
+            let path = CodexCLIInstallation.detectBinaryPath()
             await MainActor.run { detectedPath = path }
         }
     }

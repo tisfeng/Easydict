@@ -55,6 +55,8 @@ Users need to add compatible new model IDs and control Fast processing with Chat
 
 - [x] Record successful automatic recovery and verify subsequent model removal.
 
+- [x] Integrate the current Codex service, share model selection and verification, and validate both modes.
+
 ## Validation
 
 - Combined build succeeded; 33 existing tests in four suites passed.
@@ -65,7 +67,7 @@ Users need to add compatible new model IDs and control Fast processing with Chat
 - Runtime routing: twelve local checks avoided unused custom preloads; four compiled component/configuration rejection checks passed. Existing tests passed again.
 - Recovery record: fourteen local checks passed; automatic recovery restores the verified model/default effort after another selection is removed. The build and 33 existing tests passed again.
 - Earlier isolated cache checks rejected changed components/configuration; native preview input checks passed.
-- Full account/runtime suites were not repeated after the earlier fixture-copy stall. Validation tools remain local.
+- The November 20 integration passed all 158 tests in the 12 offline Codex suites, including the account and runtime suites.
 - SwiftFormat, six-locale coverage, JSON and diff checks passed.
 
 ## Completion

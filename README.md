@@ -26,8 +26,12 @@ Easydict is ready to use out of the box, can automatically recognize the languag
 
 **Supported services:** 20+ dictionary, translation, AI, local-model, and CLI services, including
 Apple Dictionary, MDict, Apple Translate, OpenAI, Gemini, Claude, DeepSeek, Ollama, Claude Code,
-Codex CLI, DeepL, Google, and Bing. See the [services overview](./docs/user-docs/en/SERVICES.md) for
+Codex, DeepL, Google, and Bing. See the [services overview](./docs/user-docs/en/SERVICES.md) for
 the complete list and access requirements.
+
+[**Codex**](./docs/user-docs/en/GUIDE.md#codex-translation) supports two modes: **Local Codex CLI**
+uses the CLI you installed and authenticated; **ChatGPT sign-in (built-in)** downloads the Codex
+component in Easydict and lets you sign in without installing the CLI yourself.
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -137,10 +141,10 @@ Thanks to all sponsors for their generous support. For details, please see the [
 
 ## Star History
 
-<a href="https://tisfeng.github.io/Easydict/star-history/#tisfeng/easydict&Date">
+<a href="https://www.star-history.com/?repos=tisfeng%2Feasydict&amp;type=date&amp;legend=top-left">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./docs/assets/star-history/star-history-dark.svg" />
-    <source media="(prefers-color-scheme: light)" srcset="./docs/assets/star-history/star-history-light.svg" />
-    <img alt="Star History Chart" src="./docs/assets/star-history/star-history-light.svg" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=tisfeng%2Feasydict&amp;type=Date&amp;theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=tisfeng%2Feasydict&amp;type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=tisfeng%2Feasydict&amp;type=Date" />
   </picture>
 </a>

@@ -55,17 +55,18 @@ certificate, use `./scripts/setup-team.sh --adhoc`. Remove the local configurati
 
 ## Custom Codex models
 
-On macOS 15+, open Codex **Advanced settings** in ChatGPT sign-in mode. Enter an exact
+On macOS 13+, open Codex **Advanced settings** in ChatGPT sign-in mode. Enter an exact
 **Model ID** and choose **Add and Verify**. A short translation must succeed before the
 ID is saved to the model picker. Adding an entry preserves a valid current selection;
 otherwise the verified model is selected.
 
+Custom models support text translation. Choose an image-capable built-in model for OCR.
 Custom models default to automatic reasoning. Other levels are verified before saving;
 failure preserves the previous value. Open **Model** and click the **×** on an entry to remove it.
 Removing an unselected entry preserves the active settings.
 Built-in entries are hidden; enter their ID and use **Add and Verify** to restore them.
 Removal selects a remaining model, preferring the last working selection. If the list is empty,
-add a model to continue. Use **Test Connection** to recheck the selected settings.
+add a model to continue. Use **Validate** to recheck the selected settings.
 Saved entries do not guarantee continued availability or compatibility with future protocols.
 
 Fast mode requests faster processing and can be toggled in **Advanced settings** or the
@@ -126,6 +127,15 @@ System OCR also extracts QR code payloads. When an image contains both text and 
 For better results, capture a smaller area, improve text/background contrast, and select the correct
 recognition language in settings.
 
+### OCR service
+
+Apple OCR is the default. To use Codex or OpenAI for screenshot translation, clipboard images,
+or silent screenshot OCR, configure a vision-capable model in Settings → Services. Select that
+service in Settings → Advanced → OCR Settings. The image is sent to the selected provider.
+Codex OCR supports Local CLI and ChatGPT sign-in with the managed component on macOS 13 or later.
+Formulas are transcribed as editable LaTeX. Translation uses the services enabled for the window.
+The screenshot OCR preview uses Apple OCR.
+
 ## Text to speech
 
 Easydict supports Apple, Baidu, Bing, Google, and Youdao TTS, with Youdao selected by default. TTS
@@ -151,6 +161,15 @@ Focused setup guides:
 - [Apple Dictionary](./How-to-use-macOS-system-dictionary-in-Easydict.md)
 - [MDict](./How-to-use-MDict-in-Easydict.md)
 - [Apple Translate](./How-to-use-macOS-system-translation-in-Easydict.md)
+
+### Codex translation
+
+In Settings → Services, add Codex and choose a mode in Advanced Settings:
+
+- **Local Codex CLI**: Use the Codex CLI you installed and authenticated, with its existing configuration.
+- **ChatGPT sign-in (built-in)**: Download the Codex component in Easydict, then sign in to your
+  ChatGPT account in the browser. You do not need to install the CLI yourself. Availability and
+  usage limits depend on your account.
 
 ### GitHub Copilot translate
 
@@ -191,7 +210,7 @@ its behavior, so please report it.
 
 ## History and results
 
-- Query history keeps recent items for re-querying, favoriting, exporting, or clearing.
+- **Save locally** in Settings → Privacy enables query history, saving the latest screenshot, and logging recognized OCR text. It defaults to off. Turning it off stops new saves and retains existing files and history.
 - Favorites keep entries you want to revisit.
 - Markdown returned by AI services is rendered as rich text; copied content remains available as text.
 - Service cards can be retried, copied, or collapsed depending on the current window and state.

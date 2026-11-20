@@ -48,7 +48,8 @@ impact: Explain the resulting behavior, impact, or preserved boundary.
 Optional BREAKING CHANGE: footer when applicable.
 ```
 
-整个提交还可以在所有语言区块之后使用一次可选的 `References:` 尾段；它不属于任一语言区块。
+每个语言区块末尾可以使用一个可选的 `References:` 尾段；双语提交有引用时，两个区块各列
+一份相同来源，便于按语言完整阅读。
 
 - 使用范围最窄且准确的 Angular `type(scope): subject`，标题不超过 80 个字符。
 - `type`、`scope` 和 `!` 在两个区块保持一致；冒号后的 subject 分别使用该区块的语言。
@@ -60,12 +61,12 @@ Optional BREAKING CHANGE: footer when applicable.
   `context: `、`change: `、`impact: `，冒号后恰好一个空格再接非空正文。
 - 同一语言区块不能缺失、错序或混用两套标记；非英文与英文区块的含义、段落数和顺序一致。
 - 仅在不兼容变更时使用 `!` 或语言区块末尾的 `BREAKING CHANGE:` footer；footer 不能替代
-  三个正文段。全局 `References:` 尾段存在时排在所有语言区块及其 footer 之后。
+  三个正文段。`References:` 尾段存在时排在所属语言区块的正文及其 footer 之后。
 
 ## 外部引用
 
 当前请求、已采纳的调查证据或 staged 内容包含直接影响本次动机、诊断、设计或验证的外部
-PR、Issue、review thread、文档或网页时，在整个提交末尾追加一次引用尾段：
+PR、Issue、review thread、文档或网页时，在每个语言区块末尾追加引用尾段：
 
 ```text
 References:
@@ -76,8 +77,10 @@ References:
 - 固定使用不翻译的 `References:`，其前恰好一个空行；标题与条目之间不留空行。
 - 每个条目独占一行，以 `- ` 开头，可使用以 `: ` 分隔的简短标签，并以可直接跳转的绝对
   HTTP(S) URL 结尾。
-- 整个提交最多一个引用尾段。按引用在正文中的首次出现顺序排列；正文未提及时，按已采纳
-  证据中的首次出现顺序排列，并按 URL 去重。
+- 单语言提交最多一个引用尾段；双语提交要么两个区块都不含引用，要么各含一个，不能只在
+  英文区块末尾放一份全局引用。两个区块的 URL 及顺序必须一致，简短标签可按各自语言翻译。
+- 按引用在第一个语言区块正文中的首次出现顺序排列；正文未提及时，按已采纳证据中的首次
+  出现顺序排列。每个区块内部按 URL 去重，跨语言区块保留同一组 URL。
 - PR、Issue 和 review thread 优先使用精确页面或评论的 canonical URL，不使用仓库首页、搜索页
   或只有编号的缩写。目标不能唯一确认时不猜测，先报告缺失的引用信息。
 - 正文必须说明引用与变更的关系及证据边界；引用尾段只提供跳转入口，不替代三个正文段，
@@ -85,6 +88,34 @@ References:
 - 不因 staged 内容含有徽章、依赖主页、示例链接或普通文档链接就自动引用；只保留实际影响
   本次决策的最小来源集合。
 - 不使用 `Closes:`、`Fixes:` 或 `Resolves:` 代替中性的 `References:`，避免引入 Issue 状态语义。
+
+双语示例（单语言提交只保留英文区块及其引用）：
+
+```text
+fix(translation): 移除腾讯翻译服务
+
+背景：腾讯翻译的官方退市通知影响了继续保留该服务的决策。
+
+变更：移除腾讯翻译入口及对应实现，并在提交中保留通知链接。
+
+影响：用户不再看到腾讯翻译选项；退市通知不作为其他翻译服务可用性的验证证据。
+
+References:
+- 腾讯云退市通知: https://cloud.tencent.com/announce/detail/2482
+
+----------------------------------------------------------------------
+
+fix(translation): remove Tencent translation
+
+context: The official Tencent translation retirement notice informed the decision to remove the service.
+
+change: Remove the Tencent translation entry and implementation, and retain the notice link in the commit.
+
+impact: Users no longer see the Tencent translation option; the notice does not verify the availability of other translation services.
+
+References:
+- Tencent Cloud retirement notice: https://cloud.tencent.com/announce/detail/2482
+```
 
 ## Type 指南
 

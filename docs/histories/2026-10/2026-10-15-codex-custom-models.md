@@ -51,4 +51,8 @@ Custom requests use private App Servers and existing official login. Fast select
 
 ### Follow-up
 
-Model access and Fast availability depend on the account and pinned component. The complete regression rerun remains limited by fixture copying.
+Model access and Fast availability depend on the account and pinned component.
+
+On November 20 the feature moved to the shared App Server transport. Both settings surfaces use the same model list, and model and effort verification share one request lifecycle. Local CLI discovery and OCR keep their existing capability checks.
+
+All 158 tests in the 12 offline Codex suites passed. Isolated checks covered selection recovery, removal, Fast tiers and text-only custom models. Three edits produced `ccc` in the native model ID field.
