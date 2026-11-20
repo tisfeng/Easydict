@@ -34,7 +34,10 @@ public final class DetectManager: NSObject {
         self.allowsDetachedDetection = true
     }
 
-    deinit { ocrTask?.cancel() }
+    deinit {
+        ocrTask?.cancel()
+        combinedOCRRequest?.cancel()
+    }
 
     // MARK: Public
 
@@ -61,12 +64,52 @@ public final class DetectManager: NSObject {
     }
 
     public func cancelOCR() {
+        combinedOCRRequest?.cancel()
+        combinedOCRRequest = nil
         latestOCRRequestID = nil
         ocrTask?.cancel()
         ocrTask = nil
     }
 
     // MARK: - Public Methods
+
+    /// Returns an enabled translator backed by the same configured image service.
+    @MainActor
+    @objc(combinedOCRServiceIn:)
+    public func combinedOCRService(in services: [QueryService]) -> StreamService? {
+        guard let selected = ocrService as? StreamService else { return nil }
+        return services.compactMap { $0 as? StreamService }.first {
+            $0.enabled && $0.enabledQuery && $0.serviceUsageStatus() != .alwaysOff
+                && !$0.supportedQueryType().isEmpty && selected.canCombineOCR(with: $0)
+        }
+    }
+
+    @MainActor
+    @objc(ocrAndTranslateWithService:progress:ocrCompletion:translation:)
+    public func ocrAndTranslate(
+        using service: StreamService, progress: @escaping (String) -> (),
+        ocrCompletion: @escaping (QueryModel, Error?) -> (),
+        translation: @escaping (QueryResult, Error?) -> ()
+    ) {
+        cancelOCR()
+        let model = queryModel
+        service.queryModel = model
+        let identifier = UUID()
+        let request = OCRTranslationRequest(
+            identifier: identifier, model: model, service: service,
+            isCurrent: { [weak self, weak model] in
+                self?.queryModel === model && self?.combinedOCRRequest?.identifier == identifier
+            }, sourceProgress: progress, sourceCompletion: ocrCompletion, translation: translation,
+            finished: { [weak self] in
+                // A replacement can install a new request before the cancelled task unwinds.
+                if self?.combinedOCRRequest?.identifier == identifier {
+                    self?.combinedOCRRequest = nil
+                }
+            }
+        )
+        combinedOCRRequest = request
+        request.start()
+    }
 
     /// Performs OCR on the query model's image and then detects the language of the OCR result.
     /// - Parameter completion: Callback with the updated query model and optional error.
@@ -177,6 +220,8 @@ public final class DetectManager: NSObject {
     @nonobjc static var ocrServiceIDs: [String] {
         configuredServiceIDs.filter { makeOCRService($0) != nil }.sorted()
     }
+
+    @nonobjc var combinedOCRRequest: OCRTranslationRequest?
 
     @nonobjc
     func ocrAndDetectText(
