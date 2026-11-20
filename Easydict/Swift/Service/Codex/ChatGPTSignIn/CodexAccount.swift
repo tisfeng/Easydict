@@ -33,6 +33,11 @@ final class CodexAccount: ObservableObject {
         case unknown, checking, signedOut, authorizing, verifying, signedIn, ready
     }
 
+    enum Candidate {
+        case model(String)
+        case effort(CodexReasoningEffort)
+    }
+
     static let shared = CodexAccount()
 
     @Published private(set) var state: State = .unknown
@@ -120,12 +125,14 @@ final class CodexAccount: ObservableObject {
             var release = CodexRuntimeRelease.current
             do {
                 try CodexRuntime.validateSelection(
-                    model: configuration.model, effort: configuration.effort.cliValue
+                    model: configuration.model, effort: configuration.effort.cliValue,
+                    customModel: configuration.isCustomModel
                 )
                 let runtime = try await runtimeFactory()
                 release = runtime.release
                 try check(generation)
                 try await validateConnection(generation: generation, runtime: runtime, configuration: configuration)
+                configuration.rememberSuccessfulSelection()
                 verificationResult = VerificationResult(
                     configuration: configuration,
                     release: release,
@@ -156,6 +163,61 @@ final class CodexAccount: ObservableObject {
         guard state == .ready, let result = currentVerification(for: configuration),
               case .success = result.outcome else { return false }
         return true
+    }
+
+    /// Probe the candidate without changing the active selection. Settings observers
+    /// can safely switch selections once the completion callback runs.
+    func verify(
+        _ candidate: Candidate,
+        configuration: CodexServiceConfig,
+        completion: @escaping (Result<(), Error>) -> ()
+    ) {
+        guard !isBusy else { return }
+        let model: String
+        let effort: CodexReasoningEffort
+        switch candidate {
+        case let .model(id):
+            guard configuration.mode == .managed, CodexModelCatalog.isValidModelID(id),
+                  !CodexServiceConfig.models(uuid: configuration.uuid).contains(id) else {
+                completion(.failure(CodexServiceError.invalidModel))
+                return
+            }
+            model = id
+            effort = .default
+        case let .effort(level):
+            guard configuration.isCustomModel, level != .default,
+                  CodexReasoningEffort.customOptions.contains(level) else {
+                completion(.failure(CodexCLIError.unsupportedReasoningEffort))
+                return
+            }
+            model = configuration.model
+            effort = level
+        }
+        let generation = begin(state: .verifying, kind: .verification)
+        validationConfiguration = configuration
+        originUUID = configuration.uuid
+        operation = Task {
+            do {
+                let runtime: CodexRuntime?
+                if case .model = candidate { runtime = try await runtimeFactory() } else { runtime = nil }
+                let text = try await checkModel(
+                    model, effort: effort, fastMode: configuration.fastMode, runtime: runtime, generation: generation
+                )
+                try check(generation)
+                guard configuration == CodexServiceConfig(uuid: configuration.uuid) else { throw CancellationError() }
+                try validateGreeting(text)
+                if case .model = candidate { configuration.saveVerifiedModel(model) }
+                authenticationState = true
+                restorePresentation()
+                finish(generation: generation)
+                completion(.success(()))
+            } catch {
+                guard self.generation == generation else { return }
+                setFailureState(error)
+                finish(generation: generation)
+                completion(.failure(error))
+            }
+        }
     }
 
     /// Completed success and failure both expire; changing back never restores old evidence.
@@ -238,6 +300,7 @@ final class CodexAccount: ObservableObject {
 
     @Published private var verificationResult: VerificationResult?
 
+    private let validationPrompt = "Translate the English greeting Hello into Simplified Chinese. Return only the translation."
     private let runtimeFactory: () async throws -> CodexRuntime
     private let coordinator: CodexRequestCoordinator
     // nil means no official authentication status has been established yet.
@@ -369,30 +432,60 @@ final class CodexAccount: ObservableObject {
         }
     }
 
+    private func validateGreeting(_ text: String) throws {
+        let greeting = text.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+        guard ["你好", "您好"].contains(greeting) else { throw CodexServiceError.invalidResponse }
+    }
+
+    /// A model addition or manual connection check first checks official login status.
+    private func checkModel(
+        _ model: String, effort: CodexReasoningEffort, fastMode: Bool, runtime: CodexRuntime?, generation: UInt
+    ) async throws
+        -> String {
+        try check(generation)
+        if let runtime {
+            let status = try await runtime.command(["login", "status"], process: nextProcess())
+            try check(generation)
+            guard try CodexConnectionCheck.isSignedIn(status) else { throw CodexServiceError.loginRequired }
+        }
+        let connection: CodexAppServerRequest.Connection = CodexRuntime.bundledModelNames.contains(model)
+            ? .managed(runtime) : .custom
+        return try await CodexAppServerRequest().runUsingAppServer(
+            prompt: validationPrompt, model: model, effort: effort.cliValue, connection: connection,
+            fastMode: fastMode, deltaReceived: { _ in }
+        ).text
+    }
+
     private func validateConnection(
         generation: UInt, runtime: CodexRuntime, configuration: CodexServiceConfig? = nil
     ) async throws {
         state = .verifying
-        let request = CodexConnectionCheck()
-        validation = request
         try check(generation)
         if let configuration {
             guard configuration.mode == .managed,
                   configuration == CodexServiceConfig(uuid: configuration.uuid)
             else { throw CancellationError() }
         }
-        let result = try await request.run(
-            prompt: "Translate the English greeting Hello into Simplified Chinese. Return only the translation.",
-            model: configuration?.model ?? runtime.release.defaultModel,
-            effort: configuration?.effort.cliValue, runtime: runtime
-        )
+        let text: String
+        if let configuration, configuration.isCustomModel {
+            text = try await checkModel(
+                configuration.model, effort: configuration.effort, fastMode: configuration.fastMode,
+                runtime: runtime, generation: generation
+            )
+        } else {
+            let request = CodexConnectionCheck()
+            validation = request
+            text = try await request.run(
+                prompt: validationPrompt, model: configuration?.model ?? runtime.release.defaultModel,
+                effort: configuration?.effort.cliValue, runtime: runtime, fastMode: configuration?.fastMode ?? false
+            ).text
+        }
         try check(generation)
         if let configuration,
            configuration != CodexServiceConfig(uuid: configuration.uuid) {
             throw CancellationError()
         }
-        let greeting = result.text.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
-        guard ["你好", "您好"].contains(greeting) else { throw CodexServiceError.invalidResponse }
+        try validateGreeting(text)
         authenticationState = true
         state = .ready
     }

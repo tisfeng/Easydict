@@ -104,10 +104,11 @@ final class CodexConnectionCheck: @unchecked Sendable {
         prompt: String,
         model: String,
         effort: String?,
-        runtime: CodexRuntime
+        runtime: CodexRuntime,
+        fastMode: Bool = false
     ) async throws
         -> Result {
-        let arguments = try runtime.translationArguments(model: model, effort: effort)
+        let arguments = try runtime.translationArguments(model: model, effort: effort, fastMode: fastMode)
         let status = try await runtime.command(["login", "status"], process: nextProcess())
         guard try Self.isSignedIn(status) else { throw CodexServiceError.loginRequired }
         let started = Date()

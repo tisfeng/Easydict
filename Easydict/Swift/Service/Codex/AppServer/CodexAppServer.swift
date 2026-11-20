@@ -13,10 +13,6 @@ import Foundation
 /// in an independent ephemeral thread. Requests are multiplexed by thread and turn
 /// identifiers so cancellation never terminates work owned by another window.
 actor CodexAppServer {
-    // MARK: Lifecycle
-
-    private init() {}
-
     // MARK: Internal
 
     struct Response {
@@ -31,6 +27,7 @@ actor CodexAppServer {
         let effort: String?
         let runtime: CodexRuntime?
         var imageURL: String?
+        var fastMode = false
         let isCancelled: @Sendable () -> Bool
         let deltaReceived: @Sendable (String) -> ()
     }
@@ -79,8 +76,11 @@ actor CodexAppServer {
         try Task.checkCancellation()
         guard !translation.isCancelled() else { throw CancellationError() }
         let model: String
-        if translation.runtime != nil {
-            try CodexRuntime.validateSelection(model: translation.model, effort: translation.effort)
+        if let runtime = translation.runtime {
+            try CodexModelCatalog.load(at: runtime.catalogURL).validate(
+                model: translation.model,
+                effort: translation.effort
+            )
             model = translation.model
         } else if translation.imageURL != nil {
             let available = try await localModelList()
@@ -136,7 +136,8 @@ actor CodexAppServer {
                 params: threadParameters(
                     model: model,
                     runtime: translation.runtime,
-                    isOCR: translation.imageURL != nil
+                    isOCR: translation.imageURL != nil,
+                    fastMode: translation.fastMode
                 ),
                 translationIdentifier: translation.identifier
             )
@@ -825,7 +826,7 @@ extension CodexAppServer {
         stopSession(error: CancellationError())
     }
 
-    private func threadParameters(model: String, runtime: CodexRuntime?, isOCR: Bool) -> [String: Any] {
+    private func threadParameters(model: String, runtime: CodexRuntime?, isOCR: Bool, fastMode: Bool) -> [String: Any] {
         var parameters: [String: Any] = [
             "cwd": (runtime?.workingDirectory ?? FileManager.default.temporaryDirectory).path,
             "approvalPolicy": "never",
@@ -837,7 +838,10 @@ extension CodexAppServer {
             "serviceName": "easydict",
         ]
         if !model.isEmpty { parameters["model"] = model }
-        if runtime != nil { parameters["modelProvider"] = Self.providerID }
+        if runtime != nil {
+            parameters["modelProvider"] = Self.providerID
+            parameters["serviceTier"] = fastMode ? "priority" : "default"
+        }
         return parameters
     }
 

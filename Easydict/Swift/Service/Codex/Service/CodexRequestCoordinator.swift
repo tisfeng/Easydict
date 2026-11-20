@@ -60,6 +60,12 @@ final class CodexRequestCoordinator: @unchecked Sendable {
                 }
                 .store(in: &subscriptions)
         }
+        Defaults.publisher(CodexServiceConfig.fastModeKey(uuid: uuid), options: [])
+            .sink { [weak self] _ in
+                self?.invalidate(uuid: uuid, mode: .managed)
+                Task { @MainActor in CodexAccount.shared.configurationChanged(origin: uuid) }
+            }
+            .store(in: &subscriptions)
         lock.withLock { observers[uuid] = subscriptions }
     }
 

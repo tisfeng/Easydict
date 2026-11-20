@@ -11,23 +11,49 @@ import Foundation
 final class CodexAppServerRequest: @unchecked Sendable {
     // MARK: Internal
 
-    /// Streams one translation through the shared process without sharing thread state.
+    enum Connection {
+        case localCLI, managed(CodexRuntime? = nil), custom
+    }
+
+    /// Each custom catalog is loaded by a freshly verified private process.
     func runUsingAppServer(
         prompt: String,
         model: String,
         effort: String?,
-        runtime: CodexRuntime?,
+        connection: Connection,
+        fastMode: Bool = false,
         imageURL: String? = nil,
         deltaReceived: @escaping @Sendable (String) -> ()
     ) async throws
         -> CodexAppServer.Response {
-        let server = runtime == nil ? CodexAppServer.localCLI : CodexAppServer.managed
+        let server: CodexAppServer
+        let runtime: CodexRuntime?
+        switch connection {
+        case .localCLI:
+            server = .localCLI
+            runtime = nil
+        case let .managed(verified):
+            try CodexRuntime.validateSelection(model: model, effort: effort)
+            server = .managed
+            if let verified {
+                runtime = verified
+            } else {
+                runtime = try await server.runtime()
+            }
+        case .custom:
+            guard imageURL == nil else { throw CodexServiceError.unavailableImageModel }
+            try CodexRuntime.validateSelection(model: model, effort: effort, customModel: true)
+            runtime = try await CodexRuntime.installed().forCustomModel(model, effort: effort)
+            server = CodexAppServer()
+        }
+        try Task.checkCancellation()
         let requestID = try lock.withLock { () -> UUID in
             if cancelled { throw CancellationError() }
             let requestID = UUID()
             appServerRequest = (requestID, server)
             return requestID
         }
+        defer { clearAppServerRequest(requestID) }
         return try await withTaskCancellationHandler {
             do {
                 let result = try await server.translate(
@@ -38,14 +64,15 @@ final class CodexAppServerRequest: @unchecked Sendable {
                         effort: effort,
                         runtime: runtime,
                         imageURL: imageURL,
+                        fastMode: fastMode,
                         isCancelled: { [weak self] in self?.isCancelled ?? true },
                         deltaReceived: deltaReceived
                     )
                 )
-                clearAppServerRequest(requestID)
+                if case .custom = connection { await server.invalidate() }
                 return result
             } catch {
-                clearAppServerRequest(requestID)
+                if case .custom = connection { await server.invalidate() }
                 if runtime == nil, error as? CodexServiceError == .loginRequired {
                     throw CodexCLIError.notLoggedIn
                 }
