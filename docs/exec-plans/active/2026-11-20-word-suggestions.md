@@ -42,7 +42,7 @@
 - 有道联想与 `jsonapi_s` 为非公开接口，可能变更或限流；失败时只显示本地候选，不影响查询。
 - 用户输入会发送到有道；只在手动输入单个英文单词时请求，并加防抖与缓存。
 - 使用系统拼写检查而非自建词表，离线可用且纠错质量已实测（fonetic→phonetic、sycology→psychology）。
-- 偏好键 `enableWordSuggestion` 默认开启，`wordSuggestionSource` 默认有道；设置页「通用」可关闭或改为仅本地。
+- 偏好键 `enableWordSuggestion` 默认开启，`wordSuggestionSource` 默认仅本地（不联网，用户可切到有道）；设置页「通用」可关闭或改为仅本地。
 - 有道 `jsonapi_s` 未签名请求会对许多词返回随机词条，须使用网页签名请求并校验返回的 `input`。
 
 ## 进度
