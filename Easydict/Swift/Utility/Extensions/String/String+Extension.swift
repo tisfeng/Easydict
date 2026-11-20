@@ -58,14 +58,15 @@ extension String {
         return String(dropFirst(prefix.count))
     }
 
-    /// Copy string to pasteboard.
-    func copyToPasteboard() {
+    /// Copy string to pasteboard, returning whether the write succeeded.
+    @discardableResult
+    func copyToPasteboard() -> Bool {
         guard !isEmpty else {
-            return
+            return false
         }
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
-        pasteboard.setString(self, forType: .string)
+        return pasteboard.setString(self, forType: .string)
     }
 }
 
@@ -84,7 +85,8 @@ extension NSString {
         return self
     }
 
-    func copyToPasteboard() {
+    @discardableResult
+    func copyToPasteboard() -> Bool {
         (self as String).copyToPasteboard()
     }
 
