@@ -145,6 +145,9 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
 }
 
 - (void)goToSettings {
+    // The query window does not activate the app, so without this the Settings
+    // window opens behind the frontmost app and the click seems to do nothing.
+    [NSApp activateApp];
     [[NSNotificationCenter defaultCenter] postNotificationName:EZOpenSettingsNotification object:nil];
 }
 
