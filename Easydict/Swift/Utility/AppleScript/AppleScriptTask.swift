@@ -10,13 +10,11 @@ import Foundation
 // MARK: - AppleScriptTask
 
 /// Provides the app-facing AppleScript facade used by browser automation, system integrations,
-/// and Apple Translation fallback. Business code depends on this type instead of selecting an
-/// execution backend directly, so the preferred `NSAppleScript` path stays centralized while still
-/// avoiding UI-thread blocking. The same facade is also bridged into Objective-C through Swift async
-/// completion-handler generation.
+/// and Apple Translation fallback. The same facade is also bridged into Objective-C through Swift
+/// async completion-handler generation.
 @objcMembers
 class AppleScriptTask: NSObject {
-    /// Runs the Apple Translation shortcut through the unified `NSAppleScript` backend.
+    /// Runs the Apple Translation shortcut through the shared AppleScript executor.
     ///
     /// The script template targets `Shortcuts Events`, but execution still goes through the
     /// shared business runner so Objective-C and Swift callers observe the same timeout and
@@ -38,8 +36,7 @@ class AppleScriptTask: NSObject {
     ///   - timeout: Maximum execution time in seconds, defaults to 10
     /// - Returns: Optional string result from the AppleScript execution
     /// - Throws: QueryError if execution fails or times out
-    /// - Note: Execution is dispatched to a background queue so AppleScript work does not occupy the
-    ///   UI thread. Timeout is best-effort only and cannot forcibly interrupt a running script.
+    /// - Note: A timeout cancels queued work or terminates the running subprocess.
     @discardableResult
     static func runAppleScript(_ appleScript: String, timeout: TimeInterval = 10) async throws
         -> String? {
