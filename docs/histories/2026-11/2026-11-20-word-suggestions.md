@@ -96,6 +96,8 @@
   ①② 义项、去掉例句与 `→` 交叉引用，英文词的释义取提到该中文的英汉条目（`bank` 取“银行”而非“岸”）。仅本地模式用它做
   中文反查（结果同步返回），有道模式在有道无结果时回退到它；设置页说明同步更新。复测：`固执`→stubborn/stick to，
   `银行`→bank（银行；库），`打`→dozen/beat/break…，`坚持不懈`→persistent（adj.）；词典没有的 `一石二鸟` 本地无结果，有道模式不变。
+- 用户发现用鼠标点击推荐行会关闭查询窗口，回车选择正常：`EventMonitor` 用全局鼠标按下判断是否点在浮动窗口外，点击位置最上层
+  是推荐列表子窗口而非浮动窗口本身，被判为窗口外并关闭未固定的窗口。改为浮动窗口的子窗口也算窗口内。点击验证由用户进行。
 - 未执行：界面截图；窄窗口点击、失焦时关闭列表、深色模式、中文输入法组字等清单未逐项确认。
   脚本无法把 Debug 版切到前台，界面交互只能由用户手动验证。
 - 经用户授权新增 `EasydictTests/Feature/WordSuggestion/` 测试（Swift Testing）：排序与对齐加粗、屈折识别、
@@ -111,6 +113,7 @@
 - `Easydict/objc/ViewController/View/QueryView/EZQueryView.m`
 - `Easydict/Swift/Feature/Configuration/Defaults.Keys+Extension.swift`
 - `Easydict/Swift/View/SettingView/Tabs/TabView/GeneralTab.swift`
+- `Easydict/Swift/Utility/EventMonitor/Core/EventMonitor.swift`
 - `Easydict/App/Localizable.xcstrings`
 - `Easydict.xcodeproj/project.pbxproj`
 - `docs/exec-plans/active/2026-11-20-word-suggestions.md`

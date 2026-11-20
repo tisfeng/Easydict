@@ -497,7 +497,9 @@ extension EventMonitor {
         // cursor in the same coordinate space as the event, regardless of display
         // arrangement or whether our (accessory) app is active.
         let windowNumberAtPoint = NSWindow.windowNumber(at: mouseLocation, belowWindowWithWindowNumber: 0)
+        // Child windows, such as the word suggestion list under the input, belong to the floating window.
         let clickedOnFloatingWindow = windowNumberAtPoint == floatingWindow.windowNumber
+            || floatingWindow.childWindows?.contains { $0.windowNumber == windowNumberAtPoint } == true
 
         if !clickedOnFloatingWindow {
             dismissAllNotPinndFloatingWindowBlock?()
