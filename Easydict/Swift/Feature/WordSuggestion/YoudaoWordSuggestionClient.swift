@@ -62,11 +62,10 @@ final class YoudaoWordSuggestionClient {
         if let cached = definitionCache[word] {
             return cached
         }
+        // Exact spelling only: `john` (toilet) and `John` (a name) have different glosses.
+        // The word detail endpoint below is queried with the exact spelling as well.
         let entries = await suggestions(for: word, limit: 1)
-        // Exact spelling first; otherwise accept a case variant, e.g. `Warcraft` for `warcraft`.
-        let entry = entries.first { $0.word == word }
-            ?? entries.first { $0.word.lowercased() == word.lowercased() }
-        if let definition = entry?.definition {
+        if let definition = entries.first(where: { $0.word == word })?.definition {
             return definition
         }
 

@@ -24,10 +24,11 @@ struct WordSuggestionRanker {
     ///   word sounds, so earlier ones get a small boost (`sycology` → `psychology` over `mycology`).
     func rank(_ candidates: [String], for input: String, preferred: [String] = []) -> [String] {
         let query = input.lowercased()
+        // Case-sensitive: `march` and `March` are different words.
         var seen = Set<String>()
         let unique = candidates.filter { candidate in
-            let key = candidate.lowercased()
-            guard !key.isEmpty, !isPossessive(key), seen.insert(key).inserted else { return false }
+            guard !candidate.isEmpty, !isPossessive(candidate.lowercased()), seen.insert(candidate).inserted
+            else { return false }
             return true
         }
 

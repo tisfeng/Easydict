@@ -47,7 +47,7 @@ final class WordSuggestionProvider {
 
         // While typing or for a real word, look up what was typed; for a typo, Youdao's
         // fuzzy matches on the raw input are mostly noise, so use the best correction instead.
-        let onlineQuery = check.isTypingPrefix || check.isCorrect ? input : check.guesses.first
+        let onlineQuery = check.isTypingPrefix || check.isCorrect ? input : check.corrections.first
         let online = if let onlineQuery {
             await client.suggestions(for: onlineQuery, limit: onlineLimit)
         } else {
@@ -59,8 +59,11 @@ final class WordSuggestionProvider {
             }
         }
 
-        // Youdao also returns rare or misspelled headwords; keep words the spell checker accepts.
-        let onlineWords = online.map(\.word).filter(isCorrectlySpelled)
+        // Youdao also returns rare or misspelled headwords; keep words the spell checker accepts,
+        // except spellings of the input itself, such as `anne` for a name.
+        let onlineWords = online.map(\.word).filter { word in
+            word.lowercased() == input.lowercased() || isCorrectlySpelled(word)
+        }
         let words = orderedCandidates(for: input, check: check, onlineWords: onlineWords).prefix(maxSimilar)
 
         // Always try: the suggest endpoint returns nothing for some words Youdao still defines.
@@ -71,7 +74,8 @@ final class WordSuggestionProvider {
         var similar: [WordSuggestion] = []
         for word in words {
             let definition = cachedDefinitions[word]
-            // A word Youdao was asked about but cannot gloss is usually a name or a rare form.
+            // A word Youdao was asked about but cannot gloss is usually a rare form; spellings
+            // of the input itself stay, since names are often missing from the dictionary.
             if definition == nil, isYoudaoReachable, lookedUp.contains(word), word.lowercased() != input.lowercased() {
                 continue
             }
@@ -150,51 +154,68 @@ final class WordSuggestionProvider {
     private func spellCheck(for input: String) -> SpellCheck {
         let range = NSRange(location: 0, length: (input as NSString).length)
         let isCorrect = isCorrectlySpelled(input)
-        let completions = spellChecker.completions(
+        // The spell checker capitalizes completions to match capitalized input
+        // (`Anne` → `Annex`); use the ordinary lowercase word when there is one.
+        let isCapitalized = input.first?.isUppercase == true && input.dropFirst() == input.dropFirst().lowercased()
+        let completions = (spellChecker.completions(
             forPartialWordRange: range,
             in: input,
             language: language,
             inSpellDocumentWithTag: 0
-        ) ?? []
-        let guesses = isCorrect ? [] : spellChecker.guesses(
+        ) ?? []).map { word in
+            let lowercased = word.lowercased()
+            return isCapitalized && isCorrectlySpelled(lowercased) ? lowercased : word
+        }
+        let guesses = spellChecker.guesses(
             forWordRange: range,
             in: input,
             language: language,
             inSpellDocumentWithTag: 0
         ) ?? []
-        return SpellCheck(isCorrect: isCorrect, completions: completions, guesses: guesses)
+        return SpellCheck(isCorrect: isCorrect, completions: completions, guesses: guesses, input: input)
     }
 
     /// Candidates in display order, before glosses are attached.
     ///
-    /// While the input is a prefix being typed, the most frequent completions are
-    /// kept and then ordered by how few letters they add (`inves` → `invest` before
-    /// `investment`); equal lengths keep frequency order. Keeping only frequent ones
-    /// first stops rare short words such as `testy` from pushing out common ones.
-    /// Only a typo with no completions is ranked by similarity to the spell checker's
-    /// corrections, so `upgr` leads with `upgrade`, not `upper`.
+    /// Spellings of the input that differ only in case come first, the exact one
+    /// leading: `anne` → `anne`, `Anne`; `march` → `march`, `March`. Then, while the
+    /// input is a prefix being typed, the most frequent completions are kept and
+    /// ordered by how few letters they add (`inves` → `invest` before `investment`);
+    /// equal lengths keep frequency order, and keeping only frequent ones first stops
+    /// rare short words such as `testy` from pushing out common ones. Only a typo with
+    /// no completions is ranked by similarity to the spell checker's corrections, so
+    /// `upgr` leads with `upgrade`, not `upper`.
     private func orderedCandidates(for input: String, check: SpellCheck, onlineWords: [String]) -> [String] {
-        guard check.isTypingPrefix else {
-            // A complete word with nothing to complete, such as `Warcraft`, still leads with itself.
-            let pool = (check.isCorrect ? [input] : []) + check.guesses + onlineWords
-            let ranked = ranker.rank(pool, for: input, preferred: check.guesses)
-            return filter(ranked, input: input, isCorrect: check.isCorrect)
+        let key = input.lowercased()
+        let spellings = ([input] + check.caseVariants + onlineWords)
+            .filter { $0.lowercased() == key }
+        let isKnownSpelling = { (word: String) in
+            word != input || check.isCorrect || onlineWords.contains(input)
         }
-
-        let query = input.lowercased()
-        let onlineCompletions = onlineWords.filter { $0.lowercased().hasPrefix(query) }
-        let frequencyOrdered = (check.isCorrect ? [input] : []) + check.completions + onlineCompletions
         var seen = Set<String>()
-        let unique = frequencyOrdered.filter { seen.insert($0.lowercased()).inserted }
-        let frequent = filter(unique, input: input, isCorrect: check.isCorrect).prefix(maxSimilar)
+        let head = spellings.filter { isKnownSpelling($0) && seen.insert($0).inserted }
 
-        return frequent.enumerated()
-            .sorted { lhs, rhs in
-                lhs.element.count == rhs.element.count
-                    ? lhs.offset < rhs.offset
-                    : lhs.element.count < rhs.element.count
-            }
-            .map(\.element)
+        let rest: [String]
+        if check.isTypingPrefix {
+            let onlineCompletions = onlineWords.filter { $0.lowercased().hasPrefix(key) }
+            let frequencyOrdered = (check.completions + onlineCompletions).filter { !seen.contains($0) }
+            var restSeen = seen
+            let unique = frequencyOrdered.filter { restSeen.insert($0).inserted }
+            let frequent = filter(unique, input: input, isCorrect: check.isCorrect)
+                .prefix(max(maxSimilar - head.count, 0))
+            rest = frequent.enumerated()
+                .sorted { lhs, rhs in
+                    lhs.element.count == rhs.element.count
+                        ? lhs.offset < rhs.offset
+                        : lhs.element.count < rhs.element.count
+                }
+                .map(\.element)
+        } else {
+            let pool = (check.corrections + onlineWords).filter { !seen.contains($0) }
+            let ranked = ranker.rank(pool, for: input, preferred: check.corrections)
+            rest = filter(ranked, input: input, isCorrect: check.isCorrect)
+        }
+        return head + rest
     }
 
     /// Drops phrases, unrelated capitalized names for lowercase input, and plain inflections:
@@ -225,6 +246,17 @@ private struct SpellCheck {
     let isCorrect: Bool
     let completions: [String]
     let guesses: [String]
+    let input: String
+
+    /// Corrections for a misspelled input; a correct word needs none.
+    var corrections: [String] {
+        isCorrect ? [] : guesses.filter { $0.lowercased() != input.lowercased() }
+    }
+
+    /// Spellings of the input that differ only in case, such as `Anne` for `anne`.
+    var caseVariants: [String] {
+        guesses.filter { $0 != input && $0.lowercased() == input.lowercased() }
+    }
 
     /// Completions exist, so the text is most likely an unfinished word rather than a typo.
     var isTypingPrefix: Bool {
