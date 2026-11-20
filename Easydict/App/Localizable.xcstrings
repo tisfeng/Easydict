@@ -8456,6 +8456,53 @@
         }
       }
     },
+    "query.word_suggestion.hint.fill" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇥ Fill"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇥ Completar"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇥ 入力"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇥ Doplniť"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇥ بھریں"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇥ 填入"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇥ 填入"
+          }
+        }
+      }
+    },
     "query.word_suggestion.hint.query" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -18357,6 +18404,288 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "關閉"
+          }
+        }
+      }
+    },
+    "setting.general.word_suggestion.enable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show suggestions while typing a word"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar sugerencias al escribir una palabra"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "単語の入力中に候補を表示"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobrazovať návrhy pri písaní slova"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لفظ ٹائپ کرتے وقت تجاویز دکھائیں"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入单词时显示推荐列表"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸入單字時顯示推薦列表"
+          }
+        }
+      }
+    },
+    "setting.general.word_suggestion.footer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao adds glosses, same-root words, phrases and English words for Chinese input; what you type is sent to Youdao. This Mac only uses the spell checker and the Oxford English-Chinese dictionary, which you can download in Dictionary > Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao añade definiciones, palabras de la misma raíz, frases y palabras en inglés para texto en chino; lo que escribes se envía a Youdao. Solo este Mac usa el corrector ortográfico y el diccionario Oxford inglés-chino, que puedes descargar en Diccionario > Ajustes."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao では訳語、同根語、フレーズ、中国語入力に対応する英単語を表示し、入力内容は Youdao に送信されます。「このMacのみ」はスペルチェッカーと Oxford 英中辞典だけを使います。辞典は「辞書」App の設定でダウンロードできます。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao pridáva významy, slová s rovnakým koreňom, frázy a anglické slová pre čínsky vstup; napísaný text sa odosiela do Youdao. Iba tento Mac používa kontrolu pravopisu a Oxfordský anglicko-čínsky slovník, ktorý si stiahnete v Slovník > Nastavenia."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao معانی، ہم جڑ الفاظ، جملے اور چینی ان پٹ کے انگریزی الفاظ دکھاتا ہے؛ آپ کا لکھا ہوا متن Youdao کو بھیجا جاتا ہے۔ صرف یہ Mac ہجے جانچ اور Oxford انگریزی-چینی لغت استعمال کرتا ہے، جسے لغت > سیٹنگز میں ڈاؤن لوڈ کیا جا سکتا ہے۔"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有道模式显示释义、同根词、短语，并支持中文反查，输入内容会发送到有道。仅本地模式只用系统拼写检查和「牛津英汉汉英词典」，该词典需要在「词典」App 的设置中勾选下载。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有道模式顯示釋義、同根詞、片語，並支援中文反查，輸入內容會傳送到有道。僅本機模式只使用系統拼字檢查和「牛津英漢漢英詞典」，該詞典需要在「辭典」App 的設定中勾選下載。"
+          }
+        }
+      }
+    },
+    "setting.general.word_suggestion.header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Word Suggestions"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sugerencias de palabras"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "単語候補"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Návrhy slov"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الفاظ کی تجاویز"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单词推荐"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "單字推薦"
+          }
+        }
+      }
+    },
+    "setting.general.word_suggestion.source" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data source"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuente de datos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データソース"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zdroj údajov"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ڈیٹا کا ذریعہ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数据来源"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "資料來源"
+          }
+        }
+      }
+    },
+    "setting.general.word_suggestion.source.local" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Mac only"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo este Mac"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このMacのみ"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iba tento Mac"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صرف یہ Mac"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅本地"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅本機"
+          }
+        }
+      }
+    },
+    "setting.general.word_suggestion.source.youdao" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao (online)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao (en línea)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao（オンライン）"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao (online)"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Youdao (آن لائن)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有道（在线）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有道（線上）"
           }
         }
       }

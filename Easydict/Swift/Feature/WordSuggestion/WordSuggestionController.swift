@@ -39,6 +39,13 @@ final class WordSuggestionController: NSObject {
     /// Called with the word the user picked; the caller fills the input and runs the query.
     @objc var selectionHandler: ((String) -> ())?
 
+    /// Called with the word the user completed with Tab; the caller only fills the input.
+    @objc var fillHandler: ((String) -> ())?
+
+    /// Whether an input method is still composing; checked when the debounce fires, because
+    /// right after Chinese text is committed the text view may still report marked text.
+    @objc var isComposing: (() -> Bool)?
+
     @objc var isVisible: Bool {
         panel.isVisible
     }
@@ -60,6 +67,10 @@ final class WordSuggestionController: NSObject {
         lookupTask = Task { [weak self] in
             try? await Task.sleep(nanoseconds: delay)
             guard let self, !Task.isCancelled, currentGeneration == generation else { return }
+            if isComposing?() == true {
+                hide()
+                return
+            }
 
             show(provider.localSuggestions(for: input))
             let suggestions = await provider.suggestions(for: input)
@@ -90,6 +101,11 @@ final class WordSuggestionController: NSObject {
                 return false
             }
             choose(at: panel.listView.selectedIndex)
+            return true
+        case #selector(NSResponder.insertTab(_:)):
+            // Like shell completion: fill the selected word, or the first one, without querying.
+            let index = suggestions.indices.contains(panel.listView.selectedIndex) ? panel.listView.selectedIndex : 0
+            fill(at: index)
             return true
         case #selector(NSResponder.cancelOperation(_:)):
             hide()
@@ -160,6 +176,15 @@ final class WordSuggestionController: NSObject {
             window.addChildWindow(panel, ordered: .above)
         }
         panel.orderFront(nil)
+    }
+
+    private func fill(at index: Int) {
+        guard suggestions.indices.contains(index) else { return }
+        let word = suggestions[index].word
+        hide()
+        fillHandler?(word)
+        // Suggest again for the filled word, such as its same-root words and phrases.
+        textDidChange(word)
     }
 
     private func choose(at index: Int) {

@@ -71,6 +71,20 @@ struct GeneralTab: View {
             }
 
             Section {
+                Toggle("setting.general.word_suggestion.enable", isOn: $enableWordSuggestion)
+                Picker("setting.general.word_suggestion.source", selection: $wordSuggestionSource) {
+                    Text("setting.general.word_suggestion.source.youdao").tag(WordSuggestionSource.youdao)
+                    Text("setting.general.word_suggestion.source.local").tag(WordSuggestionSource.local)
+                }
+                .disabled(!enableWordSuggestion)
+            } header: {
+                Text("setting.general.word_suggestion.header")
+            } footer: {
+                Text("setting.general.word_suggestion.footer")
+                    .font(.footnote)
+            }
+
+            Section {
                 Toggle("auto_query_selected_text", isOn: $autoQuerySelectedText)
                 Toggle("auto_query_ocr_text", isOn: $autoQueryOCRText)
                 Toggle("auto_query_pasted_text", isOn: $autoQueryPastedText)
@@ -284,6 +298,8 @@ struct GeneralTab: View {
     @Default(.clearQueryWhenInputTranslate) private var clearInput
     @Default(.keepPrevResultWhenSelectTranslateTextIsEmpty) private var keepPrevResultWhenEmpty
     @Default(.selectQueryTextWhenWindowActivate) private var selectQueryTextWhenWindowActivate
+    @Default(.enableWordSuggestion) private var enableWordSuggestion
+    @Default(.wordSuggestionSource) private var wordSuggestionSource
 
     // Auto query
     @Default(.autoQueryOCRText) private var autoQueryOCRText

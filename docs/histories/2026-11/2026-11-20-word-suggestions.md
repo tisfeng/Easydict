@@ -63,6 +63,26 @@
   拼写查（`john` 厕所、`John` 约翰）；首字母大写输入时把拼写检查自动大写的补全还原为小写（`Anne` 不再出
   `Annex`）。复测：`anne`→anne/Anne/annex…，`john`→john/John，`march`→march/March，`polish`→polish/Polish，
   `inves`、`rekon`、`tes` 不变。
+- 用户确认第二批改进（匹配加粗、Tab 填入、短语、中文反查、系统词典兜底、设置页），暂不做列表防闪烁和 Ollama 找词：
+  - 加粗：前缀补全加粗已输入的前缀，纠错候选按最小编辑对齐加粗保留下来的字母（`fonetic`→ph**onetic**）；
+    同根词、短语、中文反查行不加粗。
+  - Tab：填入选中行（未选中时填第一行）且不查询，并按新词重新推荐；底部提示增加 `⇥ 填入`。
+  - 短语：读取 `jsonapi_s` 的 `phrs`，与同根词共用一次请求（并发请求合并）。有道的短语顺序不按常用程度
+    （`take` 首个是 `take some`），改为“词 + 小品词”的短语动词优先、其他两词短语次之、含 `one's` 等占位词的最后。
+    拼对时：原词与大小写变体、补全最多 3 个、同根词 3 个、短语 3 个，总共最多 10 行。复测：`give`→give up/out/in，
+    `take`→take on/up/off，`look`→look at/for/into，`bank`→bank on/central bank/commercial bank。
+  - 同时过滤不在列表里的词的屈折形式：有道释义注明“的复数/过去分词”等，或 `-ers`/`-ors` 去掉 s 仍是单词
+    （`givers`、`takers`、`taken` 不再出现）。
+  - 中文反查：输入 12 个字以内的纯汉字时，用 `jsonapi_s` 的 `ce` 列出英文词与对应中文义。该接口对部分中文词
+    （`银行`、`一石二鸟`）会返回随机的无关词条，所以只在返回的 `input` 与查询一致时采用，否则改用联想接口精确
+    词条的 `explain`；英文词须通过拼写检查（去掉 `bankbk`），整句翻译不列出。输入法组字时的检查移到防抖触发时，
+    提交汉字后仍会弹出列表。复测：`固执`→obstinate/stubborn/recalcitrance，`放弃`→abandon/give up/waive，
+    `银行`→bank/banking house/redlining，`一石二鸟`→kill two birds with one stone。
+  - 系统词典：读取系统自带的「牛津英汉汉英词典」（需在「词典」App 设置中勾选下载，约 32 MB），解析纯文本条目的
+    词性与前两个义项的中文词（去拼音、英文提示与例句），每次查询 1–2 ms。有道缺释义时兜底；未安装时每 60 秒
+    重试一次，不用重启。复测：`stubborn`→adj. 执拗的，倔强的，固执的；难开的，难去除的，`upgrade`→v. 改进；提升，提高。
+  - 设置页「通用」新增“单词推荐”分组：开关与数据来源（有道在线 / 仅本地），附隐私说明；仅本地模式不访问网络，
+    只用拼写检查与系统词典，不提供同根词、短语与中文反查。复测本地模式 `inves` 0.03 秒出全部释义。
 - 未执行：界面截图；窄窗口点击、失焦时关闭列表、深色模式、中文输入法组字等清单未逐项确认。
   脚本无法把 Debug 版切到前台，界面交互只能由用户手动验证。
 - 未新增单元测试：仓库规定新增测试需用户授权；排序与释义解析为纯函数，建议补充。
@@ -72,6 +92,7 @@
 - `Easydict/Swift/Feature/WordSuggestion/*.swift`
 - `Easydict/objc/ViewController/View/QueryView/EZQueryView.m`
 - `Easydict/Swift/Feature/Configuration/Defaults.Keys+Extension.swift`
+- `Easydict/Swift/View/SettingView/Tabs/TabView/GeneralTab.swift`
 - `Easydict/App/Localizable.xcstrings`
 - `Easydict.xcodeproj/project.pbxproj`
 - `docs/exec-plans/active/2026-11-20-word-suggestions.md`
@@ -80,4 +101,4 @@
 
 - 补齐界面验证清单与截图。
 - 经授权后为 `WordSuggestionRanker` 和释义解析补单元测试。
-- 考虑在设置页提供开关，并说明输入内容会发送到有道。
+- 暂缓：列表防闪烁、Ollama 描述找词与近义辨析。

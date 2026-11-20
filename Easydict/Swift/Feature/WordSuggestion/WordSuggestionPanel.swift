@@ -140,6 +140,7 @@ final class WordSuggestionListView: NSVisualEffectView {
         // the in-app interface language instead of the system language.
         footerLabel.stringValue = [
             NSLocalizedString("query.word_suggestion.hint.select", comment: ""),
+            NSLocalizedString("query.word_suggestion.hint.fill", comment: ""),
             NSLocalizedString("query.word_suggestion.hint.query", comment: ""),
             NSLocalizedString("query.word_suggestion.hint.close", comment: ""),
         ].joined(separator: "     ")
@@ -257,10 +258,22 @@ final class WordSuggestionRowView: NSView {
         let primary: NSColor = isSelected ? .alternateSelectedControlTextColor : .labelColor
         let secondary: NSColor = isSelected ? .alternateSelectedControlTextColor : .secondaryLabelColor
 
-        let text = NSMutableAttributedString(string: suggestion.word, attributes: [
-            .font: NSFont.systemFont(ofSize: fontSize, weight: .medium),
-            .foregroundColor: primary,
-        ])
+        let text = NSMutableAttributedString()
+        if suggestion.matchedOffsets.isEmpty {
+            text.append(NSAttributedString(string: suggestion.word, attributes: [
+                .font: NSFont.systemFont(ofSize: fontSize, weight: .medium),
+                .foregroundColor: primary,
+            ]))
+        } else {
+            // Letters that match the typed text are bold, the rest regular: `inves` in `investment`.
+            for (offset, character) in suggestion.word.enumerated() {
+                let isMatched = suggestion.matchedOffsets.contains(offset)
+                text.append(NSAttributedString(string: String(character), attributes: [
+                    .font: NSFont.systemFont(ofSize: fontSize, weight: isMatched ? .bold : .regular),
+                    .foregroundColor: primary,
+                ]))
+            }
+        }
         let parts: [(String?, NSFont)] = [
             (suggestion.partOfSpeech, .systemFont(ofSize: fontSize - 2)),
             (suggestion.meaning, .systemFont(ofSize: fontSize)),

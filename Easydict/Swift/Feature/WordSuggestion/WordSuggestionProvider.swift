@@ -7,48 +7,48 @@
 //
 
 import AppKit
+import Defaults
 
 // MARK: - WordSuggestionProvider
 
-/// Builds the suggestion list for a typed word.
+/// Builds the suggestion list for a typed word, or English words for typed Chinese.
 ///
-/// Candidates come from the macOS spell checker (corrections and
-/// completions, available offline) merged with Youdao's prefix suggestions.
-/// Glosses and same-root words come from Youdao; when it is unreachable the
-/// list still shows the spell checker's words without glosses.
+/// Candidates come from the macOS spell checker (corrections and completions,
+/// available offline) merged with Youdao's prefix suggestions. Glosses, same-root
+/// words, phrases and Chinese lookups come from Youdao; the system Oxford
+/// English-Chinese dictionary fills in glosses Youdao lacks, and is the only gloss
+/// source when the user keeps lookups on the Mac.
 @MainActor
 final class WordSuggestionProvider {
     // MARK: Internal
 
-    /// Whether `text` looks like one English word worth suggesting for.
+    /// Whether `text` is one English word, or a short Chinese term when Youdao is the source.
     func isSuggestible(_ text: String) -> Bool {
-        text.range(of: #"^[A-Za-z][A-Za-z'\-]{1,39}$"#, options: .regularExpression) != nil
+        isEnglishWord(text) || (source == .youdao && isChineseTerm(text))
     }
 
     /// Spell-checker candidates in display order; available synchronously and offline.
     func localSuggestions(for input: String) -> [WordSuggestion] {
+        guard isEnglishWord(input) else { return [] }
         let check = spellCheck(for: input)
         return orderedCandidates(for: input, check: check, onlineWords: [])
             .prefix(maxSimilar)
-            .map { word in
-                let definition = cachedDefinitions[word]
-                return WordSuggestion(
-                    word: word,
-                    partOfSpeech: definition?.partOfSpeech,
-                    meaning: definition?.meaning,
-                    origin: .similar
-                )
-            }
+            .map { similarSuggestion($0, input: input, definition: cachedDefinitions[$0]) }
     }
 
-    /// Full list with glosses and, for correctly spelled input, same-root words.
+    /// Full list with glosses; for a correctly spelled word also same-root words and phrases.
     func suggestions(for input: String) async -> [WordSuggestion] {
+        if isChineseTerm(input) {
+            return source == .youdao ? await translations(for: input) : []
+        }
+
         let check = spellCheck(for: input)
+        let usesYoudao = source == .youdao
 
         // While typing or for a real word, look up what was typed; for a typo, Youdao's
         // fuzzy matches on the raw input are mostly noise, so use the best correction instead.
         let onlineQuery = check.isTypingPrefix || check.isCorrect ? input : check.corrections.first
-        let online = if let onlineQuery {
+        let online = if usesYoudao, let onlineQuery {
             await client.suggestions(for: onlineQuery, limit: onlineLimit)
         } else {
             [(word: String, definition: WordDefinition?)]()
@@ -64,58 +64,135 @@ final class WordSuggestionProvider {
         let onlineWords = online.map(\.word).filter { word in
             word.lowercased() == input.lowercased() || isCorrectlySpelled(word)
         }
-        let words = orderedCandidates(for: input, check: check, onlineWords: onlineWords).prefix(maxSimilar)
+        let words = Array(orderedCandidates(for: input, check: check, onlineWords: onlineWords).prefix(maxSimilar))
 
         // Always try: the suggest endpoint returns nothing for some words Youdao still defines.
-        let lookedUp = await fetchMissingDefinitions(for: Array(words))
+        var lookedUp = usesYoudao ? await fetchMissingDefinitions(for: words) : []
         // Some gloss arrived, so Youdao is reachable and a missing one means a rare word, not an outage.
-        let isYoudaoReachable = !online.isEmpty || words.contains { cachedDefinitions[$0] != nil }
+        let isYoudaoReachable = usesYoudao && (!online.isEmpty || words.contains { cachedDefinitions[$0] != nil })
+        if appleDictionary.isAvailable {
+            for word in words where cachedDefinitions[word] == nil {
+                cachedDefinitions[word] = appleDictionary.definition(for: word)
+                lookedUp.insert(word)
+            }
+        }
+        let canDropUnglossed = isYoudaoReachable || appleDictionary.isAvailable
 
         var similar: [WordSuggestion] = []
         for word in words {
             let definition = cachedDefinitions[word]
-            // A word Youdao was asked about but cannot gloss is usually a rare form; spellings
-            // of the input itself stay, since names are often missing from the dictionary.
-            if definition == nil, isYoudaoReachable, lookedUp.contains(word), word.lowercased() != input.lowercased() {
+            // A word no dictionary can gloss is usually a rare form; spellings of the
+            // input itself stay, since names are often missing from the dictionary.
+            if definition == nil, canDropUnglossed, lookedUp.contains(word), word.lowercased() != input.lowercased() {
                 continue
             }
-            similar.append(WordSuggestion(
-                word: word,
-                partOfSpeech: definition?.partOfSpeech,
-                meaning: definition?.meaning,
-                origin: .similar
-            ))
+            if word.lowercased() != input.lowercased(), isInflectedForm(word, definition: definition) {
+                continue
+            }
+            similar.append(similarSuggestion(word, input: input, definition: definition))
         }
 
-        guard check.isCorrect else { return similar }
+        guard check.isCorrect, usesYoudao else { return similar }
 
         let shown = Set(similar.map { $0.word.lowercased() })
-        let related = await client.relatedWords(for: input)
+        async let relatedWords = client.relatedWords(for: input)
+        async let phraseList = client.phrases(for: input)
+        let related = await relatedWords
             .filter { !shown.contains($0.word.lowercased()) && !ranker.isInflection($0.word, of: input) }
             .prefix(maxRelated)
-        let similarLimit = max(maxCount - related.count, 1)
-        return Array(similar.prefix(similarLimit)) + related
+        let phrases = await phraseList.prefix(maxPhrases)
+        guard !related.isEmpty || !phrases.isEmpty else { return similar }
+
+        // A known word leaves room for the word itself, a few completions, then related words and phrases.
+        let spellingsOfInput = similar.prefix { $0.word.lowercased() == input.lowercased() }.count
+        let similarLimit = spellingsOfInput + maxCompletionsWithExtras
+        return Array((similar.prefix(similarLimit) + related + phrases).prefix(maxCount))
     }
 
     // MARK: Private
 
     private let ranker = WordSuggestionRanker()
     private let client = YoudaoWordSuggestionClient()
+    private let appleDictionary = AppleDictionaryGlossClient()
     private let spellChecker = NSSpellChecker.shared
     private let language = "en"
-    private let maxCount = 8
+    private let maxCount = 10
     private let maxSimilar = 8
-    private let maxRelated = 4
+    private let maxCompletionsWithExtras = 3
+    private let maxRelated = 3
+    private let maxPhrases = 3
+    private let maxTranslations = 6
+    private let maxChineseLength = 12
     private let onlineLimit = 8
     /// Caps extra gloss requests per lookup; prefix suggestions usually cover most rows.
     private let maxDefinitionLookups = 5
 
     private var cachedDefinitions: [String: WordDefinition] = [:]
 
+    private var source: WordSuggestionSource {
+        Defaults[.wordSuggestionSource]
+    }
+
+    private func isEnglishWord(_ text: String) -> Bool {
+        text.range(of: #"^[A-Za-z][A-Za-z'\-]{1,39}$"#, options: .regularExpression) != nil
+    }
+
+    /// A short run of Chinese characters, such as `固执`; sentences are left to the normal query.
+    private func isChineseTerm(_ text: String) -> Bool {
+        text.count <= maxChineseLength
+            && text.range(of: #"^\p{Han}+$"#, options: .regularExpression) != nil
+    }
+
+    /// Inflections of a word that is not itself in the list: Youdao notes them
+    /// (`taken`: `take 的过去分词`), and agent-noun plurals like `givers` are caught by spelling.
+    private func isInflectedForm(_ word: String, definition: WordDefinition?) -> Bool {
+        let notes = ["的复数", "的过去式", "的过去分词", "的现在分词", "的第三人称单数"]
+        if let meaning = definition?.meaning, notes.contains(where: meaning.contains) {
+            return true
+        }
+        let lowercased = word.lowercased()
+        return (lowercased.hasSuffix("ers") || lowercased.hasSuffix("ors"))
+            && isCorrectlySpelled(String(lowercased.dropLast()))
+    }
+
+    private func similarSuggestion(_ word: String, input: String, definition: WordDefinition?) -> WordSuggestion {
+        WordSuggestion(
+            word: word,
+            partOfSpeech: definition?.partOfSpeech,
+            meaning: definition?.meaning,
+            origin: .similar,
+            matchedOffsets: ranker.matchedOffsets(of: word, input: input)
+        )
+    }
+
+    /// English words for Chinese input in Youdao's order, each with a part of speech from
+    /// its own gloss; words no dictionary knows, such as typos in Youdao's list, are dropped.
+    private func translations(for input: String) async -> [WordSuggestion] {
+        // Youdao's lists carry the odd typo (`bankbk` for `银行`); keep words the spell checker accepts.
+        let items = Array(await client.translations(for: input)
+            .filter { item in item.word.split(separator: " ").allSatisfy { isCorrectlySpelled(String($0)) } }
+            .prefix(maxTranslations))
+        guard !items.isEmpty else { return [] }
+
+        let words = items.map(\.word)
+        await fetchMissingDefinitions(for: words, limit: maxTranslations)
+        return items.compactMap { item in
+            let definition = cachedDefinitions[item.word] ?? appleDictionary.definition(for: item.word)
+            guard item.meaning != nil || definition != nil else { return nil }
+            return WordSuggestion(
+                word: item.word,
+                partOfSpeech: definition?.partOfSpeech,
+                meaning: item.meaning ?? definition?.meaning,
+                origin: .translation
+            )
+        }
+    }
+
     /// Looks up glosses for the top words the prefix suggestions did not cover, concurrently.
     /// - Returns: The words that were looked up.
-    private func fetchMissingDefinitions(for words: [String]) async -> Set<String> {
-        let missing = words.filter { cachedDefinitions[$0] == nil }.prefix(maxDefinitionLookups)
+    @discardableResult
+    private func fetchMissingDefinitions(for words: [String], limit: Int? = nil) async -> Set<String> {
+        let missing = words.filter { cachedDefinitions[$0] == nil }.prefix(limit ?? maxDefinitionLookups)
         guard !missing.isEmpty else { return [] }
 
         let client = client

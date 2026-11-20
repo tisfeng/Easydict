@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 
 // MARK: - WordSuggestion
@@ -18,12 +19,18 @@ struct WordSuggestion: Equatable {
         case similar
         /// Shares a root with the input but has another part of speech.
         case related
+        /// A common phrase built on the input, such as `give up` for `give`.
+        case phrase
+        /// An English word for Chinese input, such as `stubborn` for `固执`.
+        case translation
     }
 
     let word: String
     var partOfSpeech: String?
     var meaning: String?
     let origin: Origin
+    /// Character offsets in `word` that match the typed text; drawn in bold.
+    var matchedOffsets = IndexSet()
 }
 
 // MARK: - WordDefinition
@@ -32,4 +39,15 @@ struct WordSuggestion: Equatable {
 struct WordDefinition: Equatable, Sendable {
     let partOfSpeech: String?
     let meaning: String
+}
+
+// MARK: - WordSuggestionSource
+
+/// Where suggestion glosses come from.
+enum WordSuggestionSource: String, CaseIterable, Defaults.Serializable {
+    /// Youdao's web dictionary: glosses, same-root words, phrases and Chinese lookups.
+    /// The typed text is sent to Youdao.
+    case youdao
+    /// Nothing leaves the Mac: the spell checker plus the system Oxford English-Chinese dictionary.
+    case local
 }

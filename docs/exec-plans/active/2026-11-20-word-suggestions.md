@@ -21,11 +21,11 @@
 - 目标结果：手动输入单个英文单词时，输入框下方弹出推荐列表，从最相似的单词开始，一行一个，
   显示单词、词性和主要中文释义；容忍一定程度的拼写错误；输入拼写正确的单词时追加同根的其他词性词汇。
 - 允许修改路径：`Easydict/Swift/Feature/WordSuggestion/`、`Easydict/objc/ViewController/View/QueryView/EZQueryView.m`、
-  `Easydict/Swift/Feature/Configuration/` 中的偏好键、`Easydict/App/Localizable.xcstrings`、
+  `Easydict/Swift/Feature/Configuration/` 中的偏好键、`GeneralTab.swift` 设置项、`Easydict/App/Localizable.xcstrings`、
   `Easydict.xcodeproj/project.pbxproj`、相关测试与文档。
 - 同任务 history：`docs/histories/2026-11/2026-11-20-word-suggestions.md`
 - 用户限制：在线数据为主；不做中文反查，不接 LLM 语义找词；界面按已确认的示意图（去掉“你是不是要找”标题行）。
-- 非目标：内置离线词库、设置页开关 UI、多词短语推荐。
+- 非目标：内置离线词库、Ollama 描述找词与辨析、列表防闪烁。
 - 验收标准：拼错单词（如 fonetic、rekon）能给出正确候选；前缀输入能补全；每行带词性和中文释义；
   ↑↓ 选择、回车查询所选词、Esc 关闭列表；断网时仍显示候选单词，原查询流程不受影响。
 
@@ -42,13 +42,15 @@
 - 有道联想与 `jsonapi_s` 为非公开接口，可能变更或限流；失败时只显示本地候选，不影响查询。
 - 用户输入会发送到有道；只在手动输入单个英文单词时请求，并加防抖与缓存。
 - 使用系统拼写检查而非自建词表，离线可用且纠错质量已实测（fonetic→phonetic、sycology→psychology）。
-- 偏好键 `enableWordSuggestion` 默认开启，暂不提供设置页 UI。
+- 偏好键 `enableWordSuggestion` 默认开启，`wordSuggestionSource` 默认有道；设置页「通用」可关闭或改为仅本地。
+- 有道 `jsonapi_s` 对部分中文查询返回无关词条，中文反查须校验 `input` 并回退到联想接口。
 
 ## 进度
 
 - [x] 候选词与排序
 - [x] 有道释义与同根词
 - [x] 推荐列表界面与交互（按用户反馈改为固定间距单行、提示跟随界面语言）
+- [x] 第二批：匹配加粗、Tab 填入、短语、中文反查、系统词典兜底、设置页开关与数据来源
 - [ ] 界面验证清单与截图
 - [ ] 单元测试（待用户授权）
 

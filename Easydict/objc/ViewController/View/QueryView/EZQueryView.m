@@ -130,6 +130,16 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
             self.enterActionBlock(word);
         }
     }];
+    [self.wordSuggestionController setFillHandler:^(NSString *_Nonnull word) {
+        mm_strongify(self);
+        [self cancelAutoQuery];
+        [self updateInputText:word];
+        [self.textView setSelectedRange:NSMakeRange(word.length, 0)];
+    }];
+    [self.wordSuggestionController setIsComposing:^BOOL {
+        mm_strongify(self);
+        return self.textView.hasMarkedText;
+    }];
 
     // When programatically setting the text, like auto select text, or OCR text.
     [textView setUpdateTextBlock:^(NSString * _Nonnull text) {
@@ -637,12 +647,12 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     // textView.string has been changed, we don't need to update it again.
     [self updateInputText:nil];
 
-    // Skip suggestions while an input method is still composing.
+    // While an input method is composing the list is hidden; the controller checks again
+    // when its debounce fires, so committed Chinese text still gets suggestions.
     if (self.textView.hasMarkedText) {
         [self.wordSuggestionController hide];
-    } else {
-        [self.wordSuggestionController textDidChange:[self copiedText]];
     }
+    [self.wordSuggestionController textDidChange:[self copiedText]];
 
     // Optionally auto translate while typing, debounced so we only query
     // once the user pauses instead of on every keystroke.

@@ -62,6 +62,9 @@ extension Defaults.Keys {
     )
     /// Show spelling-tolerant word suggestions while typing a single English word.
     static let enableWordSuggestion = Key<Bool>("EZConfiguration_kEnableWordSuggestionKey", default: true)
+    static let wordSuggestionSource = Key<WordSuggestionSource>(
+        "EZConfiguration_kWordSuggestionSourceKey", default: .youdao
+    )
     static let autoCopyOCRText = Key<Bool>("EZConfiguration_kAutoCopyOCRTextKey", default: false)
     static let autoCopySelectedText = Key<Bool>(
         "EZConfiguration_kAutoCopySelectedTextKey", default: false

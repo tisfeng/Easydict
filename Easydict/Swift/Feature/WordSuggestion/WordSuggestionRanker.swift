@@ -84,6 +84,54 @@ struct WordSuggestionRanker {
         return forms.contains(candidate)
     }
 
+    /// Offsets of the characters in `candidate` that line up with `input`, ignoring case.
+    ///
+    /// A completion matches its typed prefix (`inves` in `investment`); otherwise the
+    /// letters kept by a minimal edit alignment match (`onetic` in `phonetic` for `fonetic`).
+    func matchedOffsets(of candidate: String, input: String) -> IndexSet {
+        let source = Array(input.lowercased())
+        let target = Array(candidate.lowercased())
+        guard !source.isEmpty, !target.isEmpty, source.count == input.count, target.count == candidate.count
+        else { return [] }
+        if target.starts(with: source) {
+            return IndexSet(integersIn: 0 ..< source.count)
+        }
+
+        var matrix = Array(repeating: Array(repeating: 0, count: target.count + 1), count: source.count + 1)
+        for row in 0 ... source.count { matrix[row][0] = row }
+        for column in 0 ... target.count { matrix[0][column] = column }
+        for row in 1 ... source.count {
+            for column in 1 ... target.count {
+                let cost = source[row - 1] == target[column - 1] ? 0 : 1
+                matrix[row][column] = min(
+                    matrix[row - 1][column] + 1,
+                    matrix[row][column - 1] + 1,
+                    matrix[row - 1][column - 1] + cost
+                )
+            }
+        }
+
+        var offsets = IndexSet()
+        var row = source.count
+        var column = target.count
+        while row > 0, column > 0 {
+            let isMatch = source[row - 1] == target[column - 1]
+            if isMatch, matrix[row][column] == matrix[row - 1][column - 1] {
+                offsets.insert(column - 1)
+                row -= 1
+                column -= 1
+            } else if matrix[row][column] == matrix[row][column - 1] + 1 {
+                column -= 1
+            } else if matrix[row][column] == matrix[row - 1][column] + 1 {
+                row -= 1
+            } else {
+                row -= 1
+                column -= 1
+            }
+        }
+        return offsets
+    }
+
     /// Optimal string alignment distance: insertions, deletions,
     /// substitutions and adjacent transpositions each cost 1.
     func damerauLevenshteinDistance(_ lhs: String, _ rhs: String) -> Int {

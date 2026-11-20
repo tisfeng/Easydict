@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A34054CAACF82166405D6F1B /* WordSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA36452A8AA133F668187A9 /* WordSuggestion.swift */; };
 		BDBD7E75E7A80620C68D652D /* WordSuggestionRanker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2824A48AFFA6C48D703603E8 /* WordSuggestionRanker.swift */; };
+		F58AE7C884C0720BF2465EE4 /* AppleDictionaryGlossClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FAE2676C5199AACF0E17417 /* AppleDictionaryGlossClient.swift */; };
 		3745D64BA78939D9BCD6F6E5 /* YoudaoWordSuggestionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E015787653B67F498106A6AD /* YoudaoWordSuggestionClient.swift */; };
 		1A1C39EDAD059CB7FCD9B439 /* WordSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFA141A6447CC4127611245 /* WordSuggestionProvider.swift */; };
 		38475023973CB73138D1A560 /* WordSuggestionPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C85638C2F89725DDCDF62F /* WordSuggestionPanel.swift */; };
@@ -714,6 +715,7 @@
 /* Begin PBXFileReference section */
 		7EA36452A8AA133F668187A9 /* WordSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordSuggestion.swift; sourceTree = "<group>"; };
 		2824A48AFFA6C48D703603E8 /* WordSuggestionRanker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordSuggestionRanker.swift; sourceTree = "<group>"; };
+		4FAE2676C5199AACF0E17417 /* AppleDictionaryGlossClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleDictionaryGlossClient.swift; sourceTree = "<group>"; };
 		E015787653B67F498106A6AD /* YoudaoWordSuggestionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoudaoWordSuggestionClient.swift; sourceTree = "<group>"; };
 		6EFA141A6447CC4127611245 /* WordSuggestionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordSuggestionProvider.swift; sourceTree = "<group>"; };
 		B5C85638C2F89725DDCDF62F /* WordSuggestionPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordSuggestionPanel.swift; sourceTree = "<group>"; };
@@ -1550,6 +1552,7 @@
 			isa = PBXGroup;
 			children = (
 				7EA36452A8AA133F668187A9 /* WordSuggestion.swift */,
+				4FAE2676C5199AACF0E17417 /* AppleDictionaryGlossClient.swift */,
 				2824A48AFFA6C48D703603E8 /* WordSuggestionRanker.swift */,
 				E015787653B67F498106A6AD /* YoudaoWordSuggestionClient.swift */,
 				6EFA141A6447CC4127611245 /* WordSuggestionProvider.swift */,
@@ -5066,6 +5069,7 @@
 				A1B2C3D4E5F6000000000004 /* VocabularyNotebookService.swift in Sources */,
 				A34054CAACF82166405D6F1B /* WordSuggestion.swift in Sources */,
 				BDBD7E75E7A80620C68D652D /* WordSuggestionRanker.swift in Sources */,
+				F58AE7C884C0720BF2465EE4 /* AppleDictionaryGlossClient.swift in Sources */,
 				3745D64BA78939D9BCD6F6E5 /* YoudaoWordSuggestionClient.swift in Sources */,
 				1A1C39EDAD059CB7FCD9B439 /* WordSuggestionProvider.swift in Sources */,
 				38475023973CB73138D1A560 /* WordSuggestionPanel.swift in Sources */,
