@@ -60,6 +60,8 @@ extension Defaults.Keys {
     static let autoQueryWhenTextChanged = Key<Bool>(
         "EZConfiguration_kAutoQueryWhenTextChangedKey", default: false
     )
+    /// Show spelling-tolerant word suggestions while typing a single English word.
+    static let enableWordSuggestion = Key<Bool>("EZConfiguration_kEnableWordSuggestionKey", default: true)
     static let autoCopyOCRText = Key<Bool>("EZConfiguration_kAutoCopyOCRTextKey", default: false)
     static let autoCopySelectedText = Key<Bool>(
         "EZConfiguration_kAutoCopySelectedTextKey", default: false
