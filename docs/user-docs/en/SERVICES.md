@@ -45,6 +45,7 @@ The Services settings use these access types:
 | Ollama (`Ollama`) | No key | Calls Ollama on this Mac or at a custom server URL. |
 | Custom OpenAI (`CustomOpenAI`) | User key | Configures an OpenAI-compatible endpoint; supports multiple instances. |
 | Baidu Qianfan (`Qianfan`) | User key | Uses Baidu Qianfan's Chat V2 API and available chat models. |
+| Qwen-MT (`QwenMT`) | User key | Uses Alibaba Cloud Model Studio's dedicated translation models; defaults to `qwen-mt-flash`. |
 
 ## AI tools
 
@@ -69,6 +70,27 @@ The Services settings use these access types:
 | Doubao Translate (`Doubao`) | User key | Requires Doubao translation credentials. |
 
 ## Configuration tips
+
+### Qwen-MT
+
+1. Add Qwen-MT in Settings → Services and enter your Alibaba Cloud Model Studio API key.
+2. The default endpoint is
+   `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions` for Beijing.
+   For Singapore, use
+   `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions`,
+   or enter the complete workspace-specific URL from your Model Studio console.
+   Enter the complete Chat Completions URL and match it to your API key's region.
+3. Select a model and click Validate. `qwen-mt-flash` and `qwen-mt-lite` use incremental streaming;
+   `qwen-mt-plus` returns a complete translation. Lite supports fewer languages and reports
+   unsupported language pairs.
+
+This service translates only. It sends the original text and source/target languages without
+chat prompts, dictionary definitions, or sentence analysis. Automatic source detection is supported;
+choose an explicit target language. Simplified and Traditional Chinese map to `zh` and `zh_tw`.
+See the [Qwen-MT documentation](https://www.alibabacloud.com/help/en/model-studio/machine-translation)
+for model availability and language/region limits.
+
+### General tips
 
 1. Keep only a few frequently used services enabled to avoid unnecessary requests for each query.
 2. For private or offline workflows, consider Apple Dictionary, MDict, Apple offline translation,

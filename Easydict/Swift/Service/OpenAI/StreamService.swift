@@ -241,6 +241,11 @@ public class StreamService: QueryService {
 
     var hideThinkTagContent: Bool = true
 
+    /// Dedicated translation providers return literal content rather than chat wrappers.
+    var preservesResponseContent: Bool {
+        false
+    }
+
     /// The optional OpenAI-compatible reasoning mode for stream services.
     /// Subclasses can override this when the selected provider supports the parameter.
     @nonobjc

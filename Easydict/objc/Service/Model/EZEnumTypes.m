@@ -32,6 +32,7 @@ NSString *const EZServiceTypeSummary = @"Summary";
 NSString *const EZServiceTypeExplain = @"Explain";
 NSString *const EZServiceTypeDeepSeek = @"DeepSeek";
 NSString *const EZServiceTypeQianfan = @"Qianfan";
+NSString *const EZServiceTypeQwenMT = @"QwenMT";
 NSString *const EZServiceTypeAppleDictionary = @"AppleDictionary";
 NSString *const EZServiceTypeGroq = @"Groq";
 NSString *const EZServiceTypeZhipu = @"Zhipu";
