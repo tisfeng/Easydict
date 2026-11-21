@@ -107,6 +107,12 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         // on, and honors the paste preference when it is off.
         [self cancelAutoQuery];
 
+        // A pasted word that is queried right away needs no suggestions; the query reuses the
+        // unchanged text without `updateInputText:`, so the lookup scheduled above must stop here.
+        if (MyConfiguration.shared.autoQueryPastedText) {
+            [self.wordSuggestionController hide];
+        }
+
         if (self.pasteTextBlock) {
             self.pasteTextBlock(text);
         }
