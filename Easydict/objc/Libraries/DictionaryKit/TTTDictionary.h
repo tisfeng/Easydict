@@ -86,6 +86,10 @@ typedef NS_ENUM(NSUInteger, TTTDictionarySearchType) {
 /// Get dict with CFBundleDisplayName
 + (nullable instancetype)dictionaryNamed:(NSString *)name;
 
+/// Like `dictionaryNamed:`, but scans the available dictionaries again instead of using the
+/// list cached at first use, so a dictionary installed while the app runs is found.
++ (nullable instancetype)rescannedDictionaryNamed:(NSString *)name NS_SWIFT_NAME(rescanned(named:));
+
 + (NSSet<TTTDictionary *> *)availableDictionaries;
 
 + (NSArray<TTTDictionary *> *)activeDictionaries;

@@ -211,6 +211,16 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
     return _availableDictionariesKeyedByName[name];
 }
 
++ (nullable instancetype)rescannedDictionaryNamed:(NSString *)name {
+    for (id dictionary in (__bridge_transfer NSArray *)DCSCopyAvailableDictionaries()) {
+        TTTDictionary *availableDictionary = [[TTTDictionary alloc] initWithDictionaryRef:(__bridge DCSDictionaryRef)dictionary];
+        if ([availableDictionary.name isEqualToString:name]) {
+            return availableDictionary;
+        }
+    }
+    return nil;
+}
+
 + (NSSet<TTTDictionary *> *)availableDictionaries {
     // Cost < 0.1s
     static NSSet *_availableDictionaries = nil;

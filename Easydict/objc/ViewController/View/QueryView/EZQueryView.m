@@ -43,6 +43,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 @property (nonatomic, strong) EDMarkdownLabel *formulaPreview;
 @property (nonatomic, assign) BOOL didChooseFormulaView;
 @property (nonatomic, strong) EDMarkdownToggleButton *markdownButton;
+@property (nonatomic, strong) EZWordSuggestionController *wordSuggestionController;
 
 @end
 
@@ -106,6 +107,12 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         // on, and honors the paste preference when it is off.
         [self cancelAutoQuery];
 
+        // A pasted word that is queried right away needs no suggestions; the query reuses the
+        // unchanged text without `updateInputText:`, so the lookup scheduled above must stop here.
+        if (MyConfiguration.shared.autoQueryPastedText) {
+            [self.wordSuggestionController hide];
+        }
+
         if (self.pasteTextBlock) {
             self.pasteTextBlock(text);
         }
@@ -120,6 +127,26 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
         self.formulaPreview.font = self.textView.font;
     }];
     
+    self.wordSuggestionController = [[EZWordSuggestionController alloc] initWithAnchorView:self];
+    [self.wordSuggestionController setSelectionHandler:^(NSString *_Nonnull word) {
+        mm_strongify(self);
+        [self cancelAutoQuery];
+        [self updateInputText:word];
+        if (self.enterActionBlock) {
+            self.enterActionBlock(word);
+        }
+    }];
+    [self.wordSuggestionController setFillHandler:^(NSString *_Nonnull word) {
+        mm_strongify(self);
+        [self cancelAutoQuery];
+        [self updateInputText:word];
+        [self.textView setSelectedRange:NSMakeRange(word.length, 0)];
+    }];
+    [self.wordSuggestionController setIsComposing:^BOOL {
+        mm_strongify(self);
+        return self.textView.hasMarkedText;
+    }];
+
     // When programatically setting the text, like auto select text, or OCR text.
     [textView setUpdateTextBlock:^(NSString * _Nonnull text) {
         mm_strongify(self);
@@ -523,6 +550,16 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     NSEventModifierFlags flags = currentEvent.modifierFlags;
 //    NSInteger keyCode = currentEvent.keyCode;
 //    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+
+    // The suggestion list takes arrow keys, Enter and Escape while it is open.
+    if (!(flags & NSEventModifierFlagShift) && [self.wordSuggestionController handleCommand:commandSelector]) {
+        // Browsing rows means the user is choosing; a pending auto query would replace the pick
+        // with the typed text, so drop it.
+        if (commandSelector == @selector(moveUp:) || commandSelector == @selector(moveDown:)) {
+            [self cancelAutoQuery];
+        }
+        return YES;
+    }
     
     if (commandSelector == @selector(insertNewline:)) {
         // Shift + Enter
@@ -532,6 +569,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
             // Pressing Enter queries immediately, so drop any pending
             // debounced auto query to avoid a duplicate request.
             [self cancelAutoQuery];
+            [self.wordSuggestionController hide];
             if (self.enterActionBlock) {
                 MMLogInfo(@"enterActionBlock");
                 self.enterActionBlock(self.copiedText);
@@ -620,6 +658,13 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     // textView.string has been changed, we don't need to update it again.
     [self updateInputText:nil];
 
+    // While an input method is composing the list is hidden; the controller checks again
+    // when its debounce fires, so committed Chinese text still gets suggestions.
+    if (self.textView.hasMarkedText) {
+        [self.wordSuggestionController hide];
+    }
+    [self.wordSuggestionController textDidChange:[self copiedText]];
+
     // Optionally auto translate while typing, debounced so we only query
     // once the user pauses instead of on every keystroke.
     [self scheduleAutoQueryWhenTextChanged];
@@ -629,6 +674,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 // closing and hiding are handled separately by the window lifecycle.
 - (void)textDidEndEditing:(NSNotification *)notification {
     [self cancelAutoQuery];
+    [self.wordSuggestionController hide];
 }
 
 /// Schedule a debounced auto query when "auto query when text changed" is
@@ -665,6 +711,7 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
     if (text.length == 0) {
         return;
     }
+    [self.wordSuggestionController hide];
     if (self.enterActionBlock) {
         self.enterActionBlock([self copiedText]);
     }
@@ -677,6 +724,8 @@ static const NSTimeInterval EZAutoQueryWhenTextChangedDelay = 0.8;
 - (void)updateInputText:(nullable NSString *)text {
     // !!!: set string will change selectedRange, means it will change cursor position.
     if (text) {
+        // Text set by the app (selection, OCR, a picked suggestion) is not being typed.
+        [self.wordSuggestionController hide];
         self.textView.string = text;
     } else {
         text = [self copiedText];
