@@ -132,6 +132,7 @@ final class QueryServiceFactory: NSObject {
         .init(.ollama, OllamaService.self, "ollama_translate", apiKeyRequirement: .none),
         .init(.polishing, PolishingService.self, "polishing_service", apiKeyRequirement: .builtIn),
         .init(.summary, SummaryService.self, "summary_service", apiKeyRequirement: .builtIn),
+        .init(.explain, ExplainService.self, "explain_service", apiKeyRequirement: .builtIn),
         .init(.customOpenAI, CustomOpenAIService.self, "custom_openai", allowsMultipleInstances: true),
         .init(.deepL, DeepLService.self, "deepL_translate", apiKeyRequirement: .none),
         .init(.google, GoogleService.self, "google_translate", apiKeyRequirement: .none),

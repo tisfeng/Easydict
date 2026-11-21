@@ -4032,6 +4032,52 @@
         }
       }
     },
+    "explain_service" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explain"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicación"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解説"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vysvetlenie"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وضاحت"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这是什么"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這是什麼"
+          }
+        }
+      }
+    },
     "Export Log" : {
       "localizations" : {
         "es" : {
@@ -10643,6 +10689,53 @@
         }
       }
     },
+    "service.codex_cli.isolation_failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codex isolation checks failed. No text or image was sent."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudieron verificar las restricciones de Codex. No se envió ningún texto ni imagen."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codex の隔離状態を確認できませんでした。テキストや画像は送信されていません。"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontrola izolácie Codexu zlyhala. Nebol odoslaný žiadny text ani obrázok."
+          }
+        },
+        "ur": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codex کی علیحدگی کی جانچ ناکام ہو گئی۔ کوئی متن یا تصویر نہیں بھیجی گئی۔"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codex 隔离检查未通过，未发送文本或图片。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codex 隔離檢查未通過，未傳送文字或圖片。"
+          }
+        }
+      }
+    },
     "service.codex_cli.local.unsupported_effort" : {
       "localizations" : {
         "en" : {
@@ -12487,7 +12580,6 @@
     },
     "service.codex_cli.reasoning_effort.default" : {
       "comment" : "Default option means: do not override ~/.codex/config.toml",
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12534,7 +12626,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.high" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12581,7 +12672,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.low" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12628,7 +12718,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.max" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12675,7 +12764,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.medium" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12722,7 +12810,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.minimal" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12769,7 +12856,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.ultra" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12816,7 +12902,6 @@
       }
     },
     "service.codex_cli.reasoning_effort.xhigh" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -25762,6 +25847,12 @@
           }
         },
         "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tencent TokenHub"
+          }
+        },
+        "ur" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tencent TokenHub"

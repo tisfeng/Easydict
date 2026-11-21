@@ -51,13 +51,7 @@ enum CodexReasoningEffort: String, CaseIterable, Codable, Defaults.Serializable,
 // MARK: EnumLocalizedStringConvertible
 
 extension CodexReasoningEffort: EnumLocalizedStringConvertible {
-    var title: LocalizedStringKey { LocalizedStringKey(titleKey) }
-
-    var localizedTitle: String {
-        NSLocalizedString(titleKey, comment: "Codex reasoning effort")
-    }
-
-    private var titleKey: String {
+    var title: LocalizedStringKey {
         switch self {
         case .default:
             "service.codex_cli.reasoning_effort.default"

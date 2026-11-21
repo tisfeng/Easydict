@@ -16,6 +16,7 @@ enum CodexServiceError: Error, LocalizedError, Equatable {
     case componentInvalid
     case componentMissing
     case externalConfiguration
+    case isolationFailed
     case timeout
     case outputTooLarge
     case invalidResponse
@@ -33,6 +34,7 @@ enum CodexServiceError: Error, LocalizedError, Equatable {
         case .componentInvalid: String(localized: "service.codex_cli.managed.component_invalid")
         case .componentMissing: String(localized: "service.codex_cli.managed.component_missing")
         case .externalConfiguration: String(localized: "service.codex_cli.managed.external_configuration")
+        case .isolationFailed: String(localized: "service.codex_cli.isolation_failed")
         case .timeout: String(localized: "service.codex_cli.managed.timeout")
         case .outputTooLarge: String(localized: "service.codex_cli.managed.output_too_large")
         case .invalidResponse: String(localized: "service.codex_cli.managed.invalid_response")

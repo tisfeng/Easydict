@@ -256,7 +256,7 @@ enum CodexCLIInstallation {
     }
 
     /// Reuse the installed CLI's account, provider and environment.
-    static func configureAppServer(_ process: Process) throws {
+    static func configureAppServer(_ process: Process, disablingMCPServers serverNames: [String] = []) throws {
         let executable = try detectCodexBinary()
         var environment = buildProcessEnvironment()
         environment["RUST_LOG"] = "off"
@@ -267,11 +267,11 @@ enum CodexCLIInstallation {
             "app-server", "--listen", "stdio://",
             "-c", #"history.persistence="none""#,
             "-c", #"web_search="disabled""#,
-            "-c", "mcp_servers={}",
             "-c", "project_doc_max_bytes=0",
             "-c", "analytics.enabled=false",
             "-c", "feedback.enabled=false",
-        ] + disabledToolFeatures.flatMap { ["--disable", $0] }
+        ] + (try CodexMCPIsolation().disablingArguments(for: serverNames))
+            + disabledToolFeatures.flatMap { ["--disable", $0] }
     }
 
     // MARK: Private
