@@ -201,8 +201,9 @@ extension QueryResult {
 
         updateCollinsAndExamples(dictV4: model, wordResult: wordResult)
 
-        // Set word result only if it has parts or simple words
-        if wordResult.parts != nil || wordResult.simpleWords != nil {
+        // Set word result only if it has something to show
+        if wordResult.parts != nil || wordResult.simpleWords != nil
+            || wordResult.collinsSenses != nil || wordResult.exampleSentences != nil {
             self.wordResult = wordResult
         }
     }
@@ -221,7 +222,9 @@ extension QueryResult {
     /// into the English definition and the trailing Chinese gloss, if any.
     static func splitCollinsTranslation(_ text: String) -> (definition: String, meaning: String?) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        let pattern = #"\s([^A-Za-z<>]*\p{Han}[^A-Za-z<>]*)$"#
+        // The gloss starts with a Han character or an opening bracket, such as `（使）下降`, so a figure
+        // or punctuation ending the definition (`the number 5. 五`) stays in the definition.
+        let pattern = #"\s([\p{Han}（(【\[][^A-Za-z<>]*)$"#
         guard let range = trimmed.range(of: pattern, options: .regularExpression) else {
             return (trimmed, nil)
         }
@@ -234,12 +237,14 @@ extension QueryResult {
     func updateCollinsAndExamples(dictV4 model: YoudaoDictResponseV4, wordResult: EZTranslateWordResult) {
         if Defaults[.youdaoShowCollins], let entries = model.collins?.collinsEntries {
             var senses: [EZCollinsSense] = []
-            for entry in entries {
+            collect: for entry in entries {
+                if wordResult.collinsStar == 0, let star = entry.star.flatMap(Int.init) {
+                    wordResult.collinsStar = star
+                }
                 for item in entry.entries?.entry ?? [] {
                     for tran in item.tranEntry ?? [] {
-                        guard senses.count < Self.maxCollinsSenses,
-                              let text = tran.tran, !text.isEmpty
-                        else { continue }
+                        guard senses.count < Self.maxCollinsSenses else { break collect }
+                        guard let text = tran.tran, !text.isEmpty else { continue }
                         let parts = Self.splitCollinsTranslation(text)
                         let sense = EZCollinsSense()
                         sense.partOfSpeech = tran.posEntry?.pos
@@ -253,9 +258,6 @@ extension QueryResult {
                         }
                         senses.append(sense)
                     }
-                }
-                if wordResult.collinsStar == 0, let star = entry.star.flatMap(Int.init) {
-                    wordResult.collinsStar = star
                 }
             }
             if !senses.isEmpty {

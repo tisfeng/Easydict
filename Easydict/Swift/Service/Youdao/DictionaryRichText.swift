@@ -134,6 +134,12 @@ class DictionaryRichText: NSObject {
                 break
             }
             let tag = remaining[remaining.index(after: open) ..< close].lowercased()
+            // Only `<name …>` or `</name>` is markup; a literal `<`, as in `prices < 5 and costs > 3`, stays text.
+            guard tag.range(of: #"^/?[a-z][a-z0-9]*(\s[^<]*)?$"#, options: .regularExpression) != nil else {
+                appendPlain(remaining[open ... open], bold: isBold, to: result)
+                remaining = remaining[remaining.index(after: open)...]
+                continue
+            }
             if tag == "b" {
                 isBold = true
             } else if tag == "/b" {
@@ -147,7 +153,10 @@ class DictionaryRichText: NSObject {
 
     // MARK: Private
 
-    private static let entities = ["&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": "\"", "&#39;": "'", "&nbsp;": " "]
+    /// Decoded in this order, with `&amp;` last, so an escaped entity such as `&amp;lt;` stays `&lt;`.
+    private static let entities = [
+        ("&lt;", "<"), ("&gt;", ">"), ("&quot;", "\""), ("&#39;", "'"), ("&nbsp;", " "), ("&amp;", "&"),
+    ]
 
     /// Appends `paragraph` on a new line, indented by the widths of `indent`'s two prefixes.
     private static func appendParagraph(
