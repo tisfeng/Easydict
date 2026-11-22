@@ -871,6 +871,24 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             resultLabel.mas_key = @"resultLabel_etymology";
             lastView = resultLabel;
         }
+
+        if (wordResult.collinsSenses.count) {
+            NSString *title = [EZDictionaryRichText collinsTitleWithStar:wordResult.collinsStar];
+            lastView = [self addDictionarySectionTitle:title textColor:typeTextColor font:typeTextFont height:&height lastView:lastView];
+            [wordResult.collinsSenses enumerateObjectsUsingBlock:^(EZCollinsSense *_Nonnull sense, NSUInteger idx, BOOL *_Nonnull stop) {
+                NSAttributedString *text = [EZDictionaryRichText collinsSense:sense number:idx + 1];
+                lastView = [self addDictionaryRichTextLabel:text height:&height lastView:lastView];
+            }];
+        }
+
+        if (wordResult.exampleSentences.count) {
+            NSString *title = NSLocalizedString(@"youdao.examples.title", nil);
+            lastView = [self addDictionarySectionTitle:title textColor:typeTextColor font:typeTextFont height:&height lastView:lastView];
+            [wordResult.exampleSentences enumerateObjectsUsingBlock:^(EZExampleSentence *_Nonnull example, NSUInteger idx, BOOL *_Nonnull stop) {
+                NSAttributedString *text = [EZDictionaryRichText exampleSentence:example number:idx + 1];
+                lastView = [self addDictionaryRichTextLabel:text height:&height lastView:lastView];
+            }];
+        }
     }
 
     [self setupBottomToolBarButtons:result lastView:lastView height:height];
@@ -1174,6 +1192,57 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
     }];
 
     return rtnView;
+}
+
+/// Adds a gray section title, such as Collins or Examples, on its own line below `lastView`.
+- (NSView *)addDictionarySectionTitle:(NSString *)title
+                            textColor:(NSColor *)textColor
+                                 font:(NSFont *)font
+                               height:(CGFloat *)height
+                             lastView:(nullable NSView *)lastView {
+    EZLabel *titleLabel = [self makeResultTextLabel];
+    [self addSubview:titleLabel];
+    titleLabel.font = font;
+    titleLabel.textForegroundColor = textColor;
+    titleLabel.text = title;
+    [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(kHorizontalMargin_8);
+        if (lastView) {
+            make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin_12);
+        } else {
+            make.top.offset(kVerticalMargin_12);
+        }
+        *height += kVerticalMargin_12;
+
+        CGSize labelSize = [titleLabel oneLineSize];
+        make.size.mas_equalTo(labelSize).priorityHigh();
+        *height += labelSize.height;
+    }];
+    titleLabel.mas_key = @"dictionarySectionTitle";
+    return titleLabel;
+}
+
+/// Adds a full-width label with emphasis and secondary runs below `lastView`.
+- (NSView *)addDictionaryRichTextLabel:(NSAttributedString *)richText
+                                height:(CGFloat *)height
+                              lastView:(NSView *)lastView {
+    EZDictionaryRichTextLabel *label = [[EZDictionaryRichTextLabel alloc] init];
+    [self addSubview:label];
+    label.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
+    label.styledText = richText;
+    label.delegate = self;
+    [label mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self).offset(kHorizontalMargin_8);
+        make.right.equalTo(self).offset(-kHorizontalMargin_8);
+        make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_6);
+        *height += kVerticalPadding_6;
+
+        CGSize labelSize = [self labelSize:label exceptedWidth:kHorizontalMargin_8 * 2];
+        make.size.mas_equalTo(labelSize).priorityHigh();
+        *height += labelSize.height;
+    }];
+    label.mas_key = @"dictionaryRichTextLabel";
+    return label;
 }
 
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {

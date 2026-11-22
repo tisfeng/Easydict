@@ -175,6 +175,11 @@ extension Defaults.Keys {
     static var enableVocabularyNotebook = Key<Bool>("enableVocabularyNotebook", default: false)
     static var vocabularyNotebookDirectory = Key<String>("vocabularyNotebookDirectory", default: "")
 
+    /// Shows Collins English-Chinese senses in Youdao dictionary results.
+    static let youdaoShowCollins = Key<Bool>("youdaoShowCollins", default: true)
+    /// Shows bilingual example sentences in Youdao dictionary results.
+    static let youdaoShowExampleSentences = Key<Bool>("youdaoShowExampleSentences", default: true)
+
     static var enableAppleOfflineTranslation = Key<Bool>(
         "enableAppleOfflineTranslation", default: false
     )
