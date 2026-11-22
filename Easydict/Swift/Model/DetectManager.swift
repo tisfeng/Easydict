@@ -85,10 +85,11 @@ public final class DetectManager: NSObject {
     }
 
     @MainActor
-    @objc(ocrAndTranslateWithService:progress:ocrCompletion:translation:)
+    @objc(ocrAndTranslateWithService:progress:ocrCompletion:stateUpdate:translation:)
     public func ocrAndTranslate(
         using service: StreamService, progress: @escaping (String) -> (),
         ocrCompletion: @escaping (QueryModel, Error?) -> (),
+        stateUpdate: @escaping (QueryResult) -> () = { _ in },
         translation: @escaping (QueryResult, Error?) -> ()
     ) {
         cancelOCR()
@@ -100,6 +101,7 @@ public final class DetectManager: NSObject {
             isCurrent: { [weak self, weak model] in
                 self?.queryModel === model && self?.combinedOCRRequest?.identifier == identifier
             }, sourceProgress: progress, sourceCompletion: ocrCompletion, translation: translation,
+            stateUpdate: stateUpdate,
             finished: { [weak self] in
                 // A replacement can install a new request before the cancelled task unwinds.
                 if self?.combinedOCRRequest?.identifier == identifier {

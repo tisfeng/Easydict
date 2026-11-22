@@ -19,6 +19,7 @@ final class OCRTranslationRequest {
         sourceProgress: @escaping (String) -> (),
         sourceCompletion: @escaping (QueryModel, Error?) -> (),
         translation: @escaping (QueryResult, Error?) -> (),
+        stateUpdate: @escaping (QueryResult) -> (),
         finished: @escaping () -> ()
     ) {
         self.identifier = identifier
@@ -43,6 +44,7 @@ final class OCRTranslationRequest {
         self.sourceProgress = sourceProgress
         self.sourceCompletion = sourceCompletion
         self.translation = translation
+        self.stateUpdate = stateUpdate
         self.finished = finished
     }
 
@@ -58,25 +60,24 @@ final class OCRTranslationRequest {
             return previous
         }
         guard !wasCancelled else { return }
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            task?.cancel()
-            service.updateResultLock.withLock {
-                guard service.resultGeneration == generation else { return }
-                service.resultGeneration &+= 1
-                activeResult.isLoading = false
-                activeResult.isStreamFinished = true
-            }
+        Task { @MainActor in
+            self.task?.cancel()
+            self.finishCancellation()
         }
     }
 
     func start() {
+        activeResult.isCombinedOCRInProgress = true
+        activeResult.isShowing = true
+        activeResult.isLoading = true
+        activeResult.isStreamFinished = false
         task = Task { [weak self] in
             guard let self else { return }
             defer {
                 // A preference change while awaiting the complete response must still end input loading.
-                if cancelled.withLock({ $0 }), !sourceDelivered, ownsInput {
-                    sourceCompletion(model, CocoaError(.userCancelled))
+                if cancelled.withLock({ $0 }) {
+                    finishCancellation()
+                    if !sourceDelivered, ownsInput { sourceCompletion(model, CocoaError(.userCancelled)) }
                 }
                 finished()
             }
@@ -101,11 +102,13 @@ final class OCRTranslationRequest {
                 activeResult.error = QueryError.queryError(from: error)
                 activeResult.isLoading = false
                 activeResult.isStreamFinished = true
+                activeResult.isCombinedOCRInProgress = false
                 if !sourceDelivered { sourceCompletion(model, error) }
                 translation(activeResult, error)
             }
         }
         model.setStop({ [weak self] in self?.cancel() }, serviceType: service.serviceTypeWithUniqueIdentifier())
+        stateUpdate(activeResult)
     }
 
     // MARK: Private
@@ -125,6 +128,7 @@ final class OCRTranslationRequest {
     private let sourceProgress: (String) -> ()
     private let sourceCompletion: (QueryModel, Error?) -> ()
     private let translation: (QueryResult, Error?) -> ()
+    private let stateUpdate: (QueryResult) -> ()
     private let finished: () -> ()
     private nonisolated let cancelled = OSAllocatedUnfairLock(initialState: false)
     private var task: Task<(), Never>?
@@ -138,11 +142,23 @@ final class OCRTranslationRequest {
     private var acceptsUpdates: Bool {
         !cancelled.withLock { $0 } && isCurrent()
             && service.updateResultLock.withLock { service.resultGeneration == generation }
-            && service.enabled && service.enabledQuery
+            && service.enabled
             && service.ocrTranslationConfiguration == configuration
             && model.ocrImage === image && model.actionType == action && model.inputText == expectedInput
             && model.userSourceLanguage == sourcePreference && model.userTargetLanguage == to
             && EZLanguageManager.shared().userPreferredTwoLanguages == preferredLanguages
+    }
+
+    private func finishCancellation() {
+        let didFinish = service.updateResultLock.withLock {
+            guard service.resultGeneration == generation, activeResult.isCombinedOCRInProgress else { return false }
+            service.resultGeneration &+= 1
+            activeResult.isCombinedOCRInProgress = false
+            activeResult.isLoading = false
+            activeResult.isStreamFinished = true
+            return true
+        }
+        if didFinish { stateUpdate(activeResult) }
     }
 
     private func publishSource(_ text: String, complete: Bool) {
@@ -174,7 +190,7 @@ final class OCRTranslationRequest {
         activeResult.translatedResults = [text]
         activeResult.isStreamFinished = finished
         activeResult.isLoading = !finished
-        activeResult.isShowing = true
+        activeResult.isCombinedOCRInProgress = !finished
         translation(activeResult, nil)
     }
 }

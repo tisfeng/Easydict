@@ -263,7 +263,7 @@ public class StreamService: QueryService {
     /// Preserve dictionary, sentence-analysis and intelligent-query behavior after the source is known.
     @objc(canReuseOCRTranslationForModel:)
     public func canReuseOCRTranslation(for model: QueryModel) -> Bool {
-        supportsOCRAndTranslation() && enabledQuery && enabledAutoQuery
+        supportsOCRAndTranslation() && (enabledQuery || result?.isCombinedOCRInProgress == true) && enabledAutoQuery
             && model.queryText == model.inputText
             && queryType(text: model.queryText, from: model.queryFromLanguage, to: model.queryTargetLanguage) ==
             .translation

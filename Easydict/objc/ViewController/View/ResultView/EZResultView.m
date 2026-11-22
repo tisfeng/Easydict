@@ -246,7 +246,7 @@
 
 - (void)handleTopBarTap:(NSClickGestureRecognizer *)gestureRecognizer {
 
-    if (!self.result.hasShowingResult && self.result.queryModel.queryText.length == 0) {
+    if (!self.result.isCombinedOCRInProgress && !self.result.hasShowingResult && self.result.queryModel.queryText.length == 0) {
         MMLogWarn(@"query text is empty");
         return;
     }
@@ -437,7 +437,7 @@
     BOOL showStopButton = NO;
     
     if (self.service.isStream) {
-        showStopButton = self.result.hasTranslatedResult && !self.result.isStreamFinished;
+        showStopButton = self.result.isCombinedOCRInProgress || (self.result.hasTranslatedResult && !self.result.isStreamFinished);
     }
     
     self.stopButton.hidden = !showStopButton;

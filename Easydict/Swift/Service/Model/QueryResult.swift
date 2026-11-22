@@ -179,6 +179,7 @@ public class QueryResult: NSObject {
 
     var isLoading: Bool = false
     var isStreamFinished: Bool = true
+    var isCombinedOCRInProgress: Bool = false
 
     var queryText: String = ""
     var from: Language = .auto
@@ -311,6 +312,7 @@ public class QueryResult: NSObject {
         showBigWord = false
         translateResultsTopInset = 0
         isStreamFinished = true
+        isCombinedOCRInProgress = false
         manualShow = false
         htmlString = nil
         htmlStrings = nil

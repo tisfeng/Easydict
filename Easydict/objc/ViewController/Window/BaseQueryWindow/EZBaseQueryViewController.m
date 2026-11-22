@@ -551,6 +551,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
     [self cancelDelayDetectQueryText];
+    self.queryModel.actionType = actionType;
     EZStreamService *combinedService = autoQuery && ![actionType isEqualToString:EZActionTypeScreenshotOCR]
         ? [self.detectManager combinedOCRServiceIn:self.services] : nil;
     if (combinedService) {
@@ -574,7 +575,6 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         }
     }
 
-    self.queryModel.actionType = actionType;
     [self.queryView resetFormulaPreview];
     self.queryModel.ocrImage = image;
 
@@ -668,6 +668,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         [self.detectManager ocrAndTranslateWithService:combinedService
                                              progress:progress
                                         ocrCompletion:ocrCompletion
+                                          stateUpdate:^(EZQueryResult *result) {
+            mm_strongify(self);
+            [self updateCellWithResult:result reloadData:YES];
+        }
                                           translation:^(EZQueryResult *result, NSError *error) {
             mm_strongify(self);
             [self handleQueryResult:result error:error model:self.queryModel service:combinedService
@@ -1228,7 +1232,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         if (result.isShowing && result.htmlString.length) {
             isFinished = result.webViewManager.wordResultViewHeight > 0;
         }
-        result.isLoading = !isFinished;
+        if (!result.isCombinedOCRInProgress) {
+            result.isLoading = !isFinished;
+        }
 
         NSIndexSet *indexSet = [self indexSetOfResult:result];
         if (indexSet) {
@@ -1761,7 +1767,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     NSString *resultQueryText = result.queryText ?: @"";
 
     // Expanded cells can still hold rendered content from an older query.
-    BOOL hasStaleExpandedResult = isShowing
+    BOOL hasStaleExpandedResult = isShowing && !result.isCombinedOCRInProgress
         && result.hasShowingResult
         && ![resultQueryText isEqualToString:currentQueryText];
 
@@ -1775,7 +1781,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     // Newly expanded services with no visible result should query this text.
-    BOOL needsQueryForExpandedService = isShowing && !result.hasShowingResult;
+    BOOL needsQueryForExpandedService = isShowing && !result.isCombinedOCRInProgress && !result.hasShowingResult;
     if (needsQueryForExpandedService) {
         [self performAfterLanguageDetectionIfNeeded:^{
             [self queryExpandedServiceIfToggleStillValid:service
@@ -1856,7 +1862,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     // Another callback may have produced a result while detection was running.
-    if (result.hasShowingResult) {
+    if (result.isCombinedOCRInProgress || result.hasShowingResult) {
         return;
     }
 
