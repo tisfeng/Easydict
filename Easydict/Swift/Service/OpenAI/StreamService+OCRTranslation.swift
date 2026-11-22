@@ -125,15 +125,15 @@ private final class OCRTranslationStreamBuffer: @unchecked Sendable {
             guard flush || Date().timeIntervalSince(lastUpdate) >= 0.08 else { return }
             lastUpdate = Date()
             let progress = OCRTranslationProgress(text)
-            if progress.original != original || (progress.originalComplete && !sourceComplete) {
+            if !progress.original.utf8.elementsEqual(original.utf8) || (progress.originalComplete && !sourceComplete) {
                 // Ignore malformed prefixes that would retract previously published text.
-                guard progress.original.hasPrefix(original) else { return }
+                guard progress.original.utf8.starts(with: original.utf8) else { return }
                 original = progress.original
                 sourceComplete = progress.originalComplete
                 continuation.yield(.original(original, complete: sourceComplete))
             }
-            if sourceComplete, progress.translation != translation,
-               progress.translation.hasPrefix(translation) {
+            if sourceComplete, !progress.translation.utf8.elementsEqual(translation.utf8),
+               progress.translation.utf8.starts(with: translation.utf8) {
                 translation = progress.translation
                 continuation.yield(.translation(translation))
             }
@@ -145,7 +145,7 @@ private final class OCRTranslationStreamBuffer: @unchecked Sendable {
         try lock.withLock {
             let source = original.trimmingCharacters(in: .whitespacesAndNewlines)
             let target = translation.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard final.original.hasPrefix(source), final.translation.hasPrefix(target),
+            guard final.original.utf8.starts(with: source.utf8), final.translation.utf8.starts(with: target.utf8),
                   !sourceComplete || final.original == source else {
                 logError("Combined image final response disagrees with streamed fields")
                 throw QueryError(type: .noResult)

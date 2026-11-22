@@ -9,7 +9,7 @@ struct OCRTranslationProgress {
     // MARK: Lifecycle
 
     init(_ response: String) {
-        let text = response.trimmingCharacters(in: .whitespacesAndNewlines)
+        let text = response.trimmingCharacters(in: .whitespacesAndNewlines).unicodeScalars
         guard text.first == "{" else { return }
         var cursor = text.index(after: text.startIndex)
         var seen: Set<String> = []
@@ -17,8 +17,7 @@ struct OCRTranslationProgress {
             skipWhitespace(text, cursor: &cursor)
             guard cursor < text.endIndex, text[cursor] != "}" else { return }
             guard let key = readString(text, cursor: &cursor), key.closed,
-                  ["original", "translation"].contains(key.value), seen.insert(key.value).inserted
-            else { return }
+                  ["original", "translation"].contains(key.value), seen.insert(key.value).inserted else { return }
             skipWhitespace(text, cursor: &cursor)
             guard cursor < text.endIndex, text[cursor] == ":" else { return }
             cursor = text.index(after: cursor)
@@ -29,9 +28,7 @@ struct OCRTranslationProgress {
             guard value.closed else { return }
             skipWhitespace(text, cursor: &cursor)
             guard cursor < text.endIndex, text[cursor] == "," || text[cursor] == "}" else { return }
-            if key
-                .value ==
-                "original" {
+            if key.value == "original" {
                 self.originalComplete = !value.value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             }
             if text[cursor] == "}" { return }
@@ -47,11 +44,14 @@ struct OCRTranslationProgress {
 
     // MARK: Private
 
-    private func skipWhitespace(_ text: String, cursor: inout String.Index) {
-        while cursor < text.endIndex, text[cursor].isWhitespace { cursor = text.index(after: cursor) }
+    private func skipWhitespace(_ text: String.UnicodeScalarView, cursor: inout String.Index) {
+        while cursor < text.endIndex, text[cursor].properties.isWhitespace { cursor = text.index(after: cursor) }
     }
 
-    private func readString(_ text: String, cursor: inout String.Index) -> (value: String, closed: Bool)? {
+    private func readString(
+        _ text: String.UnicodeScalarView, cursor: inout String.Index
+    )
+        -> (value: String, closed: Bool)? {
         guard cursor < text.endIndex, text[cursor] == "\"" else { return nil }
         cursor = text.index(after: cursor)
         let start = cursor
@@ -72,7 +72,7 @@ struct OCRTranslationProgress {
         for _ in 0 ... 12 {
             if let decoded = decode(body) { return (decoded, false) }
             guard !body.isEmpty else { break }
-            body.removeLast()
+            body.unicodeScalars.removeLast()
         }
         return nil
     }
