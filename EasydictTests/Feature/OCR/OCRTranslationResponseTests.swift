@@ -17,7 +17,8 @@ struct OCRTranslationResponseTests {
         let original = #"English \(x_j^2\), quoted \"text\" and </S15D346> literally."#
         let translation = #"中文 \(x_j^2\)，保留公式。"#
         let data = try JSONSerialization.data(withJSONObject: ["original": original, "translation": translation])
-        let response = try OCRTranslationResponse(response: String(decoding: data, as: UTF8.self))
+        let json = try #require(String(bytes: data, encoding: .utf8))
+        let response = try OCRTranslationResponse(response: json)
         #expect(response.original == original)
         #expect(response.translation == translation)
     }

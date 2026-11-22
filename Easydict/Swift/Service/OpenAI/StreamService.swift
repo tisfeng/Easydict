@@ -260,25 +260,6 @@ public class StreamService: QueryService {
         !apiKey.isEmpty
     }
 
-    /// Preserve dictionary, sentence-analysis and intelligent-query behavior after the source is known.
-    @objc(canReuseOCRTranslationForModel:)
-    public func canReuseOCRTranslation(for model: QueryModel) -> Bool {
-        supportsOCRAndTranslation() && (enabledQuery || result?.isCombinedOCRInProgress == true) && enabledAutoQuery
-            && model.queryText == model.inputText
-            && result?.from == model.queryFromLanguage && result?.to == model.queryTargetLanguage
-            && queryType(text: model.queryText, from: model.queryFromLanguage, to: model.queryTargetLanguage) ==
-            .translation
-    }
-
-    /// Merge only the same configured service, including its actual model and transport settings.
-    @objc(canCombineOCRWithService:)
-    public func canCombineOCR(with other: QueryService) -> Bool {
-        guard let other = other as? StreamService else { return false }
-        return supportsOCRAndTranslation() && other.supportsOCRAndTranslation()
-            && serviceTypeWithUniqueIdentifier() == other.serviceTypeWithUniqueIdentifier()
-            && ocrTranslationConfiguration == other.ocrTranslationConfiguration
-    }
-
     // MARK: Internal
 
     let mustOverride = "This property or method must be overridden by a subclass"
@@ -632,39 +613,6 @@ public class StreamService: QueryService {
             return chatMessages
         }
         return builtInChatMessageDicts(chatQuery)
-    }
-
-    /// Get query type by text and from && to language.
-    func queryType(text: String, from: Language, to: Language) -> EZQueryTextType {
-        // If queryType has been set, use it directly.
-        if !queryType.isEmpty {
-            return queryType
-        }
-
-        let enableDictionary = supportedQueryType().contains(.dictionary)
-        var isQueryDictionary = false
-        if enableDictionary {
-            isQueryDictionary = (text as NSString).shouldQueryDictionary(
-                withLanguage: from, maxWordCount: 2
-            )
-            if isQueryDictionary {
-                return .dictionary
-            }
-        }
-
-        let enableSentence = supportedQueryType().contains(.sentence)
-        var isQueryEnglishSentence = false
-        if !isQueryDictionary, enableSentence {
-            let isEnglishText = from == .english
-            if isEnglishText {
-                isQueryEnglishSentence = (text as NSString).shouldQuerySentence(withLanguage: from)
-                if isQueryEnglishSentence {
-                    return .sentence
-                }
-            }
-        }
-
-        return .translation
     }
 
     /// Content stream translate.

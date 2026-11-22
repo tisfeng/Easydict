@@ -352,7 +352,7 @@ struct CombinedOCRTranslationTests {
             config.autoCopyFirstTranslatedText = oldTranslatedCopy
             config.localAutoSave = oldSave
         }
-        let base = try #require(NSClassFromString("EZBaseQueryViewController"))
+        let base: AnyClass = try #require(NSClassFromString("EZBaseQueryViewController"))
         let selector = NSSelectorFromString("queryWithModel:service:")
         let originalMethod = try #require(class_getInstanceMethod(base, selector))
         typealias Query = @convention(c) (AnyObject, Selector, AnyObject, AnyObject) -> ()
@@ -368,7 +368,7 @@ struct CombinedOCRTranslationTests {
             }
             original(controller, selector, model, service)
         }
-        let subclass = try #require(objc_allocateClassPair(base, "CombinedOCRWindow_\(UUID().uuidString)", 0))
+        let subclass: AnyClass = try #require(objc_allocateClassPair(base, "CombinedOCRWindow_\(UUID().uuidString)", 0))
         let implementation = imp_implementationWithBlock(spy)
         try #require(class_addMethod(subclass, selector, implementation, method_getTypeEncoding(originalMethod)))
         objc_registerClassPair(subclass)

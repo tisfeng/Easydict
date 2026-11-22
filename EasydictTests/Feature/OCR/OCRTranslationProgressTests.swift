@@ -11,8 +11,8 @@ struct OCRTranslationProgressTests {
     func everyCharacterBoundaryKeepsChannelsSeparate() throws {
         let source = #"English \(x_j^2\), a \"quoted\" word, 🌊 and </S15D346> literally."#
         let target = #"中文 \[R_8=\frac{x_j^2+1}{\sqrt{n+3}}\]。"#
-        let sourceJSON = String(decoding: try JSONEncoder().encode(source), as: UTF8.self)
-        let targetJSON = String(decoding: try JSONEncoder().encode(target), as: UTF8.self)
+        let sourceJSON = try #require(String(bytes: JSONEncoder().encode(source), encoding: .utf8))
+        let targetJSON = try #require(String(bytes: JSONEncoder().encode(target), encoding: .utf8))
         let json = "{\"original\":" + sourceJSON + ",\"translation\":" + targetJSON + "}"
         var previous = ""
         for end in 0 ... json.count {

@@ -23,8 +23,11 @@ struct OCRTranslationProgress {
             cursor = text.index(after: cursor)
             skipWhitespace(text, cursor: &cursor)
             guard let value = readString(text, cursor: &cursor) else { return }
-            if key.value == "original" { self.original = value.value }
-            else { self.translation = value.value }
+            if key.value == "original" {
+                self.original = value.value
+            } else {
+                self.translation = value.value
+            }
             guard value.closed else { return }
             skipWhitespace(text, cursor: &cursor)
             guard cursor < text.endIndex, text[cursor] == "," || text[cursor] == "}" else { return }

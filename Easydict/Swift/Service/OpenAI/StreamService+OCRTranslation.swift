@@ -9,6 +9,25 @@ import AppKit
 import Foundation
 
 extension StreamService {
+    /// Preserve dictionary, sentence-analysis and intelligent-query behavior after the source is known.
+    @objc(canReuseOCRTranslationForModel:)
+    public func canReuseOCRTranslation(for model: QueryModel) -> Bool {
+        supportsOCRAndTranslation() && (enabledQuery || result?.isCombinedOCRInProgress == true) && enabledAutoQuery
+            && model.queryText == model.inputText
+            && result?.from == model.queryFromLanguage && result?.to == model.queryTargetLanguage
+            && queryType(text: model.queryText, from: model.queryFromLanguage, to: model.queryTargetLanguage) ==
+            .translation
+    }
+
+    /// Merge only the same configured service, including its actual model and transport settings.
+    @objc(canCombineOCRWithService:)
+    public func canCombineOCR(with other: QueryService) -> Bool {
+        guard let other = other as? StreamService else { return false }
+        return supportsOCRAndTranslation() && other.supportsOCRAndTranslation()
+            && serviceTypeWithUniqueIdentifier() == other.serviceTypeWithUniqueIdentifier()
+            && ocrTranslationConfiguration == other.ocrTranslationConfiguration
+    }
+
     /// Ordered events preserve provider order across transport and main-actor UI updates.
     enum OCRTranslationEvent {
         case original(String, complete: Bool)
@@ -86,8 +105,9 @@ extension StreamService {
         let second = preferred.dropFirst().first ?? .english
         let actualFrom = from == .auto ? AppleLanguageDetector().detectLanguage(text: final.original) : from
         let actualTo: Language
-        if to != .auto { actualTo = to }
-        else {
+        if to != .auto {
+            actualTo = to
+        } else {
             let preferredTo = actualFrom == first ? second : first
             actualTo = preferredTo == actualFrom ? (actualFrom == .english ? .simplifiedChinese : .english) :
                 preferredTo
