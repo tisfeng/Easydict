@@ -959,13 +959,17 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     self.firstService = nil;
     for (EZQueryService *service in self.services) {
-        BOOL enableAutoQuery = service.enabledQuery && service.enabledAutoQuery && service.supportedQueryType != EZQueryTextTypeNone;
+        BOOL isCombinedService = service == excludedService;
+        BOOL enableAutoQuery = (service.enabledQuery || isCombinedService)
+            && service.enabledAutoQuery && service.supportedQueryType != EZQueryTextTypeNone;
         if (!enableAutoQuery) {
             MMLogInfo(@"service disabled: %@", service.serviceTypeWithUniqueIdentifier);
             continue;
         }
 
-        if (service != excludedService) {
+        if (isCombinedService) {
+            [EZLocalStorage.shared increaseQueryService:service];
+        } else {
             [self queryWithModel:queryModel service:service];
         }
 

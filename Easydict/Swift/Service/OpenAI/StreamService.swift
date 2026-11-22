@@ -265,6 +265,7 @@ public class StreamService: QueryService {
     public func canReuseOCRTranslation(for model: QueryModel) -> Bool {
         supportsOCRAndTranslation() && (enabledQuery || result?.isCombinedOCRInProgress == true) && enabledAutoQuery
             && model.queryText == model.inputText
+            && result?.from == model.queryFromLanguage && result?.to == model.queryTargetLanguage
             && queryType(text: model.queryText, from: model.queryFromLanguage, to: model.queryTargetLanguage) ==
             .translation
     }
