@@ -51,6 +51,7 @@ final class OCRTranslationRequest {
     // MARK: Internal
 
     let identifier: UUID
+    private(set) var sourceDelivered = false
 
     /// Invalidates queued UI events immediately, even when cancellation comes from a service stop callback.
     nonisolated func cancel() {
@@ -136,7 +137,6 @@ final class OCRTranslationRequest {
     private nonisolated let cancelled = OSAllocatedUnfairLock(initialState: false)
     private var task: Task<(), Never>?
     private var expectedInput: String
-    private var sourceDelivered = false
 
     private var ownsInput: Bool {
         isCurrent() && model.ocrImage === image && model.actionType == action && model.inputText == expectedInput

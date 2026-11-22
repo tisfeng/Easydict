@@ -948,6 +948,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (queryModel.queryText.length == 0) {
         return;
     }
+
     MMLogInfo(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
 
     if (MyConfiguration.shared.localAutoSave && queryModel.queryText.length) {
@@ -962,7 +963,13 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         BOOL isCombinedService = service == excludedService;
         BOOL enableAutoQuery = (service.enabledQuery || isCombinedService)
             && service.enabledAutoQuery && service.supportedQueryType != EZQueryTextTypeNone;
+        BOOL expandedDuringOCR = excludedService && !isCombinedService && service.enabledQuery
+            && service.result.isShowing && service.result.manualShow && !service.result.hasShowingResult;
         if (!enableAutoQuery) {
+            if (expandedDuringOCR) {
+                [self queryWithModel:queryModel service:service];
+                continue;
+            }
             MMLogInfo(@"service disabled: %@", service.serviceTypeWithUniqueIdentifier);
             continue;
         }
@@ -1775,9 +1782,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
                           isShowing:(BOOL)isShowing {
     NSString *currentQueryText = self.queryModel.queryText ?: @"";
     NSString *resultQueryText = result.queryText ?: @"";
+    BOOL canQueryExpandedResult = isShowing && !self.detectManager.isAwaitingCombinedOCRSource
+        && !result.isCombinedOCRInProgress;
 
     // Expanded cells can still hold rendered content from an older query.
-    BOOL hasStaleExpandedResult = isShowing && !result.isCombinedOCRInProgress && !result.isCombinedOCRFailure
+    BOOL hasStaleExpandedResult = canQueryExpandedResult && !result.isCombinedOCRFailure
         && result.hasShowingResult
         && ![resultQueryText isEqualToString:currentQueryText];
 
@@ -1791,7 +1800,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     // Newly expanded services with no visible result should query this text.
-    BOOL needsQueryForExpandedService = isShowing && !result.isCombinedOCRInProgress && !result.hasShowingResult;
+    BOOL needsQueryForExpandedService = canQueryExpandedResult && !result.hasShowingResult;
     if (needsQueryForExpandedService) {
         [self performAfterLanguageDetectionIfNeeded:^{
             [self queryExpandedServiceIfToggleStillValid:service
@@ -1826,6 +1835,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     NSString *currentQueryText = self.queryModel.queryText ?: @"";
     return currentService == service
         && result.isShowing
+        && !self.detectManager.isAwaitingCombinedOCRSource
         && [currentQueryText isEqualToString:queryText];
 }
 

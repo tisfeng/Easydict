@@ -53,6 +53,13 @@ public final class DetectManager: NSObject {
         return AppleService.shared
     }
 
+    // MARK: - Public Methods
+
+    @MainActor
+    public var isAwaitingCombinedOCRSource: Bool {
+        combinedOCRRequest?.sourceDelivered == false
+    }
+
     // MARK: - Static Factory
 
     /// Creates a new detect manager with the specified query model.
@@ -70,8 +77,6 @@ public final class DetectManager: NSObject {
         ocrTask?.cancel()
         ocrTask = nil
     }
-
-    // MARK: - Public Methods
 
     /// Returns an enabled translator backed by the same configured image service.
     @MainActor
