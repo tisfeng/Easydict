@@ -1036,7 +1036,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         }
     }
 
-    if (service.autoCopyTranslatedTextBlock) {
+    if (service.autoCopyTranslatedTextBlock && !result.isCombinedOCRFailure) {
         BOOL shouldAutoCopy = !service.isStream || result.isStreamFinished;
         if (shouldAutoCopy) {
             service.autoCopyTranslatedTextBlock(result, error);
@@ -1740,6 +1740,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     [resultView setRetryBlock:^(EZQueryResult *result) {
         mm_strongify(self);
+        if (result.combinedOCRRetryRequiresImage && self.queryModel.ocrImage
+            && [result.queryText isEqualToString:self.queryModel.queryText]) {
+            service.enabledQuery = YES;
+            [self startQueryWithType:self.queryModel.actionType];
+            return;
+        }
         [self resetCellWithService:service autoQuery:YES];
     }];
 
@@ -1767,7 +1773,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     NSString *resultQueryText = result.queryText ?: @"";
 
     // Expanded cells can still hold rendered content from an older query.
-    BOOL hasStaleExpandedResult = isShowing && !result.isCombinedOCRInProgress
+    BOOL hasStaleExpandedResult = isShowing && !result.isCombinedOCRInProgress && !result.isCombinedOCRFailure
         && result.hasShowingResult
         && ![resultQueryText isEqualToString:currentQueryText];
 

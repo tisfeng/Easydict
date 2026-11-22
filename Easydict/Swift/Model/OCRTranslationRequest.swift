@@ -103,6 +103,9 @@ final class OCRTranslationRequest {
                 activeResult.isLoading = false
                 activeResult.isStreamFinished = true
                 activeResult.isCombinedOCRInProgress = false
+                activeResult.isCombinedOCRFailure = true
+                activeResult.combinedOCRRetryRequiresImage = !sourceDelivered
+                activeResult.queryText = model.queryText
                 if !sourceDelivered { sourceCompletion(model, error) }
                 translation(activeResult, error)
             }

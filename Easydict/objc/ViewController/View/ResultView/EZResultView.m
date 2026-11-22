@@ -415,7 +415,7 @@
         (type == EZQueryErrorTypeNoResult && !self.service.isStream)
     );
 
-    BOOL showWarningImage = !self.result.hasTranslatedResult && warningType;
+    BOOL showWarningImage = !self.result.isCombinedOCRFailure && !self.result.hasTranslatedResult && warningType;
     self.errorImageView.hidden = !showWarningImage;
     
     NSString *errorImageName = @"disabled";

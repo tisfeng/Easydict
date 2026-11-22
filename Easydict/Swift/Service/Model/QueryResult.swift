@@ -180,6 +180,8 @@ public class QueryResult: NSObject {
     var isLoading: Bool = false
     var isStreamFinished: Bool = true
     var isCombinedOCRInProgress: Bool = false
+    var isCombinedOCRFailure: Bool = false
+    var combinedOCRRetryRequiresImage: Bool = false
 
     var queryText: String = ""
     var from: Language = .auto
@@ -255,7 +257,7 @@ public class QueryResult: NSObject {
     }
 
     var isWarningErrorType: Bool {
-        guard let error else { return false }
+        guard let error, !isCombinedOCRFailure else { return false }
         return error.type == .unsupportedLanguage || error.type == .noResult
     }
 
@@ -313,6 +315,8 @@ public class QueryResult: NSObject {
         translateResultsTopInset = 0
         isStreamFinished = true
         isCombinedOCRInProgress = false
+        isCombinedOCRFailure = false
+        combinedOCRRetryRequiresImage = false
         manualShow = false
         htmlString = nil
         htmlStrings = nil
