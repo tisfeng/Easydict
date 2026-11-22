@@ -1786,8 +1786,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         && !result.isCombinedOCRInProgress;
 
     // Expanded cells can still hold rendered content from an older query.
-    BOOL hasStaleExpandedResult = canQueryExpandedResult && !result.isCombinedOCRFailure
-        && result.hasShowingResult
+    BOOL hasStaleExpandedResult = canQueryExpandedResult && result.hasShowingResult
         && ![resultQueryText isEqualToString:currentQueryText];
 
     if (hasStaleExpandedResult) {
