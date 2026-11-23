@@ -64,6 +64,7 @@
 		0320411E2E44DABA0065A05B /* ocr-ja-text-3.png in Resources */ = {isa = PBXBuildFile; fileRef = 0320411D2E44DABA0065A05B /* ocr-ja-text-3.png */; };
 		032041202E478BD20065A05B /* ocr-ja-text-4.png in Resources */ = {isa = PBXBuildFile; fileRef = 0320411F2E478BD20065A05B /* ocr-ja-text-4.png */; };
 		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
+		2210AC46040448348911D2B1 /* QueryUsageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42C7E80B650424CB13CBF01 /* QueryUsageStore.swift */; };
 		0320DFF72C54A11300C516A7 /* StreamService+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320DFF62C54A11300C516A7 /* StreamService+Request.swift */; };
 		03220E282E11A199002C7F3F /* OCRLineAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */; };
 		03220E2A2E11A1A0002C7F3F /* OCRObservationPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03220E292E11A1A0002C7F3F /* OCRObservationPair.swift */; };
@@ -607,6 +608,7 @@
 		C0DE13030002000000000001 /* CodexRuntimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DE13030001000000000001 /* CodexRuntimeTests.swift */; };
 		C0DE13030004000000000001 /* CodexAppServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DE13030003000000000001 /* CodexAppServer.swift */; };
 		C0DE13030004000000000002 /* CodexAppServerProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DE13030003000000000002 /* CodexAppServerProcess.swift */; };
+		A92011200000000000000002 /* CodexMCPIsolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92011200000000000000001 /* CodexMCPIsolation.swift */; };
 		C0DE13032026091400000001 /* CodexDirectoryMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DE13032026091400000002 /* CodexDirectoryMigration.swift */; };
 		C0DEC11E0001000000000001 /* CodexService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000001 /* CodexService.swift */; };
 		C0DEC11E0001000000000002 /* CodexCLIRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DEC11E0002000000000002 /* CodexCLIRunner.swift */; };
@@ -639,6 +641,7 @@
 		C490BF722BE910B70021E40A /* AdvancedTabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C490BF712BE910B70021E40A /* AdvancedTabItemView.swift */; };
 		C4A512BE2C414A2400F00F33 /* AIToolService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A512BD2C414A2400F00F33 /* AIToolService.swift */; };
 		C4BB908FFBD2D1A171F74CBC /* CodexComponentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF517B31357FC07D98440EE /* CodexComponentManager.swift */; };
+		8EA083CA5E0D461AB55E28DB /* ExplainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AC1325D890496496FEC8A4 /* ExplainService.swift */; };
 		C4BE8E1C2C72E61B00F53204 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = C4BE8E1B2C72E61B00F53204 /* LaunchAtLogin */; };
 		C4CCDAA32C407A0D00AC88BA /* SummaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CCDAA22C407A0D00AC88BA /* SummaryService.swift */; };
 		C4CCDAA52C407A4100AC88BA /* PolishingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CCDAA42C407A4100AC88BA /* PolishingService.swift */; };
@@ -773,6 +776,7 @@
 		0320411D2E44DABA0065A05B /* ocr-ja-text-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-ja-text-3.png"; sourceTree = "<group>"; };
 		0320411F2E478BD20065A05B /* ocr-ja-text-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-ja-text-4.png"; sourceTree = "<group>"; };
 		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
+		E42C7E80B650424CB13CBF01 /* QueryUsageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryUsageStore.swift; sourceTree = "<group>"; };
 		0320DFF62C54A11300C516A7 /* StreamService+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StreamService+Request.swift"; sourceTree = "<group>"; };
 		03220E272E11A199002C7F3F /* OCRLineAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRLineAnalyzer.swift; sourceTree = "<group>"; };
 		03220E292E11A1A0002C7F3F /* OCRObservationPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRObservationPair.swift; sourceTree = "<group>"; };
@@ -1409,6 +1413,7 @@
 		C0DE13030001000000000001 /* CodexRuntimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexRuntimeTests.swift; sourceTree = "<group>"; };
 		C0DE13030003000000000001 /* CodexAppServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexAppServer.swift; sourceTree = "<group>"; };
 		C0DE13030003000000000002 /* CodexAppServerProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexAppServerProcess.swift; sourceTree = "<group>"; };
+		A92011200000000000000001 /* CodexMCPIsolation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexMCPIsolation.swift; sourceTree = "<group>"; };
 		C0DE13032026091400000002 /* CodexDirectoryMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexDirectoryMigration.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000001 /* CodexService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexService.swift; sourceTree = "<group>"; };
 		C0DEC11E0002000000000002 /* CodexCLIRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIRunner.swift; sourceTree = "<group>"; };
@@ -1440,6 +1445,7 @@
 		C477BF902C0E2C61006A3F27 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		C490BF712BE910B70021E40A /* AdvancedTabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AdvancedTabItemView.swift; path = Easydict/Swift/View/AdvancedTabItemView.swift; sourceTree = SOURCE_ROOT; };
 		C4A512BD2C414A2400F00F33 /* AIToolService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIToolService.swift; sourceTree = "<group>"; };
+		86AC1325D890496496FEC8A4 /* ExplainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplainService.swift; sourceTree = "<group>"; };
 		C4CCDAA22C407A0D00AC88BA /* SummaryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryService.swift; sourceTree = "<group>"; };
 		C4CCDAA42C407A4100AC88BA /* PolishingService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolishingService.swift; sourceTree = "<group>"; };
 		C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = Localizable.xcstrings; path = Easydict/App/Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
@@ -2369,6 +2375,7 @@
 			children = (
 				0396D613292CC4C3006A11D9 /* LocalStorage.swift */,
 				0320C5862B29F35700861B3D /* QueryServiceRecord.swift */,
+				E42C7E80B650424CB13CBF01 /* QueryUsageStore.swift */,
 				03F60B4F2F4C123400123456 /* QueryServiceConfiguration.swift */,
 			);
 			path = Storage;
@@ -3554,6 +3561,7 @@
 			children = (
 				C0DE13030003000000000001 /* CodexAppServer.swift */,
 				C0DE13030003000000000002 /* CodexAppServerProcess.swift */,
+				A92011200000000000000001 /* CodexMCPIsolation.swift */,
 				D777448D5C79452B85E8A640 /* CodexAppServerRequest.swift */,
 			);
 			path = AppServer;
@@ -3954,6 +3962,7 @@
 			isa = PBXGroup;
 			children = (
 				C4A512BD2C414A2400F00F33 /* AIToolService.swift */,
+				86AC1325D890496496FEC8A4 /* ExplainService.swift */,
 				C4CCDAA42C407A4100AC88BA /* PolishingService.swift */,
 				C4CCDAA22C407A0D00AC88BA /* SummaryService.swift */,
 			);
@@ -4745,6 +4754,7 @@
 				03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */,
 				24832952EE17407C852B2258 /* String+Convenience.swift in Sources */,
 				C4A512BE2C414A2400F00F33 /* AIToolService.swift in Sources */,
+				8EA083CA5E0D461AB55E28DB /* ExplainService.swift in Sources */,
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				C43B56722C693FFB00EF26FD /* VolcanoSigning.swift in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
@@ -4948,6 +4958,7 @@
 				0C93675282708F04BAEBDFB6 /* CodexRuntime.swift in Sources */,
 				C0DE13030004000000000001 /* CodexAppServer.swift in Sources */,
 				C0DE13030004000000000002 /* CodexAppServerProcess.swift in Sources */,
+				A92011200000000000000002 /* CodexMCPIsolation.swift in Sources */,
 				C0DE13032026091400000001 /* CodexDirectoryMigration.swift in Sources */,
 				C4BB908FFBD2D1A171F74CBC /* CodexComponentManager.swift in Sources */,
 				F5467B113D285C01338E3C55 /* CodexComponentStore.swift in Sources */,
@@ -5035,6 +5046,7 @@
 				03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */,
 				0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */,
 				0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */,
+				2210AC46040448348911D2B1 /* QueryUsageStore.swift in Sources */,
 				033A8EAE2BDFE09B00030C08 /* String+Extension.swift in Sources */,
 				03FF0D5F2E1959EC00ABBF17 /* String+Removing.swift in Sources */,
 				FA0D2894537C47E1AF63D495 /* QueryServiceFactory.swift in Sources */,

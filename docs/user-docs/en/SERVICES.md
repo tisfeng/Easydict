@@ -39,7 +39,7 @@ The Services settings use these access types:
 | Tencent TokenHub (`TokenHub`) | User key | Uses Tencent TokenHub API |
 | Built-in AI (`BuiltInAI`) | Built in | AI queries without a separately configured API key. |
 | Claude Code (`ClaudeCode`) | CLI | Calls an installed and authenticated Claude Code CLI. |
-| Codex CLI (`CodexCLI`) | CLI | Calls an installed and authenticated Codex CLI. |
+| Codex (`CodexCLI`) | Local CLI or ChatGPT sign-in | Use an installed and authenticated Codex CLI, or download the component in Easydict and sign in with ChatGPT. See [Codex translation](./GUIDE.md#codex-translation). |
 | Gemini (`Gemini`) | User key | Uses the Gemini API. |
 | Claude (`Claude`) | User key | Uses the Anthropic Claude API. |
 | Ollama (`Ollama`) | No key | Calls Ollama on this Mac or at a custom server URL. |
