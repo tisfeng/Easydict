@@ -455,6 +455,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 /// Recreate the query model and rebind dependent managers for background OCR.
 - (void)resetQueryModelForBackgroundOCR {
+    self.isOCRStreamingInProgress = NO;
     [self.detectManager cancelOCR];
     EZQueryModel *model = [[EZQueryModel alloc] init];
     model.userSourceLanguage = MyConfiguration.shared.fromLanguage;
@@ -507,6 +508,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
+    self.isOCRStreamingInProgress = NO;
     [self.detectManager cancelOCR];
     [self.queryView startLoadingAnimation:NO];
     if (![text isEqualToString:self.inputText]) {
@@ -739,6 +741,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     // Reset query view height if we are retrying OCR query
     if (self.queryModel.ocrImage) {
+        self.isOCRStreamingInProgress = NO;
         [self.detectManager cancelOCR];
         self.inputText = @"";
     }
@@ -912,6 +915,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (![queryType isEqualToString:EZActionTypeOCRQuery]
         && ![queryType isEqualToString:EZActionTypePasteboardOCR]
         && ![queryType isEqualToString:EZActionTypeScreenshotOCR]) {
+        self.isOCRStreamingInProgress = NO;
         [self.detectManager cancelOCR];
         [self.queryView startLoadingAnimation:NO];
         self.queryModel.ocrImage = nil;
