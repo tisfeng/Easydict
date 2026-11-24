@@ -7,6 +7,7 @@
 //
 
 import AppKit
+import Defaults
 import Foundation
 import SwiftUI
 
@@ -19,7 +20,6 @@ class Screenshot: NSObject {
     @objc public static let shared = Screenshot()
 
     @objc public private(set) var isTakingScreenshot = false
-    @objc public var shouldRestorePreviousApp = false
 
     @objc
     public func startCapture(completion: @escaping (NSImage?) -> ()) {
@@ -46,6 +46,7 @@ class Screenshot: NSObject {
         }
 
         isTakingScreenshot = true
+        captureSessionID = UUID()
         pushCrosshairCursor()
         setupEventMonitor()
         showOverlayWindow(completion: completion)
@@ -57,6 +58,9 @@ class Screenshot: NSObject {
     var overlayViewStates: [NSScreen: ScreenshotState] = [:]
 
     var eventMonitor: Any?
+    let keyboardEventTap = ScreenshotKeyboardEventTap()
+    var isKeyboardAvailable = true
+    private(set) var captureSessionID: UUID?
 
     /// Work item for the delayed screenshot capture after pressing 'D' for preview.
     var previewScreenshotWorkItem: DispatchWorkItem?
@@ -64,28 +68,24 @@ class Screenshot: NSObject {
     /// Finish screenshot capture and call the completion handler
     @objc
     func finishCapture(_ image: NSImage?) {
-        // Cancel any pending preview screenshot task first
+        guard isTakingScreenshot else { return }
         cancelPreviewScreenshotTimer()
-
+        captureSessionID = nil
         isTakingScreenshot = false
         popCrosshairCursor()
 
-        // Restore focus to previous application only if shouldRestorePreviousApp is true
-        if shouldRestorePreviousApp, let previousApp = previousActiveApp {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                previousApp.activate()
-            }
-        }
-
-        previousActiveApp = nil
-
-        // Call the original completion handler
-        captureCompletionHandler?(image)
+        let completion = captureCompletionHandler
         captureCompletionHandler = nil
-
         hideAllOverlayWindows()
         removeEventMonitor()
-        tearDownOverlayStates()
+        overlayViewStates.removeAll()
+
+        if Defaults[.localAutoSave], let image {
+            image.write(to: AppPathManager.current.snipImageFileURL, using: .png)
+        }
+
+        // Result windows may activate the app; no old capture cleanup runs after them.
+        completion?(image)
     }
 
     /// Cancels the scheduled preview screenshot task, if any.
@@ -99,6 +99,7 @@ class Screenshot: NSObject {
     ///   - screen: The screen to capture from.
     ///   - rect: The rectangle area to capture within the screen coordinates.
     func performScreenshot(screen: NSScreen, rect: CGRect) {
+        guard let sessionID = captureSessionID else { return }
         NSLog("Performing screenshot, screen frame: \(screen.frame), rect: \(rect)")
 
         // Reset the state for the specific screen to hide selection UI etc.
@@ -110,6 +111,7 @@ class Screenshot: NSObject {
 
         // Async dispatch to allow UI updates (state reset) before capturing
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            guard self.captureSessionID == sessionID else { return }
             let image = screen.takeScreenshot(rect: rect)
             // Finish the capture process with the result
             self.finishCapture(image)
@@ -120,8 +122,6 @@ class Screenshot: NSObject {
 
     /// The completion handler passed from startCapture.
     private var captureCompletionHandler: ((NSImage?) -> ())?
-
-    private var previousActiveApp: NSRunningApplication?
 
     /// Tracks whether the crosshair cursor is currently pushed onto the cursor stack.
     private var hasPushedCrosshairCursor = false
@@ -149,41 +149,18 @@ class Screenshot: NSObject {
         // Store the completion handler
         captureCompletionHandler = completion
 
-        // Save the currently active application
-        previousActiveApp = NSWorkspace.shared.frontmostApplication
-
-        tearDownOverlayStates()
+        overlayViewStates.removeAll()
         hideAllOverlayWindows()
 
-        // Show overlay window on each screen
         for screen in NSScreen.screens {
             createOverlayWindow(for: screen)
         }
-
-        /*
-         Activate App after creating all screenshot windows, avoid losing focus application.
-
-         Activate the application to ensure it receives key events.
-         Local event monitors (`addLocalMonitorForEvents`) only capture events
-         dispatched to the *active* application. Without activating,
-         key down events (like ESC to cancel) might not be received
-         if another application was active when the screenshot started.
-         */
-        NSApplication.shared.activateApp()
-    }
-
-    /// Removes transient screenshot state and releases any local event monitors it owns.
-    private func tearDownOverlayStates() {
-        for state in overlayViewStates.values {
-            state.cleanup()
-        }
-        overlayViewStates.removeAll()
     }
 
     private func createOverlayWindow(for screen: NSScreen) {
         let window = ScreenshotOverlayWindow(
             contentRect: screen.frame,
-            styleMask: [.borderless],
+            styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
             defer: false
         )
@@ -192,17 +169,25 @@ class Screenshot: NSObject {
         window.acceptsMouseMovedEvents = true
         window.backgroundColor = .clear
         window.isOpaque = false
-        window.makeKeyAndOrderFront(nil)
+        // Keep the full-screen snapshot stationary when the panel appears or disappears.
+        window.animationBehavior = .none
+        window.hidesOnDeactivate = false
+        window.becomesKeyOnlyIfNeeded = true
+        window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
 
         let state = ScreenshotState(screen: screen)
+        state.isKeyboardAvailable = isKeyboardAvailable
         let contentView = ScreenshotOverlayView(state: state)
-        window.contentView = ScreenshotOverlayHostingView(rootView: contentView)
+        let hostingView = ScreenshotOverlayHostingView(rootView: contentView)
+        hostingView.onMouseMoved = { [weak state] in state?.handleMouseMoved() }
+        window.contentView = hostingView
         if let contentView = window.contentView {
             window.invalidateCursorRects(for: contentView)
         }
 
         overlayWindows[screen] = window
         overlayViewStates[screen] = state
+        window.orderFrontRegardless()
     }
 
     private func hideAllOverlayWindows() {
@@ -215,13 +200,13 @@ class Screenshot: NSObject {
 
 // MARK: - ScreenshotOverlayWindow
 
-/// A borderless overlay window that can become key and main for cursor updates.
-final class ScreenshotOverlayWindow: NSWindow {
+/// Receives screenshot mouse input while preserving the frontmost application.
+final class ScreenshotOverlayWindow: NSPanel {
     override var canBecomeKey: Bool {
-        true
+        false
     }
 
     override var canBecomeMain: Bool {
-        true
+        false
     }
 }

@@ -12,7 +12,7 @@ Accepted PR references:
   https://github.com/<base-owner>/<base-repo>/pull/<number>
   <base-owner>/<base-repo>#<number>
   <number>
-Ordinary review preserves local-only commits on a verified self-authored PR
+Ordinary review preserves local-only commits on a verified linked PR
 branch and reviews the frozen remote Git objects. An existing clean checkout
 of that branch is reused automatically; no new review branch is needed.
 Options:
@@ -34,7 +34,7 @@ Options:
       integration or conflict resolution. Never push the result.
   --reuse-branch BRANCH
       In local mode, require a previously selected PR branch and keep using
-      it. A self-authored branch may contain the frozen head plus local commits
+      it. A verified linked PR branch may contain the frozen head plus local commits
       in ordinary review; latest-base still requires the exact PR head.
       Incompatible state fails instead of silently selecting a fallback.
 USAGE
@@ -43,6 +43,10 @@ USAGE
 fail() {
   printf 'error: %s\n' "$*" >&2
   exit 1
+}
+
+branch_name() {
+  python3 "${script_dir}/../../git-commit/scripts/branch_name.py" "$@"
 }
 
 same_github_repo_url() {
@@ -174,7 +178,7 @@ branch_checked_out_elsewhere() {
 }
 
 # Return success only when the active GitHub login authored this PR. Failure
-# preserves the existing collision fallback instead of blocking preparation.
+# leaves upstream-based reuse available without author confirmation.
 current_user_owns_pr() {
   local viewer_login normalized_viewer normalized_author
 
@@ -199,8 +203,8 @@ upstream_targets_pr_head() {
 }
 
 # Classify whether the PR head branch can be prepared under its exact local
-# name. A self-authored PR may reuse an equivalent upstream alias or add a
-# missing upstream; incompatible self-authored state must stop without fallback.
+# name. Equivalent upstream aliases identify the same PR regardless of author.
+# Self-authored branches may also acquire a missing upstream.
 inspect_head_branch() {
   local branch=$1
   local expected_upstream=$2
@@ -230,22 +234,16 @@ inspect_head_branch() {
     fi
 
     actual_upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/${branch}")
-    if [[ $actual_upstream == "$expected_upstream" ]]; then
+    if upstream_targets_pr_head "$branch"; then
+      selected_upstream_ref=$actual_upstream
       receipt_self_authored_branch=$self_authored_pr
       return 0
     fi
 
-    if [[ $self_authored_pr == true ]]; then
-      if [[ -z $actual_upstream ]]; then
-        set_selected_upstream=true
-        receipt_self_authored_branch=true
-        return 0
-      fi
-      if upstream_targets_pr_head "$branch"; then
-        selected_upstream_ref=$actual_upstream
-        receipt_self_authored_branch=true
-        return 0
-      fi
+    if [[ $self_authored_pr == true && -z $actual_upstream ]]; then
+      set_selected_upstream=true
+      receipt_self_authored_branch=true
+      return 0
     fi
 
     [[ -n $actual_upstream ]] || actual_upstream="no upstream"
@@ -254,12 +252,11 @@ inspect_head_branch() {
 }
 
 # Create or reuse the collision-fallback review branch
-# review/pr-<number>-<head-short-sha> tracking the contributor remote branch.
+# Its name comes from the shared policy; it tracks the contributor remote branch.
 prepare_collision_review_branch() {
   local reason=$1
-  local head_short=${head_oid:0:10}
   local actual_head actual_upstream
-  review_branch="review/pr-${pr_number}-${head_short}"
+  review_branch=$(branch_name review --pr "$pr_number" --sha "$head_oid")
   receipt_collision=$reason
 
   if git show-ref --verify --quiet "refs/heads/${review_branch}"; then
@@ -288,11 +285,12 @@ prepare_collision_review_branch() {
 validate_reused_branch() {
   local branch=$1
   local actual_head actual_upstream
-  local expected_fallback="review/pr-${pr_number}-${head_oid:0:10}"
+  local expected_fallback
+  expected_fallback=$(branch_name review --pr "$pr_number" --sha "$head_oid")
 
   [[ $checkout_mode == local ]] || \
     fail "--reuse-branch is only supported in local checkout mode."
-  git check-ref-format "refs/heads/${branch}" >/dev/null || \
+  branch_name validate --name "$branch" >/dev/null || \
     fail "Invalid reused review branch '${branch}'."
   case "$branch" in
     dev | main | master | develop | trunk)
@@ -306,17 +304,6 @@ validate_reused_branch() {
   if branch_checked_out_elsewhere "$branch"; then
     fail "Reused review branch '${branch}' is checked out in another worktree."
   fi
-
-  actual_head=$(git rev-parse "refs/heads/${branch}")
-  if [[ $actual_head != "$head_oid" ]]; then
-    if [[ $branch == "$head_branch" && $self_authored_pr == true && $mode == prepare ]] && \
-      git merge-base --is-ancestor "$head_oid" "$actual_head"; then
-      review_mode=git_objects
-    else
-      fail "Reused review branch '${branch}' is at '${actual_head}', not PR head '${head_oid}'."
-    fi
-  fi
-  expected_local_head=$actual_head
 
   actual_upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/${branch}")
   [[ -n $actual_upstream ]] || \
@@ -333,6 +320,21 @@ validate_reused_branch() {
   else
     fail "Reused branch '${branch}' is neither PR head '${head_branch}' nor the expected collision fallback '${expected_fallback}'."
   fi
+
+  actual_head=$(git rev-parse "refs/heads/${branch}")
+  if [[ $actual_head != "$head_oid" ]]; then
+    if [[ $branch == "$head_branch" && $preserve_pr_branch == true ]] && \
+      git merge-base --is-ancestor "$actual_head" "$head_oid"; then
+      # Fast-forward only after switching and rechecking the selected checkout.
+      review_mode=checkout
+    elif [[ $branch == "$head_branch" && $preserve_pr_branch == true && $mode == prepare ]] && \
+      git merge-base --is-ancestor "$head_oid" "$actual_head"; then
+      review_mode=git_objects
+    else
+      fail "Reused review branch '${branch}' is at '${actual_head}', not PR head '${head_oid}'."
+    fi
+  fi
+  expected_local_head=$actual_head
 
   selected_upstream_ref=$actual_upstream
   expected_checkout_upstream=$actual_upstream
@@ -384,7 +386,6 @@ verify_source_checkout() {
 # Resolve one stable review location from the repository's common Git dir.
 resolve_worktree_target() {
   local common_dir main_worktree parent_dir repo_name suffix
-  local head_short=${head_oid:0:10}
   common_dir=$(git rev-parse --path-format=absolute --git-common-dir)
   [[ $common_dir == */.git ]] || \
     fail "Could not derive the main worktree from Git common dir '${common_dir}'."
@@ -394,13 +395,12 @@ resolve_worktree_target() {
   repo_name=$(basename "$main_worktree")
 
   if [[ $mode == "merge" ]]; then
-    suffix="pr-${pr_number}-merge-${head_short}"
-    review_branch="review/pr-${pr_number}-merge-${head_short}"
+    review_branch=$(branch_name review --pr "$pr_number" --sha "$head_oid" --merge-latest)
   else
-    suffix="pr-${pr_number}-${head_short}"
-    review_branch="review/pr-${pr_number}-${head_short}"
+    review_branch=$(branch_name review --pr "$pr_number" --sha "$head_oid")
   fi
 
+  suffix=${review_branch#*/}
   review_root="${parent_dir}/.review-pr-worktrees/${repo_name}"
   worktree_path="${review_root}/${suffix}"
 }
@@ -425,11 +425,11 @@ find_branch_worktree() {
   return 1
 }
 
-# Follow a verified self-authored branch to its existing checkout. Never force
+# Follow a verified PR branch to its existing checkout. Never force
 # a checkout in the caller or treat a dirty/missing target as a branch collision.
 select_existing_pr_worktree() {
   local existing_path
-  [[ $self_authored_pr == true ]] || return 0
+  [[ $preserve_pr_branch == true ]] || return 0
   [[ -z $reuse_branch || $reuse_branch == "$head_branch" ]] || return 0
   branch_checked_out_elsewhere "$head_branch" || return 0
   existing_path=$(find_branch_worktree "$head_branch")
@@ -531,6 +531,10 @@ prepare_pr_branch() {
     actual_head=$(git rev-parse HEAD)
     [[ $actual_head == "$expected_local_head" ]] || \
       fail "Prepared reused branch '${reuse_branch}' changed during preparation."
+    if [[ $review_mode == checkout && $actual_head != "$head_oid" ]]; then
+      git merge --ff-only "$head_oid"
+      expected_local_head=$head_oid
+    fi
 
     if [[ $mode == merge ]]; then
       merge_latest_base_into_current_branch "$reuse_branch" "$selected_upstream_ref"
@@ -549,9 +553,9 @@ prepare_pr_branch() {
   fi
 
   inspect_head_branch "$head_branch" "$upstream_ref" "$base_branch"
-  if [[ -n $collision_reason && $self_authored_pr == true ]]; then
+  if [[ -n $collision_reason && $preserve_pr_branch == true ]]; then
     receipt_collision=$collision_reason
-    fail "Cannot reuse self-authored PR branch: ${collision_reason}. Inspect its identity/state before retrying; no fallback branch was selected."
+    fail "Cannot reuse verified PR branch: ${collision_reason}. Inspect its identity/state before retrying; no fallback branch was selected."
   fi
 
   prepare_head_ref
@@ -568,12 +572,12 @@ prepare_pr_branch() {
         git rev-list --left-right --count \
           "refs/heads/${head_branch}...${remote_ref}"
       )
-      if [[ $self_authored_pr == true ]]; then
+      if [[ $preserve_pr_branch == true ]]; then
         if [[ $behind_count == 0 && $mode == prepare ]]; then
           review_mode=git_objects
           expected_local_head=$local_head
         else
-          fail "Self-authored PR branch '${head_branch}' is not PR head '${head_oid}' (ahead ${ahead_count}, behind ${behind_count}). Preserve local commits; divergence or latest-base integration requires a separate decision."
+          fail "Verified PR branch '${head_branch}' is not PR head '${head_oid}' (ahead ${ahead_count}, behind ${behind_count}). Preserve local commits; divergence or latest-base integration requires a separate decision."
         fi
       else
         collision_reason="local branch '${head_branch}' does not safely fast-forward to PR head '${head_oid}' (ahead ${ahead_count}, behind ${behind_count})"
@@ -842,7 +846,7 @@ finalize_preparation() {
   [[ -z $(git -C "$receipt_path" status --porcelain=v1) ]] || fail "Prepared checkout is no longer clean."
   if [[ $mode == prepare ]]; then
     if [[ $review_mode == git_objects ]]; then
-      [[ $receipt_self_authored_branch == true && $receipt_branch == "$head_branch" && \
+      [[ $preserve_pr_branch == true && $receipt_branch == "$head_branch" && \
         $receipt_head == "$expected_local_head" ]] || fail "Preserved PR branch changed during preparation."
       git merge-base --is-ancestor "$head_oid" "$receipt_head" || fail "Preserved branch lost PR head."
     else
@@ -850,7 +854,7 @@ finalize_preparation() {
     fi
     [[ -n $expected_checkout_upstream && $receipt_upstream == "$expected_checkout_upstream" ]] || \
       fail "Prepared upstream changed."
-    if [[ $receipt_self_authored_branch == true ]]; then
+    if [[ $receipt_branch == "$head_branch" ]]; then
       upstream_targets_pr_head "$receipt_branch" || \
         fail "Reused local branch upstream no longer matches the PR head repository and branch."
     fi
@@ -873,18 +877,23 @@ finalize_preparation() {
 
 emit_receipt() {
   local exit_code=$1
+  local linked_branch_reused=false
+  if [[ $linked_pr_branch == true && $checkout_mode == local &&
+        ${receipt_branch:-} == "${head_branch:-}" ]]; then
+    linked_branch_reused=true
+  fi
   python3 - "$exit_code" "$phase" "${base_owner:-}/${base_repo:-}" "${pr_number:-0}" \
     "${head_oid:-}" "${base_oid:-}" "${base_branch:-}" "${receipt_merge_base:-}" \
     "${receipt_path:-}" "${receipt_branch:-}" "${receipt_head:-}" "${receipt_upstream:-}" \
     "$receipt_collision" "$receipt_self_authored_branch" "$checkout_mode" "$mode" \
     "$head_fetches" "$base_fetches" "$helper_fingerprint" "$reuse_branch" \
-    "$review_mode" "$reused_worktree" "${receipt_ahead:-}" "${receipt_behind:-}" >&3 <<'PY'
+    "$review_mode" "$reused_worktree" "${receipt_ahead:-}" "${receipt_behind:-}" "$linked_branch_reused" >&3 <<'PY'
 import json
 import sys
 (code, phase, repo, number, head, base, base_branch, merge_base, path, branch,
  checkout_head, upstream, collision, self_branch, checkout_mode, mode,
  head_fetches, base_fetches, helper_fingerprint, reused_branch,
- review_mode, reused_worktree, ahead, behind) = sys.argv[1:]
+ review_mode, reused_worktree, ahead, behind, linked_branch) = sys.argv[1:]
 success = code == "0" and phase == "complete"
 print(json.dumps({
     "schema_version": 2, "status": "prepared" if success else "failed",
@@ -896,16 +905,19 @@ print(json.dumps({
     "review": {"head_sha": head, "mode": review_mode if success else None,
                "ahead": int(ahead) if success else None,
                "behind": int(behind) if success else None},
-    "selection_reason": ("self_authored_local_commits" if review_mode == "git_objects"
+    "selection_reason": ("self_authored_local_commits" if review_mode == "git_objects" and self_branch == "true"
+                         else "linked_local_commits" if review_mode == "git_objects"
                          else "isolated_worktree" if checkout_mode == "worktree"
                          else "existing_worktree" if reused_worktree == "true"
                          else "collision_fallback" if collision
                          else "self_authored_branch" if self_branch == "true"
+                         else "linked_pr_branch" if linked_branch == "true"
                          else "pr_head_branch") if success else None,
     "reused_worktree": reused_worktree == "true",
     "collision_reason": collision or None,
     "reused_branch": reused_branch or None,
     "self_authored_branch_reused": self_branch == "true" if success else None,
+    "linked_pr_branch_reused": linked_branch == "true" if success else None,
     "helper": json.loads(helper_fingerprint),
     "source_unchanged": True if success and (checkout_mode == "worktree" or reused_worktree == "true") else None,
     "integration": mode == "merge",
@@ -928,6 +940,8 @@ base_fetches=0
 receipt_collision=""
 receipt_self_authored_branch=false
 self_authored_pr=false
+linked_pr_branch=false
+preserve_pr_branch=false
 review_mode=checkout
 reused_worktree=false
 expected_local_head=""
@@ -991,7 +1005,7 @@ if [[ $checkout_mode == worktree && -n $reuse_branch ]]; then
   fail "--reuse-branch cannot be combined with --worktree."
 fi
 if [[ -n $reuse_branch ]]; then
-  git check-ref-format "refs/heads/${reuse_branch}" >/dev/null || \
+  branch_name validate --name "$reuse_branch" >/dev/null || \
     fail "Invalid reused review branch '${reuse_branch}'."
 fi
 
@@ -1010,6 +1024,12 @@ if [[ $checkout_mode == "worktree" ]]; then
 else
   if git show-ref --verify --quiet "refs/heads/${head_branch}" && current_user_owns_pr; then
     self_authored_pr=true
+  fi
+  if git show-ref --verify --quiet "refs/heads/${head_branch}" && upstream_targets_pr_head "$head_branch"; then
+    linked_pr_branch=true
+  fi
+  if [[ $self_authored_pr == true || $linked_pr_branch == true ]]; then
+    preserve_pr_branch=true
   fi
   select_existing_pr_worktree
   prepare_pr_branch

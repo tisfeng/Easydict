@@ -18,7 +18,7 @@ struct EasydictMainMenu: Commands {
         // Override Help
         CommandGroup(replacing: .help) {
             Button("menu_feedback") {
-                openURL(URL(string: "\(EZGithubRepoEasydictURL)/issues")!)
+                openURL(AppConstants.issuesURL)
             }
         }
 

@@ -246,7 +246,7 @@
 
 - (void)handleTopBarTap:(NSClickGestureRecognizer *)gestureRecognizer {
 
-    if (!self.result.hasShowingResult && self.result.queryModel.queryText.length == 0) {
+    if (!self.result.isCombinedOCRInProgress && !self.result.hasShowingResult && self.result.queryModel.queryText.length == 0) {
         MMLogWarn(@"query text is empty");
         return;
     }
@@ -308,10 +308,7 @@
         [self updateWordResultViewHeight:wordResultViewHeight];
     }];
     
-    [self updateAllButtonStatus];
-    
-    CGFloat wordResultViewHeight = self.wordResultView.viewHeight ?: result.webViewManager.wordResultViewHeight;
-    [self updateWordResultViewHeight:wordResultViewHeight];
+    [self updateExpandedState];
     
     // animation need right frame, but result may change, so have to layout frame.
     [self updateLoadingAnimation];
@@ -370,6 +367,12 @@
 
 #pragma mark - Update UI
 
+- (void)updateExpandedState {
+    [self updateAllButtonStatus];
+    CGFloat contentHeight = self.wordResultView.viewHeight ?: self.result.webViewManager.wordResultViewHeight;
+    [self updateWordResultViewHeight:contentHeight];
+}
+
 - (void)updateWordResultViewHeight:(CGFloat)wordResultViewHeight {
     if (self.result.htmlString.length) {
         self.result.webViewManager.wordResultViewHeight = wordResultViewHeight;
@@ -412,7 +415,7 @@
         (type == EZQueryErrorTypeNoResult && !self.service.isStream)
     );
 
-    BOOL showWarningImage = !self.result.hasTranslatedResult && warningType;
+    BOOL showWarningImage = !self.result.isCombinedOCRFailure && !self.result.hasTranslatedResult && warningType;
     self.errorImageView.hidden = !showWarningImage;
     
     NSString *errorImageName = @"disabled";
@@ -434,7 +437,7 @@
     BOOL showStopButton = NO;
     
     if (self.service.isStream) {
-        showStopButton = self.result.hasTranslatedResult && !self.result.isStreamFinished;
+        showStopButton = self.result.isCombinedOCRInProgress || (self.result.hasTranslatedResult && !self.result.isStreamFinished);
     }
     
     self.stopButton.hidden = !showStopButton;

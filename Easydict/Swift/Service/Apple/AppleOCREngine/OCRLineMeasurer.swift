@@ -70,12 +70,9 @@ class OCRLineMeasurer {
         // Line is considered "long" if remaining space is less than required minimum
         let isLongLine = actualRemainingCharacters < finalThreshold
 
-        let debugText = observation.firstText.prefix20
-        let refText = comparedObservation?.firstText.prefix20 ?? "Default"
-
         if !isLongLine {
             print(
-                "Short line detected (confidence: \(confidence)): '\(debugText)...' -> Remaining: \(actualRemainingCharacters.string1f)), Threshold: \(finalThreshold.string1f) (base: \(baseThreshold)) × \(confidence.multiplier)), Ref: '\(refText)...'"
+                "Short line detected (confidence: \(confidence)). Remaining: \(actualRemainingCharacters.string1f), threshold: \(finalThreshold.string1f)"
             )
         }
 

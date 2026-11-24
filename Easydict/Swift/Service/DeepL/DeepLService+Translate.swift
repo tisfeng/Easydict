@@ -32,35 +32,39 @@ extension DeepLService {
         _ text: String,
         from: Language,
         to: Language,
+        generation: UInt? = nil,
         completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
-        let cancellation = DeepLWebTranslationCancellation()
-        queryModel.setStop({
-            cancellation.cancel()
-        }, serviceType: serviceType().rawValue)
+        updateResultLock.lock()
+        defer { updateResultLock.unlock() }
+        let generation = generation ?? QueryService.queryGeneration ?? resultGeneration
+        guard generation == resultGeneration, !Task.isCancelled else {
+            completion(QueryResult(), CancellationError())
+            return
+        }
+        cancelStream()
 
-        Task { [weak self] in
+        webTranslationTask = Task { [weak self] in
             guard let self else {
                 completion(QueryResult(), CancellationError())
                 return
             }
 
             let appVersion = await DeepLWebAppVersionProvider.shared.currentVersion()
-            guard !cancellation.isCancelled else {
-                completion(QueryResult(), CancellationError())
-                return
+            updateResultLock.withLock {
+                guard generation == self.resultGeneration, !Task.isCancelled else {
+                    completion(QueryResult(), CancellationError())
+                    return
+                }
+                self.webTranslationTask = nil
+                self.performDeepLWebTranslate(
+                    text,
+                    from: from,
+                    to: to,
+                    context: DeepLWebTranslationContext(appVersion: appVersion, generation: generation),
+                    completion: completion
+                )
             }
-
-            performDeepLWebTranslate(
-                text,
-                from: from,
-                to: to,
-                context: DeepLWebTranslationContext(
-                    appVersion: appVersion,
-                    cancellation: cancellation
-                ),
-                completion: completion
-            )
         }
     }
 
@@ -71,11 +75,6 @@ extension DeepLService {
         context: DeepLWebTranslationContext,
         completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
-        guard !context.cancellation.isCancelled else {
-            completion(QueryResult(), CancellationError())
-            return
-        }
-
         let sourceLanguageCode = languageCode(for: from) ?? "auto"
         guard let targetLanguageCode = languageCode(for: to),
               targetLanguageCode != "auto"
@@ -110,7 +109,7 @@ extension DeepLService {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = postData
-        request.timeoutInterval = EZNetWorkTimeoutInterval
+        request.timeoutInterval = AppConstants.networkTimeoutInterval
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("None", forHTTPHeaderField: "Authorization")
         request.setValue(
@@ -126,10 +125,7 @@ extension DeepLService {
         let dataRequest = AF.request(request)
             .validate(statusCode: 200 ..< 300)
 
-        guard context.cancellation.install(dataRequest) else {
-            completion(QueryResult(), CancellationError())
-            return
-        }
+        activeDataRequest = dataRequest
 
         dataRequest.responseData { [weak self] response in
             guard let self = self else {
@@ -137,13 +133,15 @@ extension DeepLService {
                 return
             }
 
-            if queryModel.isServiceStopped(serviceType().rawValue) {
-                completion(result, CancellationError())
+            updateResultLock.lock()
+            defer { updateResultLock.unlock() }
+            guard context.generation == resultGeneration, activeDataRequest === dataRequest else {
+                completion(QueryResult(), CancellationError())
                 return
             }
-
-            if let nsError = response.error as? NSError, nsError.code == NSURLErrorCancelled {
-                completion(result, CancellationError())
+            activeDataRequest = nil
+            guard !isDeepLCancellation(response.error) else {
+                completion(QueryResult(), CancellationError())
                 return
             }
 
@@ -155,7 +153,7 @@ extension DeepLService {
                 let useOfficialAPI = !Defaults[.deepLAuth].isEmpty &&
                     (Defaults[.deepLTranslation] == .webFirst)
                 if useOfficialAPI {
-                    deepLTranslate(text, from: from, to: to, completion: completion)
+                    deepLTranslate(text, from: from, to: to, generation: context.generation, completion: completion)
                     return
                 }
 
@@ -196,8 +194,18 @@ extension DeepLService {
         _ text: String,
         from: Language,
         to: Language,
+        generation: UInt? = nil,
         completion: @escaping (QueryResult, (any Error)?) -> ()
     ) {
+        updateResultLock.lock()
+        defer { updateResultLock.unlock() }
+        let generation = generation ?? QueryService.queryGeneration ?? resultGeneration
+        guard generation == resultGeneration, !Task.isCancelled else {
+            completion(QueryResult(), CancellationError())
+            return
+        }
+        cancelStream()
+
         var sourceLangCode = languageCode(for: from) ?? "auto"
         sourceLangCode = removeLanguageVariant(sourceLangCode)
 
@@ -232,32 +240,35 @@ extension DeepLService {
                 "Authorization": authorization,
             ]),
             requestModifier: { request in
-                request.timeoutInterval = EZNetWorkTimeoutInterval
+                request.timeoutInterval = AppConstants.networkTimeoutInterval
             }
         )
         .validate(statusCode: 200 ..< 300)
 
+        activeDataRequest = request
         request.responseData { [weak self] response in
             guard let self = self else {
                 completion(QueryResult(), CancellationError())
                 return
             }
 
-            if queryModel.isServiceStopped(serviceType().rawValue) {
-                completion(result, CancellationError())
+            updateResultLock.lock()
+            defer { updateResultLock.unlock() }
+            guard generation == resultGeneration, activeDataRequest === request else {
+                completion(QueryResult(), CancellationError())
+                return
+            }
+            activeDataRequest = nil
+            guard !isDeepLCancellation(response.error) else {
+                completion(QueryResult(), CancellationError())
                 return
             }
 
             if let error = response.error {
-                if (error as NSError).code == NSURLErrorCancelled {
-                    completion(result, CancellationError())
-                    return
-                }
-
                 logError("deepLTranslate error: \(error)")
 
                 if Defaults[.deepLTranslation] == .authKeyFirst {
-                    deepLWebTranslate(text, from: from, to: to, completion: completion)
+                    deepLWebTranslate(text, from: from, to: to, generation: generation, completion: completion)
                     return
                 }
 
@@ -281,10 +292,6 @@ extension DeepLService {
             result.raw = responseDict as NSDictionary
             completion(result, nil)
         }
-
-        queryModel.setStop({
-            request.cancel()
-        }, serviceType: serviceType().rawValue)
     }
 
     // MARK: - Official API Response Parser
@@ -339,45 +346,20 @@ extension DeepLService {
     }
 }
 
-private func deepLWebUserAgent(appVersion: String) -> String {
-    "DeepL/\(appVersion) CFNetwork/3826.600.41 Darwin/25.0.0"
-}
-
 // MARK: - DeepLWebTranslationContext
 
 private struct DeepLWebTranslationContext {
     let appVersion: String
-    let cancellation: DeepLWebTranslationCancellation
+    let generation: UInt
 }
 
-// MARK: - DeepLWebTranslationCancellation
+private func deepLWebUserAgent(appVersion: String) -> String {
+    "DeepL/\(appVersion) CFNetwork/3826.600.41 Darwin/25.0.0"
+}
 
-private final class DeepLWebTranslationCancellation: @unchecked Sendable {
-    // MARK: Internal
-
-    var isCancelled: Bool { lock.withLock { cancelled } }
-
-    func cancel() {
-        let cancelRequest = lock.withLock { () -> (() -> ())? in
-            cancelled = true
-            return cancelRequestHandler
-        }
-        cancelRequest?()
-    }
-
-    func install(_ request: DataRequest) -> Bool {
-        let shouldCancel = lock.withLock {
-            if cancelled { return true }
-            cancelRequestHandler = { request.cancel() }
-            return false
-        }
-        if shouldCancel { request.cancel() }
-        return !shouldCancel
-    }
-
-    // MARK: Private
-
-    private let lock = NSLock()
-    private var cancelled = false
-    private var cancelRequestHandler: (() -> ())?
+private func isDeepLCancellation(_ error: AFError?) -> Bool {
+    guard let error else { return false }
+    if error.isExplicitlyCancelledError { return true }
+    let underlyingError = (error.underlyingError ?? error) as NSError
+    return underlyingError.domain == NSURLErrorDomain && underlyingError.code == NSURLErrorCancelled
 }

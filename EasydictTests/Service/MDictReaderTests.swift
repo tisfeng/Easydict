@@ -8,6 +8,7 @@
 
 import Foundation
 import Testing
+import zlib
 
 @testable import Easydict
 
@@ -50,15 +51,16 @@ struct MDictReaderTests {
         #expect(MDictDictionary.decodeResourceText(data, preferredEncoding: encoding) == "发音样式")
     }
 
-    @Test("External MDX and MDD lookup flow")
+    @Test(
+        "External MDX and MDD lookup flow",
+        .tags(.requiresLocalEnvironment),
+        .enabled(
+            if: MDictReaderTests.externalDictionaryURLs != nil,
+            "Set EASYDICT_MDICT_INTEGRATION_MDX and EASYDICT_MDICT_INTEGRATION_MDD to local dictionary paths."
+        )
+    )
     func testExternalMDictLookupFlow() throws {
-        let environment = ProcessInfo.processInfo.environment
-        guard let mdxPath = environment["EASYDICT_MDICT_INTEGRATION_MDX"],
-              let mddPath = environment["EASYDICT_MDICT_INTEGRATION_MDD"]
-        else { return }
-
-        let mdxURL = URL(fileURLWithPath: mdxPath)
-        let mddURL = URL(fileURLWithPath: mddPath)
+        let (mdxURL, mddURL) = try #require(Self.externalDictionaryURLs)
         let reader = try MDictReader(url: mdxURL)
         let words = ["hello", "apple", "good", "test", "dictionary"]
         let definitions = try words.compactMap { try reader.lookup($0) }
@@ -130,7 +132,7 @@ struct MDictReaderTests {
     @Test("Zlib decompression round-trip")
     func testZlibDecompression() throws {
         let original = Data("Hello, MDict decompression test!".utf8)
-        let compressed = try MDictReader.zlibCompress(original)
+        let compressed = try zlibCompress(original)
 
         var block = Data([0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
         block.append(compressed)
@@ -280,6 +282,15 @@ struct MDictReaderTests {
 
     // MARK: Private
 
+    private static var externalDictionaryURLs: (mdx: URL, mdd: URL)? {
+        let environment = ProcessInfo.processInfo.environment
+        guard let mdxPath = environment["EASYDICT_MDICT_INTEGRATION_MDX"], !mdxPath.isEmpty,
+              let mddPath = environment["EASYDICT_MDICT_INTEGRATION_MDD"], !mddPath.isEmpty
+        else { return nil }
+
+        return (URL(fileURLWithPath: mdxPath), URL(fileURLWithPath: mddPath))
+    }
+
     private static func firstResourceKey(in html: String) -> String? {
         let patterns = [
             #"(?i)(?:src|href|poster)\s*=\s*["']([^"']+\.(?:css|js|png|jpg|jpeg|gif|svg|webp|mp3|wav|ogg))["']"#,
@@ -389,6 +400,25 @@ struct MDictReaderTests {
         var data = Data([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
         data.append(payload)
         return data
+    }
+
+    private func zlibCompress(_ source: Data) throws -> Data {
+        var outputSize = compressBound(uLong(source.count))
+        var output = Data(count: Int(outputSize))
+        let status = source.withUnsafeBytes { sourceBytes in
+            output.withUnsafeMutableBytes { outputBytes in
+                compress2(
+                    outputBytes.baseAddress!.assumingMemoryBound(to: Bytef.self),
+                    &outputSize,
+                    sourceBytes.baseAddress!.assumingMemoryBound(to: Bytef.self),
+                    uLong(source.count),
+                    Z_DEFAULT_COMPRESSION
+                )
+            }
+        }
+        guard status == Z_OK else { throw MDictError.decompressionFailed }
+        output.count = Int(outputSize)
+        return output
     }
 
     private func hex(_ bytes: [UInt8]) -> String {

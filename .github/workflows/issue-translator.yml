@@ -10,11 +10,35 @@ on:
 
 jobs:
   translate:
+    if: >-
+      github.event_name != 'pull_request_review_comment' ||
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
-      - uses: tisfeng/issues-translate-action@v2.9.2
+      - uses: tisfeng/issues-translate-action@v2.10.0
         with:
           IS_MODIFY_TITLE: false
           PRIMARY_LANGUAGE: zh-CN
           SECONDARY_LANGUAGE: en
           CUSTOM_BOT_NOTE: Bot automatically translated this content.
+
+  collect-fork-review-comment:
+    if: >-
+      github.event_name == 'pull_request_review_comment' &&
+      github.event.pull_request.head.repo.full_name != github.repository &&
+      github.event.comment.user.login != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Create review comment marker
+        run: touch "$RUNNER_TEMP/fork-review-comment"
+      # The publishing workflow reads only the artifact name from the API.
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: fork-review-comment-${{ github.run_attempt }}-${{ github.event.pull_request.number }}-${{ github.event.comment.id }}
+          path: ${{ runner.temp }}/fork-review-comment
+          if-no-files-found: error
+          retention-days: 1

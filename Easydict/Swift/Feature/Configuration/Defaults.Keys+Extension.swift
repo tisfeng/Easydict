@@ -48,6 +48,8 @@ extension Defaults.Keys {
         default: EnglishPronunciation.us
     )
     static let hideMainWindow = Key<Bool>("EZConfiguration_kHideMainWindowKey", default: true)
+    static let ocrServiceID = Key<String>("EZConfiguration_kOCRServiceID", default: ServiceType.apple.rawValue)
+    static let localAutoSave = Key<Bool>("EZConfiguration_kLocalAutoSave", default: false)
     static let autoQueryOCRText = Key<Bool>("EZConfiguration_kAutoQueryOCTTextKey", default: true)
     static let autoQuerySelectedText = Key<Bool>(
         "EZConfiguration_kAutoQuerySelectedTextKey", default: true
@@ -189,7 +191,7 @@ extension Defaults.Keys {
 
     static var minClassicalChineseTextDetectLength = Key<String>(
         "minClassicalChineseTextDetectLength",
-        default: "\(SharedConstants.minClassicalChineseLength)"
+        default: "\(AppConstants.minClassicalChineseLength)"
     )
 
     static let enableForceGetSelectedText = Key<Bool>(
@@ -379,10 +381,6 @@ extension Defaults.Keys {
 
     // Caiyun
     static let caiyunToken = Key<String>(EZCaiyunToken, default: "")
-
-    // tencent
-    static let tencentSecretId = Key<String>(EZTencentSecretId, default: "")
-    static let tencentSecretKey = Key<String>(EZTencentSecretKey, default: "")
 
     // Ali
     static let aliAccessKeyId = Key<String>(EZAliAccessKeyId, default: "")

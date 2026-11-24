@@ -16,7 +16,8 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 
 1. **执行前**：首次写入前读取任务路由要求的专题规则；任何可能产生仓库差异的任务都必须读取
    `exec-plans/README.md` 与 `histories/README.md`，并按其规则判断 plan 和 history。
-2. **实现与验证**：完成范围内的修改并运行风险匹配的验证；失败时修复并重新验证。
+2. **实现与验证**：完成范围内的修改并运行风险匹配的验证；失败时修复并重新验证。涉及用户可见界面
+   或交互时，按[界面验证与截图](docs/agents/build-and-test.md#界面验证与截图)实测并提供截图。
 3. **Review**：生产代码、复杂逻辑、跨模块或高风险变更在验证通过后使用
    [`review`](.agents/skills/review/SKILL.md) 技能审查；修复有效 finding 后重新验证和审查。
    纯文档及简单低风险变更除外。
@@ -25,6 +26,7 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 
 ### 通用规则
 
+- 用户可能会出错；发现用户有明显错误或决策冲突时，应明确指出并说明原因。
 - 无法确认修改授权时保持只读；从计划模式转入执行模式后，从“执行前”开始。
 - 用户的禁止、范围和顺序要求优先；push、创建 Pull Request、发布及其他外部写入仅在用户明确
   要求时执行。
@@ -37,7 +39,11 @@ Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、�
 ## 任务路由
 
 - 只读取当前任务需要的专题规则。
+- Git 分支命名：统一遵循
+  [`git-commit` 分支命名规范](.agents/skills/git-commit/references/branch-naming.md)。
 - 构建、测试、工程文件与资源、Xcode 验证：[`build-and-test.md`](docs/agents/build-and-test.md)。
+  PR 审查涉及界面时，同样按其中的[界面验证与截图](docs/agents/build-and-test.md#界面验证与截图)
+  执行，并在审查报告的验证区说明覆盖和限制。
 - 跨语言代码质量、Swift、Objective-C、SwiftUI、API 和本地化：
   [`coding-guidelines.md`](docs/agents/coding-guidelines.md)。
 - 计划与 history 记录：[`exec-plans/README.md`](docs/exec-plans/README.md) 与

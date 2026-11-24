@@ -445,8 +445,6 @@ class OCRPoetryDetector {
         print("🔍 Detected \(pattern):")
         print("❓ \(reason)")
         print("❓ Maybe not poetry, returning false")
-        print("prevText: \(prevText)")
-        print("currentText: \(currentText)")
     }
 
     /// Prints debug information when a poetry detection rule fails and returns false.

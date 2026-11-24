@@ -51,9 +51,10 @@ with open(os.environ[\"SYNC_CAPTURE\"], \"w\", encoding=\"utf-8\") as handle:
             )
             fake_sync.chmod(0o755)
             entrypoint = script_dir / "release-easydict.sh"
-            entrypoint.write_bytes(ENTRYPOINT.read_bytes())
-            entrypoint.chmod(0o755)
+            shutil.copy2(ENTRYPOINT, entrypoint)
+            shutil.copy2(ENTRYPOINT.with_name("release-auth.sh"), script_dir)
             env = os.environ.copy()
+            env["EASYDICT_RELEASE_ASC_CONFIG"] = str(temporary / "missing-asc-config.json")
             env["SYNC_CAPTURE"] = str(capture)
             result = run(
                 [
@@ -66,8 +67,10 @@ with open(os.environ[\"SYNC_CAPTURE\"], \"w\", encoding=\"utf-8\") as handle:
                 ],
                 cwd=temporary,
                 env=env,
+                check=False,
             )
-            self.assertEqual(result.returncode, 0)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertFalse((temporary / ".tmp" / "release" / "asc").exists())
             self.assertEqual(
                 json.loads(capture.read_text(encoding="utf-8")),
                 [

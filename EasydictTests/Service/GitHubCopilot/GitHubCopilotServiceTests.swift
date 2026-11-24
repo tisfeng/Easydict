@@ -36,7 +36,7 @@ struct GitHubCopilotServiceTests {
         #expect(service is GitHubCopilotService)
     }
 
-    @Test("local Copilot CLI translates through the real service path")
+    @Test("local Copilot CLI translates through the real service path", .tags(.requiresLocalEnvironment))
     func validatesLocalCopilotTranslation() async {
         let service = GitHubCopilotService()
         let result = await service.validate()

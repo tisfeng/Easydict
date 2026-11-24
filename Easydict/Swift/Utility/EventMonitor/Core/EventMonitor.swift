@@ -82,6 +82,7 @@ final class EventMonitor: NSObject {
     /// Fetches selected text using the active strategy pipeline.
     /// - Important: Completion is not guaranteed to be called on main thread.
     func getSelectedTextWithCompletion(_ completion: @escaping (String?) -> ()) {
+        invalidateAutoSelection()
         selectionWorkflow.getSelectedTextSnapshot { [weak self] snapshot in
             guard let self else {
                 completion(snapshot?.text)
@@ -105,30 +106,28 @@ final class EventMonitor: NSObject {
 
     /// Clears transient pop-button monitors after the button opens a query window.
     func consumePopButtonActivation() {
-        autoSelectionGeneration &+= 1
-        cancelDismissPopButton()
-        cancelDelayGetSelectedText()
-        popButtonController.isPopButtonVisible = false
-        mouseMovedThrottleGate.reset()
-        stopHighFrequencyEventMonitor()
-        eventTapMonitor.stop()
+        selectionEventScope = nil
+        resetPopButtonState()
     }
 
     func addLocalMonitorWithEvent(_ mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent) -> ()) {
-        eventMonitorEngine.monitor(type: .local, mask: mask, handler: handler)
+        eventMonitorEngine.monitor(type: .local, mask: mask) { event, _ in handler(event) }
     }
 
     func addGlobalMonitorWithEvent(_ mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent) -> ()) {
-        eventMonitorEngine.monitor(type: .global, mask: mask, handler: handler)
+        eventMonitorEngine.monitor(type: .global, mask: mask) { event, _ in handler(event) }
     }
 
     func bothMonitorWithEvent(_ mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent) -> ()) {
-        eventMonitorEngine.monitor(type: .both, mask: mask, handler: handler)
+        eventMonitorEngine.monitor(type: .both, mask: mask) { event, _ in handler(event) }
     }
 
     func addBothMonitor(_ isAutoSelectTextEnabled: Bool) {
+        selectionEventScope = nil
         isAutoSelectTextMonitoringEnabled = isAutoSelectTextEnabled
-        if !isAutoSelectTextEnabled {
+        if isAutoSelectTextEnabled {
+            invalidateAutoSelection()
+        } else {
             forceDismissPopButton()
         }
 
@@ -145,8 +144,8 @@ final class EventMonitor: NSObject {
             .leftMouseDragged,
         ]
 
-        bothMonitorWithEvent(eventMask) { [weak self] event in
-            self?.handleMonitorEvent(event)
+        eventMonitorEngine.monitor(type: .both, mask: eventMask) { [weak self] event, scope in
+            self?.handleMonitorEvent(event, scope: scope)
         }
 
         guard isAutoSelectTextEnabled, popButtonController.isPopButtonVisible else {
@@ -161,8 +160,9 @@ final class EventMonitor: NSObject {
     }
 
     func stop() {
-        forceDismissPopButton()
+        selectionEventScope = nil
         eventMonitorEngine.stop()
+        forceDismissPopButton()
         if let escapeKeyMonitor {
             NSEvent.removeMonitor(escapeKeyMonitor)
             self.escapeKeyMonitor = nil
@@ -226,19 +226,26 @@ final class EventMonitor: NSObject {
 
     private var lastEvent: NSEvent?
     private var currentModifierFlags: NSEvent.ModifierFlags = []
-    private var shouldBypassDismissIgnore = false
     private var mouseMovedThrottleGate: ThrottleGate
     private var escapeKeyMonitor: Any?
     private var isAutoSelectTextMonitoringEnabled = false
     private var autoSelectionGeneration: UInt = 0
+    private var selectionEventScope: EventScope?
+    private var dragStartWindowOwnerPID: pid_t?
+    private var applicationActivationObserver: NSObjectProtocol?
 }
 
 // MARK: - Private Implementation
 
 extension EventMonitor {
     private func configureDependencies() {
-        eventMonitorEngine.eventHandler = { [weak self] event in
-            self?.handleMonitorEvent(event)
+        // Space switches can bypass input monitors. Keep the scope for click-to-activate drags.
+        applicationActivationObserver = NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didActivateApplicationNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.forceDismissPopButton()
         }
 
         eventTapMonitor.keyDownHandler = { [weak self] keyCode, flags in
@@ -265,16 +272,16 @@ extension EventMonitor {
         }
     }
 
-    private func handleMonitorEvent(_ event: NSEvent) {
-        #if DEBUG
-        let eventStart = CFAbsoluteTimeGetCurrent()
+    private func handleMonitorEvent(_ event: NSEvent, scope: EventScope) {
+        let eventStart = BuildConfig.isDebug ? CFAbsoluteTimeGetCurrent() : nil
         defer {
-            let elapsed = (CFAbsoluteTimeGetCurrent() - eventStart) * 1000
-            if elapsed > 16 {
-                logInfo("Slow event handler: \(event.type.rawValue) took \(String(format: "%.1f", elapsed))ms")
+            if let eventStart {
+                let elapsed = (CFAbsoluteTimeGetCurrent() - eventStart) * 1000
+                if elapsed > 16 {
+                    logInfo("Slow event handler: \(event.type.rawValue) took \(String(format: "%.1f", elapsed))ms")
+                }
             }
         }
-        #endif
 
         lastEvent = event
         popButtonController.lastEvent = event
@@ -284,9 +291,15 @@ extension EventMonitor {
 
         switch event.type {
         case .leftMouseUp:
+            defer { dragStartWindowOwnerPID = nil }
             EZWindowManager.shared().lastPoint = mouseLocation
             endPoint = mouseLocation
             if triggerEvaluator.checkIfLeftMouseDragged() {
+                // System overlays can receive the drag without becoming the AX selection target.
+                if let dragStartWindowOwnerPID,
+                   dragStartWindowOwnerPID != frontmostApplication?.processIdentifier {
+                    return
+                }
                 triggerType = .dragged
                 let frontmostTriggerType = appContextProvider.frontmostAppTriggerType(
                     forceGetSelectedTextType: MyConfiguration.shared.forceGetSelectedTextType
@@ -296,12 +309,19 @@ extension EventMonitor {
                 }
             }
         case .leftMouseDown:
+            invalidateAutoSelection()
+            selectionEventScope = scope
+            dragStartWindowOwnerPID = scope == .global && isAutoSelectTextMonitoringEnabled
+                ? windowOwnerPID(at: mouseLocation)
+                : nil
             triggerEvaluator.updateRecordedEvents(event)
             handleLeftMouseDown(event, mouseLocation: mouseLocation)
         case .leftMouseDragged:
             triggerEvaluator.updateRecordedEvents(event)
             endPoint = mouseLocation
         case .rightMouseDown:
+            invalidateAutoSelection()
+            selectionEventScope = nil
             rightMouseDownBlock?(mouseLocation)
         case .keyDown:
 //            log("keyDown, characters: \(event.characters ?? "")")
@@ -311,8 +331,14 @@ extension EventMonitor {
             // Cmd+A only requests a selection change in the frontmost app.
             // Handle it before the generic key-down dismissal path and read
             // the selection later.
-            if handleSelectAllShortcut(event) {
+            if handleSelectAllShortcut(event, scope: scope) {
                 return
+            }
+
+            // Simulated Cmd+C must not cancel the selection request that sent it.
+            if !popButtonController.shouldIgnoreDismiss() {
+                invalidateAutoSelection()
+                selectionEventScope = nil
             }
 
             if shouldDismissForKeyCombination(
@@ -340,7 +366,10 @@ extension EventMonitor {
             if event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand {
                 triggerEvaluator.updateCommandKeyEvents(event)
                 if triggerEvaluator.checkIfDoubleCommandEvents() {
-                    dismissPopButton()
+                    // A fast Command release can arrive before the delayed Cmd+A read.
+                    if popButtonController.isPopButtonVisible {
+                        dismissPopButton()
+                    }
                     doubleCommandBlock?()
                 }
             }
@@ -357,7 +386,7 @@ extension EventMonitor {
     /// its selection, so this method schedules selection reading for later.
     /// Returns `true` when Cmd+A is consumed, including repeat events that
     /// should neither reschedule selection reading nor dismiss the pop button.
-    private func handleSelectAllShortcut(_ event: NSEvent) -> Bool {
+    private func handleSelectAllShortcut(_ event: NSEvent, scope: EventScope) -> Bool {
         guard isSelectAllShortcut(event) else { return false }
         guard !event.isARepeat else { return true }
 
@@ -382,7 +411,9 @@ extension EventMonitor {
 
         // Wait until the frontmost app applies Cmd+A; reading immediately can
         // capture the previous, empty, or partial selection.
-        cancelDelayGetSelectedText()
+        cancelDismissPopButton()
+        invalidateAutoSelection()
+        selectionEventScope = scope
         delayGetSelectedText()
 
         return true
@@ -420,6 +451,13 @@ extension EventMonitor {
 
         if popButtonController.isPopButtonVisible, isMouseInPopButtonWindow(mouseLocation) {
             // Avoid dismissing the pop button before its click action fires.
+            selectionEventScope = nil
+            return
+        }
+
+        guard let scope = selectionEventScope, allowsAutoSelection(from: scope) else {
+            selectionEventScope = nil
+            dismissPopButton()
             return
         }
 
@@ -474,6 +512,17 @@ extension EventMonitor {
         return windowNumberAtPoint == popButtonWindow.windowNumber
     }
 
+    private func windowOwnerPID(at mouseLocation: CGPoint) -> pid_t? {
+        let windowNumber = NSWindow.windowNumber(at: mouseLocation, belowWindowWithWindowNumber: 0)
+        guard windowNumber > 0, let windowID = CGWindowID(exactly: windowNumber) else { return nil }
+        let options: CGWindowListOption = [.optionOnScreenAboveWindow, .optionIncludingWindow]
+        let windows = CGWindowListCopyWindowInfo(options, windowID) as? [[String: Any]]
+        guard let window = windows?.last, window[kCGWindowNumber as String] as? CGWindowID == windowID else {
+            return nil
+        }
+        return window[kCGWindowOwnerPID as String] as? pid_t
+    }
+
     /// Handles mouse-moved events with throttling to prevent excessive computation.
     private func handleMouseMoved() {
         guard popButtonController.isPopButtonVisible else { return }
@@ -489,6 +538,7 @@ extension EventMonitor {
     @objc
     private func autoGetSelectedText() {
         guard enabledAutoSelectText() else { return }
+        guard let scope = selectionEventScope, allowsAutoSelection(from: scope) else { return }
         logInfo("auto get selected text")
 
         guard systemUtility.isFocusedSelectableTextElement() else {
@@ -537,6 +587,22 @@ extension EventMonitor {
         return enabled
     }
 
+    // Nonactivating panels receive local events while another app remains frontmost.
+    private func allowsAutoSelection(from scope: EventScope) -> Bool {
+        let isCurrentApp = appContextProvider.frontmostApplication?.processIdentifier
+            == NSRunningApplication.current.processIdentifier
+        guard scope != .local || isCurrentApp else {
+            logInfo("Skip local auto selection while an external app is frontmost")
+            return false
+        }
+        return true
+    }
+
+    private func invalidateAutoSelection() {
+        cancelDelayGetSelectedText()
+        autoSelectionGeneration &+= 1
+    }
+
     private func handleSelectedText(_ text: String?) {
         let trimmed = (text ?? "").removeInvisibleChar().trim()
         guard !trimmed.isEmpty else { return }
@@ -583,14 +649,8 @@ extension EventMonitor {
 
     @objc
     private func dismissPopButton() {
-        if shouldBypassDismissIgnore == false, popButtonController.shouldIgnoreDismiss() {
-            return
-        }
-        let wasVisible = popButtonController.isPopButtonVisible
-        consumePopButtonActivation()
-        if wasVisible {
-            dismissPopButtonBlock?()
-        }
+        guard !popButtonController.shouldIgnoreDismiss() else { return }
+        forceDismissPopButton()
     }
 
     private func delayDismissPopButton() {
@@ -637,10 +697,20 @@ extension EventMonitor {
 
     /// Cancels pending selection work even before its pop button becomes visible.
     private func forceDismissPopButton() {
-        log("forceDismissPopButton")
-        shouldBypassDismissIgnore = true
-        dismissPopButton()
-        shouldBypassDismissIgnore = false
+        let wasVisible = popButtonController.isPopButtonVisible
+        resetPopButtonState()
+        if wasVisible {
+            dismissPopButtonBlock?()
+        }
+    }
+
+    private func resetPopButtonState() {
+        invalidateAutoSelection()
+        cancelDismissPopButton()
+        popButtonController.isPopButtonVisible = false
+        mouseMovedThrottleGate.reset()
+        stopHighFrequencyEventMonitor()
+        eventTapMonitor.stop()
     }
 
     private func delayDismissPopButton(delay: TimeInterval) {
@@ -688,7 +758,7 @@ extension EventMonitor {
         guard isAutoSelectTextMonitoringEnabled else { return }
 
         highFrequencyEventMonitorEngine
-            .monitor(type: .both, mask: Constants.highFrequencyEventMask) { [weak self] event in
+            .monitor(type: .both, mask: Constants.highFrequencyEventMask) { [weak self] event, _ in
                 self?.handleHighFrequencyMonitorEvent(event)
             }
     }
