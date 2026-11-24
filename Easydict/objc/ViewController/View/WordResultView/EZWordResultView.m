@@ -263,6 +263,20 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             }
 
             NSString *text = nil;
+            if (errorMessage.length && result.isCombinedOCRFailure && result.translatedText.length) {
+                NSTextField *failureLabel = [NSTextField wrappingLabelWithString:errorMessage];
+                [self addSubview:failureLabel];
+                failureLabel.font = textFont;
+                failureLabel.textColor = NSColor.secondaryLabelColor;
+                [failureLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                    make.left.right.inset(kHorizontalMargin_8);
+                    make.top.equalTo(lastView ? lastView.mas_bottom : self.mas_top).offset(8);
+                }];
+                CGFloat width = MAX(1, NSWidth(self.bounds) - 2 * kHorizontalMargin_8);
+                height += 8 + [failureLabel.cell cellSizeForBounds:NSMakeRect(0, 0, width, CGFLOAT_MAX)].height;
+                lastView = failureLabel;
+                errorMessage = nil;
+            }
             if (errorMessage.length) {
                 text = errorMessage;
             } else if (result.translatedText) {

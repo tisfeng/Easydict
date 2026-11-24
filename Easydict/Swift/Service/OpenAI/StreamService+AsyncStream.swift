@@ -12,6 +12,26 @@ import OpenAI
 // MARK: - Stream Translate
 
 extension StreamService {
+    /// Resolves the query mode from the requested mode, text, and source language.
+    func queryType(text: String, from: Language, to: Language) -> EZQueryTextType {
+        if !queryType.isEmpty {
+            return queryType
+        }
+
+        let supportedTypes = supportedQueryType()
+        if supportedTypes.contains(.dictionary), (text as NSString).shouldQueryDictionary(
+            withLanguage: from,
+            maxWordCount: 2
+        ) {
+            return .dictionary
+        }
+        if supportedTypes.contains(.sentence), from == .english,
+           (text as NSString).shouldQuerySentence(withLanguage: from) {
+            return .sentence
+        }
+        return .translation
+    }
+
     func chatStreamTranslate(
         _ text: String,
         from: Language,

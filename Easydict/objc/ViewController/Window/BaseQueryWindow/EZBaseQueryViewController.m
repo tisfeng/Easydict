@@ -575,6 +575,29 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     [self cancelDelayDetectQueryText];
     self.queryModel.actionType = actionType;
+    EZStreamService *combinedService = autoQuery && ![actionType isEqualToString:EZActionTypeScreenshotOCR]
+        ? [self.detectManager combinedOCRServiceIn:self.services] : nil;
+    if (combinedService) {
+        EZLanguage sourceLanguage = self.queryModel.queryFromLanguage;
+        BOOL needsDetection = self.queryModel.needDetectLanguage;
+        [self.detectManager cancelOCR];
+        [self closeAllResultView:nil];
+        self.inputText = @"";
+        // Clearing an empty query also resets detected language; preserve explicit OCR retry intent.
+        if (!needsDetection) {
+            self.queryModel.detectedLanguage = sourceLanguage;
+        }
+        self.queryModel.needDetectLanguage = needsDetection;
+        self.firstService = nil;
+        for (EZQueryService *service in self.services) {
+            if (service.enabledQuery && service.enabledAutoQuery && service.supportedQueryType != EZQueryTextTypeNone) {
+                self.firstService = service;
+                [self autoCopyTranslatedTextOfService:service];
+                break;
+            }
+        }
+    }
+
     [self.queryView resetFormulaPreview];
     self.queryModel.ocrImage = image;
 
@@ -584,7 +607,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     BOOL saveOCRLocally = MyConfiguration.shared.localAutoSave;
     NSInteger ocrToken = ++self.ocrRequestToken;
     mm_weakify(self);
-    [self.detectManager ocrAndDetectTextWithProgress:^(NSString *text) {
+    void (^progress)(NSString *) = ^(NSString *text) {
         mm_strongify(self);
         if (ocrToken != self.ocrRequestToken) {
             return;
@@ -594,7 +617,8 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             self.inputText = text;
             [self.queryView enableStreamingFormulaPreview];
         }
-    } completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+    };
+    void (^ocrCompletion)(EZQueryModel *, NSError *) = ^(EZQueryModel *queryModel, NSError *error) {
         mm_strongify(self);
         if (ocrToken != self.ocrRequestToken) {
             return;
@@ -674,10 +698,30 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
             }
 
             if (autoQuery) {
-                [self startQueryText];
+                if (combinedService && [combinedService canReuseOCRTranslationForModel:queryModel]) {
+                    [self queryAllSerives:queryModel excludingService:combinedService];
+                } else {
+                    [self startQueryText];
+                }
             }
         }
-    }];
+    };
+    if (combinedService) {
+        [self.detectManager ocrAndTranslateWithService:combinedService
+                                             progress:progress
+                                        ocrCompletion:ocrCompletion
+                                          stateUpdate:^(EZQueryResult *result) {
+            mm_strongify(self);
+            [self updateCellWithResult:result reloadData:YES];
+        }
+                                          translation:^(EZQueryResult *result, NSError *error) {
+            mm_strongify(self);
+            [self handleQueryResult:result error:error model:self.queryModel service:combinedService
+                          queryText:result.queryText saveLocally:saveOCRLocally];
+        }];
+    } else {
+        [self.detectManager ocrAndDetectTextWithProgress:progress completion:ocrCompletion];
+    }
 }
 
 - (void)retryQueryWithLanguage:(EZLanguage)language {
@@ -939,9 +983,15 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel {
+    [self queryAllSerives:queryModel excludingService:nil];
+}
+
+/// The combined image request already owns the excluded service's translation.
+- (void)queryAllSerives:(EZQueryModel *)queryModel excludingService:(EZQueryService *)excludedService {
     if (queryModel.queryText.length == 0) {
         return;
     }
+
     MMLogInfo(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
 
     if (MyConfiguration.shared.localAutoSave && queryModel.queryText.length) {
@@ -953,13 +1003,25 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     self.firstService = nil;
     for (EZQueryService *service in self.services) {
-        BOOL enableAutoQuery = service.enabledQuery && service.enabledAutoQuery && service.supportedQueryType != EZQueryTextTypeNone;
+        BOOL isCombinedService = service == excludedService;
+        BOOL enableAutoQuery = (service.enabledQuery || isCombinedService)
+            && service.enabledAutoQuery && service.supportedQueryType != EZQueryTextTypeNone;
+        BOOL expandedDuringOCR = excludedService && !isCombinedService && service.enabledQuery
+            && service.result.isShowing && service.result.manualShow && !service.result.hasShowingResult;
         if (!enableAutoQuery) {
+            if (expandedDuringOCR) {
+                [self queryWithModel:queryModel service:service];
+                continue;
+            }
             MMLogInfo(@"service disabled: %@", service.serviceTypeWithUniqueIdentifier);
             continue;
         }
 
-        [self queryWithModel:queryModel service:service];
+        if (isCombinedService) {
+            [EZLocalStorage.shared increaseQueryService:service];
+        } else {
+            [self queryWithModel:queryModel service:service];
+        }
 
         if (!self.firstService) {
             self.firstService = service;
@@ -977,52 +1039,63 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     NSString *queryText = [queryModel.queryText copy];
     BOOL saveLocally = MyConfiguration.shared.localAutoSave;
     [self queryWithModel:queryModel service:service completion:^(EZQueryResult *result, NSError *_Nullable error) {
-        if (error) {
-            MMLogError(@"service: %@, query error code: %ld", service.serviceType, (long)error.code);
-        }
-        result.error = [EZQueryError queryErrorFrom:error];
-
-        // Auto convert to traditional Chinese if needed.
-        if (service.autoConvertTraditionalChinese &&
-            [self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
-            [service.result convertToTraditionalChineseResult];
-        }
-
-        BOOL hideResult = !result.manualShow && !result.hasTranslatedResult && result.isWarningErrorType;
-        if (hideResult) {
-            result.isShowing = NO;
-        }
-
-        //        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
-        [self updateCellWithResult:result reloadData:YES];
-
-        if (service == self.firstService) {
-            BOOL shouldRecord = !service.isStream || result.isStreamFinished;
-            if (saveLocally && MyConfiguration.shared.localAutoSave && shouldRecord && result.error == nil
-                && result.translatedText.length && queryText.length) {
-                [QueryRecordManager.shared updateTranslatedResult:result.translatedText
-                                                      forQueryText:queryText
-                                                                in:RecordTypeHistory];
-            }
-            // Append the query to the vocabulary notebook when it has content.
-            // HTML-only dictionary results (Apple Dictionary, MDict) carry neither a
-            // word result nor translated text, so htmlString must count as content too.
-            BOOL hasContent = queryText.length > 0
-                && (result.wordResult != nil
-                    || result.translatedText.length > 0
-                    || result.htmlString.length > 0);
-            if (shouldRecord && hasContent && result.error == nil) {
-                [VocabularyNotebookService.shared appendWithQueryModel:queryModel result:result];
-            }
-        }
-
-        if (service.autoCopyTranslatedTextBlock) {
-            BOOL shouldAutoCopy = !service.isStream || result.isStreamFinished;
-            if (shouldAutoCopy) {
-                service.autoCopyTranslatedTextBlock(result, error);
-            }
-        }
+        [self handleQueryResult:result error:error model:queryModel service:service
+                      queryText:queryText saveLocally:saveLocally];
     }];
+}
+
+/// Keep history, audio, copy and dictionary handling identical for image and text translations.
+- (void)handleQueryResult:(EZQueryResult *)result
+                    error:(NSError *)error
+                    model:(EZQueryModel *)queryModel
+                  service:(EZQueryService *)service
+                queryText:(NSString *)queryText
+              saveLocally:(BOOL)saveLocally {
+    if (error) {
+        MMLogError(@"service: %@, query error code: %ld", service.serviceType, (long)error.code);
+    }
+    result.error = [EZQueryError queryErrorFrom:error];
+
+    // Auto convert to traditional Chinese if needed.
+    if (service.autoConvertTraditionalChinese &&
+        [self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
+        [service.result convertToTraditionalChineseResult];
+    }
+
+    BOOL hideResult = !result.manualShow && !result.hasTranslatedResult && result.isWarningErrorType;
+    if (hideResult) {
+        result.isShowing = NO;
+    }
+
+    //        MMLogInfo(@"update service: %@, %@", service.serviceType, result);
+    [self updateCellWithResult:result reloadData:YES];
+
+    if (service == self.firstService) {
+        BOOL shouldRecord = !service.isStream || result.isStreamFinished;
+        if (saveLocally && MyConfiguration.shared.localAutoSave && shouldRecord && result.error == nil
+            && result.translatedText.length && queryText.length) {
+            [QueryRecordManager.shared updateTranslatedResult:result.translatedText
+                                                  forQueryText:queryText
+                                                            in:RecordTypeHistory];
+        }
+        // Append the query to the vocabulary notebook when it has content.
+        // HTML-only dictionary results (Apple Dictionary, MDict) carry neither a
+        // word result nor translated text, so htmlString must count as content too.
+        BOOL hasContent = queryText.length > 0
+            && (result.wordResult != nil
+                || result.translatedText.length > 0
+                || result.htmlString.length > 0);
+        if (shouldRecord && hasContent && result.error == nil) {
+            [VocabularyNotebookService.shared appendWithQueryModel:queryModel result:result];
+        }
+    }
+
+    if (service.autoCopyTranslatedTextBlock && !result.isCombinedOCRFailure) {
+        BOOL shouldAutoCopy = !service.isStream || result.isStreamFinished;
+        if (shouldAutoCopy) {
+            service.autoCopyTranslatedTextBlock(result, error);
+        }
+    }
 }
 
 // TODO: service already has the model property.
@@ -1213,7 +1286,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         if (result.isShowing && result.htmlString.length) {
             isFinished = result.webViewManager.wordResultViewHeight > 0;
         }
-        result.isLoading = !isFinished;
+        if (!result.isCombinedOCRInProgress) {
+            result.isLoading = !isFinished;
+        }
 
         NSIndexSet *indexSet = [self indexSetOfResult:result];
         if (indexSet) {
@@ -1720,6 +1795,12 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     [resultView setRetryBlock:^(EZQueryResult *result) {
         mm_strongify(self);
+        if (result.combinedOCRRetryRequiresImage && self.queryModel.ocrImage
+            && [result.queryText isEqualToString:self.queryModel.queryText]) {
+            service.enabledQuery = YES;
+            [self startQueryWithType:self.queryModel.actionType];
+            return;
+        }
         [self resetCellWithService:service autoQuery:YES];
     }];
 
@@ -1745,10 +1826,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
                           isShowing:(BOOL)isShowing {
     NSString *currentQueryText = self.queryModel.queryText ?: @"";
     NSString *resultQueryText = result.queryText ?: @"";
+    BOOL canQueryExpandedResult = isShowing && !self.detectManager.isAwaitingCombinedOCRSource
+        && !result.isCombinedOCRInProgress;
 
     // Expanded cells can still hold rendered content from an older query.
-    BOOL hasStaleExpandedResult = isShowing
-        && result.hasShowingResult
+    BOOL hasStaleExpandedResult = canQueryExpandedResult && result.hasShowingResult
         && ![resultQueryText isEqualToString:currentQueryText];
 
     if (hasStaleExpandedResult) {
@@ -1761,7 +1843,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     // Newly expanded services with no visible result should query this text.
-    BOOL needsQueryForExpandedService = isShowing && !result.hasShowingResult;
+    BOOL needsQueryForExpandedService = canQueryExpandedResult && !result.hasShowingResult;
     if (needsQueryForExpandedService) {
         [self performAfterLanguageDetectionIfNeeded:^{
             [self queryExpandedServiceIfToggleStillValid:service
@@ -1796,6 +1878,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     NSString *currentQueryText = self.queryModel.queryText ?: @"";
     return currentService == service
         && result.isShowing
+        && !self.detectManager.isAwaitingCombinedOCRSource
         && [currentQueryText isEqualToString:queryText];
 }
 
@@ -1842,7 +1925,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 
     // Another callback may have produced a result while detection was running.
-    if (result.hasShowingResult) {
+    if (result.isCombinedOCRInProgress || result.hasShowingResult) {
         return;
     }
 

@@ -13,8 +13,9 @@ import Foundation
 final class CodexAppServerProcess: @unchecked Sendable {
     // MARK: Lifecycle
 
-    init(runtime: CodexRuntime?) {
+    init(runtime: CodexRuntime?, disablingMCPServers serverNames: [String] = []) {
         self.runtime = runtime
+        self.disabledMCPServers = serverNames
     }
 
     deinit {
@@ -41,7 +42,7 @@ final class CodexAppServerProcess: @unchecked Sendable {
             )
             process.currentDirectoryURL = runtime.workingDirectory
         } else {
-            try CodexCLIInstallation.configureAppServer(process)
+            try CodexCLIInstallation.configureAppServer(process, disablingMCPServers: disabledMCPServers)
         }
         process.standardInput = context.stdinPipe
         process.standardOutput = context.stdoutPipe
@@ -79,7 +80,8 @@ final class CodexAppServerProcess: @unchecked Sendable {
     }
 
     func send(_ message: [String: Any]) throws {
-        var data = try JSONSerialization.data(withJSONObject: message)
+        // Keep schema property order deterministic so structured output emits original before translation.
+        var data = try JSONSerialization.data(withJSONObject: message, options: [.sortedKeys])
         data.append(0x0A)
         let handle = try stateLock.withLock { () -> FileHandle in
             guard process?.isRunning == true, let context else {
@@ -117,6 +119,7 @@ final class CodexAppServerProcess: @unchecked Sendable {
     private static let maximumStderrSize = 1024 * 1024
 
     private let runtime: CodexRuntime?
+    private let disabledMCPServers: [String]
     private let stateLock = NSLock()
     private let writeLock = NSLock()
     private let ioQueue = DispatchQueue(

@@ -82,11 +82,7 @@ struct EasydictApp: App {
             } icon: {
                 Image(menuBarIcon.rawValue)
                     .resizable()
-                    #if DEBUG
-                    .renderingMode(.original)
-                    #else
-                    .renderingMode(.template)
-                    #endif
+                    .renderingMode(BuildConfig.isDebug ? .original : .template)
                     .scaledToFit()
             }
             .help("Easydict 🍃")
