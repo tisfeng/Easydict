@@ -58,6 +58,8 @@ Qwen-MT 要求单条 user 消息及独立的 `translation_options`，现有自�
 - [x] 实测设置与三种模型的翻译界面，完成最终代码 review。
 - [x] 提交上游正式 PR，归档计划并准备交付回执。
 - [x] 修正自动审查发现的聊天清理问题，补测真实响应中的引号和标签保留。
+- [x] 2026-11-24 同步上游 [OCR 流式翻译 #1403](https://github.com/tisfeng/Easydict/pull/1403)，
+  在 `StreamService.swift` 保留 OCR 配置比较和 Qwen-MT 译文保留开关。
 
 ## 验证
 
@@ -95,6 +97,9 @@ Qwen-MT 要求单条 user 消息及独立的 `translation_options`，现有自�
   未单独执行 UI 取消操作。
 - 正式 PR #1406 已从 fork 任务分支提交至上游 `dev`；创建后回读核对
   repository、分支、head、标题和正文通过。截图由交付流程从仓库外补传。
+- 2026-11-24 合并验证：Debug arm64 构建成功；`Default` 测试计划中 Qwen-MT、
+  OCR 路由、顺序解码、完整响应、OCR 流和 OpenAI 请求控制共 31 项通过。
+  对照合并两侧确认代码差异完整保留，SwiftFormat 和 `git diff --check` 通过。
 - 官方接口参考：<https://help.aliyun.com/zh/model-studio/machine-translation>、
   <https://www.alibabacloud.com/help/en/model-studio/qwen-mt-api>。
 

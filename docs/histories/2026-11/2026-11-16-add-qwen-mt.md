@@ -2,6 +2,7 @@
 
 **Links:** [Issue #1114](https://github.com/tisfeng/Easydict/issues/1114)、
 [PR #1406](https://github.com/tisfeng/Easydict/pull/1406)、
+[OCR 流式翻译 #1403](https://github.com/tisfeng/Easydict/pull/1403)、
 [执行计划](../../exec-plans/completed/2026-11/2026-11-16-add-qwen-mt.md)
 
 ### 执行上下文
@@ -27,6 +28,8 @@
 - 增加服务注册、七种语言的名称、图标和 Xcode 源码/测试引用。
 - 增加专属测试及中英文配置说明，覆盖地域 Endpoint 与翻译专用行为。
 - 已构建并安装可日常使用的个人版本，保留官方 bundle ID。
+- 2026-11-24 同步上游 `dev` 的 `72b3187e`，解决 `StreamService.swift` 中
+  OCR 配置比较与 Qwen-MT 译文保留开关的冲突，两项属性均保留。
 
 ### 设计意图
 
@@ -59,6 +62,9 @@ Qwen-MT 的翻译参数和消息契约不同于通用聊天服务。独立服务
 - 构建产物与安装副本均通过 `codesign --verify --deep --strict`。
   界面验收后已恢复临时偏好，并正常启动唯一安装版实例。
 - 正式 PR #1406 已提交至上游 `dev`，创建后的身份、head 和正文回读验证通过。
+- 2026-11-24 合并验证：Debug arm64 构建成功，`Default` 计划的 Qwen-MT、OCR
+  路由、顺序解码、完整响应、OCR 流及 OpenAI 请求控制共 31 项测试通过。
+  复核确认合并结果完整保留两边的代码差异。本轮未重复真实接口或界面验收。
 
 ### 受影响文件
 
