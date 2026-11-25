@@ -106,13 +106,8 @@ final class EventMonitor: NSObject {
 
     /// Clears transient pop-button monitors after the button opens a query window.
     func consumePopButtonActivation() {
-        invalidateAutoSelection()
         selectionEventScope = nil
-        cancelDismissPopButton()
-        popButtonController.isPopButtonVisible = false
-        mouseMovedThrottleGate.reset()
-        stopHighFrequencyEventMonitor()
-        eventTapMonitor.stop()
+        resetPopButtonState()
     }
 
     func addLocalMonitorWithEvent(_ mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent) -> ()) {
@@ -128,9 +123,17 @@ final class EventMonitor: NSObject {
     }
 
     func addBothMonitor(_ isAutoSelectTextEnabled: Bool) {
-        invalidateAutoSelection()
         selectionEventScope = nil
         isAutoSelectTextMonitoringEnabled = isAutoSelectTextEnabled
+        if isAutoSelectTextEnabled {
+            invalidateAutoSelection()
+        } else {
+            forceDismissPopButton()
+        }
+
+        // Cursor updates belong to AppKit's tracking areas, not selection
+        // gestures. Dismissing a window while its cursor is updating can
+        // invalidate the cursor region again.
         let eventMask: NSEvent.EventTypeMask = [
             .leftMouseDown,
             .leftMouseUp,
@@ -139,7 +142,6 @@ final class EventMonitor: NSObject {
             .keyUp,
             .flagsChanged,
             .leftMouseDragged,
-            .cursorUpdate,
         ]
 
         eventMonitorEngine.monitor(type: .both, mask: eventMask) { [weak self] event, scope in
@@ -158,11 +160,9 @@ final class EventMonitor: NSObject {
     }
 
     func stop() {
-        invalidateAutoSelection()
         selectionEventScope = nil
         eventMonitorEngine.stop()
-        highFrequencyEventMonitorEngine.stop()
-        eventTapMonitor.stop()
+        forceDismissPopButton()
         if let escapeKeyMonitor {
             NSEvent.removeMonitor(escapeKeyMonitor)
             self.escapeKeyMonitor = nil
@@ -226,7 +226,6 @@ final class EventMonitor: NSObject {
 
     private var lastEvent: NSEvent?
     private var currentModifierFlags: NSEvent.ModifierFlags = []
-    private var shouldBypassDismissIgnore = false
     private var mouseMovedThrottleGate: ThrottleGate
     private var escapeKeyMonitor: Any?
     private var isAutoSelectTextMonitoringEnabled = false
@@ -246,7 +245,6 @@ extension EventMonitor {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.invalidateAutoSelection()
             self?.forceDismissPopButton()
         }
 
@@ -368,7 +366,10 @@ extension EventMonitor {
             if event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand {
                 triggerEvaluator.updateCommandKeyEvents(event)
                 if triggerEvaluator.checkIfDoubleCommandEvents() {
-                    dismissPopButton()
+                    // A fast Command release can arrive before the delayed Cmd+A read.
+                    if popButtonController.isPopButtonVisible {
+                        dismissPopButton()
+                    }
                     doubleCommandBlock?()
                 }
             }
@@ -410,6 +411,7 @@ extension EventMonitor {
 
         // Wait until the frontmost app applies Cmd+A; reading immediately can
         // capture the previous, empty, or partial selection.
+        cancelDismissPopButton()
         invalidateAutoSelection()
         selectionEventScope = scope
         delayGetSelectedText()
@@ -561,6 +563,10 @@ extension EventMonitor {
             guard let self else { return }
             DispatchQueue.main.async {
                 guard self.autoSelectionGeneration == selectionGeneration else { return }
+                guard self.enabledAutoSelectText() else {
+                    self.forceDismissPopButton()
+                    return
+                }
                 if let snapshot {
                     self.selectTextType = snapshot.selectTextType
                     self.isSelectedTextEditable = snapshot.isEditable
@@ -603,9 +609,8 @@ extension EventMonitor {
         let shouldShow = (actionType == .autoSelectQuery) && shouldShowAutoQueryIcon(for: trimmed)
         let updateUI = { [weak self] in
             guard let self else { return }
-            guard shouldShow else {
+            guard enabledAutoSelectText(), shouldShow else {
                 forceDismissPopButton()
-                eventTapMonitor.stop()
                 return
             }
 
@@ -644,15 +649,8 @@ extension EventMonitor {
 
     @objc
     private func dismissPopButton() {
-        if shouldBypassDismissIgnore == false, popButtonController.shouldIgnoreDismiss() {
-            return
-        }
-        invalidateAutoSelection()
-        dismissPopButtonBlock?()
-        popButtonController.isPopButtonVisible = false
-        mouseMovedThrottleGate.reset()
-        stopHighFrequencyEventMonitor()
-        eventTapMonitor.stop()
+        guard !popButtonController.shouldIgnoreDismiss() else { return }
+        forceDismissPopButton()
     }
 
     private func delayDismissPopButton() {
@@ -697,14 +695,22 @@ extension EventMonitor {
         return modifierKeyCodes.contains(keyCode)
     }
 
-    /// Dismisses the pop button even if dismiss ignores are active.
+    /// Cancels pending selection work even before its pop button becomes visible.
     private func forceDismissPopButton() {
-        log("forceDismissPopButton")
-        if popButtonController.isPopButtonVisible {
-            shouldBypassDismissIgnore = true
-            dismissPopButton()
-            shouldBypassDismissIgnore = false
+        let wasVisible = popButtonController.isPopButtonVisible
+        resetPopButtonState()
+        if wasVisible {
+            dismissPopButtonBlock?()
         }
+    }
+
+    private func resetPopButtonState() {
+        invalidateAutoSelection()
+        cancelDismissPopButton()
+        popButtonController.isPopButtonVisible = false
+        mouseMovedThrottleGate.reset()
+        stopHighFrequencyEventMonitor()
+        eventTapMonitor.stop()
     }
 
     private func delayDismissPopButton(delay: TimeInterval) {
