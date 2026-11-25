@@ -28,6 +28,8 @@ class CustomOpenAIService: BaseOpenAIService {
 
     override var supportsStreamingToggle: Bool { true }
 
+    @nonobjc override var supportsAPITypePicker: Bool { true }
+
     override func serviceTypeWithUniqueIdentifier() -> String {
         guard !uuid.isEmpty else {
             return ServiceType.customOpenAI.rawValue
@@ -47,7 +49,8 @@ class CustomOpenAIService: BaseOpenAIService {
         StreamConfigurationView(
             service: self,
             showCustomNameSection: true,
-            showStreamingToggle: true
+            showStreamingToggle: true,
+            showAPITypePicker: true
         )
     }
 }

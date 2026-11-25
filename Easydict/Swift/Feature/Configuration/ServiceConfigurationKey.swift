@@ -50,6 +50,7 @@ enum ServiceConfigurationKey: String {
     case model
     case apiKey = "API"
     case endpoint = "EndPoint"
+    case apiType = "APIType"
     case name
     case enableCustomPrompt
     case systemPrompt
