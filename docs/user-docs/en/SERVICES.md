@@ -40,6 +40,7 @@ The Services settings use these access types:
 | Built-in AI (`BuiltInAI`) | Built in | AI queries without a separately configured API key. |
 | Claude Code (`ClaudeCode`) | CLI | Calls an installed and authenticated Claude Code CLI. |
 | Codex (`CodexCLI`) | Local CLI or ChatGPT sign-in | Use an installed and authenticated Codex CLI, or download the component in Easydict and sign in with ChatGPT. See [Codex translation](./GUIDE.md#codex-translation). |
+| GitHub Copilot (`GitHubCopilot`) | CLI | Uses the locally installed and authenticated Copilot CLI. See [GitHub Copilot setup](./GUIDE.md#github-copilot-translate). |
 | Gemini (`Gemini`) | User key | Uses the Gemini API. |
 | Claude (`Claude`) | User key | Uses the Anthropic Claude API. |
 | Ollama (`Ollama`) | No key | Calls Ollama on this Mac or at a custom server URL. |
@@ -52,6 +53,7 @@ The Services settings use these access types:
 | --- | --- | --- |
 | Polishing (`Polishing`) | Built in | Polishes the input text with AI. |
 | Summary (`Summary`) | Built in | Summarizes the input text with AI. |
+| Explain (`Explain`) | Built in | Explains unfamiliar text in your preferred language. |
 
 ## General translation
 

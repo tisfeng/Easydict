@@ -38,7 +38,7 @@ final class QueryUsageStore {
         let newLevel = queryLevel(for: newCount)
 
         if currentCount == 0 || newLevel != currentLevel {
-            let levelTitle = queryLevelTitle(newLevel, chineseFlag: true)
+            let levelTitle = queryLevelTitle(newLevel)
             logInfo("new level: \(levelTitle)")
 
             let dict: [String: String] = [
@@ -147,28 +147,11 @@ final class QueryUsageStore {
         }
     }
 
-    /// Returns a localized level title.
-    /// - Parameters:
-    ///   - level: Level index.
-    ///   - chineseFlag: Whether Chinese labels should be used.
-    /// - Returns: Level title.
-    private func queryLevelTitle(_ level: Int, chineseFlag: Bool) -> String {
+    /// Returns the title used in query count logs and analytics.
+    private func queryLevelTitle(_ level: Int) -> String {
         let titles = ["黑铁", "青铜", "白银", "黄金", "铂金", "钻石", "大师", "宗师", "王者", "传奇"]
-        let enTitles = [
-            "Iron",
-            "Bronze",
-            "Silver",
-            "Gold",
-            "Platinum",
-            "Diamond",
-            "Master",
-            "Grandmaster",
-            "King",
-            "Legend",
-        ]
-
         let clampedLevel = max(1, min(level, titles.count))
-        return chineseFlag ? titles[clampedLevel - 1] : enTitles[clampedLevel - 1]
+        return titles[clampedLevel - 1]
     }
 }
 
