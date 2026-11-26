@@ -381,6 +381,97 @@ struct ResponsesAPITests {
         #expect(second == ["你"])
     }
 
+    @Test("SSE joins data lines of one event and still keeps the following event")
+    func joinsDataLinesBeforeDecoding() {
+        let texts = streamTexts([
+            "event: response.output_text.delta",
+            #"data: {"type":"response.output_text.delta","#,
+            #"data: "delta":"Hi"}"#,
+            "",
+            #"data: {"type":"response.output_text.delta","delta":"!"}"#,
+            "",
+        ])
+
+        #expect(texts == ["Hi", "!"])
+    }
+
+    @Test("A split terminal part and a later single-line part are both kept")
+    func joinsSplitTerminalPartWithoutDroppingTheNextEvent() {
+        let texts = streamTexts([
+            #"data: {"type":"response.output_text.done","output_index":0,"#,
+            #"data: "content_index":0,"text":"First"}"#,
+            "",
+            #"data: {"type":"response.output_text.done","output_index":1,"content_index":0,"text":" second"}"#,
+            "",
+            #"data: {"type":"response.completed","response":{"output_text":"First second"}}"#,
+            "",
+        ])
+
+        #expect(texts == ["First", " second"])
+    }
+
+    @Test("CRLF events and comment or id lines decode at the blank line")
+    func decodesCRLFEventsAndIgnoresNonDataFields() {
+        let texts = streamTexts(
+            [
+                "event: response.output_text.delta",
+                ": keep-alive",
+                "id: 7",
+                #"data: {"delta":"Hi"}"#,
+                "",
+            ],
+            separator: "\r\n"
+        )
+
+        #expect(texts == ["Hi"])
+    }
+
+    @Test("The event name survives until the blank line when JSON omits type")
+    func usesEventNameForJSONSplitAcrossDataLines() {
+        let texts = streamTexts([
+            "event: response.output_text.delta",
+            #"data: {"delta":"#,
+            #"data: "Hi"}"#,
+            "",
+        ])
+
+        #expect(texts == ["Hi"])
+    }
+
+    @Test("A trailing SSE event without a blank line is still decoded")
+    func finishesTrailingEventWithoutBlankLine() {
+        var decoder = ResponsesSSEDecoder()
+        let chunk = Data("data: {\"type\":\"response.output_text.delta\",\"delta\":\"Hi\"}\n".utf8)
+
+        #expect(decoder.consume(chunk).isEmpty)
+        #expect(decoder.finish() == [.delta("Hi", part: ResponsesOutputPartKey())])
+    }
+
+    @Test("Data lines split across chunks stay one event until the blank line")
+    func waitsForEventBoundaryAcrossChunks() {
+        var decoder = ResponsesSSEDecoder()
+        let first = Data("data: {\"type\":\"response.output_text.delta\",\n".utf8)
+        let second = Data("data: \"delta\":\"Hi\"}\n\n".utf8)
+
+        #expect(decoder.consume(first).isEmpty)
+        #expect(decoder.consume(second) == [.delta("Hi", part: ResponsesOutputPartKey())])
+    }
+
+    @Test("A failure payload split across data lines stays one failure")
+    func joinsSplitFailurePayload() {
+        let events = classifications([
+            #"data: {"type":"response.failed","response":"#,
+            #"data: {"error":{"message":"boom"}}}"#,
+            "",
+        ])
+        let details = """
+        {"type":"response.failed","response":
+        {"error":{"message":"boom"}}}
+        """
+
+        #expect(events == [.failure(message: "boom", details: details)])
+    }
+
     // MARK: Private
 
     private struct RequestBody: Decodable {
@@ -413,5 +504,21 @@ struct ResponsesAPITests {
     private func reducedTexts(_ classifications: [ResponsesStreamClassification]) -> [String] {
         var reducer = ResponsesStreamTextReducer()
         return classifications.flatMap { reducer.texts(from: $0) }
+    }
+
+    /// Joins SSE lines and keeps a trailing blank line when `lines` ends with `""`.
+    private func sseLines(_ lines: [String], separator: String = "\n") -> String {
+        lines.joined(separator: separator) + separator
+    }
+
+    private func classifications(_ lines: [String], separator: String = "\n") -> [ResponsesStreamClassification] {
+        var decoder = ResponsesSSEDecoder()
+        let data = Data(sseLines(lines, separator: separator).utf8)
+        return decoder.consume(data) + decoder.finish()
+    }
+
+    private func streamTexts(_ lines: [String], separator: String = "\n") -> [String] {
+        var reducer = ResponsesStreamTextReducer()
+        return classifications(lines, separator: separator).flatMap { reducer.texts(from: $0) }
     }
 }

@@ -123,6 +123,7 @@ struct ResponsesAPITransport {
 
     /// Streams Responses SSE events, yielding each new piece of output text once.
     ///
+    /// Data lines of one SSE event are joined at the blank-line boundary before JSON decoding.
     /// Deltas are forwarded as they arrive. `response.output_text.done` is forwarded only for
     /// parts that were not already streamed, so several terminal-only parts are preserved and a
     /// repeated full-text done does not duplicate deltas. `response.completed` is used only when
@@ -133,31 +134,17 @@ struct ResponsesAPITransport {
     ) async throws {
         let streamRequest = AF.streamRequest(request)
         let dataStream = streamRequest.streamTask().streamingData(automaticallyCancelling: true)
-        var lineBuffer = ResponsesSSEBuffer()
-        var eventName = ""
+        var decoder = ResponsesSSEDecoder()
         var errorBody = Data()
         var reducer = ResponsesStreamTextReducer()
-        let classifier = ResponsesStreamClassifier()
 
         // `streamingData` uses `Never` as its stream failure type. HTTP and cancellation
         // errors arrive on the completion event, not as a stream failure.
         for await element in dataStream {
             if let data = element.value {
                 appendErrorBody(data, to: &errorBody)
-                for line in lineBuffer.append(data) {
-                    if line.hasPrefix("event:") {
-                        eventName = String(line.dropFirst("event:".count))
-                            .trimmingCharacters(in: .whitespaces)
-                    } else if line.hasPrefix("data:") {
-                        let payload = String(line.dropFirst("data:".count))
-                            .trimmingCharacters(in: .whitespaces)
-                        try consumeStreamPayload(
-                            classifier.classify(eventName: eventName, payload: payload),
-                            reducer: &reducer,
-                            onText: onText
-                        )
-                        eventName = ""
-                    }
+                for classification in decoder.consume(data) {
+                    try consumeStreamPayload(classification, reducer: &reducer, onText: onText)
                 }
             }
             if let completion = element.completion {
@@ -169,6 +156,9 @@ struct ResponsesAPITransport {
                     try validateStreamContentType(response)
                 }
             }
+        }
+        for classification in decoder.finish() {
+            try consumeStreamPayload(classification, reducer: &reducer, onText: onText)
         }
     }
 

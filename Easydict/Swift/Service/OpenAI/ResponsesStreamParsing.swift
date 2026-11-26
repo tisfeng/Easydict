@@ -335,7 +335,7 @@ struct ResponsesSSEBuffer {
         return lines
     }
 
-    /// Returns a trailing partial line when the stream ends without a newline.
+    /// Returns bytes that never received a newline, so the final event can still be decoded.
     mutating func takeRemainder() -> String? {
         guard !pending.isEmpty else {
             return nil
@@ -354,4 +354,116 @@ struct ResponsesSSEBuffer {
     // MARK: Private
 
     private var pending = Data()
+}
+
+// MARK: - ResponsesSSEEvent
+
+struct ResponsesSSEEvent: Equatable, Sendable {
+    var eventName: String
+    var data: String
+}
+
+// MARK: - ResponsesSSEEventAssembler
+
+/// Joins the `data:` lines of one SSE event.
+///
+/// The SSE spec dispatches an event at the blank line. Multiple `data:` lines are one
+/// payload separated by `\n`, matching the Chat Completions stream parser. A trailing
+/// event with no blank line is available from `finish()`.
+struct ResponsesSSEEventAssembler {
+    // MARK: Internal
+
+    /// Accepts one line without its terminator. A blank line dispatches the accumulated event.
+    mutating func consume(line: String) -> ResponsesSSEEvent? {
+        if line.isEmpty {
+            return dispatch()
+        }
+        if line.hasPrefix(":") {
+            return nil
+        }
+        if let value = fieldValue("event:", in: line) {
+            eventName = value
+            return nil
+        }
+        if let value = fieldValue("data:", in: line) {
+            dataLines.append(value)
+            return nil
+        }
+        return nil
+    }
+
+    /// Dispatches a final event when the stream ends without a blank line.
+    mutating func finish() -> ResponsesSSEEvent? {
+        dispatch()
+    }
+
+    // MARK: Private
+
+    private var eventName = ""
+    private var dataLines: [String] = []
+
+    private mutating func dispatch() -> ResponsesSSEEvent? {
+        let name = eventName
+        let lines = dataLines
+        eventName = ""
+        dataLines.removeAll(keepingCapacity: true)
+        guard !lines.isEmpty else {
+            return nil
+        }
+        return ResponsesSSEEvent(eventName: name, data: lines.joined(separator: "\n"))
+    }
+
+    /// Reads an SSE field the way the Chat Completions parser does, trimming surrounding spaces.
+    private func fieldValue(_ name: String, in line: String) -> String? {
+        guard line.hasPrefix(name) else {
+            return nil
+        }
+        return String(line.dropFirst(name.count)).trimmingCharacters(in: .whitespaces)
+    }
+}
+
+// MARK: - ResponsesSSEDecoder
+
+/// Turns a Responses SSE byte stream into classified events.
+struct ResponsesSSEDecoder {
+    // MARK: Internal
+
+    /// Classifies every event whose blank-line boundary arrived in this chunk.
+    mutating func consume(_ data: Data) -> [ResponsesStreamClassification] {
+        classifications(from: buffer.append(data))
+    }
+
+    /// Classifies a trailing event that the stream ended without a blank line.
+    mutating func finish() -> [ResponsesStreamClassification] {
+        var lines: [String] = []
+        if let remainder = buffer.takeRemainder() {
+            lines.append(remainder)
+        }
+        var results = classifications(from: lines)
+        if let event = assembler.finish() {
+            results.append(classify(event))
+        }
+        return results
+    }
+
+    // MARK: Private
+
+    private var buffer = ResponsesSSEBuffer()
+    private var assembler = ResponsesSSEEventAssembler()
+    private let classifier = ResponsesStreamClassifier()
+
+    private mutating func classifications(from lines: [String]) -> [ResponsesStreamClassification] {
+        var results: [ResponsesStreamClassification] = []
+        for line in lines {
+            guard let event = assembler.consume(line: line) else {
+                continue
+            }
+            results.append(classify(event))
+        }
+        return results
+    }
+
+    private func classify(_ event: ResponsesSSEEvent) -> ResponsesStreamClassification {
+        classifier.classify(eventName: event.eventName, payload: event.data)
+    }
 }
