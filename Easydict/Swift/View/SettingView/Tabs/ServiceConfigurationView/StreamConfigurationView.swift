@@ -158,6 +158,15 @@ struct StreamConfigurationView: View {
                 )
             }
 
+            if let openAIService = service as? BaseOpenAIService,
+               openAIService.supportsOpenAIReasoningEffort {
+                StaticPickerCell(
+                    titleKey: "service.configuration.reasoning_effort.title",
+                    key: openAIService.openAIReasoningEffortKey,
+                    values: OpenAIReasoningEffort.allCases
+                )
+            }
+
             if showCustomPromptSection {
                 ToggleCell(
                     titleKey: "service.configuration.openai.enable_custom_prompt.title",

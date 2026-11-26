@@ -61,6 +61,9 @@ enum ServiceConfigurationKey: String {
     // `reasoningEffort`, whose storage slot the StreamService base class already
     // claims with the incompatible `ReasoningEffort` enum.
     case cliEffort = "CLIEffort"
+    // OpenAI-compatible `reasoning_effort` level (`OpenAIReasoningEffort`), kept
+    // separate from the `reasoningEffort` slot for the same type-conflict reason.
+    case openAIReasoningEffort = "OpenAIReasoningEffort"
     case codexAccessMode
     case codexManagedModel
     case codexManagedReasoningEffort
