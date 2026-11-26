@@ -203,7 +203,7 @@ struct ResponsesAPITests {
             payload: #"{"type":"response.output_text.delta","delta":"Hi"}"#
         )
 
-        #expect(event == .delta("Hi"))
+        #expect(event == .delta("Hi", part: ResponsesOutputPartKey()))
     }
 
     @Test("Terminal text is available when a gateway sends only response.completed")
@@ -217,7 +217,134 @@ struct ResponsesAPITests {
             """
         )
 
-        #expect(event == .terminalText("Done"))
+        #expect(event == .completedText("Done"))
+    }
+
+    @Test("output_text.done keeps the output and content index of that part")
+    func classifiesIndexedTerminalPart() {
+        let event = ResponsesStreamClassifier().classify(
+            eventName: "",
+            payload: #"{"type":"response.output_text.done","output_index":1,"content_index":0,"item_id":"msg_1","text":" second"}"#
+        )
+
+        #expect(
+            event == .terminalPart(
+                " second",
+                part: ResponsesOutputPartKey(outputIndex: 1, contentIndex: 0, itemID: "msg_1")
+            )
+        )
+    }
+
+    @Test("Terminal-only output parts are all kept and the completed aggregate is not repeated")
+    func preservesEveryTerminalOnlyPart() {
+        let texts = reducedTexts([
+            donePart("First", output: 0, content: 0),
+            donePart(" second", output: 1, content: 0),
+            completed("First second"),
+        ])
+
+        #expect(texts == ["First", " second"])
+    }
+
+    @Test("A done event does not repeat a part that was already streamed by deltas")
+    func skipsTerminalTextAlreadyStreamedByDeltas() {
+        let part = ResponsesOutputPartKey(outputIndex: 0, contentIndex: 0)
+        let texts = reducedTexts([
+            .delta("Hel", part: part),
+            .delta("lo", part: part),
+            .terminalPart("Hello", part: part),
+            .completedText("Hello"),
+        ])
+
+        #expect(texts == ["Hel", "lo"])
+    }
+
+    @Test("A completed payload is still used when the stream never sent deltas or done parts")
+    func usesCompletedTextWhenNothingElseArrived() {
+        let texts = reducedTexts([.completedText("Done")])
+
+        #expect(texts == ["Done"])
+    }
+
+    @Test("Deltas for one part and a terminal-only later part are both kept")
+    func keepsTerminalPartThatWasNotStreamed() {
+        let streamed = ResponsesOutputPartKey(outputIndex: 0, contentIndex: 0)
+        let terminalOnly = ResponsesOutputPartKey(outputIndex: 1, contentIndex: 0)
+        let texts = reducedTexts([
+            .delta("Hello", part: streamed),
+            .terminalPart("Hello", part: streamed),
+            .terminalPart(" world", part: terminalOnly),
+            .completedText("Hello world"),
+        ])
+
+        #expect(texts == ["Hello", " world"])
+    }
+
+    @Test("Index-less done events stay separate parts and do not repeat streamed deltas")
+    func preservesAnonymousTerminalPartsWithoutDuplicatingDeltas() {
+        let anonymous = ResponsesOutputPartKey()
+        let terminalOnly = reducedTexts([
+            .terminalPart("First", part: anonymous),
+            .terminalPart(" second", part: anonymous),
+            .completedText("First second"),
+        ])
+        let streamed = reducedTexts([
+            .delta("Hel", part: anonymous),
+            .delta("lo", part: anonymous),
+            .terminalPart("Hello", part: anonymous),
+        ])
+
+        #expect(terminalOnly == ["First", " second"])
+        #expect(streamed == ["Hel", "lo"])
+    }
+
+    @Test("Item ids keep distinct terminal messages and skip a done that repeats streamed text")
+    func tracksTerminalPartsByItemID() {
+        let first = ResponsesOutputPartKey(itemID: "msg_1")
+        let second = ResponsesOutputPartKey(itemID: "msg_2")
+        let texts = reducedTexts([
+            .delta("Hel", part: first),
+            .delta("lo", part: first),
+            .terminalPart("Hello", part: first),
+            .terminalPart("!", part: second),
+        ])
+
+        #expect(texts == ["Hel", "lo", "!"])
+    }
+
+    @Test("Two content parts of one item are both kept")
+    func keepsDistinctContentPartsOfTheSameItem() {
+        let first = ResponsesOutputPartKey(outputIndex: 0, contentIndex: 0, itemID: "msg_1")
+        let second = ResponsesOutputPartKey(outputIndex: 0, contentIndex: 1, itemID: "msg_1")
+        let texts = reducedTexts([
+            .terminalPart("First", part: first),
+            .terminalPart(" second", part: second),
+        ])
+
+        #expect(texts == ["First", " second"])
+    }
+
+    @Test("An item-level done does not repeat deltas already streamed for that item")
+    func skipsItemLevelDoneAfterIndexedDeltas() {
+        let streamed = ResponsesOutputPartKey(outputIndex: 0, contentIndex: 0, itemID: "msg_1")
+        let repeated = ResponsesOutputPartKey(itemID: "msg_1")
+        let texts = reducedTexts([
+            .delta("Hello", part: streamed),
+            .terminalPart("Hello", part: repeated),
+        ])
+
+        #expect(texts == ["Hello"])
+    }
+
+    @Test("The same indexed done part is emitted once")
+    func skipsDuplicateIndexedTerminalPart() {
+        let part = ResponsesOutputPartKey(outputIndex: 0, contentIndex: 0)
+        let texts = reducedTexts([
+            .terminalPart("First", part: part),
+            .terminalPart("First", part: part),
+        ])
+
+        #expect(texts == ["First"])
     }
 
     @Test("Failed and incomplete stream events stay failures without an event line")
@@ -273,5 +400,18 @@ struct ResponsesAPITests {
 
     private func decodeResponse(_ json: String) throws -> ResponsesResponse {
         try JSONDecoder().decode(ResponsesResponse.self, from: Data(json.utf8))
+    }
+
+    private func donePart(_ text: String, output: Int, content: Int) -> ResponsesStreamClassification {
+        .terminalPart(text, part: ResponsesOutputPartKey(outputIndex: output, contentIndex: content))
+    }
+
+    private func completed(_ text: String) -> ResponsesStreamClassification {
+        .completedText(text)
+    }
+
+    private func reducedTexts(_ classifications: [ResponsesStreamClassification]) -> [String] {
+        var reducer = ResponsesStreamTextReducer()
+        return classifications.flatMap { reducer.texts(from: $0) }
     }
 }

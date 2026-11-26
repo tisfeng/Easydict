@@ -54,71 +54,9 @@ struct ResponsesRequest: Encodable, Sendable {
     let store: Bool?
 }
 
-// MARK: - ResponsesAPIErrorBody
+// MARK: - ResponsesResponse + Output
 
-struct ResponsesAPIErrorBody: Decodable, Equatable, Sendable {
-    let message: String?
-}
-
-// MARK: - ResponsesIncompleteDetails
-
-struct ResponsesIncompleteDetails: Decodable, Equatable, Sendable {
-    let reason: String?
-}
-
-// MARK: - ResponsesOutputContent
-
-struct ResponsesOutputContent: Decodable, Equatable, Sendable {
-    let type: String?
-    let text: String?
-}
-
-// MARK: - ResponsesOutputItem
-
-struct ResponsesOutputItem: Decodable, Equatable, Sendable {
-    let type: String?
-    let content: [ResponsesOutputContent]?
-}
-
-// MARK: - ResponsesResponse
-
-struct ResponsesResponse: Decodable, Equatable, Sendable {
-    // MARK: Internal
-
-    let status: String?
-    let output: [ResponsesOutputItem]?
-    let error: ResponsesAPIErrorBody?
-    let incompleteDetails: ResponsesIncompleteDetails?
-    let outputTextField: String?
-
-    enum CodingKeys: String, CodingKey {
-        case status
-        case output
-        case error
-        case incompleteDetails = "incomplete_details"
-        case outputTextField = "output_text"
-    }
-
-    /// Text from completed message items, or the top-level `output_text` when a gateway only sends that field.
-    var aggregatedOutputText: String? {
-        var texts: [String] = []
-        for item in output ?? [] where item.type == "message" {
-            for content in item.content ?? [] where content.type == "output_text" {
-                if let text = content.text, !text.isEmpty {
-                    texts.append(text)
-                }
-            }
-        }
-        let joined = texts.joined()
-        if !joined.isEmpty {
-            return joined
-        }
-        if let outputTextField, !outputTextField.isEmpty {
-            return outputTextField
-        }
-        return nil
-    }
-
+extension ResponsesResponse {
     /// Returns completed output. A non-completed status is a failed translation even when partial text exists.
     func requireOutputText() throws -> String {
         if let status = status?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(),
@@ -134,120 +72,6 @@ struct ResponsesResponse: Decodable, Equatable, Sendable {
         }
         return text
     }
-}
-
-// MARK: - ResponsesStreamClassification
-
-enum ResponsesStreamClassification: Equatable {
-    case delta(String)
-    case terminalText(String)
-    case failure(message: String, details: String)
-    case ignored
-}
-
-// MARK: - ResponsesStreamClassifier
-
-/// Classifies one Responses SSE payload.
-///
-/// The JSON `type` decides the event. Gateways that remove the `event:` line still work,
-/// and an `event:` name is only a fallback when the payload has no type.
-struct ResponsesStreamClassifier {
-    // MARK: Internal
-
-    func classify(eventName: String, payload: String) -> ResponsesStreamClassification {
-        let trimmedPayload = payload.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedPayload.isEmpty, trimmedPayload != "[DONE]" else {
-            return .ignored
-        }
-
-        guard let data = trimmedPayload.data(using: .utf8),
-              let decoded = try? JSONDecoder().decode(ResponsesStreamPayload.self, from: data)
-        else {
-            return .ignored
-        }
-
-        let type = decoded.type ?? eventName
-        if type == "response.output_text.delta", let delta = decoded.delta, !delta.isEmpty {
-            return .delta(delta)
-        }
-        if let terminalText = terminalText(type: type, payload: decoded) {
-            return .terminalText(terminalText)
-        }
-        if isFailure(type) {
-            return .failure(
-                message: failureMessage(type: type, payload: decoded),
-                details: trimmedPayload
-            )
-        }
-        return .ignored
-    }
-
-    // MARK: Private
-
-    private func isFailure(_ type: String) -> Bool {
-        type == "response.failed" || type == "response.incomplete" || type == "error" || type == "response.error"
-    }
-
-    private func terminalText(type: String, payload: ResponsesStreamPayload) -> String? {
-        if type == "response.output_text.done", let text = payload.text, !text.isEmpty {
-            return text
-        }
-        if type == "response.completed" {
-            return payload.response?.aggregatedOutputText
-        }
-        return nil
-    }
-
-    private func failureMessage(type: String, payload: ResponsesStreamPayload) -> String {
-        if let message = payload.message?.trimmingCharacters(in: .whitespacesAndNewlines), !message.isEmpty {
-            return message
-        }
-        if let message = payload.response?.error?.message, !message.isEmpty {
-            return message
-        }
-        if let reason = payload.response?.incompleteDetails?.reason, !reason.isEmpty {
-            return "Responses status incomplete: \(reason)"
-        }
-        return "Responses stream \(type)"
-    }
-}
-
-// MARK: - ResponsesStreamPayload
-
-private struct ResponsesStreamPayload: Decodable {
-    let type: String?
-    let delta: String?
-    let text: String?
-    let message: String?
-    let response: ResponsesResponse?
-}
-
-// MARK: - ResponsesSSEBuffer
-
-/// Splits a byte stream into SSE lines.
-///
-/// Chunks may divide a line inside a multibyte UTF-8 character, so a line is decoded only after its newline byte.
-struct ResponsesSSEBuffer {
-    // MARK: Internal
-
-    /// Appends one chunk and returns each complete line without its terminator.
-    mutating func append(_ data: Data) -> [String] {
-        pending.append(data)
-        var lines: [String] = []
-        while let newlineIndex = pending.firstIndex(of: 0x0A) {
-            var lineData = pending[..<newlineIndex]
-            pending.removeSubrange(...newlineIndex)
-            if lineData.last == 0x0D {
-                lineData = lineData.dropLast()
-            }
-            lines.append(String(decoding: Data(lineData), as: UTF8.self))
-        }
-        return lines
-    }
-
-    // MARK: Private
-
-    private var pending = Data()
 }
 
 // MARK: - ResponsesAPITransport
@@ -297,10 +121,12 @@ struct ResponsesAPITransport {
         return try decoded.requireOutputText()
     }
 
-    /// Streams Responses SSE events, yielding each text delta once.
+    /// Streams Responses SSE events, yielding each new piece of output text once.
     ///
-    /// A terminal text event is used only when the stream never emitted a delta, so a gateway that
-    /// sends only `response.completed` still produces a translation without duplicating streamed text.
+    /// Deltas are forwarded as they arrive. `response.output_text.done` is forwarded only for
+    /// parts that were not already streamed, so several terminal-only parts are preserved and a
+    /// repeated full-text done does not duplicate deltas. `response.completed` is used only when
+    /// the stream has not already produced text.
     func stream(
         _ request: URLRequest,
         onText: @escaping @Sendable (String) -> ()
@@ -310,7 +136,7 @@ struct ResponsesAPITransport {
         var lineBuffer = ResponsesSSEBuffer()
         var eventName = ""
         var errorBody = Data()
-        var sawDelta = false
+        var reducer = ResponsesStreamTextReducer()
         let classifier = ResponsesStreamClassifier()
 
         // `streamingData` uses `Never` as its stream failure type. HTTP and cancellation
@@ -327,7 +153,7 @@ struct ResponsesAPITransport {
                             .trimmingCharacters(in: .whitespaces)
                         try consumeStreamPayload(
                             classifier.classify(eventName: eventName, payload: payload),
-                            sawDelta: &sawDelta,
+                            reducer: &reducer,
                             onText: onText
                         )
                         eventName = ""
@@ -392,22 +218,14 @@ struct ResponsesAPITransport {
 
     private func consumeStreamPayload(
         _ classification: ResponsesStreamClassification,
-        sawDelta: inout Bool,
+        reducer: inout ResponsesStreamTextReducer,
         onText: @Sendable (String) -> ()
     ) throws {
-        switch classification {
-        case let .delta(text):
-            sawDelta = true
-            onText(text)
-        case let .terminalText(text):
-            if !sawDelta {
-                sawDelta = true
-                onText(text)
-            }
-        case let .failure(message, details):
+        if case let .failure(message, details) = classification {
             throw QueryError(type: .api, message: message, errorDataMessage: details)
-        case .ignored:
-            break
+        }
+        for text in reducer.texts(from: classification) {
+            onText(text)
         }
     }
 
