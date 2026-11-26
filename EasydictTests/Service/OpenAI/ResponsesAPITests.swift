@@ -6,6 +6,7 @@
 //  Copyright © 2026 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 import Testing
 
@@ -80,9 +81,16 @@ struct ResponsesAPITests {
         #expect(!openAI.usesResponsesAPI)
         #expect(openAI.resolvedRequestURL(from: responsesURL) == responsesURL)
 
+        // A fresh UUID reads a missing key. The default instance key
+        // EZCustomOpenAIAPITypeKey can already be set to Responses on a developer machine.
         let custom = CustomOpenAIService()
+        custom.uuid = UUID().uuidString
+        let apiTypeKey = custom.apiTypeKey
+        defer { Defaults.reset(apiTypeKey) }
         let chatURL = try url("https://example.com/v1/chat/completions")
         let unrecognized = try url("https://example.com/api/chat")
+        #expect(apiTypeKey.name != "EZCustomOpenAIAPITypeKey")
+        #expect(UserDefaults.standard.object(forKey: apiTypeKey.name) == nil)
         #expect(custom.supportsAPITypePicker)
         #expect(custom.apiType == .chat)
         #expect(!custom.usesResponsesAPI)
