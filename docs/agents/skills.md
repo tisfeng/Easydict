@@ -27,17 +27,17 @@ Easydict 直接从仓库运行共享 Skills，安装内容需要可离线审查�
 
 ## 来源基线：tisfeng/skills
 
-- 核对日期：2026-11-11；来源：`https://github.com/tisfeng/skills`；安装器 `skills@1.5.25`。
-- 采用版本：`v0.9.3`；annotated tag `d73800074e35f407b574c54b365e68a3229b3867`（unsigned），
-  peeled commit `485579eed83d2924236b477624161550c0349bf0`；核验时同时固定 tag 和 peeled
+- 核对日期：2026-11-27；来源：`https://github.com/tisfeng/skills`；安装器 `skills@1.5.25`。
+- 采用版本：`v0.10.0`；annotated tag `6d2ef6453e37ba6fc0957831b21f6e7be3d22b72`（unsigned），
+  peeled commit `f75f348da80ee320db207c4047fdf2eb5d48e38c`；核验时同时固定 tag 和 peeled
   commit。
-- 采用范围：`code-simplifier`、`git-commit`、`review`、`review-pr`、`submit-pr`、
+- 采用范围：`code-maintenance`、`git-commit`、`review`、`review-pr`、`submit-pr`、
   `worktree-rebase-merge` 六个完整 Skill 目录，不采用其他上游内容。
 
 ```bash
 npx -y skills@1.5.25 add \
-  https://github.com/tisfeng/skills/tree/v0.9.3 \
-  --skill code-simplifier git-commit review review-pr submit-pr worktree-rebase-merge \
+  https://github.com/tisfeng/skills/tree/v0.10.0 \
+  --skill code-maintenance git-commit review review-pr submit-pr worktree-rebase-merge \
   --agent codex --yes --copy --full-depth
 ```
 
@@ -52,7 +52,7 @@ npx -y skills@1.5.25 add \
   type、scope 与 breaking 语义，避免两个区块复用同一英文标题。
 - 上游仓库级格式校验不随安装器复制，升级时另行核对 frontmatter、`agents/openai.yaml` 和
   相对链接。
-- `code-simplifier` 同时包含 Electron 与 Swift 条件规则，不删减不适用部分，任务中按 Skill
+- `code-maintenance` 同时包含 Electron 与 Swift 条件规则，不删减不适用部分，任务中按 Skill
   路由读取适用内容。
 - 上游 `.agents/skills/<name> -> ../../skills/<name>` 链接是上游自用的源码发现机制，快照
   继续使用 `--copy --full-depth` 保存完整目录，不引入这些链接。
