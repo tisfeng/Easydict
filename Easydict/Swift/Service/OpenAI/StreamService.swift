@@ -268,6 +268,11 @@ public class StreamService: QueryService {
 
     var hideThinkTagContent: Bool = true
 
+    /// Dedicated translation providers return literal content rather than chat wrappers.
+    var preservesResponseContent: Bool {
+        false
+    }
+
     /// Compared only in memory; credentials must never be logged or persisted in request records.
     @nonobjc
     var ocrTranslationConfiguration: [String] {

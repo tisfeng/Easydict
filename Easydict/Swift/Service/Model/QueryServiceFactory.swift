@@ -139,6 +139,7 @@ final class QueryServiceFactory: NSObject {
         .init(.youdao, YoudaoService.self, "youdao_dict", apiKeyRequirement: .none),
         .init(.openAI, OpenAIService.self, "openai_translate"),
         .init(.qianfan, QianfanService.self, "service.qianfan.name"),
+        .init(.qwenMT, QwenMTService.self, "service.qwen_mt.name"),
         .init(.deepSeek, DeepSeekService.self, "deepseek_translate"),
         .init(.groq, GroqService.self, "groq_translate"),
         .init(.zhipu, ZhipuService.self, "zhipu_translate"),
