@@ -8,6 +8,7 @@
 
 import Alamofire
 import AsyncAlgorithms
+import Defaults
 import Foundation
 import OpenAI
 
@@ -42,6 +43,30 @@ public class BaseOpenAIService: StreamService {
 
     override var canFetchRemoteModels: Bool {
         true
+    }
+
+    @nonobjc
+    override var reasoningEffort: ChatQuery.ReasoningEffort? {
+        guard supportsOpenAIReasoningEffort else { return super.reasoningEffort }
+        return Defaults[openAIReasoningEffortKey].chatQueryValue
+    }
+
+    /// Includes the reasoning effort so changing it invalidates in-flight OCR translation reuse.
+    @nonobjc
+    override var ocrTranslationConfiguration: [String] {
+        guard supportsOpenAIReasoningEffort else { return super.ocrTranslationConfiguration }
+        return super.ocrTranslationConfiguration + [Defaults[openAIReasoningEffortKey].rawValue]
+    }
+
+    /// Whether this service exposes the OpenAI-compatible reasoning effort picker
+    /// and sends the selected `reasoning_effort`. Off by default.
+    var supportsOpenAIReasoningEffort: Bool {
+        false
+    }
+
+    @nonobjc
+    var openAIReasoningEffortKey: Defaults.Key<OpenAIReasoningEffort> {
+        serviceDefaultsKey(.openAIReasoningEffort, defaultValue: .default)
     }
 
     override func contentStreamTranslate(
