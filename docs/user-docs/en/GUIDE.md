@@ -33,7 +33,8 @@ Download the latest version from [GitHub Releases](https://github.com/tisfeng/Ea
 
 ### Developer build
 
-The current source requires macOS 13+, Xcode 16+, and CocoaPods.
+To build the current source, use Xcode 27 and CocoaPods on a Mac with Apple silicon
+running macOS Tahoe 26.6 or later.
 
 1. Clone the repository and switch to the `dev` branch.
 2. Run `pod install` in the repository directory.

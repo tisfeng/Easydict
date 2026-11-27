@@ -1,6 +1,6 @@
 # Getting Started on Localization
 Easydict uses Xcode String Catalog to manage translations, so the following steps are what you need to get started on localizing the app.
-### Installing Xcode 16+
+### Installing Xcode 27
 You can install Xcode from the [Mac App Store](https://apps.apple.com/app/xcode/id497799835) or its beta versions on [Apple Developer](https://developer.apple.com/xcode/resources/).
 ### Cloning and building the project
 1. Use git to clone the project from GitHub to your Mac. You can do this by using the [git command line tool](https://docs.github.com/en/get-started/getting-started-with-git) or  [GitHub Desktop](https://desktop.github.com).

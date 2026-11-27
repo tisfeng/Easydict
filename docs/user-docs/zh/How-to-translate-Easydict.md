@@ -1,6 +1,6 @@
 # 开始翻译
 Easydict 的翻译是通过 Xcode 中的 String Catalog 管理的，下面是翻译 Easydict 的详细步骤
-### 安装 Xcode 16+
+### 安装 Xcode 27
 可以从 [Mac App Store](https://apps.apple.com/app/xcode/id497799835) 安装Xcode，或者从 [Apple Developer](https://developer.apple.com/xcode/resources/) 获取 Beta 版本。
 ### 克隆和构建项目
 1. 使用 git 将项目从 GitHub 克隆到本地，这里可以使用 [git 命令行工具](https://docs.github.com/en/get-started/getting-started-with-git) 或 [GitHub Desktop](https://desktop.github.com) 

@@ -30,7 +30,8 @@ brew install --cask easydict
 
 ### 开发者构建
 
-当前源码需要 macOS 13+、Xcode 16+ 和 CocoaPods。
+请在搭载 Apple 芯片且运行 macOS Tahoe 26.6 或更高版本的 Mac 上，使用 Xcode 27 和
+CocoaPods 构建当前源码。
 
 1. 克隆仓库并切换到 `dev` 分支。
 2. 在仓库目录运行 `pod install`。
