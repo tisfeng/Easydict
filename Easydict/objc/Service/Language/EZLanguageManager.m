@@ -167,7 +167,12 @@ static EZLanguageManager *_instance;
 
 
 - (NSArray<EZLanguage> *)userPreferredTwoLanguages {
-    NSArray *twoLanguages = @[ self.userFirstLanguage, self.userSecondLanguage ];
+    NSMutableArray *twoLanguages = [NSMutableArray arrayWithObject:self.userFirstLanguage];
+    // Second language is optional, Auto means the user left it empty.
+    EZLanguage secondLanguage = self.userSecondLanguage;
+    if (![secondLanguage isEqualToString:EZLanguageAuto]) {
+        [twoLanguages addObject:secondLanguage];
+    }
     return twoLanguages;
 }
 
@@ -212,6 +217,10 @@ static EZLanguageManager *_instance;
     EZLanguage secondLanguage = [self userSecondLanguage];
     EZLanguage targetLanguage = firstLanguage;
     if ([sourceLanguage isEqualToString:firstLanguage]) {
+        // Without a second language, always translate into the first language.
+        if ([secondLanguage isEqualToString:EZLanguageAuto]) {
+            return firstLanguage;
+        }
         targetLanguage = secondLanguage;
     }
     
