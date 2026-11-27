@@ -152,6 +152,48 @@ class EZTranslateWordResult: NSObject {
     var synonyms: [EZTranslatePart]?
     var antonyms: [EZTranslatePart]?
     var collocation: [EZTranslatePart]?
+    /// Collins frequency band, 1–5 stars; 0 when unknown.
+    var collinsStar: Int = 0
+    /// Senses from the Collins English-Chinese dictionary, in dictionary order.
+    var collinsSenses: [EZCollinsSense]?
+    /// Bilingual example sentences for the queried word.
+    var exampleSentences: [EZExampleSentence]?
+}
+
+// MARK: - EZExampleSentence
+
+/// An example sentence with its translation.
+///
+/// `text` may contain `<b>` tags around the queried word, as Youdao and Collins mark it.
+@objcMembers
+class EZExampleSentence: NSObject {
+    // MARK: Lifecycle
+
+    init(text: String, translation: String?) {
+        self.text = text
+        self.translation = translation
+    }
+
+    // MARK: Internal
+
+    let text: String
+    let translation: String?
+}
+
+// MARK: - EZCollinsSense
+
+/// One numbered sense of a Collins English-Chinese entry.
+@objcMembers
+class EZCollinsSense: NSObject {
+    /// Collins grammar code, such as `V-I` or `N-COUNT`.
+    var partOfSpeech: String?
+    /// Register label such as `正式` (formal).
+    var register: String?
+    /// Short Chinese gloss, such as `下降`.
+    var meaning: String?
+    /// The English definition, which may contain `<b>` tags.
+    var definition: String = ""
+    var examples: [EZExampleSentence] = []
 }
 
 // MARK: - QueryResult

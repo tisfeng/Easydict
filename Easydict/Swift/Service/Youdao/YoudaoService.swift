@@ -11,6 +11,7 @@ import CryptoKit
 import CryptoSwift
 import Defaults
 import Foundation
+import SwiftUI
 
 // MARK: - Constants
 
@@ -71,6 +72,11 @@ class YoudaoService: QueryService {
 
     override func name() -> String {
         NSLocalizedString("youdao_dict", comment: "")
+    }
+
+    /// Returns the toggles for the optional sections of Youdao word results.
+    override func configurationListItems() -> Any? {
+        YoudaoDictionaryConfigurationView()
     }
 
     override func intelligentQueryTextType() -> EZQueryTextType {
@@ -230,4 +236,27 @@ class YoudaoService: QueryService {
 
         return result
     }
+}
+
+// MARK: - YoudaoDictionaryConfigurationView
+
+/// Toggles for the Collins and example sentence sections of Youdao word results.
+private struct YoudaoDictionaryConfigurationView: View {
+    // MARK: Internal
+
+    var body: some View {
+        Section {
+            Toggle("service.configuration.youdao.show_collins.title", isOn: $showCollins)
+            Toggle("service.configuration.youdao.show_examples.title", isOn: $showExampleSentences)
+        } header: {
+            Text("youdao_dict")
+        } footer: {
+            Text("service.configuration.youdao.sections.footer")
+        }
+    }
+
+    // MARK: Private
+
+    @Default(.youdaoShowCollins) private var showCollins
+    @Default(.youdaoShowExampleSentences) private var showExampleSentences
 }

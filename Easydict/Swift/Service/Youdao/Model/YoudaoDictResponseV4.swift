@@ -232,6 +232,7 @@ struct YoudaoDictResponseV4: Codable {
             case tran, gram
             case boxExtra = "box_extra"
             case seeAlsos, headword, sees, loc
+            case register = "registr"
         }
 
         let posEntry: PosEntry?
@@ -241,6 +242,28 @@ struct YoudaoDictResponseV4: Codable {
         let headword: String?
         let sees: Sees?
         let loc: String?
+        /// Register label such as `正式`; lossy so an unexpected shape cannot fail the whole response.
+        let register: LossyString?
+    }
+
+    // MARK: - LossyString
+
+    /// A string that decodes to `nil` instead of failing when the value has another type.
+    struct LossyString: Codable {
+        // MARK: Lifecycle
+
+        init(from decoder: Decoder) throws {
+            self.value = try? decoder.singleValueContainer().decode(String.self)
+        }
+
+        // MARK: Internal
+
+        let value: String?
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.singleValueContainer()
+            try container.encode(value)
+        }
     }
 
     // MARK: - ExamSents

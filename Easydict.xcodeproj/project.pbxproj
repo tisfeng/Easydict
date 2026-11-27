@@ -176,6 +176,7 @@
 		035451052E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035451042E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift */; };
 		0354E9202D3601500050E5BE /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 0354E91F2D3601500050E5BE /* AsyncAlgorithms */; };
 		035606002D2EB00700FC28B3 /* EZQueryResult+DictV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035605FF2D2EB00700FC28B3 /* EZQueryResult+DictV4.swift */; };
+		A9D1C0DE2026112200000001 /* DictionaryRichText.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D1C0DE2026112200000002 /* DictionaryRichText.swift */; };
 		0356498E2E8F7EDA00398D52 /* ocr-en-number-729.png in Resources */ = {isa = PBXBuildFile; fileRef = 0356498B2E8F7EDA00398D52 /* ocr-en-number-729.png */; };
 		035649902E8FBFB900398D52 /* ocr-en-number-pi.png in Resources */ = {isa = PBXBuildFile; fileRef = 0356498F2E8FBFB900398D52 /* ocr-en-number-pi.png */; };
 		0357B95A2C04387D00A48CB0 /* TextEditorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0357B9592C04387D00A48CB0 /* TextEditorCell.swift */; };
@@ -907,6 +908,7 @@
 		035451022E3C60D600BAA8E5 /* OCRConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRConstants.swift; sourceTree = "<group>"; };
 		035451042E3C656A00BAA8E5 /* OCRMergeAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRMergeAnalyzer.swift; sourceTree = "<group>"; };
 		035605FF2D2EB00700FC28B3 /* EZQueryResult+DictV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EZQueryResult+DictV4.swift"; sourceTree = "<group>"; };
+		A9D1C0DE2026112200000002 /* DictionaryRichText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryRichText.swift; sourceTree = "<group>"; };
 		0356498B2E8F7EDA00398D52 /* ocr-en-number-729.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-number-729.png"; sourceTree = "<group>"; };
 		0356498F2E8FBFB900398D52 /* ocr-en-number-pi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ocr-en-number-pi.png"; sourceTree = "<group>"; };
 		0357B9592C04387D00A48CB0 /* TextEditorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditorCell.swift; sourceTree = "<group>"; };
@@ -3041,6 +3043,7 @@
 				03538E012D26D705005E56A8 /* YoudaoService+Dict.swift */,
 				03538E032D26D70E005E56A8 /* YoudaoService+Translate.swift */,
 				035605FF2D2EB00700FC28B3 /* EZQueryResult+DictV4.swift */,
+				A9D1C0DE2026112200000002 /* DictionaryRichText.swift */,
 				03538E092D281920005E56A8 /* YoudaoService+OCR.swift */,
 			);
 			path = Youdao;
@@ -5018,6 +5021,7 @@
 				0352AF352E0EEE9D00C2D4B1 /* OCRPoetryDetector.swift in Sources */,
 				9643D9402B6FC426000FBEA6 /* MainMenuShortcutCommand.swift in Sources */,
 				035606002D2EB00700FC28B3 /* EZQueryResult+DictV4.swift in Sources */,
+				A9D1C0DE2026112200000001 /* DictionaryRichText.swift in Sources */,
 				03538E0C2D281ADA005E56A8 /* YoudaoOCRResponse.swift in Sources */,
 				03CD01592D24E17C0079D0CB /* YoudaoService.swift in Sources */,
 				03BDA7BE2A26DA280079D04F /* XPMCountedArgument.m in Sources */,

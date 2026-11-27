@@ -6,6 +6,7 @@
 //  Copyright © 2025 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 
 // MARK: - EZQueryResult + DictV4
@@ -198,11 +199,80 @@ extension QueryResult {
             translatedResults = [translation]
         }
 
-        // Set word result only if it has parts or simple words
-        if wordResult.parts != nil || wordResult.simpleWords != nil {
+        updateCollinsAndExamples(dictV4: model, wordResult: wordResult)
+
+        // Set word result only if it has something to show
+        if wordResult.parts != nil || wordResult.simpleWords != nil
+            || wordResult.collinsSenses != nil || wordResult.exampleSentences != nil {
             self.wordResult = wordResult
         }
     }
 }
 
 // swiftlint:enable all
+
+// MARK: - Collins and example sentences
+
+extension QueryResult {
+    /// At most this many Collins senses and example sentences are shown, to keep the card short.
+    static let maxCollinsSenses = 3
+    static let maxExampleSentences = 3
+
+    /// Splits a Collins `tran` such as `If something declines, it becomes less…. 下降`
+    /// into the English definition and the trailing Chinese gloss, if any.
+    static func splitCollinsTranslation(_ text: String) -> (definition: String, meaning: String?) {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        // The gloss starts with a Han character or an opening bracket, such as `（使）下降`, so a figure
+        // or punctuation ending the definition (`the number 5. 五`) stays in the definition.
+        let pattern = #"\s([\p{Han}（(【\[][^A-Za-z<>]*)$"#
+        guard let range = trimmed.range(of: pattern, options: .regularExpression) else {
+            return (trimmed, nil)
+        }
+        let meaning = trimmed[range].trimmingCharacters(in: .whitespacesAndNewlines)
+        let definition = trimmed[..<range.lowerBound].trimmingCharacters(in: .whitespacesAndNewlines)
+        return (definition, meaning.isEmpty ? nil : meaning)
+    }
+
+    /// Fills the Collins senses and bilingual examples that the word detail response already carries.
+    func updateCollinsAndExamples(dictV4 model: YoudaoDictResponseV4, wordResult: EZTranslateWordResult) {
+        if Defaults[.youdaoShowCollins], let entries = model.collins?.collinsEntries {
+            var senses: [EZCollinsSense] = []
+            collect: for entry in entries {
+                if wordResult.collinsStar == 0, let star = entry.star.flatMap(Int.init) {
+                    wordResult.collinsStar = star
+                }
+                for item in entry.entries?.entry ?? [] {
+                    for tran in item.tranEntry ?? [] {
+                        guard senses.count < Self.maxCollinsSenses else { break collect }
+                        guard let text = tran.tran, !text.isEmpty else { continue }
+                        let parts = Self.splitCollinsTranslation(text)
+                        let sense = EZCollinsSense()
+                        sense.partOfSpeech = tran.posEntry?.pos
+                        sense.register = tran.register?.value
+                        sense.meaning = parts.meaning
+                        sense.definition = parts.definition
+                        // One example per sense keeps three senses readable at a glance.
+                        if let example = tran.examSents?.sent?.first(where: { $0.engSent?.isEmpty == false }),
+                           let english = example.engSent {
+                            sense.examples = [EZExampleSentence(text: english, translation: example.chnSent)]
+                        }
+                        senses.append(sense)
+                    }
+                }
+            }
+            if !senses.isEmpty {
+                wordResult.collinsSenses = senses
+            }
+        }
+
+        if Defaults[.youdaoShowExampleSentences], let pairs = model.blngSentsPart?.sentencePair {
+            let examples = pairs.prefix(Self.maxExampleSentences).compactMap { pair -> EZExampleSentence? in
+                guard let text = pair.sentenceEng ?? pair.sentence, !text.isEmpty else { return nil }
+                return EZExampleSentence(text: text, translation: pair.sentenceTranslation)
+            }
+            if !examples.isEmpty {
+                wordResult.exampleSentences = examples
+            }
+        }
+    }
+}
