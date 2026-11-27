@@ -29,6 +29,15 @@ extension YoudaoService {
             throw QueryError(type: .unsupportedLanguage)
         }
 
+        let parameters = Self.webDictParameters(text: text, foreignLanguage: foreignLanguage)
+        return try await requestDictionaryV4(parameters: parameters)
+    }
+
+    /// Form parameters for the web dictionary API, signed the way the Youdao website signs them.
+    ///
+    /// Unsigned requests are answered with an unrelated entry for many words, so every caller of
+    /// `jsonapi_s` (the dictionary service and word suggestions) shares this signing.
+    static func webDictParameters(text: String, foreignLanguage: String) -> [String: Any] {
         let ww = "\(text)webdict"
         let time = ww.count % 10
         let salt = ww.md5()
@@ -43,7 +52,10 @@ extension YoudaoService {
             "sign": sign,
             "keyfrom": "webdict",
         ] as [String: Any]
+        return parameters
+    }
 
+    private func requestDictionaryV4(parameters: [String: Any]) async throws -> QueryResult {
         let url = "\(kYoudaoDictURL)/jsonapi_s?doctype=json&jsonversion=4"
 
         do {
