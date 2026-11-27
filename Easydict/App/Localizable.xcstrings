@@ -21765,6 +21765,147 @@
         }
       }
     },
+    "setting.advance.translate_and_replace.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uses the model, endpoint, and credentials configured in Services. Window service switches do not affect this action. If the selected service fails, no other service is used."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa el modelo, el endpoint y las credenciales configurados en Servicios. Los interruptores de servicio de las ventanas no afectan a esta acción. Si el servicio seleccionado falla, no se usa otro servicio."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「サービス」で設定したモデル、エンドポイント、認証情報を使用します。各ウインドウのサービスのオン・オフは影響しません。選択したサービスが失敗しても、別のサービスには切り替えません。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Používa model, endpoint a prihlasovacie údaje nastavené v časti Služby. Prepínače služieb v oknách túto akciu neovplyvňujú. Ak vybraná služba zlyhá, iná služba sa nepoužije."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سروسز میں ترتیب دیا گیا ماڈل، اینڈ پوائنٹ اور اسناد استعمال کرتا ہے۔ ونڈو میں سروس کے سوئچ اس عمل پر اثر نہیں ڈالتے۔ منتخب سروس ناکام ہو تو کوئی دوسری سروس استعمال نہیں ہوتی۔"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复用「服务」中配置的模型、接口地址和凭证，不受各窗口服务开关影响。所选服务失败时不会改用其他服务。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沿用「服務」中設定的模型、介面位址和憑證，不受各視窗服務開關影響。所選服務失敗時不會改用其他服務。"
+          }
+        }
+      }
+    },
+    "setting.advance.translate_and_replace.service" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translate and Replace Service"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servicio para traducir y reemplazar"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳して置換するサービス"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Služba pre preklad a nahradenie"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ترجمہ کر کے بدلنے کی سروس"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译并替换服务"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻譯並替換服務"
+          }
+        }
+      }
+    },
+    "setting.advance.translate_and_replace.service_unavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected service unavailable"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servicio seleccionado no disponible"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択したサービスは利用できません"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vybraná služba nie je dostupná"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "منتخب سروس دستیاب نہیں"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所选服务不可用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所選服務無法使用"
+          }
+        }
+      }
+    },
     "setting.advance.vocabulary_notebook" : {
       "localizations" : {
         "en" : {
@@ -25682,6 +25823,53 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "同義詞"
+          }
+        }
+      }
+    },
+    "text_replacement.translation.failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translate and Replace failed. Check the selected service in Settings → Advanced. No other service was used."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo traducir y reemplazar. Comprueba el servicio seleccionado en Ajustes → Avanzado. No se usó otro servicio."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳して置換できませんでした。「設定 → 詳細」で選択したサービスを確認してください。別のサービスは使用していません。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preklad a nahradenie zlyhalo. Skontrolujte vybranú službu v Nastavenia → Rozšírené. Iná služba sa nepoužila."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ترجمہ کر کے بدلنے کا عمل ناکام ہوا۔ ترتیبات ← اعلیٰ میں منتخب سروس چیک کریں۔ کوئی دوسری سروس استعمال نہیں ہوئی۔"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译并替换失败，请在「设置 → 高级」检查所选服务。未使用其他服务。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻譯並替換失敗，請在「設定 → 進階」檢查所選服務。未使用其他服務。"
           }
         }
       }
