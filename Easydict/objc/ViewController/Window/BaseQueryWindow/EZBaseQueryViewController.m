@@ -59,6 +59,9 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 @property (nonatomic, strong) EZSelectLanguageCell *selectLanguageCell;
 
 // queryText is self.queryModel.queryText;
+@property (nonatomic, copy, nullable) NSString *ocrPrefixText;
+@property (nonatomic, assign) NSInteger ocrRequestToken;
+@property (nonatomic, assign) BOOL isOCRStreamingInProgress;
 @property (nonatomic, copy, readonly) NSString *queryText;
 @property (nonatomic, strong) NSArray<NSString *> *serviceTypeIds;
 @property (nonatomic, strong) NSArray<EZQueryService *> *services;
@@ -452,6 +455,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
 /// Recreate the query model and rebind dependent managers for background OCR.
 - (void)resetQueryModelForBackgroundOCR {
+    self.isOCRStreamingInProgress = NO;
     [self.detectManager cancelOCR];
     EZQueryModel *model = [[EZQueryModel alloc] init];
     model.userSourceLanguage = MyConfiguration.shared.fromLanguage;
@@ -474,6 +478,23 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     }
 }
 
+- (NSString *)combinePreviousText:(NSString *)oldText withNewText:(NSString *)newText {
+    if (oldText.length == 0) {
+        return newText ?: @"";
+    }
+    if (newText.length == 0) {
+        return oldText ?: @"";
+    }
+
+    NSString *trimmedOld = [oldText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *trimmedNew = [newText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+    if (trimmedOld.length == 0) return trimmedNew;
+    if (trimmedNew.length == 0) return trimmedOld;
+
+    return [NSString stringWithFormat:@"%@\n%@", trimmedOld, trimmedNew];
+}
+
 /// Before starting query text, close all result view.
 - (void)startQueryText:(NSString *)text {
     [self startQueryText:text actionType:self.queryModel.actionType];
@@ -487,6 +508,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         return;
     }
 
+    self.isOCRStreamingInProgress = NO;
     [self.detectManager cancelOCR];
     [self.queryView startLoadingAnimation:NO];
     if (![text isEqualToString:self.inputText]) {
@@ -550,9 +572,18 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     MMLogInfo(@"start OCR Image: %@, actionType: %@", @(image.size), actionType);
     MMLogInfo(@"ocr language: %@", self.queryModel.queryFromLanguage);
 
+    if (image != self.queryModel.ocrImage) {
+        if (self.isOCRStreamingInProgress) {
+            self.ocrPrefixText = MyConfiguration.shared.enableAppendMode ? self.ocrPrefixText : nil;
+        } else {
+            self.ocrPrefixText = MyConfiguration.shared.enableAppendMode ? self.inputText : nil;
+        }
+    }
+
     [self cancelDelayDetectQueryText];
     self.queryModel.actionType = actionType;
-    EZStreamService *combinedService = autoQuery && ![actionType isEqualToString:EZActionTypeScreenshotOCR]
+    BOOL hasAppendPrefix = MyConfiguration.shared.enableAppendMode && self.ocrPrefixText.length > 0;
+    EZStreamService *combinedService = (autoQuery && !hasAppendPrefix && ![actionType isEqualToString:EZActionTypeScreenshotOCR])
         ? [self.detectManager combinedOCRServiceIn:self.services] : nil;
     if (combinedService) {
         EZLanguage sourceLanguage = self.queryModel.queryFromLanguage;
@@ -582,9 +613,14 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     [self.queryView startLoadingAnimation:YES];
 
     BOOL saveOCRLocally = MyConfiguration.shared.localAutoSave;
+    self.isOCRStreamingInProgress = ![actionType isEqualToString:EZActionTypeScreenshotOCR];
+    NSInteger ocrToken = ++self.ocrRequestToken;
     mm_weakify(self);
     void (^progress)(NSString *) = ^(NSString *text) {
         mm_strongify(self);
+        if (ocrToken != self.ocrRequestToken) {
+            return;
+        }
         if (![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
             [self.queryView startLoadingAnimation:NO];
             self.inputText = text;
@@ -593,8 +629,16 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     };
     void (^ocrCompletion)(EZQueryModel *, NSError *) = ^(EZQueryModel *queryModel, NSError *error) {
         mm_strongify(self);
+        if (ocrToken != self.ocrRequestToken) {
+            return;
+        }
+        self.isOCRStreamingInProgress = NO;
         if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSUserCancelledError) {
             [self.queryView startLoadingAnimation:NO];
+            if (MyConfiguration.shared.enableAppendMode && self.ocrPrefixText.length > 0
+                && ![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
+                self.inputText = self.ocrPrefixText;
+            }
             return;
         }
 
@@ -612,6 +656,10 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
         if (error) {
             [self.queryView startLoadingAnimation:NO];
+            if (MyConfiguration.shared.enableAppendMode && self.ocrPrefixText.length > 0
+                && ![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
+                self.inputText = self.ocrPrefixText;
+            }
 
             NSString *errorMsg = [error localizedDescription];
             dispatch_block_on_main_safely(^{
@@ -634,12 +682,16 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         if (![actionType isEqualToString:EZActionTypeScreenshotOCR]) {
             [self.queryView startLoadingAnimation:NO];
 
-            self.inputText = inputText;
+            NSString *finalText = inputText;
+            if (MyConfiguration.shared.enableAppendMode && self.ocrPrefixText.length > 0) {
+                finalText = [self combinePreviousText:self.ocrPrefixText withNewText:inputText];
+            }
+            self.inputText = finalText;
 
             // Show detected language, even auto
             self.queryModel.showAutoLanguage = YES;
 
-            [self updateQueryTextAndParagraphStyle:inputText actionType:actionType];
+            [self updateQueryTextAndParagraphStyle:finalText actionType:actionType];
 
             if (self.config.autoCopyOCRText) {
                 [inputText copyToPasteboard];
@@ -689,6 +741,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 
     // Reset query view height if we are retrying OCR query
     if (self.queryModel.ocrImage) {
+        self.isOCRStreamingInProgress = NO;
         [self.detectManager cancelOCR];
         self.inputText = @"";
     }
@@ -726,9 +779,11 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 }
 
 - (void)clearInput {
+    self.isOCRStreamingInProgress = NO;
     [self.detectManager cancelOCR];
     [self.queryView startLoadingAnimation:NO];
     // Clear query text, detect language and clear button right now;
+    self.ocrPrefixText = nil;
     self.queryModel.ocrImage = nil;
     self.inputText = @"";
     [self.queryView setAlertTextHidden:YES];
@@ -860,6 +915,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
     if (![queryType isEqualToString:EZActionTypeOCRQuery]
         && ![queryType isEqualToString:EZActionTypePasteboardOCR]
         && ![queryType isEqualToString:EZActionTypeScreenshotOCR]) {
+        self.isOCRStreamingInProgress = NO;
         [self.detectManager cancelOCR];
         [self.queryView startLoadingAnimation:NO];
         self.queryModel.ocrImage = nil;
@@ -1438,13 +1494,20 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
 #pragma mark - Update Data.
 
 - (void)resetQueryAndResults {
+    BOOL wasOCRInProgress = self.isOCRStreamingInProgress;
+    self.isOCRStreamingInProgress = NO;
     [self.detectManager cancelOCR];
     [self.queryView startLoadingAnimation:NO];
     [self resetAllResults];
 
-    if (self.inputText.length || self.queryModel.ocrImage) {
-        self.queryModel.ocrImage = nil;
-        self.inputText = @"";
+    self.queryModel.ocrImage = nil;
+    if (!MyConfiguration.shared.enableAppendMode) {
+        if (self.inputText.length) {
+            self.inputText = @"";
+            self.ocrPrefixText = nil;
+        }
+    } else if (wasOCRInProgress) {
+        self.inputText = self.ocrPrefixText ?: @"";
     }
 }
 
@@ -1606,6 +1669,7 @@ static BOOL ez_frame_equal_with_tolerance(CGRect lhs, CGRect rhs, CGFloat tolera
         // But, since there are cases where the query text is set manually, such as query selected text, where the query text is set first and then the input text is modified, the query cell must be updated for such cases.
 
         if ([self.queryModel.actionType isEqualToString:EZActionTypeInputQuery]) {
+            self.isOCRStreamingInProgress = NO;
             [self.detectManager cancelOCR];
         }
 
