@@ -8,6 +8,7 @@
 
 import Alamofire
 import AsyncAlgorithms
+import Defaults
 import Foundation
 import OpenAI
 
@@ -22,10 +23,36 @@ public class BaseOpenAIService: StreamService {
     /// Only services with a visible toggle should persist streaming auto-disable after fallback validation.
     open var supportsStreamingToggle: Bool { false }
 
+    /// Custom OpenAI exposes the Chat Completions / Responses picker.
+    /// Built-in OpenAI-compatible services stay on Chat Completions.
+    @nonobjc var supportsAPITypePicker: Bool { false }
+
+    @nonobjc var apiTypeKey: Defaults.Key<OpenAIAPIType> {
+        serviceDefaultsKey(.apiType, defaultValue: .chat)
+    }
+
+    @nonobjc var apiType: OpenAIAPIType {
+        get { Defaults[apiTypeKey] }
+        set { Defaults[apiTypeKey] = newValue }
+    }
+
+    @nonobjc var usesResponsesAPI: Bool {
+        supportsAPITypePicker && apiType == .responses
+    }
+
     open override func cancelStream() {
         streamTaskControl.cancel()
+        responsesNonStreamingControl.cancel()
         nonStreamingTask?.cancel()
         nonStreamingTask = nil
+    }
+
+    override var ocrTranslationConfiguration: [String] {
+        var configuration = super.ocrTranslationConfiguration
+        if supportsAPITypePicker {
+            configuration.append(apiType.rawValue)
+        }
+        return configuration
     }
 
     // MARK: Internal
@@ -58,6 +85,10 @@ public class BaseOpenAIService: StreamService {
             queryType: queryType,
             enableSystemPrompt: true
         )
+
+        if usesResponsesAPI {
+            return responsesContentStream(messages: chatMessageDicts(chatQueryParam))
+        }
 
         let chatHistory = serviceChatMessageModels(chatQueryParam)
         guard let chatHistory = chatHistory as? [OpenAIChatMessage] else {
@@ -250,10 +281,23 @@ public class BaseOpenAIService: StreamService {
     /// Temporary override for streaming during validate retry. `nil` means use the persisted value.
     private var streamingOverride: Bool?
 
-    /// Reference to the in-flight non-streaming task so `cancelStream()` can cancel it.
-    private var nonStreamingTask: Task<(), Never>?
+    /// Reference to the in-flight non-streaming Chat Completions task so `cancelStream()` can cancel it.
+    @nonobjc var nonStreamingTask: Task<(), Never>?
 
-    private let streamTaskControl = OpenAIStreamTaskControl()
+    @nonobjc let streamTaskControl = OpenAIStreamTaskControl()
+
+    /// Identifier-aware slot for a non-streaming Responses request.
+    /// A replacement query cancels the previous task, and a stale finish cannot clear the newer one.
+    @nonobjc let responsesNonStreamingControl = OpenAIStreamTaskControl()
+
+    /// Chat Completions keeps an unrecognized endpoint unchanged.
+    /// A stored `/responses` URL is swapped back when the custom service is set to Chat Completions.
+    @nonobjc func resolvedRequestURL(from url: URL) -> URL {
+        guard supportsAPITypePicker else {
+            return url
+        }
+        return OpenAIEndpointAdapter().requestURL(endpoint: url, apiType: apiType)
+    }
 
     private func contentStream(
         messages: [OpenAIChatMessage]
@@ -261,19 +305,20 @@ public class BaseOpenAIService: StreamService {
         -> AsyncThrowingStream<String, any Error> {
         do {
             let endpoint = try validateChatStreamRequest()
+            let requestURL = resolvedRequestURL(from: endpoint)
             result.isStreamFinished = false
 
             let query = makeChatQuery(messages: messages)
             if usesStreamingTransport {
-                return contentStream(for: query, endpoint: endpoint)
+                return contentStream(for: query, endpoint: requestURL)
             }
-            return nonStreamingTranslate(query: query, url: endpoint)
+            return nonStreamingTranslate(query: query, url: requestURL)
         } catch {
             return failedContentStream(error: error)
         }
     }
 
-    private func failedContentStream(error: Error) -> AsyncThrowingStream<String, any Error> {
+    @nonobjc func failedContentStream(error: Error) -> AsyncThrowingStream<String, any Error> {
         AsyncThrowingStream { continuation in
             continuation.finish(throwing: error)
         }
@@ -288,6 +333,7 @@ public class BaseOpenAIService: StreamService {
 
         return AsyncThrowingStream { continuation in
             let identifier = UUID()
+            responsesNonStreamingControl.cancel()
             taskControl.begin(identifier: identifier)
 
             let task = Task {
@@ -356,6 +402,7 @@ public class BaseOpenAIService: StreamService {
                 return
             }
 
+            responsesNonStreamingControl.cancel()
             let task = Task {
                 defer { self.nonStreamingTask = nil }
 
@@ -430,7 +477,7 @@ public class BaseOpenAIService: StreamService {
             parts = ["v1"]
         } else if Array(lowercasedParts.suffix(2)) == ["chat", "completions"] {
             parts.removeLast(2)
-        } else if lowercasedParts.last == "completions" {
+        } else if lowercasedParts.last == "completions" || lowercasedParts.last == "responses" {
             parts.removeLast()
         } else if lowercasedParts.last == "models" {
             parts.removeLast()

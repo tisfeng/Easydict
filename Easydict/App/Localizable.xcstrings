@@ -13922,6 +13922,98 @@
         }
       }
     },
+    "service.configuration.custom_openai.api_type.footnote" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses sends input to /responses. Switching rewrites a recognized suffix, and a bare …/v1 URL gains /responses."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses envía input a /responses. Al cambiar se reescribe un sufijo reconocido, y una URL base …/v1 recibe /responses."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses は input を /responses に送ります。切り替えると認識済みの末尾を書き換え、…/v1 のようなベース URL には /responses を付けます。"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses posiela input na /responses. Prepnutie prepíše rozpoznanú príponu a k holému URL …/v1 pripojí /responses."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses ان پٹ کو /responses پر بھیجتا ہے۔ تبدیلی پہچانی گئی لاحقہ بدل دیتی ہے، اور …/v1 جیسے بنیادی URL پر /responses شامل ہو جاتا ہے۔"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses 会把 input 发到 /responses。切换时会改写已识别的后缀，裸 …/v1 地址会补上 /responses。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses 會把 input 發到 /responses。切換時會改寫已識別的後綴，裸 …/v1 位址會補上 /responses。"
+          }
+        }
+      }
+    },
+    "service.configuration.custom_openai.api_type.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Type"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de API"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API タイプ"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typ API"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API کی قسم"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接口类型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "介面類型"
+          }
+        }
+      }
+    },
     "service.configuration.custom_openai.enable_streaming.footnote" : {
       "localizations" : {
         "en" : {
@@ -18125,6 +18217,98 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "百度千帆翻譯"
+          }
+        }
+      }
+    },
+    "service.openai_api_type.chat" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat Completions"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat Completions"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat Completions"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat Completions"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat Completions"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat Completions"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat Completions"
+          }
+        }
+      }
+    },
+    "service.openai_api_type.responses" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responses"
           }
         }
       }

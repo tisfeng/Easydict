@@ -30,6 +30,7 @@ struct StreamConfigurationView: View {
         showUsageStatusPicker: Bool = true,
         showThinkTagContent: Bool = true,
         showStreamingToggle: Bool = false,
+        showAPITypePicker: Bool = false,
         validationAction: (() -> ())? = nil,
         validationDisabled: Bool = false
     ) {
@@ -47,6 +48,7 @@ struct StreamConfigurationView: View {
         self.showUsageStatusPicker = showUsageStatusPicker
         self.showThinkTagSection = showThinkTagContent
         self.showStreamingToggle = showStreamingToggle
+        self.showAPITypePicker = showAPITypePicker
         self.validationAction = validationAction
         self.validationDisabled = validationDisabled
 
@@ -74,6 +76,7 @@ struct StreamConfigurationView: View {
     let showUsageStatusPicker: Bool
     let showThinkTagSection: Bool
     let showStreamingToggle: Bool
+    let showAPITypePicker: Bool
     let validationAction: (() -> ())?
     let validationDisabled: Bool
 
@@ -116,6 +119,10 @@ struct StreamConfigurationView: View {
                     placeholder: service.endpointPlaceholder,
                     showText: true
                 )
+            }
+
+            if showAPITypePicker, let openAIService = service as? BaseOpenAIService {
+                OpenAIAPITypePicker(service: openAIService)
             }
 
             if showSupportedModelsSection {
@@ -326,6 +333,52 @@ struct StreamConfigurationView: View {
 
     private func isValidEndpoint(_ endpoint: String) -> Bool {
         URL(string: endpoint.trim())?.isValid == true
+    }
+}
+
+// MARK: - OpenAIAPITypePicker
+
+/// Chooses the custom OpenAI wire format and rewrites a recognized endpoint suffix to match.
+private struct OpenAIAPITypePicker: View {
+    // MARK: Lifecycle
+
+    init(service: BaseOpenAIService) {
+        _apiType = .init(service.apiTypeKey)
+        _endpoint = .init(service.endpointKey)
+    }
+
+    // MARK: Internal
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Picker("service.configuration.custom_openai.api_type.title", selection: $apiType) {
+                ForEach(OpenAIAPIType.allCases, id: \.self) { apiType in
+                    Text(apiType.title)
+                }
+            }
+            .onChange(of: apiType) { newValue in
+                adaptEndpoint(to: newValue)
+            }
+
+            Text("service.configuration.custom_openai.api_type.footnote")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    // MARK: Private
+
+    @Default private var apiType: OpenAIAPIType
+    @Default private var endpoint: String
+
+    private func adaptEndpoint(to apiType: OpenAIAPIType) {
+        guard let url = URL(string: endpoint.trim()), url.isValid else {
+            return
+        }
+        let adaptedURL = OpenAIEndpointAdapter().requestURL(endpoint: url, apiType: apiType).absoluteString
+        if adaptedURL != endpoint {
+            endpoint = adaptedURL
+        }
     }
 }
 
