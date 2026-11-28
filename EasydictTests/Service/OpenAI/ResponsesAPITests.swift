@@ -480,6 +480,101 @@ struct ResponsesAPITests {
         #expect(events == [.failure(message: "boom", details: details)])
     }
 
+    @Test("An undecodable delta surfaces a failure between valid stream events")
+    func failsForUndecodableDelta() {
+        let payload = #"{"type":"response.output_text.delta","delta":2}"#
+        let events = classifications([
+            #"data: {"type":"response.output_text.delta","delta":"First"}"#,
+            "",
+            "data:  \(payload)  ",
+            "",
+            #"data: {"type":"response.completed","response":{"output_text":"First second"}}"#,
+            "",
+        ])
+
+        #expect(events == [
+            .delta("First", part: ResponsesOutputPartKey()),
+            .failure(message: "Could not decode Responses stream event", details: payload),
+            completed("First second"),
+        ])
+    }
+
+    @Test("Malformed JSON and schema-incompatible response.failed payloads surface failures", arguments: [
+        #"{"type":"response.failed","#,
+        #"{"type":"response.failed","response":{"error":{"message":42}}}"#,
+    ])
+    func failsForUndecodableFailurePayload(_ payload: String) {
+        let events = classifications(["event: response.failed", "data: \(payload)", ""])
+
+        #expect(events == [.failure(message: "Could not decode Responses stream event", details: payload)])
+    }
+
+    @Test("CR-only streams decode both deltas")
+    func decodesCROnlyEvents() {
+        let texts = streamTexts(
+            [
+                #"data: {"type":"response.output_text.delta","delta":"First"}"#,
+                "",
+                #"data: {"type":"response.output_text.delta","delta":" second"}"#,
+                "",
+            ],
+            separator: "\r"
+        )
+
+        #expect(texts == ["First", " second"])
+    }
+
+    @Test("A CRLF split across chunks keeps multiline data in one event")
+    func preservesEventBoundaryAcrossSplitCRLF() {
+        var decoder = ResponsesSSEDecoder()
+        let first = Data("data: {\"type\":\"response.output_text.delta\",\r".utf8)
+        let second = Data("\ndata: \"delta\":\"Hi\"}\r\n\r".utf8)
+
+        #expect(decoder.consume(first).isEmpty)
+        #expect(decoder.consume(Data()).isEmpty)
+        #expect(decoder.consume(second) == [.delta("Hi", part: ResponsesOutputPartKey())])
+        #expect(decoder.consume(Data("\n".utf8)).isEmpty)
+        #expect(decoder.finish().isEmpty)
+    }
+
+    @Test("Mixed SSE line endings preserve the trailing unterminated field")
+    func decodesMixedLineEndings() {
+        var decoder = ResponsesSSEDecoder()
+        let stream = """
+        event: response.output_text.delta\rdata: {"delta":"First"}\r\n\n\
+        event: response.output_text.delta\r\ndata: {"delta":" second"}
+        """
+
+        #expect(decoder.consume(Data(stream.utf8)) == [.delta("First", part: ResponsesOutputPartKey())])
+        #expect(decoder.finish() == [.delta(" second", part: ResponsesOutputPartKey())])
+    }
+
+    @Test("A leading UTF-8 BOM preserves the first delta even across chunks", arguments: [0, 1, 2])
+    func stripsLeadingBOM(splitAt: Int) {
+        var decoder = ResponsesSSEDecoder()
+        let stream = Data(("\u{FEFF}" + sseLines([
+            #"data: {"type":"response.output_text.delta","delta":"First"}"#,
+            "",
+            #"data: {"type":"response.output_text.delta","delta":" second"}"#,
+            "",
+            #"data: {"type":"response.completed","response":{"output_text":"First second"}}"#,
+            "",
+        ])).utf8)
+
+        #expect(decoder.consume(stream.prefix(splitAt)).isEmpty)
+        let events = decoder.consume(stream.dropFirst(splitAt)) + decoder.finish()
+
+        #expect(reducedTexts(events) == ["First", " second"])
+    }
+
+    @Test("Only one UTF-8 BOM at the start of the stream is stripped")
+    func keepsAdditionalBOMs() {
+        var buffer = ResponsesSSEBuffer()
+        let lines = buffer.append(Data("\u{FEFF}\u{FEFF}data: First\r\u{FEFF}data: second\n".utf8))
+
+        #expect(lines == ["\u{FEFF}data: First", "\u{FEFF}data: second"])
+    }
+
     // MARK: Private
 
     private struct RequestBody: Decodable {

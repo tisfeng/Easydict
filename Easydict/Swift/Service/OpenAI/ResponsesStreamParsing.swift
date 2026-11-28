@@ -139,7 +139,7 @@ struct ResponsesStreamClassifier {
         guard let data = trimmedPayload.data(using: .utf8),
               let decoded = try? JSONDecoder().decode(ResponsesStreamPayload.self, from: data)
         else {
-            return .ignored
+            return .failure(message: "Could not decode Responses stream event", details: trimmedPayload)
         }
 
         let type = decoded.type ?? eventName
@@ -316,7 +316,7 @@ struct ResponsesStreamTextReducer {
 
 /// Splits a byte stream into SSE lines.
 ///
-/// Chunks may divide a line inside a multibyte UTF-8 character, so a line is decoded only after its newline byte.
+/// Chunks may split UTF-8 characters and CRLF terminators.
 struct ResponsesSSEBuffer {
     // MARK: Internal
 
@@ -324,13 +324,21 @@ struct ResponsesSSEBuffer {
     mutating func append(_ data: Data) -> [String] {
         pending.append(data)
         var lines: [String] = []
-        while let newlineIndex = pending.firstIndex(of: 0x0A) {
-            var lineData = pending[..<newlineIndex]
-            pending.removeSubrange(...newlineIndex)
-            if lineData.last == 0x0D {
-                lineData = lineData.dropLast()
+        while !pending.isEmpty {
+            // A CR already ended the line. Consume its optional LF even in the next chunk.
+            if skipLineFeed {
+                skipLineFeed = false
+                if pending.first == 0x0A {
+                    pending.removeFirst()
+                }
             }
-            lines.append(String(decoding: Data(lineData), as: UTF8.self))
+            guard let newlineIndex = pending.firstIndex(where: { $0 == 0x0A || $0 == 0x0D }) else {
+                break
+            }
+            let lineData = pending[..<newlineIndex]
+            skipLineFeed = pending[newlineIndex] == 0x0D
+            pending.removeSubrange(...newlineIndex)
+            lines.append(decodeLine(lineData))
         }
         return lines
     }
@@ -340,20 +348,27 @@ struct ResponsesSSEBuffer {
         guard !pending.isEmpty else {
             return nil
         }
-        if pending.last == 0x0D {
-            pending.removeLast()
-        }
-        guard !pending.isEmpty else {
-            return nil
-        }
-        let line = String(decoding: pending, as: UTF8.self)
+        let line = decodeLine(pending)
         pending.removeAll(keepingCapacity: true)
-        return line
+        return line.isEmpty ? nil : line
     }
 
     // MARK: Private
 
     private var pending = Data()
+    private var skipLineFeed = false
+    private var isFirstLine = true
+
+    private mutating func decodeLine(_ data: Data) -> String {
+        let bom: [UInt8] = [0xEF, 0xBB, 0xBF]
+        if isFirstLine {
+            isFirstLine = false
+            if data.starts(with: bom) {
+                return String(decoding: data.dropFirst(bom.count), as: UTF8.self)
+            }
+        }
+        return String(decoding: data, as: UTF8.self)
+    }
 }
 
 // MARK: - ResponsesSSEEvent
