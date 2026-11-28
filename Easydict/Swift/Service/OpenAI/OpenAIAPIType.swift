@@ -51,46 +51,47 @@ struct OpenAIEndpointAdapter {
             return endpoint
         }
 
-        let parts = pathParts(components.path)
-        let lowered = parts.map { $0.lowercased() }
-        var updated = parts
+        // Match and replace only the API suffix; escaped separators may be part of a gateway route.
+        var path = components.percentEncodedPath
+        while path.last == "/" {
+            path.removeLast()
+        }
+        let lowered = path.lowercased()
+        let chatSuffix = "/chat/completions"
+        let responsesSuffix = "/responses"
 
         switch apiType {
         case .responses:
-            if lowered.suffix(2).elementsEqual(["chat", "completions"]) {
-                updated.removeLast(2)
-                updated.append("responses")
-            } else if lowered.last == "responses" {
+            if lowered.hasSuffix(chatSuffix) {
+                path = path.dropLast(chatSuffix.count) + responsesSuffix
+            } else if lowered.hasSuffix(responsesSuffix) {
                 return endpoint
-            } else if isBareBase(parts) {
-                if parts.isEmpty {
-                    updated = ["v1", "responses"]
-                } else {
-                    updated.append("responses")
-                }
+            } else if path.isEmpty {
+                path = "/v1" + responsesSuffix
+            } else if isBareBase(path) {
+                path += responsesSuffix
             } else {
                 return endpoint
             }
         case .chat:
-            guard lowered.last == "responses" else {
+            guard lowered.hasSuffix(responsesSuffix) else {
                 return endpoint
             }
-            updated.removeLast()
-            updated.append(contentsOf: ["chat", "completions"])
+            path = path.dropLast(responsesSuffix.count) + chatSuffix
         }
 
-        components.path = "/" + updated.joined(separator: "/")
+        components.percentEncodedPath = path
         return components.url ?? endpoint
     }
 
     // MARK: Private
 
-    /// A bare base is an origin, or a path whose last segment is an API version such as `v1`.
-    private func isBareBase(_ parts: [String]) -> Bool {
-        guard let last = parts.last?.lowercased() else {
-            return true
+    /// A non-empty bare base ends with an API version such as `v1`.
+    private func isBareBase(_ path: String) -> Bool {
+        guard let last = path.split(separator: "/").last else {
+            return false
         }
-        return isVersionSegment(last)
+        return isVersionSegment(last.lowercased())
     }
 
     /// Matches `v1`, `v2`, and version labels such as `v1beta` without treating `v` alone as a version.
@@ -103,9 +104,5 @@ struct OpenAIEndpointAdapter {
             return false
         }
         return version.allSatisfy { $0.isNumber || $0.isLetter }
-    }
-
-    private func pathParts(_ path: String) -> [String] {
-        path.split(separator: "/", omittingEmptySubsequences: true).map(String.init)
     }
 }
