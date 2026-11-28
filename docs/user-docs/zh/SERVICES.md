@@ -37,6 +37,7 @@ macOS 版本、网络环境、账号权限和上游接口状态。
 | 内置 AI (`BuiltInAI`) | 项目内置 | 无需单独配置 API Key 的 AI 查询服务。 |
 | Claude Code (`ClaudeCode`) | CLI | 调用已安装并登录的 Claude Code CLI。 |
 | Codex (`CodexCLI`) | 本机 CLI 或 ChatGPT 登录 | 使用已安装并登录的 Codex CLI，或在 Easydict 内下载组件并使用 ChatGPT 登录。见 [Codex 翻译](./GUIDE.md#codex-翻译)。 |
+| GitHub Copilot (`GitHubCopilot`) | CLI | 调用已在本机安装并登录的 Copilot CLI。见 [GitHub Copilot 配置](./GUIDE.md#github-copilot-翻译)。 |
 | Gemini (`Gemini`) | 用户密钥 | 使用 Gemini API。 |
 | Claude (`Claude`) | 用户密钥 | 使用 Anthropic Claude API。 |
 | Ollama (`Ollama`) | 无需密钥 | 调用本机或自定义地址上的 Ollama 服务。 |
@@ -49,6 +50,7 @@ macOS 版本、网络环境、账号权限和上游接口状态。
 | --- | --- | --- |
 | 润色 (`Polishing`) | 项目内置 | 对输入文本进行 AI 润色。 |
 | 总结 (`Summary`) | 项目内置 | 对输入文本进行 AI 总结。 |
+| 这是什么 (`Explain`) | 项目内置 | 使用首选语言解释不熟悉的文本。 |
 
 ## 通用翻译
 

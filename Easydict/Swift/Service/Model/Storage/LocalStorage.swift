@@ -220,11 +220,10 @@ final class LocalStorage: NSObject {
 
     func enabledServiceTypeIDs(_ windowType: EZWindowType) -> [String] {
         allServiceTypes(windowType).filter { typeId in
-            let components = serviceIdentifierComponents(from: typeId)
-            let baseType = ServiceType(rawValue: components.rawType)
+            let identifier = ServiceIdentifier(typeId)
             let info = serviceInfo(
-                withType: baseType,
-                serviceId: components.uuid,
+                withType: identifier.serviceType,
+                serviceId: identifier.uuid,
                 windowType: windowType
             )
             return info?.enabled == true
@@ -232,16 +231,15 @@ final class LocalStorage: NSObject {
     }
 
     func setServiceEnabled(_ enabled: Bool, serviceTypeId: String, windowType: EZWindowType) {
-        let components = serviceIdentifierComponents(from: serviceTypeId)
-        let baseType = ServiceType(rawValue: components.rawType)
+        let identifier = ServiceIdentifier(serviceTypeId)
         let info = serviceInfo(
-            withType: baseType,
-            serviceId: components.uuid,
+            withType: identifier.serviceType,
+            serviceId: identifier.uuid,
             windowType: windowType
         ) ??
             QueryServiceConfiguration(
-                uuid: components.uuid,
-                type: baseType,
+                uuid: identifier.uuid,
+                type: identifier.serviceType,
                 enabled: enabled,
                 enabledQuery: queryCount == 0,
                 windowType: windowType
@@ -399,21 +397,22 @@ final class LocalStorage: NSObject {
             let serviceTypeIds = allServiceTypes(windowType)
 
             for serviceTypeId in serviceTypeIds {
-                let components = serviceIdentifierComponents(from: serviceTypeId)
-                let rawType = components.rawType
-                let uuid = components.uuid
-                let baseType = ServiceType(rawValue: rawType)
+                let identifier = ServiceIdentifier(serviceTypeId)
 
-                if serviceInfo(withType: baseType, serviceId: uuid, windowType: windowType) == nil {
+                if serviceInfo(
+                    withType: identifier.serviceType,
+                    serviceId: identifier.uuid,
+                    windowType: windowType
+                ) == nil {
                     let serviceInfo = QueryServiceConfiguration(
-                        uuid: uuid,
-                        type: baseType,
+                        uuid: identifier.uuid,
+                        type: identifier.serviceType,
                         enabled: true,
                         enabledQuery: queryCount == 0,
                         windowType: windowType
                     )
 
-                    serviceInfo.enabled = defaultServiceTypeIDs.contains(rawType)
+                    serviceInfo.enabled = defaultServiceTypeIDs.contains(identifier.serviceType.rawValue)
                     setServiceInfo(serviceInfo, windowType: windowType)
                 }
             }
@@ -439,7 +438,7 @@ final class LocalStorage: NSObject {
     ///   - windowType: Window scope.
     /// - Returns: Namespaced storage key.
     private func key(forServiceType serviceType: ServiceType, serviceId: String, windowType: EZWindowType) -> String {
-        let baseType = baseServiceType(from: serviceType).rawValue
+        let baseType = ServiceIdentifier(serviceType.rawValue).serviceType.rawValue
         if serviceId.isEmpty {
             return "\(Constants.serviceInfoStorageKey)-\(baseType)-\(windowType.rawValue)"
         }
@@ -474,34 +473,20 @@ final class LocalStorage: NSObject {
         setServiceInfo(serviceInfo, windowType: windowType)
     }
 
-    private func serviceIdentifierComponents(from serviceTypeId: String)
-        -> (rawType: String, uuid: String) {
-        let components = serviceTypeId.split(
-            separator: "#",
-            maxSplits: 1,
-            omittingEmptySubsequences: false
-        )
-        let rawType = String(components.first ?? Substring(serviceTypeId))
-        let uuid = components.count > 1 ? String(components[1]) : ""
-        return (rawType, uuid)
-    }
-
     private func containsServiceType(
         _ serviceTypeId: String,
         in serviceTypeIds: [String],
         metadata: QueryServiceMetadata
     )
         -> Bool {
-        let components = serviceIdentifierComponents(from: serviceTypeId)
-
-        return serviceTypeIds.contains { existingTypeId in
+        serviceTypeIds.contains { existingTypeId in
             if existingTypeId == serviceTypeId {
                 return true
             }
             guard !metadata.allowsMultipleInstances else {
                 return false
             }
-            return serviceIdentifierComponents(from: existingTypeId).rawType == components.rawType
+            return ServiceIdentifier(existingTypeId).serviceType == metadata.serviceType
         }
     }
 
@@ -565,7 +550,7 @@ final class LocalStorage: NSObject {
         windowType: EZWindowType
     )
         -> QueryServiceConfiguration {
-        let baseType = baseServiceType(from: info.type)
+        let baseType = ServiceIdentifier(info.type.rawValue).serviceType
         let normalizedUUID = info.uuid.isEmpty ? serviceId : info.uuid
 
         let normalizedInfo = QueryServiceConfiguration(
@@ -577,17 +562,6 @@ final class LocalStorage: NSObject {
         )
 
         return normalizedInfo
-    }
-
-    /// Returns a service type without any duplicated-instance suffix.
-    /// - Parameter serviceType: Service type that may contain a `#uuid` suffix.
-    /// - Returns: Base service type.
-    private func baseServiceType(from serviceType: ServiceType) -> ServiceType {
-        guard let separatorIndex = serviceType.rawValue.firstIndex(of: "#") else {
-            return serviceType
-        }
-        let rawValue = String(serviceType.rawValue[..<separatorIndex])
-        return ServiceType(rawValue: rawValue)
     }
 }
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Maintenance"
+  short_description: "简化代码、整理 Markdown 排版，并核对代码与现行文档的一致性"
+  default_prompt: "使用 $code-maintenance 检查近期代码和文档，报告值得维护的地方和已证实的不一致。"

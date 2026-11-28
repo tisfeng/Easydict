@@ -1,12 +1,12 @@
 {
   "version": 1,
   "skills": {
-    "code-simplifier": {
+    "code-maintenance": {
       "source": "tisfeng/skills",
-      "ref": "v0.9.3",
+      "ref": "v0.10.0",
       "sourceType": "github",
-      "skillPath": "skills/code-simplifier/SKILL.md",
-      "computedHash": "59f615935befe37a597770ad6536e504b8b449b6c52ce0b6f6bdbeafadbe3d96"
+      "skillPath": "skills/code-maintenance/SKILL.md",
+      "computedHash": "286b0f6e8daf0066cee9d4ad608ce3d660bcadc907f93bdabeb4fb1429616789"
     },
     "fireworks-tech-graph": {
       "source": "yizhiyanhua-ai/fireworks-tech-graph",
@@ -17,35 +17,35 @@
     },
     "git-commit": {
       "source": "tisfeng/skills",
-      "ref": "v0.9.3",
+      "ref": "v0.10.0",
       "sourceType": "github",
       "skillPath": "skills/git-commit/SKILL.md",
       "computedHash": "638cfff446c5833d8d39a2c16e1e736eb69432f0d98fbac3f0c0eec7c5dc7c4f"
     },
     "review": {
       "source": "tisfeng/skills",
-      "ref": "v0.9.3",
+      "ref": "v0.10.0",
       "sourceType": "github",
       "skillPath": "skills/review/SKILL.md",
-      "computedHash": "4e082e710e59b438fee4242ce77ab87dc0735137d4e65873b88b6ae3b839434e"
+      "computedHash": "b8e575b2ef600b5ddf05df8a8216f7250c952b488086b6575f2444fb4504770f"
     },
     "review-pr": {
       "source": "tisfeng/skills",
-      "ref": "v0.9.3",
+      "ref": "v0.10.0",
       "sourceType": "github",
       "skillPath": "skills/review-pr/SKILL.md",
       "computedHash": "aa21a8904c7bc680b5be756224ecc67226f8524ee1584a6d35d14639516debcf"
     },
     "submit-pr": {
       "source": "tisfeng/skills",
-      "ref": "v0.9.3",
+      "ref": "v0.10.0",
       "sourceType": "github",
       "skillPath": "skills/submit-pr/SKILL.md",
       "computedHash": "2bad18ed7ff81bbe8a7fa91185793e4ba13db0ccedc5d8e50d1dae801279181c"
     },
     "worktree-rebase-merge": {
       "source": "tisfeng/skills",
-      "ref": "v0.9.3",
+      "ref": "v0.10.0",
       "sourceType": "github",
       "skillPath": "skills/worktree-rebase-merge/SKILL.md",
       "computedHash": "983723230a91e2b96c736003d56d22d1ad9434e2e328d9d4a18d8a0540c17052"
