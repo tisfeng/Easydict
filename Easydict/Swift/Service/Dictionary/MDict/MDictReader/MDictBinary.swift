@@ -342,28 +342,6 @@ extension MDictReader {
         }
     }
 
-    #if DEBUG
-    /// Compress `source` with raw deflate. Used only in tests.
-    static func zlibCompress(_ source: Data) throws -> Data {
-        var outputSize = compressBound(uLong(source.count))
-        var output = Data(count: Int(outputSize))
-        let status = source.withUnsafeBytes { srcPtr in
-            output.withUnsafeMutableBytes { dstPtr in
-                compress2(
-                    dstPtr.baseAddress!.assumingMemoryBound(to: Bytef.self),
-                    &outputSize,
-                    srcPtr.baseAddress!.assumingMemoryBound(to: Bytef.self),
-                    uLong(source.count),
-                    Z_DEFAULT_COMPRESSION
-                )
-            }
-        }
-        guard status == Z_OK else { throw MDictError.decompressionFailed }
-        output.count = Int(outputSize)
-        return output
-    }
-    #endif
-
     /// Decrypt the key block info section for MDict files with `Encrypted="2"`.
     ///
     /// Uses a nibble-swap XOR cipher keyed on `ripemd128(adler32 || 0x95360000)`.

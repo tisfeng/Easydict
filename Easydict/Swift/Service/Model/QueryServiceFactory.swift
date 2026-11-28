@@ -9,6 +9,28 @@
 import Defaults
 import Foundation
 
+// MARK: - ServiceIdentifier
+
+/// A stored service ID is the service type followed by an optional "#instance" suffix.
+struct ServiceIdentifier {
+    // MARK: Lifecycle
+
+    init(_ value: String) {
+        guard let separator = value.firstIndex(of: "#") else {
+            self.serviceType = ServiceType(rawValue: value)
+            self.uuid = ""
+            return
+        }
+        self.serviceType = ServiceType(rawValue: String(value[..<separator]))
+        self.uuid = String(value[value.index(after: separator)...])
+    }
+
+    // MARK: Internal
+
+    let serviceType: ServiceType
+    let uuid: String
+}
+
 // MARK: - QueryServiceMetadata
 
 struct QueryServiceMetadata {
@@ -69,14 +91,14 @@ final class QueryServiceFactory: NSObject {
     }
 
     func service(withTypeId typeIdIfHave: String) -> QueryService? {
-        let components = serviceIdentifierComponents(from: typeIdIfHave)
+        let identifier = ServiceIdentifier(typeIdIfHave)
 
-        guard let serviceClass = serviceClass(withTypeId: typeIdIfHave) else {
+        guard let serviceClass = registration(for: identifier.serviceType)?.serviceClass else {
             return nil
         }
 
         let service = serviceClass.init()
-        service.uuid = components.uuid
+        service.uuid = identifier.uuid
         return service
     }
 
@@ -85,22 +107,22 @@ final class QueryServiceFactory: NSObject {
     }
 
     func isStreamService(typeIdIfHave: String) -> Bool {
-        guard let serviceClass = serviceClass(withTypeId: typeIdIfHave) else {
+        guard let serviceClass = registration(for: ServiceIdentifier(typeIdIfHave).serviceType)?.serviceClass else {
             return false
         }
         return serviceClass is StreamService.Type
     }
 
     func metadata(withTypeId typeIdIfHave: String) -> QueryServiceMetadata? {
-        let components = serviceIdentifierComponents(from: typeIdIfHave)
-        guard let registration = serviceRegistration(withTypeId: typeIdIfHave) else { return nil }
+        let identifier = ServiceIdentifier(typeIdIfHave)
+        guard let registration = registration(for: identifier.serviceType) else { return nil }
 
         return QueryServiceMetadata(
             serviceType: registration.serviceType,
-            uuid: components.uuid,
+            uuid: identifier.uuid,
             title: title(
                 for: registration.serviceType,
-                uuid: components.uuid,
+                uuid: identifier.uuid,
                 fallbackKey: registration.titleKey
             ),
             apiKeyRequirement: registration.apiKeyRequirement,
@@ -145,25 +167,8 @@ final class QueryServiceFactory: NSObject {
         .init(.doubao, DoubaoService.self, "doubao_translate"),
     ]
 
-    private func serviceClass(withTypeId typeIdIfHave: String) -> QueryService.Type? {
-        serviceRegistration(withTypeId: typeIdIfHave)?.serviceClass
-    }
-
-    private func serviceRegistration(withTypeId typeIdIfHave: String) -> ServiceRegistration? {
-        let components = serviceIdentifierComponents(from: typeIdIfHave)
-        return serviceRegistrations.first { $0.serviceType.rawValue == components.rawType }
-    }
-
-    private func serviceIdentifierComponents(from typeIdIfHave: String)
-        -> (rawType: String, uuid: String) {
-        let components = typeIdIfHave.split(
-            separator: "#",
-            maxSplits: 1,
-            omittingEmptySubsequences: false
-        )
-        let rawType = String(components.first ?? Substring(typeIdIfHave))
-        let uuid = components.count > 1 ? String(components[1]) : ""
-        return (rawType, uuid)
+    private func registration(for serviceType: ServiceType) -> ServiceRegistration? {
+        serviceRegistrations.first { $0.serviceType == serviceType }
     }
 
     private func title(for serviceType: ServiceType, uuid: String, fallbackKey: String) -> String {

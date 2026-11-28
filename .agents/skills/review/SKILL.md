@@ -1,6 +1,6 @@
 ---
 name: review
-description: 审查本地工作树、提交、range、文件或模块，找出有证据的缺陷。GitHub PR 审查使用 review-pr；代码清理使用 code-simplifier。
+description: 审查本地工作树、提交、range、文件或模块，找出有证据的缺陷。GitHub PR 审查使用 review-pr；代码清理使用 code-maintenance。
 ---
 
 # 通用代码审查

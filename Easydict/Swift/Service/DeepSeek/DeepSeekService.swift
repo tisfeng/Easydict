@@ -102,6 +102,30 @@ class DeepSeekService: OpenAIService {
         }
     }
 
+    override func recognizeJSONImage(
+        _ imageURL: String, prompt: String, onDelta: @escaping @Sendable (String) -> ()
+    ) async throws
+        -> String {
+        var request = try imageRecognitionRequest(imageURL, prompt: prompt, stream: enableStreaming)
+        guard var body = try JSONSerialization.jsonObject(with: request.httpBody ?? Data()) as? [String: Any]
+        else { throw QueryError(type: .parameter) }
+        body["response_format"] = ["type": "json_object"]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        let transport = OpenAIStreamTransport()
+        if enableStreaming {
+            return try await transport.stream(request: request) { result in
+                if let delta = result.choices.first?.delta.content { onDelta(delta) }
+            }
+        }
+        let response = await AF.request(request).serializingData().response
+        let data = try response.result.get()
+        guard let http = response.response else { throw QueryError(type: .api) }
+        try validateHTTPResponse(http)
+        let result = try JSONDecoder().decode(ChatResult.self, from: data)
+        guard let text = result.choices.first?.message.content else { throw QueryError(type: .noResult) }
+        return text
+    }
+
     override func contentStreamTranslate(
         _ text: String,
         from: Language,

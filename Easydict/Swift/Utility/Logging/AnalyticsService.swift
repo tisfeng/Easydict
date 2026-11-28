@@ -20,7 +20,7 @@ final class AnalyticsService: NSObject {
     /// Configures crash logging services in non-debug builds.
     @objc(setupCrashLogService)
     static func setupCrashService() {
-        #if !DEBUG
+        guard !BuildConfig.isDebug else { return }
         configureFirebaseIfNeeded()
         SentrySDK.start { options in
             options.dsn = SecretKeyManager.keyValues["sentryDSN"]
@@ -28,20 +28,15 @@ final class AnalyticsService: NSObject {
             options.tracesSampleRate = NSNumber(value: 0.1)
             options.swiftAsyncStacktraces = true
         }
-        #endif
     }
 
     /// Enables or disables crash logging, and always disables it in debug builds.
     static func setCrashEnabled(_ enabled: Bool) {
-        #if DEBUG
-        SentrySDK.close()
-        #else
-        if enabled {
+        if !BuildConfig.isDebug, enabled {
             setupCrashService()
         } else {
             SentrySDK.close()
         }
-        #endif
     }
 
     /// Logs an analytics event with the given name and parameters.
@@ -50,13 +45,11 @@ final class AnalyticsService: NSObject {
     /// - Parameters should use string keys and values that are compatible with analytics.
     @objc(logEventWithName:parameters:)
     static func logEvent(withName name: String, parameters: [String: Any]?) {
-        guard MyConfiguration.shared.allowAnalytics else {
+        guard MyConfiguration.shared.allowAnalytics, !BuildConfig.isDebug else {
             return
         }
 
-        #if !DEBUG
         Analytics.logEvent(name, parameters: parameters)
-        #endif
     }
 
     /// Logs window appearance events.
