@@ -99,12 +99,11 @@ extension String {
     }
 
     func copyAndShowToast(_ showToast: Bool) {
-        copyToPasteboard()
-        guard !isEmpty, showToast else {
+        guard copyToPasteboard(), showToast else {
             return
         }
         DispatchQueue.main.async {
-            //            EZToast.showText("Copy Success")
+            EZToast.showText(String(localized: "copy.action.toast.copied"))
         }
     }
 
